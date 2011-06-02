@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.editor.controller.curate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
@@ -160,29 +159,43 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             handleException(t);
         }
 
+        String currentAc = getAnnotatedObject() != null ? getAnnotatedObject().getAc() : null;
+        boolean currentAnnotatedObjectDeleted = false;
+
+        // annotated objects specific tasks to prepare the save/delete
+        doPreSave();
+
         // delete from the unsaved manager
         final List<UnsavedChange> deletedObjects = changesController.getAllUnsavedDeleted();
 
         PersistenceController persistenceController = getPersistenceController();
 
         for (UnsavedChange unsaved : deletedObjects) {
+
+            IntactObject unsavedObject = unsaved.getUnsavedObject();
+
+            if (unsavedObject.getAc() != null && unsavedObject.getAc().equals(currentAc)){
+                currentAnnotatedObjectDeleted = true;
+            }
             // remove the object to delete from its parent
-            persistenceController.doDelete(unsaved.getUnsavedObject());
+            persistenceController.doDelete(unsavedObject);
 
             changesController.removeFromDeleted(unsaved);
         }
 
-        // annotated objects specific tasks to prepare the save
-        doPreSave();
-
         AnnotatedObject annotatedObject = getAnnotatedObject();
+        boolean saved;
 
-        boolean saved = persistenceController.doSave(annotatedObject);
+        if (currentAnnotatedObjectDeleted){
+            saved = true;
+        }
+        else{
+            saved = persistenceController.doSave(annotatedObject);
+            // saves specific elements for each annotated object (e.g. components in interactions)
+            boolean detailsSaved = doSaveDetails();
 
-        // saves specific elements for each annotated object (e.g. components in interactions)
-        boolean detailsSaved = doSaveDetails();
-
-        if (detailsSaved) saved = true;
+            if (detailsSaved) saved = true;
+        }
 
         if (saved) {
             lastSaved = new Date();
@@ -197,7 +210,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         setAnnotatedObject(annotatedObject);
 
-        addInfoMessage("Saved", DebugUtil.annotatedObjectToString(getAnnotatedObject(), false));
+        if (annotatedObject != null){
+            addInfoMessage("Saved", DebugUtil.annotatedObjectToString(getAnnotatedObject(), false));
+        }
 
         refreshCurrentViewObject();
 
@@ -205,19 +220,26 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     private AnnotatedObject refresh(AnnotatedObject annotatedObject) {
-        final TransactionStatus transactionStatus2 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        //final TransactionStatus transactionStatus2 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
-        boolean isNew = (getAnnotatedObject().getAc() == null);
+        if (annotatedObject != null){
+            boolean isNew = false;
 
-        if (!isNew && getDaoFactory().getEntityManager().contains(annotatedObject)) {
-            // the following line is commented because it seems to cause problems when deleting an xref - it is not deleted.
-            // I should write some comments so I could remember why I did add it in the first place...
+            if (getAnnotatedObject() != null){
+                isNew = (getAnnotatedObject().getAc() == null);
+            }
 
-            //getDaoFactory().getEntityManager().refresh(annotatedObject);
-        } else {
-            annotatedObject = getDaoFactory().getEntityManager().find(annotatedObject.getClass(), annotatedObject.getAc());
+            if (!isNew && getDaoFactory().getEntityManager().contains(annotatedObject)) {
+                // the following line is commented because it seems to cause problems when deleting an xref - it is not deleted.
+                // I should write some comments so I could remember why I did add it in the first place...
+
+                getDaoFactory().getEntityManager().refresh(annotatedObject);
+            } else {
+                annotatedObject = getDaoFactory().getEntityManager().find(annotatedObject.getClass(), annotatedObject.getAc());
+            }
         }
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus2);
+
+        //IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus2);
         return annotatedObject;
     }
 
@@ -226,10 +248,15 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         final AnnotatedObject currentAo = curateController.getCurrentAnnotatedObjectController().getAnnotatedObject();
 
-        if (currentAo != null && currentAo.getAc() != null && getAnnotatedObject() != null && !currentAo.getAc().equals(getAnnotatedObject().getAc())) {
-            if (log.isDebugEnabled()) log.debug("Refreshing object in view: "+DebugUtil.annotatedObjectToString(currentAo, false));
+        if (currentAo != null && currentAo.getAc() != null) {
 
-            refresh(currentAo);
+            // we have to refresh because the current annotated object is different from the annotated object of this controller
+            if (getAnnotatedObject() != null && !currentAo.getAc().equals(getAnnotatedObject().getAc())){
+                if (log.isDebugEnabled()) log.debug("Refreshing object in view: "+DebugUtil.annotatedObjectToString(currentAo, false));
+
+                AnnotatedObject refreshedAo = refresh(currentAo);
+                curateController.getCurrentAnnotatedObjectController().setAnnotatedObject(refreshedAo);
+            }
         }
     }
 

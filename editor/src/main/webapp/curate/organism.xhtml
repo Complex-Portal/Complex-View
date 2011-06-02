@@ -49,7 +49,7 @@
                         <p:inputText id="taxIdTxt" value="#{bioSourceController.taxId}" onchange="markAsUnsaved()" converter="trimmingConverter"
                                      required="true" requiredMessage="Tax ID is required">
                             <!--<ed:ajax event="valueChange" update="organismTabs"
-                          beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()" process="autoFillBtn"/>-->
+                          beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"/>-->
                         </p:inputText>
 
                         <p:commandButton id="autoFillBtn" value="Auto-fill" actionListener="#{bioSourceController.autoFill}"

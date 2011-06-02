@@ -101,9 +101,9 @@ public class ChangesController extends JpaAwareController implements UserListene
             AnnotatedObjectUtils.removeChild(parent, object);
         }
 
-        if (parent != null && parent.getAc() != null) {
+        /*if (parent != null && parent.getAc() != null) {
             addChange(new UnsavedChange(parent, UnsavedChange.UPDATED));
-        }
+        }*/
     }
 
     public void markToCreatedTranscriptWithoutMaster(IntactObject object) {
