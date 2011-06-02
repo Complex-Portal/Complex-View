@@ -113,8 +113,8 @@
                 <div style="float:right">
                     <p:commandLink process="@this" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
                                    actionListener="#{interactionController.markParticipantToDelete(participant)}"
-                                   update="participantsTable,unsavedChangesInfo,changesPanel,messagesComponent"
-                                   oncomplete="markAsUnsaved()"
+                                   update="participantsTable,unsavedChangesInfo,changesPanel,messagesComponent,unsavedChangesInfo"
+                                   oncomplete="editorCuration.showUnsavedBar()"
                                    rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
                 </div>
                 <div style="float:right">

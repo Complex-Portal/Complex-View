@@ -44,11 +44,11 @@
              <div class="dialogButtonBar">
                 <p:commandButton value="Save All" actionListener="#{persistenceController.saveAll}"
                                  onstart="saveAllDlg.show()" onsuccess="saveAllDlg.hide()" oncomplete="unsavedChangesDialog.hide();"
-                                 update="centralUnit,topSection,messagesComponent"/>
+                                 update="centralUnit,topSection,messagesComponent,editorForm"/>
                  &#160;
                 <p:commandLink value="Revert All" actionListener="#{persistenceController.revertAll}"
                                onclick="revertAllDlg.show()" onsuccess="unsavedChangesDialog.hide()" oncomplete="revertAllDlg.hide();"
-                               update="centralUnit,topSection,messagesComponent"/>
+                               update="centralUnit,topSection,messagesComponent,editorForm"/>
             </div>
 
     </p:dialog>
