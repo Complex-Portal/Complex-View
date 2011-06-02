@@ -277,7 +277,10 @@ public class FeatureController extends AnnotatedObjectController {
 
     @Override
     public void doPreSave() {
-        participantController.getParticipant().addFeature(feature);
+        // the feature was just created, add it to the list of features of the participant
+        if (feature.getAc() == null){
+            participantController.getParticipant().addFeature(feature);
+        }
     }
 
     public String getNewRangeValue() {

@@ -376,8 +376,9 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public void refreshParticipants() {
-        final Collection<Component> components = interaction.getComponents();
         participantWrappers = new LinkedList<ParticipantWrapper>();
+
+        final Collection<Component> components = interaction.getComponents();
 
         for ( Component component : components ) {
             participantWrappers.add( new ParticipantWrapper( component, getChangesController() ) );
@@ -657,7 +658,7 @@ public class InteractionController extends ParameterizableObjectController {
         if (interaction != null) {
             this.ac = interaction.getAc();
 
-            if (Hibernate.isInitialized(interaction.getExperiments()) && !interaction.getExperiments().isEmpty()) {
+            if ( Hibernate.isInitialized(interaction.getExperiments()) && !interaction.getExperiments().isEmpty()) {
                 experimentController.setExperiment(interaction.getExperiments().iterator().next());
             }
         }

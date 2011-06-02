@@ -138,7 +138,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         // adjust any xref, just if the curator introduced a value in the primaryId of the xref
         // and clicked on save without focusing on another field first (which would trigger
         // a change event and field the values with ajax)
-        xrefChanged(null);
+        if (IntactCore.isInitialized(getAnnotatedObject().getXrefs())){
+            xrefChanged(null);
+        }
 
         // check if object already exists in the database before creating a new one
         try {
@@ -215,7 +217,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
 
         refreshCurrentViewObject();
-
         doPostSave();
     }
 
@@ -253,6 +254,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             // we have to refresh because the current annotated object is different from the annotated object of this controller
             if (getAnnotatedObject() != null && !currentAo.getAc().equals(getAnnotatedObject().getAc())){
                 if (log.isDebugEnabled()) log.debug("Refreshing object in view: "+DebugUtil.annotatedObjectToString(currentAo, false));
+
+                AnnotatedObject refreshedAo = refresh(currentAo);
+                curateController.getCurrentAnnotatedObjectController().setAnnotatedObject(refreshedAo);
+            }
+            else if (getAnnotatedObject() == null && currentAo != null){
+                 if (log.isDebugEnabled()) log.debug("Refreshing object in view: "+DebugUtil.annotatedObjectToString(currentAo, false));
 
                 AnnotatedObject refreshedAo = refresh(currentAo);
                 curateController.getCurrentAnnotatedObjectController().setAnnotatedObject(refreshedAo);

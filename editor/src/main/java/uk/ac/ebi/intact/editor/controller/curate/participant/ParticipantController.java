@@ -157,7 +157,14 @@ public class ParticipantController extends ParameterizableObjectController {
             getCorePersister().saveOrUpdate(participant.getInteractor());
         }
 
-        interactionController.getInteraction().addComponent(participant);
+        // the participant is not persisted, we can add it to the list of components in the interaction
+        if (participant.getAc() == null){
+            interactionController.getInteraction().addComponent(participant);
+        }
+    }
+
+    @Override
+    public void doPostSave(){
         interactionController.refreshParticipants();
     }
 

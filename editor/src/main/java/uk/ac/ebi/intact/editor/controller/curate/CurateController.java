@@ -101,8 +101,8 @@ public class CurateController extends JpaAwareController {
         } else if (Interaction.class.isAssignableFrom(iaClass)) {
             InteractionController interactionController = (InteractionController) getSpringContext().getBean("interactionController");
             interactionController.setInteraction((Interaction)intactObject);
-            interactionController.refreshParticipants();
-            interactionController.refreshExperimentLists();
+            //interactionController.refreshParticipants();
+            //interactionController.refreshExperimentLists();
             return new CurateObjectMetadata(interactionController, "interaction");
         } else if (Interactor.class.isAssignableFrom(iaClass)) {
             InteractorController interactorController = (InteractorController) getSpringContext().getBean("interactorController");
