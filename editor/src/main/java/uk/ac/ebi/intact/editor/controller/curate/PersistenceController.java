@@ -63,6 +63,8 @@ public class PersistenceController extends JpaAwareController {
 
         try {
             getIntactContext().getCorePersister().saveOrUpdate( annotatedObject );
+            changesController.removeFromUnsaved(annotatedObject);
+
             return true;
 
         } catch (IllegalTransactionStateException itse) {
@@ -108,6 +110,7 @@ public class PersistenceController extends JpaAwareController {
                 coreDeleter.delete(intactObject);
 
                 addInfoMessage("Deleted object", DebugUtil.intactObjectToString(intactObject, false));
+                changesController.removeFromDeleted(intactObject, null);
 
                 return true;
             }
@@ -140,8 +143,6 @@ public class PersistenceController extends JpaAwareController {
         for (IntactObject intactObject : changesController.getAllDeleted()) {
             doDelete(intactObject);
         }
-
-        changesController.clearCurrentUserChanges();
 
         // refresh current view now
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");

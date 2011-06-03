@@ -45,9 +45,14 @@ public class ChangesController extends JpaAwareController implements UserListene
      * Map containing the user name as the key, and a list with his/her changes.
      */
     private Map<String,List<UnsavedChange>> changesPerUser;
+    /**
+     * Map containing the user name as the key, and a list with his/her changes which are behind the scene and should be hidden from the user.
+     */
+    private Map<String,List<UnsavedChange>> hiddenChangesPerUser;
 
     public ChangesController() {
         changesPerUser = new HashMap<String, List<UnsavedChange>>();
+        hiddenChangesPerUser = new HashMap<String, List<UnsavedChange>>();
     }
 
     @Override
@@ -55,6 +60,7 @@ public class ChangesController extends JpaAwareController implements UserListene
         if (user == null) return;
 
         changesPerUser.put(user.getLogin(), new ArrayList<UnsavedChange>());
+        hiddenChangesPerUser.put(user.getLogin(), new ArrayList<UnsavedChange>());
     }
 
     @Override
@@ -64,8 +70,9 @@ public class ChangesController extends JpaAwareController implements UserListene
 
     private void userLoggedOut(String user) {
         final List<UnsavedChange> unsavedChanges = getUnsavedChangesForUser(user);
+        final List<UnsavedChange> hiddenUnsavedChanges = getHiddenUnsavedChangesForUser(user);
 
-        if (unsavedChanges == null) {
+        if (unsavedChanges == null || hiddenUnsavedChanges == null) {
             throw new IllegalStateException("No unsaved changes found for user: "+user);
         }
 
@@ -75,7 +82,14 @@ public class ChangesController extends JpaAwareController implements UserListene
             unsavedChanges.clear();
         }
 
+        if (!hiddenUnsavedChanges.isEmpty()) {
+            if (log.isInfoEnabled()) log.info("User logged out with "+hiddenChangesPerUser.size()+" hidden pending changes: "+user);
+
+            hiddenUnsavedChanges.clear();
+        }
+
         removeUserFromUnsaved(user);
+        removeUserFromHiddenUnsaved(user);
     }
 
     public void markAsUnsaved(IntactObject io) {
@@ -145,6 +159,14 @@ public class ChangesController extends JpaAwareController implements UserListene
                     getUnsavedChangesForCurrentUser().remove(change);
                 }
             }
+
+            List<UnsavedChange> changes2 = new ArrayList(getHiddenUnsavedChangesForCurrentUser());
+            for (UnsavedChange change : changes2){
+
+                if (change.getScope().contains(object.getAc())){
+                    getHiddenUnsavedChangesForCurrentUser().remove(change);
+                }
+            }
         }
     }
 
@@ -169,7 +191,7 @@ public class ChangesController extends JpaAwareController implements UserListene
         }
     }
 
-    public void markToCreatedTranscriptWithoutMaster(IntactObject object, AnnotatedObject parent) {
+    public void markAsHiddenChange(IntactObject object, AnnotatedObject parent, Collection<String> contextAcs) {
         String scope;
 
         if (parent != null && parent.getAc() != null){
@@ -178,7 +200,9 @@ public class ChangesController extends JpaAwareController implements UserListene
         else {
             scope = null;
         }
-        addUnsavedChange(new UnsavedChange(object, UnsavedChange.CREATED_TRANSCRIPT, scope));
+        UnsavedChange change = new UnsavedChange(object, UnsavedChange.CREATED_TRANSCRIPT, scope);
+        change.getAcsToDeleteOn().addAll(contextAcs);
+        addUnsavedHiddenChange(change);
     }
 
     @Transactional
@@ -212,12 +236,13 @@ public class ChangesController extends JpaAwareController implements UserListene
         removeObsoleteChangesOnSave(io);
     }
 
-    public void removeFromCreatedTranscriptWithoutProtein(UnsavedChange unsavedChange) {
-        getUnsavedChangesForCurrentUser().remove(unsavedChange);
+    public void removeFromHiddenChanges(UnsavedChange unsavedChange) {
+        getHiddenUnsavedChangesForCurrentUser().remove(unsavedChange);
     }
 
     public void removeFromDeleted(UnsavedChange unsavedChange) {
         getUnsavedChangesForCurrentUser().remove(unsavedChange);
+        removeObsoleteChangesOnDelete(unsavedChange.getUnsavedObject());
     }
 
     public void removeFromDeleted(IntactObject object, AnnotatedObject parent) {
@@ -231,6 +256,7 @@ public class ChangesController extends JpaAwareController implements UserListene
         }
 
         getUnsavedChangesForCurrentUser().remove(new UnsavedChange(object, UnsavedChange.DELETED, parent, scope));
+        removeObsoleteChangesOnDelete(object);
     }
 
     public void revert(AnnotatedObject io) {
@@ -288,6 +314,20 @@ public class ChangesController extends JpaAwareController implements UserListene
                     else if (interaction.getShortLabel() != null && unsavedInteraction.getShortLabel() == null) {
                         checkParentOfUnsavedObject(parentAcs, iterator, unsavedChange);
                     }
+                }
+            }
+        }
+
+        Iterator<UnsavedChange> iterator2 = getHiddenUnsavedChangesForCurrentUser().iterator();
+
+        // removed the passed object from the list of hidden unsaved changes (transcripts created). If this object is the scope of another change as well, delete it
+        while (iterator2.hasNext()) {
+            UnsavedChange unsavedChange = iterator2.next();
+            // the object has an ac, we can compare using ac
+            if (interaction.getAc() != null){
+                // if the protein transcript has been created when using component scope and the component ac is matching, delete it
+                if (interaction.getAc().equals(unsavedChange.getScope())) {
+                    iterator.remove();
                 }
             }
         }
@@ -377,6 +417,20 @@ public class ChangesController extends JpaAwareController implements UserListene
                     else if (component.getShortLabel() == null && unsavedComponent.getShortLabel() == null) {
                         checkParentOfUnsavedObject(parentAcs, iterator, unsavedChange);
                     }
+                }
+            }
+        }
+
+        Iterator<UnsavedChange> iterator2 = getHiddenUnsavedChangesForCurrentUser().iterator();
+
+        // removed the passed object from the list of hidden unsaved changes (transcripts created). If this object is the scope of another change as well, delete it
+        while (iterator2.hasNext()) {
+            UnsavedChange unsavedChange = iterator2.next();
+            // the object has an ac, we can compare using ac
+            if (component.getAc() != null){
+                // if the protein transcript has been created when using component scope and the component ac is matching, delete it
+                if (component.getAc().equals(unsavedChange.getScope())) {
+                    iterator.remove();
                 }
             }
         }
@@ -614,6 +668,7 @@ public class ChangesController extends JpaAwareController implements UserListene
 
     public void clearCurrentUserChanges() {
         getUnsavedChangesForCurrentUser().clear();
+        getHiddenUnsavedChangesForCurrentUser().clear();
     }
 
     private User getCurrentUser() {
@@ -625,6 +680,10 @@ public class ChangesController extends JpaAwareController implements UserListene
         return getUnsavedChangesForUser(getCurrentUser().getLogin());
     }
 
+    public List<UnsavedChange> getHiddenUnsavedChangesForCurrentUser() {
+        return getHiddenUnsavedChangesForUser(getCurrentUser().getLogin());
+    }
+
     public List<UnsavedChange> getUnsavedChangesForUser(String userId) {
         List<UnsavedChange> unsavedChanges;
 
@@ -633,6 +692,19 @@ public class ChangesController extends JpaAwareController implements UserListene
         } else {
             unsavedChanges = new ArrayList<UnsavedChange>();
             changesPerUser.put(userId, unsavedChanges);
+        }
+
+        return unsavedChanges;
+    }
+
+    public List<UnsavedChange> getHiddenUnsavedChangesForUser(String userId) {
+        List<UnsavedChange> unsavedChanges;
+
+        if (hiddenChangesPerUser.containsKey(userId)) {
+            unsavedChanges = hiddenChangesPerUser.get(userId);
+        } else {
+            unsavedChanges = new ArrayList<UnsavedChange>();
+            hiddenChangesPerUser.put(userId, unsavedChanges);
         }
 
         return unsavedChanges;
@@ -663,7 +735,29 @@ public class ChangesController extends JpaAwareController implements UserListene
         return true;
     }
 
+    private boolean addUnsavedHiddenChange(UnsavedChange unsavedChange) {
+        removeFromHiddenChanges(unsavedChange);
+
+        List<UnsavedChange> deletedChanges = getAllUnsavedDeleted();
+
+        for (UnsavedChange deleteChange : deletedChanges){
+
+            // if one deleted event is in conflict with the current save event, don't add an update event (if experiment is deleted, new changes on the interaction does not make any sense)
+            if (unsavedChange.getAcsToDeleteOn().contains(deleteChange.getUnsavedObject().getAc())){
+                return false;
+            }
+        }
+
+        List<UnsavedChange> unsavedChanges = getUnsavedChangesForCurrentUser();
+        unsavedChanges.add(unsavedChange);
+        return true;
+    }
+
     private void removeUserFromUnsaved(String user) {
         changesPerUser.remove(user);
+    }
+
+    private void removeUserFromHiddenUnsaved(String user) {
+        hiddenChangesPerUser.remove(user);
     }
 }

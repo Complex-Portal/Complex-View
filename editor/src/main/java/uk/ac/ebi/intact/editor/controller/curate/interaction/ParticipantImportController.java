@@ -25,6 +25,7 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriter;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriterImpl;
 import uk.ac.ebi.intact.dbupdate.prot.report.UpdateReportHandler;
@@ -261,20 +262,56 @@ public class ParticipantImportController extends BaseController {
 //            interactor = toProtein(candidate);
 //        }
 
-        if (candidate.isChain() || candidate.isIsoform()){
-            getInteractionController().getChangesController().markToCreatedTranscriptWithoutMaster(interactor, interaction);
-        }
-
         Component component = new Component(IntactContext.getCurrentInstance().getInstitution(),
                 interaction, interactor, cvExperimentalRole, cvBiologicalRole );
         component.setExpressedIn(expressedIn);
         component.setStoichiometry(stoichiometry);
+
+        if (candidate.isChain() || candidate.isIsoform()){
+            Collection<String> parentAcs = new ArrayList<String>();
+
+            if (interaction.getAc() != null){
+                parentAcs.add(interaction.getAc());
+
+                addParentAcsTo(parentAcs, interaction);
+            }
+
+            getInteractionController().getChangesController().markAsHiddenChange(interactor, interaction, parentAcs);
+        }
 
         if (cvExperimentalPreparation != null) {
             component.setExperimentalPreparations(Collections.singleton(cvExperimentalPreparation));
         }
 
         return component;
+    }
+
+    /**
+     * Add all the parent acs of this interaction
+     * @param parentAcs
+     * @param inter
+     */
+    protected void addParentAcsTo(Collection<String> parentAcs, Interaction inter) {
+        if (inter.getAc() != null){
+            parentAcs.add(inter.getAc());
+        }
+
+        if (IntactCore.isInitialized(inter.getExperiments()) && !inter.getExperiments().isEmpty()){
+            for (Experiment exp : inter.getExperiments()){
+                interactionController.addParentAcsTo(parentAcs, exp);
+            }
+        }
+        else if (interactionController.getExperiment() != null){
+            Experiment exp = interactionController.getExperiment();
+            interactionController.addParentAcsTo(parentAcs, exp);
+        }
+        else if (!IntactCore.isInitialized(inter.getExperiments())){
+            Collection<Experiment> experiments = IntactCore.ensureInitializedExperiments(inter);
+
+            for (Experiment exp : experiments){
+                interactionController.addParentAcsTo(parentAcs, exp);
+            }
+        }
     }
 
     private Interactor toProtein(ImportCandidate candidate) {

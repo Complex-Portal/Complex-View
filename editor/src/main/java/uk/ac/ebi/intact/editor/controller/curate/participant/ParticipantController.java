@@ -156,8 +156,6 @@ public class ParticipantController extends ParameterizableObjectController {
             // if current ac is null, no unsaved event should be associated with it as this object has not been saved yet
             if (unsaved.getScope() != null && unsaved.getScope().equals(currentAc)){
                 super.getPersistenceController().doSaveMasterProteins(transcript);
-
-                super.getChangesController().removeFromCreatedTranscriptWithoutProtein(unsaved);
             }
         }
 
@@ -270,8 +268,15 @@ public class ParticipantController extends ParameterizableObjectController {
     public void addInteractorToParticipant(ActionEvent evt) {
         for (ImportCandidate importCandidate : interactorCandidates) {
             if (importCandidate.isSelected()) {
+                // chain or isoform, we may have to update it later
                 if (importCandidate.isChain() || importCandidate.isIsoform()){
-                    getChangesController().markToCreatedTranscriptWithoutMaster(importCandidate.getInteractor(), participant);
+                    Collection<String> parentAcs = new ArrayList<String>();
+
+                    if (participant.getInteraction() != null){
+                        addParentAcsTo(parentAcs, participant.getInteraction());
+                    }
+
+                    getChangesController().markAsHiddenChange(importCandidate.getInteractor(), participant, parentAcs);
                 }
                 participant.setInteractor(importCandidate.getInteractor());
                 setUnsavedChanges(true);
