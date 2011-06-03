@@ -390,6 +390,8 @@ public class InteractionController extends ParameterizableObjectController {
         refreshExperimentLists();
         refreshParticipants();
 
+        changed();
+
         return navigateToObject(interaction);
     }
 

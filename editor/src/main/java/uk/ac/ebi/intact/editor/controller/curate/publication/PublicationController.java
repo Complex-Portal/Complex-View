@@ -929,4 +929,9 @@ public class PublicationController extends AnnotatedObjectController {
 
         getChangesController().revertPublication(publication);
     }
+
+    @Override
+    public String goToParent() {
+        return "/curate/curate?faces-redirect=true";
+    }
 }

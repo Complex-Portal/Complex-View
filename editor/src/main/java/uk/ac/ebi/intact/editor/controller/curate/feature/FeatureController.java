@@ -174,7 +174,7 @@ public class FeatureController extends AnnotatedObjectController {
         //participant.addBindingDomain(feature);
 
         refreshRangeWrappers();
-
+        changed();
         //getUnsavedChangeManager().markAsUnsaved(feature);
 
         return navigateToObject(feature);

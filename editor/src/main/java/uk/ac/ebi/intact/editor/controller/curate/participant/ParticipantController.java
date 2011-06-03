@@ -252,6 +252,7 @@ public class ParticipantController extends ParameterizableObjectController {
         //interaction.addComponent(participant);
 
         //getUnsavedChangeManager().markAsUnsaved(participant);
+        changed();
 
         return navigateToObject(participant);
     }

@@ -59,7 +59,7 @@ public class BioSourceController extends AnnotatedObjectController {
         setBioSource(bioSource);
 
         //getUnsavedChangeManager().markAsUnsaved(bioSource);
-
+        changed();
         return navigateToObject(bioSource);
     }
 
