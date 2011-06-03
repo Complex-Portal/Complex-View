@@ -74,7 +74,6 @@ public class CurateController extends JpaAwareController {
 
     @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void discard(IntactObject intactObject) {
-        changesController.removeFromUnsaved(intactObject);
 
         AnnotatedObjectController annotatedObjectController = getMetadata(intactObject).getAnnotatedObjectController();
         annotatedObjectController.doRevertChanges(null);

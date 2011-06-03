@@ -19,6 +19,9 @@ import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -33,6 +36,7 @@ public class UnsavedChange {
     private IntactObject unsavedObject;
     private AnnotatedObject parentObject;
     private String action;
+    private Collection<String> acsToDeleteOn = new ArrayList<String>();
 
     /**
      * This is the global scope of change in case we delete an object from its parent. We know during which update we can save this change

@@ -317,7 +317,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         PersistenceController persistenceController = getPersistenceController();
         setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
 
-        changesController.clearCurrentUserChanges();
+        changesController.revert(getAnnotatedObject());
 
         postRevert();
 
@@ -331,7 +331,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public String doCancelEdition() {
         addInfoMessage("Canceled", "");
 
-        changesController.clearCurrentUserChanges();
+        changesController.revert(getAnnotatedObject());
 
         return goToParent();
 

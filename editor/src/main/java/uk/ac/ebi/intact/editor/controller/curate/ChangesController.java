@@ -177,12 +177,13 @@ public class ChangesController extends JpaAwareController implements UserListene
     public void revert(IntactObject io) {
         Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
 
-        // removed the passed object from the list of unsaved changes
+        // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
         while (iterator.hasNext()) {
             UnsavedChange unsavedChange = iterator.next();
-            if (io.getAc() != null && io.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
+            if (io.getAc() != null && (io.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || io.getAc().equals(unsavedChange.getScope()))) {
                 iterator.remove();
             }
+
         }
     }
 
