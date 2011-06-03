@@ -91,7 +91,20 @@ public class ChangesController extends JpaAwareController implements UserListene
         }
     }
 
+    public void markAsUnsaved(IntactObject io, Collection<String> parentAcs) {
+        if (io == null) return;
 
+        UnsavedChange change;
+
+        if (io.getAc() != null) {
+            change = new UnsavedChange(io, UnsavedChange.UPDATED, null);
+        } else {
+            change = new UnsavedChange(io, UnsavedChange.CREATED, null);
+        }
+        change.getAcsToDeleteOn().addAll(parentAcs);
+
+        addChange(change);
+    }
 
     public void markToDelete(IntactObject object, AnnotatedObject parent) {
         if (object.getAc() != null) {
@@ -106,7 +119,12 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
 
             addChange(new UnsavedChange(object, UnsavedChange.DELETED, parent, scope));
-            removeFromUnsaved(object);
+
+            // very important to delete all changes which can be affected by the delete of this object!!!
+            removeObsoleteChangesOnDelete(object);
+
+            // line commented because already done when adding the change
+            //removeFromUnsaved(object);
         } else {
             AnnotatedObjectUtils.removeChild(parent, object);
         }
@@ -114,6 +132,19 @@ public class ChangesController extends JpaAwareController implements UserListene
         /*if (parent != null && parent.getAc() != null) {
             addChange(new UnsavedChange(parent, UnsavedChange.UPDATED));
         }*/
+    }
+
+    public void removeObsoleteChangesOnDelete(IntactObject object){
+        if (object.getAc() != null){
+
+            List<UnsavedChange> changes = new ArrayList(getUnsavedChangesForCurrentUser());
+            for (UnsavedChange change : changes){
+
+                if (change.getAcsToDeleteOn().contains(object.getAc())){
+                     getUnsavedChangesForCurrentUser().remove(change);
+                }
+            }
+        }
     }
 
     public void markToCreatedTranscriptWithoutMaster(IntactObject object, AnnotatedObject parent) {

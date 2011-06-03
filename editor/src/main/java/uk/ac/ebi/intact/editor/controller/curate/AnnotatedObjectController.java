@@ -44,10 +44,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.validator.ValidatorException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -363,7 +360,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         setAnnotatedObject(clone);
 
-        changesController.markAsUnsaved(clone);
+        setUnsavedChanges(true);
 
         return getCurateController().edit(clone);
     }
@@ -392,11 +389,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return new EditorIntactCloner();
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public String doDelete() {
         PersistenceController persistenceController = getPersistenceController();
 
         if (persistenceController.doDelete(getAnnotatedObject())){
+            getChangesController().removeObsoleteChangesOnDelete(getAnnotatedObject());
             setAnnotatedObject(null);
             return goToParent();
         }
@@ -818,5 +815,33 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             if ( o1.getAc() != null ) return 1;
             return 0;
         }
+    }
+
+    /**
+     * Get the publication ac of this experiment if it exists and add it to the list or parentAcs
+     * @param parentAcs
+     * @param exp
+     */
+    protected void addPublicationAcToParentAcs(Collection<String> parentAcs, Experiment exp) {
+        if (exp.getPublication() != null){
+            Publication pub = exp.getPublication();
+
+            if (pub.getAc() != null){
+                parentAcs.add(pub.getAc());
+            }
+        }
+    }
+
+    /**
+     * Get the publication ac of this experiment if it exists, the ac of this experiment if it exists and add it to the list or parentAcs
+     * @param parentAcs
+     * @param exp
+     */
+    protected void addParentAcsTo(Collection<String> parentAcs, Experiment exp) {
+        if (exp.getAc() != null){
+            parentAcs.add(exp.getAc());
+        }
+
+        addPublicationAcToParentAcs(parentAcs, exp);
     }
 }

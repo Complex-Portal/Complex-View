@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantIntactCloner;
@@ -168,6 +169,50 @@ public class ParticipantController extends ParameterizableObjectController {
         // the participant is not persisted, we can add it to the list of components in the interaction
         if (participant.getAc() == null){
             interactionController.getInteraction().addComponent(participant);
+        }
+    }
+
+    @Override
+    public void setUnsavedChanges(boolean unsavedChanges) {
+        if (unsavedChanges) {
+            Collection<String> parentAcs = new ArrayList<String>();
+
+            if (participant.getInteraction() != null){
+                addParentAcsTo(parentAcs, participant.getInteraction());
+            }
+
+            getChangesController().markAsUnsaved(getAnnotatedObject(), parentAcs);
+
+        } else {
+            getChangesController().removeFromUnsaved(getAnnotatedObject());
+        }
+    }
+
+    /**
+     * Add all the parent acs of this interaction
+     * @param parentAcs
+     * @param inter
+     */
+    protected void addParentAcsTo(Collection<String> parentAcs, Interaction inter) {
+        if (inter.getAc() != null){
+            parentAcs.add(inter.getAc());
+        }
+
+        if (IntactCore.isInitialized(inter.getExperiments()) && !inter.getExperiments().isEmpty()){
+            for (Experiment exp : inter.getExperiments()){
+                addParentAcsTo(parentAcs, exp);
+            }
+        }
+        else if (interactionController.getExperiment() != null){
+            Experiment exp = interactionController.getExperiment();
+            addParentAcsTo(parentAcs, exp);
+        }
+        else if (!IntactCore.isInitialized(inter.getExperiments())){
+            Collection<Experiment> experiments = IntactCore.ensureInitializedExperiments(inter);
+
+            for (Experiment exp : experiments){
+                addParentAcsTo(parentAcs, exp);
+            }
         }
     }
 

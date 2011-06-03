@@ -76,6 +76,10 @@ public class UnsavedChange {
         return DebugUtil.intactObjectToString(intactObject, true);
     }
 
+    public Collection<String> getAcsToDeleteOn() {
+        return acsToDeleteOn;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

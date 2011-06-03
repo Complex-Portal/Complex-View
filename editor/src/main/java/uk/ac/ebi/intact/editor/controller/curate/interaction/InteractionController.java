@@ -416,7 +416,35 @@ public class InteractionController extends ParameterizableObjectController {
 
         }
 
-        getChangesController().markAsUnsaved(interaction);
+        setUnsavedChanges(true);
+    }
+
+    @Override
+    public void setUnsavedChanges(boolean unsavedChanges) {
+        if (unsavedChanges) {
+            Collection<String> parentAcs = new ArrayList<String>();
+
+            if (IntactCore.isInitialized(interaction.getExperiments()) && !interaction.getExperiments().isEmpty()){
+                for (Experiment exp : interaction.getExperiments()){
+                    addParentAcsTo(parentAcs, exp);
+                }
+            }
+            else if (experiment != null){
+                addParentAcsTo(parentAcs, experiment);
+            }
+            else if (!IntactCore.isInitialized(interaction.getExperiments())){
+                Collection<Experiment> experiments = IntactCore.ensureInitializedExperiments(interaction);
+
+                for (Experiment exp : experiments){
+                    addParentAcsTo(parentAcs, exp);
+                }
+            }
+
+            getChangesController().markAsUnsaved(getAnnotatedObject(), parentAcs);
+
+        } else {
+            getChangesController().removeFromUnsaved(getAnnotatedObject());
+        }
     }
 
     public String copyToExperiment() {

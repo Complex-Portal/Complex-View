@@ -38,6 +38,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -212,7 +214,7 @@ public class ExperimentController extends AnnotatedObjectController {
 
             year = new SimpleDateFormat("yyyy").format(new Date());
         } else {
-             year = String.valueOf(publicationController.getYear());
+            year = String.valueOf(publicationController.getYear());
         }
 
         String shortLabel = author+"-"+year;
@@ -232,7 +234,7 @@ public class ExperimentController extends AnnotatedObjectController {
         }
 
         if (pmid != null) {
-             return ExperimentUtils.syncShortLabelWithDb(expLabel, pmid);
+            return ExperimentUtils.syncShortLabelWithDb(expLabel, pmid);
         } else {
             return expLabel;
         }
@@ -317,7 +319,7 @@ public class ExperimentController extends AnnotatedObjectController {
         Experiment e = exp;
 
         if (!IntactCore.isInitialized(exp.getAnnotations())) {
-           e = getDaoFactory().getExperimentDao().getByAc(exp.getAc());
+            e = getDaoFactory().getExperimentDao().getByAc(exp.getAc());
         }
         return e;
     }
@@ -429,5 +431,19 @@ public class ExperimentController extends AnnotatedObjectController {
 
     private PublicationController getPublicationController() {
         return (PublicationController) getSpringContext().getBean("publicationController");
+    }
+
+    @Override
+    public void setUnsavedChanges(boolean unsavedChanges) {
+        if (unsavedChanges) {
+            Collection<String> parentAcs = new ArrayList<String>();
+
+            addPublicationAcToParentAcs(parentAcs, experiment);
+
+            getChangesController().markAsUnsaved(getAnnotatedObject(), parentAcs);
+
+        } else {
+            getChangesController().removeFromUnsaved(getAnnotatedObject());
+        }
     }
 }

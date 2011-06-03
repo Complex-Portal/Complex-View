@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
@@ -40,6 +41,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.validator.ValidatorException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -214,7 +216,7 @@ public class FeatureController extends AnnotatedObjectController {
 
         refreshRangeWrappers();
 
-        getChangesController().markAsUnsaved(feature);
+        setUnsavedChanges(true);
     }
 
     public void validateFeature(FacesContext context, UIComponent component, Object value) throws ValidatorException {
@@ -297,5 +299,66 @@ public class FeatureController extends AnnotatedObjectController {
 
     public void setContainsInvalidRanges(boolean containsInvalidRanges) {
         this.containsInvalidRanges = containsInvalidRanges;
+    }
+
+    @Override
+    public void setUnsavedChanges(boolean unsavedChanges) {
+        if (unsavedChanges) {
+            Collection<String> parentAcs = new ArrayList<String>();
+
+            if (feature.getComponent() != null){
+                Component comp = feature.getComponent();
+                if (comp.getAc() != null){
+                    parentAcs.add(comp.getAc());
+                }
+
+                addParentAcsTo(parentAcs, comp);
+            }
+
+            getChangesController().markAsUnsaved(getAnnotatedObject(), parentAcs);
+
+        } else {
+            getChangesController().removeFromUnsaved(getAnnotatedObject());
+        }
+    }
+
+    /**
+     * Get the publication ac of this participant if it exists, the ac of the interaction if it exists and the component ac if it exists and add it to the list or parentAcs
+     * @param parentAcs
+     * @param comp
+     */
+    private void addParentAcsTo(Collection<String> parentAcs, Component comp) {
+        if (comp.getInteraction() != null){
+            Interaction inter = comp.getInteraction();
+            addParentAcsTo(parentAcs, inter);
+        }
+    }
+
+    /**
+     * Add all the parent acs of this interaction
+     * @param parentAcs
+     * @param inter
+     */
+    protected void addParentAcsTo(Collection<String> parentAcs, Interaction inter) {
+        if (inter.getAc() != null){
+            parentAcs.add(inter.getAc());
+        }
+
+        if (IntactCore.isInitialized(inter.getExperiments()) && !inter.getExperiments().isEmpty()){
+            for (Experiment exp : inter.getExperiments()){
+                addParentAcsTo(parentAcs, exp);
+            }
+        }
+        else if (interactionController.getExperiment() != null){
+            Experiment exp = interactionController.getExperiment();
+            addParentAcsTo(parentAcs, exp);
+        }
+        else if (!IntactCore.isInitialized(inter.getExperiments())){
+            Collection<Experiment> experiments = IntactCore.ensureInitializedExperiments(inter);
+
+            for (Experiment exp : experiments){
+                addParentAcsTo(parentAcs, exp);
+            }
+        }
     }
 }
