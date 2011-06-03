@@ -17,6 +17,11 @@ a img {
 
 
 /** Custom classes **/
+.code {
+    font-family: monospace, "Courier";
+    font-weight: bold;
+}
+
 .label, .value {
 border-right:0 none !important;
 }

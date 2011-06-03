@@ -26,6 +26,9 @@
 
         <h:panelGroup id="notesPanel">
 
+            This space is just for you, for your personal enjoyment. You can type accessions (e.g. <span class="code">#{intactConfig.acPrefix}-12345</span>) and
+            even macros with HQL queries (e.g. <span class="code">{query:experiments select e from Experiment e}</span>).
+
             <h:panelGroup rendered="#{myNotesController.editMode}">
 
                 <p:inputTextarea id="notesArea" value="#{myNotesController.rawNotes}" rows="15" cols="80"/>
