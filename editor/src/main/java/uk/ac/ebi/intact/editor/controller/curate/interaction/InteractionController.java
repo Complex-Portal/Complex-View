@@ -211,8 +211,19 @@ public class InteractionController extends ParameterizableObjectController {
                 publicationController.setPublication(pub);
             }
 
-            for ( Experiment e : pub.getExperiments() ) {
-                experimentSelectItems.add(new SelectItem(e, e.getShortLabel(), e.getFullName()));
+            // publication does have experiments so we can propose them
+            if (!pub.getExperiments().isEmpty()){
+                for ( Experiment e : pub.getExperiments() ) {
+                    experimentSelectItems.add(new SelectItem(e, e.getShortLabel(), e.getFullName()));
+                }
+            }
+
+            // check if a new pending experiment is also present but not added to the publication experiments yet because not saved
+            if (experimentController.getExperiment() != null){
+                Experiment expController = experimentController.getExperiment();
+                if (expController.getAc() == null){
+                    experimentSelectItems.add(new SelectItem(expController, expController.getShortLabel(), expController.getFullName()));
+                }
             }
         }
     }
