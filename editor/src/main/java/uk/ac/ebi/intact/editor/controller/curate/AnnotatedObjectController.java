@@ -303,6 +303,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void doRevertChanges( ActionEvent evt ) {
+        if (getAnnotatedObject().getAc() == null){
+            doCancelEdition();
+        }
         PersistenceController persistenceController = getPersistenceController();
         setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
 

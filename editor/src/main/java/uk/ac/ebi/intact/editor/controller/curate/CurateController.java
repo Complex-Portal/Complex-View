@@ -76,7 +76,15 @@ public class CurateController extends JpaAwareController {
     public void discard(IntactObject intactObject) {
 
         AnnotatedObjectController annotatedObjectController = getMetadata(intactObject).getAnnotatedObjectController();
+
         annotatedObjectController.doRevertChanges(null);
+    }
+
+    public String cancelEdition(IntactObject intactObject) {
+
+        AnnotatedObjectController annotatedObjectController = getMetadata(intactObject).getAnnotatedObjectController();
+
+        return annotatedObjectController.doCancelEdition();
     }
 
     public String newIntactObject(IntactObject intactObject) {

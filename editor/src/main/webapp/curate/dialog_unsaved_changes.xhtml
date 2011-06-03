@@ -18,7 +18,11 @@
                                  update="unsavedTable, messagesComponent, unsavedChangesInfo, changesPanel, editorForm"/>
                 <p:commandButton value="Discard" actionListener="#{curateController.discard(change.unsavedObject)}"
                                  update="unsavedTable, messagesComponent, unsavedChangesInfo, changesPanel, editorForm"
-                                 onclick="revertDlg.show()" oncomplete="revertDlg.hide()"/>
+                                 onclick="revertDlg.show()" oncomplete="revertDlg.hide()" immediate="true"
+                                 rendered="#{curateController.acToOpen != null}"/>
+                <p:commandButton value="Cancel" action="#{curateController.cancelEdition(change.unsavedObject)}"
+                                 update="unsavedTable, messagesComponent, unsavedChangesInfo, changesPanel, editorForm"
+                                 onclick="revertDlg.show()" oncomplete="revertDlg.hide()" immediate="true" rendered="#{curateController.acToOpen == null}"/>
             </p:column>
             <p:column>
                 <f:facet name="header"><h:outputText value="Modification"/></f:facet>
