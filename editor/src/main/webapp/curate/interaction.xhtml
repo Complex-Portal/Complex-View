@@ -106,9 +106,10 @@
                         </td>
                         <td colspan="3" >
                             <h:selectOneMenu id="experimentLists"
-                                             value="#{interactionController.experiment}" onchange="markAsUnsaved()"
+                                             value="#{interactionController.experiment}"
                                              required="true" requiredMessage="You must set an experiment">
-                                <f:ajax event="valueChange" listener="#{interactionController.experimentChanged}" onevent="markAsUnsaved()" execute="@this"/>
+                                <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo editorForm"
+                                                process="@this" listener="#{interactionController.experimentChanged}" async="true"/>
                                  <f:selectItems value="#{interactionController.experimentSelectItems}"/>
                             </h:selectOneMenu>
                             <!--<p:pickList id="experimentLists"-->

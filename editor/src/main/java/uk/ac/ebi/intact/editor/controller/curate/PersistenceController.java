@@ -107,10 +107,11 @@ public class PersistenceController extends JpaAwareController {
 //            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
             try{
+                changesController.removeFromDeleted(intactObject, null);
+
                 coreDeleter.delete(intactObject);
 
                 addInfoMessage("Deleted object", DebugUtil.intactObjectToString(intactObject, false));
-                changesController.removeFromDeleted(intactObject, null);
 
                 return true;
             }

@@ -352,6 +352,8 @@ public class InteractionController extends ParameterizableObjectController {
         interaction.addExperiment(newExp);
 
         experimentsToUpdate.add(newExp);
+
+        changed();
     }
 
     private Experiment reload(Experiment oldExp) {
