@@ -188,6 +188,18 @@ public class ParticipantController extends ParameterizableObjectController {
         }
     }
 
+    @Override
+    protected void refreshUnsavedChangesAfterRevert(){
+        Collection<String> parentAcs = new ArrayList<String>();
+
+        if (participant.getInteraction() != null){
+            addParentAcsTo(parentAcs, participant.getInteraction());
+        }
+
+        getChangesController().revertComponent(participant, parentAcs);
+    }
+
+
     /**
      * Add all the parent acs of this interaction
      * @param parentAcs

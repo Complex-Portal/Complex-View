@@ -923,4 +923,10 @@ public class PublicationController extends AnnotatedObjectController {
     public void setXml254File(StreamedContent xml254File) {
         this.xml254File = xml254File;
     }
+
+    @Override
+    protected void refreshUnsavedChangesAfterRevert(){
+
+        getChangesController().revertPublication(publication);
+    }
 }

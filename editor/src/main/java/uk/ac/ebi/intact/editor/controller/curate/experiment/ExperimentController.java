@@ -446,4 +446,13 @@ public class ExperimentController extends AnnotatedObjectController {
             getChangesController().removeFromUnsaved(getAnnotatedObject());
         }
     }
+
+    @Override
+    protected void refreshUnsavedChangesAfterRevert(){
+        Collection<String> parentAcs = new ArrayList<String>();
+
+        addPublicationAcToParentAcs(parentAcs, experiment);
+
+        getChangesController().revertExperiment(experiment, parentAcs);
+    }
 }

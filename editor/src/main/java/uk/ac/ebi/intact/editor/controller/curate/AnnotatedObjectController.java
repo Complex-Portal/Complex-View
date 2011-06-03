@@ -18,8 +18,6 @@ package uk.ac.ebi.intact.editor.controller.curate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.IntactObjectDao;
@@ -309,12 +307,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void doRevertChanges( ActionEvent evt ) {
         PersistenceController persistenceController = getPersistenceController();
         setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
 
-        changesController.revert(getAnnotatedObject());
+        refreshUnsavedChangesAfterRevert();
 
         postRevert();
 
@@ -328,10 +325,14 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public String doCancelEdition() {
         addInfoMessage("Canceled", "");
 
-        changesController.revert(getAnnotatedObject());
+        refreshUnsavedChangesAfterRevert();
 
         return goToParent();
 
+    }
+
+    protected void refreshUnsavedChangesAfterRevert(){
+        changesController.revert(getAnnotatedObject());
     }
 
     public void changed() {

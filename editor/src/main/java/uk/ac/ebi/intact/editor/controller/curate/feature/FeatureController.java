@@ -322,6 +322,22 @@ public class FeatureController extends AnnotatedObjectController {
         }
     }
 
+    @Override
+    protected void refreshUnsavedChangesAfterRevert(){
+        Collection<String> parentAcs = new ArrayList<String>();
+
+        if (feature.getComponent() != null){
+            Component comp = feature.getComponent();
+            if (comp.getAc() != null){
+                parentAcs.add(comp.getAc());
+            }
+
+            addParentAcsTo(parentAcs, comp);
+        }
+
+        getChangesController().revertFeature(feature, parentAcs);
+    }
+
     /**
      * Get the publication ac of this participant if it exists, the ac of the interaction if it exists and the component ac if it exists and add it to the list or parentAcs
      * @param parentAcs

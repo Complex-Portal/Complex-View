@@ -218,14 +218,6 @@ public class InteractionController extends ParameterizableObjectController {
                     experimentSelectItems.add(new SelectItem(e, e.getShortLabel(), e.getFullName()));
                 }
             }
-
-            // check if a new pending experiment is also present but not added to the publication experiments yet because not saved
-            if (experimentController.getExperiment() != null){
-                Experiment expController = experimentController.getExperiment();
-                if (expController.getAc() == null){
-                    experimentSelectItems.add(new SelectItem(expController, expController.getShortLabel(), expController.getFullName()));
-                }
-            }
         }
     }
     public void forceRefreshCurrentViewObject(){
@@ -471,6 +463,29 @@ public class InteractionController extends ParameterizableObjectController {
         } else {
             getChangesController().removeFromUnsaved(getAnnotatedObject());
         }
+    }
+
+    @Override
+    protected void refreshUnsavedChangesAfterRevert(){
+        Collection<String> parentAcs = new ArrayList<String>();
+
+        if (IntactCore.isInitialized(interaction.getExperiments()) && !interaction.getExperiments().isEmpty()){
+            for (Experiment exp : interaction.getExperiments()){
+                addParentAcsTo(parentAcs, exp);
+            }
+        }
+        else if (experiment != null){
+            addParentAcsTo(parentAcs, experiment);
+        }
+        else if (!IntactCore.isInitialized(interaction.getExperiments())){
+            Collection<Experiment> experiments = IntactCore.ensureInitializedExperiments(interaction);
+
+            for (Experiment exp : experiments){
+                addParentAcsTo(parentAcs, exp);
+            }
+        }
+
+        getChangesController().revertInteraction(interaction, parentAcs);
     }
 
     public String copyToExperiment() {

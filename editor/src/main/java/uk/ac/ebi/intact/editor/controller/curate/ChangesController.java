@@ -25,10 +25,7 @@ import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserListener;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
-import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.IntactObject;
-import uk.ac.ebi.intact.model.Interaction;
+import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import java.util.*;
@@ -141,7 +138,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             for (UnsavedChange change : changes){
 
                 if (change.getAcsToDeleteOn().contains(object.getAc())){
-                     getUnsavedChangesForCurrentUser().remove(change);
+                    getUnsavedChangesForCurrentUser().remove(change);
                 }
             }
         }
@@ -205,16 +202,202 @@ public class ChangesController extends JpaAwareController implements UserListene
         getUnsavedChangesForCurrentUser().remove(new UnsavedChange(object, UnsavedChange.DELETED, parent, scope));
     }
 
-    public void revert(IntactObject io) {
+    public void revert(AnnotatedObject io) {
         Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
 
         // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
         while (iterator.hasNext()) {
             UnsavedChange unsavedChange = iterator.next();
-            if (io.getAc() != null && (io.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || io.getAc().equals(unsavedChange.getScope()))) {
-                iterator.remove();
+
+            // the object has an ac, we can compare using ac
+            if (io.getAc() != null){
+                if (io.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || io.getAc().equals(unsavedChange.getScope())) {
+                    iterator.remove();
+                }
+            }
+            // the object is new, we can only checks if we have an unchanged event which is new and does not have a collection of parent acs (interactors, organism, cv terms)
+            else if (unsavedChange.getUnsavedObject().getAc() == null) {
+
+                if (unsavedChange.getUnsavedObject() instanceof AnnotatedObject){
+                    AnnotatedObject unsavedAnnObj = (AnnotatedObject) unsavedChange.getUnsavedObject();
+
+                    if (io.getShortLabel() != null && io.getShortLabel().equals(unsavedAnnObj.getShortLabel())){
+                        iterator.remove();
+                    }
+                    else if (io.getShortLabel() == null && unsavedAnnObj.getShortLabel() == null && unsavedChange.getAcsToDeleteOn().isEmpty()){
+                        iterator.remove();
+                    }
+                }
+            }
+        }
+    }
+
+    public void revertInteraction(Interaction interaction, Collection<String> parentAcs) {
+        Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
+
+        // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
+        while (iterator.hasNext()) {
+            UnsavedChange unsavedChange = iterator.next();
+
+            // the object has an ac, we can compare using ac
+            if (interaction.getAc() != null){
+                if (interaction.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || interaction.getAc().equals(unsavedChange.getScope())) {
+                    iterator.remove();
+                }
+            }
+            // the object is new, we can only checks if we have an unchanged event which is new and does not have a collection of parent acs (interactors, organism, cv terms)
+            else if (unsavedChange.getUnsavedObject().getAc() == null) {
+                if (unsavedChange.getUnsavedObject() instanceof Interaction){
+                    Interaction unsavedInteraction = (Interaction) unsavedChange.getUnsavedObject();
+
+                    if (interaction.getShortLabel() != null && interaction.getShortLabel().equals(unsavedInteraction.getShortLabel())){
+                        iterator.remove();
+                    }
+                    // if both shortlabels are null, just checks parent acs
+                    else if (interaction.getShortLabel() != null && unsavedInteraction.getShortLabel() == null) {
+                        checkParentOfUnsavedObject(parentAcs, iterator, unsavedChange);
+                    }
+                }
+            }
+        }
+    }
+
+    public void revertExperiment(Experiment experiment, Collection<String> parentAcs) {
+        Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
+
+        // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
+        while (iterator.hasNext()) {
+            UnsavedChange unsavedChange = iterator.next();
+
+            // the object has an ac, we can compare using ac
+            if (experiment.getAc() != null){
+                if (experiment.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || experiment.getAc().equals(unsavedChange.getScope())) {
+                    iterator.remove();
+                }
+            }
+            // the object is new, we can only checks if we have an unchanged event which is new and does not have a collection of parent acs (interactors, organism, cv terms)
+            else if (unsavedChange.getUnsavedObject().getAc() == null) {
+                if (unsavedChange.getUnsavedObject() instanceof Experiment){
+                    Experiment unsavedExperiment = (Experiment) unsavedChange.getUnsavedObject();
+
+                    if (experiment.getShortLabel() != null && experiment.getShortLabel().equals(unsavedExperiment.getShortLabel())){
+                        iterator.remove();
+                    }
+                    // if both shortlabels are null, just checks parent acs
+                    else if (experiment.getShortLabel() == null && unsavedExperiment.getShortLabel() == null) {
+                        checkParentOfUnsavedObject(parentAcs, iterator, unsavedChange);
+                    }
+                }
+            }
+        }
+    }
+
+    public void revertPublication(Publication publication) {
+        Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
+
+        // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
+        while (iterator.hasNext()) {
+            UnsavedChange unsavedChange = iterator.next();
+
+            // the object has an ac, we can compare using ac
+            if (publication.getAc() != null){
+                if (publication.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || publication.getAc().equals(unsavedChange.getScope())) {
+                    iterator.remove();
+                }
+            }
+            // the object is new, we can only checks if we have an unchanged event which is new and does not have a collection of parent acs (interactors, organism, cv terms)
+            else if (unsavedChange.getUnsavedObject().getAc() == null) {
+                if (unsavedChange.getUnsavedObject() instanceof Publication){
+                    Publication unsavedPublication = (Publication) unsavedChange.getUnsavedObject();
+
+                    if (publication.getShortLabel() != null && publication.getShortLabel().equals(unsavedPublication.getShortLabel())){
+                        iterator.remove();
+                    }
+                    // if both shortlabels are null, just checks parent acs
+                    else if (publication.getShortLabel() == null && unsavedPublication.getShortLabel() == null) {
+                        iterator.remove();
+                    }
+                }
+            }
+        }
+    }
+
+    public void revertComponent(uk.ac.ebi.intact.model.Component component, Collection<String> parentAcs) {
+        Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
+
+        // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
+        while (iterator.hasNext()) {
+            UnsavedChange unsavedChange = iterator.next();
+            // the object has an ac, we can compare using ac
+            if (component.getAc() != null){
+                if (component.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || component.getAc().equals(unsavedChange.getScope())) {
+                    iterator.remove();
+                }
+            }
+            // the object is new, we can only checks if we have an unchanged event which is new and does not have a collection of parent acs (interactors, organism, cv terms)
+            else if (unsavedChange.getUnsavedObject().getAc() == null) {
+                if (unsavedChange.getUnsavedObject() instanceof uk.ac.ebi.intact.model.Component){
+                    uk.ac.ebi.intact.model.Component unsavedComponent = (uk.ac.ebi.intact.model.Component) unsavedChange.getUnsavedObject();
+
+                    if (component.getShortLabel() != null && component.getShortLabel().equals(unsavedComponent.getShortLabel())){
+                        iterator.remove();
+                    }
+                    // if both shortlabels are null, just checks parent acs
+                    else if (component.getShortLabel() == null && unsavedComponent.getShortLabel() == null) {
+                        checkParentOfUnsavedObject(parentAcs, iterator, unsavedChange);
+                    }
+                }
+            }
+        }
+    }
+
+    public void revertFeature(Feature feature, Collection<String> parentAcs) {
+        Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
+
+        // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
+        while (iterator.hasNext()) {
+            UnsavedChange unsavedChange = iterator.next();
+            // the object has an ac, we can compare using ac
+            if (feature.getAc() != null){
+                if (feature.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || feature.getAc().equals(unsavedChange.getScope())) {
+                    iterator.remove();
+                }
+            }
+            // the object is new, we can only checks if we have an unchanged event which is new and does not have a collection of parent acs (interactors, organism, cv terms)
+            else if (unsavedChange.getUnsavedObject().getAc() == null) {
+                if (unsavedChange.getUnsavedObject() instanceof Feature){
+                    Feature unsavedComponent = (Feature) unsavedChange.getUnsavedObject();
+
+                    if (feature.getShortLabel() != null && feature.getShortLabel().equals(unsavedComponent.getShortLabel())){
+                        iterator.remove();
+                    }
+                    // if both shortlabels are null, just checks parent acs
+                    else if (feature.getShortLabel() == null && unsavedComponent.getShortLabel() == null) {
+                        checkParentOfUnsavedObject(parentAcs, iterator, unsavedChange);
+                    }
+                }
+            }
+        }
+    }
+
+    private void checkParentOfUnsavedObject(Collection<String> parentAcs, Iterator<UnsavedChange> iterator, UnsavedChange unsavedChange) {
+        // both parent acs are not saved, revert it
+        if (parentAcs.isEmpty() && unsavedChange.getAcsToDeleteOn().isEmpty()){
+            iterator.remove();
+        }
+        // if one of the parents is saved, checks that the parent acs of the unsaved changes are in common so we don't revert changes not saved which concerns another publication
+        else if (!parentAcs.isEmpty()){
+            boolean haveSameParents = true;
+            for (String parentAc : parentAcs) {
+
+                if (!unsavedChange.getAcsToDeleteOn().contains(parentAc)){
+                    haveSameParents = false;
+                }
             }
 
+            if (haveSameParents){
+                iterator.remove();
+            }
         }
     }
 
