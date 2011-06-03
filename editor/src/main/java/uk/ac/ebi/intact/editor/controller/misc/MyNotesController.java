@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.editor.controller.misc;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -49,8 +48,7 @@ import java.util.regex.Pattern;
  * @version $Id$
  */
 @Controller
-@Scope( "conversation.access" )
-@ConversationName( "notes" )
+@Scope( "session" )
 public class MyNotesController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog(MyNotesController.class);
