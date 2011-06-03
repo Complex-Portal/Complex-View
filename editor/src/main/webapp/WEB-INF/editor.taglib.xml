@@ -7,6 +7,50 @@
 
     <tag>
         <description>
+            Controls some of the curation flow
+        </description>
+
+        <tag-name>curation</tag-name>
+
+        <component>
+            <component-type>uk.ac.ebi.intact.editor.component.Curation</component-type>
+            <renderer-type>uk.ac.ebi.intact.editor.component.CurationRenderer</renderer-type>
+        </component>
+
+        <attribute>
+            <name>rendered</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>
+            Syncs the value of two input components, placed as a child of an input component.
+        </description>
+
+        <tag-name>syncValue</tag-name>
+
+        <component>
+            <component-type>uk.ac.ebi.intact.editor.component.SyncValue</component-type>
+            <renderer-type>uk.ac.ebi.intact.editor.component.SyncValueRenderer</renderer-type>
+        </component>
+
+        <attribute>
+            <name>rendered</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>The input to sync with</description>
+            <name>with</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>
             Custom AjaxBehavior, with a delay
         </description>
 

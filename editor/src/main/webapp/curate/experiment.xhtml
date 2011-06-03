@@ -171,9 +171,9 @@
                     </ui:include>
                 </p:tab>
 
-                    <ui:include src="propertiesTabs.xhtml">
+                    <ui:decorate template="propertiesTabs.xhtml">
                             <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.experimentTopicSelectItems}"/>
-                        </ui:include>
+                    </ui:decorate>
             </p:tabView>
 
 

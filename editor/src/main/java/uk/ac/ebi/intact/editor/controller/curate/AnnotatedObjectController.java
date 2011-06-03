@@ -41,6 +41,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.ValidatorException;
 import java.util.*;
 
@@ -79,10 +80,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return "/curate/publication?faces-redirect=true&includeViewParams=true";
     }
 
-    public AnnotatedObjectWrapper getAnnotatedObjectWrapper() {
-        return new AnnotatedObjectWrapper(changesController, getAnnotatedObject());
-    }
-
     public AnnotatedObjectHelper getAnnotatedObjectHelper() {
         AnnotatedObject ao = getAnnotatedObject();
 
@@ -117,6 +114,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
 
         return ao;
+    }
+
+    public void unsavedValueChange(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
     }
 
     /**

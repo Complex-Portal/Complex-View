@@ -142,12 +142,11 @@
                                 <td>
                                     <p:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
                                                  validator="#{annotatedObjectController.validateAnnotatedObject}"
-                                                 size="10" onkeyup="enableAutocomplete()"
+                                                 size="10" onkeyup="enableAutocomplete();"
+                                                 valueChangeListener="#{publicationController.unsavedValueChange}"
                                                  converter="trimmingConverter"
                                                  required="true" requiredMessage="Identifier is required">
-                                        <ed:ajax event="valueChange" timeout="0" update="changesPanel unsavedChangesInfo publicationTabs"
-                                                 beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                                process="@this" listener="#{publicationController.changed}"/>
+                                            <ed:curation/>
                                     </p:inputText>
 
                                     <p:remoteCommand name="enableAutocomplete" update="autocompleteBtn" async="true">
@@ -181,10 +180,9 @@
                                 </td>
                                 <td colspan="2">
                                     <p:inputTextarea id="titleTxt" value="#{publicationController.publication.fullName}" cols="60" rows="1"
-                                            converter="trimmingConverter">
-                                        <ed:ajax event="valueChange" timeout="0" update="changesPanel unsavedChangesInfo"
-                                                 beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                                process="@this" listener="#{publicationController.changed}"/>
+                                            converter="trimmingConverter"
+                                            valueChangeListener="#{publicationController.unsavedValueChange}">
+                                        <ed:curation/>
                                     </p:inputTextarea>
                                 </td>
                                 <td colspan="1" style="text-align: right;">
@@ -195,11 +193,10 @@
                                                <!--style="width:50px"-->
                                                <!--onchange="markAsUnsaved(); refreshTabs()"/>-->
                                     <p:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4"
-                                            validatorMessage="Year provided is invalid">
+                                            validatorMessage="Year provided is invalid"
+                                            valueChangeListener="#{publicationController.unsavedValueChange}">
                                         <f:convertNumber maxFractionDigits="0" pattern="#" />
-                                         <ed:ajax event="valueChange" timeout="0" update="changesPanel unsavedChangesInfo publicationTabs"
-                                                  beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                                process="@this" listener="#{publicationController.changed}"/>
+                                        <ed:curation/>
                                     </p:inputText>
 
                                 </td>
@@ -209,10 +206,9 @@
                                     <h:outputLabel value="Contact email: " for="contactTxt"/>
                                 </td>
                                 <td colspan="3">
-                                    <p:inputText id="contactTxt" value="#{publicationController.contactEmail}" size="50" converter="trimmingConverter">
-                                        <ed:ajax event="valueChange" timeout="0" update="publicationTabs unsavedChangesInfo changesPanel" process="@this"
-                                                 beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                                listener="#{publicationController.changed}"/>
+                                    <p:inputText id="contactTxt" value="#{publicationController.contactEmail}" size="50" converter="trimmingConverter"
+                                            valueChangeListener="#{publicationController.unsavedValueChange}">
+                                            <ed:curation/>
                                     </p:inputText>
                                 </td>
                             </tr>
@@ -248,8 +244,8 @@
                                 <td colspan="3">
                                     <h:panelGroup id="curationDepthMenu">
                                         <h:selectOneMenu value="#{publicationController.curationDepth}" >
-                                            <f:ajax event="valueChange" render=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:publicationTabs"
-                                                execute="@this" listener="#{publicationController.changed}"/>
+                                            <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo publicationTabs"
+                                                process="@this" listener="#{publicationController.changed}" async="true"/>
 
                                             <f:selectItem itemLabel="-- Not specified --"/>
                                             <f:selectItem itemLabel="IMEx" itemValue="imex curation"/>
@@ -265,11 +261,10 @@
                                 <td colspan="3">
                                     <h:panelGroup>
                                         <p:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70"
-                                                     converter="trimmingConverter">
-                                            <p:ajax event="valueChange" update="publicationTabs infoPanels changesPanel"
-                                                    onstart="editorCuration.setUnsavedChanges(true)" oncomplete="ia_enableSave()" async="true"
-                                                    process="@this" listener="#{publicationController.changed}"/>
+                                                valueChangeListener="#{publicationController.unsavedValueChange}">
+                                            <ed:curation/>
                                         </p:inputText>
+
                                         <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{publicationController.setUnsavedChanges(true)}"
                                                          onclick="document.getElementById('onHoldTxt').value = ''"
                                                          update="infoPanels,publicationTabs,changesPanel"/>
@@ -317,10 +312,22 @@
 
 
 
-                        <ui:include src="propertiesTabs.xhtml">
+                        <ui:decorate template="propertiesTabs.xhtml">
                             <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.publicationTopicSelectItems}"/>
                             <ui:param name="updateOnChange" value=":editorForm:basic"/>
-                        </ui:include>
+
+                            <ui:define name="xrefSyncValues">
+                                <ed:syncValue with="editorForm:idTxt" rendered="#{xref.cvDatabase != null and xref.cvDatabase.identifier == 'MI:0446' and xref.cvXrefQualifier != null and xref.cvXrefQualifier.identifier == 'MI:0358'}"/>
+                                <ed:syncValue with="editorForm:imexIdTxt" rendered="#{xref.cvDatabase != null and xref.cvDatabase.identifier == 'MI:0670' and xref.cvXrefQualifier != null and xref.cvXrefQualifier.identifier == 'MI:0662'}"/>
+                            </ui:define>
+
+                            <ui:define name="annotationSyncValues">
+                                <ed:syncValue with="editorForm:onHoldTxt" rendered="#{annotation.cvTopic != null and annotation.cvTopic.shortLabel == 'on-hold'}"/>
+                                <ed:syncValue with="editorForm:yearTxt" rendered="#{annotation.cvTopic != null and annotation.cvTopic.identifier == 'MI:0886'}"/>
+                                <ed:syncValue with="editorForm:contactTxt" rendered="#{annotation.cvTopic != null and annotation.cvTopic.identifier == 'MI:0634'}"/>
+                            </ui:define>
+
+                        </ui:decorate>
 
                 </p:tabView>
 

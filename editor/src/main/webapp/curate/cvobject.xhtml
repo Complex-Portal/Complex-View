@@ -116,9 +116,9 @@
 
             <p:tabView id="cvobjectTabs">
 
-               <ui:include src="propertiesTabs.xhtml">
+               <ui:decorate template="propertiesTabs.xhtml">
                      <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.cvObjectTopicSelectItems}"/>
-                </ui:include>
+                </ui:decorate>
 
                 <p:tab id="advancedTab" title="Advanced">
                     <h:panelGrid columns="2">

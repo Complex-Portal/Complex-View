@@ -39,11 +39,10 @@
                 <f:facet name="header">
                     <h:outputText value="Topic"/>
                 </f:facet>
-                <h:selectOneMenu value="#{annotation.cvTopic}" required="true" requiredMessage="Topic is required">
+                <h:selectOneMenu value="#{annotation.cvTopic}"
+                                 required="true" requiredMessage="Topic is required">
                     <f:selectItems value="#{topicSelectItems}"/>
-                    <f:ajax event="valueChange" render="#{valueChangeRender}" execute="@this"
-                                        disabled="#{valueChangeAwareObject == null}"
-                                        listener="#{valueChangeAwareObject.changed}"/>
+                    <ed:curation/>
                 </h:selectOneMenu>
             </p:column>
             <p:column>
@@ -51,13 +50,12 @@
                     <h:outputText value="Text"/>
                 </f:facet>
                    <p:inputTextarea value="#{annotation.annotationText}" cols="50"
-                                    onchange="editorCuration.setUnsavedChanges(true)" autoResize="true"
+                                    autoResize="true"
                              converter="trimmingConverter">
-                       <ed:ajax event="valueChange" update="#{update} @this" process="@this"
-                                  timeout="0" beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                        disabled="#{valueChangeAwareObject == null}"
-                                        listener="#{valueChangeAwareObject.changed}"/>
+                       <ed:curation/>
+                       <ui:insert name="syncValues"/>
                     </p:inputTextarea>
+
             </p:column>
             <p:column>
                 <f:facet name="header">

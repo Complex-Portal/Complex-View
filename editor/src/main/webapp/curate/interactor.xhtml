@@ -115,9 +115,9 @@
 
             <p:tabView id="interactorTabs">
 
-               <ui:include src="propertiesTabs.xhtml">
+               <ui:decorate template="propertiesTabs.xhtml">
                      <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.interactorTopicSelectItems}"/>
-                </ui:include>
+                </ui:decorate>
 
             </p:tabView>
 

@@ -92,7 +92,6 @@
 
     <ui:define name="content">
         <h:outputScript library="javascript" name="intact.js"/>
-        <h:outputScript library="javascript" name="editor.js"/>
 
         <script type="text/javascript">
             function ia_disableSave() {
@@ -107,19 +106,15 @@
                 ia_enableButton('unsavedSaveButton', buttonHTML);
             }
 
-            var editorCuration = new EditorCuration();
-
-//            function prepare(e) {
-//                editorCuration.setUnsavedChanges(#{annotatedObjectController.unsavedChanges});
-//            }
-//
-//            YAHOO.util.Event.addListener(window, 'load', prepare);
-
         </script>
 
         <!--<p:hotkey bind="alt+n" oncomplete="newPublicationDlg.show()"/>-->
         <!--<p:hotkey bind="alt+o" oncomplete="openByAcDlg.show()"/>-->
         <!--<p:hotkey bind="alt+s" oncomplete="save(); return false" onerror="alert('lala')"/>-->
+
+        <h:panelGroup rendered="#{annotatedObjectController.annotatedObject == null}">
+                 <ui:insert name="emptyCurateContent"/>
+            </h:panelGroup>
 
         <h:panelGroup rendered="#{annotatedObjectController != null}">
 
@@ -130,9 +125,6 @@
         <ia:loadingDialog widgetVar="loadDialog"/>
 
         <div style="width:100%;">
-            <h:panelGroup rendered="#{annotatedObjectController.annotatedObject == null}">
-                 <ui:insert name="emptyCurateContent"/>
-            </h:panelGroup>
 
             <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
                 <h:panelGroup id="unsavedChangesInfo" style="float: right; margin-right: 40px">
@@ -158,7 +150,7 @@
 
             <ui:insert name="curateContent"/>
 
-            <p:outputPanel id="changesPanel" style="display: none">
+            <p:outputPanel id="changesPanel" style="display: #{annotatedObjectController.unsavedChanges? 'block' : 'none'}">
 
             <h:panelGroup>
 
@@ -189,10 +181,6 @@
                                update="centralUnit,topSection,messagesComponent"
                                onclick="revertDialog.show()" oncomplete="revertDialog.hide();"/>
             </div>
-
-                <script type="text/javascript">
-                    editorCuration.setUnsavedChanges(#{annotatedObjectController.unsavedChanges});
-                </script>
 
             </h:panelGroup>
         </p:outputPanel>

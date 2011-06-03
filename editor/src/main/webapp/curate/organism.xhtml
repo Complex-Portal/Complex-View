@@ -91,9 +91,9 @@
 
             <p:tabView id="organismTabs">
 
-                <ui:include src="propertiesTabs.xhtml">
+                <ui:decorate template="propertiesTabs.xhtml">
                     <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.bioSourceTopicSelectItems}"/>
-                </ui:include>
+                </ui:decorate>
 
             </p:tabView>
 
