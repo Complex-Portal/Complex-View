@@ -179,6 +179,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                 persistenceController.doDelete(unsavedObject);
 
                 changesController.removeFromDeleted(unsaved);
+                changesController.removeObsoleteChangesOnDelete(unsavedObject);
             }
             // the object to delete is different from the current object. Checks that the scope of this object to delete is the ac of the current object being saved
             // if the scope is null or different, the object should not be deleted at this stage because we only save the current object and changes associated with it
@@ -188,6 +189,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                 persistenceController.doDelete(unsavedObject);
 
                 changesController.removeFromDeleted(unsaved);
+                changesController.removeObsoleteChangesOnDelete(unsavedObject);
             }
         }
 
