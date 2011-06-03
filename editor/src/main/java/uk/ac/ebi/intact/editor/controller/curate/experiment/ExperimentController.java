@@ -159,7 +159,8 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public void doPreSave() {
-        if (experiment.getPublication() != null) {
+        // new object, add it to the list of experiments of its publication before saving
+        if (experiment.getPublication() != null && experiment.getAc() == null) {
             publicationController.getPublication().addExperiment(experiment);
         }
     }
