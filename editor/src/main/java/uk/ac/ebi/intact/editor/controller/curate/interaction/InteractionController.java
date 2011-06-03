@@ -150,6 +150,7 @@ public class InteractionController extends ParameterizableObjectController {
         Publication currentPublication = null;
         Experiment currentExperiment = null;
 
+        // the interaction does not have any experiments
         if (!interaction.getExperiments().isEmpty()){
             currentExperiment = interaction.getExperiments().iterator().next();
 
@@ -259,11 +260,25 @@ public class InteractionController extends ParameterizableObjectController {
         }
 
         // Reload experiments
-        final Collection<Experiment> experiments = new ArrayList<Experiment>( interaction.getExperiments() );
+        Collection<Experiment> experiments = new ArrayList<Experiment>( interaction.getExperiments() );
+
+        if (interaction.getExperiments().isEmpty() && experiment != null){
+            experiments.add(experiment);
+        }
+
         interaction.getExperiments().clear();
+
         for ( Experiment exp : experiments ) {
-            Experiment reloaded = getDaoFactory().getExperimentDao().getByAc( exp.getAc() );
-            interaction.getExperiments().add( reloaded );
+            Experiment reloaded = exp;
+
+            // if experiment already exists, reload it
+            if (exp.getAc() != null){
+                reloaded = getDaoFactory().getExperimentDao().getByAc( exp.getAc() );
+            }
+
+            if (reloaded != null){
+                interaction.getExperiments().add( reloaded );
+            }
         }
     }
 
