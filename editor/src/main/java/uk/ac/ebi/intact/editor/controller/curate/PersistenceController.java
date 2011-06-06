@@ -36,6 +36,8 @@ import uk.ac.ebi.intact.model.*;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -130,7 +132,9 @@ public class PersistenceController extends JpaAwareController {
     public void saveAll(ActionEvent actionEvent) {
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
-        for (UnsavedChange unsaved : changesController.getUnsavedChangesForCurrentUser()){
+        Collection<UnsavedChange> changes = new ArrayList(changesController.getUnsavedChangesForCurrentUser());
+
+        for (UnsavedChange unsaved : changes){
             IntactObject object = unsaved.getUnsavedObject();
             curateController.save(object, false);
         }
@@ -181,8 +185,9 @@ public class PersistenceController extends JpaAwareController {
     public void revertAll(ActionEvent actionEvent) {
 
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+        Collection<UnsavedChange> changes = new ArrayList(changesController.getUnsavedChangesForCurrentUser());
 
-        for (UnsavedChange unsaved : changesController.getUnsavedChangesForCurrentUser()){
+        for (UnsavedChange unsaved : changes){
             IntactObject object = unsaved.getUnsavedObject();
             curateController.discard(object);
         }
