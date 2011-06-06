@@ -25,15 +25,13 @@
             </f:facet>
             <p:inputText id="rangeTxt" value="#{rangeWrapper.rangeAsString}"
                          validator="#{rangeWrapper.validateRange}"
-                         valueChangeListener="#{rangeWrapper.onRangeAsStringChanged}"
                          required="true"
                          requiredMessage="Range value is required"
                          readonly="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"
                          styleClass="#{changesController.isDeletedAc(rangeWrapper.range.ac)? 'intact-deleted' : ''}"
                          style="font-family: monospace">
-                <ed:curation/>
-                <!--<p:ajax event="valueChange" update="changesPanel unsavedChangesInfo rangeTables messageComponent"
-                        process="@this" listener="#{rangeWrapper.onRangeAsStringChanged}" async="true"/>-->
+                <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo rangeTables messageComponent"
+                        process="@this" listener="#{rangeWrapper.onRangeAsStringChanged}" async="true"/>
             </p:inputText>
 
             <h:panelGroup id="validityPanel">
