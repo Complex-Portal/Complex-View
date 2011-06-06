@@ -11,7 +11,7 @@
     <h:panelGroup id="experimentsTable">
 
         <ui:param name="expToDeleteCount"
-                  value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Experiment').size()}"/>
+                  value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Experiment', publicationController.ac).size()}"/>
 
         <h:panelGroup rendered="#{expToDeleteCount gt 0}">
             <ia:panelMessage level="info">

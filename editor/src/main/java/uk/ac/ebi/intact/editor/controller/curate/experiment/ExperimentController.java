@@ -23,7 +23,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
@@ -121,16 +120,7 @@ public class ExperimentController extends AnnotatedObjectController {
             experiment.setShortLabel(createExperimentShortLabel());
         }
 
-        InteractionDao interactionDao = getDaoFactory().getInteractionDao();
-
-        boolean saved = false;
-
-        for (String deletedInteractionAc : getChangesController().getDeletedAcs(Interaction.class)) {
-            interactionDao.deleteByAc(deletedInteractionAc);
-            saved = true;
-        }
-
-        return saved;
+        return true;
     }
 
     @Override

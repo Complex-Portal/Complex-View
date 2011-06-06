@@ -528,27 +528,36 @@ public class ChangesController extends JpaAwareController implements UserListene
         return false;
     }
 
-    public List<String> getDeletedAcs(Class type) {
-        return DebugUtil.acList(getDeleted(type));
+    public List<String> getDeletedAcs(Class type, String parentAc) {
+        return DebugUtil.acList(getDeleted(type, parentAc));
     }
 
-    public List<String> getDeletedAcsByClassName(String className) {
+    public List<String> getDeletedAcsByClassName(String className, String parentAc) {
         try {
-            return getDeletedAcs(Thread.currentThread().getContextClassLoader().loadClass(className));
+            return getDeletedAcs(Thread.currentThread().getContextClassLoader().loadClass(className), parentAc);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return Collections.EMPTY_LIST;
     }
 
-    public List<IntactObject> getDeleted(Class type) {
+    public List<IntactObject> getDeleted(Class type, String parentAc) {
         List<IntactObject> ios = new ArrayList<IntactObject>();
 
         for (UnsavedChange change : getUnsavedChangesForCurrentUser()) {
             if (UnsavedChange.DELETED.equals(change.getAction()) &&
                     type.isAssignableFrom(change.getUnsavedObject().getClass())) {
-                IntactObject intactObject = change.getUnsavedObject();
-                ios.add(intactObject);
+
+                if (change.getParentObject() != null && change.getParentObject().getAc() != null){
+                    if (change.getParentObject().getAc().equals(parentAc)){
+                        IntactObject intactObject = change.getUnsavedObject();
+                        ios.add(intactObject);
+                    }
+                }
+                else if (change.getScope() != null && change.getScope().equals(parentAc)){
+                    IntactObject intactObject = change.getUnsavedObject();
+                    ios.add(intactObject);
+                }
             }
         }
 

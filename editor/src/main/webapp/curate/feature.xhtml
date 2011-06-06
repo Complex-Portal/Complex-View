@@ -130,7 +130,7 @@
                     <p:outputPanel id="rangeTable">
                         <h:panelGroup id="rangesTable">
 
-                        <ui:param name="rangeToDeleteCount" value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Range').size()}"/>
+                        <ui:param name="rangeToDeleteCount" value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Range', featureController.ac).size()}"/>
 
                         <h:panelGroup rendered="#{rangeToDeleteCount gt 0}">
                             <ia:panelMessage level="info">

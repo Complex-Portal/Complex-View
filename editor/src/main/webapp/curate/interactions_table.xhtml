@@ -10,7 +10,7 @@
 
         <h:panelGroup id="interactionTable">
 
-            <ui:param name="toDeleteCount" value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Interaction').size()}"/>
+            <ui:param name="toDeleteCount" value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Interaction', experimentController.ac).size()}"/>
 
             <h:panelGroup rendered="#{toDeleteCount gt 0}">
                 <ia:panelMessage level="info">
