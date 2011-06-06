@@ -23,16 +23,16 @@
             <f:facet name="header">
                 <h:outputText value="Value"/>
             </f:facet>
-            <p:inputText id="rangeTxt" value="#{rangeWrapper.rangeAsString}"
+            <h:inputText id="rangeTxt" value="#{rangeWrapper.rangeAsString}"
                          validator="#{rangeWrapper.validateRange}"
                          required="true"
                          requiredMessage="Range value is required"
                          readonly="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"
                          styleClass="#{changesController.isDeletedAc(rangeWrapper.range.ac)? 'intact-deleted' : ''}"
                          style="font-family: monospace">
-                <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo rangeTables messageComponent"
-                        process="@this" listener="#{rangeWrapper.onRangeAsStringChanged}" async="true"/>
-            </p:inputText>
+                <f:ajax event="valueChange" render=":editorForm:rangesTable :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                        process="@this" listener="#{rangeWrapper.onRangeAsStringChanged}" onevent="markAsUnsaved"/>
+            </h:inputText>
 
             <h:panelGroup id="validityPanel">
 
@@ -47,11 +47,10 @@
                 <h:outputText value="From type"/>
             </f:facet>
             <h:selectOneMenu id="fromCvFuzzyType" value="#{rangeWrapper.range.fromCvFuzzyType}" converter="cvObjectConverter"
-                             onchange="markAsUnsaved()"
                              required="true"
                              requiredMessage="Range from CvFuzzyType is required">
-                <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo rangeTables messageComponent"
-                        process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" async="true"/>
+                <f:ajax event="valueChange" render=":editorForm:rangesTable :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                        process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved"/>
                 <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
             </h:selectOneMenu>
         </p:column>
@@ -60,11 +59,10 @@
                 <h:outputText value="To type"/>
             </f:facet>
             <h:selectOneMenu id="toCvFuzzyType" value="#{rangeWrapper.range.toCvFuzzyType}" converter="cvObjectConverter"
-                             onChange="markAsUnsaved()"
                              required="true"
                              requiredMessage="Range to CvFuzzyType is required">
-                <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo rangeTables messageComponent"
-                        process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" async="true"/>
+                <f:ajax event="valueChange" render=":editorForm:rangesTable :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                        process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved"/>
                 <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
             </h:selectOneMenu>
         </p:column>
