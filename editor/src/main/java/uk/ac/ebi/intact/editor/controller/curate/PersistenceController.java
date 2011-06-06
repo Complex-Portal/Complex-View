@@ -186,9 +186,5 @@ public class PersistenceController extends JpaAwareController {
             IntactObject object = unsaved.getUnsavedObject();
             curateController.discard(object);
         }
-
-        // refresh current view now
-        final AnnotatedObjectController currentAoController = curateController.getCurrentAnnotatedObjectController();
-        currentAoController.forceRefreshCurrentViewObject();
     }
 }

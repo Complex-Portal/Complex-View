@@ -285,9 +285,10 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Override
     public boolean doSaveDetails() {
-        boolean saved = false;
+        boolean saved = true;
 
-        for (ParticipantWrapper pw : participantWrappers) {
+        // not necessary to persist or delete components after saving interaction as it is done while saving the interaction
+        /*for (ParticipantWrapper pw : participantWrappers) {
             Component component = pw.getParticipant();
 
             // checks that the component has not been deleted before saving
@@ -312,7 +313,7 @@ public class InteractionController extends ParameterizableObjectController {
             }
 
             saved = true;
-        }
+        }*/
 
         for (Experiment experimentToUpdate : experimentsToUpdate) {
             getCorePersister().saveOrUpdate(experimentToUpdate);
