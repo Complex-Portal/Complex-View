@@ -136,6 +136,18 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
      * @param evt the action faces event
      */
     public void doSave( ActionEvent evt ) {
+        // this method will save and refresh the current view
+        doSave(true);
+    }
+
+    /**
+     * Executes the deletions and save the current object using the <code>CorePersister</code>. It invokes preSave()
+     * before saving just in case a specific controller needs to prepare the object for the save operation. After invoking
+     * the CorePersister's save(), it invokes the doSaveDetails() callback that can be used to handle whatever is not handled
+     * by the CorePersister (ie. wrapped components). At the end, the current object is refreshed from the database.
+     *
+     */
+    public void doSave( boolean refreshCurrentView ) {
         ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
 
         // adjust any xref, just if the curator introduced a value in the primaryId of the xref
@@ -170,6 +182,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         // annotated objects specific tasks to prepare the save/delete
         doPreSave();
 
+        boolean saved = false;
+
         // delete from the unsaved manager
         final List<UnsavedChange> deletedObjects = changesController.getAllUnsavedDeleted();
 
@@ -183,8 +197,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             if (unsavedObject.getAc() != null && unsavedObject.getAc().equals(currentAc)){
                 currentAnnotatedObjectDeleted = true;
 
-                // remove the object to delete from its parent
-                persistenceController.doDelete(unsavedObject);
+                // remove the object to delete from its parent. If it is successful and the current object has been deleted, we can say that the save is successful
+                if (persistenceController.doDelete(unsavedObject)){
+                    saved = true;
+                }
+
             }
             // the object to delete is different from the current object. Checks that the scope of this object to delete is the ac of the current object being saved
             // if the scope is null or different, the object should not be deleted at this stage because we only save the current object and changes associated with it
@@ -196,24 +213,24 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
 
         AnnotatedObject annotatedObject = getAnnotatedObject();
-        boolean saved;
 
-        if (currentAnnotatedObjectDeleted){
-            saved = true;
-        }
-        else{
+        if (!currentAnnotatedObjectDeleted) {
             saved = persistenceController.doSave(annotatedObject);
-            // saves specific elements for each annotated object (e.g. components in interactions)
-            boolean detailsSaved = doSaveDetails();
 
-            if (detailsSaved) saved = true;
+            if (saved){
+                // saves specific elements for each annotated object (e.g. components in interactions)
+                boolean detailsSaved = doSaveDetails();
+
+                if (detailsSaved) saved = true;
+            }
         }
 
         if (saved) {
             lastSaved = new Date();
         }
 
-        if (annotatedObject.getAc() != null) {
+        // we refresh the object if it has been saved
+        if (annotatedObject.getAc() != null && saved) {
 
             annotatedObject = refresh(annotatedObject);
         }
@@ -224,7 +241,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             addInfoMessage("Saved", DebugUtil.annotatedObjectToString(getAnnotatedObject(), false));
         }
 
-        refreshCurrentViewObject();
+        if (refreshCurrentView){
+            refreshCurrentViewObject();
+        }
         doPostSave();
     }
 
@@ -313,14 +332,16 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         if (getAnnotatedObject().getAc() == null){
             doCancelEdition();
         }
-        PersistenceController persistenceController = getPersistenceController();
-        setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
+        else{
+            PersistenceController persistenceController = getPersistenceController();
+            setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
 
-        refreshUnsavedChangesAfterRevert();
+            refreshUnsavedChangesAfterRevert();
 
-        postRevert();
+            postRevert();
 
-        addInfoMessage("Changes reverted", "");
+            addInfoMessage("Changes reverted", "");
+        }
     }
 
     protected void postRevert(){
@@ -404,7 +425,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
 
         // if delete not successfull, just display the message and don't go to the parent because the message will be lost
-        return "/curate/curate";
+        // keep editing this object
+        return curateController.edit(getAnnotatedObject());
     }
 
     // XREFS

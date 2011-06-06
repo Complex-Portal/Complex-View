@@ -34,6 +34,7 @@ import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantImportController;
 import uk.ac.ebi.intact.model.*;
 
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.util.Set;
 
@@ -107,9 +108,9 @@ public class PersistenceController extends JpaAwareController {
 //            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
             try{
-                changesController.removeFromDeleted(intactObject, null);
-
                 coreDeleter.delete(intactObject);
+
+                changesController.removeFromDeleted(intactObject, null);
 
                 addInfoMessage("Deleted object", DebugUtil.intactObjectToString(intactObject, false));
 
@@ -117,6 +118,7 @@ public class PersistenceController extends JpaAwareController {
             }
             catch (IntactObjectDeleteException e){
                 addErrorMessage("Deletion not allowed", e.getMessage());
+                FacesContext.getCurrentInstance().renderResponse();
             }
 //            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
         }
@@ -126,28 +128,14 @@ public class PersistenceController extends JpaAwareController {
     }
 
     public void saveAll(ActionEvent actionEvent) {
+        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
-        // create master proteins from the unsaved manager and save the transcripts
-        for (IntactObject intactObject : changesController.getAllCreatedProteinTranscripts()) {
-
-            doSaveMasterProteins(intactObject);
-        }
-
-        // save created or updated
-        for (IntactObject intactObject : changesController.getAllUnsaved()) {
-
-            if (intactObject instanceof AnnotatedObject) {
-                doSave((AnnotatedObject) intactObject);
-            }
-        }
-
-        for (IntactObject intactObject : changesController.getAllDeleted()) {
-            doDelete(intactObject);
+        for (UnsavedChange unsaved : changesController.getUnsavedChangesForCurrentUser()){
+            IntactObject object = unsaved.getUnsavedObject();
+            curateController.save(object, false);
         }
 
         // refresh current view now
-        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
-
         final AnnotatedObjectController currentAoController = curateController.getCurrentAnnotatedObjectController();
         currentAoController.forceRefreshCurrentViewObject();
     }
@@ -191,10 +179,16 @@ public class PersistenceController extends JpaAwareController {
 
     @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void revertAll(ActionEvent actionEvent) {
-        for (IntactObject intactObject : changesController.getAllUnsaved()) {
-            doRevert(intactObject);
+
+        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+
+        for (UnsavedChange unsaved : changesController.getUnsavedChangesForCurrentUser()){
+            IntactObject object = unsaved.getUnsavedObject();
+            curateController.discard(object);
         }
 
-        changesController.clearCurrentUserChanges();
+        // refresh current view now
+        final AnnotatedObjectController currentAoController = curateController.getCurrentAnnotatedObjectController();
+        currentAoController.forceRefreshCurrentViewObject();
     }
 }
