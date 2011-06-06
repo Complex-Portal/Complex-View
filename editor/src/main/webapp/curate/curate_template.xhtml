@@ -119,7 +119,6 @@
         <h:panelGroup rendered="#{annotatedObjectController != null}">
 
         <p:remoteCommand id="markAsUnsavedCmd" name="markAsUnsaved" update="messagesComponent,changesPanel,unsavedChangesInfo"
-                         onstart="editorCuration.showUnsavedBar()"
                                  actionListener="#{annotatedObjectController.changed(null)}" process="markAsUnsavedCmd"/>
 
         <ia:loadingDialog widgetVar="loadDialog"/>
