@@ -73,11 +73,12 @@
                         </td>
                         <td>
                             <p:inputText id="shortlabelTxt" value="#{feature.shortLabel}" size="30"
-                                         validator="#{featureController.validateFeature}" converter="trimmingConverter"
-                                    required="true" requiredMessage="Shortlabel is required">
-                                <ed:ajax event="valueChange" timeout="0" process="@this"
+                                         converter="trimmingConverter"
+                                         required="true" requiredMessage="Shortlabel is required" valueChangeListener="#{annotatedObjectController.changed}">
+                                <ed:curation/>
+                                <!--<ed:ajax event="valueChange" timeout="0" process="@this"
                                          beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                            listener="#{annotatedObjectController.changed}"/>
+                                            listener="#{annotatedObjectController.changed}"/>-->
                             </p:inputText>
                         </td>
                         <td style="padding-left: 50px;">

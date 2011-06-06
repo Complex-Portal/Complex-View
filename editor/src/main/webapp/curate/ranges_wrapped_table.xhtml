@@ -8,95 +8,100 @@
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
                 xmlns:ed="http://ebi.ac.uk/intact/editor/ui">
 
-            <p:dataTable var="rangeWrapper" value="#{value}"
-                         paginator="true" rows="10" paginatorAlwaysVisible="false">
-                <p:column style="width:16px">
-                    <p:rowToggler/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="AC"/>
-                    </f:facet>
-                    <h:outputText value="#{rangeWrapper.range.ac}" styleClass="#{changesController.isDeletedAc(rangeWrapper.range.ac)? 'intact-deleted' : ''}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Value"/>
-                    </f:facet>
-                    <h:inputText id="rangeTxt" value="#{rangeWrapper.rangeAsString}"
-                                 validator="#{rangeWrapper.validateRange}"
-                                 required="true"
-                                 requiredMessage="Range value is required"
-                                 readonly="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"
-                                 styleClass="#{changesController.isDeletedAc(rangeWrapper.range.ac)? 'intact-deleted' : ''}"
-                                 style="font-family: monospace">
-                        <f:ajax event="valueChange" listener="#{rangeWrapper.onRangeAsStringChanged}" execute="@this" onevent="markAsUnsaved()" render=":editorForm:rangesTable :editorForm:messagesComponent"/>
-                    </h:inputText>
+    <p:dataTable var="rangeWrapper" value="#{value}"
+                 paginator="true" rows="10" paginatorAlwaysVisible="false">
+        <p:column style="width:16px">
+            <p:rowToggler/>
+        </p:column>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="AC"/>
+            </f:facet>
+            <h:outputText value="#{rangeWrapper.range.ac}" styleClass="#{changesController.isDeletedAc(rangeWrapper.range.ac)? 'intact-deleted' : ''}"/>
+        </p:column>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Value"/>
+            </f:facet>
+            <p:inputText id="rangeTxt" value="#{rangeWrapper.rangeAsString}"
+                         validator="#{rangeWrapper.validateRange}"
+                         valueChangeListener="#{rangeWrapper.onRangeAsStringChanged}"
+                         required="true"
+                         requiredMessage="Range value is required"
+                         readonly="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"
+                         styleClass="#{changesController.isDeletedAc(rangeWrapper.range.ac)? 'intact-deleted' : ''}"
+                         style="font-family: monospace">
+                <ed:curation/>
+                <!--<p:ajax event="valueChange" update="changesPanel unsavedChangesInfo rangeTables messageComponent"
+                        process="@this" listener="#{rangeWrapper.onRangeAsStringChanged}" async="true"/>-->
+            </p:inputText>
 
-                     <h:panelGroup id="validityPanel">
+            <h:panelGroup id="validityPanel">
 
-                         <h:panelGroup rendered="#{not rangeWrapper.validRange}">
+                <h:panelGroup rendered="#{not rangeWrapper.validRange}">
                                     <span class="ui-icon ui-icon-alert" style="display:inline-block"
                                           title="#{rangeWrapper.badRangeInfo}"/>
-                         </h:panelGroup>
-                     </h:panelGroup>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="From type"/>
-                    </f:facet>
-                    <h:selectOneMenu id="fromCvFuzzyType" value="#{rangeWrapper.range.fromCvFuzzyType}" converter="cvObjectConverter"
-                            onchange="markAsUnsaved()"
-                            required="true"
-                            requiredMessage="Range from CvFuzzyType is required">
-                        <f:ajax event="valueChange" listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()" execute="@this" render=":editorForm:rangesTable :editorForm:messagesComponent"/>
-                        <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
-                    </h:selectOneMenu>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="To type"/>
-                    </f:facet>
-                    <h:selectOneMenu id="toCvFuzzyType" value="#{rangeWrapper.range.toCvFuzzyType}" converter="cvObjectConverter"
-                            onChange="markAsUnsaved()"
-                            required="true"
-                            requiredMessage="Range to CvFuzzyType is required">
-                        <f:ajax event="valueChange" listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()" execute="@this" render=":editorForm:rangesTable :editorForm:messagesComponent"/>
-                        <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
-                    </h:selectOneMenu>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Linked"/>
-                    </f:facet>
-                    <h:outputText value="#{feature.boundDomain != null? 'Yes' : 'No'}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Actions"/>
-                    </f:facet>
-                    <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
-                               actionListener="#{featureController.markRangeToDelete(rangeWrapper.range)}"
-                               update="rangesTable,growl,changesPanel,messagesComponent" rendered="#{not changesController.isDeletedAc(rangeWrapper.range.ac)}"
-                               onclick="markAsUnsaved()"/>
-                    <p:commandLink immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
-                               actionListener="#{changesController.revert(rangeWrapper.range)}"
-                               update="rangesTable,growl,changesPanel,messagesComponent" rendered="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"/>
-                </p:column>
+                </h:panelGroup>
+            </h:panelGroup>
+        </p:column>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="From type"/>
+            </f:facet>
+            <h:selectOneMenu id="fromCvFuzzyType" value="#{rangeWrapper.range.fromCvFuzzyType}" converter="cvObjectConverter"
+                             onchange="markAsUnsaved()"
+                             required="true"
+                             requiredMessage="Range from CvFuzzyType is required">
+                <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo rangeTables messageComponent"
+                        process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" async="true"/>
+                <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
+            </h:selectOneMenu>
+        </p:column>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="To type"/>
+            </f:facet>
+            <h:selectOneMenu id="toCvFuzzyType" value="#{rangeWrapper.range.toCvFuzzyType}" converter="cvObjectConverter"
+                             onChange="markAsUnsaved()"
+                             required="true"
+                             requiredMessage="Range to CvFuzzyType is required">
+                <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo rangeTables messageComponent"
+                        process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" async="true"/>
+                <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
+            </h:selectOneMenu>
+        </p:column>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Linked"/>
+            </f:facet>
+            <h:outputText value="#{feature.boundDomain != null? 'Yes' : 'No'}"/>
+        </p:column>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Actions"/>
+            </f:facet>
+            <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
+                           actionListener="#{featureController.markRangeToDelete(rangeWrapper.range)}"
+                           update="rangesTable,growl,changesPanel,messagesComponent" rendered="#{not changesController.isDeletedAc(rangeWrapper.range.ac)}"
+                           onclick="markAsUnsaved()"/>
+            <p:commandLink immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
+                           actionListener="#{changesController.revert(rangeWrapper.range)}"
+                           update="rangesTable,growl,changesPanel,messagesComponent" rendered="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"/>
+        </p:column>
 
-                <f:facet name="expansion">
-                    <h:panelGrid columns="2">
-                        <h:outputText value="Sequence:"/>
-                        <p:inputTextarea value="#{rangeWrapper.range.fullSequence}" readonly="true" cols="60" rows="3"/>
+        <f:facet name="expansion">
+            <h:panelGrid columns="2">
+                <h:outputText value="Sequence:"/>
+                <p:inputTextarea value="#{rangeWrapper.range.fullSequence}" readonly="true" cols="60" rows="3"/>
 
-                        <h:outputText value="Upstream sequence:"/>
-                        <p:inputTextarea value="#{rangeWrapper.range.upStreamSequence}" readonly="true" cols="60" rows="3"/>
+                <h:outputText value="Upstream sequence:"/>
+                <p:inputTextarea value="#{rangeWrapper.range.upStreamSequence}" readonly="true" cols="60" rows="3"/>
 
-                        <h:outputText value="Downstream sequence:"/>
-                        <p:inputTextarea value="#{rangeWrapper.range.downStreamSequence}" readonly="true" cols="60" rows="3"/>
-                    </h:panelGrid>
-                </f:facet>
+                <h:outputText value="Downstream sequence:"/>
+                <p:inputTextarea value="#{rangeWrapper.range.downStreamSequence}" readonly="true" cols="60" rows="3"/>
+            </h:panelGrid>
+        </f:facet>
 
-            </p:dataTable>
+    </p:dataTable>
 
 </ui:composition>

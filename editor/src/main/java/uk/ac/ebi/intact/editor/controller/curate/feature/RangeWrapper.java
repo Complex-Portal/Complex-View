@@ -26,6 +26,7 @@ import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.ValidatorException;
 
 /**
@@ -44,7 +45,9 @@ public class RangeWrapper {
         this.sequence = sequence;
     }
 
-    public void onRangeAsStringChanged(AjaxBehaviorEvent evt) {
+    public void onRangeAsStringChanged(ValueChangeEvent evt) {
+        this.rangeAsString = (String) evt.getNewValue();
+
         Range newRange = FeatureUtils.createRangeFromString(rangeAsString, sequence);
 
         this.range.setDownStreamSequence(newRange.getDownStreamSequence());
