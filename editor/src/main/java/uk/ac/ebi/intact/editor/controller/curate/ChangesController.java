@@ -171,21 +171,29 @@ public class ChangesController extends JpaAwareController implements UserListene
     }
 
     /**
-     * When saving an object, all save/created/deleted events attached to one of the children of this object became obsolete because will be updated with the current object.
+     * When saving an object, all save/created/deleted events attached to one of the children (or parent) of this object became obsolete because will be updated with the current object.
      * However, in case of new publication, new experiment, new interaction, new participant, new feature, it is important to keep the change as it will not be created while updating this event.
      * New objects are only attached to their parents if saved. So when saving the parent, it will not create the child because not added yet
      *
      * @param object
      */
-    public void removeObsoleteChangesOnSave(IntactObject object){
+    public void removeObsoleteChangesOnSave(IntactObject object, Collection<String> parentAcs){
         if (object.getAc() != null){
 
             List<UnsavedChange> changes = new ArrayList(getUnsavedChangesForCurrentUser());
             for (UnsavedChange change : changes){
 
                 // very important to check that the ac is not null. Any new children event is not obsolete after saving the parent because not added yet
+                // checks the unsaved change is not new and is not a children of the current object to save. If it is a children, the unsaved event of the children becomes obsolete because the parent object will be saved
                 if (change.getAcsToDeleteOn().contains(object.getAc()) && change.getUnsavedObject().getAc() != null){
                     getUnsavedChangesForCurrentUser().remove(change);
+                }
+                // we gave a list of parent acs for this object. It means that we want to remove all unsaved change event which refers to one of the parent acs
+                else if (!parentAcs.isEmpty()){
+                    // the save event concerns one of the parent of the current object being saved, we can remove this unsaved event as it will be saved with current object
+                    if (change.getUnsavedObject().getAc() != null && parentAcs.contains(change.getUnsavedObject().getAc())){
+                        getUnsavedChangesForCurrentUser().remove(change);
+                    }
                 }
             }
         }
@@ -227,13 +235,13 @@ public class ChangesController extends JpaAwareController implements UserListene
      * When removing a save event from unsaved events, we have to refresh the unsaved events which have been saved while saving this specific change
      * @param io
      */
-    public void removeFromUnsaved(IntactObject io) {
+    public void removeFromUnsaved(IntactObject io, Collection<String> parentAcs) {
         List<UnsavedChange> changes = getUnsavedChangesForCurrentUser();
 
         changes.remove(new UnsavedChange(io, UnsavedChange.CREATED, null));
         changes.remove(new UnsavedChange(io, UnsavedChange.UPDATED, null));
 
-        removeObsoleteChangesOnSave(io);
+        removeObsoleteChangesOnSave(io, parentAcs);
     }
 
     public void removeFromHiddenChanges(UnsavedChange unsavedChange) {
@@ -577,6 +585,18 @@ public class ChangesController extends JpaAwareController implements UserListene
         return ios;
     }
 
+    public List<UnsavedChange> getAllUnsavedChanges() {
+        List<UnsavedChange> ios = new ArrayList<UnsavedChange>();
+
+        for (UnsavedChange change : getUnsavedChangesForCurrentUser()) {
+            if (UnsavedChange.UPDATED.equals(change.getAction()) || UnsavedChange.CREATED.equals(change.getAction())) {
+                ios.add(change);
+            }
+        }
+
+        return ios;
+    }
+
     public List<IntactObject> getAllDeleted() {
         List<IntactObject> ios = new ArrayList<IntactObject>();
 
@@ -727,7 +747,10 @@ public class ChangesController extends JpaAwareController implements UserListene
     }
 
     private boolean addUnsavedChange(UnsavedChange unsavedChange) {
-        removeFromUnsaved(unsavedChange.getUnsavedObject());
+
+        // before adding the unsave event, we delete all unsave event which already concerns this intact object or one of its children BUT
+        // NOT the parent object.
+        removeFromUnsaved(unsavedChange.getUnsavedObject(), Collections.EMPTY_LIST);
 
         List<UnsavedChange> deletedChanges = getAllUnsavedDeleted();
 
@@ -739,7 +762,17 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
         }
 
-        List<UnsavedChange> unsavedChanges = getUnsavedChangesForCurrentUser();
+        List<UnsavedChange> unsavedChanges = getAllUnsavedChanges();
+
+        for (UnsavedChange unsaveEvent : unsavedChanges){
+
+            // if one updated/created event is attached to one of the parent of the current unsaved change, don't add it because it will be saved while saving parent
+            if (unsavedChange.getAcsToDeleteOn().contains(unsaveEvent.getUnsavedObject().getAc())){
+                return false;
+            }
+        }
+
+        unsavedChanges = getUnsavedChangesForCurrentUser();
         unsavedChanges.add(unsavedChange);
         return true;
     }

@@ -171,19 +171,14 @@ public class ParticipantController extends ParameterizableObjectController {
     }
 
     @Override
-    public void setUnsavedChanges(boolean unsavedChanges) {
-        if (unsavedChanges) {
-            Collection<String> parentAcs = new ArrayList<String>();
+    protected Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
+        Collection<String> parentAcs = new ArrayList<String>();
 
-            if (participant.getInteraction() != null){
-                addParentAcsTo(parentAcs, participant.getInteraction());
-            }
-
-            getChangesController().markAsUnsaved(getAnnotatedObject(), parentAcs);
-
-        } else {
-            getChangesController().removeFromUnsaved(getAnnotatedObject());
+        if (participant.getInteraction() != null){
+            addParentAcsTo(parentAcs, participant.getInteraction());
         }
+
+        return parentAcs;
     }
 
     @Override

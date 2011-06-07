@@ -66,7 +66,6 @@ public class PersistenceController extends JpaAwareController {
 
         try {
             getIntactContext().getCorePersister().saveOrUpdate( annotatedObject );
-            changesController.removeFromUnsaved(annotatedObject);
 
             return true;
 

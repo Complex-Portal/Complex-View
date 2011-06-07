@@ -230,6 +230,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         if (saved) {
             lastSaved = new Date();
+            changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject());
         }
 
         // we refresh the object if it has been saved
@@ -687,11 +688,20 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void setUnsavedChanges(boolean unsavedChanges) {
+        Collection<String> parentAcs = collectParentAcsOfCurrentAnnotatedObject();
+
+        // we want to add a new change event for this annotated object
         if (unsavedChanges) {
-            changesController.markAsUnsaved(getAnnotatedObject());
-        } else {
-            changesController.removeFromUnsaved(getAnnotatedObject());
+            changesController.markAsUnsaved(getAnnotatedObject(), parentAcs);
         }
+        // we want to remove any change event concerning this object (or affecting parent and children)
+        else {
+            changesController.removeFromUnsaved(getAnnotatedObject(), parentAcs);
+        }
+    }
+
+    protected Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
+        return Collections.EMPTY_LIST;
     }
 
     public Date getLastSaved() {

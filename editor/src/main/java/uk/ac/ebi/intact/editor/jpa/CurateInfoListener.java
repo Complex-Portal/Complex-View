@@ -12,6 +12,8 @@ import uk.ac.ebi.intact.editor.controller.curate.CuratorContextController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
 
+import java.util.Collections;
+
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -33,7 +35,7 @@ public class CurateInfoListener implements PostUpdateEventListener, PostInsertEv
                 getCuratorContextController()
                     .addInfoMessage( getCuratorContextController().intactObjectSimpleName(io) +" updated", "- "+DebugUtil.intactObjectToString(io, false) );
 
-                getChangesController().removeFromUnsaved(io);
+                getChangesController().removeFromUnsaved(io, Collections.EMPTY_LIST);
             }
 
             if (log.isDebugEnabled()) log.debug("Updated: "+DebugUtil.intactObjectToString(io, false));
@@ -54,7 +56,7 @@ public class CurateInfoListener implements PostUpdateEventListener, PostInsertEv
             getChangesController()
                 .addInfoMessage( getCuratorContextController().intactObjectSimpleName(io) +" deleted", "- "+DebugUtil.intactObjectToString(io, false) );
 
-            getChangesController().removeFromUnsaved(io);
+            getChangesController().removeFromUnsaved(io, Collections.EMPTY_LIST);
 
             if (log.isDebugEnabled()) log.debug("Deleted: "+DebugUtil.intactObjectToString(io, false));
         }
@@ -71,7 +73,7 @@ public class CurateInfoListener implements PostUpdateEventListener, PostInsertEv
             getChangesController()
                 .addInfoMessage( getCuratorContextController().intactObjectSimpleName(io) +" created", "- "+DebugUtil.intactObjectToString(io, false) );
 
-            getChangesController().removeFromUnsaved(io);
+            getChangesController().removeFromUnsaved(io, Collections.EMPTY_LIST);
 
             if (log.isDebugEnabled()) log.debug("Created: "+DebugUtil.intactObjectToString(io, false));
         }

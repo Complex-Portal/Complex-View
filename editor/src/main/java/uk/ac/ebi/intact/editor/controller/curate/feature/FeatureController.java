@@ -302,24 +302,19 @@ public class FeatureController extends AnnotatedObjectController {
     }
 
     @Override
-    public void setUnsavedChanges(boolean unsavedChanges) {
-        if (unsavedChanges) {
-            Collection<String> parentAcs = new ArrayList<String>();
+    protected Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
+        Collection<String> parentAcs = new ArrayList<String>();
 
-            if (feature.getComponent() != null){
-                Component comp = feature.getComponent();
-                if (comp.getAc() != null){
-                    parentAcs.add(comp.getAc());
-                }
-
-                addParentAcsTo(parentAcs, comp);
+        if (feature.getComponent() != null){
+            Component comp = feature.getComponent();
+            if (comp.getAc() != null){
+                parentAcs.add(comp.getAc());
             }
 
-            getChangesController().markAsUnsaved(getAnnotatedObject(), parentAcs);
-
-        } else {
-            getChangesController().removeFromUnsaved(getAnnotatedObject());
+            addParentAcsTo(parentAcs, comp);
         }
+
+        return parentAcs;
     }
 
     @Override

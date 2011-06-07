@@ -425,17 +425,12 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     @Override
-    public void setUnsavedChanges(boolean unsavedChanges) {
-        if (unsavedChanges) {
-            Collection<String> parentAcs = new ArrayList<String>();
+    protected Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
+        Collection<String> parentAcs = new ArrayList<String>();
 
-            addPublicationAcToParentAcs(parentAcs, experiment);
+        addPublicationAcToParentAcs(parentAcs, experiment);
 
-            getChangesController().markAsUnsaved(getAnnotatedObject(), parentAcs);
-
-        } else {
-            getChangesController().removeFromUnsaved(getAnnotatedObject());
-        }
+        return parentAcs;
     }
 
     @Override
