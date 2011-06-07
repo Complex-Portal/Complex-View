@@ -156,6 +156,7 @@ public class ParticipantController extends ParameterizableObjectController {
             // if current ac is null, no unsaved event should be associated with it as this object has not been saved yet
             if (unsaved.getScope() != null && unsaved.getScope().equals(currentAc)){
                 super.getPersistenceController().doSaveMasterProteins(transcript);
+                getChangesController().removeFromHiddenChanges(unsaved);
             }
         }
 

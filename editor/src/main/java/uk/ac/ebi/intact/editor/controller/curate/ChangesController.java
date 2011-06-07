@@ -748,37 +748,31 @@ public class ChangesController extends JpaAwareController implements UserListene
 
     private boolean addUnsavedChange(UnsavedChange unsavedChange) {
 
-        // before adding the unsave event, we delete all unsave event which already concerns this intact object or one of its children BUT
-        // NOT the parent object.
-        removeFromUnsaved(unsavedChange.getUnsavedObject(), Collections.EMPTY_LIST);
-
+        // check first if the current object will not be deleted
         List<UnsavedChange> deletedChanges = getAllUnsavedDeleted();
 
         for (UnsavedChange deleteChange : deletedChanges){
 
-            // if one deleted event is in conflict with the current save event, don't add an update event (if experiment is deleted, new changes on the interaction does not make any sense)
+            // if one deleted event is in conflict with the current save event (one of the parents of the current object will be deleted), don't add an update event (if experiment is deleted, new changes on the interaction does not make any sense)
             if (unsavedChange.getAcsToDeleteOn().contains(deleteChange.getUnsavedObject().getAc())){
                 return false;
             }
-        }
-
-        List<UnsavedChange> unsavedChanges = getAllUnsavedChanges();
-
-        for (UnsavedChange unsaveEvent : unsavedChanges){
-
-            // if one updated/created event is attached to one of the parent of the current unsaved change, don't add it because it will be saved while saving parent
-            if (unsavedChange.getAcsToDeleteOn().contains(unsaveEvent.getUnsavedObject().getAc())){
+            // the current object will be deleted itself
+            else if (unsavedChange.getUnsavedObject().getAc() != null && unsavedChange.getUnsavedObject().getAc().equals(deleteChange.getUnsavedObject().getAc())){
                 return false;
             }
         }
 
-        unsavedChanges = getUnsavedChangesForCurrentUser();
+        // the current object will not be deleted (or any of its parents), we can remove safely the current changes if it exists and replace it with the new one
+        List<UnsavedChange> unsavedChanges = getUnsavedChangesForCurrentUser();
+
+        unsavedChanges.remove(unsavedChanges);
+
         unsavedChanges.add(unsavedChange);
         return true;
     }
 
     private boolean addUnsavedHiddenChange(UnsavedChange unsavedChange) {
-        removeFromHiddenChanges(unsavedChange);
 
         List<UnsavedChange> deletedChanges = getAllUnsavedDeleted();
 
@@ -788,9 +782,14 @@ public class ChangesController extends JpaAwareController implements UserListene
             if (unsavedChange.getAcsToDeleteOn().contains(deleteChange.getUnsavedObject().getAc())){
                 return false;
             }
+            // the current object will be deleted itself
+            else if (unsavedChange.getUnsavedObject().getAc() != null && unsavedChange.getUnsavedObject().getAc().equals(deleteChange.getUnsavedObject().getAc())){
+                return false;
+            }
         }
 
         List<UnsavedChange> unsavedChanges = getUnsavedChangesForCurrentUser();
+        unsavedChanges.remove(unsavedChange);
         unsavedChanges.add(unsavedChange);
         return true;
     }

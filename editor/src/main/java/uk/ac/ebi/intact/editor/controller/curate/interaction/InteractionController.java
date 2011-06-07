@@ -235,7 +235,7 @@ public class InteractionController extends ParameterizableObjectController {
     @Override
     public void doPreSave() {
         // create master proteins from the unsaved manager
-        final List<UnsavedChange> transcriptCreated = super.getChangesController().getAllUnsavedProteinTranscripts();
+        final List<UnsavedChange> transcriptCreated = new ArrayList(super.getChangesController().getAllUnsavedProteinTranscripts());
         String currentAc = interaction != null ? interaction.getAc() : null;
 
         for (UnsavedChange unsaved : transcriptCreated) {
@@ -246,6 +246,9 @@ public class InteractionController extends ParameterizableObjectController {
             // if current ac is null, no unsaved event should be associated with it as this object has not been saved yet
             if (unsaved.getScope() != null && unsaved.getScope().equals(currentAc)){
                 super.getPersistenceController().doSaveMasterProteins(transcript);
+
+                getChangesController().removeFromHiddenChanges(unsaved);
+
             }
         }
 
