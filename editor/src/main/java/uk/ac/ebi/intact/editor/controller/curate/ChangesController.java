@@ -515,7 +515,8 @@ public class ChangesController extends JpaAwareController implements UserListene
         if (ac == null) return true;
 
         for (UnsavedChange unsavedChange : getUnsavedChangesForCurrentUser()) {
-            if (ac.equals(unsavedChange.getUnsavedObject().getAc())) {
+            // if one unsaved event exists and matches the ac of the current object or the scope of the unsaved event matches the current object, this event can be considered as unsaved
+            if (ac.equals(unsavedChange.getUnsavedObject().getAc()) || ac.equals(unsavedChange.getScope())) {
                 return true;
             }
         }
