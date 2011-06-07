@@ -49,10 +49,6 @@ public class CvObjectController extends AnnotatedObjectController {
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
         this.cvObject = (CvDagObject) annotatedObject;
-        if (cvObject == null) {
-            addErrorMessage("No CvObject with this AC", ac);
-            return;
-        }
 
         if (cvObject != null){
             this.ac = annotatedObject.getAc();
@@ -65,6 +61,11 @@ public class CvObjectController extends AnnotatedObjectController {
                 cvObject = (CvDagObject) loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(), ac);
             } else if (cvClassName != null) {
                 cvObject = newInstance(cvClassName);
+            }
+
+            if (cvObject == null) {
+                addErrorMessage("No CvObject with this AC", ac);
+                return;
             }
 
             prepareView();

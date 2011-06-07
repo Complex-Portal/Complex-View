@@ -49,10 +49,6 @@ public class InteractorController extends AnnotatedObjectController {
 
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            if (interactor == null) {
-                super.addErrorMessage("Interactor does not exist", ac);
-                return;
-            }
 
             if ( ac != null ) {
                 if ( interactor == null || !ac.equals(interactor.getAc())) {
@@ -62,8 +58,13 @@ public class InteractorController extends AnnotatedObjectController {
                 if ( interactor != null ) ac = interactor.getAc();
             }
 
+            if (interactor == null) {
+                super.addErrorMessage("Interactor does not exist", ac);
+                return;
+            }
+
             reset();
-        } 
+        }
 
         generalLoadChecks();
     }

@@ -43,10 +43,6 @@ public class BioSourceController extends AnnotatedObjectController {
 
     public void loadData(ComponentSystemEvent evt) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            if (bioSource == null) {
-                super.addErrorMessage("Organism does not exist", ac);
-                return;
-            }
 
             if (ac != null) {
                 bioSource = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getBioSourceDao(), ac);
@@ -54,6 +50,10 @@ public class BioSourceController extends AnnotatedObjectController {
                 bioSource = new BioSource();
             }
 
+            if (bioSource == null) {
+                super.addErrorMessage("Organism does not exist", ac);
+                return;
+            }
         }
 
         generalLoadChecks();

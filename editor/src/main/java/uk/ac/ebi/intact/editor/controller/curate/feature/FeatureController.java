@@ -100,10 +100,6 @@ public class FeatureController extends AnnotatedObjectController {
 
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            if (feature == null) {
-                super.addErrorMessage("Feature does not exist", ac);
-                return;
-            }
 
             if ( ac != null ) {
                 if ( feature == null || !ac.equals( feature.getAc() ) ) {
@@ -111,6 +107,11 @@ public class FeatureController extends AnnotatedObjectController {
                 }
             } else {
                 if ( feature != null ) ac = feature.getAc();
+            }
+
+            if (feature == null) {
+                super.addErrorMessage("Feature does not exist", ac);
+                return;
             }
 
             final Component participant = feature.getComponent();

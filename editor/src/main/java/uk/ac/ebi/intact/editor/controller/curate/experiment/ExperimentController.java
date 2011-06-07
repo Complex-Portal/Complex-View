@@ -81,15 +81,16 @@ public class ExperimentController extends AnnotatedObjectController {
     @SuppressWarnings("unchecked")
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            if (experiment == null) {
-                addErrorMessage("No Experiment with this AC", ac);
-                return;
-            }
 
             if ( ac != null ) {
                 if ( experiment == null || !ac.equals( experiment.getAc() ) ) {
                     experiment = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao(), ac);
                 }
+                if (experiment == null) {
+                    addErrorMessage("No Experiment with this AC", ac);
+                    return;
+                }
+
                 refreshInteractions();
             } else if ( experiment != null ) {
                 ac = experiment.getAc();
