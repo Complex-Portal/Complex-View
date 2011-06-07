@@ -48,7 +48,11 @@ public class CvObjectController extends AnnotatedObjectController {
 
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-       this.cvObject = (CvDagObject) annotatedObject;
+        this.cvObject = (CvDagObject) annotatedObject;
+        if (cvObject == null) {
+            addErrorMessage("No CvObject with this AC", ac);
+            return;
+        }
 
         if (cvObject != null){
             this.ac = annotatedObject.getAc();
@@ -58,13 +62,13 @@ public class CvObjectController extends AnnotatedObjectController {
     public void loadData(ComponentSystemEvent evt) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if (ac != null) {
-               cvObject = (CvDagObject) loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(), ac);
+                cvObject = (CvDagObject) loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(), ac);
             } else if (cvClassName != null) {
                 cvObject = newInstance(cvClassName);
             }
 
             prepareView();
-         }
+        }
         generalLoadChecks();
     }
 
@@ -88,7 +92,7 @@ public class CvObjectController extends AnnotatedObjectController {
         }
 
         prepareView();
-        
+
         return navigateToObject(cvObject);
     }
 
@@ -108,7 +112,7 @@ public class CvObjectController extends AnnotatedObjectController {
 
         return obj;
     }
-    
+
     @Override
     public boolean doSaveDetails() {
         cvObjectService.refresh(null);
@@ -119,7 +123,7 @@ public class CvObjectController extends AnnotatedObjectController {
             getDaoFactory().getCvObjectDao().update(refreshedParent);
             getDaoFactory().getCvObjectDao().update(cvObject);
         }
-        
+
         return super.doSaveDetails();
     }
 

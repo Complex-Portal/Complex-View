@@ -49,6 +49,11 @@ public class InteractorController extends AnnotatedObjectController {
 
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
+            if (interactor == null) {
+                super.addErrorMessage("Interactor does not exist", ac);
+                return;
+            }
+
             if ( ac != null ) {
                 if ( interactor == null || !ac.equals(interactor.getAc())) {
                     interactor = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractorDao(), ac);

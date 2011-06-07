@@ -109,17 +109,17 @@ public class InteractionController extends ParameterizableObjectController {
     @Transactional(readOnly = true)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
+            if (interaction == null) {
+                addErrorMessage("No interaction with this AC", ac);
+                return;
+            }
+
             if ( ac != null ) {
                 if ( interaction == null || !ac.equals( interaction.getAc() ) || !Hibernate.isInitialized(interaction.getExperiments())) {
                     interaction = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao(), ac);
                 }
             } else {
                 ac = interaction.getAc();
-            }
-
-            if (interaction == null) {
-                addErrorMessage("No interaction with this AC", ac);
-                return;
             }
 
             setInteraction(interaction);

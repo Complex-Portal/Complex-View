@@ -93,17 +93,17 @@ public class ParticipantController extends ParameterizableObjectController {
 
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
+            if (participant == null) {
+                addErrorMessage("No participant with this AC", ac);
+                return;
+            }
+
             if ( ac != null ) {
                 if ( participant == null || !ac.equals( participant.getAc() ) ) {
                     participant = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getComponentDao(), ac);
                 }
             } else {
                 if ( participant != null ) ac = participant.getAc();
-            }
-
-            if (participant == null) {
-                addErrorMessage("No participant loaded", "That's annoying!");
-                return;
             }
 
             // check if the publication, experiment and interaction are null in their controllers (this happens when the
