@@ -755,10 +755,22 @@ public class ChangesController extends JpaAwareController implements UserListene
 
             // if one deleted event is in conflict with the current save event (one of the parents of the current object will be deleted), don't add an update event (if experiment is deleted, new changes on the interaction does not make any sense)
             if (unsavedChange.getAcsToDeleteOn().contains(deleteChange.getUnsavedObject().getAc())){
+                if (deleteChange.getUnsavedObject() instanceof AnnotatedObject){
+                    addWarningMessage("Save not allowed", "This object cannot be updated because it will be deleted when deleting " + DebugUtil.annotatedObjectToString((AnnotatedObject) deleteChange.getUnsavedObject(), false));
+                }
+                else {
+                    addWarningMessage("Save not allowed", "This object will be deleted when deleting the intact object AC = " + deleteChange.getUnsavedObject().getAc());
+                }
                 return false;
             }
             // the current object will be deleted itself
             else if (unsavedChange.getUnsavedObject().getAc() != null && unsavedChange.getUnsavedObject().getAc().equals(deleteChange.getUnsavedObject().getAc())){
+                if (deleteChange.getUnsavedObject() instanceof AnnotatedObject){
+                    addWarningMessage("Save not allowed", "This object cannot be updated because it will be deleted when deleting " + DebugUtil.annotatedObjectToString((AnnotatedObject) deleteChange.getUnsavedObject(), false));
+                }
+                else {
+                    addWarningMessage("Save not allowed", "This object will be deleted when deleting the intact object AC = " + deleteChange.getUnsavedObject().getAc());
+                }
                 return false;
             }
         }
@@ -780,10 +792,22 @@ public class ChangesController extends JpaAwareController implements UserListene
 
             // if one deleted event is in conflict with the current save event, don't add an update event (if experiment is deleted, new changes on the interaction does not make any sense)
             if (unsavedChange.getAcsToDeleteOn().contains(deleteChange.getUnsavedObject().getAc())){
+                if (deleteChange.getUnsavedObject() instanceof AnnotatedObject){
+                    addWarningMessage("Save not allowed", "This object cannot be updated because it will be deleted when deleting " + DebugUtil.annotatedObjectToString((AnnotatedObject) deleteChange.getUnsavedObject(), false));
+                }
+                else {
+                    addWarningMessage("Save not allowed", "This object will be deleted when deleting the intact object AC = " + deleteChange.getUnsavedObject().getAc());
+                }
                 return false;
             }
             // the current object will be deleted itself
             else if (unsavedChange.getUnsavedObject().getAc() != null && unsavedChange.getUnsavedObject().getAc().equals(deleteChange.getUnsavedObject().getAc())){
+                if (deleteChange.getUnsavedObject() instanceof AnnotatedObject){
+                    addWarningMessage("Save not allowed", "This object cannot be updated because it will be deleted when deleting " + DebugUtil.annotatedObjectToString((AnnotatedObject) deleteChange.getUnsavedObject(), false));
+                }
+                else {
+                    addWarningMessage("Save not allowed", "This object will be deleted when deleting the intact object AC = " + deleteChange.getUnsavedObject().getAc());
+                }
                 return false;
             }
         }

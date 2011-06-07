@@ -118,10 +118,6 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            if (publication == null) {
-                addErrorMessage("No Publication with this AC", ac);
-                return;
-            }
 
             datasetsSelectItems = new ArrayList<SelectItem>();
 
