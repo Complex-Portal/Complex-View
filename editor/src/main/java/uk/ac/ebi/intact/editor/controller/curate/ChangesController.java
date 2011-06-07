@@ -766,7 +766,7 @@ public class ChangesController extends JpaAwareController implements UserListene
         // the current object will not be deleted (or any of its parents), we can remove safely the current changes if it exists and replace it with the new one
         List<UnsavedChange> unsavedChanges = getUnsavedChangesForCurrentUser();
 
-        unsavedChanges.remove(unsavedChanges);
+        unsavedChanges.remove(unsavedChange);
 
         unsavedChanges.add(unsavedChange);
         return true;
@@ -788,7 +788,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
         }
 
-        List<UnsavedChange> unsavedChanges = getUnsavedChangesForCurrentUser();
+        List<UnsavedChange> unsavedChanges = getHiddenUnsavedChangesForCurrentUser();
         unsavedChanges.remove(unsavedChange);
         unsavedChanges.add(unsavedChange);
         return true;

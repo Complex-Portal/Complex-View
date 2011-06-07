@@ -250,6 +250,10 @@ public class InteractionController extends ParameterizableObjectController {
                 getChangesController().removeFromHiddenChanges(unsaved);
 
             }
+            else if (unsaved.getScope() == null && currentAc == null){
+                super.getPersistenceController().doSaveMasterProteins(transcript);
+                getChangesController().removeFromHiddenChanges(unsaved);
+            }
         }
 
         // Reload experiments

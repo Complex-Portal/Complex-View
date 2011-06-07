@@ -346,6 +346,10 @@ public class ParticipantImportController extends BaseController {
 
             CvDatabase ownDatabase = InstitutionUtils.retrieveCvDatabase(IntactContext.getCurrentInstance(), owner);
 
+            if (ownDatabase == null){
+               ownDatabase = daoFactory.getCvObjectDao(CvDatabase.class).getByIdentifier(CvDatabase.INTACT_MI_REF);
+            }
+
             UniprotProteinTranscript proteinTranscript = (UniprotProteinTranscript) uniprotProtein;
 
             // set shortlabel differently for protein transcripts

@@ -158,6 +158,10 @@ public class ParticipantController extends ParameterizableObjectController {
                 super.getPersistenceController().doSaveMasterProteins(transcript);
                 getChangesController().removeFromHiddenChanges(unsaved);
             }
+            else if (unsaved.getScope() == null && currentAc == null){
+                super.getPersistenceController().doSaveMasterProteins(transcript);
+                getChangesController().removeFromHiddenChanges(unsaved);
+            }
         }
 
         // save the interactor, if it didn't exist and the participant is just being updated
@@ -276,7 +280,11 @@ public class ParticipantController extends ParameterizableObjectController {
                     getChangesController().markAsHiddenChange(importCandidate.getInteractor(), participant, parentAcs);
                 }
                 participant.setInteractor(importCandidate.getInteractor());
-                setUnsavedChanges(true);
+
+                // if the participant is a new participant, we don't need to add a unsaved notice because one already exists for creating a new participant
+                if (participant.getAc() != null){
+                    setUnsavedChanges(true);
+                }
             }
         }
     }
