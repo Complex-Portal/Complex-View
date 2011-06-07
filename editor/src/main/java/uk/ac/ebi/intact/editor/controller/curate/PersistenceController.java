@@ -136,7 +136,12 @@ public class PersistenceController extends JpaAwareController {
 
         for (UnsavedChange unsaved : changes){
             IntactObject object = unsaved.getUnsavedObject();
-            curateController.save(object, false);
+
+            // checks that the current unsaved change is not obsolete because of a previous change (when saving/deleting, some unsaved change became obsolete and have been removed from the unsaved changes)
+            if (changesController.getUnsavedChangesForCurrentUser().contains(unsaved)){
+                curateController.save(object, false);
+
+            }
         }
 
         // refresh current view now
@@ -189,7 +194,11 @@ public class PersistenceController extends JpaAwareController {
 
         for (UnsavedChange unsaved : changes){
             IntactObject object = unsaved.getUnsavedObject();
-            curateController.discard(object);
+
+            // checks that the current unsaved change is not obsolete because of a previous change (when saving/deleting, some unsaved change became obsolete and have been removed from the unsaved changes)
+            if (changesController.getUnsavedChangesForCurrentUser().contains(unsaved)){
+                curateController.discard(object);
+            }
         }
     }
 }

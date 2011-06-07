@@ -185,7 +185,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         boolean saved = false;
 
         // delete from the unsaved manager
-        final List<UnsavedChange> deletedObjects = changesController.getAllUnsavedDeleted();
+        final List<UnsavedChange> deletedObjects = new ArrayList(changesController.getAllUnsavedDeleted());
 
         PersistenceController persistenceController = getPersistenceController();
 
@@ -193,22 +193,25 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
             IntactObject unsavedObject = unsaved.getUnsavedObject();
 
-            // the object to delete is the current object itself. Should delete it now
-            if (unsavedObject.getAc() != null && unsavedObject.getAc().equals(currentAc)){
-                currentAnnotatedObjectDeleted = true;
+            // when an object is deleted, other deleted events can become obsolete and could have been removed from the deleted change events
+            if (changesController.getAllUnsavedDeleted().contains(unsaved)){
+                // the object to delete is the current object itself. Should delete it now
+                if (unsavedObject.getAc() != null && unsavedObject.getAc().equals(currentAc)){
+                    currentAnnotatedObjectDeleted = true;
 
-                // remove the object to delete from its parent. If it is successful and the current object has been deleted, we can say that the save is successful
-                if (persistenceController.doDelete(unsavedObject)){
-                    saved = true;
+                    // remove the object to delete from its parent. If it is successful and the current object has been deleted, we can say that the save is successful
+                    if (persistenceController.doDelete(unsavedObject)){
+                        saved = true;
+                    }
+
                 }
-
-            }
-            // the object to delete is different from the current object. Checks that the scope of this object to delete is the ac of the current object being saved
-            // if the scope is null or different, the object should not be deleted at this stage because we only save the current object and changes associated with it
-            // if current ac is null, no deleted event should be associated with it as this object has not been saved yet
-            else if (unsaved.getScope() != null && unsaved.getScope().equals(currentAc)){
-                // remove the object to delete from its parent
-                persistenceController.doDelete(unsavedObject);
+                // the object to delete is different from the current object. Checks that the scope of this object to delete is the ac of the current object being saved
+                // if the scope is null or different, the object should not be deleted at this stage because we only save the current object and changes associated with it
+                // if current ac is null, no deleted event should be associated with it as this object has not been saved yet
+                else if (unsaved.getScope() != null && unsaved.getScope().equals(currentAc)){
+                    // remove the object to delete from its parent
+                    persistenceController.doDelete(unsavedObject);
+                }
             }
         }
 

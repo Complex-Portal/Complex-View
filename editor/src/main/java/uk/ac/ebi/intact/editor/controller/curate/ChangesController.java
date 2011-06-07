@@ -605,7 +605,7 @@ public class ChangesController extends JpaAwareController implements UserListene
     public List<UnsavedChange> getAllUnsavedProteinTranscripts() {
         List<UnsavedChange> unsaved = new ArrayList<UnsavedChange>();
 
-        for (UnsavedChange change : getUnsavedChangesForCurrentUser()) {
+        for (UnsavedChange change : getHiddenUnsavedChangesForCurrentUser()) {
             if (UnsavedChange.CREATED_TRANSCRIPT.equals(change.getAction())) {
                 unsaved.add(change);
             }
