@@ -119,7 +119,7 @@
                 <div style="float:right">
                 <p:commandLink process="@this" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
                                actionListener="#{changesController.revert(participant)}"
-                               update="participantsTable,unsavedChangesInfo,changesPanel,messagesComponent"
+                               update="participantsTable,unsavedChangesInfo,changesPanel,messagesComponent,unsavedChangesInfo"
                                rendered="#{changesController.isDeletedAc(participant.ac)}"/>
                 </div>
                 <div style="float:left">

@@ -519,6 +519,12 @@ public class ChangesController extends JpaAwareController implements UserListene
             if (ac.equals(unsavedChange.getUnsavedObject().getAc()) || ac.equals(unsavedChange.getScope())) {
                 return true;
             }
+            // if the current ac is the parent ac of one of the elements to save, mark it as unsaved
+            else if (!unsavedChange.getAcsToDeleteOn().isEmpty()){
+                if (unsavedChange.getAcsToDeleteOn().contains(ac)){
+                    return true;
+                }
+            }
         }
 
         return false;
