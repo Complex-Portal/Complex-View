@@ -144,7 +144,7 @@ public class ParticipantController extends ParameterizableObjectController {
     @Override
     public void doPreSave() {
         // create master proteins from the unsaved manager
-        final List<UnsavedChange> transcriptCreated = super.getChangesController().getAllUnsavedProteinTranscripts();
+        final List<UnsavedChange> transcriptCreated = getChangesController().getAllUnsavedProteinTranscripts();
 
         for (UnsavedChange unsaved : transcriptCreated) {
             IntactObject transcript = unsaved.getUnsavedObject();
