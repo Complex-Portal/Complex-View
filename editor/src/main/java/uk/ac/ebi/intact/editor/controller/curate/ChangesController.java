@@ -362,6 +362,9 @@ public class ChangesController extends JpaAwareController implements UserListene
                 if (interaction.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || interaction.getAc().equals(unsavedChange.getScope())) {
                     iterator.remove();
                 }
+                else if (unsavedChange.getAcsToDeleteOn().contains(interaction.getAc())) {
+                    iterator.remove();
+                }
             }
             // the object is new, we can only checks if we have an unchanged event which is new and does not have a collection of parent acs (interactors, organism, cv terms)
             else if (unsavedChange.getUnsavedObject().getAc() == null) {
@@ -390,6 +393,9 @@ public class ChangesController extends JpaAwareController implements UserListene
                 if (interaction.getAc().equals(unsavedChange.getScope())) {
                     iterator.remove();
                 }
+                else if (unsavedChange.getAcsToDeleteOn().contains(interaction.getAc())) {
+                    iterator.remove();
+                }
             }
         }
     }
@@ -404,6 +410,9 @@ public class ChangesController extends JpaAwareController implements UserListene
             // the object has an ac, we can compare using ac
             if (experiment.getAc() != null){
                 if (experiment.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || experiment.getAc().equals(unsavedChange.getScope())) {
+                    iterator.remove();
+                }
+                else if (unsavedChange.getAcsToDeleteOn().contains(experiment.getAc())) {
                     iterator.remove();
                 }
             }
@@ -436,6 +445,11 @@ public class ChangesController extends JpaAwareController implements UserListene
                 if (publication.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || publication.getAc().equals(unsavedChange.getScope())) {
                     iterator.remove();
                 }
+                else if (!unsavedChange.getAcsToDeleteOn().isEmpty()){
+                    if (unsavedChange.getAcsToDeleteOn().contains(publication.getAc())) {
+                        iterator.remove();
+                    }
+                }
             }
             // the object is new, we can only checks if we have an unchanged event which is new and does not have a collection of parent acs (interactors, organism, cv terms)
             else if (unsavedChange.getUnsavedObject().getAc() == null) {
@@ -465,6 +479,9 @@ public class ChangesController extends JpaAwareController implements UserListene
                 if (component.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || component.getAc().equals(unsavedChange.getScope())) {
                     iterator.remove();
                 }
+                else if (unsavedChange.getAcsToDeleteOn().contains(component.getAc())) {
+                        iterator.remove();
+                }
             }
             // the object is new, we can only checks if we have an unchanged event which is new and does not have a collection of parent acs (interactors, organism, cv terms)
             else if (unsavedChange.getUnsavedObject().getAc() == null) {
@@ -493,6 +510,9 @@ public class ChangesController extends JpaAwareController implements UserListene
                 if (component.getAc().equals(unsavedChange.getScope())) {
                     iterator.remove();
                 }
+                else if (unsavedChange.getAcsToDeleteOn().contains(component.getAc())) {
+                        iterator.remove();
+                }
             }
         }
     }
@@ -507,6 +527,9 @@ public class ChangesController extends JpaAwareController implements UserListene
             if (feature.getAc() != null){
                 if (feature.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || feature.getAc().equals(unsavedChange.getScope())) {
                     iterator.remove();
+                }
+                else if (unsavedChange.getAcsToDeleteOn().contains(feature.getAc())) {
+                        iterator.remove();
                 }
             }
             // the object is new, we can only checks if we have an unchanged event which is new and does not have a collection of parent acs (interactors, organism, cv terms)
