@@ -73,7 +73,7 @@
                         </td>
                         <td>
                             <p:inputText id="shortlabelTxt" value="#{feature.shortLabel}" size="30"
-                                         converter="trimmingConverter"
+                                         converter="trimmingConverter" validator="#{featureController.validateFeature}"
                                          required="true" requiredMessage="Shortlabel is required" valueChangeListener="#{annotatedObjectController.changed}">
                                 <ed:curation/>
                             </p:inputText>
