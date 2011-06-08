@@ -251,6 +251,7 @@ public class PublicationController extends AnnotatedObjectController {
             setPrimaryReference( id );
 
             publication.setFullName( citation.getTitle() );
+            copyPublicationTitleToExperiments(null);
             setJournal( citation.getJournalIssue().getJournal().getISOAbbreviation() + " (" +
                     citation.getJournalIssue().getJournal().getISSN() + ")" );
             setYear( citation.getJournalIssue().getYearOfPublication() );
@@ -265,6 +266,8 @@ public class PublicationController extends AnnotatedObjectController {
             }
 
             setAuthors( sbAuthors.toString() );
+
+            copyAnnotationsToExperiments(null);
 
             addInfoMessage( "Auto-complete successful", "Fetched details for: " + id );
 
