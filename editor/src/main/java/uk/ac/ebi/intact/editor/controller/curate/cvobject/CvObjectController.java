@@ -184,10 +184,9 @@ public class CvObjectController extends AnnotatedObjectController {
 
             // very important : DO NOT use Array.AsList because it will be a problem when persisting the data. We can only do a clear operation on lists
             // and the clear method is always called in the corePersister to refresh collections (instead of using the set )
-            Collection<CvDagObject> parents = new ArrayList<CvDagObject>(1);
-            parents.add(parentCvObjects);
 
-            cvObject.setParents(parents);
+            cvObject.getParents().clear();
+            cvObject.getParents().add(parentCvObjects);
         }
     }
 
