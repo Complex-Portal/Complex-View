@@ -4,8 +4,6 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectController;
@@ -66,18 +64,15 @@ public class CurateController extends JpaAwareController {
         return edit(ao);
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void save(IntactObject intactObject) {
         save(intactObject, true);
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void save(IntactObject intactObject, boolean refreshCurrentView) {
         AnnotatedObjectController annotatedObjectController = getMetadata(intactObject).getAnnotatedObjectController();
         annotatedObjectController.doSave(refreshCurrentView);
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void discard(IntactObject intactObject) {
 
         AnnotatedObjectController annotatedObjectController = getMetadata(intactObject).getAnnotatedObjectController();
