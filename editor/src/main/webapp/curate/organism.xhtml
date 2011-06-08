@@ -48,12 +48,11 @@
                     <h:panelGroup>
                         <p:inputText id="taxIdTxt" value="#{bioSourceController.taxId}" onchange="markAsUnsaved()" converter="trimmingConverter"
                                      required="true" requiredMessage="Tax ID is required">
-                            <!--<ed:ajax event="valueChange" update="organismTabs"
-                          beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"/>-->
+                            <p:ajax event="valueChange" process="@this"/>
                         </p:inputText>
 
                         <p:commandButton id="autoFillBtn" value="Auto-fill" actionListener="#{bioSourceController.autoFill}"
-                                         update="basic organismTabs" immediate="true">
+                                         update=":basic,:organismTabs" immediate="true" ajax="false">
                             <!--This is a trick to be able to auto fill the biosource without forcing validation of shortlabel as it will be autocompleted-->
                             <f:param name="skipvalidation" value="1" />
                         </p:commandButton>
