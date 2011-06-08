@@ -242,9 +242,14 @@ public class PublicationController extends AnnotatedObjectController {
         try {
             final Citation citation = citexploreClient.getCitationById( id );
 
-            if ( citation == null ) {
-                addErrorMessage( "No citation was found", "PMID: " + id );
+            // new publication. No autocompletion available and this publication can be created under unassigned
+            if ( citation == null && publication.getAc() == null) {
+                addErrorMessage( "No citation was found, the auto completion has been aborted", "PMID: " + id );
                 setPublication(null);
+                return;
+            }
+            else if (citation == null && publication.getAc() != null){
+                addErrorMessage( "This pubmed id does not exist and the autocompletion has been aborted", "PMID: " + id );
                 return;
             }
 
@@ -828,7 +833,6 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional
     public void copyAnnotationsToExperiments(ActionEvent evt) {
         for (Experiment exp : publication.getExperiments()) {
             CurateUtils.copyPublicationAnnotationsToExperiment(exp);
@@ -839,7 +843,6 @@ public class PublicationController extends AnnotatedObjectController {
         setUnsavedChanges(true);
     }
 
-    @Transactional
     public void copyPublicationTitleToExperiments(ActionEvent evt) {
         for (Experiment exp : publication.getExperiments()) {
             exp.setFullName(publication.getFullName());
