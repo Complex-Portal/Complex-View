@@ -48,13 +48,12 @@
                     <h:panelGroup>
                         <p:inputText id="taxIdTxt" value="#{bioSourceController.taxId}" onchange="markAsUnsaved()" converter="trimmingConverter"
                                      required="true" requiredMessage="Tax ID is required">
-                            <p:ajax event="valueChange" process="@this"/>
+                            <!--<p:ajax event="valueChange" process="@this"/>-->
+                            <ed:curation/>
                         </p:inputText>
 
                         <p:commandButton id="autoFillBtn" value="Auto-fill" actionListener="#{bioSourceController.autoFill}"
-                                         update=":basic,:organismTabs" immediate="true" ajax="false">
-                            <!--This is a trick to be able to auto fill the biosource without forcing validation of shortlabel as it will be autocompleted-->
-                            <f:param name="skipvalidation" value="1" />
+                                         update="basic,organismTabs" ajax="true" process="taxIdTxt">
                         </p:commandButton>
 
                     </h:panelGroup>
@@ -66,20 +65,25 @@
                     <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                     <p:inputText id="shortlabelTxt" value="#{bioSourceController.bioSource.shortLabel}" size="30" converter="trimmingConverter"
                                  validator="#{annotatedObjectController.validateAnnotatedObject}"
-                                 required="#{empty param['skipvalidation']}" requiredMessage="Shortlabel is required"
-                                 onchange="markAsUnsaved()"/>
+                                 required="true" requiredMessage="Shortlabel is required">
+                            <ed:curation/>
+                    </p:inputText>
 
                     <h:outputLabel value="Fullname: " for="fullnameTxt"/>
-                    <p:inputText id="fullnameTxt" value="#{bioSourceController.bioSource.fullName}" onchange="markAsUnsaved()" size="50" converter="trimmingConverter"/>
+                    <p:inputText id="fullnameTxt" value="#{bioSourceController.bioSource.fullName}" size="50" converter="trimmingConverter">
+                            <ed:curation/>
+                    </p:inputText>
 
                     <h:outputLabel value="Cell type: " for="cellTypeTxt"/>
                     <h:selectOneMenu id="cellTypeTxt" value="#{bioSourceController.bioSource.cvCellType}">
-                        <f:selectItems value="#{cvObjectService.cellTypeSelectItems}" onchange="markAsUnsaved()"/>
+                        <f:selectItems value="#{cvObjectService.cellTypeSelectItems}"/>
+                        <ed:curation/>
                     </h:selectOneMenu>
 
                     <h:outputLabel value="Tissue: " for="tissueTxt"/>
                     <h:selectOneMenu id="tissueTxt" value="#{bioSourceController.bioSource.cvTissue}">
                         <f:selectItems value="#{cvObjectService.tissueSelectItems}"/>
+                        <ed:curation/>
                     </h:selectOneMenu>
 
                 </h:panelGrid>
