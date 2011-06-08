@@ -47,8 +47,8 @@
 
                     <h:panelGroup>
                         <p:inputText id="taxIdTxt" value="#{bioSourceController.taxId}" onchange="markAsUnsaved()" converter="trimmingConverter"
-                                     required="true" requiredMessage="Tax ID is required">
-                            <!--<p:ajax event="valueChange" process="@this"/>-->
+                                     required="true" requiredMessage="Tax ID is required"
+                                valueChangeListener="#{publicationController.unsavedValueChange}">
                             <ed:curation/>
                         </p:inputText>
 
@@ -65,23 +65,27 @@
                     <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                     <p:inputText id="shortlabelTxt" value="#{bioSourceController.bioSource.shortLabel}" size="30" converter="trimmingConverter"
                                  validator="#{annotatedObjectController.validateAnnotatedObject}"
+                                 valueChangeListener="#{publicationController.unsavedValueChange}"
                                  required="true" requiredMessage="Shortlabel is required">
                             <ed:curation/>
                     </p:inputText>
 
                     <h:outputLabel value="Fullname: " for="fullnameTxt"/>
-                    <p:inputText id="fullnameTxt" value="#{bioSourceController.bioSource.fullName}" size="50" converter="trimmingConverter">
+                    <p:inputText id="fullnameTxt" value="#{bioSourceController.bioSource.fullName}" size="50" converter="trimmingConverter"
+                            valueChangeListener="#{publicationController.unsavedValueChange}">
                             <ed:curation/>
                     </p:inputText>
 
                     <h:outputLabel value="Cell type: " for="cellTypeTxt"/>
-                    <h:selectOneMenu id="cellTypeTxt" value="#{bioSourceController.bioSource.cvCellType}">
+                    <h:selectOneMenu id="cellTypeTxt" value="#{bioSourceController.bioSource.cvCellType}"
+                            valueChangeListener="#{publicationController.unsavedValueChange}">
                         <f:selectItems value="#{cvObjectService.cellTypeSelectItems}"/>
                         <ed:curation/>
                     </h:selectOneMenu>
 
                     <h:outputLabel value="Tissue: " for="tissueTxt"/>
-                    <h:selectOneMenu id="tissueTxt" value="#{bioSourceController.bioSource.cvTissue}">
+                    <h:selectOneMenu id="tissueTxt" value="#{bioSourceController.bioSource.cvTissue}"
+                            valueChangeListener="#{publicationController.unsavedValueChange}">
                         <f:selectItems value="#{cvObjectService.tissueSelectItems}"/>
                         <ed:curation/>
                     </h:selectOneMenu>
