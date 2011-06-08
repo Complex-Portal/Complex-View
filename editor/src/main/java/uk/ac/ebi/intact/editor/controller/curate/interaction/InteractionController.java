@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.util.DebugUtil;
+import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.EditorIntactCloner;
@@ -78,6 +79,9 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Autowired
     private ExperimentController experimentController;
+
+    @Autowired
+    private UserSessionController userSessionController;
 
     public InteractionController() {
         experimentsToUpdate = new ArrayList<Experiment>();
@@ -374,7 +378,7 @@ public class InteractionController extends ParameterizableObjectController {
     @Transactional(readOnly = true)
     public String newInteraction(Publication publication, Experiment exp) {
         Interaction interaction = new InteractionImpl();
-        interaction.setOwner(getIntactContext().getInstitution());
+        interaction.setOwner(userSessionController.getUserInstitution());
 
         CvInteractorType type = getDaoFactory().getCvObjectDao(CvInteractorType.class).getByPsiMiRef(CvInteractorType.INTERACTION_MI_REF);
         interaction.setCvInteractorType(type);

@@ -23,10 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.persistence.dao.InstitutionDao;
 import uk.ac.ebi.intact.core.users.model.Preference;
 import uk.ac.ebi.intact.core.users.model.Role;
 import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.users.persistence.dao.UserDao;
+import uk.ac.ebi.intact.editor.controller.misc.AbstractUserController;
+import uk.ac.ebi.intact.model.Institution;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -98,6 +101,24 @@ public class UserSessionController extends JpaAwareController implements Disposa
 
             userDao.saveOrUpdate(currentUser);
         }
+    }
+
+    public Institution getUserInstitution() {
+        Preference instiPref = currentUser.getPreference(AbstractUserController.INSTITUTION_AC);
+
+        if (instiPref == null) {
+            return getIntactContext().getInstitution();
+        }
+
+        InstitutionDao institutionDao = getDaoFactory().getInstitutionDao();
+
+        Institution institution = institutionDao.getByAc(instiPref.getValue());
+
+        if (institution == null) {
+            return getIntactContext().getInstitution();
+        }
+
+        return institution;
     }
 
     @Override

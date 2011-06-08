@@ -182,10 +182,20 @@
                     <h:panelGrid columns="2">
                         <h:outputLabel for="kdTxt" value="Kd: "/>
                         <p:inputText id="kdTxt" value="#{interactionController.interaction.KD}" size="5"
-                                 onchange="markAsUnsaved()" converter="trimmingConverter"/>
+                                     valueChangeListener="#{interactionController.unsavedValueChange}" converter="trimmingConverter">
+                            <ed:curation/>
+                        </p:inputText>
 
                         <h:outputLabel for="crcTxt" value="CRC: "/>
                         <p:inputText id="crcTxt" value="#{interactionController.interaction.crc}" size="20" readonly="true"/>
+
+                        <h:outputLabel for="institutionSel" value="Institution: "/>
+                        <h:selectOneMenu id="institutionSel" value="#{interactionController.interaction.owner}"
+                                         valueChangeListener="#{interactionController.unsavedValueChange}"
+                                disabled="#{not userSessionController.hasRole('ADMIN') and not userSessionController.hasRole('REVIEWER')}}">
+                            <f:selectItems value="#{institutionService.institutionSelectItems}"/>
+                            <ed:curation/>
+                        </h:selectOneMenu>
                     </h:panelGrid>
                 </p:tab>
 

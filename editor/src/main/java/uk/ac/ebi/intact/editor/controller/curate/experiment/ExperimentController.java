@@ -60,6 +60,9 @@ public class ExperimentController extends AnnotatedObjectController {
     @Autowired
     private PublicationController publicationController;
 
+    @Autowired
+    private UserSessionController userSessionController;
+
     public ExperimentController() {
     }
 
@@ -162,7 +165,7 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public String newExperiment(Publication publication) {
-        Experiment experiment = new Experiment(getIntactContext().getInstitution(), createExperimentShortLabel(), null);
+        Experiment experiment = new Experiment(userSessionController.getUserInstitution(), createExperimentShortLabel(), null);
         setExperiment(experiment);
         experiment.setPublication(publication);
 

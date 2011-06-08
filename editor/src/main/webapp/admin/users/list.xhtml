@@ -50,12 +50,12 @@
                 <h:graphicImage url="/resources/images/green-ball.png" width="12" alt="Active" title="Active" rendered="#{not user.disabled}"/>
                 <h:graphicImage url="/resources/images/red-ball.png" width="12" alt="Disabled" title="Disabled" rendered="#{user.disabled}" />
             </p:column>
-            <!--<p:column>-->
-                <!--<f:facet name="header">-->
-                    <!--<h:outputText value="Password"/>-->
-                <!--</f:facet>-->
-                <!--<h:outputText value="#{user.password}"/>-->
-            <!--</p:column>-->
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Institution"/>
+                </f:facet>
+                <h:outputText value="#{user.getPreference('editor.institution.name').value}" rendered="#{user.getPreference('editor.institution.name') != null}"/>
+            </p:column>
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Roles"/>

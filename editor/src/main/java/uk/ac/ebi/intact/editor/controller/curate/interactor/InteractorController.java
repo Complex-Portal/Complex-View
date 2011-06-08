@@ -2,9 +2,11 @@ package uk.ac.ebi.intact.editor.controller.curate.interactor;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
@@ -33,6 +35,9 @@ public class InteractorController extends AnnotatedObjectController {
     private String ac;
 
     private CvInteractorType newInteractorType;
+
+    @Autowired
+    private UserSessionController userSessionController;
 
     public InteractorController() {
     }
@@ -87,7 +92,7 @@ public class InteractorController extends AnnotatedObjectController {
 
     public String newInteractor() {
         Interactor interactor = newInstance(newInteractorType);
-        interactor.setOwner(getIntactContext().getInstitution());
+        interactor.setOwner(userSessionController.getUserInstitution());
         interactor.setCvInteractorType(newInteractorType);
 
         setInteractor(interactor);

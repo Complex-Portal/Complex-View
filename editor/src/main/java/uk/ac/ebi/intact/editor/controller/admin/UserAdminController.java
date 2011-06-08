@@ -32,10 +32,8 @@ public class UserAdminController extends AbstractUserController {
 
     private static final Log log = LogFactory.getLog( UserAdminController.class );
 
-    public static final String RAW_NOTES = "editor.notes";
 
     private String loginParam;
-
     private DualListModel<String> roles;
 
     private LazyDataModel<User> allUsers;
@@ -190,5 +188,4 @@ public class UserAdminController extends AbstractUserController {
 
         return allUsers;
     }
-
 }

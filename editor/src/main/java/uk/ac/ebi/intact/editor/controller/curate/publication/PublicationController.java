@@ -22,6 +22,7 @@ import org.hibernate.Hibernate;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.StreamedContent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionStatus;
@@ -102,6 +103,9 @@ public class PublicationController extends AnnotatedObjectController {
     private StreamedContent xml254File;
     private StreamedContent mitab25File;
     private StreamedContent mitab25ExtendedFile;
+
+    @Autowired
+    private UserSessionController userSessionController;
 
     public PublicationController() {
     }
@@ -307,7 +311,7 @@ public class PublicationController extends AnnotatedObjectController {
             }
         }
 
-        Publication publication = new Publication( IntactContext.getCurrentInstance().getInstitution(), identifier );
+        Publication publication = new Publication( userSessionController.getUserInstitution(), identifier );
         setPublication(publication);
 
         getChangesController().markAsUnsaved(publication);
@@ -791,7 +795,7 @@ public class PublicationController extends AnnotatedObjectController {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         String date = "Rejected " +new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase();
 
-        setToBeReviewed(date+". "+reasonForRejection);
+        setToBeReviewed(date + ". " + reasonForRejection);
 
         addInfoMessage("Publication rejected", "");
 
