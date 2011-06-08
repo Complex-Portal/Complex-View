@@ -259,10 +259,10 @@ public class PublicationController extends AnnotatedObjectController {
 
             setPrimaryReference( id );
 
-            publication.setFullName( citation.getTitle() );
+            publication.setFullName(citation.getTitle());
             copyPublicationTitleToExperiments(null);
-            setJournal( citation.getJournalIssue().getJournal().getISOAbbreviation() + " (" +
-                    citation.getJournalIssue().getJournal().getISSN() + ")" );
+            setJournal(citation.getJournalIssue().getJournal().getISOAbbreviation() + " (" +
+                    citation.getJournalIssue().getJournal().getISSN() + ")");
             setYear( citation.getJournalIssue().getYearOfPublication() );
 
             StringBuilder sbAuthors = new StringBuilder( 64 );
@@ -840,21 +840,29 @@ public class PublicationController extends AnnotatedObjectController {
     public void copyAnnotationsToExperiments(ActionEvent evt) {
         for (Experiment exp : publication.getExperiments()) {
             CurateUtils.copyPublicationAnnotationsToExperiment(exp);
+            Collection<String> parent = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parent.add(publication.getAc());
+            }
+
+            getChangesController().markAsUnsaved(exp, parent);
         }
 
         addInfoMessage("Annotations copied", publication.getExperiments().size()+" experiments were modified");
-
-        setUnsavedChanges(true);
     }
 
     public void copyPublicationTitleToExperiments(ActionEvent evt) {
         for (Experiment exp : publication.getExperiments()) {
             exp.setFullName(publication.getFullName());
+            Collection<String> parent = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parent.add(publication.getAc());
+            }
+
+            getChangesController().markAsUnsaved(exp, parent);
         }
 
         addInfoMessage("Publication title copied", publication.getExperiments().size()+" experiments were modified");
-
-        setUnsavedChanges(true);
     }
 
     public List<SelectItem> getDatasetsSelectItems() {

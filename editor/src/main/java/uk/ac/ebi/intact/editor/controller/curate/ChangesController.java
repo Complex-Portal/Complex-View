@@ -323,13 +323,21 @@ public class ChangesController extends JpaAwareController implements UserListene
     public void revert(AnnotatedObject io) {
         Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
 
+        Collection<UnsavedChange> additionnalUnsavedEventToRevert = new ArrayList<UnsavedChange>(getUnsavedChangesForCurrentUser().size());
+
         // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
         while (iterator.hasNext()) {
             UnsavedChange unsavedChange = iterator.next();
 
             // the object has an ac, we can compare using ac
             if (io.getAc() != null){
-                if (io.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || io.getAc().equals(unsavedChange.getScope())) {
+                // change concerning the object, we can remove it because the revert has been done
+                if (io.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
+                    iterator.remove();
+                }
+                // change concerning the object but which need to be reverted because don't touch the object itself
+                else if (io.getAc().equals(unsavedChange.getScope())){
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
                     iterator.remove();
                 }
             }
@@ -348,10 +356,21 @@ public class ChangesController extends JpaAwareController implements UserListene
                 }
             }
         }
+
+        // now revert additonal changes related to this revert
+        if (!additionnalUnsavedEventToRevert.isEmpty()){
+            CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+
+            for (UnsavedChange addChange : additionnalUnsavedEventToRevert){
+                AnnotatedObjectController annotatedObjectController = curateController.getMetadata(addChange.getUnsavedObject()).getAnnotatedObjectController();
+                annotatedObjectController.doRevertChanges(null);
+            }
+        }
     }
 
     public void revertInteraction(Interaction interaction, Collection<String> parentAcs) {
         Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
+        Collection<UnsavedChange> additionnalUnsavedEventToRevert = new ArrayList<UnsavedChange>(getUnsavedChangesForCurrentUser().size());
 
         // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
         while (iterator.hasNext()) {
@@ -359,10 +378,16 @@ public class ChangesController extends JpaAwareController implements UserListene
 
             // the object has an ac, we can compare using ac
             if (interaction.getAc() != null){
-                if (interaction.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || interaction.getAc().equals(unsavedChange.getScope())) {
+                if (interaction.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
+                    iterator.remove();
+                }
+                // change concerning the object but which need to be reverted because don't touch the object itself
+                else if (interaction.getAc().equals(unsavedChange.getScope())){
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
                     iterator.remove();
                 }
                 else if (unsavedChange.getAcsToDeleteOn().contains(interaction.getAc())) {
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
                     iterator.remove();
                 }
             }
@@ -391,11 +416,23 @@ public class ChangesController extends JpaAwareController implements UserListene
             if (interaction.getAc() != null){
                 // if the protein transcript has been created when using component scope and the component ac is matching, delete it
                 if (interaction.getAc().equals(unsavedChange.getScope())) {
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
                     iterator.remove();
                 }
                 else if (unsavedChange.getAcsToDeleteOn().contains(interaction.getAc())) {
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
                     iterator.remove();
                 }
+            }
+        }
+
+        // now revert additonal changes related to this revert
+        if (!additionnalUnsavedEventToRevert.isEmpty()){
+            CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+
+            for (UnsavedChange addChange : additionnalUnsavedEventToRevert){
+                AnnotatedObjectController annotatedObjectController = curateController.getMetadata(addChange.getUnsavedObject()).getAnnotatedObjectController();
+                annotatedObjectController.doRevertChanges(null);
             }
         }
     }
@@ -403,16 +440,23 @@ public class ChangesController extends JpaAwareController implements UserListene
     public void revertExperiment(Experiment experiment, Collection<String> parentAcs) {
         Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
 
+        Collection<UnsavedChange> additionnalUnsavedEventToRevert = new ArrayList<UnsavedChange>(getUnsavedChangesForCurrentUser().size());
+
         // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
         while (iterator.hasNext()) {
             UnsavedChange unsavedChange = iterator.next();
 
             // the object has an ac, we can compare using ac
             if (experiment.getAc() != null){
-                if (experiment.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || experiment.getAc().equals(unsavedChange.getScope())) {
+                if (experiment.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
+                    iterator.remove();
+                }
+                else if (experiment.getAc().equals(unsavedChange.getScope())){
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
                     iterator.remove();
                 }
                 else if (unsavedChange.getAcsToDeleteOn().contains(experiment.getAc())) {
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
                     iterator.remove();
                 }
             }
@@ -431,10 +475,22 @@ public class ChangesController extends JpaAwareController implements UserListene
                 }
             }
         }
+
+        // now revert additonal changes related to this revert
+        if (!additionnalUnsavedEventToRevert.isEmpty()){
+            CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+
+            for (UnsavedChange addChange : additionnalUnsavedEventToRevert){
+                AnnotatedObjectController annotatedObjectController = curateController.getMetadata(addChange.getUnsavedObject()).getAnnotatedObjectController();
+                annotatedObjectController.doRevertChanges(null);
+            }
+        }
     }
 
     public void revertPublication(Publication publication) {
         Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
+
+        Collection<UnsavedChange> additionnalUnsavedEventToRevert = new ArrayList<UnsavedChange>(getUnsavedChangesForCurrentUser().size());
 
         // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
         while (iterator.hasNext()) {
@@ -442,11 +498,16 @@ public class ChangesController extends JpaAwareController implements UserListene
 
             // the object has an ac, we can compare using ac
             if (publication.getAc() != null){
-                if (publication.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || publication.getAc().equals(unsavedChange.getScope())) {
+                if (publication.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
+                    iterator.remove();
+                }
+                else if (publication.getAc().equals(unsavedChange.getScope())){
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
                     iterator.remove();
                 }
                 else if (!unsavedChange.getAcsToDeleteOn().isEmpty()){
                     if (unsavedChange.getAcsToDeleteOn().contains(publication.getAc())) {
+                        additionnalUnsavedEventToRevert.add(unsavedChange);
                         iterator.remove();
                     }
                 }
@@ -466,21 +527,38 @@ public class ChangesController extends JpaAwareController implements UserListene
                 }
             }
         }
+
+        // now revert additonal changes related to this revert
+        if (!additionnalUnsavedEventToRevert.isEmpty()){
+            CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+
+            for (UnsavedChange addChange : additionnalUnsavedEventToRevert){
+                AnnotatedObjectController annotatedObjectController = curateController.getMetadata(addChange.getUnsavedObject()).getAnnotatedObjectController();
+                annotatedObjectController.doRevertChanges(null);
+            }
+        }
     }
 
     public void revertComponent(uk.ac.ebi.intact.model.Component component, Collection<String> parentAcs) {
         Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
+
+        Collection<UnsavedChange> additionnalUnsavedEventToRevert = new ArrayList<UnsavedChange>(getUnsavedChangesForCurrentUser().size());
 
         // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
         while (iterator.hasNext()) {
             UnsavedChange unsavedChange = iterator.next();
             // the object has an ac, we can compare using ac
             if (component.getAc() != null){
-                if (component.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || component.getAc().equals(unsavedChange.getScope())) {
+                if (component.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
+                    iterator.remove();
+                }
+                else if (component.getAc().equals(unsavedChange.getScope())){
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
                     iterator.remove();
                 }
                 else if (unsavedChange.getAcsToDeleteOn().contains(component.getAc())) {
-                        iterator.remove();
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
+                    iterator.remove();
                 }
             }
             // the object is new, we can only checks if we have an unchanged event which is new and does not have a collection of parent acs (interactors, organism, cv terms)
@@ -508,11 +586,23 @@ public class ChangesController extends JpaAwareController implements UserListene
             if (component.getAc() != null){
                 // if the protein transcript has been created when using component scope and the component ac is matching, delete it
                 if (component.getAc().equals(unsavedChange.getScope())) {
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
                     iterator.remove();
                 }
                 else if (unsavedChange.getAcsToDeleteOn().contains(component.getAc())) {
-                        iterator.remove();
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
+                    iterator.remove();
                 }
+            }
+        }
+
+        // now revert additonal changes related to this revert
+        if (!additionnalUnsavedEventToRevert.isEmpty()){
+            CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+
+            for (UnsavedChange addChange : additionnalUnsavedEventToRevert){
+                AnnotatedObjectController annotatedObjectController = curateController.getMetadata(addChange.getUnsavedObject()).getAnnotatedObjectController();
+                annotatedObjectController.doRevertChanges(null);
             }
         }
     }
@@ -520,16 +610,23 @@ public class ChangesController extends JpaAwareController implements UserListene
     public void revertFeature(Feature feature, Collection<String> parentAcs) {
         Iterator<UnsavedChange> iterator = getUnsavedChangesForCurrentUser().iterator();
 
+        Collection<UnsavedChange> additionnalUnsavedEventToRevert = new ArrayList<UnsavedChange>(getUnsavedChangesForCurrentUser().size());
+
         // removed the passed object from the list of unsaved changes. If this object is the scope of another change as well, delete it
         while (iterator.hasNext()) {
             UnsavedChange unsavedChange = iterator.next();
             // the object has an ac, we can compare using ac
             if (feature.getAc() != null){
-                if (feature.getAc().equals(unsavedChange.getUnsavedObject().getAc()) || feature.getAc().equals(unsavedChange.getScope())) {
+                if (feature.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
+                    iterator.remove();
+                }
+                else if (feature.getAc().equals(unsavedChange.getScope())){
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
                     iterator.remove();
                 }
                 else if (unsavedChange.getAcsToDeleteOn().contains(feature.getAc())) {
-                        iterator.remove();
+                    additionnalUnsavedEventToRevert.add(unsavedChange);
+                    iterator.remove();
                 }
             }
             // the object is new, we can only checks if we have an unchanged event which is new and does not have a collection of parent acs (interactors, organism, cv terms)
@@ -547,9 +644,20 @@ public class ChangesController extends JpaAwareController implements UserListene
                 }
             }
         }
+
+        // now revert additonal changes related to this revert
+        if (!additionnalUnsavedEventToRevert.isEmpty()){
+            CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+
+            for (UnsavedChange addChange : additionnalUnsavedEventToRevert){
+                AnnotatedObjectController annotatedObjectController = curateController.getMetadata(addChange.getUnsavedObject()).getAnnotatedObjectController();
+                annotatedObjectController.doRevertChanges(null);
+            }
+        }
     }
 
     private void checkParentOfUnsavedObject(Collection<String> parentAcs, Iterator<UnsavedChange> iterator, UnsavedChange unsavedChange) {
+
         // both parent acs are not saved, revert it
         if (parentAcs.isEmpty() && unsavedChange.getAcsToDeleteOn().isEmpty()){
             iterator.remove();
