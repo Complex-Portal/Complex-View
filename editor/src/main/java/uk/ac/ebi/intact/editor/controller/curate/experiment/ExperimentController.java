@@ -431,7 +431,7 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     @Override
-    protected Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
+    public Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
         Collection<String> parentAcs = new ArrayList<String>();
 
         addPublicationAcToParentAcs(parentAcs, experiment);

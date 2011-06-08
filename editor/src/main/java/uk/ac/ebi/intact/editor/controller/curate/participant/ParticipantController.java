@@ -176,7 +176,7 @@ public class ParticipantController extends ParameterizableObjectController {
     }
 
     @Override
-    protected Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
+    public Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
         Collection<String> parentAcs = new ArrayList<String>();
 
         if (participant.getInteraction() != null){

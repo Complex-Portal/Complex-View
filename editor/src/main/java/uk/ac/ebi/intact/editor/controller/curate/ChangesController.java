@@ -95,11 +95,20 @@ public class ChangesController extends JpaAwareController implements UserListene
     public void markAsUnsaved(IntactObject io) {
         if (io == null) return;
 
+        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+        AnnotatedObjectController annotatedObjectController = curateController.getMetadata(io).getAnnotatedObjectController();
+
+        Collection<String> parentAcs = annotatedObjectController.collectParentAcsOfCurrentAnnotatedObject();
+
+        UnsavedChange change;
         if (io.getAc() != null) {
-            addUnsavedChange(new UnsavedChange(io, UnsavedChange.UPDATED, null));
+            change = new UnsavedChange(io, UnsavedChange.UPDATED, null);
         } else {
-            addUnsavedChange(new UnsavedChange(io, UnsavedChange.CREATED, null));
+            change = new UnsavedChange(io, UnsavedChange.CREATED, null);
         }
+
+        change.getAcsToDeleteOn().addAll(parentAcs);
+        addUnsavedChange(change);
     }
 
     public void markAsUnsaved(IntactObject io, Collection<String> parentAcs) {
@@ -132,12 +141,56 @@ public class ChangesController extends JpaAwareController implements UserListene
             // very important to delete all changes which can be affected by the delete of this object!!!
             removeObsoleteChangesOnDelete(object);
 
-            addChange(new UnsavedChange(object, UnsavedChange.DELETED, parent, scope));
+            // collect parent acs for this intact object if possible
+            CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+            AnnotatedObjectController annotatedObjectController = curateController.getMetadata(object).getAnnotatedObjectController();
+
+            Collection<String> parentAcs = annotatedObjectController.collectParentAcsOfCurrentAnnotatedObject();
+
+            UnsavedChange change = new UnsavedChange(object, UnsavedChange.DELETED, parent, scope);
+            change.getAcsToDeleteOn().addAll(parentAcs);
+
+            addChange(change);
 
             // line commented because already done when adding the change
             //removeFromUnsaved(object);
         } else {
             AnnotatedObjectUtils.removeChild(parent, object);
+        }
+
+        /*if (parent != null && parent.getAc() != null) {
+            addChange(new UnsavedChange(parent, UnsavedChange.UPDATED));
+        }*/
+    }
+
+    public void markToDeleteRange(Range range, Feature parent) {
+        if (range.getAc() != null) {
+
+            String scope;
+            Collection<String> parentAcs = Collections.EMPTY_LIST;
+
+            if (parent != null && parent.getAc() != null){
+                scope = parent.getAc();
+                // collect parent acs for this intact object if possible
+                CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+                AnnotatedObjectController annotatedObjectController = curateController.getMetadata(parent).getAnnotatedObjectController();
+
+                parentAcs = annotatedObjectController.collectParentAcsOfCurrentAnnotatedObject();
+                parentAcs.add(parent.getAc());
+            }
+            else {
+                scope = null;
+            }
+
+            UnsavedChange change = new UnsavedChange(range, UnsavedChange.DELETED, parent, scope);
+            change.getAcsToDeleteOn().addAll(parentAcs);
+
+            addChange(change);
+
+            // line commented because already done when adding the change
+            //removeFromUnsaved(object);
+        } else {
+            AnnotatedObjectUtils.removeChild(parent, range);
         }
 
         /*if (parent != null && parent.getAc() != null) {

@@ -448,7 +448,7 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     @Override
-    protected Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
+    public Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
         Collection<String> parentAcs = new ArrayList<String>();
 
         if (IntactCore.isInitialized(interaction.getExperiments()) && !interaction.getExperiments().isEmpty()){

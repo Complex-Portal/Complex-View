@@ -700,7 +700,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
     }
 
-    protected Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
+    public Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
         return Collections.EMPTY_LIST;
     }
 

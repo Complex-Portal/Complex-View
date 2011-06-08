@@ -247,7 +247,7 @@ public class FeatureController extends AnnotatedObjectController {
             feature.removeRange(range);
             refreshRangeWrappers();
         } else {
-            getChangesController().markToDelete(range, range.getFeature());
+            getChangesController().markToDeleteRange(range, range.getFeature());
         }
     }
 
@@ -303,7 +303,7 @@ public class FeatureController extends AnnotatedObjectController {
     }
 
     @Override
-    protected Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
+    public Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
         Collection<String> parentAcs = new ArrayList<String>();
 
         if (feature.getComponent() != null){
