@@ -110,6 +110,17 @@ public class InteractionController extends ParameterizableObjectController {
         this.experimentLists = experimentLists;
     }
 
+    @Override
+    public String clone() {
+        String value = clone(getAnnotatedObject(), newClonerInstance());
+
+        refreshParticipants();
+        refreshExperimentLists();
+        refreshParentControllers();
+
+        return value;
+    }
+
     @Transactional(readOnly = true)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
