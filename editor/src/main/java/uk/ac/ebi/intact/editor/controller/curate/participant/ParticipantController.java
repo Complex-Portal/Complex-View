@@ -237,6 +237,8 @@ public class ParticipantController extends ParameterizableObjectController {
     }
 
     public String newParticipant(Interaction interaction) {
+        this.interactor = null;
+
         Component participant = new Component("N/A", interaction, new InteractorImpl(), new CvExperimentalRole(), new CvBiologicalRole());
         participant.setInteractor(null);
         participant.getExperimentalRoles().clear();
