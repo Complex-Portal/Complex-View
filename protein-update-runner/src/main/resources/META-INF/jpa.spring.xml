@@ -32,13 +32,13 @@
             <props>
                 <prop key="hibernate.generate_statistics">true</prop>
                 <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.hbm2ddl.auto">${intact.db.hbm2ddl}</prop>
+                <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl}</prop>
             </props>
         </property>
 
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="databasePlatform" value="${intact.db.dialect}"/>
+                <property name="databasePlatform" value="${db.dialect}"/>
                 <property name="showSql" value="false"/>
                 <property name="generateDdl" value="false"/>
             </bean>
@@ -46,10 +46,10 @@
     </bean>
 
     <bean id="intactReleaseDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="${intact.db.driver}"/>
-        <property name="url" value="${intact.db.url}"/>
-        <property name="username" value="${intact.db.username}"/>
-        <property name="password" value="${intact.db.password}"/>
+        <property name="driverClassName" value="${db.driver}"/>
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.user}"/>
+        <property name="password" value="${db.password}"/>
     </bean>
 
 </beans>

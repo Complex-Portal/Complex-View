@@ -34,11 +34,6 @@ public class ProteinUpdateRunner {
 
     public static void main(String[] args) {
 
-        // three possible arguments
-        if( args.length != 1 && args.length != 2 ) {
-            System.err.println( "Usage: GlobalUpdate <folder> <blast>" );
-            System.exit( 1 );
-        }
         final String filename = args[0];
 
         boolean isBlastEnabled = false;
@@ -50,7 +45,7 @@ public class ProteinUpdateRunner {
         System.out.println( "folder where are the log files = " + filename );
         System.out.println( "Blast enabled = " + isBlastEnabled );
 
-        IntactContext.initContext(new String[]{"/META-INF/jpa.spring.xml", "proteinupdaterunner.spring.xml"});
+        IntactContext.initContext(new String[]{"/META-INF/jpa.spring.xml", "/META-INF/proteinupdaterunner.spring.xml"});
 
         ProteinUpdateProcessorConfig config = ProteinUpdateContext.getInstance().getConfig();
         config.setDeleteProteinTranscriptWithoutInteractions(true);

@@ -22,13 +22,11 @@
         <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/protein-update-runner</developerConnection>
         <url>http://code.google.com/p/intact/wiki/Editor</url>
     </scm>
-
     <properties>
+        <blast>false</blast>
         <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
         <db.hbm2ddl>none</db.hbm2ddl>
     </properties>
-
-
 
     <build>
         <resources>
@@ -65,10 +63,14 @@
                         <configuration>
                             <executable>java</executable>
                             <arguments>
-                                <argument>-Xmx4096m</argument>
+                                <argument>-Xmx2096m</argument>
                                 <argument>-classpath</argument>
                                 <classpath/>
                                 <argument>uk.ac.ebi.intact.service.proteinupdaterunner.ProteinUpdateRunner</argument>
+                                <!-- repository where to find the log files -->
+                                <argument>${folder}</argument>
+                                <!-- boolean value to enable or not blast process when remapping proteins -->
+                                <argument>${blast}</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -81,7 +83,7 @@
     <dependencies>
 
 
-       <!-- Intact -->
+        <!-- Intact -->
         <dependency>
             <groupId>uk.ac.ebi.intact.dbupdate</groupId>
             <artifactId>intact-proteins-update</artifactId>
@@ -122,11 +124,11 @@
 
     </dependencies>
 
-   <repositories>
+    <repositories>
         <repository>
-              <id>intact.nexus</id>
-              <name>IntAct Nexus</name>
-              <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
+            <id>intact.nexus</id>
+            <name>IntAct Nexus</name>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
         </repository>
     </repositories>
 
