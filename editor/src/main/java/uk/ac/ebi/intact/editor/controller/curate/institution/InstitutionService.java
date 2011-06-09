@@ -67,8 +67,6 @@ public class InstitutionService extends JpaAwareController {
 
         institutionSelectItems = new ArrayList<SelectItem>(allInstitutions.size());
 
-        institutionSelectItems.add( new SelectItem( null, "-- Select Institution --", "-- Select Institution --", false, false, true ) );
-
         for (Institution institution : allInstitutions) {
             institutionSelectItems.add(new SelectItem(institution, institution.getShortLabel(), institution.getFullName()));
         }
@@ -82,7 +80,17 @@ public class InstitutionService extends JpaAwareController {
     }
 
     public List<SelectItem> getInstitutionSelectItems() {
-        return institutionSelectItems;
+        return getInstitutionSelectItems(true);
+    }
+
+    public List<SelectItem> getInstitutionSelectItems(boolean addDefaultNoSelection) {
+        List<SelectItem> items = new ArrayList(institutionSelectItems);
+
+        if (addDefaultNoSelection) {
+            items.add( new SelectItem( null, "-- Select Institution --", "-- Select Institution --", false, false, true ) );
+        }
+
+        return items;
     }
 
     public List<Institution> getAllInstitutions() {

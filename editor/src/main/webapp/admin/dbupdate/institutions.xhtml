@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+                template="/admin/admin_template.xhtml">
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{institutionAdminController.load}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="adminContent">
+
+        <h2>Institutions</h2>
+
+        <p:dataTable id="institutionsTable" var="institution" value="#{institutionAdminController.institutions}"
+                selection="#{institutionAdminController.selectedInstitutions}">
+            <f:facet name="header">
+                <h:panelGroup>
+                    Selected:&#160;
+                    <h:selectOneMenu >
+                        <f:selectItem itemLabel="-- Merge into --" itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{institutionService.getInstitutionSelectItems(false)}"/>
+                    </h:selectOneMenu>
+                    <p:commandButton value="Merge" actionListener="#{institutionAdminController.mergeSelected}" update="institutionsTable,messagesComponent"/>
+                </h:panelGroup>
+            </f:facet>
+
+            <p:column selectionMode="multiple" />
+            <p:column headerText="Short label">
+                <h:outputText value="#{institution.shortLabel}"/>
+            </p:column>
+            <p:column headerText="Full name">
+                <h:outputText value="#{institution.fullName}"/>
+            </p:column>
+            <p:column headerText="AC">
+                <h:outputText value="#{institution.ac}"/>
+            </p:column>
+            <p:column headerText="# Publications">
+                <h:outputText value="#{publicationDaoImpl.countByInstitutionAc(institution.ac)}"/>
+            </p:column>
+            <p:column headerText="# Experiments">
+                <h:outputText value="#{experimentDaoImpl.countByInstitutionAc(institution.ac)}"/>
+            </p:column>
+            <p:column headerText="# Interactions">
+                <h:outputText value="#{interactionDaoImpl.countByInstitutionAc(institution.ac)}"/>
+            </p:column>
+        </p:dataTable>
+
+    </ui:define>
+
+    <ui:define name="dialogs">
+
+
+
+    </ui:define>
+
+</ui:composition>
