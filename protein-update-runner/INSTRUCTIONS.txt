@@ -1,0 +1,3 @@
+For example, to execute this:
+
+mvn clean install -Pexec,ebi-test -Ddb=oracle
