@@ -319,7 +319,7 @@ public class FeatureController extends AnnotatedObjectController {
     }
 
     @Override
-    protected void refreshUnsavedChangesAfterRevert(){
+    protected void refreshUnsavedChangesBeforeRevert(){
         Collection<String> parentAcs = new ArrayList<String>();
 
         if (feature.getComponent() != null){

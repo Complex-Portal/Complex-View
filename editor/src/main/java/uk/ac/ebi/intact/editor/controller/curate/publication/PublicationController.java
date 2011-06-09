@@ -946,7 +946,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     @Override
-    protected void refreshUnsavedChangesAfterRevert(){
+    protected void refreshUnsavedChangesBeforeRevert(){
 
         getChangesController().revertPublication(publication);
     }

@@ -475,7 +475,7 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     @Override
-    protected void refreshUnsavedChangesAfterRevert(){
+    protected void refreshUnsavedChangesBeforeRevert(){
         Collection<String> parentAcs = new ArrayList<String>();
 
         if (IntactCore.isInitialized(interaction.getExperiments()) && !interaction.getExperiments().isEmpty()){

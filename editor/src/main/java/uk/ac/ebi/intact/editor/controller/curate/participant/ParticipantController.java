@@ -187,7 +187,7 @@ public class ParticipantController extends ParameterizableObjectController {
     }
 
     @Override
-    protected void refreshUnsavedChangesAfterRevert(){
+    protected void refreshUnsavedChangesBeforeRevert(){
         Collection<String> parentAcs = new ArrayList<String>();
 
         if (participant.getInteraction() != null){

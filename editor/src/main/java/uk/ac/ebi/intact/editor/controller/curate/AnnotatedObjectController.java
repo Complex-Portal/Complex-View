@@ -331,10 +331,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             doCancelEdition();
         }
         else{
+            // revert first all unsaved events attached to any children of this object (will avoid to persist new annotations on children eg. copy publication annotations to experiments
+            // could not be reverted otherwise)
+            refreshUnsavedChangesBeforeRevert();
+
             PersistenceController persistenceController = getPersistenceController();
             setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
-
-            refreshUnsavedChangesAfterRevert();
 
             postRevert();
 
@@ -349,13 +351,13 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public String doCancelEdition() {
         addInfoMessage("Canceled", "");
 
-        refreshUnsavedChangesAfterRevert();
+        refreshUnsavedChangesBeforeRevert();
 
         return goToParent();
 
     }
 
-    protected void refreshUnsavedChangesAfterRevert(){
+    protected void refreshUnsavedChangesBeforeRevert(){
         changesController.revert(getAnnotatedObject());
     }
 

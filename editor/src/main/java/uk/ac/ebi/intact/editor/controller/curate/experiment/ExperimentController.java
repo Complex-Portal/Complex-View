@@ -443,7 +443,7 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     @Override
-    protected void refreshUnsavedChangesAfterRevert(){
+    protected void refreshUnsavedChangesBeforeRevert(){
         Collection<String> parentAcs = new ArrayList<String>();
 
         addPublicationAcToParentAcs(parentAcs, experiment);
