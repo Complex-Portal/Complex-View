@@ -354,6 +354,19 @@ public class ExperimentController extends AnnotatedObjectController {
 
             experiment.setPublication(publication);
 
+            // update the primary reference when moving the experiment
+            if (publication.getPublicationId() != null) {
+                setXref(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE, publication.getShortLabel());
+            }
+
+            copyPublicationAnnotations(null);
+
+            // update the shortlabel
+            String newShortLabel = createExperimentShortLabel();
+            if (newShortLabel != null){
+                experiment.setShortLabel(newShortLabel);
+            }
+
             setExperiment(experiment);
 
         } else {
