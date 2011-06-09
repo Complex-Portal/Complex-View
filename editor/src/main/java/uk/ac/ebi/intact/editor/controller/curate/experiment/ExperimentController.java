@@ -350,7 +350,10 @@ public class ExperimentController extends AnnotatedObjectController {
                 return null;
             }
 
-            experiment.getPublication().removeExperiment(experiment);
+            publicationController.setPublication(publication);
+            // don't remove the experiment from the parent publication yet so the revert will work properly. It will be added only after saving
+            // As an experiment can have only one publication, it will be removed from the previous publication
+            //experiment.getPublication().removeExperiment(experiment);
 
             experiment.setPublication(publication);
 
