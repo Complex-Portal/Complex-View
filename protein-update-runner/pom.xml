@@ -74,6 +74,14 @@
 
     <dependencies>
 
+
+       <!-- Intact -->
+        <dependency>
+            <groupId>uk.ac.ebi.intact.dbupdate</groupId>
+            <artifactId>intact-proteins-update</artifactId>
+            <version>2.1.2-SNAPSHOT</version>
+        </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>log4j</groupId>
