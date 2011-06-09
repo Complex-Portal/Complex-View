@@ -184,7 +184,9 @@
                   modal="true" position="center">
             <h:panelGrid columns="3" style="margin-bottom:10px">
                     <h:outputLabel for="reasonRejTxt" value="Reason for rejection:"/>
-                    <p:inputTextarea id="reasonRejTxt" value="#{experimentController.reasonForRejection}" rows="4" cols="60" converter="trimmingConverter"/>
+                    <p:inputTextarea id="reasonRejTxt" value="#{experimentController.reasonForRejection}" rows="4" cols="40"
+                                     autoResize="false"
+                                     converter="trimmingConverter"/>
 
                     <p:commandButton value="Reject" actionListener="#{experimentController.rejectExperiment}"
                                      process="reasonRejTxt"
