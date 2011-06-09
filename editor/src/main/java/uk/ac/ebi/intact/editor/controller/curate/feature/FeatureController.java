@@ -84,6 +84,15 @@ public class FeatureController extends AnnotatedObjectController {
     }
 
     @Override
+    public String clone() {
+        String value = clone(getAnnotatedObject(), newClonerInstance());
+
+        refreshRangeWrappers();
+
+        return value;
+    }
+
+    @Override
     public AnnotatedObject getAnnotatedObject() {
         return getFeature();
     }
