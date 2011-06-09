@@ -23,6 +23,12 @@
         <url>http://code.google.com/p/intact/wiki/Editor</url>
     </scm>
 
+    <properties>
+        <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
+        <db.hbm2ddl>none</db.hbm2ddl>
+    </properties>
+
+
 
     <build>
         <resources>
