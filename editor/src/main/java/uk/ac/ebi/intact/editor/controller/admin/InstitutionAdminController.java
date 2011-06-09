@@ -19,6 +19,8 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.persistence.util.InstitutionMerger;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.institution.InstitutionService;
 import uk.ac.ebi.intact.model.Institution;
@@ -33,7 +35,7 @@ import java.util.List;
  */
 @Controller
 @Scope( "conversation.access" )
-@ConversationName( "admin" )
+@ConversationName( "general" )
 public class InstitutionAdminController extends JpaAwareController {
 
     @Autowired
@@ -42,6 +44,7 @@ public class InstitutionAdminController extends JpaAwareController {
     private List<Institution> institutions;
 
     private Institution[] selectedInstitutions;
+    private Institution mergeDestinationInstitution;
 
     public InstitutionAdminController() {
 
@@ -51,9 +54,17 @@ public class InstitutionAdminController extends JpaAwareController {
          institutions = institutionService.getAllInstitutions();
     }
 
-
+    @Transactional
     public void mergeSelected(ActionEvent evt) {
-        addWarningMessage("This is not yet implemented. Sorry!", selectedInstitutions.length+" selected");
+        if (mergeDestinationInstitution == null) {
+            addErrorMessage("Destination institution not selected", "Select one in the drop down list");
+            return;
+        }
+
+        InstitutionMerger merger = new InstitutionMerger();
+        merger.merge(selectedInstitutions, mergeDestinationInstitution, true);
+
+        addInfoMessage("Institutions merged", selectedInstitutions.length+ " merged to "+mergeDestinationInstitution.getShortLabel());
     }
 
     public List<Institution> getInstitutions() {
@@ -66,5 +77,13 @@ public class InstitutionAdminController extends JpaAwareController {
 
     public void setSelectedInstitutions(Institution[] selectedInstitutions) {
         this.selectedInstitutions = selectedInstitutions;
+    }
+
+    public Institution getMergeDestinationInstitution() {
+        return mergeDestinationInstitution;
+    }
+
+    public void setMergeDestinationInstitution(Institution mergeDestinationInstitution) {
+        this.mergeDestinationInstitution = mergeDestinationInstitution;
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.editor.controller.admin.InstitutionController;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.feature.FeatureController;
@@ -131,6 +132,10 @@ public class CurateController extends JpaAwareController {
             BioSourceController bioSourceController = (BioSourceController) getSpringContext().getBean("bioSourceController");
             bioSourceController.setBioSource((BioSource) intactObject);
             return new CurateObjectMetadata(bioSourceController, "organism");
+         } else if (Institution.class.isAssignableFrom(iaClass)) {
+            InstitutionController institutionController = (InstitutionController) getSpringContext().getBean("institutionController");
+            institutionController.setInstitution((Institution) intactObject);
+            return new CurateObjectMetadata(institutionController, "institution");
         } else {
             throw new IllegalArgumentException("No view defined for object with type: "+iaClass);
         }

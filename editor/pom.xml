@@ -26,7 +26,6 @@
         <timestamp>${maven.build.timestamp}</timestamp>
 
         <core.version>2.4.0-SNAPSHOT</core.version>
-        <core.temp.version>2.4.0-20110609</core.temp.version>
         <spring.version>3.0.2.RELEASE</spring.version>
         <bridges.version>2.1.3</bridges.version>
 
@@ -163,7 +162,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
             <artifactId>intact-core</artifactId>
-            <version>${core.temp.version}</version>
+            <version>${core.version}</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>

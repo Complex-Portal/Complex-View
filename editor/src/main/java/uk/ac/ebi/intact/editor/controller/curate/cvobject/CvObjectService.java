@@ -554,6 +554,10 @@ public class CvObjectService extends JpaAwareController {
         return confidenceTypeSelectItems;
     }
 
+    public List<SelectItem> getNoClassSelectItems() {
+        return noClassSelectItems;
+    }
+
     private class CvObjectComparator implements Comparator<CvObject> {
         @Override
         public int compare( CvObject o1, CvObject o2 ) {

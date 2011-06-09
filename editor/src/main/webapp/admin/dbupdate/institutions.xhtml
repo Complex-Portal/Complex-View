@@ -17,22 +17,30 @@
 
         <h2>Institutions</h2>
 
+        <p:commandButton value="New institution"
+                         action="#{institutionController.newInstitution()}" ajax="false" />
+
+        <br/><br/>
+
         <p:dataTable id="institutionsTable" var="institution" value="#{institutionAdminController.institutions}"
                 selection="#{institutionAdminController.selectedInstitutions}">
             <f:facet name="header">
                 <h:panelGroup>
                     Selected:&#160;
-                    <h:selectOneMenu >
+                    <h:selectOneMenu value="#{institutionAdminController.mergeDestinationInstitution}">
                         <f:selectItem itemLabel="-- Merge into --" itemValue="#{null}" noSelectionOption="true"/>
                         <f:selectItems value="#{institutionService.getInstitutionSelectItems(false)}"/>
                     </h:selectOneMenu>
-                    <p:commandButton value="Merge" actionListener="#{institutionAdminController.mergeSelected}" update="institutionsTable,messagesComponent"/>
+                    <p:commandButton value="Merge" actionListener="#{institutionAdminController.mergeSelected}"
+                            ajax="false"/>
                 </h:panelGroup>
             </f:facet>
 
             <p:column selectionMode="multiple" />
             <p:column headerText="Short label">
-                <h:outputText value="#{institution.shortLabel}"/>
+                <h:link outcome="/admin/dbupdate/institution" value="#{institution.shortLabel}" includeViewParams="true">
+                    <f:param name="ac" value="#{institution.ac}"/>
+                </h:link>
             </p:column>
             <p:column headerText="Full name">
                 <h:outputText value="#{institution.fullName}"/>
