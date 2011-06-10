@@ -22,7 +22,7 @@
                      <h:outputText value="Login time"/>
                  </f:facet>
                  <h:outputText value="#{user.lastLogin}">
-                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="#{userManagerController.timeZone}"/>
                  </h:outputText>
              </p:column>
             <p:column>

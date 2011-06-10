@@ -88,4 +88,13 @@ public class UserManagerController extends BaseController implements UserListene
     public void userLoggedOut(User user) {
         loggedInUsers.remove(user);
     }
+
+    /**
+     *
+     * @return the time zone of the application so it does not show one hour of difference when logging
+     */
+    public TimeZone getTimeZone() {
+        return TimeZone.getDefault();
+    }
+
 }
