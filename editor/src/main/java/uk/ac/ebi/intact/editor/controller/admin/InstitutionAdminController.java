@@ -16,18 +16,27 @@
 package uk.ac.ebi.intact.editor.controller.admin;
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
 import uk.ac.ebi.intact.core.persistence.util.InstitutionMerger;
+import uk.ac.ebi.intact.core.users.model.Preference;
+import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.institution.InstitutionService;
+import uk.ac.ebi.intact.editor.controller.misc.AbstractUserController;
 import uk.ac.ebi.intact.model.Institution;
+import uk.ac.ebi.intact.model.OwnedAnnotatedObject;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /** *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -46,12 +55,21 @@ public class InstitutionAdminController extends JpaAwareController {
     private Institution[] selectedInstitutions;
     private Institution mergeDestinationInstitution;
 
+    private DualListModel<User> usersDualListModel;
+
     public InstitutionAdminController() {
 
     }
 
     public void load(ComponentSystemEvent event) {
-         institutions = institutionService.getAllInstitutions();
+        institutionService.refresh(null);
+        institutions = institutionService.getAllInstitutions();
+
+        List<User> usersAvailable = getUsersDaoFactory().getUserDao().getAll();
+        List<User> usersSelected = new ArrayList<User>();
+
+        usersDualListModel = new DualListModel<User>(usersAvailable, usersSelected);
+
     }
 
     @Transactional
@@ -62,10 +80,51 @@ public class InstitutionAdminController extends JpaAwareController {
         }
 
         InstitutionMerger merger = new InstitutionMerger();
-        merger.merge(selectedInstitutions, mergeDestinationInstitution, true);
+        int updated = merger.merge(selectedInstitutions, mergeDestinationInstitution, true);
 
-        addInfoMessage("Institutions merged", selectedInstitutions.length+ " merged to "+mergeDestinationInstitution.getShortLabel());
+        addInfoMessage(selectedInstitutions.length + " iInstitutions merged", updated + " annotated objects updated");
+
+        institutionService.refresh(null);
     }
+
+    @Transactional
+    public void deleteSelected(ActionEvent evt) {
+        for (Institution selectedInstitution : selectedInstitutions) {
+            getDaoFactory().getInstitutionDao().deleteByAc(selectedInstitution.getAc());
+        }
+    }
+
+    @Transactional
+    public void fixAnnotatedObjectOwners(ActionEvent evt) {
+        if (usersDualListModel.getTarget().isEmpty()) {
+            addErrorMessage("No users selected", "Add some users to fix using the picklist");
+            return;
+        }
+
+        IntactContext intactContext = IntactContext.getCurrentInstance();
+
+        Map<String, AnnotatedObjectDao> annotatedObjectDaoMap = intactContext.getSpringContext().getBeansOfType(AnnotatedObjectDao.class);
+
+        int updatedCount = 0;
+
+        for (User userToFix : usersDualListModel.getTarget()) {
+            Institution userInstitution = ((UserAdminController) getSpringContext().getBean("userAdminController")).getInstitution(userToFix);
+
+            if (userInstitution != null) {
+
+                for (AnnotatedObjectDao annotatedObjectDao : annotatedObjectDaoMap.values()) {
+                    if (OwnedAnnotatedObject.class.isAssignableFrom(annotatedObjectDao.getEntityClass())) {
+                        int replaced = annotatedObjectDao.replaceInstitution(userInstitution, userToFix.getLogin().toUpperCase());
+
+                        updatedCount += replaced;
+                    }
+                }
+            }
+        }
+
+        addInfoMessage("Users object ownership fixed", "Updated annotated objects: "+updatedCount);
+    }
+
 
     public List<Institution> getInstitutions() {
         return institutions;
@@ -85,5 +144,13 @@ public class InstitutionAdminController extends JpaAwareController {
 
     public void setMergeDestinationInstitution(Institution mergeDestinationInstitution) {
         this.mergeDestinationInstitution = mergeDestinationInstitution;
+    }
+
+    public DualListModel<User> getUsersDualListModel() {
+        return usersDualListModel;
+    }
+
+    public void setUsersDualListModel(DualListModel<User> usersDualListModel) {
+        this.usersDualListModel = usersDualListModel;
     }
 }

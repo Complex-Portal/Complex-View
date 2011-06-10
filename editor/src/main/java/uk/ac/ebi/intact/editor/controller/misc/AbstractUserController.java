@@ -33,6 +33,15 @@ public abstract class AbstractUserController extends JpaAwareController {
     /////////////////
     // Users
 
+    public String getInstitutionNameForUser(User user) {
+        return findPreference(user, INSTITUTION_NAME, null);
+    }
+
+    public String getInstitutionAcForUser(User user) {
+        return findPreference(user, INSTITUTION_AC, null);
+    }
+
+
     public User getUser() {
         return user;
     }
@@ -66,7 +75,11 @@ public abstract class AbstractUserController extends JpaAwareController {
     }
 
     public Institution getInstitution() {
-        String ac = findPreference(INSTITUTION_AC, null);
+        return getInstitution(getUser());
+    }
+
+    public Institution getInstitution(User user) {
+        String ac = findPreference(user, INSTITUTION_AC, null);
 
         if (ac != null) {
             InstitutionService institutionService = (InstitutionService) getSpringContext().getBean("institutionService");
@@ -82,10 +95,14 @@ public abstract class AbstractUserController extends JpaAwareController {
     }
 
     private String findPreference(String prefKey) {
-        return findPreference(prefKey, null);
+        return findPreference(getUser(), prefKey, null);
     }
 
     private String findPreference(String prefKey, String defaultValue) {
+        return findPreference(getUser(), prefKey, defaultValue);
+    }
+
+    private String findPreference(User user, String prefKey, String defaultValue) {
         if (user.getPreferences() == null) {
             user.setPreferences(new ArrayList<Preference>());
         }

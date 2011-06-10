@@ -23,7 +23,7 @@
                 <p:menuitem value="New user" action="#{userAdminController.newUser}" ajax="false"/>
                 <p:menuitem value="List users" action="/admin/users/list?faces-redirect=true" ajax="false" />
             </p:submenu>
-            <p:submenu label="DB Update">
+            <p:submenu label="Database">
                 <p:menuitem value="Import PSI-MI XML" action="/admin/dbupdate/importXml?faces-redirect=true" ajax="false"/>
                 <p:menuitem value="Compatibility Tools" action="/admin/dbupdate/compatibility?faces-redirect=true" ajax="false"/>
                 <p:menuitem value="CV Manager" action="/admin/dbupdate/cvManagement?faces-redirect=true" ajax="false"/>
@@ -41,7 +41,9 @@
 
             <ui:insert name="adminContent"/>
 
-        </div>                                 
+        </div>
+
+        <p>&#160;</p>
 
     </ui:define>
 

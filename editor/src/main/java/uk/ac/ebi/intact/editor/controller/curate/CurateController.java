@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.editor.controller.admin.InstitutionController;
+import uk.ac.ebi.intact.editor.controller.curate.institution.InstitutionController;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.feature.FeatureController;

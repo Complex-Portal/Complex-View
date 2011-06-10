@@ -20,7 +20,8 @@
 
         <!-- TODO: if the user is disabled, show the line red. -->
         <p:dataTable id="usersTable" var="user" value="#{userAdminController.allUsers}"
-                     paginator="#{userAdminController.allUsers.rowCount > 10}" rows="10" dynamic="true" lazy="true">
+                     paginator="true" paginatorAlwaysVisible="false" rows="50"
+                     dynamic="true" lazy="true">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Login"/>
