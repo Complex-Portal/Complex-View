@@ -34,9 +34,12 @@ import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.InstitutionUtils;
 import uk.ac.ebi.intact.model.util.XrefUtils;
+import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
 import uk.ac.ebi.intact.uniprot.model.UniprotProteinLike;
 import uk.ac.ebi.intact.uniprot.model.UniprotProteinTranscript;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
+import uk.ac.ebi.intact.util.ProteinServiceImpl;
+import uk.ac.ebi.intact.util.protein.ProteinServiceException;
 
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
@@ -57,6 +60,9 @@ public class ParticipantImportController extends BaseController {
 
     @Autowired
     private UniprotRemoteService uniprotRemoteService;
+
+    @Autowired
+    private ProteinServiceImpl proteinService;
 
     @Autowired
     private InteractionController interactionController;
@@ -315,6 +321,34 @@ public class ParticipantImportController extends BaseController {
     }
 
     private Interactor toProtein(ImportCandidate candidate) {
+        Protein protein;
+
+        // use the protein service to create proteins (not persist!) if unavailable for some reason, it creates a minimalistic protein using the previous code
+        if (candidate.isIsoform() || candidate.isChain()) {
+            UniprotProteinTranscript proteinTranscript = (UniprotProteinTranscript) candidate.getUniprotProtein();
+
+            try {
+                protein = proteinService.getProteinTranscriptFromUniprotEntry(proteinTranscript, "?"+proteinTranscript.getMasterProtein().getPrimaryAc());
+            } catch (ProteinServiceException e) {
+                log.error("Impossible to create a full isoform/feature chain using the protein service, will create a minimalistic protein transcript by default");
+                protein = createMinimalisticProtein(candidate);
+            }
+        }
+        else {
+            UniprotProtein uniprotProtein = (UniprotProtein) candidate.getUniprotProtein();
+
+            try {
+                protein = proteinService.getMasterProteinFromUniprotEntry(uniprotProtein);
+            } catch (ProteinServiceException e) {
+                log.error("Impossible to create a full isoform/feature chain using the protein service, will create a minimalistic protein transcript by default");
+                protein = createMinimalisticProtein(candidate);
+            }
+        }
+
+        return protein;
+    }
+
+    private Protein createMinimalisticProtein(ImportCandidate candidate){
         final Institution owner = IntactContext.getCurrentInstance().getInstitution();
         final UniprotProteinLike uniprotProtein = candidate.getUniprotProtein();
 
@@ -335,7 +369,6 @@ public class ParticipantImportController extends BaseController {
         // if it is an isoform or chain, we will create a stub annotation that will be completed when the protein is saved by
         // creating its corresponding protein master and updating the accession.
         if (candidate.isIsoform() || candidate.isChain()) {
-
             CvXrefQualifier tempParentRef;
 
             if (candidate.isIsoform()) {

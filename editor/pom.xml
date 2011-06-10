@@ -189,12 +189,13 @@
             <groupId>uk.ac.ebi.intact.dbupdate</groupId>
             <artifactId>intact-proteins-update</artifactId>
             <version>2.1.2-SNAPSHOT</version>
+             <!--Do not exclude biosource service because need it to build the protein
              <exclusions>
                 <exclusion>
                     <groupId>uk.ac.ebi.intact.dbupdate</groupId>
                     <artifactId>intact-biosource-update</artifactId>
                 </exclusion>
-            </exclusions>
+            </exclusions>-->
         </dependency>
 
         <!-- Bridges -->

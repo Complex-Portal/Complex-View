@@ -27,5 +27,6 @@
 
     <!-- Uniprot -->
     <bean name="uniprotService" class="uk.ac.ebi.intact.uniprot.service.UniprotRemoteService"/>
+    <bean name="proteinService" class="uk.ac.ebi.intact.util.ProteinServiceImpl"/>
    
 </beans>
