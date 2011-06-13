@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.cloner.CvObjectIntactCloner;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.CvDagObject;
 import uk.ac.ebi.intact.model.CvObject;
@@ -52,6 +53,11 @@ public class CvObjectController extends AnnotatedObjectController {
         if (cvObject != null){
             this.ac = annotatedObject.getAc();
         }
+    }
+
+        @Override
+    public String clone() {
+        return clone(cvObject, new CvObjectIntactCloner());
     }
 
     public void loadData(ComponentSystemEvent evt) {
