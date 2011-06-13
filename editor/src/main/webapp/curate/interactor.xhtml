@@ -6,6 +6,7 @@
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+                xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
 
                 template="/curate/curate_template.xhtml">
 
@@ -72,38 +73,48 @@
                     <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                     <p:inputText id="shortlabelTxt" value="#{interactor.shortLabel}" size="30"
                                  validator="#{annotatedObjectController.validateAnnotatedObject}"
-                                 required="true" requiredMessage="Shortlabel is required" converter="trimmingConverter"/>
+                                 valueChangeListener="#{interactorController.unsavedValueChange}"
+                                 required="true" requiredMessage="Shortlabel is required" converter="trimmingConverter">
+                        <ed:curation/>
+                    </p:inputText>
 
                     <h:outputLabel value="Fullname: " for="fullnameTxt"/>
                     <p:inputText id="fullnameTxt" value="#{interactor.fullName}" size="80"
-                                    onchange="markAsUnsaved()" converter="trimmingConverter"/>
+                                 valueChangeListener="#{interactorController.unsavedValueChange}" converter="trimmingConverter"/>
 
                     <h:outputLabel value="Organism: " for="organismTxt"/>
                     <ia:inputBioSource id="organismTxt" value="#{interactor.bioSource}"
                                        valueChangeAwareObject="#{interactorController}"
-                                        beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                                       beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                        update="changesPanel unsavedChangesInfo"
-                                        selectItems="#{bioSourceService.bioSourceSelectItems}"/>
+                                       selectItems="#{bioSourceService.bioSourceSelectItems}">
+                        <ed:curation/>
+                    </ia:inputBioSource>
 
                     <h:outputLabel value="Type: " for="interactorTxt"/>
                     <p:inputText id="interactorTxt" value="#{interactorController.moleculeType}"
-                                         size="50"
-                                         readonly="true"/>
+                                 valueChangeListener="#{interactorController.unsavedValueChange}"
+                                 size="50"
+                                 readonly="true">
+                        <ed:curation/>
+                    </p:inputText>
 
                     <!--<h:panelGroup id="seqSection" style="display:#{interactorController.changedSequence? 'block' : 'none'}}">-->
                     <!--<h:outputText value=" " rendered="#{interactorController.changedSequence}"/>-->
                     <!--<h:panelGroup rendered="#{interactorController.changedSequence}">-->
-                        <!--<ia:panelMessage level="warn" showIcon="true">-->
-                            <!--Sequence updated, illegal characters were found in the sequence and were replaced automatically-->
-                        <!--</ia:panelMessage>-->
+                    <!--<ia:panelMessage level="warn" showIcon="true">-->
+                    <!--Sequence updated, illegal characters were found in the sequence and were replaced automatically-->
+                    <!--</ia:panelMessage>-->
                     <!--</h:panelGroup>-->
                     <!--</h:panelGroup>-->
 
                     <h:outputLabel value="Sequence: " for="sequenceTxt"/>
                     <p:inputTextarea id="sequenceTxt" value="#{interactorController.sequence}"
+                                     valueChangeListener="#{interactorController.unsavedValueChange}"
                                      rows="5" cols="100" converter="trimmingConverter">
                         <!--<f:ajax event="valueChange" timeout="0" listener="#{interactorController.cleanSequence}" execute="sequenceTxt"-->
-                                <!--render="basic messagesComponent"/>-->
+                        <!--render="basic messagesComponent"/>-->
+                        <ed:curation/>
                     </p:inputTextarea>
 
                 </h:panelGrid>
@@ -115,8 +126,8 @@
 
             <p:tabView id="interactorTabs">
 
-               <ui:decorate template="propertiesTabs.xhtml">
-                     <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.interactorTopicSelectItems}"/>
+                <ui:decorate template="propertiesTabs.xhtml">
+                    <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.interactorTopicSelectItems}"/>
                 </ui:decorate>
 
             </p:tabView>
