@@ -179,7 +179,7 @@
                                     <h:outputLabel value="Title: " for="titleTxt"/>
                                 </td>
                                 <td colspan="2">
-                                    <p:inputTextarea id="titleTxt" value="#{publicationController.publication.fullName}" cols="60" rows="1"
+                                    <p:inputTextarea id="titleTxt" value="#{publicationController.publicationTitle}" cols="60" rows="1"
                                             converter="trimmingConverter"
                                             valueChangeListener="#{publicationController.unsavedValueChange}">
                                         <ed:curation/>
@@ -195,7 +195,7 @@
                                     <p:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4"
                                             validatorMessage="Year provided is invalid"
                                             valueChangeListener="#{publicationController.unsavedValueChange}">
-                                        <f:convertNumber maxFractionDigits="0" pattern="#" />
+                                        <f:converter converterId="javax.faces.Short" maxFractionDigits="0" pattern="#" />
                                         <ed:curation/>
                                     </p:inputText>
 
@@ -227,13 +227,13 @@
                                         </h:selectManyMenu>
 
                                         <p:commandButton value="Remove" actionListener="#{publicationController.removeDatasets}"
-                                                         update="datasetsMenu,publicationTabs,changesPanel"
+                                                         update="datasetsMenu,publicationTabs,changesPanel,unsavedChangesInfo"
                                                          rendered="#{not empty publicationController.datasetsSelectItems}"/>
                                         <h:selectOneMenu value="#{publicationController.datasetToAdd}">
                                             <f:selectItems value="#{datasetPopulator.allDatasetSelectItems}"/>
                                         </h:selectOneMenu>
                                         <p:commandButton value="Add" actionListener="#{publicationController.addDataset}"
-                                                         update="datasetsMenu,publicationTabs,changesPanel"/>
+                                                         update="datasetsMenu,publicationTabs,changesPanel,unsavedChangesInfo"/>
                                     </h:panelGroup>
                                 </td>
                             </tr>
@@ -267,7 +267,7 @@
 
                                         <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{publicationController.setUnsavedChanges(true)}"
                                                          onclick="document.getElementById('onHoldTxt').value = ''"
-                                                         update="infoPanels,publicationTabs,changesPanel"/>
+                                                         update="infoPanels,publicationTabs,changesPanel,unsavedChangesInfo"/>
                                     </h:panelGroup>
                                 </td>
                             </tr>

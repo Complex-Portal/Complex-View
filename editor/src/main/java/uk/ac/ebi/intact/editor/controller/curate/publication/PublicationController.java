@@ -168,6 +168,11 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     private void loadFormFields() {
+        // reset previous dataset actions in the form
+        this.datasetsToRemove = null;
+        this.datasetToAdd = null;
+        datasetsSelectItems.clear();
+
         for ( Annotation annotation : publication.getAnnotations() ) {
             if ( annotation.getCvTopic() != null && CvTopic.DATASET_MI_REF.equals( annotation.getCvTopic().getIdentifier() ) ) {
                 String datasetText = annotation.getAnnotationText();
@@ -260,7 +265,7 @@ public class PublicationController extends AnnotatedObjectController {
             setPrimaryReference( id );
 
             publication.setFullName(citation.getTitle());
-            copyPublicationTitleToExperiments(null);
+
             setJournal(citation.getJournalIssue().getJournal().getISOAbbreviation() + " (" +
                     citation.getJournalIssue().getJournal().getISSN() + ")");
             setYear( citation.getJournalIssue().getYearOfPublication() );
@@ -275,8 +280,6 @@ public class PublicationController extends AnnotatedObjectController {
             }
 
             setAuthors( sbAuthors.toString() );
-
-            copyAnnotationsToExperiments(null);
 
             addInfoMessage( "Auto-complete successful", "Fetched details for: " + id );
 
@@ -373,10 +376,20 @@ public class PublicationController extends AnnotatedObjectController {
                 experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
             }
 
-            for (Experiment experiment : experiments) {
-                newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.DATASET_MI_REF, datasetToAdd);
+            if (!experiments.isEmpty()){
+                Collection<String> parentAcs = new ArrayList<String>();
+                if (publication.getAc() != null){
+                    parentAcs.add(publication.getAc());
+                }
+                for (Experiment experiment : experiments) {
+                    newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.DATASET_MI_REF, datasetToAdd);
+
+                    getChangesController().markAsUnsaved(experiment, parentAcs);
+                }
             }
 
+            // reset the dataset to add as it has already been added
+            datasetToAdd = null;
             setUnsavedChanges( true );
         }
     }
@@ -401,8 +414,16 @@ public class PublicationController extends AnnotatedObjectController {
                     experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
                 }
 
-                for (Experiment experiment : experiments) {
-                    newAnnotatedObjectHelper(experiment).removeAnnotation(CvTopic.DATASET_MI_REF, datasetToRemove);
+                if (!experiments.isEmpty()){
+                    Collection<String> parentAcs = new ArrayList<String>();
+                    if (publication.getAc() != null){
+                        parentAcs.add(publication.getAc());
+                    }
+                    for (Experiment experiment : experiments) {
+                        newAnnotatedObjectHelper(experiment).removeAnnotation(CvTopic.DATASET_MI_REF, datasetToRemove);
+
+                        getChangesController().markAsUnsaved(experiment, parentAcs);
+                    }
                 }
             }
             setUnsavedChanges( true );
@@ -565,6 +586,23 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setJournal( String journal ) {
         setAnnotation( CvTopic.JOURNAL_MI_REF, journal );
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation( CvTopic.JOURNAL_MI_REF, journal );
+
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
+        }
     }
 
     public String getContactEmail() {
@@ -579,9 +617,16 @@ public class PublicationController extends AnnotatedObjectController {
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
         }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, contactEmail);
 
-        for (Experiment experiment : experiments) {
-            newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, contactEmail);
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
         }
     }
 
@@ -591,6 +636,23 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setSubmitted( String submitted ) {
         setAnnotation(SUBMITTED, submitted );
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation(SUBMITTED, submitted );
+
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
+        }
     }
 
     public String getCurationRequest() {
@@ -599,6 +661,23 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setCurationRequest( String requestedCuration ) {
         setAnnotation(CURATION_REQUEST, requestedCuration );
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation(CURATION_REQUEST, requestedCuration );
+
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
+        }
     }
 
     public Short getYear() {
@@ -619,9 +698,16 @@ public class PublicationController extends AnnotatedObjectController {
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
         }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation( CvTopic.PUBLICATION_YEAR_MI_REF, year );
 
-        for (Experiment experiment : experiments) {
-            newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, year);
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
         }
     }
 
@@ -651,6 +737,23 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setPrimaryReference( String id ) {
         setXref( CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id );
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setXref( CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id, null );
+
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
+        }
     }
 
     public String getAuthors() {
@@ -659,6 +762,23 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setAuthors( String authors ) {
         setAnnotation( CvTopic.AUTHOR_LIST_MI_REF, authors );
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation( CvTopic.AUTHOR_LIST_MI_REF, authors );
+
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
+        }
     }
 
     public String getOnHold() {
@@ -673,9 +793,16 @@ public class PublicationController extends AnnotatedObjectController {
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
         }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation( CvTopic.ON_HOLD, reason );
 
-        for (Experiment experiment : experiments) {
-            newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.ON_HOLD, reason );
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
         }
     }
 
@@ -703,9 +830,16 @@ public class PublicationController extends AnnotatedObjectController {
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
         }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation(CURATION_DEPTH, curationDepth);
 
-        for (Experiment experiment : experiments) {
-            newAnnotatedObjectHelper(experiment).setAnnotation(CURATION_DEPTH, curationDepth);
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
         }
     }
 
@@ -741,9 +875,16 @@ public class PublicationController extends AnnotatedObjectController {
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
         }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation( CvTopic.ACCEPTED, message );
 
-        for (Experiment experiment : experiments) {
-            newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.ACCEPTED, message);
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
         }
     }
 
@@ -765,6 +906,48 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setImexId(String imexId) {
         setXref( CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId );
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setXref( CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId, null );
+
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
+        }
+    }
+
+    public String getPublicationTitle() {
+        return publication.getFullName();
+    }
+
+    public void setPublicationTitle(String publicationTitle) {
+        publication.setFullName(publicationTitle);
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                experiment.setFullName(publicationTitle);
+
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
+        }
     }
 
 
@@ -813,9 +996,16 @@ public class PublicationController extends AnnotatedObjectController {
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
         }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
 
-        for (Experiment experiment : experiments) {
-            newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
         }
     }
 
@@ -831,9 +1021,16 @@ public class PublicationController extends AnnotatedObjectController {
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
         }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).removeAnnotation(CvTopic.TO_BE_REVIEWED);
 
-        for (Experiment experiment : experiments) {
-            newAnnotatedObjectHelper(experiment).removeAnnotation(CvTopic.TO_BE_REVIEWED);
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
         }
     }
 
@@ -954,5 +1151,15 @@ public class PublicationController extends AnnotatedObjectController {
     @Override
     public String goToParent() {
         return "/curate/curate?faces-redirect=true";
+    }
+
+    @Override
+    protected void postRevert() {
+        loadFormFields();
+    }
+
+    @Override
+    public void doPostSave() {
+        loadFormFields();
     }
 }

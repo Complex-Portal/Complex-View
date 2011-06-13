@@ -117,7 +117,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void unsavedValueChange(ValueChangeEvent evt) {
-        if (evt.getOldValue() != null && evt.getOldValue().equals(evt.getNewValue())) {
+        if (evt.getOldValue() != null && !evt.getOldValue().equals(evt.getNewValue())) {
+            setUnsavedChanges(true);
+        }
+        else if (evt.getNewValue() != null && !evt.getNewValue().equals(evt.getOldValue())){
             setUnsavedChanges(true);
         }
     }
