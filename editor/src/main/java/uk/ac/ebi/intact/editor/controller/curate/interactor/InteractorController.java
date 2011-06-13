@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.cloner.InteractorIntactCloner;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
 
@@ -45,6 +46,11 @@ public class InteractorController extends AnnotatedObjectController {
     @Override
     public AnnotatedObject getAnnotatedObject() {
         return getInteractor();
+    }
+
+    @Override
+    public String clone() {
+        return clone(interactor, new InteractorIntactCloner());
     }
 
     @Override
