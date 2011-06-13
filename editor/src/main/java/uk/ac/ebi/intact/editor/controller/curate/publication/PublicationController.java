@@ -145,18 +145,18 @@ public class PublicationController extends AnnotatedObjectController {
                         super.addErrorMessage("No publication with this AC", ac);
                     }
                 }
-
-                if ( publication != null ) {
-                    loadFormFields();
-                }
             }
 
             refreshDataModels();
+            if ( publication != null ) {
+                loadFormFields();
+            }
 
             //getCuratorContextController().removeFromUnsavedByAc(ac);
 
         } else if ( publication != null ) {
             ac = publication.getAc();
+            loadFormFields();
         }
     }
 
@@ -383,7 +383,7 @@ public class PublicationController extends AnnotatedObjectController {
                     parentAcs.add(publication.getAc());
                 }
                 for (Experiment experiment : experiments) {
-                    newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.DATASET_MI_REF, datasetToAdd);
+                    newAnnotatedObjectHelper(experiment).addAnnotation(CvTopic.DATASET_MI_REF, datasetToAdd);
 
                     getChangesController().markAsUnsaved(experiment, parentAcs);
                 }
