@@ -276,7 +276,15 @@ public class PublicationController extends AnnotatedObjectController {
             Iterator<Author> authorIterator = citation.getAuthorCollection().iterator();
             while ( authorIterator.hasNext() ) {
                 Author author = authorIterator.next();
-                sbAuthors.append( author.getLastName() ).append( " " ).append( author.getInitials() ).append( "." );
+                sbAuthors.append( author.getLastName() ).append( " " );
+
+                if (author.getInitials() != null){
+                    for (int i = 0; i < author.getInitials().length(); i++){
+                        char initial = author.getInitials().charAt(i);
+                        sbAuthors.append( initial ).append(".");
+                    }
+                }
+
                 if ( authorIterator.hasNext() ) sbAuthors.append( ", " );
             }
 
