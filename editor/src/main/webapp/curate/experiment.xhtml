@@ -40,6 +40,12 @@
         <p:menuitem value="Move to Publication" ajax="true"
                         onclick="moveToPublicationDialog.show()" />
 
+        <p:submenu label="Export">
+            <ui:include src="export_submenu.xhtml">
+                <ui:param name="slug" value="experiment"/>
+            </ui:include>
+        </p:submenu>
+
     </ui:define>
 
     <ui:define name="reviewerContextual">

@@ -101,10 +101,6 @@ public class PublicationController extends AnnotatedObjectController {
 
     private LazyDataModel<Interaction> interactionDataModel;
 
-    private StreamedContent xml254File;
-    private StreamedContent mitab25File;
-    private StreamedContent mitab25ExtendedFile;
-
     @Autowired
     private UserSessionController userSessionController;
 
@@ -437,104 +433,6 @@ public class PublicationController extends AnnotatedObjectController {
             }
             setUnsavedChanges( true );
         }
-    }
-
-    @Transactional
-    public void exportToXml254(ActionEvent evt) {
-        EntrySet entrySet = createEntrySet();
-
-        String filename = getPublication().getPublicationId() + ".xml";
-
-        PsimiXmlWriter writer = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254);
-
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-            writer.write(entrySet, baos);
-
-            baos.close();
-
-            xml254File = createStreamedContent(baos, "application/xml", filename);
-        } catch (Exception e) {
-            addErrorMessage("Export failed", "Problem exporting to PSI-MI XML: "+e.getMessage());
-            handleException(e);
-            return;
-        }
-    }
-
-
-    @Transactional
-    public void exportToMitab25(ActionEvent evt) {
-        String filename = getPublication().getPublicationId() + ".mitab.txt";
-        mitab25File = exportToMitab(filename, new PsimiTabWriter());
-    }
-
-    @Transactional
-    public void exportToMitab25Extended(ActionEvent evt) {
-        String filename = getPublication().getPublicationId() + ".ext-mitab.txt";
-        mitab25ExtendedFile = exportToMitab(filename, new IntactPsimiTabWriter());
-    }
-
-    public StreamedContent exportToMitab(String filename, PsimiTabWriter psimitabWriter) {
-        EntrySet entrySet = createEntrySet();
-
-        // Setup a interaction expansion strategy that is going to transform n-ary interactions into binaries using
-        // the spoke expansion algorithm
-        IntactXml2Tab xml2tab = new IntactXml2Tab();
-        xml2tab.setExpansionStrategy( new SpokeWithoutBaitExpansion() );
-
-        try {
-            Collection<BinaryInteraction> binaryInteractions = xml2tab.convert(entrySet);
-
-            psimitabWriter.setHeaderEnabled(false);
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            psimitabWriter.write(binaryInteractions, baos);
-            baos.close();
-
-            return createStreamedContent(baos, "plain/text", filename);
-
-        } catch (Exception e) {
-            addErrorMessage("Export failed", "Problem exporting to MITAB: "+e.getMessage());
-            handleException(e);
-            return null;
-        }
-
-    }
-
-    private StreamedContent createStreamedContent(ByteArrayOutputStream baos, String contentType, String filename ) {
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-
-        return new DefaultStreamedContent(bais, contentType, filename);
-    }
-
-    private EntrySet createEntrySet() {
-        final TransactionStatus transactionStatus = getIntactContext().getDataContext().beginTransaction();
-        getIntactContext().getDataContext().getDaoFactory().getEntityManager().setFlushMode(FlushModeType.COMMIT);
-
-        // When exporting, we need to create an IntactEntry object, which contains the interactions
-        // and all the related information (e.g. interactors, experiments, features...) that we want
-        // to export
-        IntactEntry intactEntry = IntactEntryFactory.createIntactEntry(getIntactContext()).addPublicationId(publication.getPublicationId());
-
-        // This is the main method to export data. An EntrySet is the equivalent to the IntactEntry object
-        // but is a member of the PSI-MI model (IntactEntry is for the Intact model)
-        PsiExchange psiExchange = (PsiExchange) IntactContext.getCurrentInstance().getSpringContext().getBean("psiExchange");
-        EntrySet entrySet = psiExchange.exportToEntrySet(intactEntry);
-
-        // we rollback as we don't need to commit any change
-        getIntactContext().getDataContext().rollbackTransaction(transactionStatus);
-
-        return entrySet;
-    }
-
-    protected PrintWriter getOutPrintWriter(String filename, String contentType) throws IOException {
-        FacesContext fc = FacesContext.getCurrentInstance();
-        HttpServletResponse response = (HttpServletResponse)fc.getExternalContext().getResponse();
-        response.setHeader("Content-disposition", "attachment; filename=" + filename);
-        response.setContentType(contentType);
-
-        return response.getWriter();
     }
 
     public boolean isUnassigned() {
@@ -1151,30 +1049,6 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setIdentifierToImport(String identifierToImport) {
         this.identifierToImport = identifierToImport;
-    }
-
-    public StreamedContent getMitab25File() {
-        return mitab25File;
-    }
-
-    public void setMitab25File(StreamedContent mitab25File) {
-        this.mitab25File = mitab25File;
-    }
-
-    public StreamedContent getMitab25ExtendedFile() {
-        return mitab25ExtendedFile;
-    }
-
-    public void setMitab25ExtendedFile(StreamedContent mitab25ExtendedFile) {
-        this.mitab25ExtendedFile = mitab25ExtendedFile;
-    }
-
-    public StreamedContent getXml254File() {
-        return xml254File;
-    }
-
-    public void setXml254File(StreamedContent xml254File) {
-        this.xml254File = xml254File;
     }
 
     @Override

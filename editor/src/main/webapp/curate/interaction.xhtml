@@ -42,6 +42,12 @@
         <p:menuitem value="Move to Experiment" ajax="true"
                         onclick="moveToExperimentDialog.show()" />
 
+        <p:submenu label="Export">
+            <ui:include src="export_submenu.xhtml">
+                <ui:param name="slug" value="interaction"/>
+            </ui:include>
+        </p:submenu>
+
     </ui:define>
 
     <ui:define name="curateContent">
