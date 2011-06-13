@@ -130,7 +130,7 @@ public class BioSourceController extends AnnotatedObjectController {
 
     public void setTaxId(String taxId, String organismName) {
         bioSource.setTaxId(taxId);
-        replaceOrCreateXref("MI:0942", CvXrefQualifier.IDENTITY, taxId, organismName);
+        newAnnotatedObjectHelper(bioSource).replaceOrCreateXref("MI:0942", CvXrefQualifier.IDENTITY, taxId, organismName);
     }
 
     public String getTaxId() {
