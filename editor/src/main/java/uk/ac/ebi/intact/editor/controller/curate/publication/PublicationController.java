@@ -56,6 +56,7 @@ import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.persistence.FlushModeType;
 import javax.servlet.http.HttpServletResponse;
@@ -598,7 +599,7 @@ public class PublicationController extends AnnotatedObjectController {
                 parentAcs.add(publication.getAc());
             }
             for (Experiment experiment : experiments) {
-                newAnnotatedObjectHelper(experiment).setAnnotation( CvTopic.JOURNAL_MI_REF, journal );
+                newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.JOURNAL_MI_REF, journal);
 
                 getChangesController().markAsUnsaved(experiment, parentAcs);
             }
@@ -625,7 +626,8 @@ public class PublicationController extends AnnotatedObjectController {
             for (Experiment experiment : experiments) {
                 newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, contactEmail);
 
-                getChangesController().markAsUnsaved(experiment, parentAcs);
+                // this will only be called if value has been changed
+                // getChangesController().markAsUnsaved(experiment, parentAcs);
             }
         }
     }
@@ -706,7 +708,8 @@ public class PublicationController extends AnnotatedObjectController {
             for (Experiment experiment : experiments) {
                 newAnnotatedObjectHelper(experiment).setAnnotation( CvTopic.PUBLICATION_YEAR_MI_REF, year );
 
-                getChangesController().markAsUnsaved(experiment, parentAcs);
+                // this will only be called if value has been changed
+                // getChangesController().markAsUnsaved(experiment, parentAcs);
             }
         }
     }
@@ -749,9 +752,10 @@ public class PublicationController extends AnnotatedObjectController {
                 parentAcs.add(publication.getAc());
             }
             for (Experiment experiment : experiments) {
-                newAnnotatedObjectHelper(experiment).setXref( CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id, null );
+                newAnnotatedObjectHelper(experiment).setXref(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id, null);
 
-                getChangesController().markAsUnsaved(experiment, parentAcs);
+                // this will only be called if value has been changed
+                // getChangesController().markAsUnsaved(experiment, parentAcs);
             }
         }
     }
@@ -801,6 +805,27 @@ public class PublicationController extends AnnotatedObjectController {
             for (Experiment experiment : experiments) {
                 newAnnotatedObjectHelper(experiment).setAnnotation( CvTopic.ON_HOLD, reason );
 
+                // this will only be called if value has been changed
+                // getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
+        }
+    }
+
+    public void unsavedValueChangeWithExperiments(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+
                 getChangesController().markAsUnsaved(experiment, parentAcs);
             }
         }
@@ -838,7 +863,8 @@ public class PublicationController extends AnnotatedObjectController {
             for (Experiment experiment : experiments) {
                 newAnnotatedObjectHelper(experiment).setAnnotation(CURATION_DEPTH, curationDepth);
 
-                getChangesController().markAsUnsaved(experiment, parentAcs);
+                // this will only be called if value has been changed
+                // getChangesController().markAsUnsaved(experiment, parentAcs);
             }
         }
     }
@@ -945,7 +971,8 @@ public class PublicationController extends AnnotatedObjectController {
             for (Experiment experiment : experiments) {
                 experiment.setFullName(publicationTitle);
 
-                getChangesController().markAsUnsaved(experiment, parentAcs);
+                // this will only be called if value has been changed
+                // getChangesController().markAsUnsaved(experiment, parentAcs);
             }
         }
     }

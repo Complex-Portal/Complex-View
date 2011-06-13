@@ -53,13 +53,13 @@
 
     <ui:define name="reviewerContextual">
         <p:menuitem value="Accept publication" actionListener="#{publicationController.acceptPublication}"
-                        update="centralUnit,topSection"/>
+                        update="centralUnit,topSection,unsavedChangesInfo"/>
         <p:menuitem value="Reject publication" onclick="rejectPublicationDialog.show()"/>
     </ui:define>
 
     <ui:define name="curateContent">
         <p:hotkey bind="alt+s" actionListener="#{publicationController.doSave}"
-                  update="publicationDetails,northUnit,messagesComponent,changesPanel"/>
+                  update="publicationDetails,northUnit,messagesComponent,changesPanel,unsavedChangesInfo"/>
 
         <h:panelGroup rendered="#{publicationController.publication == null}">
             <ia:panelMessage level="warn">
@@ -116,7 +116,7 @@
                             <ia:panelMessage level="error">
                                 This publication does not contain some essential data (e.g. title).
                                 <p:commandButton value="Try to fix" actionListener="#{publicationController.doFormAutocomplete}"
-                                                 update="basic,publicationTabs,changesPanel,messagesComponent">
+                                                 update="basic,publicationTabs,changesPanel,messagesComponent,unsavedChangesInfo">
                                     <f:setPropertyActionListener value="#{true}" target="#{publicationController.unsavedChanges}"/>
                                 </p:commandButton>
 
@@ -143,7 +143,7 @@
                                     <p:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
                                                  validator="#{annotatedObjectController.validateAnnotatedObject}"
                                                  size="10"
-                                                 valueChangeListener="#{publicationController.unsavedValueChange}"
+                                                 valueChangeListener="#{publicationController.unsavedValueChangeWithExperiments}"
                                                  converter="trimmingConverter"
                                                  required="true" requiredMessage="Identifier is required">
                                             <ed:curation/>
@@ -157,7 +157,7 @@
                                     <p:commandButton id="autocompleteBtn" value="Auto-complete"
                                                      actionListener="#{publicationController.doFormAutocomplete}" async="true"
                                                      process="idTxt"
-                                                     update="basic,northUnit,messagesComponent">
+                                                     update="basic,northUnit,messagesComponent,unsavedChangesInfo">
                                         <!--<p:confirmDialog yesLabel="Auto-complete" noLabel="Not now" width="300px"-->
                                         <!--draggable="false"-->
                                         <!--message="Auto-completing an existing publication will update its cross references and annotations. Are you sure?"-->
@@ -181,7 +181,7 @@
                                 <td colspan="2">
                                     <p:inputTextarea id="titleTxt" value="#{publicationController.publicationTitle}" cols="60" rows="1"
                                             converter="trimmingConverter"
-                                            valueChangeListener="#{publicationController.unsavedValueChange}">
+                                            valueChangeListener="#{publicationController.unsavedValueChangeWithExperiments}">
                                         <ed:curation/>
                                     </p:inputTextarea>
                                 </td>
@@ -194,7 +194,7 @@
                                                <!--onchange="markAsUnsaved(); refreshTabs()"/>-->
                                     <p:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4"
                                             validatorMessage="Year provided is invalid"
-                                            valueChangeListener="#{publicationController.unsavedValueChange}">
+                                            valueChangeListener="#{publicationController.unsavedValueChangeWithExperiments}">
                                         <f:converter converterId="javax.faces.Short" maxFractionDigits="0" pattern="#" />
                                         <ed:curation/>
                                     </p:inputText>
@@ -207,7 +207,7 @@
                                 </td>
                                 <td colspan="3">
                                     <p:inputText id="contactTxt" value="#{publicationController.contactEmail}" size="50" converter="trimmingConverter"
-                                            valueChangeListener="#{publicationController.unsavedValueChange}">
+                                            valueChangeListener="#{publicationController.unsavedValueChangeWithExperiments}">
                                             <ed:curation/>
                                     </p:inputText>
                                 </td>
@@ -243,9 +243,9 @@
                                 </td>
                                 <td colspan="3">
                                     <h:panelGroup id="curationDepthMenu">
-                                        <h:selectOneMenu value="#{publicationController.curationDepth}" >
+                                        <h:selectOneMenu value="#{publicationController.curationDepth}" valueChangeListener="publicationController.unsavedValueChangeWithExperiments">
                                             <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo publicationTabs"
-                                                process="@this" listener="#{publicationController.changed}" async="true"/>
+                                                process="@this" async="true"/>
 
                                             <f:selectItem itemLabel="-- Not specified --"/>
                                             <f:selectItem itemLabel="IMEx" itemValue="imex curation"/>
@@ -261,7 +261,7 @@
                                 <td colspan="3">
                                     <h:panelGroup>
                                         <p:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70"
-                                                valueChangeListener="#{publicationController.unsavedValueChange}">
+                                                valueChangeListener="#{publicationController.unsavedValueChangeWithExperiments}">
                                             <ed:curation/>
                                         </p:inputText>
 
