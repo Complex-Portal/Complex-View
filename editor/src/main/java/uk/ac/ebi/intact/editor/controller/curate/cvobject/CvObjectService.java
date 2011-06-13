@@ -189,7 +189,7 @@ public class CvObjectService extends JpaAwareController {
         proteinTopics = getSortedTopicList( Protein.class.getName(), cvObjectsByUsedInClass);
         participantTopics = getSortedTopicList( Component.class.getName(), cvObjectsByUsedInClass);
         featureTopics = getSortedTopicList( Feature.class.getName(), cvObjectsByUsedInClass);
-        bioSourceTopics = getSortedTopicList( Feature.class.getName(), cvObjectsByUsedInClass);
+        bioSourceTopics = getSortedTopicList( BioSource.class.getName(), cvObjectsByUsedInClass);
         cvObjectTopics = getSortedTopicList( CvObject.class.getName(), cvObjectsByUsedInClass);
         noClassTopics = getSortedTopicList( NO_CLASS, cvObjectsByUsedInClass);
 
