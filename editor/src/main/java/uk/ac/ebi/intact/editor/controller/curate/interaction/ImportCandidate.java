@@ -1,5 +1,6 @@
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
+import uk.ac.ebi.intact.model.BioSource;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.uniprot.model.UniprotFeatureChain;
 import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
@@ -29,7 +30,14 @@ public class ImportCandidate {
         this.interactor = interactor;
 
         if (interactor.getBioSource() != null) {
-            this.organism = interactor.getBioSource().getFullName();
+            BioSource biosource = interactor.getBioSource();
+
+            if (biosource.getFullName() != null){
+                this.organism = biosource.getFullName();
+            }
+            else {
+                this.organism = biosource.getShortLabel();
+            }
         }
     }
 
