@@ -109,21 +109,25 @@ public class ParticipantController extends ParameterizableObjectController {
             // check if the publication, experiment and interaction are null in their controllers (this happens when the
             // participant page is loaded directly using a URL)
 
-            if( participant.getInteraction().getExperiments().isEmpty()) {
-                addWarningMessage( "The parent interaction of this participant isn't attached to an experiment",
-                        "Abort experiment loading." );
-                return;
-            }
-
             if (participant.getInteraction() != null){
-                Collection<Experiment> exps = participant.getInteraction().getExperiments();
-                if (!exps.isEmpty()){
+                Collection<Experiment> experiments = participant.getInteraction().getExperiments();
+
+                if (!IntactCore.isInitialized(experiments)){
+                    experiments = getDaoFactory().getExperimentDao().getByInteractionAc(participant.getInteraction().getAc());
+                }
+
+                if( experiments.isEmpty()) {
+                    addWarningMessage( "The parent interaction of this participant isn't attached to an experiment",
+                            "Abort experiment loading." );
+                    return;
+                }
+                else{
                     if ( publicationController.getPublication() == null ) {
-                        Publication publication = exps.iterator().next().getPublication();
+                        Publication publication = experiments.iterator().next().getPublication();
                         publicationController.setPublication( publication );
                     }
                     if ( experimentController.getExperiment() == null ) {
-                        experimentController.setExperiment( exps.iterator().next() );
+                        experimentController.setExperiment( experiments.iterator().next() );
                     }
                 }
             }
