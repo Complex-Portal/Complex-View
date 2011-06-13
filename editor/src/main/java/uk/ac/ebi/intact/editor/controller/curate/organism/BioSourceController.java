@@ -7,6 +7,7 @@ import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyTerm;
 import uk.ac.ebi.intact.bridges.taxonomy.UniprotTaxonomyService;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.cloner.BiosourceIntactCloner;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.BioSource;
 import uk.ac.ebi.intact.model.CvXrefQualifier;
@@ -57,6 +58,11 @@ public class BioSourceController extends AnnotatedObjectController {
         }
 
         generalLoadChecks();
+    }
+
+    @Override
+    public String clone() {
+        return clone(bioSource, new BiosourceIntactCloner());
     }
 
     public String newOrganism() {
