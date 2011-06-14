@@ -14,6 +14,7 @@
   <composite:interface>
       <composite:attribute name="interactor" type="psidev.psi.mi.tab.model.Interactor" required="true"/>
       <composite:attribute name="display" type="java.lang.Boolean" default="true"/>
+      <composite:attribute name="displayAsText" type="java.lang.Boolean" default="false"/>
   </composite:interface>
 
   <!-- IMPLEMENTATION -->
@@ -23,21 +24,21 @@
 
        <ui:repeat var="xref" value="#{cc.attrs.interactor.identifiers}" varStatus="rowStatus">
             <h:panelGroup rendered="#{xref.database == 'uniprotkb'}">
-                <iax:goUniprot query="#{xref.identifier}" onlyLogo="true"/>
+                <iax:goUniprot query="#{xref.identifier}" onlyLogo="#{not cc.attrs.displayAsText}"/>
                 <br/>
 
-                <iax:goMoleculeView query="#{iamf:getIntactIdentifierFromCrossReferences(cc.attrs.interactor.identifiers)}" onlyLogo="true"
+                <iax:goMoleculeView query="#{iamf:getIntactIdentifierFromCrossReferences(cc.attrs.interactor.identifiers)}" onlyLogo="#{not cc.attrs.displayAsText}"
                         useUrl="true"/>
 
             </h:panelGroup>
             <h:panelGroup rendered="#{xref.database == 'chebi'}">
-                <iax:goChebi query="#{xref.identifier}" onlyLogo="true"/>
+                <iax:goChebi query="#{xref.identifier}" onlyLogo="#{not cc.attrs.displayAsText}"/>
                 <br/>
             </h:panelGroup>
             <h:panelGroup rendered="#{xref.database == 'drugbank'}">
-                <iax:goDrugbank query="#{xref.identifier}" onlyLogo="true"/>
+                <iax:goDrugbank query="#{xref.identifier}" onlyLogo="#{not cc.attrs.displayAsText}"/>
                 <br/>
-                <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="true" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(cc.attrs.interactor))}"/>
+                <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="#{not cc.attrs.displayAsText}" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(cc.attrs.interactor))}"/>
                 <br/>
             </h:panelGroup>
         </ui:repeat>

@@ -102,6 +102,15 @@
 
 <hr/>
 
+    If the table below looks too crowded, you can switch to a&#160;
+    <p:commandLink value="Minimal" actionListener="#{columnContext.selectMininumColumns()}"
+                   action="interactions" ajax="false" />
+    or&#160;
+    <p:commandLink value="Basic" actionListener="#{columnContext.selectBasicColumns()}"
+                   action="interactions" ajax="false" />
+    table preset.
+    <br/>  <br/>
+
 <!-- RESULTS TABLE -->
 
 <ui:include src="interactionTable.xhtml"/>

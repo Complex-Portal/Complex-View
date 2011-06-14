@@ -99,8 +99,10 @@ public class SearchController extends JpaBaseController {
             addWarningMessage("Session expired", "The user session was expired due to intactivity or the server being restarted");
         }
 
-        SolrQuery solrQuery = userQuery.createSolrQuery();
-        doBinarySearch( solrQuery );
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            SolrQuery solrQuery = userQuery.createSolrQuery();
+            doBinarySearch( solrQuery );
+        }
     }
 
     public String doBinarySearchAction() {

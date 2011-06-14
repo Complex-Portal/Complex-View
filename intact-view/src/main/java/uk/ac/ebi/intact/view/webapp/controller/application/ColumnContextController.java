@@ -110,7 +110,7 @@ public class ColumnContextController {
         if (showIconsCookie != null) {
             showTypeRoleIcons = Boolean.valueOf(showIconsCookie);
         } else {
-            setShowTypeRoleIcons(true);
+            setShowIcons(true);
         }
     }
 
@@ -214,11 +214,11 @@ public class ColumnContextController {
         return columnsSelectItems;
     }
 
-    public boolean isShowTypeRoleIcons() {
+    public boolean isShowIcons() {
         return showTypeRoleIcons;
     }
 
-    public void setShowTypeRoleIcons(boolean showTypeRoleIcons) {
+    public void setShowIcons(boolean showTypeRoleIcons) {
         this.showTypeRoleIcons = showTypeRoleIcons;
 
         writeCookie(COOKIE_SHOWICONS_NAME, String.valueOf(showTypeRoleIcons));
