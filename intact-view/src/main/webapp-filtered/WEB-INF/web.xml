@@ -332,6 +332,17 @@
         <url-pattern>/tableHeader</url-pattern>
     </servlet-mapping>
 
+    <!-- JSON Exporter Servlet -->
+    <servlet>
+        <servlet-name>jsonExport</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.view.webapp.servlet.JsonExporter</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>jsonExport</servlet-name>
+        <url-pattern>/json</url-pattern>
+    </servlet-mapping>
+
     <!-- Welcome files -->
     <welcome-file-list>
         <welcome-file>/index.jsp</welcome-file>
