@@ -189,12 +189,6 @@
             <groupId>uk.ac.ebi.intact.dbupdate</groupId>
             <artifactId>intact-proteins-update</artifactId>
             <version>2.1.2-SNAPSHOT</version>
-             <exclusions>
-                <exclusion>
-                    <groupId>uk.ac.ebi.intact.dbupdate</groupId>
-                    <artifactId>intact-biosource-update</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Bridges -->
@@ -411,7 +405,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>3.0.M2-intact-SNAPSHOT</version>
+            <version>3.0.M2-intact2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>

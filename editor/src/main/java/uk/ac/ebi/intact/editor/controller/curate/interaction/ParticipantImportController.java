@@ -39,6 +39,8 @@ import uk.ac.ebi.intact.uniprot.model.UniprotProteinLike;
 import uk.ac.ebi.intact.uniprot.model.UniprotProteinTranscript;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 import uk.ac.ebi.intact.util.ProteinServiceImpl;
+import uk.ac.ebi.intact.util.biosource.BioSourceService;
+import uk.ac.ebi.intact.util.biosource.BioSourceServiceException;
 import uk.ac.ebi.intact.util.protein.ProteinServiceException;
 
 import javax.annotation.PostConstruct;
@@ -63,6 +65,9 @@ public class ParticipantImportController extends BaseController {
 
     @Autowired
     private ProteinServiceImpl proteinService;
+
+    @Autowired
+    private BioSourceService bioSourceService;
 
     @Autowired
     private InteractionController interactionController;
@@ -150,7 +155,14 @@ public class ParticipantImportController extends BaseController {
         Set<ImportCandidate> candidates = importFromIntAct(participantToImport);
 
         if (candidates.isEmpty()) {
-            Set<ImportCandidate> uniprotCandidates = importFromUniprot(participantToImport);
+            Set<ImportCandidate> uniprotCandidates = null;
+            try {
+                uniprotCandidates = importFromUniprot(participantToImport);
+            } catch (ProteinServiceException e) {
+                addErrorMessage("Cannot import participants", "Problem fetching participant: "+participantToImport);
+                handleException(e);
+                return Collections.EMPTY_SET;
+            }
 
             // only pre-select those that match the query
             for (ImportCandidate candidate : uniprotCandidates) {
@@ -215,7 +227,7 @@ public class ParticipantImportController extends BaseController {
 
 
 
-    private Set<ImportCandidate> importFromUniprot(String participantToImport) {
+    private Set<ImportCandidate> importFromUniprot(String participantToImport) throws ProteinServiceException {
         Set<ImportCandidate> candidates = new HashSet<ImportCandidate>();
 
         final Collection<UniprotProteinLike> uniprotProteins = uniprotRemoteService.retrieveAny(participantToImport);
@@ -320,81 +332,23 @@ public class ParticipantImportController extends BaseController {
         }
     }
 
-    private Interactor toProtein(ImportCandidate candidate) {
+    private Interactor toProtein(ImportCandidate candidate) throws ProteinServiceException {
         Protein protein;
 
         // use the protein service to create proteins (not persist!) if unavailable for some reason, it creates a minimalistic protein using the previous code
         if (candidate.isIsoform() || candidate.isChain()) {
             UniprotProteinTranscript proteinTranscript = (UniprotProteinTranscript) candidate.getUniprotProtein();
 
-            try {
-                protein = proteinService.getProteinTranscriptFromUniprotEntry(proteinTranscript, "?"+proteinTranscript.getMasterProtein().getPrimaryAc());
-            } catch (ProteinServiceException e) {
-                log.error("Impossible to create a full isoform/feature chain using the protein service, will create a minimalistic protein transcript by default");
-                protein = createMinimalisticProtein(candidate);
-            }
+            protein = proteinService.getProteinTranscriptFromUniprotEntry(proteinTranscript, "?"+proteinTranscript.getMasterProtein().getPrimaryAc());
         }
         else {
             UniprotProtein uniprotProtein = (UniprotProtein) candidate.getUniprotProtein();
-
-            try {
-                protein = proteinService.getMasterProteinFromUniprotEntry(uniprotProtein);
-            } catch (ProteinServiceException e) {
-                log.error("Impossible to create a full isoform/feature chain using the protein service, will create a minimalistic protein transcript by default");
-                protein = createMinimalisticProtein(candidate);
-            }
+            protein = proteinService.getMasterProteinFromUniprotEntry(uniprotProtein);
         }
 
         return protein;
     }
 
-    private Protein createMinimalisticProtein(ImportCandidate candidate){
-        final Institution owner = IntactContext.getCurrentInstance().getInstitution();
-        final UniprotProteinLike uniprotProtein = candidate.getUniprotProtein();
-
-        final DaoFactory daoFactory = IntactContext.getCurrentInstance().getDaoFactory();
-        CvInteractorType type = daoFactory.getCvObjectDao(CvInteractorType.class).getByPsiMiRef(CvInteractorType.PROTEIN_MI_REF);
-        CvDatabase uniprotkb = daoFactory.getCvObjectDao(CvDatabase.class).getByPsiMiRef(CvDatabase.UNIPROT_MI_REF);
-        CvXrefQualifier identity = daoFactory.getCvObjectDao(CvXrefQualifier.class).getByPsiMiRef(CvXrefQualifier.IDENTITY_MI_REF);
-
-        BioSource organism = new BioSource(uniprotProtein.getOrganism().getName(), String.valueOf(uniprotProtein.getOrganism().getTaxid()));
-        Protein protein = new ProteinImpl(owner, organism, uniprotProtein.getId().toLowerCase(), type);
-        protein.setFullName(uniprotProtein.getDescription());
-
-        InteractorXref xref = new InteractorXref(owner, uniprotkb, candidate.getPrimaryAcs().iterator().next(), identity);
-        protein.addXref(xref);
-
-        protein.setSequence(uniprotProtein.getSequence());
-
-        // if it is an isoform or chain, we will create a stub annotation that will be completed when the protein is saved by
-        // creating its corresponding protein master and updating the accession.
-        if (candidate.isIsoform() || candidate.isChain()) {
-            CvXrefQualifier tempParentRef;
-
-            if (candidate.isIsoform()) {
-                tempParentRef = daoFactory.getCvObjectDao(CvXrefQualifier.class).getByIdentifier(CvXrefQualifier.ISOFORM_PARENT_MI_REF);
-            } else {
-                tempParentRef = daoFactory.getCvObjectDao(CvXrefQualifier.class).getByIdentifier(CvXrefQualifier.CHAIN_PARENT_MI_REF);
-            }
-
-            CvDatabase ownDatabase = InstitutionUtils.retrieveCvDatabase(IntactContext.getCurrentInstance(), owner);
-
-            if (ownDatabase == null){
-               ownDatabase = daoFactory.getCvObjectDao(CvDatabase.class).getByIdentifier(CvDatabase.INTACT_MI_REF);
-            }
-
-            UniprotProteinTranscript proteinTranscript = (UniprotProteinTranscript) uniprotProtein;
-
-            // set shortlabel differently for protein transcripts
-            protein.setShortLabel( proteinTranscript.getPrimaryAc().toLowerCase() );
-
-            // temporary master accession instead of the IntAct AC, with this structure "?P12345"
-            InteractorXref tempIsoformParent = new InteractorXref(owner, ownDatabase, "?"+proteinTranscript.getMasterProtein().getPrimaryAc(), tempParentRef);
-            protein.addXref(tempIsoformParent);
-        }
-
-        return protein;
-    }
 
     public String[] getParticipantsToImport() {
         return participantsToImport;

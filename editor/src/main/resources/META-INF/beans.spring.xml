@@ -26,7 +26,14 @@
     </bean>
 
     <!-- Uniprot -->
-    <bean name="uniprotService" class="uk.ac.ebi.intact.uniprot.service.UniprotRemoteService"/>
-    <bean name="proteinService" class="uk.ac.ebi.intact.util.ProteinServiceImpl"/>
+    <bean id="uniprotService" class="uk.ac.ebi.intact.uniprot.service.UniprotRemoteService"/>
+    <bean id="proteinService" class="uk.ac.ebi.intact.util.ProteinServiceImpl"/>
+
+    <!-- Biosource update -->
+    <bean id="editorBioSourceService" class="uk.ac.ebi.intact.editor.controller.curate.interaction.EditorBioSourceService">
+        <constructor-arg>
+            <bean id="taxonomyService" class="uk.ac.ebi.intact.bridges.taxonomy.UniprotTaxonomyService"/>
+        </constructor-arg>
+    </bean>
    
 </beans>
