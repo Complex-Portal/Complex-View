@@ -111,8 +111,9 @@
                 <f:facet name="header">
                      <h:outputText value="Actions"/>
                 </f:facet>
-                <p:commandLink immediate="true" styleClass="ui-icon ui-icon-closethick"
+                <p:commandLink styleClass="ui-icon ui-icon-closethick" process="@this"
                                actionListener="#{cc.attrs.annotatedObjectController.annotatedObject.removeParameter(parameter)}"
+                               oncomplete="markAsUnsaved()"
                                update="#{cc.attrs.update}"/>
             </p:column>
         </p:dataTable>
