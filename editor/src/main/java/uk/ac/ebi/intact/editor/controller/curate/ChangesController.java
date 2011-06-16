@@ -157,10 +157,6 @@ public class ChangesController extends JpaAwareController implements UserListene
         } else {
             AnnotatedObjectUtils.removeChild(parent, object);
         }
-
-        /*if (parent != null && parent.getAc() != null) {
-            addChange(new UnsavedChange(parent, UnsavedChange.UPDATED));
-        }*/
     }
 
     public void markToDeleteRange(Range range, Feature parent) {
@@ -279,8 +275,37 @@ public class ChangesController extends JpaAwareController implements UserListene
         // using an array to avoid a concurrent modification exception, which happens when trying to remove the interaction from its experiments
         final Experiment[] array = parents.toArray(new Experiment[parents.size()]);
 
+
         for (int i=0; i<array.length; i++) {
-            markToDelete(interaction, array[i]);
+            if (interaction.getAc() != null) {
+
+                String scope;
+                // collect parent acs for this intact object if possible
+                Collection<String> parentAcs = new ArrayList<String>();
+                if (array[i] != null && array[i].getAc() != null){
+                    scope = array[i].getAc();
+                    parentAcs.add(scope);
+                }
+                else {
+                    scope = null;
+                }
+
+                if (array[i].getPublication() != null && array[i].getPublication().getAc() != null){
+                    parentAcs.add(array[i].getPublication().getAc());
+                }
+                // very important to delete all changes which can be affected by the delete of this object!!!
+                removeObsoleteChangesOnDelete(interaction);
+
+                UnsavedChange change = new UnsavedChange(interaction, UnsavedChange.DELETED, array[i], scope);
+                change.getAcsToDeleteOn().addAll(parentAcs);
+
+                addChange(change);
+
+                // line commented because already done when adding the change
+                //removeFromUnsaved(object);
+            } else {
+                AnnotatedObjectUtils.removeChild(array[i], interaction);
+            }
         }
     }
 

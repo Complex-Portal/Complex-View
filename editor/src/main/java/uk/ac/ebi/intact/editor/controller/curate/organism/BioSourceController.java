@@ -97,7 +97,13 @@ public class BioSourceController extends AnnotatedObjectController {
 
             String commonName = name.toLowerCase();
 
-            bioSource.setShortLabel(commonName);
+            if (term.getMnemonic() != null){
+                bioSource.setShortLabel(term.getMnemonic().toLowerCase());
+            }
+            else {
+                bioSource.setShortLabel(commonName);
+            }
+
             bioSource.setFullName(term.getScientificName());
 
             setTaxId(taxIdStr, commonName);
