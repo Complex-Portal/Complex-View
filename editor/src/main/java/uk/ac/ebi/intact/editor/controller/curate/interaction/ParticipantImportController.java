@@ -83,6 +83,8 @@ public class ParticipantImportController extends BaseController {
     private CvExperimentalPreparation cvExperimentalPreparation;
     private float stoichiometry;
 
+    private final static String FEATURE_CHAIN = "PRO_";
+
     @PostConstruct
     public void init() {
         EditorConfig editorConfig = getEditorConfig();
@@ -173,6 +175,17 @@ public class ParticipantImportController extends BaseController {
                     if (candidate.getQuery().equalsIgnoreCase(primaryAc)) {
                         candidate.setSelected(true);
                         break;
+                    }
+                    // for feature chains, in IntAct, we add the parent uniprot ac before the chain id so feature chains are never pre-selected
+                    else if (candidate.isChain() && primaryAc.toUpperCase().contains(FEATURE_CHAIN)){
+                        int indexOfChain = primaryAc.indexOf(FEATURE_CHAIN);
+
+                        String chain_ac = primaryAc.substring(indexOfChain);
+
+                        if (candidate.getQuery().equalsIgnoreCase(chain_ac)) {
+                            candidate.setSelected(true);
+                            break;
+                        }
                     }
                 }
             }
