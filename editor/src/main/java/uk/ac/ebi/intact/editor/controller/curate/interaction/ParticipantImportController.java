@@ -32,7 +32,6 @@ import uk.ac.ebi.intact.dbupdate.prot.report.UpdateReportHandler;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.util.InstitutionUtils;
 import uk.ac.ebi.intact.model.util.XrefUtils;
 import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
 import uk.ac.ebi.intact.uniprot.model.UniprotProteinLike;
@@ -40,7 +39,6 @@ import uk.ac.ebi.intact.uniprot.model.UniprotProteinTranscript;
 import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
 import uk.ac.ebi.intact.util.ProteinServiceImpl;
 import uk.ac.ebi.intact.util.biosource.BioSourceService;
-import uk.ac.ebi.intact.util.biosource.BioSourceServiceException;
 import uk.ac.ebi.intact.util.protein.ProteinServiceException;
 
 import javax.annotation.PostConstruct;
@@ -89,6 +87,9 @@ public class ParticipantImportController extends BaseController {
     public void init() {
         EditorConfig editorConfig = getEditorConfig();
         stoichiometry = editorConfig.getDefaultStoichiometry();
+
+        // set the biosource service of protein service
+        this.proteinService.setBiosourceService(bioSourceService);
     }
 
     public void importParticipants( ActionEvent evt ) {
@@ -335,7 +336,7 @@ public class ParticipantImportController extends BaseController {
     private Interactor toProtein(ImportCandidate candidate) throws ProteinServiceException {
         Protein protein;
 
-        // use the protein service to create proteins (not persist!) if unavailable for some reason, it creates a minimalistic protein using the previous code
+        // use the protein service to create proteins (not persist!)
         if (candidate.isIsoform() || candidate.isChain()) {
             UniprotProteinTranscript proteinTranscript = (UniprotProteinTranscript) candidate.getUniprotProtein();
 
