@@ -19,30 +19,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
-import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import psidev.psi.mi.tab.PsimiTabWriter;
-import psidev.psi.mi.tab.expansion.SpokeWithoutBaitExpansion;
-import psidev.psi.mi.tab.model.BinaryInteraction;
-import psidev.psi.mi.xml.PsimiXmlVersion;
-import psidev.psi.mi.xml.PsimiXmlWriter;
-import psidev.psi.mi.xml.model.EntrySet;
 import uk.ac.ebi.cdb.webservice.Author;
 import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.config.SequenceCreationException;
 import uk.ac.ebi.intact.core.config.SequenceManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.persistence.dao.entry.IntactEntryFactory;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.users.model.Preference;
-import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
@@ -50,20 +39,12 @@ import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
 import uk.ac.ebi.intact.model.util.PublicationUtils;
-import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
-import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
-import javax.persistence.FlushModeType;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
@@ -494,7 +475,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setJournal( String journal ) {
         setAnnotation( CvTopic.JOURNAL_MI_REF, journal );
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -509,7 +490,7 @@ public class PublicationController extends AnnotatedObjectController {
 
                 getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        }*/
     }
 
     public String getContactEmail() {
@@ -519,7 +500,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setContactEmail( String contactEmail ) {
         setAnnotation( CvTopic.CONTACT_EMAIL_MI_REF, contactEmail );
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -535,7 +516,7 @@ public class PublicationController extends AnnotatedObjectController {
                 // this will only be called if value has been changed
                 // getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        } */
     }
 
     public String getSubmitted() {
@@ -545,7 +526,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setSubmitted( String submitted ) {
         setAnnotation(SUBMITTED, submitted );
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -560,7 +541,7 @@ public class PublicationController extends AnnotatedObjectController {
 
                 getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        }*/
     }
 
     public String getCurationRequest() {
@@ -570,7 +551,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setCurationRequest( String requestedCuration ) {
         setAnnotation(CURATION_REQUEST, requestedCuration );
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -585,7 +566,7 @@ public class PublicationController extends AnnotatedObjectController {
 
                 getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        } */
     }
 
     public Short getYear() {
@@ -601,7 +582,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setYear( Short year ) {
         setAnnotation( CvTopic.PUBLICATION_YEAR_MI_REF, year );
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -617,7 +598,7 @@ public class PublicationController extends AnnotatedObjectController {
                 // this will only be called if value has been changed
                 // getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        }*/
     }
 
     public String getIdentifier() {
@@ -647,7 +628,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setPrimaryReference( String id ) {
         setXref( CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id );
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -663,7 +644,7 @@ public class PublicationController extends AnnotatedObjectController {
                 // this will only be called if value has been changed
                 // getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        }*/
     }
 
     public String getAuthors() {
@@ -673,7 +654,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setAuthors( String authors ) {
         setAnnotation( CvTopic.AUTHOR_LIST_MI_REF, authors );
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -688,7 +669,7 @@ public class PublicationController extends AnnotatedObjectController {
 
                 getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        }*/
     }
 
     public String getOnHold() {
@@ -698,7 +679,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setOnHold( String reason ) {
         setAnnotation( CvTopic.ON_HOLD, reason );
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -714,27 +695,13 @@ public class PublicationController extends AnnotatedObjectController {
                 // this will only be called if value has been changed
                 // getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        }*/
     }
 
     public void unsavedValueChangeWithExperiments(ValueChangeEvent evt) {
         setUnsavedChanges(true);
-
-        Collection<Experiment> experiments = publication.getExperiments();
-
-        if (!IntactCore.isInitialized(publication.getExperiments())) {
-            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
-        }
-        if (!experiments.isEmpty()){
-            Collection<String> parentAcs = new ArrayList<String>();
-            if (publication.getAc() != null){
-                parentAcs.add(publication.getAc());
-            }
-            for (Experiment experiment : experiments) {
-
-                getChangesController().markAsUnsaved(experiment, parentAcs);
-            }
-        }
+        copyAnnotationsToExperiments(null);
+        copyPublicationTitleToExperiments(null);
     }
 
     public String getAcceptedMessage() {
@@ -756,7 +723,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setCurationDepth(String curationDepth) {
         setAnnotation(CURATION_DEPTH, curationDepth);
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -772,7 +739,7 @@ public class PublicationController extends AnnotatedObjectController {
                 // this will only be called if value has been changed
                 // getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        }*/
     }
 
     @Transactional(readOnly = true)
@@ -802,7 +769,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setAcceptedMessage( String message ) {
         setAnnotation( CvTopic.ACCEPTED, message );
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -817,7 +784,7 @@ public class PublicationController extends AnnotatedObjectController {
 
                 getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        }*/
     }
 
     public boolean isToBeReviewed(Publication pub) {
@@ -839,7 +806,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setImexId(String imexId) {
         setXref( CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId );
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -854,7 +821,7 @@ public class PublicationController extends AnnotatedObjectController {
 
                 getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        }*/
     }
 
     public String getPublicationTitle() {
@@ -864,7 +831,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setPublicationTitle(String publicationTitle) {
         publication.setFullName(publicationTitle);
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -880,7 +847,7 @@ public class PublicationController extends AnnotatedObjectController {
                 // this will only be called if value has been changed
                 // getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        }*/
     }
 
 
@@ -924,7 +891,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void setToBeReviewed(String toBeReviewed) {
         setAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
 
-        Collection<Experiment> experiments = publication.getExperiments();
+        /*Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
@@ -939,7 +906,7 @@ public class PublicationController extends AnnotatedObjectController {
 
                 getChangesController().markAsUnsaved(experiment, parentAcs);
             }
-        }
+        }*/
     }
 
     public String getToBeReviewed() {
