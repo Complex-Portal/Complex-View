@@ -400,7 +400,7 @@ public class ChangesController extends JpaAwareController implements UserListene
                         iterator.remove();
                     }
                     // if both shortlabels are null, just checks parent acs
-                    else if (interaction.getShortLabel() != null && unsavedInteraction.getShortLabel() == null) {
+                    else if (interaction.getShortLabel() == null && unsavedInteraction.getShortLabel() == null) {
                         checkParentOfUnsavedObject(parentAcs, iterator, unsavedChange);
                     }
                 }
