@@ -197,6 +197,9 @@
                     method: 'GET',
                     dataType: 'json',
                     success: function(json){
+                        if(typeof(json) != 'object'){
+							json = $.parseJSON(json);
+						}
                         self._interactionInformation = json;
                         self._finishedRequests["loadData"] = true;
                         self._checkRequests();
@@ -213,6 +216,9 @@
                     dataType: 'json',
                     data: "url=" + url,
                     success: function(json){
+                        if(typeof(json) != 'object'){
+							json = $.parseJSON(json);
+						}
                         self._interactionInformation = json;
                         self._finishedRequests["loadData"] = true;
                         self._checkRequests();
@@ -239,7 +245,10 @@
                     url: self._MIOntologyUrl + self._MIParent,
                     method: "GET",
                     success: function(json){
-                        self._parseResponse($.parseJSON(json));
+                        if(typeof(json) != 'object'){
+							json = $.parseJSON(json);
+						}
+                        self._parseResponse(json);
                         self._finishedRequests["loadAllIdentifiers"] = true;
                         self._checkRequests();
                     },
@@ -255,7 +264,10 @@
                     method: "GET",
                     data: "url=" + url,
                     success: function(json){
-                        self._parseResponse($.parseJSON(json));
+                        if(typeof(json) != 'object'){
+							json = $.parseJSON(json);
+						}
+                        self._parseResponse(json);
                         self._finishedRequests["loadAllIdentifiers"] = true;
                         self._checkRequests();
                     },
