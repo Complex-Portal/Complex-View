@@ -155,12 +155,12 @@ public class ParticipantImportController extends BaseController {
         }
         log.debug( "Importing participant: "+ participantToImport );
 
-        Set<ImportCandidate> candidates = importFromIntAct(participantToImport);
+        Set<ImportCandidate> candidates = importFromIntAct(participantToImport.toUpperCase());
 
         if (candidates.isEmpty()) {
             Set<ImportCandidate> uniprotCandidates = null;
             try {
-                uniprotCandidates = importFromUniprot(participantToImport);
+                uniprotCandidates = importFromUniprot(participantToImport.toUpperCase());
             } catch (ProteinServiceException e) {
                 addErrorMessage("Cannot import participants", "Problem fetching participant: "+participantToImport);
                 handleException(e);
