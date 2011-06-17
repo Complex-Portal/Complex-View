@@ -133,7 +133,7 @@
                                     <p:inputText id="idTxt" value="#{publicationController.publication.shortLabel}"
                                                  validator="#{annotatedObjectController.validateAnnotatedObject}"
                                                  size="10"
-                                                 valueChangeListener="#{publicationController.unsavedValueChangeWithExperiments}"
+                                                 valueChangeListener="#{publicationController.publicationIdentifierChanged}"
                                                  converter="trimmingConverter"
                                                  required="true" requiredMessage="Identifier is required">
                                             <ed:curation/>
@@ -171,7 +171,7 @@
                                 <td colspan="2">
                                     <p:inputTextarea id="titleTxt" value="#{publicationController.publicationTitle}" cols="60" rows="1"
                                             converter="trimmingConverter"
-                                            valueChangeListener="#{publicationController.unsavedValueChangeWithExperiments}">
+                                            valueChangeListener="#{publicationController.publicationTitleChanged}">
                                         <ed:curation/>
                                     </p:inputTextarea>
                                 </td>
@@ -184,7 +184,7 @@
                                                <!--onchange="markAsUnsaved(); refreshTabs()"/>-->
                                     <p:inputText id="yearTxt" value="#{publicationController.year}" size="4" maxlength="4"
                                             validatorMessage="Year provided is invalid"
-                                            valueChangeListener="#{publicationController.unsavedValueChangeWithExperiments}">
+                                            valueChangeListener="#{publicationController.publicationYearChanged}">
                                         <f:converter converterId="javax.faces.Short" maxFractionDigits="0" pattern="#" />
                                         <ed:curation/>
                                     </p:inputText>
@@ -197,7 +197,7 @@
                                 </td>
                                 <td colspan="3">
                                     <p:inputText id="contactTxt" value="#{publicationController.contactEmail}" size="50" converter="trimmingConverter"
-                                            valueChangeListener="#{publicationController.unsavedValueChangeWithExperiments}">
+                                            valueChangeListener="#{publicationController.contactEmailChanged}">
                                             <ed:curation/>
                                     </p:inputText>
                                 </td>
@@ -233,7 +233,7 @@
                                 </td>
                                 <td colspan="3">
                                     <h:panelGroup id="curationDepthMenu">
-                                        <h:selectOneMenu value="#{publicationController.curationDepth}" valueChangeListener="publicationController.unsavedValueChangeWithExperiments">
+                                        <h:selectOneMenu value="#{publicationController.curationDepth}" valueChangeListener="publicationController.curationDepthChanged">
                                             <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo publicationTabs"
                                                 process="@this" async="true"/>
 
@@ -251,7 +251,7 @@
                                 <td colspan="3">
                                     <h:panelGroup>
                                         <p:inputText id="onHoldTxt" value="#{publicationController.onHold}" size="70"
-                                                valueChangeListener="#{publicationController.unsavedValueChangeWithExperiments}">
+                                                valueChangeListener="#{publicationController.onHoldChanged}">
                                             <ed:curation/>
                                         </p:inputText>
 

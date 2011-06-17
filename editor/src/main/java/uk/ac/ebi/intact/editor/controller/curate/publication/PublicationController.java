@@ -558,12 +558,103 @@ public class PublicationController extends AnnotatedObjectController {
         setAnnotation( CvTopic.ON_HOLD, reason );
     }
 
-    public void unsavedValueChangeWithExperiments(ValueChangeEvent evt) {
+    public void onHoldChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
-        // refresh experiments with possible changes in publication title, annotations and publication identifier;
-        copyAnnotationsToExperiments(null);
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.ON_HOLD, (String) evt.getNewValue());
+
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
+        }
+    }
+
+    public void curationDepthChanged(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation(CURATION_DEPTH, (String) evt.getNewValue());
+
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
+        }
+    }
+
+    public void contactEmailChanged(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, (String) evt.getNewValue());
+
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
+        }
+    }
+
+    public void publicationYearChanged(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+
+        Collection<Experiment> experiments = publication.getExperiments();
+
+        if (!IntactCore.isInitialized(publication.getExperiments())) {
+            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+        }
+
+        if (!experiments.isEmpty()){
+            Collection<String> parentAcs = new ArrayList<String>();
+            if (publication.getAc() != null){
+                parentAcs.add(publication.getAc());
+            }
+            for (Experiment experiment : experiments) {
+                newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, (String) evt.getNewValue());
+
+                getChangesController().markAsUnsaved(experiment, parentAcs);
+            }
+        }
+    }
+
+    public void publicationTitleChanged(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+
         copyPublicationTitleToExperiments(null);
+    }
+
+    public void publicationIdentifierChanged(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+
         copyPrimaryIdentifierToExperiments();
     }
 
