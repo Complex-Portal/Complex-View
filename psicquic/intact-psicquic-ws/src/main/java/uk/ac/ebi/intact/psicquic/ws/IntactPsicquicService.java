@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.psicquic.ws;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.cxf.feature.Features;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.common.SolrDocument;
 import org.hupo.psi.mi.psicquic.*;
@@ -51,13 +50,14 @@ import java.util.*;
  * @version $Id$
  */
 @Controller
-@Features(features = { "org.apache.cxf.transport.http.gzip.GZIPFeature" })
+@Features(features = {"org.apache.cxf.transport.common.gzip.GZIPFeature"})
 public class IntactPsicquicService implements PsicquicService {
 
     private final Logger logger = LoggerFactory.getLogger(IntactPsicquicService.class);
 
     public static final String RETURN_TYPE_XML25 = "psi-mi/xml25";
     public static final String RETURN_TYPE_MITAB25 = "psi-mi/tab25";
+    public static final String RETURN_TYPE_BIOPAX = "biopax";
     public static final String RETURN_TYPE_MITAB25_BIN = "psi-mi/tab25-bin";
     public static final String RETURN_TYPE_COUNT = "count";
 
@@ -66,7 +66,7 @@ public class IntactPsicquicService implements PsicquicService {
     private static final int BLOCKSIZE_MAX = 200;
     private static final String RETURN_TYPE_DEFAULT = RETURN_TYPE_MITAB25;
 
-    public static final List<String> SUPPORTED_RETURN_TYPES = Arrays.asList(RETURN_TYPE_XML25, RETURN_TYPE_MITAB25, RETURN_TYPE_COUNT);
+    public static final List<String> SUPPORTED_RETURN_TYPES = Arrays.asList(RETURN_TYPE_XML25, RETURN_TYPE_MITAB25, RETURN_TYPE_BIOPAX, RETURN_TYPE_COUNT);
     
     @Autowired
     private PsicquicConfig config;
@@ -147,7 +147,6 @@ public class IntactPsicquicService implements PsicquicService {
             throw new NotSupportedTypeException("Not supported return type: "+resultType+" - Supported types are: "+getSupportedReturnTypes());
         }
 
-        System.out.println("SEARCHING: "+query);
         logger.debug("Searching: {} ({}/{}) with type {}", new Object[] {query, requestInfo.getFirstResult(), blockSize, resultType});
 
         /////////////////////////////////////////////////////////////////
