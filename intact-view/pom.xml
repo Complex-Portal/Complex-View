@@ -598,6 +598,13 @@
             <version>0.8</version>
         </dependency>
 
+        <!-- SAXON -->
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>saxon-xom</artifactId>
+            <version>8.7</version>
+        </dependency>
+
     </dependencies>
 
 </project>

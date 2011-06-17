@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+
+
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+<!--           xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+-->
+
+    <!-- INTERFACE -->
+  <composite:interface>
+      <composite:attribute name="url" type="java.lang.String" required="true"/>
+  </composite:interface>
+
+  <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+        <h:outputScript library= "javascript/InteractionRepresentation/resources" name="annotOverlaping.js"/>
+        <h:outputScript library="javascript/InteractionRepresentation/resources" name="jquery-1.4.3.min.js"/>
+        <h:outputScript library= "javascript/InteractionRepresentation/resources" name="jquery-ui-1.8.10.custom.css"/>
+        <h:outputScript library= "javascript/InteractionRepresentation/resources" name="jquery-ui-1.8.10.custom.min.js"/>
+        <h:outputScript library= "javascript/InteractionRepresentation/resources" name="raphael-min.js"/>
+        <h:outputScript library= "javascript/InteractionRepresentation/InteractionRepresentation" name="ui.Interaction.js"/>
+        <h:outputScript library= "javascript/InteractionRepresentation/InteractionRepresentation/resources/js" name="featureDrawer.js"/>
+        <h:outputScript library= "javascript/InteractionRepresentation/InteractionRepresentation/resources/js" name="participantDrawer.js"/>
+        <h:outputScript library= "javascript/InteractionRepresentation/InteractionRepresentation/resources/js" name="rangeStatusFunctionCollection.js"/>
+        <h:outputScript library= "javascript/InteractionRepresentation/InteractionRepresentation/resources/js" name="shapeDrawer.js"/>
+        <h:outputScript library= "javascript/InteractionRepresentation/InteractionRepresentation/resources/js" name="utils.js"/>
+
+       <table width="100%" id="featureTable">
+           <tr>
+               <td style="width:75%;vertical-align:top;" id="featureColumn"></td>
+           </tr>
+       </table>
+
+       <script type="text/javascript">
+
+               jQuery(function(){
+                   var intRes = $('#featureColumn').Interaction({
+                       width: $("#featureColumn").width(),
+                       developingMode: true,
+                       jsonUrl : '#{cc.attrs.url}',
+                       proxyUrl: '/intact/json',
+                       useProxyForData: false,
+                       legendPosition: 'right'
+                   })
+               });
+
+        </script>
+
+
+
+    </composite:implementation>
+
+</ui:composition>

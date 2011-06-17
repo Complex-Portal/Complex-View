@@ -309,6 +309,15 @@ public class DetailsController extends JpaBaseController {
         return getAnnotationTextByMi( getExperiment(), CONTACT_EMAIL );
     }
 
+    public boolean isFeaturesAvailable(){
+        boolean featuresAvailable = false;
+        Interaction interaction = getInteraction();
+        for(Component component : interaction.getComponents()){
+            featuresAvailable = featuresAvailable || (component.getBindingDomains().size() > 0);
+        }
+        return featuresAvailable;
+    }
+
     private String getAnnotationTextByMi( AnnotatedObject ao, final String mi ) {
         final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( ao, mi );
         if ( annotation != null ) {

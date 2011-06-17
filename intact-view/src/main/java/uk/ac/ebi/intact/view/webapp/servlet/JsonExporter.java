@@ -15,27 +15,31 @@
  */
 package uk.ac.ebi.intact.view.webapp.servlet;
 
-import org.hibernate.FlushMode;
-import org.springframework.transaction.TransactionStatus;
-import psidev.psi.mi.xml.PsimiXmlReader;
+import net.sf.saxon.TransformerFactoryImpl;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import psidev.psi.mi.xml.PsimiXmlVersion;
 import psidev.psi.mi.xml.PsimiXmlWriter;
-import psidev.psi.mi.xml.PsimiXmlWriterException;
-import psidev.psi.mi.xml.model.Entry;
 import psidev.psi.mi.xml.model.EntrySet;
+import psidev.psi.mi.xml.stylesheets.XslTransformException;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.entry.IntactEntryFactory;
-import uk.ac.ebi.intact.dataexchange.psimi.xml.converter.shared.EntryConverter;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
 import uk.ac.ebi.intact.model.IntactEntry;
-import uk.ac.ebi.intact.model.InteractionImpl;
 
 import javax.persistence.FlushModeType;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.*;
+import java.net.URLDecoder;
 
 /**
  * Outputs JSON corresponding to an interaction.
@@ -47,29 +51,64 @@ public class JsonExporter extends HttpServlet {
 
     private static final String NEW_LINE = System.getProperty("line.separator");
 
+    private class CustomURIResolver implements URIResolver{
+
+        private String path;
+
+        public CustomURIResolver(String path){
+            this.path = path;
+        }
+
+        public Source resolve(String href, String base){
+            return new StreamSource(new File(path + "/" + href));
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String interactionAc = req.getParameter("ac");
-
-        if (interactionAc == null) {
-            throw new ServletException("Parameter 'ac' was expected");
+        String url = req.getParameter("url");
+        if (interactionAc == null && url == null) {
+            throw new ServletException("Parameter 'ac' or 'url' was expected");
         }
 
+        if(interactionAc != null && url != null){
+            throw new ServletException("Only parameter 'ac' OR 'url' was expected");
+        }
+
+        if(interactionAc != null){
+            internalRequest(interactionAc, resp.getWriter());
+        }else{
+            url = URLDecoder.decode(url, "UTF-8");
+            externalRequest(url, resp.getWriter());
+        }
+    }
+
+    private void internalRequest(String interactionAc, Writer outputWriter) throws  ServletException{
         InputStream xmlStream = createXmlStream(interactionAc);
-        
-        //TODO transform this inputStream in XML to the JSON counterpart
-
-
-        // the following is just meant for testing, you could make the XSL transformer to
-        // output the JSON stream directly using the response writer...
+        InputStream xslt = JsonExporter.class.getResourceAsStream("/META-INF/ConvertXMLToJSONInteraction.xslt");
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(xmlStream));
-        
-        String line = null;
-        
-        while ((line = bufferedReader.readLine()) != null) {
-            resp.getWriter().write(line + NEW_LINE);
-        }
 
+        try {
+            runXslt(bufferedReader, xslt, outputWriter);
+        } catch (XslTransformException e) {
+            throw new ServletException("Problem writing JSON", e);
+        }
+    }
+
+    private void externalRequest(String url, Writer outputWriter) throws IOException {
+        HttpClient client = new HttpClient();
+        GetMethod method = new GetMethod(url);
+
+        int statusCode = client.executeMethod(method);
+        InputStream inputStream = method.getResponseBodyAsStream();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+        String line = "";
+        while ((line = bufferedReader.readLine()) != null){
+            outputWriter.append(line);
+        }
+        bufferedReader.close();
     }
 
     private InputStream createXmlStream(String interactionAc) throws ServletException {
@@ -107,5 +146,29 @@ public class JsonExporter extends HttpServlet {
         EntrySet entrySet = psiExchange.exportToEntrySet(intactEntry);
 
         return entrySet;
+    }
+
+    private void runXslt( Reader inputReader, InputStream xslt, Writer outputWriter ) throws XslTransformException {
+        // JAXP reads data using the Source interface
+
+        Source xmlSource = new StreamSource( inputReader );
+        Source xsltSource = null;
+        String path = "";
+
+        xsltSource = new StreamSource( xslt );
+
+        // the factory pattern supports different XSLT processors
+        // Saxon Transformer used because of need for XSLT 2.0
+        TransformerFactory transFact = new TransformerFactoryImpl();
+
+        // setting the path for xsl:include in xslt file
+        transFact.setURIResolver(new CustomURIResolver("src/main/resources/META-INF/"));
+        try {
+            Transformer trans = transFact.newTransformer( xsltSource );
+            trans.transform(xmlSource, new StreamResult(outputWriter));
+
+        } catch ( Exception e ) {
+            throw new XslTransformException( "An error occured while transforming the XML", e );
+        }
     }
 }
