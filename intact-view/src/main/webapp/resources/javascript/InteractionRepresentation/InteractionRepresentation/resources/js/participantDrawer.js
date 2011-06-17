@@ -887,13 +887,14 @@ ParticipantDrawer = function(interactionInformation){
 						x1 = 10;
 					}
 
+					var rangeDifference = (legendItemWidth/4) / self._interactionInformation._pxPerAA;
 
 					if (!(range.begin === undefined)) {
 						range.begin.position = x1;
 					}
 					else if(!(range.beginInterval === undefined)){
 						range.beginInterval.begin = x1;
-						range.beginInterval.end = x1 + 15;
+						range.beginInterval.end = x1 + rangeDifference;
 					}else{
                         range["begin"] = {"position": x1}
                     }
@@ -902,7 +903,7 @@ ParticipantDrawer = function(interactionInformation){
 						range.end.position = x2;
 					}
 					else if(!(range.endInterval === undefined)){
-						range.endInterval.begin = x2 - 15;
+						range.endInterval.begin = x2 - rangeDifference;
 						range.endInterval.end = x2;
 					}else{
                         range["end"] = {"position": x1}
