@@ -558,8 +558,7 @@ public class PublicationController extends AnnotatedObjectController {
         setAnnotation( CvTopic.ON_HOLD, reason );
     }
 
-    public void onHoldChanged(ValueChangeEvent evt) {
-        setUnsavedChanges(true);
+    public void setExperimentAnnotation(String topic, String text) {
 
         Collection<Experiment> experiments = publication.getExperiments();
 
@@ -573,77 +572,35 @@ public class PublicationController extends AnnotatedObjectController {
                 parentAcs.add(publication.getAc());
             }
             for (Experiment experiment : experiments) {
-                newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.ON_HOLD, (String) evt.getNewValue());
+                newAnnotatedObjectHelper(experiment).setAnnotation(topic, text);
 
                 getChangesController().markAsUnsaved(experiment, parentAcs);
             }
         }
+    }
+
+    public void onHoldChanged(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+
+        setExperimentAnnotation(CvTopic.ON_HOLD, (String) evt.getNewValue());
     }
 
     public void curationDepthChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
-        Collection<Experiment> experiments = publication.getExperiments();
-
-        if (!IntactCore.isInitialized(publication.getExperiments())) {
-            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
-        }
-
-        if (!experiments.isEmpty()){
-            Collection<String> parentAcs = new ArrayList<String>();
-            if (publication.getAc() != null){
-                parentAcs.add(publication.getAc());
-            }
-            for (Experiment experiment : experiments) {
-                newAnnotatedObjectHelper(experiment).setAnnotation(CURATION_DEPTH, (String) evt.getNewValue());
-
-                getChangesController().markAsUnsaved(experiment, parentAcs);
-            }
-        }
+        setExperimentAnnotation(CURATION_DEPTH, (String) evt.getNewValue());
     }
 
     public void contactEmailChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
-        Collection<Experiment> experiments = publication.getExperiments();
-
-        if (!IntactCore.isInitialized(publication.getExperiments())) {
-            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
-        }
-
-        if (!experiments.isEmpty()){
-            Collection<String> parentAcs = new ArrayList<String>();
-            if (publication.getAc() != null){
-                parentAcs.add(publication.getAc());
-            }
-            for (Experiment experiment : experiments) {
-                newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, (String) evt.getNewValue());
-
-                getChangesController().markAsUnsaved(experiment, parentAcs);
-            }
-        }
+        setExperimentAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, (String) evt.getNewValue());
     }
 
     public void publicationYearChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
-        Collection<Experiment> experiments = publication.getExperiments();
-
-        if (!IntactCore.isInitialized(publication.getExperiments())) {
-            experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
-        }
-
-        if (!experiments.isEmpty()){
-            Collection<String> parentAcs = new ArrayList<String>();
-            if (publication.getAc() != null){
-                parentAcs.add(publication.getAc());
-            }
-            for (Experiment experiment : experiments) {
-                newAnnotatedObjectHelper(experiment).setAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, (String) evt.getNewValue());
-
-                getChangesController().markAsUnsaved(experiment, parentAcs);
-            }
-        }
+        setExperimentAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, (String) evt.getNewValue());
     }
 
     public void publicationTitleChanged(ValueChangeEvent evt) {
