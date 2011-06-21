@@ -35,11 +35,16 @@ import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationControll
 import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
+import uk.ac.ebi.intact.model.util.FeatureUtils;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
-import java.util.*;
+import javax.faces.model.SelectItem;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Participant controller.
@@ -58,6 +63,14 @@ public class ParticipantController extends ParameterizableObjectController {
 
     private String interactor;
     private List<ImportCandidate> interactorCandidates;
+
+    private Feature[] selectedFeatures;
+    private Feature featureToLink1;
+    private Feature featureToLink2;
+    private Range rangeFeatureLinked1;
+    private Range rangeFeatureLinked2;
+    private List<SelectItem> featureToLink1RangeSelectItems;
+    private List<SelectItem> featureToLink2RangeSelectItems;
 
     /**
      * The AC of the participant to be loaded.
@@ -303,6 +316,122 @@ public class ParticipantController extends ParameterizableObjectController {
         }
     }
 
+    public String linkSelectedFeatures() {
+        if (selectedFeatures.length != 2) {
+            addErrorMessage("Incorrect feature selection", "Two features need to be selected if you want to link them");
+            return null;
+        }
+
+        featureToLink1 = selectedFeatures[0];
+        featureToLink2 = selectedFeatures[1];
+
+        // clean any existing linked association, just in case the curator links an already linked feature with another
+        // binding domain
+        clearBoundDomain(featureToLink1);
+        clearBoundDomain(featureToLink2);
+
+        // link the features
+        featureToLink1.setBoundDomain(featureToLink2);
+        featureToLink2.setBoundDomain(featureToLink1);
+
+        String outcome = null;
+
+        // if each feature has only one range, we can set them as linked directly
+        if (featureToLink1.getRanges().size() == 1) {
+            featureToLink1.getRanges().iterator().next().setLinked(true);
+        } else {
+            outcome = "/curate/feature_linker";
+        }
+
+        if (featureToLink2.getRanges().size() == 1) {
+            featureToLink2.getRanges().iterator().next().setLinked(true);
+        } else {
+            outcome = "/curate/feature_linker";
+        }
+
+        if (outcome == null) {
+           addInfoMessage("Features linked", "The unique ranges for the two features have been linked");
+        } else {
+            featureToLink1RangeSelectItems = createRangeSelectItems(featureToLink1);
+            featureToLink2RangeSelectItems = createRangeSelectItems(featureToLink2);
+
+            rangeFeatureLinked1 = fetchLinkedRange(featureToLink1);
+            rangeFeatureLinked2 = fetchLinkedRange(featureToLink2);
+
+           addWarningMessage("Linking features", "The features linked have more than one range. Please indicate which ranges are to be linked");
+        }
+
+        setUnsavedChanges(true);
+
+        return outcome;
+    }
+
+
+
+    private void clearBoundDomain(Feature feature) {
+        if (feature.getBoundDomain() != null) {
+            feature.getBoundDomain().setBoundDomain(null);
+
+            for (Range range : feature.getBoundDomain().getRanges()) {
+                range.setLinked(false);
+            }
+        }
+    }
+
+    private Range fetchLinkedRange(Feature feature) {
+        for (Range range : feature.getRanges()) {
+            if (range.isLinked()) {
+                return range;
+            }
+        }
+
+        return null;
+    }
+
+    private List<SelectItem> createRangeSelectItems(Feature feature) {
+        List<SelectItem> rangeSelectItems = new ArrayList<SelectItem>();
+
+        for (Range range : feature.getRanges()) {
+            SelectItem selectItem = new SelectItem(range, FeatureUtils.convertRangeIntoString(range));
+            rangeSelectItems.add(selectItem);
+        }
+
+        return rangeSelectItems;
+    }
+
+    public void linkRanges(ActionEvent evt) {
+        for (Range range : featureToLink1.getRanges()) {
+            if (range.equals(rangeFeatureLinked1)) {
+                range.setLinked(true);
+            } else {
+                range.setLinked(false);
+            }
+        }
+
+        for (Range range : featureToLink2.getRanges()) {
+            if (range.equals(rangeFeatureLinked2)) {
+                range.setLinked(true);
+            } else {
+                range.setLinked(false);
+            }
+        }
+
+        addInfoMessage("Features linked", "Ranges involved: "+rangeFeatureLinked1+", "+rangeFeatureLinked2);
+    }
+
+    public void cancelFeatureLinkage(ActionEvent evt) {
+        clearBoundDomain(featureToLink1);
+        clearBoundDomain(featureToLink2);
+    }
+
+    public void deleteSelectedFeatures(ActionEvent evt) {
+        for (Feature feature : selectedFeatures) {
+            markFeatureToDelete(feature);
+        }
+
+        addInfoMessage("Features to be deleted", selectedFeatures.length+" have been marked to be deleted");
+    }
+
     public String getAc() {
         if ( ac == null && participant != null ) {
             return participant.getAc();
@@ -362,6 +491,62 @@ public class ParticipantController extends ParameterizableObjectController {
 
     public void setInteractorCandidates(List<ImportCandidate> interactorCandidates) {
         this.interactorCandidates = interactorCandidates;
+    }
+
+    public Feature[] getSelectedFeatures() {
+        return selectedFeatures;
+    }
+
+    public void setSelectedFeatures(Feature[] selectedFeatures) {
+        this.selectedFeatures = selectedFeatures;
+    }
+
+    public Feature getFeatureToLink1() {
+        return featureToLink1;
+    }
+
+    public void setFeatureToLink1(Feature featureToLink1) {
+        this.featureToLink1 = featureToLink1;
+    }
+
+    public Feature getFeatureToLink2() {
+        return featureToLink2;
+    }
+
+    public void setFeatureToLink2(Feature featureToLink2) {
+        this.featureToLink2 = featureToLink2;
+    }
+
+    public Range getRangeFeatureLinked1() {
+        return rangeFeatureLinked1;
+    }
+
+    public void setRangeFeatureLinked1(Range rangeFeatureLinked1) {
+        this.rangeFeatureLinked1 = rangeFeatureLinked1;
+    }
+
+    public Range getRangeFeatureLinked2() {
+        return rangeFeatureLinked2;
+    }
+
+    public void setRangeFeatureLinked2(Range rangeFeatureLinked2) {
+        this.rangeFeatureLinked2 = rangeFeatureLinked2;
+    }
+
+    public List<SelectItem> getFeatureToLink1RangeSelectItems() {
+        return featureToLink1RangeSelectItems;
+    }
+
+    public void setFeatureToLink1RangeSelectItems(List<SelectItem> featureToLink1RangeSelectItems) {
+        this.featureToLink1RangeSelectItems = featureToLink1RangeSelectItems;
+    }
+
+    public List<SelectItem> getFeatureToLink2RangeSelectItems() {
+        return featureToLink2RangeSelectItems;
+    }
+
+    public void setFeatureToLink2RangeSelectItems(List<SelectItem> featureToLink2RangeSelectItems) {
+        this.featureToLink2RangeSelectItems = featureToLink2RangeSelectItems;
     }
 
     // Confidence

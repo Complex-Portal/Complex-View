@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+                xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
+
+                template="/main_template.xhtml">
+
+    <ui:define name="content">
+
+        <h:panelGroup rendered="#{participantController.featureToLink1 == null or participantController.featureToLink2 == null}">
+            No features to link!
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{participantController.featureToLink1 != null and participantController.featureToLink2 != null}">
+
+            <ia:panelDialogLayout width="600px">
+                <f:facet name="buttonBar">
+                    <h:panelGroup>
+                        <p:commandButton value="Link features" actionListener="#{participantController.linkRanges}"
+                                         action="/curate/participant" ajax="false"/>
+                        <p:commandLink value="Cancel" actionListener="#{participantController.cancelFeatureLinkage}"
+                                       action="/curate/participant" ajax="false"/>
+                    </h:panelGroup>
+                </f:facet>
+
+                <p>Choose the ranges to be linked:</p>
+
+                <h:panelGroup id="feature1">
+                    <b>Feature 1: </b> #{participantController.featureToLink1.shortLabel}
+
+                    <h:selectOneRadio id="range1Selector" value="#{participantController.rangeFeatureLinked1}" converter="rangeConverter">
+                        <f:selectItems value="#{participantController.featureToLink1RangeSelectItems}"/>
+                    </h:selectOneRadio>
+                </h:panelGroup>
+
+                <h:panelGroup id="feature2">
+                    <b>Feature 2: </b> #{participantController.featureToLink2.shortLabel}
+
+                    <h:selectOneRadio id="range2Selector" value="#{participantController.rangeFeatureLinked2}" converter="rangeConverter">
+                        <f:selectItems value="#{participantController.featureToLink2RangeSelectItems}"/>
+                    </h:selectOneRadio>
+                </h:panelGroup>
+
+            </ia:panelDialogLayout>
+
+        </h:panelGroup>
+    </ui:define>
+
+</ui:composition>

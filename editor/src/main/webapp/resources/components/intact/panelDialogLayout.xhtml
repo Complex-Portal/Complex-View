@@ -9,6 +9,7 @@
 
     <!-- INTERFACE -->
     <composite:interface>
+        <composite:attribute name="width" default="100%"/>
         <composite:facet name="buttonBar"/>
     </composite:interface>
 
@@ -17,7 +18,7 @@
 
         <composite:insertChildren/>
 
-            <div class="dialogButtonBar">
+            <div class="dialogButtonBar" style="width: #{cc.attrs.width}}">
                 <composite:renderFacet name="buttonBar"/>
             </div>
 

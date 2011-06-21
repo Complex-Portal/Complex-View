@@ -70,7 +70,13 @@
             <f:facet name="header">
                 <h:outputText value="Linked"/>
             </f:facet>
-            <h:outputText value="#{feature.boundDomain != null? 'Yes' : 'No'}"/>
+            <h:selectBooleanCheckbox value="#{rangeWrapper.range.linked}">
+                <ed:curation/>
+             </h:selectBooleanCheckbox>
+
+            <p:commandLink onclick="load_feature.show()" action="#{curateController.edit(rangeWrapper.range.feature.boundDomain)}"
+                           rendered="#{rangeWrapper.range.linked and rangeWrapper.range.feature.boundDomain != null}"
+                           value="#{rangeWrapper.range.feature.boundDomain.shortLabel}" ajax="false"/>
         </p:column>
         <p:column>
             <f:facet name="header">

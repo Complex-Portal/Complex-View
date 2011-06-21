@@ -18,7 +18,32 @@
             </h:panelGroup>
 
             <p:dataTable var="feature" value="#{value}" emptyMessage="No features defined"
-                         paginator="#{value.size() > 10}" rows="10">
+                         paginator="#{value.size() > 10}" rows="10"
+                         selection="#{participantController.selectedFeatures}">
+
+                 <f:facet name="header">
+                        <h:panelGroup>
+                            Selected:&#160;
+                            <p:commandButton value="Link" action="#{participantController.linkSelectedFeatures}"
+                                             ajax="false" disabled="#{value.size() lt 2}"/>
+                            &#160;|&#160;
+                            <p:commandButton value="Delete" onclick="confirmation.show()" type="button"/>
+
+                            <p:confirmDialog message="Are you sure you want to delete the suckers?"
+                                             modal="true"
+                                             header="Feature deletion" severity="alert" widgetVar="confirmation">
+
+                                <p:commandButton value="Yes Sure" update="messageComponent"
+                                                 oncomplete="confirmation.hide()"
+                                                 actionListener="#{participantController.deleteSelectedFeatures}"
+                                                 ajax="false"/>
+                                <p:commandButton value="Not Yet" onclick="confirmation.hide()" type="button"/>
+
+                            </p:confirmDialog>
+                        </h:panelGroup>
+                    </f:facet>
+
+                <p:column selectionMode="multiple"/>
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="AC"/>
@@ -60,14 +85,14 @@
                     <f:facet name="header">
                         <h:outputText value="Linked feature"/>
                     </f:facet>
-                    <h:outputText value="#{feature.boundDomain == null ? 'no' : 'yes'}"/>
+                    <h:outputText value="#{feature.boundDomain == null ? '-' : feature.boundDomain.shortLabel}"/>
                 </p:column>
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="Range(s)"/>
                     </f:facet>
                     <ui:repeat value="#{feature.ranges}" var="range" varStatus="status">
-                        <h:outputText value="#{range}"/>
+                        <h:outputText value="#{range.toString()} #{range.linked? ' (linked)' : ''}"/>
                         <p:outputPanel rendered="#{status.index lt (status.end - 1)}">
                             <br/>
                         </p:outputPanel>
