@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.editor.controller.misc;
 
 import uk.ac.ebi.intact.model.IntactObject;
 
+import javax.faces.model.DataModel;
 import java.util.Collection;
 
 /**
@@ -30,9 +31,9 @@ public class QueryMacro {
     private String name;
     private String query;
 
-    private Collection<? extends IntactObject> results;
+    private DataModel results;
 
-    public QueryMacro(String name, String query, Collection<? extends IntactObject> results) {
+    public QueryMacro(String name, String query, DataModel results) {
         this.name = name;
         this.query = query;
         this.results = results;
@@ -54,11 +55,11 @@ public class QueryMacro {
         this.query = query;
     }
 
-    public Collection<? extends IntactObject> getResults() {
+    public DataModel getResults() {
         return results;
     }
 
-    public void setResults(Collection<? extends IntactObject> results) {
+    public void setResults(DataModel results) {
         this.results = results;
     }
 }

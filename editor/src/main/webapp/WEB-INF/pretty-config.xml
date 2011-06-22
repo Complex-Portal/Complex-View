@@ -75,4 +75,10 @@
         <view-id>/curate/cvobject.jsf</view-id>
     </url-mapping>
 
+
+    <url-mapping id="querymacro">
+        <pattern value="/notes/query/#{macroName}" />
+        <view-id>/notes/querymacro.jsf</view-id>
+    </url-mapping>
+
 </pretty-config>

@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.misc;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
+import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -28,11 +29,13 @@ import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.admin.UserAdminController;
+import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.model.DataModel;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
@@ -174,13 +177,12 @@ public class MyNotesController extends JpaAwareController {
                         outcome = "[only select queries allowed]";
                     } else {
                         try {
-                            Collection<? extends IntactObject> results = findResults(macroStatement);
+                            DataModel results = createDataModel(macroStatement);
 
                             QueryMacro queryMacro = new QueryMacro(macroName, macroStatement, results);
                             queryMacros.add(queryMacro);
 
-                            outcome = "<a href=\"#\" onclick=\"ia_toggleDisplayById(''qm_"+macroName+"'')\">[query: "+macroName+"]</a><br/>" +
-                                    "<div id=\"qm_"+macroName+"\" style=\"display:none\"><iframe src=\""+absoluteContextPath+"/notes/querymacro.jsf?macroName="+macroName+"\" style=\"width:95%; height: 600px\"></iframe></div>";
+                            outcome = "<a href=\""+absoluteContextPath+"/notes/query/"+macroName+"\">[query: "+macroName+"]</a><br/>";
                         } catch (Exception e) {
                             addErrorMessage("Cannot run query: "+macroName, e.getMessage());
                             outcome = "[query cannot be run: "+macroName+"]";
@@ -198,12 +200,9 @@ public class MyNotesController extends JpaAwareController {
         return outcome;
     }
 
-    private Collection<? extends IntactObject> findResults(String hqlQuery) {
-        EntityManager em = getCoreEntityManager();
-        Query query = em.createQuery(hqlQuery);
-        query.setMaxResults(MAX_RESULTS);
-
-        return query.getResultList();
+    private DataModel createDataModel(String hqlQuery) {
+        LazyDataModel dataModel = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(), hqlQuery);
+        return dataModel;
     }
 
     public String getFormattedNotes() {

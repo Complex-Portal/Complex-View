@@ -7,10 +7,11 @@
 
 
         <p:dataTable var="intactObject" value="#{intactObjects}"
-                     rendered="#{intactObjects != null}"
                      rows="10"
+                     lazy="true" dynamic="true"
                      paginator="true"
                      paginatorAlwaysVisible="false"
+                     paginatorPosition="top"
                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                      rowsPerPageTemplate="10,25,50">
             <p:column>

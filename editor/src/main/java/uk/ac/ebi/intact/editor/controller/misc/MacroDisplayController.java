@@ -28,7 +28,7 @@ import javax.faces.event.ComponentSystemEvent;
  * @version $Id$
  */
 @Controller
-@Scope("request")
+@Scope( "session" )
 public class MacroDisplayController extends JpaAwareController {
 
     @Autowired

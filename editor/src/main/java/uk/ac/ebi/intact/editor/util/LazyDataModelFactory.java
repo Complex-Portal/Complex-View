@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.editor.util;
 
 import com.google.common.collect.Maps;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.LazyDataModel;
@@ -45,6 +46,13 @@ public class LazyDataModelFactory {
         };
     }
 
+    public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query ) {
+        String countQuery = query.substring(query.indexOf("from"), query.length());
+        countQuery = "select count(*) "+countQuery;
+
+        return createLazyDataModel( entityManager, query, countQuery, Maps.<String, String>newHashMap() );
+    }
+
     public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query, String countQuery ) {
         return createLazyDataModel( entityManager, query, countQuery, Maps.<String, String>newHashMap() );
     }
@@ -54,7 +62,7 @@ public class LazyDataModelFactory {
                                                      String countQuery,
                                                      Map<String, String> params ) {
 
-        log.debug( "HQL Count: " + countQuery );
+        log.debug( "HQL Count Query: " + countQuery );
 
         int totalNumRows = 0;
         try {
@@ -68,6 +76,9 @@ public class LazyDataModelFactory {
             }
 
             totalNumRows = ( ( Long ) q.getSingleResult() ).intValue();
+
+            log.debug( "HQL Count: " + totalNumRows );
+
         } catch (Throwable e) {
             throw new IllegalArgumentException("Problem running query: "+query, e);
         }
