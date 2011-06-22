@@ -887,7 +887,7 @@ ParticipantDrawer = function(interactionInformation){
 						x1 = 10;
 					}
 
-					var rangeDifference = (legendItemWidth/4) / self._interactionInformation._pxPerAA;
+					var rangeDifference = legendItemWidth/4;
 
 					if (!(range.begin === undefined)) {
 						range.begin.position = x1;
