@@ -230,7 +230,11 @@ public class InteractionController extends ParameterizableObjectController {
             // publication does have experiments so we can propose them
             if (!pub.getExperiments().isEmpty()){
                 for ( Experiment e : pub.getExperiments() ) {
-                    experimentSelectItems.add(new SelectItem(e, e.getShortLabel(), e.getFullName()));
+                    String description = e.getShortLabel()+" | "+
+                            (e.getCvInteraction() != null? e.getCvInteraction().getShortLabel()+", " : "")+
+                            (e.getCvIdentification() != null? e.getCvIdentification().getShortLabel()+", " : "")+
+                            (e.getBioSource() != null? e.getBioSource().getShortLabel() : "");
+                    experimentSelectItems.add(new SelectItem(e, description, e.getFullName()));
                 }
             }
         }
