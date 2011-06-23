@@ -27,8 +27,8 @@ ParticipantDrawer = function(interactionInformation){
     this.drawInteractors = function(){
         var self = this;
         var y = this._interactionInformation._initY;
-        explanationText = self._shapeDrawer.getText(self._interactionInformation._proteinX, y - 10, "To display a single interaction, please click on it or the linked features.\n" +
-        "Click again to display all interactions.");
+        explanationText = self._shapeDrawer.getText(self._interactionInformation._proteinX, y - 10,
+        "To display a single interacting region click on it and click again to display all interacting regions.");
         explanationText.hide();
         
         $(self._interactionInformation._interactionInformation.interactions).each(function(){

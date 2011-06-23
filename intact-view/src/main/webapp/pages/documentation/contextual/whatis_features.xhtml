@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html">
+
+        <h1>Representation of Experimental Features</h1>
+
+            <p>
+            This section shows the graphical representation of experimental features, where
+            each participant is represented as a white rectangle with a black border and with it's features attached.
+            All categories for the different feature types are represented in the right side of the legend.
+            The left side of the legend dynamically shows the <h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?termId=MI%3A0333"
+               target="_blank">range statuses</h:outputLink> occuring in the shown interaction.
+            These are the possible range statuses:
+            </p>
+
+            <h:panelGroup style="text-align: center">
+                    <h:graphicImage style="border-style: solid;border-width:thin" alt="sourceExp" url="/images/documentation/range-statuses.png"
+                              title="Range Type Representation"/>
+            </h:panelGroup>
+
+
+            <h2>Interacting with the widget</h2>
+                Hover over a feature to see more information in a tooltip.
+                <br/>
+                To display a single interacting region click on it and click again to display all interacting regions.
+
+</ui:composition>
