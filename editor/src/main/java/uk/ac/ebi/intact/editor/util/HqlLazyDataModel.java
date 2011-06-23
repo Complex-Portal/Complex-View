@@ -36,6 +36,10 @@ public class HqlLazyDataModel<T> extends LazyDataModel<T> {
     private String hqlQuery;
     private Map<String, String> queryParameters;
 
+    private String initialSortField;
+    private boolean initialSortOrder;
+    private String var;
+
     public HqlLazyDataModel( EntityManager entityManager, String hqlQuery, Map<String, String> params ) {
         super();
         this.entityManager = entityManager;
@@ -43,12 +47,28 @@ public class HqlLazyDataModel<T> extends LazyDataModel<T> {
         this.queryParameters = params;
     }
 
+    public HqlLazyDataModel( EntityManager entityManager, String hqlQuery, Map<String, String> params, String initialSortField, boolean initialSortOrder, String var) {
+        this(entityManager, hqlQuery, params);
+        this.initialSortField = initialSortField;
+        this.initialSortOrder = initialSortOrder;
+        this.var = var;
+    }
+
 
     public List<T> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
         log.debug("Loading the lazy data between "+first+" and "+(first+pageSize));
 
-        Query query = entityManager.createQuery( hqlQuery );
-        log.debug( "HQL: " + hqlQuery );
+        String queryToRun = hqlQuery;
+
+        if (sortField != null) {
+            queryToRun = queryToRun+" order by "+var+"."+sortField+" "+(sortOrder? "asc" : "desc");
+        } else if (initialSortField != null) {
+            queryToRun = queryToRun+" order by "+var+"."+initialSortField+" "+(initialSortOrder? "asc" : "desc");
+        }
+
+        log.debug("HQL: " + queryToRun);
+
+        Query query = entityManager.createQuery( queryToRun );
 
         if ( queryParameters != null ) {
             for ( Map.Entry<String, String> entry : queryParameters.entrySet() ) {

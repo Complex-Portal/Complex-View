@@ -16,10 +16,7 @@
                  paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                  rowsPerPageTemplate="10,25,50"
                  rowStyleClass="#{publicationController.isAccepted(publication)? 'ia-accepted' : publicationController.isToBeReviewed(publication)? 'ia-to-be-reviewed' : 'ia-not-accepted'}">
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="Publication ID"/>
-            </f:facet>
+        <p:column headerText="Publication ID" sortBy="#{publication.shortLabel}">
             <ot:separateConversationContext>
                 <h:link outcome="/curate/publication" value="#{publication.shortLabel}" includeViewParams="true">
                     <f:param name="ac" value="#{publication.ac}"/>
@@ -31,40 +28,22 @@
                 <ui:param name="ao" value="#{publication}"/>
             </ui:include>
         </p:column>
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="Title"/>
-            </f:facet>
+        <p:column headerText="Title" sortBy="#{publication.fullName}">
             <h:outputText value="#{publication.fullName}"/>
         </p:column>
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="# Exps."/>
-            </f:facet>
+        <p:column headerText="# Exps.">
             <h:outputText value="#{publicationController.countExperiments(publication)}"/>
         </p:column>
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="# Inter."/>
-            </f:facet>
+        <p:column headerText="# Inter.">
             <h:outputText value="#{publicationController.countInteractions(publication)}"/>
         </p:column>
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="Creator"/>
-            </f:facet>
+        <p:column headerText="Creator" sortBy="#{publication.creator}">
             <h:outputText value="#{publication.creator}"/>
         </p:column>
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="Created"/>
-            </f:facet>
+        <p:column headerText="Created" sortBy="#{publication.created}">
             <h:outputText value="#{publication.created}"/>
         </p:column>
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="Updated"/>
-            </f:facet>
+        <p:column headerText="Updated" sortBy="#{publication.updated}">
             <h:outputText value="#{publication.updated}"/>
         </p:column>
     </p:dataTable>

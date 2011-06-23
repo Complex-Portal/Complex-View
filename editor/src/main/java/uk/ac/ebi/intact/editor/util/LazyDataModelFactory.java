@@ -19,6 +19,7 @@ import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.search.SortField;
 import org.primefaces.model.LazyDataModel;
 
 import javax.persistence.EntityManager;
@@ -46,21 +47,36 @@ public class LazyDataModelFactory {
         };
     }
 
-    public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query ) {
+    public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query) {
+        return createLazyDataModel( entityManager, query, Maps.<String, String>newHashMap(), null, null, false  );
+    }
+
+    public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query, String countQuery, Map<String, String> params) {
+        return createLazyDataModel( entityManager, query, countQuery, params, null, null, false );
+    }
+
+    public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query, String var, String sortField, boolean sortOrder) {
+        return createLazyDataModel( entityManager, query, Maps.<String, String>newHashMap(), var, sortField, sortOrder );
+    }
+
+    public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query, Map<String, String> params, String var, String sortField, boolean sortOrder) {
         String countQuery = query.substring(query.indexOf("from"), query.length());
         countQuery = "select count(*) "+countQuery;
 
-        return createLazyDataModel( entityManager, query, countQuery, Maps.<String, String>newHashMap() );
+        return createLazyDataModel( entityManager, query, countQuery, params, var, sortField, sortOrder );
     }
 
     public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query, String countQuery ) {
-        return createLazyDataModel( entityManager, query, countQuery, Maps.<String, String>newHashMap() );
+        return createLazyDataModel( entityManager, query, countQuery, Maps.<String, String>newHashMap(), null, null, false);
     }
 
     public static LazyDataModel createLazyDataModel( EntityManager entityManager,
                                                      String query,
                                                      String countQuery,
-                                                     Map<String, String> params ) {
+                                                     Map<String, String> params,
+                                                     String var,
+                                                     String sortField,
+                                                     boolean sortOrder) {
 
         log.debug( "HQL Count Query: " + countQuery );
 
@@ -83,14 +99,17 @@ public class LazyDataModelFactory {
             throw new IllegalArgumentException("Problem running query: "+query, e);
         }
 
-        return createLazyDataModel( entityManager, query, totalNumRows, params );
+        return createLazyDataModel( entityManager, query, totalNumRows, params, var, sortField, sortOrder );
     }
 
     public static LazyDataModel createLazyDataModel( EntityManager entityManager,
                                                      String query,
                                                      int totalNumRows,
-                                                     Map<String, String> params ) {
-        LazyDataModel lazyDataModel = new HqlLazyDataModel( entityManager, query, params );
+                                                     Map<String, String> params,
+                                                     String var,
+                                                     String sortField,
+                                                     boolean sortOrder) {
+        LazyDataModel lazyDataModel = new HqlLazyDataModel( entityManager, query, params, sortField, sortOrder, var );
         lazyDataModel.setPageSize(10);
         lazyDataModel.setRowCount(totalNumRows);
 

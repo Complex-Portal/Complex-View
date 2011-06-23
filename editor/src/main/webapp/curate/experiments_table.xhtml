@@ -24,10 +24,7 @@
                      paginatorAlwaysVisible="false"
                      rows="10" dynamic="#{lazy}" lazy="#{lazy}" paginatorPosition="bottom"
                      rowStyleClass="#{experimentController.isAccepted(experiment)? 'ia-accepted' : experimentController.isToBeReviewed(experiment)? 'ia-to-be-reviewed' : 'ia-not-accepted'}">
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="AC"/>
-                </f:facet>
+            <p:column headerText="AC" sortBy="#{experiment.ac}">
                 <h:outputText value="#{experiment.ac}"
                               styleClass="#{changesController.isDeletedAc(experiment.ac)? 'intact-deleted' : ''}"/>
             </p:column>
@@ -36,11 +33,7 @@
                     <ui:param name="ao" value="#{experiment}"/>
                 </ui:include>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Shortlabel"/>
-                </f:facet>
-
+            <p:column headerText="Shortlabel" sortBy="#{experiment.shortLabel}">
                 <h:panelGroup rendered="#{not changesController.isDeletedAc(experiment.ac)}">
                     <p:commandLink onclick="load_exp.show()" action="#{curateController.edit(experiment)}"
                                    style="#{experiment.ac == null? 'color:blue' :''}"
@@ -50,10 +43,7 @@
                     <h:outputText value="#{experiment.shortLabel}" style="color:red; text-decoration:line-through"/>
                 </h:panelGroup>
             </p:column>
-             <p:column rendered="#{readonly}">
-                <f:facet name="header">
-                    <h:outputText value="Publication ID"/>
-                </f:facet>
+             <p:column rendered="#{readonly}" headerText="Publication ID" sortBy="#{experiment.publication}">
                 <ot:separateConversationContext>
                     <h:link outcome="/curate/publication" value="#{experiment.publication.shortLabel}"
                             includeViewParams="true">
@@ -61,36 +51,21 @@
                     </h:link>
                 </ot:separateConversationContext>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Interaction detection method"/>
-                </f:facet>
+            <p:column headerText="Interaction detection method">
                 <h:outputText value="#{experiment.cvInteraction != null? experiment.cvInteraction.shortLabel : ''}"/>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Participant detection method"/>
-                </f:facet>
+            <p:column headerText="Participant detection method">
                 <h:outputText
                         value="#{experiment.cvIdentification != null? experiment.cvIdentification.shortLabel : ''}"/>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Host organism"/>
-                </f:facet>
+            <p:column headerText="Host organism">
                 <h:outputText
                         value="#{experiment.bioSource != null? experiment.bioSource.shortLabel : ''} (#{experiment.bioSource != null? experiment.bioSource.taxId : ''})"/>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="# Interactions"/>
-                </f:facet>
+            <p:column headerText="# Interactions">
                 <h:outputText value="#{experimentController.countInteractionsByExperimentAc(experiment.ac)}"/>
             </p:column>
-            <p:column rendered="#{not readonly}">
-                <f:facet name="header">
-                    <h:outputText value="Actions"/>
-                </f:facet>
+            <p:column rendered="#{not readonly}" headerText="Actions">
                 <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
                                actionListener="#{changesController.markToDelete(experiment, publicationController.publication)}"
                                update="experimentsTable,growl,changesPanel,messagesComponent,unsavedChangesInfo"

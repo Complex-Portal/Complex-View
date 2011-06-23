@@ -47,16 +47,13 @@ public class DashboardController extends JpaAwareController {
         final String userId = userSessionController.getCurrentUser().getLogin().toUpperCase();
 
         allPublications = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                    "select p from Publication p order by p.updated desc",
-                                                                    "select count(p) from Publication p" );
+                                                                    "select p from Publication p", "p", "updated", false);
         
         createdByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                    "select p from Publication p where p.creator = '"+userId+"' order by p.updated desc",
-                                                                    "select count(p) from Publication p where p.creator = '"+userId+"'" );
+                                                                    "select p from Publication p where p.creator = '"+userId+"'", "p", "updated", false);
 
         updatedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                    "select p from Publication p where p.updator = '"+userId+"' order by p.updated desc",
-                                                                    "select count(p) from Publication p where p.updator = '"+userId+"'" );
+                                                                    "select p from Publication p where p.updator = '"+userId+"'", "p", "updated", false);
     }
 
     public void firePanicException(ActionEvent evt) {

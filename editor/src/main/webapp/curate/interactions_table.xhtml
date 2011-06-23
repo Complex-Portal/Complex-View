@@ -21,10 +21,7 @@
         <p:dataTable var="interaction" value="#{value}"
                      emptyMessage="No interactions found" paginatorPosition="both"
                      paginator="true" paginatorAlwaysVisible="false" rows="10" lazy="true">
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="AC"/>
-                </f:facet>
+            <p:column headerText="AC" sortBy="#{interaction.ac}">
                     <h:outputText value="#{interaction.ac}" styleClass="#{changesController.isDeletedAc(interaction.ac)? 'intact-deleted' : ''}"/>
             </p:column>
             <p:column>
@@ -32,10 +29,7 @@
                     <ui:param name="ao" value="#{interaction}"/>
                 </ui:include>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Shortlabel"/>
-                </f:facet>
+            <p:column headerText="Shortlabel" sortBy="#{interaction.shortLabel}">
                 <h:panelGroup rendered="#{not changesController.isDeletedAc(interaction.ac)}">
                     <p:commandLink onclick="load_int.show()" action="/curate/interaction?faces-redirect=true&amp;includeViewParams=true"
                                style="#{interaction.ac == null? 'color:blue' :''}"
@@ -47,28 +41,16 @@
                     <h:outputText value="#{interaction.shortLabel}" style="color:red; text-decoration:line-through"/>
                 </h:panelGroup>
             </p:column>
-            <p:column rendered="#{showExperiments}">
-                <f:facet name="header">
-                    <h:outputText value="Experiment"/>
-                </f:facet>
+            <p:column headerText="Experiment" rendered="#{showExperiments}">
                 <h:outputText value="#{not empty interaction.experiments? interaction.experiments[0].shortLabel : ''}"/>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Type"/>
-                </f:facet>
+            <p:column headerText="Type">
                 <h:outputText value="#{interaction.cvInteractionType.shortLabel}"/>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="# Participants"/>
-                </f:facet>
+            <p:column headerText="# Participants">
                 <h:outputText value="#{interactionController.countParticipantsByInteraction(interaction)}"/>
             </p:column>
-            <p:column rendered="#{not readonly}">
-                <f:facet name="header">
-                    <h:outputText value="Actions"/>
-                </f:facet>
+            <p:column rendered="#{not readonly}" headerText="Actions">
                 <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
                                actionListener="#{changesController.markToDeleteInteraction(interaction, interaction.experiments)}"
                                update="interactionTable,growl,changesPanel,messagesComponent,unsavedChangesInfo" rendered="#{not changesController.isDeletedAc(interaction.ac)}"/>

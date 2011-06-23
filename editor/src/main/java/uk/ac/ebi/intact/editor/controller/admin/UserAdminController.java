@@ -76,8 +76,7 @@ public class UserAdminController extends AbstractUserController {
     public void loadData() {
         log.debug( "AbstractUserController.loadData" );
         allUsers = LazyDataModelFactory.createLazyDataModel( getUsersEntityManager(),
-                "select u from User u order by u.login asc",
-                "select count(u) from User u" );
+                "select u from User u", "u", "login", true );
     }
 
 

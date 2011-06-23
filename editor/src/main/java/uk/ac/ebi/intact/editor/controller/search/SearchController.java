@@ -250,8 +250,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
                                                               "      or lower(i.identifier) like :query " +
-                                                              "      or lower(x.primaryId) like :query ) " +
-                                                              "order by i.updated desc",
+                                                              "      or lower(x.primaryId) like :query ) ",
 
                                                               "select count(distinct i) " +
                                                               "from CvObject i left join i.xrefs as x " +
@@ -261,7 +260,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "      or lower(i.fullName) like :query " +
                                                               "      or lower(x.primaryId) like :query )",
 
-                                                              params );
+                                                              params, "i", "updated", false);
 
         log.info( "CvObject found: " + cvobjects.getRowCount() );
     }
@@ -282,8 +281,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "where    ( i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(x.primaryId) like :query ) " +
-                                                              "      and i.cvInteractorType.identifier <> 'MI:0317' " +
-                                                              "order by i.updated desc",
+                                                              "      and i.cvInteractorType.identifier <> 'MI:0317'",
 
                                                               "select count(distinct i) " +
                                                               "from InteractorImpl i left join i.xrefs as x " +
@@ -292,7 +290,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "      or lower(x.primaryId) like :query )" +
                                                               "     and i.cvInteractorType.identifier <> 'MI:0317'",
 
-                                                              params );
+                                                              params, "i", "updated", false );
 
         log.info( "Molecules found: " + molecules.getRowCount() );
     }
@@ -334,8 +332,7 @@ public class SearchController extends AnnotatedObjectController {
                                                                  "from InteractionImpl i left join i.xrefs as x " +
                                                                  "where    i.ac = :ac " +
                                                                  "      or lower(i.shortLabel) like :query " +
-                                                                 "      or lower(x.primaryId) like :query " +
-                                                                 "order by i.updated desc",
+                                                                 "      or lower(x.primaryId) like :query ",
 
                                                                  "select count(i.ac) " +
                                                                  "from InteractionImpl i left join i.xrefs as x " +
@@ -343,7 +340,7 @@ public class SearchController extends AnnotatedObjectController {
                                                                  "      or lower(i.shortLabel) like :query " +
                                                                  "      or lower(x.primaryId) like :query ",
 
-                                                                 params );
+                                                                 params, "i", "updated", false );
 
         log.info( "Interactions found: " + interactions.getRowCount() );
     }
@@ -382,8 +379,7 @@ public class SearchController extends AnnotatedObjectController {
                                                                 "from Experiment e left join e.xrefs as x " +
                                                                 "where    e.ac = :ac " +
                                                                 "      or lower(e.shortLabel) like :query " +
-                                                                "      or lower(x.primaryId) like :query " +
-                                                                "order by e.updated desc",
+                                                                "      or lower(x.primaryId) like :query ",
 
                                                                 "select count(distinct e) " +
                                                                 "from Experiment e left join e.xrefs as x " +
@@ -391,7 +387,7 @@ public class SearchController extends AnnotatedObjectController {
                                                                 "      or lower(e.shortLabel) like :query " +
                                                                 "      or lower(x.primaryId) like :query ",
 
-                                                                params );
+                                                                params, "e", "updated", false );
 
         log.info( "Experiment found: " + experiments.getRowCount() );
     }
@@ -411,8 +407,7 @@ public class SearchController extends AnnotatedObjectController {
                                                                  "where    p.ac = :ac " +
                                                                  "      or lower(p.shortLabel) like :query " +
                                                                  "      or lower(p.fullName) like :query " +
-                                                                 "      or lower(x.primaryId) like :query " +
-                                                                 "order by p.updated desc",
+                                                                 "      or lower(x.primaryId) like :query ",
 
                                                                  "select count(distinct p) " +
                                                                  "from Publication p left join p.xrefs as x " +
@@ -421,7 +416,7 @@ public class SearchController extends AnnotatedObjectController {
                                                                  "      or lower(p.fullName) like :query " +
                                                                  "      or lower(x.primaryId) like :query ",
 
-                                                                 params );
+                                                                 params, "p", "updated", false );
 
         log.info( "Publications found: " + publications.getRowCount() );
     }
@@ -440,8 +435,7 @@ public class SearchController extends AnnotatedObjectController {
                                                                  "where    p.ac = :ac " +
                                                                  "      or lower(p.shortLabel) like :query " +
                                                                  "      or lower(p.fullName) like :query " +
-                                                                 "      or lower(x.primaryId) like :query " +
-                                                                 "order by p.updated desc",
+                                                                 "      or lower(x.primaryId) like :query ",
 
                                                                  "select count(distinct p) " +
                                                                  "from Feature p left join p.xrefs as x " +
@@ -450,7 +444,7 @@ public class SearchController extends AnnotatedObjectController {
                                                                  "      or lower(p.fullName) like :query " +
                                                                  "      or lower(x.primaryId) like :query ",
 
-                                                                 params );
+                                                                 params, "p", "updated", false);
 
         log.info( "Features found: " + features.getRowCount() );
     }
@@ -469,8 +463,7 @@ public class SearchController extends AnnotatedObjectController {
                                                                  "from BioSource b " +
                                                                  "where    b.ac = :ac " +
                                                                  "      or lower(b.shortLabel) like :query " +
-                                                                 "      or lower(b.taxId) like :query " +
-                                                                 "order by b.updated desc",
+                                                                 "      or lower(b.taxId) like :query ",
 
                                                                  "select count(distinct b) " +
                                                                  "from BioSource b " +
@@ -478,7 +471,7 @@ public class SearchController extends AnnotatedObjectController {
                                                                  "      or lower(b.shortLabel) like :query " +
                                                                  "      or lower(b.taxId) like :query ",
 
-                                                                 params );
+                                                                 params, "b", "updated", false);
 
         log.info( "Organisms found: " + organisms.getRowCount() );
     }

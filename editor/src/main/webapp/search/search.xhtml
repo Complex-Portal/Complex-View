@@ -131,10 +131,7 @@
             <p:dataTable id="searchMoleculeTable" var="molecule" value="#{searchController.molecules}"
                          paginator="#{searchController.molecules.rowCount > 10}"
                          rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="AC"/>
-                    </f:facet>
+                <p:column headerText="AC">
                     <h:link outcome="/curate/interactor" value="#{molecule.ac}" includeViewParams="true">
                         <f:param name="ac" value="#{molecule.ac}"/>
                     </h:link>
@@ -148,28 +145,16 @@
                                         title="No Uniprot Update"/>
                     </h:panelGroup>
                 </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Type"/>
-                    </f:facet>
+                <p:column headerText="Type">
                     <h:outputText value="#{molecule.cvInteractorType.shortLabel}"/>
                 </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Name"/>
-                    </f:facet>
+                <p:column headerText="Name" sortBy="#{molecule.shortLabel}">
                     <h:outputText value="#{molecule.shortLabel}"/>
                 </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Identity"/>
-                    </f:facet>
+                <p:column headerText="Identity">
                     <h:outputText value="#{searchController.getIdentityXref( molecule )}"/>
                 </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="#Interactions"/>
-                    </f:facet>
+                <p:column headerText="# Interactions">
                     <h:outputText value="#{searchController.countInteractionsByMoleculeAc( molecule )}"/>
                 </p:column>
             </p:dataTable>
@@ -182,10 +167,7 @@
               <p:dataTable id="searchCvObjectTable" var="cvobject" value="#{searchController.cvobjects}"
                          paginator="#{searchController.cvobjects.rowCount > 10}"
                          rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Name"/>
-                    </f:facet>
+                <p:column headerText="Name" sortBy="#{cvobject.shortLabel}">
                     <h:link outcome="/curate/cvobject" value="#{cvobject.shortLabel}" includeViewParams="true">
                         <f:param name="ac" value="#{cvobject.ac}"/>
                     </h:link>
@@ -195,22 +177,13 @@
                           <ui:param name="ao" value="#{cvobject}"/>
                       </ui:include>
                   </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Type"/>
-                    </f:facet>
+                <p:column headerText="Type">
                     <h:outputText value="#{cvobject.class.simpleName}"/>
                 </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Identity"/>
-                    </f:facet>
+                <p:column headerText="Identifier" sortBy="#{cvobject.identifier}">
                     <h:outputText value="#{cvobject.identifier}"/>
                 </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="AC"/>
-                    </f:facet>
+                <p:column headerText="AC" sortBy="#{cvobject.ac}">
                     <h:outputText value="#{cvobject.ac}"/>
                 </p:column>
             </p:dataTable>
@@ -223,12 +196,9 @@
               <p:dataTable id="searchFeaturesTable" var="feature" value="#{searchController.features}"
                          paginator="#{searchController.features.rowCount > 10}"
                          rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="AC"/>
-                    </f:facet>
+                <p:column headerText="Name" sortBy="#{feature.shortLabel}">
                     <ot:separateConversationContext>
-                        <h:link outcome="/curate/feature" value="#{feature.shortLabel}" includeViewParams="true">
+                        <h:link outcome="/curate/feature" value="#{feature.ac}" includeViewParams="true">
                             <f:param name="ac" value="#{feature.ac}"/>
                         </h:link>
                     </ot:separateConversationContext>
@@ -238,10 +208,7 @@
                           <ui:param name="ao" value="#{feature}"/>
                       </ui:include>
                   </p:column>
-                  <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Name"/>
-                    </f:facet>
+                  <p:column headerText="Name" sortBy="#{feature.shortLabel}">
                     <h:outputText value="#{feature.shortLabel}"/>
                 </p:column>
             </p:dataTable>
@@ -254,10 +221,7 @@
               <p:dataTable id="organismFeaturesTable" var="organism" value="#{searchController.organisms}"
                          paginator="#{searchController.organisms.rowCount > 10}"
                          rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Shortlabel"/>
-                    </f:facet>
+                <p:column headerText="Shortlabel" sortBy="#{organism.shortLabel}">
                     <h:link outcome="/curate/organism" value="#{organism.shortLabel}" includeViewParams="true">
                         <f:param name="ac" value="#{organism.ac}"/>
                     </h:link>
@@ -267,22 +231,13 @@
                           <ui:param name="ao" value="#{organism}"/>
                       </ui:include>
                   </p:column>
-                  <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Name"/>
-                    </f:facet>
+                  <p:column headerText="Name" sortBy="#{organism.fullName}">
                     <h:outputText value="#{organism.fullName}"/>
                 </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Tax ID"/>
-                    </f:facet>
+                <p:column headerText="Tax ID" sortBy="#{organism.taxId}">
                     <h:outputText value="#{organism.taxId}"/>
                 </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="AC"/>
-                    </f:facet>
+                <p:column headerText="AC" sortBy="#{organism.ac}">
                     <h:outputText value="#{organism.ac}"/>
                 </p:column>
             </p:dataTable>
