@@ -131,7 +131,8 @@ ParticipantDrawer = function(interactionInformation){
             else {
                 length = interactor.sequence.length;
                 drawLength = length * self._interactionInformation._pxPerAA;
-                lengthText = interactor.sequence.length;
+                lengthText = length;
+				length -= 1;
             }
             
 			var uniProtId = "";
@@ -230,7 +231,7 @@ ParticipantDrawer = function(interactionInformation){
             y = yBottom + 1;
         }
 		
-        if (!(curFeatureTrackObject.annotations === undefined)) {
+		if (!(curFeatureTrackObject.annotations === undefined)) {
             curTracks = curFeatureTrackObject.annotations["bottom"].tracks;
             
             height = self._interactionInformation._positionsOnProtein["bottom"];
@@ -306,7 +307,7 @@ ParticipantDrawer = function(interactionInformation){
                     }
                     if (insert) {
                         var colour = curFeatureType.colour;
-                        var rangeColour = curFeatureType.rangeColour;
+                        var rangeColour = self.getGradientColour(curFeatureType.colour);
                         var opacity = curFeatureType.opacity;
                         var symbol = curFeatureType.symbol;
                         var rangeList = feature.featureRangeList.featureRange;
@@ -381,6 +382,14 @@ ParticipantDrawer = function(interactionInformation){
     }
     
 	
+	// calculate gradient colour
+	this.getGradientColour = function(hexString){
+		var HSL = this._interactionInformation._utils.HEXtoHSL(hexString);
+		HSL[2] += 10;
+		return this._interactionInformation._utils.HSLtoHEX(HSL);
+	}
+	
+	// add given eventHandling function to each feature
 	this.addOnClickHandling = function(interactorId, featureId, coordinates){
 		var self = this;
 		if (!(coordinates.eventHandlingElement === undefined) &&  (typeof self._interactionInformation.options.onFeatureClick == 'function')) {
@@ -788,7 +797,7 @@ ParticipantDrawer = function(interactionInformation){
                                                     this._interactionInformation._legendItemHeight, gap + 1,
                                                     textGap, legendPictureWidth);
 		var itemX = x + legendPictureWidth + textGap;
-        legendHeight += this.drawLegendRangetypeSection(itemX, y, yText, yLine, legendItemWidth, legendHeight, textGap, gap);
+        legendHeight = this.drawLegendRangetypeSection(itemX, y, yText, yLine, legendItemWidth, legendHeight, textGap, gap);
 
 		if(pictureHeight > legendHeight){
 			legendHeight = pictureHeight;
@@ -887,7 +896,7 @@ ParticipantDrawer = function(interactionInformation){
 						x1 = 10;
 					}
 
-					var rangeDifference = legendItemWidth/4;
+					var rangeDifference = (legendItemWidth/4);
 
 					if (!(range.begin === undefined)) {
 						range.begin.position = x1;

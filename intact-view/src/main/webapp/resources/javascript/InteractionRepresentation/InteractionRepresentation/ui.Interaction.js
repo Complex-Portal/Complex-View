@@ -8,6 +8,7 @@
             proxyUrl: '',
             useProxyForData: true,
             useProxyForOntology: true,
+			useProxyForColours: true,
             legendPosition: 'left'
         },
 		
@@ -27,7 +28,9 @@
 		// methods used in all parts of the widget
         _utils: null,
         
-        // - categorizing Identifiers(children of "biological feature" and "experimental feature"), 
+        // - categorizing Identifiers(children of "biological feature" and "experimental feature"),
+		// - if you want to use more than one parent term for a category make that the one 
+		// 	   with an entry in the DAS stylesheet is at first place 
         // - if loadChildren is true, children of these terms will be added to the arrays, containing their parent term
         // - specifying there position on the protein, the term used has to be included in "_positionsOnProtein"
         // - if "identifiers" contains a string instead of an array, all features with an id containing this term will
@@ -35,14 +38,17 @@
 		// - if "symbol" is != "", the default representation will be the symbol provided in a function "draw"+value
 		//   and the range will be represented by a line, otherwise the feature will be represented as a rectangle
 		
-        // colour and rangeColour are needed for the "participantDrawer":
+        // - if "stylesheetTerm" is specified the colour will be loaded from the DAS stylesheet
+		//   else the specified colour is used. Please provide a colour in case the term is not found in the stylesheet
+		
+		_DASStylesheet: 'http://wwwdev.ebi.ac.uk/das-srv/uniprot/das/uniprot/stylesheet',
+		
         _typeCategories: {
             "binding site": {
                 "identifiers": ['MI:0117'],
 				"loadChildren": true,
                 "position": "middle",
 				"colour": "#FAB875",
-				"rangeColour": "#FAC48E",
                 "opacity": "1",
 				"symbol" : ""
             },
@@ -51,7 +57,6 @@
 				"loadChildren": true,
                 "position": "top",
                 "colour": "#99ccff",
-                "rangeColour": "#A5CFFA",
                 "opacity": "1",
 				"symbol" : ""
             },
@@ -59,17 +64,16 @@
                 "identifiers": ['MI:0118'],
 				"loadChildren": true,
                 "position": "bottom",
-				"colour": "#FFC0CB",
-				"rangeColour": "#FFDBE2",
+				"colour": "#EEEEEE",
                 "opacity": 1,
-				"symbol" : ""
+				"symbol" : "",
+				"stylesheetTerm" : "MUTAGEN"
             },
             "isotope": {
                 "identifiers": ['MI:0253'],
 				"loadChildren": true,
                 "position": "top",
                 "colour": "#F2F200",
-                "rangeColour": "",
                 "opacity": "1",
 				"symbol" : "Isotope"
             },
@@ -78,25 +82,23 @@
 				"loadChildren": true,
                 "position": "middle",
                 "colour": "#FF2600",
-                "rangeColour": "#FC6449",
                 "opacity": "1",
 				"symbol" : ""
             },
 			"ptm": {
 				"identifiers": "MOD:",
 				"loadChildren": false,
-				"position": "bottom",
-				"colour": "#68B8B4",
-				"rangeColour": "",
+				"position": "bottom" ,
+				"colour": "#AAAAAA",
 				"opacity": 1,
-				"symbol" : "PTM"
+				"symbol" : "PTM",
+				"stylesheetTerm": "MOD_RES"
 			},
 			"not recognised": {
 				"identifiers": [],
 				"loadChildren": false,
 				"position": "middle",
 				"colour": "#bebebe",
-				"rangeColour": "#d3d3d3",
 				"opacity": 1,
 				"symbol": ""
 			}
@@ -164,7 +166,6 @@
         _init: function(){
 		   // prepare data
             this._load();
-
             var self = this;
 			// if all data is loaded
             $(this.element).bind('load_finished', function(){
@@ -182,13 +183,16 @@
         _load: function(){
             this._finishedRequests["loadData"] = false;
             this._finishedRequests["loadAllIdentifiers"] = false;
-            this._loadData(this.options.jsonUrl);
+			this._finishedRequests["loadColours"] = false;
+            this._loadData();
             this._loadAllIdentifiers();
+			this._loadColours();
         },
 
         // load data of the given json-file
-        _loadData: function(url){
+        _loadData: function(){
             var self = this;
+			var url = this.options.jsonUrl;
 			var proxyUrl = self.options.proxyUrl;
 
             if(!self.options.useProxyForData){
@@ -197,7 +201,7 @@
                     method: 'GET',
                     dataType: 'json',
                     success: function(json){
-                        if(typeof(json) != 'object'){
+						if(typeof(json) != 'object'){
 							json = $.parseJSON(json);
 						}
                         self._interactionInformation = json;
@@ -216,7 +220,7 @@
                     dataType: 'json',
                     data: "url=" + url,
                     success: function(json){
-                        if(typeof(json) != 'object'){
+						if(typeof(json) != 'object'){
 							json = $.parseJSON(json);
 						}
                         self._interactionInformation = json;
@@ -245,7 +249,7 @@
                     url: self._MIOntologyUrl + self._MIParent,
                     method: "GET",
                     success: function(json){
-                        if(typeof(json) != 'object'){
+						if(typeof(json) != 'object'){
 							json = $.parseJSON(json);
 						}
                         self._parseResponse(json);
@@ -264,7 +268,7 @@
                     method: "GET",
                     data: "url=" + url,
                     success: function(json){
-                        if(typeof(json) != 'object'){
+						if(typeof(json) != 'object'){
 							json = $.parseJSON(json);
 						}
                         self._parseResponse(json);
@@ -279,7 +283,44 @@
             }
         },
         
-        // parse the response of the request sent to the EBI-Ontology 
+		_loadColours: function(){
+			var url = this._DASStylesheet;
+			var self = this;
+			if (!this.options.useProxyForColours) {
+				$.ajax({
+					type: "GET",
+					url: url,
+					dataType: "xml",
+					success: function(xml){
+						self._parseColours(xml);
+						self._finishedRequests["loadColours"] = true;
+						self._checkRequests();
+					},
+					error: function(){
+						self._alertError(url);
+					}
+				});
+			}else{
+				var proxyUrl = this.options.proxyUrl;
+				url = escape(url);
+                $.ajax({
+                    url: proxyUrl,
+                    method: "GET",
+                    data: "url=" + url,
+                    success: function(xml){
+						self._parseColours(xml);
+						self._finishedRequests["loadColours"] = true;
+						self._checkRequests();
+                    },
+
+                    error: function(){
+                        self._alertError(url);
+                    }
+                });
+			}
+		},
+		
+		// parse the response of the request sent to the EBI-Ontology 
         // add children of a term to the array containing it
         _parseResponse: function(json){
             var self = this;
@@ -303,6 +344,24 @@
             }
         },
         
+		// get colours from stylesheet for categories with defined search term
+		_parseColours: function(xml){
+			var self = this;
+			for(var key in this._typeCategories ){
+				var curCategory = this._typeCategories[key];
+				if(!(curCategory.stylesheetTerm === undefined)){
+					var searchTerm = "TYPE[id = " + curCategory.stylesheetTerm + "]";
+					var curType = $(xml).find(searchTerm);
+					if (curType.length > 0) {
+						this._typeCategories[key].colour = $(curType).find("BGCOLOR").text();
+					}else{
+						if(this.options.developingMode){
+							console.log("Warning: \"" + curCategory.stylesheetTerm + "\" was not found in style sheet");
+						}
+					}
+				}
+			}
+		},
 		
         // arrange features per protein in tracks, a set of tracks per feature type 
         _arrangeFeatures: function(){
@@ -733,8 +792,8 @@
 				}
 			}
 			return arranged;
-		}
+		},
     };
-    
+	    
     $.widget("ui.Interaction", interactionRepresentation);
 })(jQuery);
