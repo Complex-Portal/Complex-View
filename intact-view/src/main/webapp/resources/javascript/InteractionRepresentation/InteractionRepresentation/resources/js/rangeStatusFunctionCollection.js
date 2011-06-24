@@ -293,7 +293,7 @@ RangeStatusFunctionCollection = function(featureDrawer){
 	this.getNTerminalRange = function(range){
 		var range2 = new Object();
 		$.extend(true, range2, range);
-		range2["begin"]["position"] = 1;
+		range2["begin"]["position"] = 0;
 		return range2;
 	}
 	

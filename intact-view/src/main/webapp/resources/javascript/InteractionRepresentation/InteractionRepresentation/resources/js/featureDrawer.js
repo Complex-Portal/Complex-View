@@ -84,7 +84,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         element.push(this.drawLessThan(x2Draw + 1, y, y + height, "white", opacity, symbol, width));
         var eventHandlingElement = this.createEventHandlingElement(element);
         
-        this.createTooltip(eventHandlingElement, tooltipText, x, " <" + x2);
+        this.createTooltip(eventHandlingElement, tooltipText, x, this.getLessThanText(x2));
         return {
             "x": x,
             "x2": x2,
@@ -131,7 +131,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         element.push(this.drawGreaterThan(x2Draw, y, y + height, colour, opacity, symbol, width));
         var eventHandlingElement = this.createEventHandlingElement(element);
         
-        this.createTooltip(eventHandlingElement, tooltipText, x, x2 + " <");
+        this.createTooltip(eventHandlingElement, tooltipText, x, this.getGreaterThanText(x2));
         return {
             "x": x,
             "x2": x2,
@@ -187,7 +187,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
             element.push(this.drawSpecifiedRight(xEndDraw, y, xEnd2Draw - xEndDraw, height, colour, rangeColour, opacity, symbol, width));
             var eventHandlingElement = this.createEventHandlingElement(element);
             
-            this.createTooltip(eventHandlingElement, tooltipText, xBegin, "[" + xEnd + " - " + xEnd2 + "]");
+            this.createTooltip(eventHandlingElement, tooltipText, xBegin, this.getRangeText(xEnd, xEnd2));
             return {
                 "x": xBegin,
                 "x2": xEnd2,
@@ -199,7 +199,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
             element.push(this.drawUnspecifiedRight(xEndDraw, y, height, colour, opacity, symbol, width));
             var eventHandlingElement = this.createEventHandlingElement(element);
             
-            this.createTooltip(eventHandlingElement, tooltipText, xBegin, "~" + xEnd);
+            this.createTooltip(eventHandlingElement, tooltipText, xBegin, this.getRangeText(xEnd, xEnd));
             return {
                 "x": xBegin,
                 "x2": xEnd,
@@ -218,10 +218,10 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         }
         else 
             if (!(range.beginInterval === undefined)) {
-                console.log("begin-status-type 'certain', but interval found");
+                console.log("begin-status-type 'greater than', but interval found");
             }
             else {
-                console.log("begin-status-type 'certain', but begin not provided");
+                console.log("begin-status-type 'greater than', but begin not provided");
             }
         
         if (!(range.end === undefined)) {
@@ -229,10 +229,10 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         }
         else 
             if (!(range.endInterval === undefined)) {
-                console.log("end-status-type 'less than', but interval found");
+                console.log("end-status-type 'certain', but interval found");
             }
             else {
-                console.log("end-status-type 'less than', but end not provided");
+                console.log("end-status-type 'certain', but end not provided");
             }
         
 		x = Number(x);
@@ -247,7 +247,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         element.push(this.drawGreaterThan(xDraw - 1, y, y + height, "white", opacity, symbol, width));
         var eventHandlingElement = this.createEventHandlingElement(element);
         
-        this.createTooltip(eventHandlingElement, tooltipText, x, " <" + x2);
+        this.createTooltip(eventHandlingElement, tooltipText, this.getGreaterThanText(x), x2);
         return {
             "x": x,
             "x2": x2,
@@ -266,10 +266,10 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         }
         else 
             if (!(range.beginInterval === undefined)) {
-                console.log("begin-status-type 'certain', but interval found");
+                console.log("begin-status-type 'greater than', but interval found");
             }
             else {
-                console.log("begin-status-type 'certain', but begin not provided");
+                console.log("begin-status-type 'greater than', but begin not provided");
             }
         
         if (!(range.end === undefined)) {
@@ -296,7 +296,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         element.push(this.drawGreaterThan(xDraw - 1, y, y + height, "white", opacity, symbol, width));
         var eventHandlingElement = this.createEventHandlingElement(element);
         
-        this.createTooltip(eventHandlingElement, tooltipText, x, x2 + " <");
+        this.createTooltip(eventHandlingElement, tooltipText, this.getGreaterThanText(x), this.getGreaterThanText(x2));
         return {
             "x": x,
             "x2": x2,
@@ -315,10 +315,10 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         }
         else 
             if (!(range.beginInterval === undefined)) {
-                console.log("begin-status-type 'certain', but interval found");
+                console.log("begin-status-type 'greater than', but interval found");
             }
             else {
-                console.log("begin-status-type 'certain', but begin not provided");
+                console.log("begin-status-type 'greater than', but begin not provided");
             }
         
         if (!(range.end === undefined)) {
@@ -345,7 +345,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         element.push(this.drawGreaterThan(xDraw - 1, y, y + height, "white", opacity, symbol, width));
         var eventHandlingElement = this.createEventHandlingElement(element);
         
-        this.createTooltip(eventHandlingElement, tooltipText, x, " <" + x2);
+        this.createTooltip(eventHandlingElement, tooltipText,  this.getGreaterThanText(x), this.getLessThanText(x2));
         return {
             "x": x,
             "x2": x2,
@@ -366,10 +366,10 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         }
         else 
             if (!(range.beginInterval === undefined)) {
-                console.log("begin-status-type 'certain', but interval found");
+                console.log("begin-status-type 'greater than', but interval found");
             }
             else {
-                console.log("begin-status-type 'certain', but begin not provided");
+                console.log("begin-status-type 'greater than', but begin not provided");
             }
         
         if (!(range.end === undefined)) {
@@ -402,7 +402,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
             element.push(this.drawSpecifiedRight(xEndDraw, y, xEnd2Draw - xEndDraw, height, colour, rangeColour, opacity, symbol, width));
             var eventHandlingElement = this.createEventHandlingElement(element);
             
-            this.createTooltip(eventHandlingElement, tooltipText, xBegin, "[" + xEnd + " - " + xEnd2 + "]");
+            this.createTooltip(eventHandlingElement, tooltipText, this.getGreaterThanText(xBegin), this.getRangeText(xEnd, xEnd2));
             return {
                 "x": xBegin,
                 "x2": xEnd2,
@@ -414,7 +414,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
             element.push(this.drawUnspecifiedRight(xEndDraw, y, height, colour, opacity, symbol, width));
             var eventHandlingElement = this.createEventHandlingElement(element);
             
-            this.createTooltip(eventHandlingElement, tooltipText, xBegin, "~" + xEnd);
+            this.createTooltip(eventHandlingElement, tooltipText, this.getGreaterThanText(xBegin), this.getRangeText(xEnd, xEnd));
             return {
                 "x": xBegin,
                 "x2": xEnd,
@@ -463,7 +463,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         element.push(this.drawLessThan(xDraw, y, y + height, colour, opacity, symbol, width));
         var eventHandlingElement = this.createEventHandlingElement(element);
         
-        this.createTooltip(eventHandlingElement, tooltipText, "< " + x, x2);
+        this.createTooltip(eventHandlingElement, tooltipText, this.getLessThanText(x), x2);
         return {
             "x": x,
             "x2": x2,
@@ -511,7 +511,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         element.push(this.drawLessThan(xDraw, y, y + height, colour, opacity, symbol, width));
         var eventHandlingElement = this.createEventHandlingElement(element);
         
-        this.createTooltip(eventHandlingElement, tooltipText, "< " + x, " <" + x2);
+        this.createTooltip(eventHandlingElement, tooltipText, this.getLessThanText(x), this.getLessThanText(x2));
         return {
             "x": x,
             "x2": x2,
@@ -559,7 +559,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         element.push(this.drawLessThan(xDraw, y, y + height, colour, opacity, symbol, width));
         var eventHandlingElement = this.createEventHandlingElement(element);
         
-        this.createTooltip(eventHandlingElement, tooltipText, "< " + x, x2 + " <");
+        this.createTooltip(eventHandlingElement, tooltipText, this.getLessThanText(x), this.getGreaterThanText(x2));
         return {
             "x": x,
             "x2": x2,
@@ -616,7 +616,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
             element.push(this.drawSpecifiedRight(xEndDraw, y, xEnd2Draw - xEndDraw, height, colour, rangeColour, opacity, symbol, width));
             var eventHandlingElement = this.createEventHandlingElement(element);
             
-            this.createTooltip(eventHandlingElement, tooltipText, "< " + xBegin, "[" + xEnd + " - " + xEnd2 + "]");
+            this.createTooltip(eventHandlingElement, tooltipText, this.getLessThanText(xBegin), this.getRangeText(xEnd, xEnd2));
             return {
                 "x": xBegin,
                 "x2": xEnd2,
@@ -628,7 +628,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
             element.push(this.drawUnspecifiedRight(xEndDraw, y, height, colour, opacity, symbol, width));
             var eventHandlingElement = this.createEventHandlingElement(element);
             
-            this.createTooltip(eventHandlingElement, tooltipText, "< " + xBegin, "~" + xEnd);
+            this.createTooltip(eventHandlingElement, tooltipText, this.getLessThanText(xBegin), this.getRangeText(xEnd, xEnd));
             return {
                 "x": xBegin,
                 "x2": xEnd,
@@ -667,7 +667,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         element.push(this.drawUndetermined(xUndet + 1, y, height, opacity, symbol));
         
         var eventHandlingElement = this.createEventHandlingElement(element);
-        this.createTooltip(eventHandlingElement, tooltipText, "< " + x, "?");
+        this.createTooltip(eventHandlingElement, tooltipText, this.getLessThanText(x), "?");
         
         return {
             "x": x,
@@ -724,12 +724,12 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
             element.push(this.drawCertain(xBegin2Draw, y, width, height, colour, opacity, symbol, false, true));
             element.push(this.drawSpecifiedLeft(xBeginDraw, y, xBegin2Draw - xBeginDraw, height, colour, rangeColour, opacity, symbol, width));
             
-            positionTextBegin = "[" + xBegin + " - " + xBegin2 + "]";
+            positionTextBegin = this.getRangeText(xBegin, xBegin2);
         }
         else {
             element.push(this.drawCertain(xBeginDraw, y, xEndDraw - xBeginDraw, height, colour, opacity, symbol, false, true));
             element.push(this.drawUnspecifiedLeft(xBeginDraw, y, height, colour, opacity, symbol, width));
-            positionTextBegin = "~" + xBegin;
+            positionTextBegin = this.getRangeText(xBegin, xBegin);
         }
         
         var eventHandlingElement = this.createEventHandlingElement(element);
@@ -789,20 +789,20 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
             width = xEndDraw - xBegin2Draw;
             element.push(this.drawCertain(xBegin2Draw, y, width, height, colour, opacity, symbol, false, false));
             element.push(this.drawSpecifiedLeft(xBeginDraw, y, xBegin2Draw - xBeginDraw, height, colour, rangeColour, opacity, symbol, width));
-            positionTextBegin = "[" + xBegin + " - " + xBegin2 + "]";
+            positionTextBegin = this.getRangeText(xBegin, xBegin2);
         }
         else {
             width = xEndDraw - xBeginDraw;
             element.push(this.drawCertain(xBeginDraw, y, width, height, colour, opacity, symbol, false, false));
             element.push(this.drawUnspecifiedLeft(xBeginDraw, y, height, colour, opacity, symbol, width));
-            positionTextBegin = "~" + xBegin;
+            positionTextBegin = this.getRangeText(xBegin, xBegin);
         }
         
         element.push(this.drawLessThan(xEndDraw + 1, y, y + height, "white", opacity, symbol, width));
         
         var eventHandlingElement = this.createEventHandlingElement(element);
         
-        this.createTooltip(eventHandlingElement, tooltipText, positionTextBegin, " <" + xEnd);
+        this.createTooltip(eventHandlingElement, tooltipText, positionTextBegin, this.getLessThanText(xEnd));
         return {
             "x": xBegin,
             "x2": xEnd,
@@ -856,19 +856,19 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         if (specified) {
             element.push(this.drawSpecifiedLeft(xBeginDraw, y, xBegin2Draw - xBeginDraw, height, colour, rangeColour, opacity, symbol, width));
 			element.push(this.drawCertain(xBegin2Draw, y, xEndDraw - xBegin2Draw, height, colour, opacity, symbol, false, false));
-            positionTextBegin = "[" + xBegin + " - " + xBegin2 + "]";
+            positionTextBegin = this.getRangeText(xBegin, xBegin2);
         }
         else {
 			width = xEndDraw - xBeginDraw;
 			element.push(this.drawCertain(xBeginDraw, y, xEndDraw - xBeginDraw, height, colour, opacity, symbol, false, false));
             element.push(this.drawUnspecifiedLeft(xBeginDraw, y, height, colour, opacity, symbol, width));
-            positionTextBegin = "~" + xBegin;
+            positionTextBegin = this.getRangeText(xBegin, xBegin);
         }
         
         
         var eventHandlingElement = this.createEventHandlingElement(element);
         
-        this.createTooltip(eventHandlingElement, tooltipText, positionTextBegin, xEnd + " <");
+        this.createTooltip(eventHandlingElement, tooltipText, positionTextBegin, this.getGreaterThanText(xEnd));
         return {
             "x": xBegin,
             "x2": xEnd,
@@ -929,13 +929,13 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
 			width = xEndDraw - xBegin2Draw;
             element.push(this.drawCertain(xBegin2Draw, y, width, height, colour, opacity, symbol, false, false));
             element.push(this.drawSpecifiedLeft(xBeginDraw, y, xBegin2Draw - xBeginDraw, height, colour, rangeColour, opacity, symbol, width));
-            positionTextBegin = "[" + xBegin + " - " + xBegin2 + "]";
+            positionTextBegin = this.getRangeText(xBegin, xBegin2);
         }
         else {
 			width = xEndDraw - xBeginDraw;
             element.push(this.drawCertain(xBeginDraw, y, xEndDraw - xBeginDraw, height, colour, opacity, symbol, false, false));
             element.push(this.drawUnspecifiedLeft(xBeginDraw, y, height, colour, opacity, symbol, width));
-            positionTextBegin = "~" + xBegin;
+            positionTextBegin = this.getRangeText(xBegin, xBegin);
         }
         
         if (specifiedEnd) {
@@ -943,7 +943,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
             
             var eventHandlingElement = this.createEventHandlingElement(element);
             
-            this.createTooltip(eventHandlingElement, tooltipText, positionTextBegin, "[" + xEnd + " - " + xEnd2 + "]");
+            this.createTooltip(eventHandlingElement, tooltipText, positionTextBegin, this.getRangeText(xEnd, xEnd2));
             return {
                 "x": xBegin,
                 "x2": xEnd2,
@@ -956,7 +956,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
             
             var eventHandlingElement = this.createEventHandlingElement(element);
             
-            this.createTooltip(eventHandlingElement, tooltipText, positionTextBegin, "~" + xEnd);
+            this.createTooltip(eventHandlingElement, tooltipText, positionTextBegin, this.getRangeText(xEnd, xEnd));
             return {
                 "x": xBegin,
                 "x2": xEnd,
@@ -969,7 +969,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
     
     // default drawing function for n-terminal position
     this.drawNTerminalPosition = function(range, y, height, featureStart, interactorLength, colour, rangeColour, opacity, tooltipText, symbol){
-        var x = 1;
+        var x = 0;
         if (!(range.begin === undefined) && range.begin.position != 0) {
             x = x + range.begin.position;
         }
@@ -991,7 +991,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
     
     // default drawing function for n-terminal range
     this.drawNTerminalRange = function(range, y, height, featureStart, interactorLength, colour, rangeColour, opacity, tooltipText, symbol){
-        var x = 1;
+        var x = 0;
         if (!(range.begin === undefined) && range.begin.position != 0) {
             x = x + range.begin.position;
         }
@@ -1096,7 +1096,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         element.push(this.drawUndetermined(xUndet - 7, y, height, opacity, symbol));
         
         var eventHandlingElement = this.createEventHandlingElement(element);
-        this.createTooltip(eventHandlingElement, tooltipText, "< " + x, "?");
+        this.createTooltip(eventHandlingElement, tooltipText, "?", this.getGreaterThanText(x));
         
         return {
             "x": x,
@@ -1125,7 +1125,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         var eventHandlingElement = this.createEventHandlingElement(circle);
         featureSet.push(circle);
         
-        this.createTooltip(eventHandlingElement, tooltipText, "0", "0");
+        this.createTooltip(eventHandlingElement, tooltipText, "?", "?");
         return {
             "x": x,
             "x2": x,
@@ -1149,7 +1149,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
         var element = this.drawIsotope(xDraw, y, height - 1.5, colour, true, opacity);
         var eventHandlingElement = this.createEventHandlingElement(element);
         
-        this.createTooltip(eventHandlingElement, tooltipText, "0", "0");
+        this.createTooltip(eventHandlingElement, tooltipText, "?", "?");
         return {
             "x": x,
             "x2": x,
@@ -1281,9 +1281,7 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
             if (this._interactionInformation.options.developingMode) {
                 console.log("function for drawing symbol \"" + symbol + "\" not provided");
             }
-            else {
-                //TODO
-            }
+            element = this.drawLegendSymbol(x, y, height, colour, undetermined, opacity);
         }
         return element;
     }
@@ -1498,8 +1496,19 @@ FeatureDrawer = function(interactionInformation, shapeDrawer, featureSet){
 		var rect = this._shapeDrawer.getRectangle(x - itemHeight/2 , y + 1, itemHeight, itemHeight);
 		rect.attr({"fill": colour, "stroke": colour, "fill-opacity": opacity, "opacity": opacity});
 		return rect;
-	}
+	};
 	
+	this.getRangeText = function(x,x2){
+		return x + ".." + x2;
+	};
+	
+	this.getGreaterThanText = function(x){
+		return x + ">";
+	};
+	
+	this.getLessThanText = function(x){
+		return "<" + x;
+	};
 	
 	this.createEventHandlingElement = function(element){
 		var set = this._shapeDrawer.getSet();

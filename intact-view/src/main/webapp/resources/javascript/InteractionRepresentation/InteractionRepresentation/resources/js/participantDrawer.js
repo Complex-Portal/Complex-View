@@ -27,8 +27,9 @@ ParticipantDrawer = function(interactionInformation){
     this.drawInteractors = function(){
         var self = this;
         var y = this._interactionInformation._initY;
-        explanationText = self._shapeDrawer.getText(self._interactionInformation._proteinX, y - 10,
-        "To display a single interacting region click on it and click again to display all interacting regions.");
+        var explanationText = self._shapeDrawer.getText(self._interactionInformation._proteinX, y - 10, 
+		"To display a single interaction region please click on it.\n" +
+        "Click again to display all interactions.");
         explanationText.hide();
         
         $(self._interactionInformation._interactionInformation.interactions).each(function(){
@@ -48,7 +49,6 @@ ParticipantDrawer = function(interactionInformation){
             }
 
             self._featureSet.insertBefore(self._interactorSet);
-            
             
             // connect linked features
             if (!(this.inferredInteractionList === undefined)) {
@@ -457,9 +457,20 @@ ParticipantDrawer = function(interactionInformation){
     
         var coordinates = null;
         
+		var startId = rangeList.startStatus.xref.primaryRef.id; 
+		var endId = rangeList.endStatus.xref.primaryRef.id;
+		
+		if(!(this._interactionInformation._rangeStatusEquivalents[startId] === undefined)){
+			startId = this._interactionInformation._rangeStatusEquivalents[startId];
+		}
+		
+		if(!(this._interactionInformation._rangeStatusEquivalents[endId] === undefined)){
+			endId = this._interactionInformation._rangeStatusEquivalents[endId];
+		}
+		
         // extract the id's of start- and endStatus to build the drawing function's name
-        var startId = (rangeList.startStatus.xref.primaryRef.id).substring(3);
-        var endId = (rangeList.endStatus.xref.primaryRef.id).substring(3);
+        startId = (startId).substring(3);
+        endId = (endId).substring(3);
         
         // "draw + identifiers" represents the default-behaviour
         var functionName = "draw" + startId + endId;

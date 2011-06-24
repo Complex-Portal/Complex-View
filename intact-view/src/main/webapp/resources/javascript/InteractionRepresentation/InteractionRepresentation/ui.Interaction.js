@@ -41,9 +41,7 @@
         // - if "stylesheetTerm" is specified the colour will be loaded from the DAS stylesheet
 		//   else the specified colour is used. Please provide a colour in case the term is not found in the stylesheet
 		
-		_DASStylesheet: 'http://wwwdev.ebi.ac.uk/das-srv/uniprot/das/uniprot/stylesheet',
-		
-        _typeCategories: {
+		_typeCategories: {
             "binding site": {
                 "identifiers": ['MI:0117'],
 				"loadChildren": true,
@@ -106,7 +104,10 @@
         
 		_ignoreTerms: new Array(),
 		
+		_rangeStatusEquivalents: { "MI:0341": "MI:0340"},
+		
         _MIOntologyUrl: 'http://www.ebi.ac.uk/ontology-lookup/json/termchildren?ontology=MI&depth=1000&termId=',
+		_DASStylesheet: 'http://wwwdev.ebi.ac.uk/das-srv/uniprot/das/uniprot/stylesheet',
 		
 		// structures needed to manage data --
 		_featureTracksPerParticipant: new Array(),
@@ -401,7 +402,6 @@
 							 		var count = 0;
 							 		// find the right position to attach the feature
 										for (var category in self._typeCategories) {
-										
 											var curPosition = self._typeCategories[category].position;
 											var identifiers = self._typeCategories[category].identifiers;
 											
@@ -792,7 +792,7 @@
 				}
 			}
 			return arranged;
-		},
+		}
     };
 	    
     $.widget("ui.Interaction", interactionRepresentation);
