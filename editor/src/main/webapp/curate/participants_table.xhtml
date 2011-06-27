@@ -25,10 +25,7 @@
             <ui:param name="participant" value="#{wrapper.participant}" />
             <ui:param name="interactor" value="#{participant.interactor}" />
 
-            <!--<p:column expansion="true" />-->
-
-            <p:column>
-                <f:facet name="header"><h:outputText value="Name"/></f:facet>
+            <p:column headerText="Name" sortBy="#{interactor.shortLabel}">
                 <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
                                value="#{interactor.shortLabel}" rendered="#{interactor != null and not changesController.isDeletedAc(participant.ac)}"
                                style="#{participant.ac == null? 'color:blue' :''}"
@@ -58,14 +55,12 @@
                 </h:panelGroup>
             </p:column>
 
-            <p:column>
-                <f:facet name="header"><h:outputText value="Identity"/></f:facet>
+            <p:column headerText="Identity">
                 <h:outputText value="#{interactionController.getInteractorIdentity(participant.interactor)}"
                               style="#{changesController.isDeletedAc(participant.ac)? 'color:red; text-decoration:line-through' : ''}"/>
             </p:column>
 
-            <p:column>
-                <f:facet name="header"><h:outputText value="Expressed in"/></f:facet>
+            <p:column headerText="Expressed in">
                 <h:selectOneMenu id="expressedInTxt" value="#{wrapper.participant.expressedIn}" onchange="markAsUnsaved()"
                                  rendered="#{value.size() lt 5}">
                     <f:selectItems value="#{bioSourceService.bioSourceSelectItems}" />
@@ -74,8 +69,7 @@
                         rendered="#{value.size() ge 5}"/>
             </p:column>
 
-            <p:column>
-                <f:facet name="header"><h:outputText value="Experimental role"/></f:facet>
+            <p:column headerText="Experimental role">
                 <h:selectOneMenu id="expRoleTxt" value="#{wrapper.participant.cvExperimentalRole}" onchange="markAsUnsaved()"
                         rendered="#{value.size() lt 5}">
                         <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
@@ -87,8 +81,7 @@
                         rendered="#{value.size() ge 5}"/>
             </p:column>
 
-             <p:column>
-                <f:facet name="header"><h:outputText value="Biological role"/></f:facet>
+             <p:column headerText="Biological role">
                 <h:selectOneMenu id="bioRoleTxt" value="#{wrapper.participant.cvBiologicalRole}"
                                  rendered="#{value.size() lt 5}"
                                  onchange="markAsUnsaved()">
@@ -98,18 +91,54 @@
                          rendered="#{value.size() ge 5}"/>
             </p:column>
 
-            <p:column>
-                <f:facet name="header"><h:outputText value="# Feat."/></f:facet>
-                <h:outputText value="#{participant.bindingDomains.size()}" />
+            <p:column headerText="Features">
+                <f:facet name="footer">
+                     <p:commandButton value="Link" actionListener="#{interactionController.linkSelectedFeatures}" ajax="false"/>
+                </f:facet>
+
+               <h:dataTable  var="featureWrapper" value="#{wrapper.features}"
+                              paginator="false" styleClass="inner-table">
+                    <h:column style="width: 14px">
+                         <h:selectBooleanCheckbox value="#{featureWrapper.selected}"/>
+                     </h:column>
+                     <h:column>
+                         <div id="feature_#{featureWrapper.feature.ac}"
+                                     onmouseover="this.style.fontWeight = '#{featureWrapper.feature.boundDomain != null? 'bold' : 'inherit'}'; document.getElementById('feature_#{featureWrapper.feature.boundDomain.ac}').style.fontWeight = '#{featureWrapper.feature.boundDomain != null? 'bold' : 'inherit'}'"
+                                     onmouseout="this.style.fontWeight = 'inherit'; document.getElementById('feature_#{featureWrapper.feature.boundDomain.ac}').style.fontWeight = 'inherit'">
+                            <h:outputText value="#{featureWrapper.feature.shortLabel} #{featureWrapper.feature.ranges}"/>
+
+
+                         <h:panelGroup rendered="#{featureWrapper.feature.boundDomain != null}">
+                             <p:commandLink type="button" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.show()"
+                                            styleClass="ui-icon ui-icon-link" style="display:inline-block"
+                                            title="Linked to #{featureWrapper.feature.boundDomain.shortLabel}">
+                             </p:commandLink>
+
+
+
+
+                         </h:panelGroup>
+                         </div>
+
+                         <p:confirmDialog widgetVar="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}"
+                                          rendered="#{featureWrapper.feature.boundDomain != null}"
+                                              message="Do you want to unlink this feature?" modal="true">
+                                   <p:commandButton value="Yes Sure"
+                                           actionListener="#{interactionController.unlinkFeature(featureWrapper.feature)}"
+                                           ajax="false"/>
+                                   <p:commandLink value="Not Yet" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()" type="button" />
+                             </p:confirmDialog>
+
+                     </h:column>
+                </h:dataTable>
+
             </p:column>
 
-             <p:column>
-                <f:facet name="header"><h:outputText value="Stoich."/></f:facet>
+             <p:column headerText="Stoich.">
                 <p:spinner id="stoichiometryTxt" value="#{participant.stoichiometry}" min="0" stepFactor="1" size="3" maxlength="2" onchange="markAsUnsaved()"/>
             </p:column>
 
-            <p:column>
-                <f:facet name="header"><h:outputText value="Options"/></f:facet>
+            <p:column headerText="Options">
                 <div style="float:right">
                     <p:commandLink process="@this" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
                                    actionListener="#{interactionController.markParticipantToDelete(participant)}"
@@ -129,6 +158,14 @@
                                rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
                 </div>
             </p:column>
+
+            <!--<p:rowExpansion>-->
+            <!--<h:panelGroup>-->
+
+                <!---->
+            <!--</h:panelGroup>-->
+
+        <!--</p:rowExpansion>-->
 
         </p:dataTable>
 

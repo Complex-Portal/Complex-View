@@ -212,6 +212,7 @@ public class FeatureController extends AnnotatedObjectController {
         }
 
         Range newRange = FeatureUtils.createRangeFromString(newRangeValue, sequence);
+        newRange.setLinked(false);
 
         // replace CVs by ones with ACs
 

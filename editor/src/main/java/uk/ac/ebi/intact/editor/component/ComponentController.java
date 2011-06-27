@@ -28,6 +28,7 @@ public class ComponentController {
     }
 
     public String toJavascriptFriendlyVar(String str) {
+        str = str.replaceAll("-", "_");
         return str.replaceAll(":", "__");
     }
 }

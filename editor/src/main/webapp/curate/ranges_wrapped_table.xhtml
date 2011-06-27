@@ -68,7 +68,7 @@
         </p:column>
         <p:column>
             <f:facet name="header">
-                <h:outputText value="Linked"/>
+                <h:outputText value="Link"/>
             </f:facet>
             <h:selectBooleanCheckbox value="#{rangeWrapper.range.linked}">
                 <ed:curation/>
@@ -91,7 +91,7 @@
                            update="rangesTable,growl,changesPanel,messagesComponent,unsavedChangesInfo" rendered="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"/>
         </p:column>
 
-        <f:facet name="expansion">
+        <p:rowExpansion>
             <h:panelGrid columns="2">
                 <h:outputText value="Sequence:"/>
                 <p:inputTextarea value="#{rangeWrapper.range.fullSequence}" readonly="true" cols="60" rows="3"/>
@@ -102,7 +102,7 @@
                 <h:outputText value="Downstream sequence:"/>
                 <p:inputTextarea value="#{rangeWrapper.range.downStreamSequence}" readonly="true" cols="60" rows="3"/>
             </h:panelGrid>
-        </f:facet>
+        </p:rowExpansion>
 
     </p:dataTable>
 

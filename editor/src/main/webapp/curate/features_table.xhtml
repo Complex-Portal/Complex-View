@@ -24,9 +24,6 @@
                  <f:facet name="header">
                         <h:panelGroup>
                             Selected:&#160;
-                            <p:commandButton value="Link" action="#{participantController.linkSelectedFeatures}"
-                                             ajax="false" disabled="#{value.size() lt 2}"/>
-                            &#160;|&#160;
                             <p:commandButton value="Delete" onclick="confirmation.show()" type="button"/>
 
                             <p:confirmDialog message="Are you sure you want to delete the suckers?"
@@ -85,14 +82,47 @@
                     <f:facet name="header">
                         <h:outputText value="Linked feature"/>
                     </f:facet>
-                    <h:outputText value="#{feature.boundDomain == null ? '-' : feature.boundDomain.shortLabel}"/>
+                    <h:outputText value="-" rendered="#{feature.boundDomain == null}"/>
+
+                    <h:panelGroup rendered="#{feature.boundDomain != null and feature.boundDomain.ac != null and not changesController.isDeletedAc(feature.ac)}">
+                         <p:commandLink onclick="load_feature.show()" action="#{curateController.edit(feature.boundDomain)}"
+                               style="#{feature.ac == null? 'color:blue' :''}"
+                               value="#{feature.boundDomain.shortLabel}" ajax="false"/>
+                     </h:panelGroup>
+
+                      <h:panelGroup rendered="#{feature.boundDomain != null and feature.boundDomain.ac == null}">
+                         <h:outputText value="#{feature.boundDomain.shortLabel}"/>
+                     </h:panelGroup>
+
+
+                    <h:panelGroup rendered="#{feature.boundDomain != null}">
+                        <p:commandLink type="button"
+                                       onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(feature.ac)}.show()"
+                                       styleClass="ui-icon ui-icon-link" style="display:inline-block"
+                                       title="Linked to #{feature.boundDomain.shortLabel}">
+                        </p:commandLink>
+
+
+                        <p:confirmDialog
+                                widgetVar="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}"
+                                message="Do you want to unlink this feature?" modal="true">
+                            <p:commandButton value="Yes Sure"
+                                             actionListener="#{interactionController.unlinkFeature(featureWrapper.feature)}"
+                                             ajax="false"/>
+                            <p:commandLink value="Not Yet"
+                                           onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()"
+                                           type="button"/>
+                        </p:confirmDialog>
+                    </h:panelGroup>
+
+
                 </p:column>
                 <p:column>
                     <f:facet name="header">
                         <h:outputText value="Range(s)"/>
                     </f:facet>
                     <ui:repeat value="#{feature.ranges}" var="range" varStatus="status">
-                        <h:outputText value="#{range.toString()} #{range.linked? ' (linked)' : ''}"/>
+                        <h:outputText value="#{range.toString()}"/>
                         <p:outputPanel rendered="#{status.index lt (status.end - 1)}">
                             <br/>
                         </p:outputPanel>

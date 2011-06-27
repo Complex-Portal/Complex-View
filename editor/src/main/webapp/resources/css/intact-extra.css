@@ -39,6 +39,15 @@ border-right:0 none !important;
     text-decoration:line-through
 }
 
+.inner-table,
+.inner-table tr,
+.inner-table th,
+.inner-table td {
+    border-width:  0 !important;
+}
+
+
+
 .intact-panelMessage-ok {
    background-color:#a7cf9b;
 }
@@ -193,4 +202,6 @@ border-right:0 none !important;
     background: #f8cfcf !important;
    /*/background: #fafad2 !important;*/
 }
+
+
 

@@ -136,9 +136,12 @@
                 <p:tab title="Participants (#{interactionController.participants.size()})">
 
                      <p:panel style="padding:0">
+                         Participants:&#160;
                         <p:commandButton value="New participant" action="#{participantController.newParticipant(interactionController.interaction)}"
                                              ajax="false"/>
                          <p:commandButton value="Import..." type="button" onclick="importParticipantDialog.show()"/>
+                         &#160;| Features:&#160;
+                         <p:commandButton value="Link features" actionListener="#{interactionController.linkSelectedFeatures}" ajax="false"/>
                      </p:panel>
 
                     <ia:spacer height="10" />

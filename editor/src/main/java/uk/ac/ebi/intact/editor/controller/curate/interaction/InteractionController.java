@@ -727,6 +727,57 @@ public class InteractionController extends ParameterizableObjectController {
         }
     }
 
+    public void linkSelectedFeatures(ActionEvent evt) {
+        List<Feature> selected = new ArrayList<Feature>();
+
+        for (ParticipantWrapper pw : participantWrappers) {
+            for (FeatureWrapper fw : pw.getFeatures()) {
+                if (fw.isSelected()) {
+                    selected.add(fw.getFeature());
+                }
+            }
+        }
+
+        System.out.println("Selected "+selected.size()+": "+selected);
+
+        if (selected.size() != 2) {
+            addErrorMessage("Incorrect feature selection", "Two features need to be selected if you want to link them. Currently selected: "+selected.size());
+            return;
+        }
+
+        Feature featureToLink1 = selected.get(0);
+        Feature featureToLink2 = selected.get(1);
+
+        // clean any existing linked association, just in case the curator links an already linked feature with another
+        // binding domain
+        clearBoundDomain(featureToLink1);
+        clearBoundDomain(featureToLink2);
+
+        // link the features
+        featureToLink1.setBoundDomain(featureToLink2);
+        featureToLink2.setBoundDomain(featureToLink1);
+
+
+        addInfoMessage("Features linked", DebugUtil.intactObjectToString(featureToLink1, false)+" and "+DebugUtil.intactObjectToString(featureToLink2, false));
+        setUnsavedChanges(true);
+
+    }
+
+    public void unlinkFeature(Feature feature) {
+       clearBoundDomain(feature);
+
+        addInfoMessage("Feature unlinked", DebugUtil.intactObjectToString(feature, false));
+        setUnsavedChanges(true);
+    }
+
+    private void clearBoundDomain(Feature feature) {
+        if (feature.getBoundDomain() != null) {
+            feature.getBoundDomain().setBoundDomain(null);
+        }
+
+        feature.setBoundDomain(null);
+    }
+
     public String getImexId() {
         return findXrefPrimaryId(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF);
     }

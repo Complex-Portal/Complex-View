@@ -5,6 +5,9 @@ import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
 import uk.ac.ebi.intact.model.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Wrapped participant to allow handling of special fields (eg. author given name) from the interaction view. 
  *
@@ -17,6 +20,7 @@ public class ParticipantWrapper {
     private Component participant;
     private AnnotatedObjectHelper annotatedObjectHelper;
     private ChangesController changesController;
+    private List<FeatureWrapper> features;
 
     private boolean deleted;
     
@@ -24,6 +28,13 @@ public class ParticipantWrapper {
         this.participant = participant;
         this.annotatedObjectHelper = newAnnotatedObjectHelper(participant);
         this.changesController = changesController;
+
+        features = new ArrayList<FeatureWrapper>(participant.getFeatures().size());
+
+        for (Feature feature : participant.getFeatures()) {
+            features.add(new FeatureWrapper(feature));
+        }
+
     }
 
     public Component getParticipant() {
@@ -50,7 +61,7 @@ public class ParticipantWrapper {
     }
 
     public void setFirstExperimentalRole(CvExperimentalRole role) {
-        if( ! participant.getExperimentalRoles().contains( role ) ) {
+        if( ! participant.getExperimentalRoles().contains(role) ) {
             participant.getExperimentalRoles().clear();
             participant.getExperimentalRoles().add( role );
         }
@@ -89,10 +100,15 @@ public class ParticipantWrapper {
         }
     }
 
+    public List<FeatureWrapper> getFeatures() {
+        return features;
+    }
+
     private AnnotatedObjectHelper newAnnotatedObjectHelper(AnnotatedObject annotatedObject) {
         AnnotatedObjectHelper helper = (AnnotatedObjectHelper) IntactContext.getCurrentInstance().getSpringContext().getBean("annotatedObjectHelper");
         helper.setAnnotatedObject(annotatedObject);
 
         return helper;
     }
+
 }
