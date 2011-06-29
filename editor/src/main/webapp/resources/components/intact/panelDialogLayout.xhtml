@@ -9,20 +9,24 @@
 
     <!-- INTERFACE -->
     <composite:interface>
-        <composite:attribute name="width" default="100%"/>
+        <composite:attribute name="width" default="90%"/>
         <composite:facet name="buttonBar"/>
     </composite:interface>
 
     <!-- IMPLEMENTATION -->
     <composite:implementation>
 
+         <div class="ia-paneldialog" style="width: #{cc.attrs.width}">
+
         <composite:insertChildren/>
 
-            <div class="dialogButtonBar" style="width: #{cc.attrs.width}}">
+            <div class="dialogButtonBar">
                 <composite:renderFacet name="buttonBar"/>
             </div>
 
+         </div>
     </composite:implementation>
+
 
 
 </ui:composition>

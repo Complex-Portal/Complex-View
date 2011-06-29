@@ -232,15 +232,20 @@ public class InteractionController extends ParameterizableObjectController {
             // publication does have experiments so we can propose them
             if (!pub.getExperiments().isEmpty()){
                 for ( Experiment e : pub.getExperiments() ) {
-                    String description = e.getShortLabel()+" | "+
-                            (e.getCvInteraction() != null? e.getCvInteraction().getShortLabel()+", " : "")+
-                            (e.getCvIdentification() != null? e.getCvIdentification().getShortLabel()+", " : "")+
-                            (e.getBioSource() != null? e.getBioSource().getShortLabel() : "");
+                    String description = completeExperimentLabel(e);
                     experimentSelectItems.add(new SelectItem(e, description, e.getFullName()));
                 }
             }
         }
     }
+
+    public String completeExperimentLabel(Experiment e) {
+        return e.getShortLabel()+" | "+
+                                (e.getCvInteraction() != null? e.getCvInteraction().getShortLabel()+", " : "")+
+                                (e.getCvIdentification() != null? e.getCvIdentification().getShortLabel()+", " : "")+
+                                (e.getBioSource() != null? e.getBioSource().getShortLabel() : "");
+    }
+
     public void forceRefreshCurrentViewObject(){
         super.forceRefreshCurrentViewObject();
 
@@ -785,7 +790,7 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public void setImexId(String imexId) {
-        setXref( CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId );
+        setXref(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId);
     }
 
     public void setAc( String ac ) {

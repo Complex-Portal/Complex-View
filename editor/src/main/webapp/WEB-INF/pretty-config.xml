@@ -81,4 +81,9 @@
         <view-id>/notes/querymacro.jsf</view-id>
     </url-mapping>
 
+    <url-mapping id="interactionRemote">
+        <pattern value="/interaction/remote/#{pubRef}/#{proteins}" />
+        <view-id>/curate/interaction_remote.jsf</view-id>
+    </url-mapping>
+
 </pretty-config>

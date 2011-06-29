@@ -285,7 +285,7 @@ public class ParticipantImportController extends BaseController {
         return candidate;
     }
 
-    private Component toParticipant(ImportCandidate candidate, Interaction interaction) {
+    protected Component toParticipant(ImportCandidate candidate, Interaction interaction) {
         Interactor interactor = candidate.getInteractor();
 
 //        if (candidate.getInteractor() != null) {

@@ -149,7 +149,7 @@ public class PublicationController extends AnnotatedObjectController {
         // reset previous dataset actions in the form
         this.datasetsToRemove = null;
         this.datasetToAdd = null;
-        datasetsSelectItems.clear();
+        datasetsSelectItems = new ArrayList<SelectItem>();
 
         for ( Annotation annotation : publication.getAnnotations() ) {
             if ( annotation.getCvTopic() != null && CvTopic.DATASET_MI_REF.equals( annotation.getCvTopic().getIdentifier() ) ) {
@@ -216,7 +216,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    private void autocomplete( Publication publication, String id ) {
+    public void autocomplete( Publication publication, String id ) {
         CitexploreClient citexploreClient = null;
 
         try {
