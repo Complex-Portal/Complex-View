@@ -108,6 +108,17 @@
                     </tr>
                     <tr>
                         <td colspan="1" class="firstCell">
+                            <h:outputLabel value="Figure legend: " for="figLegendTxt"/>
+                        </td>
+                        <td colspan="3">
+                            <p:inputText id="figLegendTxt" value="#{interactionController.figureLegend}" size="80"
+                                         converter="trimmingConverter">
+                                <ed:curation/>
+                            </p:inputText>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1" class="firstCell">
                             <h:outputLabel value="Experiment: " for="experimentLists"/>
                         </td>
                         <td colspan="3" >
@@ -156,8 +167,14 @@
 
 
                    <ui:decorate template="propertiesTabs.xhtml">
-                            <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.interactionTopicSelectItems}"/>
-                    </ui:decorate>
+                       <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.interactionTopicSelectItems}"/>
+                       <ui:param name="updateOnChange" value=":editorForm:basic"/>
+
+                       <ui:define name="annotationSyncValues">
+                           <ed:syncValue with="editorForm:figLegendTxt"
+                                         rendered="#{annotation.cvTopic != null and annotation.cvTopic.identifier == 'MI:0599'}"/>
+                       </ui:define>
+                   </ui:decorate>
                     
 
                 <p:tab id="parametersTab" title="Parameters (#{interaction.parameters.size()})">

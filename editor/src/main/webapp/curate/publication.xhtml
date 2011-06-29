@@ -233,7 +233,7 @@
                                 </td>
                                 <td colspan="3">
                                     <h:panelGroup id="curationDepthMenu">
-                                        <h:selectOneMenu value="#{publicationController.curationDepth}" valueChangeListener="publicationController.curationDepthChanged">
+                                        <h:selectOneMenu value="#{publicationController.curationDepth}" valueChangeListener="#{publicationController.curationDepthChanged}">
                                             <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo publicationTabs"
                                                 process="@this" async="true"/>
 

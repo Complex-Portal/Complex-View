@@ -60,6 +60,8 @@ public class InteractionController extends ParameterizableObjectController {
 
     private static final Log log = LogFactory.getLog( InteractionController.class );
 
+    private static final String FIG_LEGEND = "MI:0599";
+
     private Interaction interaction;
     private String ac;
 
@@ -844,6 +846,14 @@ public class InteractionController extends ParameterizableObjectController {
 
     public void setExperimentToCopyTo(String experimentToCopyTo) {
         this.experimentToCopyTo = experimentToCopyTo;
+    }
+
+     public String getFigureLegend() {
+        return findAnnotationText(FIG_LEGEND);
+    }
+
+    public void setFigureLegend(String figureLegend) {
+        setAnnotation(FIG_LEGEND, figureLegend);
     }
 
     //////////////////////////////////
