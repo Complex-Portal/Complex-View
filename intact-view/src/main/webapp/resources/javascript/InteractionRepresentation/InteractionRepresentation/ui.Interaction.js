@@ -630,13 +630,33 @@
 
 		// checks if two features are the same by removing the id and compare the rest of the properties
 		_equalFeatures: function(feature1, feature2){
-			var testFeature1 = $.extend(true, {}, feature1);
-			var testFeature2 = $.extend(true, {}, feature2);
-			delete testFeature1.id;
-			delete testFeature2.id;
-
-			return this._equalObjects(testFeature1, testFeature2);
+			var testFeature1 = this._removeFeatureIds(feature1);
+			var testFeature2 = this._removeFeatureIds(feature2);
+            return this._equalObjects(testFeature1, testFeature2);
 		},
+
+        // remove ids to check if features are similar
+        _removeFeatureIds: function(feature){
+            var newFeature = $.extend(true, {}, feature);
+            delete newFeature.id;
+
+            if(!(newFeature.xref.primaryRef === undefined) && newFeature.xref.primaryRef.db == "intact"){
+				delete newFeature.xref.primaryRef;
+			}
+
+			if (!(feature.xref.secondaryRef === undefined)) {
+                var j = 0;
+				for (var i = 0; i < feature.xref.secondaryRef.length; i++) {
+					if (feature.xref.secondaryRef[i].db == "intact") {
+						newFeature.xref.secondaryRef.splice(j,1);
+                        j--;
+					}
+                    j++;
+				}
+			}
+
+            return newFeature;
+        },
 
 		// checks if two objects have the same values
 		_equalObjects: function(object1, object2){

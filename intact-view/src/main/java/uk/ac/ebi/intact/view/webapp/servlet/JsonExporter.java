@@ -18,6 +18,13 @@ package uk.ac.ebi.intact.view.webapp.servlet;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.xml.PsimiXmlVersion;
 import psidev.psi.mi.xml.PsimiXmlWriter;
 import psidev.psi.mi.xml.model.EntrySet;
@@ -47,6 +54,7 @@ import java.net.URLDecoder;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Component
 public class JsonExporter extends HttpServlet {
 
     private static final String NEW_LINE = System.getProperty("line.separator");
@@ -65,6 +73,7 @@ public class JsonExporter extends HttpServlet {
     }
 
     @Override
+    @Transactional(readOnly = true)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String interactionAc = req.getParameter("ac");
         String url = req.getParameter("url");
@@ -96,6 +105,7 @@ public class JsonExporter extends HttpServlet {
         }
     }
 
+    // the jsonExporter also acts as an Proxy for the internal javascript AJAX requests
     private void externalRequest(String url, Writer outputWriter) throws IOException {
         HttpClient client = new HttpClient();
         GetMethod method = new GetMethod(url);
@@ -131,12 +141,10 @@ public class JsonExporter extends HttpServlet {
         IntactContext context = IntactContext.getCurrentInstance();
 
         context.getDaoFactory().getEntityManager().setFlushMode(FlushModeType.COMMIT);
-
         IntactEntry intactEntry = IntactEntryFactory.createIntactEntry(context)
                 .addInteractionWithAc(interactionAc);
 
         EntrySet entrySet = createEntrySet(intactEntry);
-
 
         return entrySet;
     }

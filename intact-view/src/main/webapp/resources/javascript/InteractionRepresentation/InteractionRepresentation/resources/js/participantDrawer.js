@@ -592,7 +592,7 @@ ParticipantDrawer = function(interactionInformation){
 				quad.attr({
 					"stroke": "#D17600",
 					"stroke-dasharray": "- ",
-					"stroke-width": 0.5,
+					"stroke-width": 0.3,
 					"fill": this._interactionInformation._typeCategories["binding site"].colour,
 					"fill-opacity": 0.3
 				});
