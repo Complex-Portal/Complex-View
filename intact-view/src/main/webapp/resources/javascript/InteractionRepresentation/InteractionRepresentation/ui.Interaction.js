@@ -399,10 +399,8 @@
             var self = this;
             self._pxPerAA = self._getPxPerAA();
             $(self._interactionInformation.interactions).each(function(){
-
                 var interaction = this;
-
-				self._sortParticipants(interaction);
+                self._sortParticipants(interaction);
 
                 // create structure like {MI:0118: {tracks: {1:[start, end], 2: [start, end]}, MI:0117: {..}, .. }}
                 // for each participant and store it in array
@@ -431,50 +429,76 @@
 							 	if (index < 0) {
 							 		var count = 0;
 							 		// find the right position to attach the feature
-										for (var category in self._typeCategories) {
-											var curPosition = self._typeCategories[category].position;
-											var identifiers = self._typeCategories[category].identifiers;
+                                    for (var category in self._typeCategories) {
+                                        var curPosition = self._typeCategories[category].position;
+                                        var identifiers = self._typeCategories[category].identifiers;
 
-											if ($.isArray(identifiers)) {
-												// extract start and end of each feature and store information at right position
-												if ($.inArray(id, identifiers) > -1) {
-													lengthsObject["annotations"][curPosition][feature.id] = self._getFeatureSides(feature);
-													count++;
-												}
-											}
-											else {
-												if (id.match(".*" + identifiers + ".*") != null) {
-													lengthsObject["annotations"][curPosition][feature.id] = self._getFeatureSides(feature);
-													count++;
-												}
-											}
-										}
+                                        if ($.isArray(identifiers)) {
+                                            // extract start and end of each feature and store information at right position
+                                            if ($.inArray(id, identifiers) > -1) {
+                                                lengthsObject["annotations"][curPosition][feature.id] = self._getFeatureSides(feature);
+                                                count++;
+                                            }
+                                        }
+                                        else {
+                                            if (id.match(".*" + identifiers + ".*") != null) {
+                                                lengthsObject["annotations"][curPosition][feature.id] = self._getFeatureSides(feature);
+                                                count++;
+                                            }
+                                        }
+                                    }
 
-										if (count == 0) { // feature type not found
-											if (self.options.developingMode) {
-												console.log("Warning: feature type not recognised: " + feature.featureType.xref.primaryRef.id);
-											}
+                                    if (count == 0) { // feature type not found
+                                        if (self.options.developingMode) {
+                                            console.log("Warning: feature type not recognised: " + feature.featureType.xref.primaryRef.id);
+                                        }
 
-											var curPosition = self._typeCategories["not recognised"].position;
+                                        var curPosition = self._typeCategories["not recognised"].position;
 
-											self._typeCategories["not recognised"].identifiers.push(feature.featureType.xref.primaryRef.id);
-											lengthsObject.annotations[curPosition][feature.id] = self._getFeatureSides(feature);
-										}
-									}
-									else {
-										// similarFeature found, store id for replacement
-										similarFeature = participant.featureList.feature[index];
+                                        self._typeCategories["not recognised"].identifiers.push(feature.featureType.xref.primaryRef.id);
+                                        lengthsObject.annotations[curPosition][feature.id] = self._getFeatureSides(feature);
+                                    }
+                                }
+                                else {
+                                    // similarFeature found, store id for replacement
+                                    var similarFeature = participant.featureList.feature[index];
 
-										// check if similarFeature has to be replaced itself
-										if (self._joinedFeatures[similarFeature.id] === undefined) {
-											// if not:
-											self._joinedFeatures[feature.id] = similarFeature.id;
-										}
-										else { // else store id of feature, by which the found similar feature will be replaced
-											self._joinedFeatures[feature.id] = self._joinedFeatures[similarFeature.id];
-										}
-									}
-								}
+                                    // check if similarFeature has to be replaced itself
+                                    if (self._joinedFeatures[similarFeature.id] === undefined) {
+                                        // if not:
+                                        self._joinedFeatures[feature.id] = similarFeature;
+                                    }
+                                    else { // else store id of feature, by which the found similar feature will be replaced
+                                        self._joinedFeatures[feature.id] = self._joinedFeatures[similarFeature.id];
+                                        similarFeature = self._joinedFeatures[similarFeature.id];
+                                    }
+
+                                    // use smallest ac_nr as ac_nr for merged feature
+
+                                    var featureIntactId = self._findSourceReference(feature);
+                                    var similarFeatureIntactId = self._findSourceReference(similarFeature);
+
+                                    if(similarFeatureIntactId == null){
+                                        if(similarFeature.xref === undefined || similarFeature.xref.primaryRef === undefined){
+                                            similarFeature["xref"]["primaryRef"] = featureIntactId;
+                                        }else if(similarFeature.xref.secondaryRef === undefined){
+                                            similarFeature.xref["secondaryRef"] = [featureIntactId];
+                                        }else{
+                                            similarFeature.xref.secondaryRef.push(featureIntactId);
+                                        }
+                                    }else{
+                                        if(featureIntactId != null){
+                                            if(featureIntactId.id.length < similarFeatureIntactId.id.length){
+                                                similarFeatureIntactId.id = featureIntactId.id;
+                                            }else if(featureIntactId.id.length == similarFeatureIntactId.id.length &&
+                                                    featureIntactId.id < similarFeatureIntactId.id){
+                                                similarFeatureIntactId.id = featureIntactId.id;
+                                            }
+                                        }
+                                    }
+
+                                }
+							 }
 							self._featurePositions[feature.id] = i;
 							i++;
                         });
@@ -498,6 +522,24 @@
 				self._relinkFeatures(this);
             });
         },
+
+        // find source reference in xrefs
+        _findSourceReference: function(object){
+            var sourceRef = null;
+            if(!(object.xref.primaryRef === undefined) && object.xref.primaryRef.refType == "source reference"){
+				sourceRef = object.xref.primaryRef;
+			}
+
+			if (!(object.xref.secondaryRef === undefined)) {
+				for (var i = 0; i < object.xref.secondaryRef.length && sourceRef == null; i++) {
+					if (object.xref.secondaryRef[i].refType == "source reference") {
+						sourceRef = object.xref.secondaryRef[i];
+					}
+				}
+			}
+            return sourceRef;
+        },
+
 
         // defining the start and end of a feature based on the information in the given json-file
         // these coordinates are altered manually for the use of annotOverlaping.js and should not be used to draw the feature
@@ -650,14 +692,14 @@
             var newFeature = $.extend(true, {}, feature);
             delete newFeature.id;
 
-            if(!(newFeature.xref.primaryRef === undefined) && newFeature.xref.primaryRef.db == "intact"){
+            if(!(newFeature.xref.primaryRef === undefined) && newFeature.xref.primaryRef.refType == "source reference"){
 				delete newFeature.xref.primaryRef;
 			}
 
 			if (!(feature.xref.secondaryRef === undefined)) {
                 var j = 0;
 				for (var i = 0; i < feature.xref.secondaryRef.length; i++) {
-					if (feature.xref.secondaryRef[i].db == "intact") {
+					if (feature.xref.secondaryRef[i].refType == "source reference") {
 						newFeature.xref.secondaryRef.splice(j,1);
                         j--;
 					}
@@ -668,7 +710,7 @@
             return newFeature;
         },
 
-		// checks if two objects have the same values
+        // checks if two objects have the same values
 		_equalObjects: function(object1, object2){
 			for(var element in object1){
 				if(object2[element] === undefined){
@@ -710,7 +752,7 @@
                         if (!(featureRef === undefined)) {
 							// if current featureRef is found in joinedFeatures, replace it by the stored id
 							if(!(self._joinedFeatures[featureRef] === undefined)){
-								this.participantFeatureRef = self._joinedFeatures[featureRef];
+								this.participantFeatureRef = self._joinedFeatures[featureRef].id;
 							}
 						}
 					});

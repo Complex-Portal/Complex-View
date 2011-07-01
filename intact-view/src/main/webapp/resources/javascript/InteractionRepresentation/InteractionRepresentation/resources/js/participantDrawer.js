@@ -71,9 +71,6 @@ ParticipantDrawer = function(interactionInformation){
                 explanationText.show();
             }
         });
-
-        this._interactionSet.insertAfter(this._featureSet);
-
         this.drawLegend(10, y + this._interactionInformation._legendDistanceToImage);
     };
     
@@ -720,7 +717,7 @@ ParticipantDrawer = function(interactionInformation){
     
     // draw the protein as a black rectangle with dotted lines every 100 AAs
     this.drawProtein = function(x, y, length, height, drawAAlines){
-        var protein = this._shapeDrawer.getRectangle(x - 1, y, length + 2, height);
+        var protein = this._shapeDrawer.getRectangle(x, y, length + 1, height);
         var r = height/10;
 		
 		if (r > 5) {
@@ -758,6 +755,7 @@ ParticipantDrawer = function(interactionInformation){
     
     // arrange interaction levels (so all of them will be clickable)
     this.arrangeInteractions = function(){
+        this._interactionSet.insertAfter(this._featureSet);
         var self = this;
         this._interactions.sort(function(a, b){
             return self.interactionSortFunction(a, b);
