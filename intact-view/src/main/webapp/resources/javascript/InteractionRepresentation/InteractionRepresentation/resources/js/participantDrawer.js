@@ -71,7 +71,9 @@ ParticipantDrawer = function(interactionInformation){
                 explanationText.show();
             }
         });
-        
+
+        this._interactionSet.insertAfter(this._featureSet);
+
         this.drawLegend(10, y + this._interactionInformation._legendDistanceToImage);
     };
     
@@ -592,12 +594,11 @@ ParticipantDrawer = function(interactionInformation){
 				quad.attr({
 					"stroke": "#D17600",
 					"stroke-dasharray": "- ",
-					"stroke-width": 0.3,
+					"stroke-width": 0.5,
 					"fill": this._interactionInformation._typeCategories["binding site"].colour,
 					"fill-opacity": 0.3
 				});
-				
-				quad.insertBefore(this._interactorSet);
+
 				quad.insertBefore(coordinatesFirst.eventHandlingElement);
 				quad.insertBefore(coordinatesSecond.eventHandlingElement);
 				
