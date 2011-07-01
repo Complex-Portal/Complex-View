@@ -9,7 +9,8 @@
             useProxyForData: true,
             useProxyForOntology: true,
 			useProxyForColours: true,
-            legendPosition: 'left'
+            legendPosition: 'left',
+            loadingImageUrl: ''
         },
 
         // used for the query to OLS
@@ -171,6 +172,9 @@
             var self = this;
 			// if all data is loaded
             $(this.element).bind('load_finished', function(){
+
+                $(self.element).empty();
+
                 if(self._error){
                     $(self.element).append("An error occurred while loading the data.");
                 }else{
@@ -193,6 +197,12 @@
             this._loadData();
             this._loadAllIdentifiers();
 			this._loadColours();
+            if(this.options.loadingImageUrl != ''){
+                var loadingImageText = '<img id="progress_image" ' +
+                                            'src=" ' + this.options.loadingImageUrl +' " ' +
+                                            'alt="Loading..."/>';
+                $(this.element).append(loadingImageText);
+            }
         },
 
         // load data of the given json-file

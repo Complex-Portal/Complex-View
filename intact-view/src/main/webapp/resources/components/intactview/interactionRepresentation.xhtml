@@ -35,26 +35,38 @@
 
        <table width="100%" id="featureTable">
            <tr>
-               <td style="width:75%;vertical-align:top;" id="featureColumn"></td>
+               <td style="width:75%;vertical-align:top;text-align:center;" id="featureColumn"/>
            </tr>
        </table>
 
+
+
        <script type="text/javascript">
 
-               jQuery(function(){
-                   var intRes = $('#featureColumn').Interaction({
-                       width: $("#featureColumn").width(),
-                       developingMode: true,
-                       jsonUrl : '#{cc.attrs.url}',
-                       proxyUrl: '/intact/json',
-                       useProxyForData: false,
-                       legendPosition: 'right'
-                   })
+           jQuery(function(){
+
+               var intRes = $('#featureColumn').Interaction({
+                   width: $("#featureColumn").width(),
+                   developingMode: true,
+                   jsonUrl : '#{cc.attrs.url}',
+                   proxyUrl: '/intact/json',
+                   useProxyForData: false,
+                   legendPosition: 'right',
+                   loadingImageUrl: '/intact/images/wait_red_indicator.gif'
                });
+
+
+
+           });
+
+     //    console.log(document.getElementById('progress_image'));
+
+     //      document.getElementById('progress_image').style.display = 'none';
 
         </script>
 
-
+      <!--  <img src="/intact/images/wait_red_indicator.gif" id="progress_image"
+                           alt="Loading..."/> -->
 
     </composite:implementation>
 
