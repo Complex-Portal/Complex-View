@@ -10,115 +10,116 @@
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
-                
+
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks">
 
 <h:panelGroup id="experimentPanel" rendered="#{detailsBean.experiment != null}">
 
-    <ui:param name="experiment" value="#{detailsBean.experiment}"/>
-    <!-- TODO Following statement would be harsh on the database if the experiment has a large amount of interactions !! -->
-    <ui:param name="interactionCount" value="#{fn:length(experiment.interactions)}"/>
+<ui:param name="experiment" value="#{detailsBean.experiment}"/>
+<!-- TODO Following statement would be harsh on the database if the experiment has a large amount of interactions !! -->
+<ui:param name="interactionCount" value="#{fn:length(experiment.interactions)}"/>
 
-    <h2>Experiment (#{interactionCount} interaction#{interactionCount > 1 ? 's' : ''})</h2>
+<h2>Experiment (#{interactionCount} interaction#{interactionCount > 1 ? 's' : ''})</h2>
 
-    <h:panelGroup>
+<h:panelGroup>
 
-        <iv:panelLabelAndMessage label="Accession:" labelStyleClass="textLabel">
-            <h:outputText value="#{experiment.ac}"/>
-        </iv:panelLabelAndMessage>
+    <iv:panelLabelAndMessage label="Accession:" labelStyleClass="textLabel">
+        <h:outputText value="#{experiment.ac}"/>
+    </iv:panelLabelAndMessage>
 
-        <iv:panelLabelAndMessage label="Name:" labelStyleClass="textLabel">
-            <h:outputText value="#{experiment.shortLabel}"/>
-        </iv:panelLabelAndMessage>
+    <iv:panelLabelAndMessage label="Name:" labelStyleClass="textLabel">
+        <h:outputText value="#{experiment.shortLabel}"/>
+    </iv:panelLabelAndMessage>
 
-        <iv:panelLabelAndMessage label="Host organism:" labelStyleClass="textLabel">
-            <iv:biosourcePopup bioSource="#{experiment.bioSource}" />
-        </iv:panelLabelAndMessage>
+    <iv:panelLabelAndMessage label="Host organism:" labelStyleClass="textLabel">
+        <iv:biosourcePopup bioSource="#{experiment.bioSource}"/>
+    </iv:panelLabelAndMessage>
 
-        <iv:panelLabelAndMessage label="Interaction Detection Method:" labelStyleClass="textLabel">
-            <iv:cvPopup cv="#{experiment.cvInteraction}" />
-        </iv:panelLabelAndMessage>
+    <iv:panelLabelAndMessage label="Interaction Detection Method:" labelStyleClass="textLabel">
+        <iv:cvPopup cv="#{experiment.cvInteraction}"/>
+    </iv:panelLabelAndMessage>
 
-        <iv:panelLabelAndMessage label="Participant Identification Method:" labelStyleClass="textLabel">
-            <iv:cvPopup cv="#{experiment.cvIdentification}" />
-        </iv:panelLabelAndMessage>
+    <iv:panelLabelAndMessage label="Participant Identification Method:" labelStyleClass="textLabel">
+        <iv:cvPopup cv="#{experiment.cvIdentification}"/>
+    </iv:panelLabelAndMessage>
 
-        <table border="0">
-            <tr>
-                <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
-                <td><iv:xrefTable xrefs="#{experiment.xrefs}" /></td>
-            </tr>
-            <tr>
-                <td style="font-weight:bold; vertical-align:top; text-align:right;">Annotations:</td>
-                <td><iv:annotationTable annotations="#{experiment.annotations}" /></td>
-            </tr>
-        </table>
-
-    </h:panelGroup>
-
-
-
-    <ui:param name="publication" value="#{experiment.publication}"/>
-    <ui:param name="pmid" value="#{iaf:getPubmedId(experiment)}"/>
-
-    <h2>Publication</h2>
-
-    <table id="publicationTable" width="100%">
+    <table border="0">
         <tr>
-            <td width="80%">
-
-                <iv:panelLabelAndMessage label="Author List:" labelStyleClass="textLabel">
-                    <h:outputText value="#{detailsBean.authorList}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Title:" labelStyleClass="textLabel">
-                    <h:outputText value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Journal:" labelStyleClass="textLabel">
-                    <h:outputText value="#{detailsBean.journal}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Year of Publication:" labelStyleClass="textLabel">
-                    <h:outputText value="#{detailsBean.publicationYear}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="PubMed Id:" visible="#{pmid != null}" labelStyleClass="textLabel">
-                    <h:outputText value="#{pmid}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty publication.xrefs}" labelStyleClass="textLabel">
-                    <iv:xrefTable xrefs="#{publication.xrefs}" />
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty publication.annotations}" labelStyleClass="textLabel">
-                    <iv:annotationTable annotations="#{publication.annotations}" />
-                </iv:panelLabelAndMessage>
-
-            </td>
-
-            <td width="20%" style="text-align: right; vertical-align: top;">
-
-                <p:panel id="publicationLinks" header="Links">
-                    <h:commandLink value="Show all interactions" action="#{searchBean.doBinarySearchAction}">
-                        <f:setPropertyActionListener value="pubid:#{pmid}" target="#{userQuery.searchQuery}"/>
-                        <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-                    </h:commandLink>
-                </p:panel>
-
-            </td>
+            <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
+            <td><iv:xrefTable xrefs="#{experiment.xrefs}"/></td>
+        </tr>
+        <tr>
+            <td style="font-weight:bold; vertical-align:top; text-align:right;">Annotations:</td>
+            <td><iv:annotationTable annotations="#{experiment.annotations}"/></td>
         </tr>
     </table>
 
+</h:panelGroup>
 
-    <ui:param name="interaction" value="#{detailsBean.interaction}"/>
 
-    <h:panelGroup id="interactionPanel" rendered="#{interaction != null}">
-        <h2>Interaction</h2>
+<ui:param name="publication" value="#{experiment.publication}"/>
+<ui:param name="pmid" value="#{iaf:getPubmedId(experiment)}"/>
 
-        <table width="100%">
+<h2>Publication</h2>
+
+<table id="publicationTable" width="100%">
+    <tr>
+        <td width="80%">
+
+            <iv:panelLabelAndMessage label="Author List:" labelStyleClass="textLabel">
+                <h:outputText value="#{detailsBean.authorList}"/>
+            </iv:panelLabelAndMessage>
+
+            <iv:panelLabelAndMessage label="Title:" labelStyleClass="textLabel">
+                <h:outputText value="#{(experiment.fullName == null ? '-' : experiment.fullName )}"/>
+            </iv:panelLabelAndMessage>
+
+            <iv:panelLabelAndMessage label="Journal:" labelStyleClass="textLabel">
+                <h:outputText value="#{detailsBean.journal}"/>
+            </iv:panelLabelAndMessage>
+
+            <iv:panelLabelAndMessage label="Year of Publication:" labelStyleClass="textLabel">
+                <h:outputText value="#{detailsBean.publicationYear}"/>
+            </iv:panelLabelAndMessage>
+
+            <iv:panelLabelAndMessage label="PubMed Id:" visible="#{pmid != null}" labelStyleClass="textLabel">
+                <h:outputText value="#{pmid}"/>
+            </iv:panelLabelAndMessage>
+
+            <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty publication.xrefs}"
+                                     labelStyleClass="textLabel">
+                <iv:xrefTable xrefs="#{publication.xrefs}"/>
+            </iv:panelLabelAndMessage>
+
+            <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty publication.annotations}"
+                                     labelStyleClass="textLabel">
+                <iv:annotationTable annotations="#{publication.annotations}"/>
+            </iv:panelLabelAndMessage>
+
+        </td>
+
+        <td width="20%" style="text-align: right; vertical-align: top;">
+
+            <p:panel id="publicationLinks" header="Links">
+                <h:commandLink value="Show all interactions" action="#{searchBean.doBinarySearchAction}">
+                    <f:setPropertyActionListener value="pubid:#{pmid}" target="#{userQuery.searchQuery}"/>
+                    <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
+                </h:commandLink>
+            </p:panel>
+
+        </td>
+    </tr>
+</table>
+
+
+<ui:param name="interaction" value="#{detailsBean.interaction}"/>
+
+<h:panelGroup id="interactionPanel" rendered="#{interaction != null}">
+    <h2>Interaction</h2>
+
+    <table width="100%">
         <tr>
             <td width="80%">
                 <iv:panelLabelAndMessage label="Accession:" labelStyleClass="textLabel">
@@ -134,22 +135,22 @@
                 </iv:panelLabelAndMessage>
 
                 <iv:panelLabelAndMessage label="Type:" labelStyleClass="textLabel">
-                    <iv:cvPopup cv="#{interaction.cvInteractionType}" />
+                    <iv:cvPopup cv="#{interaction.cvInteractionType}"/>
                 </iv:panelLabelAndMessage>
 
                 <table border="0">
                     <h:panelGroup rendered="#{not empty interaction.xrefs}">
-                    <tr>
-                        <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
-                        <td><iv:xrefTable xrefs="#{interaction.xrefs}" /></td>
-                    </tr>
+                        <tr>
+                            <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
+                            <td><iv:xrefTable xrefs="#{interaction.xrefs}"/></td>
+                        </tr>
                     </h:panelGroup>
 
                     <h:panelGroup rendered="#{not empty interaction.annotations}">
-                    <tr>
-                        <td style="font-weight:bold; vertical-align:top; text-align:right;">Annotations:</td>
-                        <td><iv:annotationTable annotations="#{interaction.annotations}" /></td>
-                    </tr>
+                        <tr>
+                            <td style="font-weight:bold; vertical-align:top; text-align:right;">Annotations:</td>
+                            <td><iv:annotationTable annotations="#{interaction.annotations}"/></td>
+                        </tr>
                     </h:panelGroup>
                 </table>
             </td>
@@ -175,79 +176,79 @@
         </tr>
     </table>
 
-    </h:panelGroup>
+</h:panelGroup>
 
 
-    <ui:param name="participantCount" value="#{fn:length(interaction.components)}"/>
-    <ui:param name="text" value="s (#{participantCount})"/>
+<ui:param name="participantCount" value="#{fn:length(interaction.components)}"/>
+<ui:param name="text" value="s (#{participantCount})"/>
 
-    <h:panelGroup rendered="#{interaction != null}">
+<h:panelGroup rendered="#{interaction != null}">
 
-    <h2>Participant#{(participantCount > 1 ? text : '')}</h2>
+<h2>Participant#{(participantCount > 1 ? text : '')}</h2>
 
-   <iv:cvLazyDialog dialogVar="cvInfoDialog"/>
+<iv:cvLazyDialog dialogVar="cvInfoDialog"/>
 
-    <p:dataTable var="participant" value="#{interaction.components}" paginator="false" dynamic="false" lazy="false">
+<p:dataTable var="participant" value="#{interaction.components}" paginator="false" dynamic="false" lazy="false">
 
-        <ui:param name="interactor" value="#{participant.interactor}"/>
+    <ui:param name="interactor" value="#{participant.interactor}"/>
 
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="Name"/>
-            </f:facet>
-            <h:outputText value="#{interactor.shortLabel}" />
-        </p:column>        
-        
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="Links"/>
-            </f:facet>
-            <iv:dbInteractorLinkLogos interactor="#{interactor}" />
-        </p:column>
+    <p:column>
+        <f:facet name="header">
+            <h:outputText value="Name"/>
+        </f:facet>
+        <h:outputText value="#{interactor.shortLabel}"/>
+    </p:column>
 
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="Primary Identifier"/>
-            </f:facet>
-            <ui:repeat var="xref" value="#{iaf:getIdentityXrefs(interactor)}" varStatus="rowStatus">
-                <h:outputLink value="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}" target="_blank">
-                    <h:outputText value="#{xref.primaryId}" />
-                </h:outputLink>
-            </ui:repeat>
-        </p:column>
+    <p:column>
+        <f:facet name="header">
+            <h:outputText value="Links"/>
+        </f:facet>
+        <iv:dbInteractorLinkLogos interactor="#{interactor}"/>
+    </p:column>
 
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="Aliases"/>
-            </f:facet>
-            <iam:collapsibleIterator id="csd_aliases_#{status.index}"
-                                     disclosed="false"
-                                     value="#{interactor.aliases}"
-                                     maxShown="5">
-                <h:outputText value="#{item.name}" shortDesc="#{item.cvAliasType.shortLabel}"/>
-            </iam:collapsibleIterator>
-        </p:column>
+    <p:column>
+        <f:facet name="header">
+            <h:outputText value="Primary Identifier"/>
+        </f:facet>
+        <ui:repeat var="xref" value="#{iaf:getIdentityXrefs(interactor)}" varStatus="rowStatus">
+            <h:outputLink value="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}" target="_blank">
+                <h:outputText value="#{xref.primaryId}"/>
+            </h:outputLink>
+        </ui:repeat>
+    </p:column>
 
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="Description"/>
-            </f:facet>
-            <h:outputText value="#{interactor.fullName}"/>
-        </p:column>
+    <p:column>
+        <f:facet name="header">
+            <h:outputText value="Aliases"/>
+        </f:facet>
+        <iam:collapsibleIterator id="csd_aliases_#{status.index}"
+                                 disclosed="false"
+                                 value="#{interactor.aliases}"
+                                 maxShown="5">
+            <h:outputText value="#{item.name}" shortDesc="#{item.cvAliasType.shortLabel}"/>
+        </iam:collapsibleIterator>
+    </p:column>
 
-        <p:column>
-            <f:facet name="header">
-                <h:outputText value="Species"/>
-            </f:facet>
-            <iv:biosourcePopup bioSource="#{interactor.bioSource}" visible="#{interactor.bioSource != null}" />
-            <h:outputText value="-" rendered="#{interactor.bioSource == null}"/>
-        </p:column>
+    <p:column>
+        <f:facet name="header">
+            <h:outputText value="Description"/>
+        </f:facet>
+        <h:outputText value="#{interactor.fullName}"/>
+    </p:column>
+
+    <p:column>
+        <f:facet name="header">
+            <h:outputText value="Species"/>
+        </f:facet>
+        <iv:biosourcePopup bioSource="#{interactor.bioSource}" visible="#{interactor.bioSource != null}"/>
+        <h:outputText value="-" rendered="#{interactor.bioSource == null}"/>
+    </p:column>
 
     <p:column>
         <f:facet name="header">
             <h:outputText value="Expression system"/>
         </f:facet>
-        <iv:biosourcePopup bioSource="#{participant.expressedIn}" visible="#{participant.expressedIn != null}" />
+        <iv:biosourcePopup bioSource="#{participant.expressedIn}" visible="#{participant.expressedIn != null}"/>
         <h:outputText value="-" rendered="#{participant.expressedIn == null}"/>
     </p:column>
 
@@ -255,7 +256,7 @@
         <f:facet name="header">
             <h:outputText value="Experimental role"/>
         </f:facet>
-        <iv:cvLazyPopup cvIdentifier="#{participant.cvExperimentalRole.identifier}"  dialogVar="cvInfoDialog"
+        <iv:cvLazyPopup cvIdentifier="#{participant.cvExperimentalRole.identifier}" dialogVar="cvInfoDialog"
                         text="#{participant.cvExperimentalRole.shortLabel}"
                         cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"/>
     </p:column>
@@ -264,7 +265,7 @@
         <f:facet name="header">
             <h:outputText value="Biological role"/>
         </f:facet>
-        <iv:cvLazyPopup cvIdentifier="#{participant.cvBiologicalRole.identifier}"  dialogVar="cvInfoDialog"
+        <iv:cvLazyPopup cvIdentifier="#{participant.cvBiologicalRole.identifier}" dialogVar="cvInfoDialog"
                         text="#{participant.cvBiologicalRole.shortLabel}"
                         cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"/>
     </p:column>
@@ -273,7 +274,7 @@
         <f:facet name="header">
             <h:outputText value="Interactor type"/>
         </f:facet>
-        <iv:cvLazyPopup cvIdentifier="#{interactor.cvInteractorType.identifier}"  dialogVar="cvInfoDialog"
+        <iv:cvLazyPopup cvIdentifier="#{interactor.cvInteractorType.identifier}" dialogVar="cvInfoDialog"
                         text="#{interactor.cvInteractorType.shortLabel}"
                         cvClassName="uk.ac.ebi.intact.model.CvInteractorType"/>
     </p:column>
@@ -291,26 +292,29 @@
 
         <table width="30" cellSpacing="2" cellPadding="2" border="0">
             <tr>
-                <td style="background-color:#{annotationCount>0 ? '#a7cf9b' : 'lightgray'};" width="10"> <!-- green cell -->
+                <td style="background-color:#{annotationCount>0 ? '#a7cf9b' : 'lightgray'};"
+                    width="10"> <!-- green cell -->
 
                     <iv:participantPopup participant="#{participant}" text="A" style="font-weight:bold; color:white;"
-                                         visible="#{annotationCount>0}" />
+                                         visible="#{annotationCount>0}"/>
 
                     <h:outputText value="A" shortDesc="#{annotationCount} Annotation" rendered="#{annotationCount == 0}"
                                   style="font-weight:bold; color:white;"/>
                 </td>
-                <td style="background-color:#{parameterCount>0 ? '#a1c7c7' : 'lightgray'};" width="10"> <!-- blue cell -->
+                <td style="background-color:#{parameterCount>0 ? '#a1c7c7' : 'lightgray'};"
+                    width="10"> <!-- blue cell -->
 
                     <iv:participantPopup participant="#{participant}" text="P" style="font-weight:bold; color:white;"
-                                         visible="#{parameterCount>0}" />
+                                         visible="#{parameterCount>0}"/>
 
                     <h:outputText value="P" shortDesc="#{parameterCount} Parameter" rendered="#{parameterCount == 0}"
-                                   style="font-weight:bold;color:white;"/>
+                                  style="font-weight:bold;color:white;"/>
                 </td>
-                <td style="background-color:#{participant.stoichiometry > 0 ? '#9e9e9e' : 'lightgray'};" width="10"> <!-- gray cell -->
+                <td style="background-color:#{participant.stoichiometry > 0 ? '#9e9e9e' : 'lightgray'};"
+                    width="10"> <!-- gray cell -->
 
                     <iv:participantPopup participant="#{participant}" text="S" style="font-weight:bold; color:white;"
-                                         visible="#{participant.stoichiometry gt 0}" />
+                                         visible="#{participant.stoichiometry gt 0}"/>
 
                     <h:outputText value="S" shortDesc="Stoichiometry: none" rendered="#{participant.stoichiometry eq 0}"
                                   style="font-weight:bold;color:white;"/>
@@ -318,79 +322,80 @@
                 <td style="background-color:#{domainCount>0 ? '#ed8585' : 'lightgray'};" width="10">  <!-- red cell -->
 
                     <iv:participantPopup participant="#{participant}" text="F" style="font-weight:bold; color:white;"
-                                         visible="#{domainCount>0}" />
+                                         visible="#{domainCount>0}"/>
 
                     <h:outputText value="F" shortDesc="#{domainCount} feature" rendered="#{domainCount == 0}"
-                                   style="font-weight:bold; color:white;"/>
+                                  style="font-weight:bold; color:white;"/>
                 </td>
             </tr>
         </table>
 
     </p:column>
 
-    </p:dataTable>
+</p:dataTable>
 
-    <br/>
+<br/>
 
-    <table width="100%">
-        <tr>
-            <td style="width:75%;"></td>
-            <td style="vertical-align:top; text-align:right;">
+<table width="100%">
+    <tr>
+        <td style="width:75%;"></td>
+        <td style="vertical-align:top; text-align:right;">
 
-                <p:panel style="vertical-align:top; text-align:right;">
+            <p:panel style="vertical-align:top; text-align:right;">
 
-                    <h:outputText value="Legend: " style="font-weight:bold;"/>
+                <h:outputText value="Legend: " style="font-weight:bold;"/>
 
-                    <table cellSpacing="2" cellPadding="2">
-                        <tr>
-                            <td style="background-color:#a7cf9b;" width="10"> <!-- green cell -->
-                                <h:outputText value="A" style="font-weight:bold;color:white;"/>
-                            </td>
-                            <td style="text-align:left;">
-                                <h:outputText value="Participant annotation available"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="background-color:#a1c7c7;" width="10"> <!-- blue cell -->
-                                <h:outputText value="P" style="font-weight:bold;color:white;"/>
-                            </td>
-                            <td style="text-align:left;">
-                                <h:outputText value="Participant experimental parameter available"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="background-color:#9e9e9e;" width="10"> <!-- gray cell -->
-                                <h:outputText value="S" style="font-weight:bold;color:white;"/>
-                            </td>
-                            <td style="text-align:left;">
-                                <h:outputText value="Participant stoichiometry available"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="background-color:#ed8585;" width="10">  <!-- red cell -->
-                                <h:outputText value="F" style="font-weight:bold;color:white;"/>
-                            </td>
-                            <td style="text-align:left;">
-                                <h:outputText value="Experimental feature information available"/>
-                            </td>
-                        </tr>
-                    </table>
-                </p:panel>
+                <table cellSpacing="2" cellPadding="2">
+                    <tr>
+                        <td style="background-color:#a7cf9b;" width="10"> <!-- green cell -->
+                            <h:outputText value="A" style="font-weight:bold;color:white;"/>
+                        </td>
+                        <td style="text-align:left;">
+                            <h:outputText value="Participant annotation available"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background-color:#a1c7c7;" width="10"> <!-- blue cell -->
+                            <h:outputText value="P" style="font-weight:bold;color:white;"/>
+                        </td>
+                        <td style="text-align:left;">
+                            <h:outputText value="Participant experimental parameter available"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background-color:#9e9e9e;" width="10"> <!-- gray cell -->
+                            <h:outputText value="S" style="font-weight:bold;color:white;"/>
+                        </td>
+                        <td style="text-align:left;">
+                            <h:outputText value="Participant stoichiometry available"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background-color:#ed8585;" width="10">  <!-- red cell -->
+                            <h:outputText value="F" style="font-weight:bold;color:white;"/>
+                        </td>
+                        <td style="text-align:left;">
+                            <h:outputText value="Experimental feature information available"/>
+                        </td>
+                    </tr>
+                </table>
+            </p:panel>
 
-            </td>
-        </tr>
-    </table>
-    <h:panelGroup rendered="#{detailsBean.featuresAvailable}">
-            <h2>Graphical Representation of Experimental Features</h2>
-        <div style="float:right">
+        </td>
+    </tr>
+</table>
+<h:panelGroup rendered="#{detailsBean.featuresAvailable}">
+    <h2>Graphical Representation of Experimental Features</h2>
+
+    <div style="float:right">
         <p:commandLink onclick="whatIsFeaturesDialog.show()">
             What is this image
             <h:graphicImage alt="helpIcon" url="/images/help.png"/>
         </p:commandLink>
     </div>
-            <iv:interactionRepresentation url="/intact/json?ac=#{interaction.ac}"/>
-         </h:panelGroup>
-        </h:panelGroup>
+    <iv:interactionRepresentation url="/intact/json?ac=#{interaction.ac}" />
+</h:panelGroup>
+</h:panelGroup>
 
 </h:panelGroup>
 

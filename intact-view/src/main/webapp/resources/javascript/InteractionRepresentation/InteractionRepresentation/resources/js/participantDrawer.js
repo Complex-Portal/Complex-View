@@ -721,10 +721,10 @@ ParticipantDrawer = function(interactionInformation){
         var r = height/10;
 		
 		if (r > 5) {
-			r = 5
-		};
-		
-		if(length < r){
+			r = 5;
+		}
+
+		if(length <= 2*r){
 			r = 1;
 		}
 		
