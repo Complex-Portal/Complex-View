@@ -271,13 +271,13 @@ public class InteractionController extends ParameterizableObjectController {
             // if the scope is null or different, the object should not be saved at this stage because we only save the current object and changes associated with it
             // if current ac is null, no unsaved event should be associated with it as this object has not been saved yet
             if (unsaved.getScope() != null && unsaved.getScope().equals(currentAc)){
-                super.getPersistenceController().doSaveMasterProteins(transcript);
+                getPersistenceController().doSaveMasterProteins(transcript);
 
                 getChangesController().removeFromHiddenChanges(unsaved);
 
             }
             else if (unsaved.getScope() == null && currentAc == null){
-                super.getPersistenceController().doSaveMasterProteins(transcript);
+                getPersistenceController().doSaveMasterProteins(transcript);
                 getChangesController().removeFromHiddenChanges(unsaved);
             }
         }
@@ -320,33 +320,16 @@ public class InteractionController extends ParameterizableObjectController {
     public boolean doSaveDetails() {
         boolean saved = true;
 
-        // not necessary to persist or delete components after saving interaction as it is done while saving the interaction
-        /*for (ParticipantWrapper pw : participantWrappers) {
+        // ensure that all the components are persisted (hack to fix Issue 652).
+        // There seems to be components with null AC when the master protein of that
+        // component needs to be saved
+        for (ParticipantWrapper pw : participantWrappers) {
             Component component = pw.getParticipant();
 
-            // checks that the component has not been deleted before saving
-            // TODO : update the markToDelete method, it is not synchronized with the participant wrappers
-            if (pw.isDeleted() && component.getAc() != null) {
-                interaction.removeComponent(component);
-
-                Component compToDelete;
-
-                if (!getDaoFactory().getEntityManager().contains(component)) {
-                    compToDelete = getDaoFactory().getComponentDao().getByAc(component.getAc());
-                } else {
-                    compToDelete = component;
-                }
-
-                if (compToDelete != null) {
-                    getDaoFactory().getComponentDao().delete(compToDelete);
-                }
-            }
             if (component.getAc() == null) {
                 getCorePersister().saveOrUpdate(component);
             }
-
-            saved = true;
-        }*/
+        }
 
         for (Experiment experimentToUpdate : experimentsToUpdate) {
             getCorePersister().saveOrUpdate(experimentToUpdate);
