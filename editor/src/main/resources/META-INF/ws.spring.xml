@@ -5,10 +5,10 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:cxf="http://cxf.apache.org/core"
     xmlns:jaxrs="http://cxf.apache.org/jaxrs"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
-        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+                        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd"
 	default-autowire="byName">
 
 	<!-- Load CXF modules from cxf.jar -->
@@ -24,9 +24,12 @@
 
     <bean name="exportService" class="uk.ac.ebi.intact.editor.ws.MiExportServiceImpl"/>
 
+    <bean name="userExportService" class="uk.ac.ebi.intact.editor.ws.UserExportServiceImpl"/>
+
     <jaxrs:server id="exportServer" address="/export">
         <jaxrs:serviceBeans>
             <ref bean="exportService"/>
+            <ref bean="userExportService"/>
         </jaxrs:serviceBeans>
     </jaxrs:server>
 

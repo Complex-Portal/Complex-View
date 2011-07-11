@@ -22,6 +22,8 @@
             <p:submenu label="Users">
                 <p:menuitem value="New user" action="#{userAdminController.newUser}" ajax="false"/>
                 <p:menuitem value="List users" action="/admin/users/list?faces-redirect=true" ajax="false" />
+                <p:menuitem value="Export all users" url="/service/export/users/all" target="_blank"/>
+                <p:menuitem value="Export selected users" actionListener="#{userAdminController.exportSelectedUsers}" ajax="false"/>
             </p:submenu>
             <p:submenu label="Database">
                 <p:menuitem value="Import PSI-MI XML" action="/admin/dbupdate/importXml?faces-redirect=true" ajax="false"/>

@@ -13,8 +13,15 @@ import uk.ac.ebi.intact.core.users.persistence.dao.UserDao;
 import uk.ac.ebi.intact.editor.controller.misc.AbstractUserController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,6 +44,8 @@ public class UserAdminController extends AbstractUserController {
     private DualListModel<String> roles;
 
     private LazyDataModel<User> allUsers;
+
+    private User[] selectedUsers;
 
     /////////////////
     // Users
@@ -186,5 +195,65 @@ public class UserAdminController extends AbstractUserController {
         }
 
         return allUsers;
+    }
+
+    public User[] getSelectedUsers() {
+        return selectedUsers;
+    }
+
+    public void setSelectedUsers( User[] selectedUsers ) {
+        this.selectedUsers = selectedUsers;
+    }
+
+    public boolean hasSelectedUsers() {
+        if( this.selectedUsers != null ) {
+            for ( int i = 0; i < selectedUsers.length; i++ ) {
+                if ( selectedUsers[i] != null ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public String getSelectedUsersLogin( String separator ) {
+        System.out.println( "UserAdminController.selectedUsersLogin(\""+ separator +"\")" );
+        String logins = null;
+        if( this.selectedUsers != null ) {
+            StringBuilder sb = new StringBuilder( 128 );
+            for ( int i = 0; i < selectedUsers.length; i++ ) {
+                User selectedUser = selectedUsers[i];
+                if( selectedUser != null ) {
+                    sb.append( selectedUser.getLogin() );
+                    if((i+1) < selectedUsers.length ) {
+                        sb.append( separator );
+                    }
+                }
+            }
+            logins = sb.toString();
+        }
+
+        System.out.println( "UserAdminController.selectedUsersLogin returns: '"+ logins +"'" );
+
+        return logins;
+    }
+
+    public void exportSelectedUsers( ActionEvent evt ) {
+        if( ! hasSelectedUsers() ) {
+           addWarningMessage( "Cannot export empty user selection.", "Please select at least one user." );
+            return;
+        }
+
+        try {
+            final ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            final HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
+            final HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
+
+            response.sendRedirect(request.getContextPath()+"/service/export/users/byLogin?logins="+getSelectedUsersLogin( "," ));
+
+            FacesContext.getCurrentInstance().responseComplete();
+        } catch (IOException e) {
+            handleException(e);
+        }
     }
 }
