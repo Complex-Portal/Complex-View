@@ -384,15 +384,9 @@
         </td>
     </tr>
 </table>
-<h:panelGroup rendered="#{detailsBean.featuresAvailable}">
+<!-- rendered="#{detailsBean.featuresAvailable}"> -->
+<h:panelGroup>
     <h2>Graphical Representation of Experimental Features</h2>
-
-    <div style="float:right">
-        <p:commandLink onclick="whatIsFeaturesDialog.show()">
-            What is this image
-            <h:graphicImage alt="helpIcon" url="/images/help.png"/>
-        </p:commandLink>
-    </div>
     <iv:interactionRepresentation url="/intact/json?ac=#{interaction.ac}" />
 </h:panelGroup>
 </h:panelGroup>

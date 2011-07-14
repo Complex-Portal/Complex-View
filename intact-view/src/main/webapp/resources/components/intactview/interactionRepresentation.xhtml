@@ -35,6 +35,16 @@
 
        <table width="100%" id="featureTable">
            <tr>
+               <td>
+                   <div style="float:right">
+                        <p:commandLink onclick="whatIsFeaturesDialog.show()">
+                            What is this image
+                            <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+                        </p:commandLink>
+                    </div>
+               </td>
+           </tr>
+           <tr>
                <td style="width:75%;vertical-align:top;text-align:center;" id="featureColumn"/>
            </tr>
        </table>
@@ -42,11 +52,11 @@
 
 
        <script type="text/javascript">
-
+           intRes = null;
            jQuery(function(){
-
-               var intRes = $('#featureColumn').Interaction({
+               intRes = $('#featureColumn').Interaction({
                    width: $("#featureColumn").width(),
+                   developingMode: true,
                    jsonUrl : '#{cc.attrs.url}',
                    proxyUrl: '/intact/proxy',
                    useProxyForData: false,
@@ -55,14 +65,7 @@
                });
            });
 
-     //    console.log(document.getElementById('progress_image'));
-
-     //      document.getElementById('progress_image').style.display = 'none';
-
         </script>
-
-      <!--  <img src="/intact/images/wait_red_indicator.gif" id="progress_image"
-                           alt="Loading..."/> -->
 
     </composite:implementation>
 
