@@ -39,23 +39,6 @@
         <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
         <db.hbm2ddl>none</db.hbm2ddl>
 
-
-        <!-- Users DB -->
-        <!--<db.users.jndi>jdbc/IntactEditorUsersDS</db.users.jndi>-->
-
-        <!-- Users DB defaults -->
-        <!--<db.users.url>jdbc:h2:editorusers;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.users.url>-->
-        <!--<db.users.user>sa</db.users.user>-->
-        <!--<db.users.password></db.users.password>-->
-        <!--<db.users.dialect>org.hibernate.dialect.H2Dialect</db.users.dialect>-->
-        <!--<db.users.driver>org.h2.Driver</db.users.driver>-->
-
-        <!--<db.users.url>jdbc:oracle:thin:@kava.ebi.ac.uk:1561:enzdev</db.users.url>-->
-        <!--<db.users.driver>oracle.jdbc.OracleDriver</db.users.driver>-->
-        <!--<db.users.dialect>org.hibernate.dialect.Oracle10gDialect</db.users.dialect>-->
-        <!--<db.users.user>skerrien</db.users.user>-->
-        <!--<db.users.password>jsne78AL</db.users.password>-->
-
         <!-- other property defaults -->
         <webapp.logo.url>http://www.ebi.ac.uk/~intact/images/intact_logo.png</webapp.logo.url>
         <intact.instance.name>Not Set</intact.instance.name>
