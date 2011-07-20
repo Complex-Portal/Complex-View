@@ -25,11 +25,11 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import uk.ac.ebi.intact.core.users.model.Preference;
-import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
+import uk.ac.ebi.intact.model.user.Preference;
+import uk.ac.ebi.intact.model.user.User;
 
 import javax.faces.event.ActionEvent;
 import java.io.ByteArrayOutputStream;

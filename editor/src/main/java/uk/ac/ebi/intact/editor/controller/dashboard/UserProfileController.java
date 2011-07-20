@@ -2,9 +2,9 @@ package uk.ac.ebi.intact.editor.controller.dashboard;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.misc.AbstractUserController;
+import uk.ac.ebi.intact.model.user.User;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
@@ -23,9 +23,7 @@ public class UserProfileController extends AbstractUserController {
 
     public void loadData(ComponentSystemEvent cse) {
         UserSessionController userSessionController = getUserSessionController();
-        //userSessionController.getCurrentUser();
-
-        User user =  getUsersDaoFactory().getUserDao().getByLogin(userSessionController.getCurrentUser().getLogin());
+        User user =  getDaoFactory().getUserDao().getByLogin(userSessionController.getCurrentUser().getLogin());
         setUser(user);
     }
 
@@ -43,7 +41,7 @@ public class UserProfileController extends AbstractUserController {
              }
          }
 
-        getUsersDaoFactory().getUserDao().update(user);
+        getDaoFactory().getUserDao().update(user);
 
         getUserSessionController().setCurrentUser(user);
 

@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.context.UserContext;
-import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.editor.controller.UserListener;
 import uk.ac.ebi.intact.editor.controller.admin.UserManagerController;
+import uk.ac.ebi.intact.model.user.User;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;

@@ -1,29 +1,34 @@
 package uk.ac.ebi.intact.editor.controller.admin;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.UploadedFile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.intact.core.users.model.Role;
-import uk.ac.ebi.intact.core.users.model.User;
-import uk.ac.ebi.intact.core.users.persistence.dao.UserDao;
+import uk.ac.ebi.intact.core.persistence.dao.user.UserDao;
+import uk.ac.ebi.intact.core.persistence.svc.UserService;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.misc.AbstractUserController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
+import uk.ac.ebi.intact.model.user.Preference;
+import uk.ac.ebi.intact.model.user.Role;
+import uk.ac.ebi.intact.model.user.User;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.lang.model.SourceVersion;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Controller used when administrating users.
@@ -47,6 +52,19 @@ public class UserAdminController extends AbstractUserController {
 
     private User[] selectedUsers;
 
+    @Autowired
+    private UserService userService;
+
+    private List<UserWrapper> usersToImport = new ArrayList<UserWrapper>(  );
+
+    private boolean importUpdateEnabled = true;
+
+    private UserWrapper[] selectedUsersToImport;
+
+    private UploadedFile uploadedFile;
+
+    private boolean fileUploaded;
+
     /////////////////
     // Users
 
@@ -68,7 +86,7 @@ public class UserAdminController extends AbstractUserController {
         if ( loginParam != null ) {
             // load user and prepare for update
             log.debug( "Loading user by login '" + loginParam + "'..." );
-            User user = getUsersDaoFactory().getUserDao().getByLogin( loginParam );
+            User user = getDaoFactory().getUserDao().getByLogin( loginParam );
             setUser(user);
 
             if ( user == null ) {
@@ -84,19 +102,19 @@ public class UserAdminController extends AbstractUserController {
 
     public void loadData() {
         log.debug( "AbstractUserController.loadData" );
-        allUsers = LazyDataModelFactory.createLazyDataModel( getUsersEntityManager(),
+        allUsers = LazyDataModelFactory.createLazyDataModel( super.getCoreEntityManager(),
                 "select u from User u", "u", "login", true );
     }
 
 
-    @Transactional( "users" )
+    @Transactional
     public String saveUser() {
-        final UserDao userDao = getUsersDaoFactory().getUserDao();
+        final UserDao userDao = getDaoFactory().getUserDao();
 
         User user = getUser();
 
         boolean created = false;
-        if ( !userDao.isManaged( user ) && !userDao.isDetached( user ) ) {
+        if ( !IntactCore.isManaged( user ) && ! IntactCore.isDetached( user ) ) {
             userDao.persist( user );
             created = true;
         }
@@ -105,7 +123,7 @@ public class UserAdminController extends AbstractUserController {
         final List<String> includedRoles = roles.getTarget();
         for ( String roleName : includedRoles ) {
             if ( !user.hasRole( roleName ) ) {
-                final Role r = getUsersDaoFactory().getRoleDao().getRoleByName( roleName );
+                final Role r = getDaoFactory().getRoleDao().getRoleByName( roleName );
                 user.addRole( r );
                 log.info( "Added role " + roleName + "to user " + user.getLogin() );
             }
@@ -114,22 +132,13 @@ public class UserAdminController extends AbstractUserController {
         final List<String> excludedRoles = roles.getSource();
         for ( String roleName : excludedRoles ) {
             if ( user.hasRole( roleName ) ) {
-                final Role r = getUsersDaoFactory().getRoleDao().getRoleByName( roleName );
+                final Role r = getDaoFactory().getRoleDao().getRoleByName( roleName );
                 user.removeRole( r );
                 log.info( "Removed role " + roleName + "to user " + user.getLogin() );
             }
         }
 
         userDao.saveOrUpdate( user );
-
-//        for (Preference pref : user.getPreferences()) {
-//            if (pref.getPk() == null) {
-//                daoFactory.getPreferenceDao().persist(pref);
-//            } else {
-//                daoFactory.getPreferenceDao().update(pref);
-//            }
-//
-//        }
 
         addInfoMessage( "User " + user.getLogin() + " was " + ( created ? "created" : "updated" ) + " successfully", "" );
 
@@ -152,7 +161,7 @@ public class UserAdminController extends AbstractUserController {
         List<String> source = new ArrayList<String>();
         List<String> target = new ArrayList<String>();
 
-        Collection<Role> allRoles = getUsersDaoFactory().getRoleDao().getAll();
+        Collection<Role> allRoles = getDaoFactory().getRoleDao().getAll();
         log.debug( "Found " + allRoles.size() + " role(s) in the database." );
 
         User user = getUser();
@@ -255,5 +264,121 @@ public class UserAdminController extends AbstractUserController {
         } catch (IOException e) {
             handleException(e);
         }
+    }
+
+    ///////////////////////
+    // User Import
+
+    public void upload() {
+        System.out.println( "UserAdminController.upload" );
+        System.out.println( "uploadedFile = " + uploadedFile.getFileName() );
+
+        addInfoMessage( "Succesful", uploadedFile.getFileName() + " was uploaded." );
+
+        usersToImport = new ArrayList<UserWrapper>();
+        try {
+            Collection<User> users = userService.parseUsers( uploadedFile.getInputstream() );
+            if( ! users.isEmpty() ) {
+                for ( User user : users ) {
+                    final UserWrapper uw = new UserWrapper( user );
+                    User dbUser = getDaoFactory().getUserDao().getByLogin( user.getLogin() );
+                    if( dbUser != null ) {
+                        uw.setAlreadyExistsInDB( true );
+                    }
+                    System.out.println( "Adding user: " + uw.getUser().getLogin() );
+                    usersToImport.add( uw );
+                }
+            }
+
+            fileUploaded = true;
+
+        } catch ( Exception e ) {
+            addWarningMessage( "Failed", "Could not parse user file: " + uploadedFile.getFileName() );
+        }
+    }
+
+    public List<UserWrapper> getUsersToImport() {
+        return usersToImport;
+    }
+
+    public void setUsersToImport( List<UserWrapper> usersToImport ) {
+        this.usersToImport = usersToImport;
+    }
+
+    public boolean isImportUpdateEnabled() {
+        return importUpdateEnabled;
+    }
+
+    public void setImportUpdateEnabled( boolean importUpdateEnabled ) {
+        this.importUpdateEnabled = importUpdateEnabled;
+    }
+
+    public class UserWrapper extends User {
+
+        private User user;
+
+        private boolean alreadyExistsInDB;
+
+        public UserWrapper( User user ) {
+            this.user = user;
+        }
+
+        public User getUser() {
+            return user;
+        }
+
+        public void setUser( User user ) {
+            this.user = user;
+        }
+
+        public boolean isAlreadyExistsInDB() {
+            return alreadyExistsInDB;
+        }
+
+        public void setAlreadyExistsInDB( boolean alreadyExistsInDB ) {
+            this.alreadyExistsInDB = alreadyExistsInDB;
+        }
+    }
+
+    public UserWrapper[] getSelectedUsersToImport() {
+        return selectedUsersToImport;
+    }
+
+    public void setSelectedUsersToImport( UserWrapper[] selectedUsersToImport ) {
+        this.selectedUsersToImport = selectedUsersToImport;
+    }
+
+    public UploadedFile getUploadedFile() {
+        return uploadedFile;
+    }
+
+    public void setUploadedFile( UploadedFile uploadedFile ) {
+        this.uploadedFile = uploadedFile;
+    }
+
+    public boolean isFileUploaded() {
+        return fileUploaded;
+    }
+
+    public void setFileUploaded( boolean fileUploaded ) {
+        this.fileUploaded = fileUploaded;
+    }
+
+
+    public void importSelectedUsers() {
+        System.out.println( "UserAdminController.importSelectedUsers" );
+
+        if( selectedUsersToImport == null || selectedUsersToImport.length == 0 ) {
+            addWarningMessage( "Failed", "You must select at least one user to import." );
+            return;
+        }
+
+        Collection<User> users = new ArrayList<User>( );
+        for ( int i = 0; i < selectedUsersToImport.length; i++ ) {
+            UserWrapper wrapper = selectedUsersToImport[i];
+            users.add( wrapper.getUser() );
+        }
+
+        userService.importUsers( users, importUpdateEnabled );
     }
 }

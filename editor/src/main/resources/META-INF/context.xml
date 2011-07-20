@@ -2,25 +2,14 @@
 <Context>
     <!--<Loader delegate="true"/>-->
 
-<Resource name="${db.jndi}"
-            auth="Container"
-            type="javax.sql.DataSource"
-            username="${db.user}"
-            password="${db.password}"
-            driverClassName="${db.driver}"
-            url="${db.url}"
-            maxActive="8"
-            maxIdle="4"/>
-
-<Resource name="${db.users.jndi}"
-            auth="Container"
-            type="javax.sql.DataSource"
-            username="${db.users.user}"
-            password="${db.users.password}"
-            driverClassName="${db.users.driver}"
-            url="${db.users.url}"
-            maxActive="8"
-            maxIdle="4"/>
-
+    <Resource name="${db.jndi}"
+                auth="Container"
+                type="javax.sql.DataSource"
+                username="${db.user}"
+                password="${db.password}"
+                driverClassName="${db.driver}"
+                url="${db.url}"
+                maxActive="8"
+                maxIdle="4"/>
 
 </Context>

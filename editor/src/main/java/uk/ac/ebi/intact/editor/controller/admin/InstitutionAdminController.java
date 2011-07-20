@@ -24,13 +24,11 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
 import uk.ac.ebi.intact.core.persistence.util.InstitutionMerger;
-import uk.ac.ebi.intact.core.users.model.Preference;
-import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.institution.InstitutionService;
-import uk.ac.ebi.intact.editor.controller.misc.AbstractUserController;
 import uk.ac.ebi.intact.model.Institution;
 import uk.ac.ebi.intact.model.OwnedAnnotatedObject;
+import uk.ac.ebi.intact.model.user.User;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
@@ -65,7 +63,7 @@ public class InstitutionAdminController extends JpaAwareController {
         institutionService.refresh(null);
         institutions = institutionService.getAllInstitutions();
 
-        List<User> usersAvailable = getUsersDaoFactory().getUserDao().getAll();
+        List<User> usersAvailable = getDaoFactory().getUserDao().getAll();
         List<User> usersSelected = new ArrayList<User>();
 
         usersDualListModel = new DualListModel<User>(usersAvailable, usersSelected);

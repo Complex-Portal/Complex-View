@@ -20,12 +20,12 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persister.IntactCore;
-import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserListener;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.user.User;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import java.util.*;

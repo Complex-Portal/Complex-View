@@ -1,8 +1,8 @@
 package uk.ac.ebi.intact.editor.ws;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.ac.ebi.intact.core.users.model.User;
-import uk.ac.ebi.intact.core.users.persistence.dao.UsersDaoFactory;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.model.user.User;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -18,14 +18,14 @@ import java.util.List;
 public class UserExportServiceImpl implements UserExportService {
 
     @Autowired
-    private UsersDaoFactory usersDaoFactory;
+    private DaoFactory daoFactory;
 
     @Override
     public Object exportAll() {
         Response response = null;
         try {
 
-            final List<User> all = usersDaoFactory.getUserDao().getAll();
+            final List<User> all = daoFactory.getUserDao().getAll();
             UsersStreamingOutput output = new UsersStreamingOutput( all );
             response = Response.status(200).type("application/xml").entity(output).build();
         } catch (Throwable e) {
@@ -43,7 +43,7 @@ public class UserExportServiceImpl implements UserExportService {
             final List<User> users = new ArrayList<User>( logins.length );
             for ( int i = 0; i < logins.length; i++ ) {
                 String login = logins[i];
-                User user = usersDaoFactory.getUserDao().getByLogin( login );
+                User user = daoFactory.getUserDao().getByLogin( login );
                 if( user == null ) {
                      throw new RuntimeException("Could not export, unknown user: '" + login + "'" );
                 }

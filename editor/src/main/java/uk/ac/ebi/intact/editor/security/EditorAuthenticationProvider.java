@@ -25,11 +25,11 @@ import org.springframework.security.*;
 import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.intact.core.users.model.Role;
-import uk.ac.ebi.intact.core.users.model.User;
-import uk.ac.ebi.intact.core.users.persistence.dao.UsersDaoFactory;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.controller.UserListener;
 import uk.ac.ebi.intact.editor.controller.admin.UserManagerController;
+import uk.ac.ebi.intact.model.user.Role;
+import uk.ac.ebi.intact.model.user.User;
 
 import java.util.Collection;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
     private static final Log log = LogFactory.getLog( EditorAuthenticationProvider.class );
 
     @Autowired
-    private UsersDaoFactory usersDaoFactory;
+    private DaoFactory daoFactory;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -51,7 +51,7 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private UserManagerController userManagerController;
 
-    @Transactional( value = "users", readOnly = true )
+    @Transactional( readOnly = true )
     public Authentication authenticate( Authentication authentication ) throws AuthenticationException {
 
         log.debug( "======================= AUTHENTICATE ======================" );
@@ -61,7 +61,7 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
             log.debug( "Authenticating user: " + authentication.getPrincipal() );
         }
 
-        final User user = usersDaoFactory.getUserDao().getByLogin( authentication.getPrincipal().toString() );
+        final User user = daoFactory.getUserDao().getByLogin( authentication.getPrincipal().toString() );
 
         // initialize the user collections because we will access it often
         if (user != null) {

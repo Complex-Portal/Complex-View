@@ -6,9 +6,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.Authentication;
 import org.springframework.security.ui.logout.LogoutHandler;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.editor.controller.UserListener;
 import uk.ac.ebi.intact.editor.controller.admin.UserManagerController;
+import uk.ac.ebi.intact.model.user.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

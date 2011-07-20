@@ -24,13 +24,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persister.IntactCore;
-import uk.ac.ebi.intact.core.users.model.Preference;
-import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.admin.UserAdminController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.user.Preference;
+import uk.ac.ebi.intact.model.user.User;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -57,8 +57,6 @@ public class MyNotesController extends JpaAwareController {
     private static final Log log = LogFactory.getLog(MyNotesController.class);
     private static final int MAX_RESULTS = 200;
 
-
-
     private String rawNotes;
     private String formattedNotes;
     private boolean editMode;
@@ -80,7 +78,7 @@ public class MyNotesController extends JpaAwareController {
                request.getContextPath();
     }
 
-    @Transactional("users")
+    @Transactional
     public void loadPage(ComponentSystemEvent evt) {
         User user = userSessionController.getCurrentUser(true);
 
@@ -93,7 +91,7 @@ public class MyNotesController extends JpaAwareController {
 
             user.getPreferences().add(pref);
 
-            getUsersDaoFactory().getPreferenceDao().persist(pref);
+            getDaoFactory().getPreferenceDao().persist(pref);
         }
 
         rawNotes = pref.getValue();
@@ -105,14 +103,14 @@ public class MyNotesController extends JpaAwareController {
         processNotes();
     }
 
-    @Transactional("users")
+    @Transactional
     public void saveNotes(ActionEvent evt) {
         User user = userSessionController.getCurrentUser();
 
         Preference pref = user.getPreference(UserAdminController.RAW_NOTES);
         pref.setValue(rawNotes);
 
-        getUsersDaoFactory().getPreferenceDao().update(pref);
+        getDaoFactory().getPreferenceDao().update(pref);
 
         processNotes();
 

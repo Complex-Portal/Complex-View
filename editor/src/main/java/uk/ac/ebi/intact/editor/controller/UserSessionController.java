@@ -24,12 +24,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.InstitutionDao;
-import uk.ac.ebi.intact.core.users.model.Preference;
-import uk.ac.ebi.intact.core.users.model.Role;
-import uk.ac.ebi.intact.core.users.model.User;
-import uk.ac.ebi.intact.core.users.persistence.dao.UserDao;
+import uk.ac.ebi.intact.core.persistence.dao.user.UserDao;
 import uk.ac.ebi.intact.editor.controller.misc.AbstractUserController;
 import uk.ac.ebi.intact.model.Institution;
+import uk.ac.ebi.intact.model.user.Preference;
+import uk.ac.ebi.intact.model.user.Role;
+import uk.ac.ebi.intact.model.user.User;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -55,7 +55,7 @@ public class UserSessionController extends JpaAwareController implements Disposa
 
     public User getCurrentUser(boolean refresh) {
         if (refresh) {
-            currentUser = getUsersDaoFactory().getUserDao().getByLogin(currentUser.getLogin());
+            currentUser = getDaoFactory().getUserDao().getByLogin(currentUser.getLogin());
         }
 
         return currentUser;

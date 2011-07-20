@@ -23,7 +23,6 @@ import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.IntactObjectDao;
 import uk.ac.ebi.intact.core.persister.Finder;
 import uk.ac.ebi.intact.core.persister.IntactCore;
-import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
@@ -33,6 +32,7 @@ import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationControll
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
+import uk.ac.ebi.intact.model.user.User;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.util.go.GoServerProxy;
 import uk.ac.ebi.intact.util.go.GoTerm;

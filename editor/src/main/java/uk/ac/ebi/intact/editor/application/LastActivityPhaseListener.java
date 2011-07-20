@@ -19,8 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.users.model.User;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
+import uk.ac.ebi.intact.model.user.User;
 
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;

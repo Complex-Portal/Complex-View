@@ -2,8 +2,8 @@ package uk.ac.ebi.intact.editor.controller.misc;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.core.users.model.Preference;
-import uk.ac.ebi.intact.core.users.model.User;
+import uk.ac.ebi.intact.model.user.Preference;
+import uk.ac.ebi.intact.model.user.User;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.institution.InstitutionService;
 import uk.ac.ebi.intact.model.Institution;

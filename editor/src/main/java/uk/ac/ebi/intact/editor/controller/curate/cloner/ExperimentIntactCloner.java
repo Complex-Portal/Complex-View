@@ -40,7 +40,9 @@ public class ExperimentIntactCloner extends EditorIntactCloner {
 
     @Override
     public Interaction cloneInteraction(Interaction interaction) throws IntactClonerException {
-        return super.cloneInteraction(interaction);
+        final Interaction clone = super.cloneInteraction( interaction );
+        clone.getExperiments().clear();
+        return clone;
     }
 
     @Override

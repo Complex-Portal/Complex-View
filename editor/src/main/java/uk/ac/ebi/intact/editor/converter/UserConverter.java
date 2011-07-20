@@ -16,10 +16,8 @@
 package uk.ac.ebi.intact.editor.converter;
 
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.users.model.User;
-import uk.ac.ebi.intact.core.users.persistence.dao.UserDao;
-import uk.ac.ebi.intact.editor.controller.curate.organism.BioSourceService;
-import uk.ac.ebi.intact.model.BioSource;
+import uk.ac.ebi.intact.core.persistence.dao.user.UserDao;
+import uk.ac.ebi.intact.model.user.User;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;

@@ -25,7 +25,7 @@
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <core.version>2.4.1</core.version>
+        <core.version>2.5.0-SNAPSHOT</core.version>
         <spring.version>3.0.3.RELEASE</spring.version>
         <bridges.version>2.1.3</bridges.version>
 
@@ -34,21 +34,27 @@
 
         <!-- database defaults -->
         <db.jndi>jdbc/IntactEditorDS</db.jndi>
-        
+
         <!--<db.url>jdbc:h2:editordb;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.url>-->
         <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
         <db.hbm2ddl>none</db.hbm2ddl>
 
 
         <!-- Users DB -->
-        <db.users.jndi>jdbc/IntactEditorUsersDS</db.users.jndi>
+        <!--<db.users.jndi>jdbc/IntactEditorUsersDS</db.users.jndi>-->
 
         <!-- Users DB defaults -->
-        <db.users.url>jdbc:h2:editorusers;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.users.url>
-        <db.users.user>sa</db.users.user>
-        <db.users.password></db.users.password>
-        <db.users.dialect>org.hibernate.dialect.H2Dialect</db.users.dialect>
-        <db.users.driver>org.h2.Driver</db.users.driver>
+        <!--<db.users.url>jdbc:h2:editorusers;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.users.url>-->
+        <!--<db.users.user>sa</db.users.user>-->
+        <!--<db.users.password></db.users.password>-->
+        <!--<db.users.dialect>org.hibernate.dialect.H2Dialect</db.users.dialect>-->
+        <!--<db.users.driver>org.h2.Driver</db.users.driver>-->
+
+        <!--<db.users.url>jdbc:oracle:thin:@kava.ebi.ac.uk:1561:enzdev</db.users.url>-->
+        <!--<db.users.driver>oracle.jdbc.OracleDriver</db.users.driver>-->
+        <!--<db.users.dialect>org.hibernate.dialect.Oracle10gDialect</db.users.dialect>-->
+        <!--<db.users.user>skerrien</db.users.user>-->
+        <!--<db.users.password>jsne78AL</db.users.password>-->
 
         <!-- other property defaults -->
         <webapp.logo.url>http://www.ebi.ac.uk/~intact/images/intact_logo.png</webapp.logo.url>
@@ -164,11 +170,11 @@
             <artifactId>intact-core</artifactId>
             <version>${core.version}</version>
         </dependency>
-        <dependency>
-            <groupId>uk.ac.ebi.intact.core</groupId>
-            <artifactId>intact-users</artifactId>
-            <version>${core.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>uk.ac.ebi.intact.core</groupId>-->
+            <!--<artifactId>intact-users</artifactId>-->
+            <!--<version>${core.version}</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
             <artifactId>intact-batch</artifactId>
@@ -410,7 +416,13 @@
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.2.1</version>
+            <version>1.2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
         </dependency>
 
         <!-- Atmosphere (Comet) -->

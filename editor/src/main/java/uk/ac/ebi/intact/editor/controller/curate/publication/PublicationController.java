@@ -31,12 +31,12 @@ import uk.ac.ebi.intact.core.config.SequenceCreationException;
 import uk.ac.ebi.intact.core.config.SequenceManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
-import uk.ac.ebi.intact.core.users.model.Preference;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.user.Preference;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
 import uk.ac.ebi.intact.model.util.PublicationUtils;
 
