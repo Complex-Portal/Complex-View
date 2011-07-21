@@ -52,6 +52,8 @@ public class UserAdminController extends AbstractUserController {
 
     private User[] selectedUsers;
 
+    private boolean reset;
+
     @Autowired
     private UserService userService;
 
@@ -269,12 +271,25 @@ public class UserAdminController extends AbstractUserController {
     ///////////////////////
     // User Import
 
+
+    public boolean isReset() {
+        return reset;
+    }
+
+    public void setReset( boolean reset ) {
+        this.reset = reset;
+    }
+
+    public void initUserImport() {
+        if( reset ) {
+            usersToImport = new ArrayList<UserWrapper>();
+            fileUploaded = false;
+            selectedUsersToImport = null;
+            reset = false;
+        }
+    }
+
     public void upload() {
-        System.out.println( "UserAdminController.upload" );
-        System.out.println( "uploadedFile = " + uploadedFile.getFileName() );
-
-        addInfoMessage( "Succesful", uploadedFile.getFileName() + " was uploaded." );
-
         usersToImport = new ArrayList<UserWrapper>();
         try {
             Collection<User> users = userService.parseUsers( uploadedFile.getInputstream() );
@@ -285,11 +300,11 @@ public class UserAdminController extends AbstractUserController {
                     if( dbUser != null ) {
                         uw.setAlreadyExistsInDB( true );
                     }
-                    System.out.println( "Adding user: " + uw.getUser().getLogin() );
                     usersToImport.add( uw );
                 }
             }
 
+            addInfoMessage( "Successful", usersToImport.size() + " users loaded from file " + uploadedFile.getFileName() );
             fileUploaded = true;
 
         } catch ( Exception e ) {
@@ -364,21 +379,38 @@ public class UserAdminController extends AbstractUserController {
         this.fileUploaded = fileUploaded;
     }
 
-
     public void importSelectedUsers() {
-        System.out.println( "UserAdminController.importSelectedUsers" );
-
         if( selectedUsersToImport == null || selectedUsersToImport.length == 0 ) {
             addWarningMessage( "Failed", "You must select at least one user to import." );
             return;
         }
 
         Collection<User> users = new ArrayList<User>( );
+        int newUser = 0;
+        int existingUsers = 0;
         for ( int i = 0; i < selectedUsersToImport.length; i++ ) {
             UserWrapper wrapper = selectedUsersToImport[i];
             users.add( wrapper.getUser() );
+            if( wrapper.isAlreadyExistsInDB() ) {
+                existingUsers++;
+            } else {
+                newUser++;
+            }
         }
 
         userService.importUsers( users, importUpdateEnabled );
+
+        // clear up data
+        usersToImport = new ArrayList<UserWrapper>();
+        fileUploaded = false;
+        selectedUsersToImport = null;
+
+        String msg = null;
+        if( importUpdateEnabled ) {
+            msg = newUser + " created, " + existingUsers + " updated users.";
+        } else {
+            msg = newUser + " users created.";
+        }
+        addInfoMessage( "Successful", msg );
     }
 }

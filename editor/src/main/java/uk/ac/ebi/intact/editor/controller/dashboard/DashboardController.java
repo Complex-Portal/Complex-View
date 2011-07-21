@@ -56,10 +56,6 @@ public class DashboardController extends JpaAwareController {
                                                                     "select p from Publication p where p.updator = '"+userId+"'", "p", "updated", false);
     }
 
-    public void firePanicException(ActionEvent evt) {
-        throw new IllegalStateException("Relaaax, don't panic!");
-    }
-
     public LazyDataModel<Publication> getAllPublications() {
         return allPublications;
     }

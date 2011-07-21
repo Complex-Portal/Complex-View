@@ -24,7 +24,7 @@
                 <p:menuitem value="List users" action="/admin/users/list?faces-redirect=true" ajax="false" />
                 <p:menuitem value="Export all users" url="/service/export/users/all" target="_blank"/>
                 <p:menuitem value="Export selected users" actionListener="#{userAdminController.exportSelectedUsers}" ajax="false"/>
-                <p:menuitem value="Import users" action="/admin/users/import?faces-redirect=true" ajax="false"/>
+                <p:menuitem value="Import users" action="/admin/users/import?reset=true&amp;faces-redirect=true" target="_blank" ajax="false"/>
             </p:submenu>
             <p:submenu label="Database">
                 <p:menuitem value="Import PSI-MI XML" action="/admin/dbupdate/importXml?faces-redirect=true" ajax="false"/>

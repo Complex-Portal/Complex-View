@@ -49,11 +49,6 @@
 
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{facesContext.application.projectStage == 'Development'}">
-            <p>&#160;</p>
-            <p:commandButton value="Panic!" actionListener="#{dashboardController.firePanicException}"/>
-        </h:panelGroup>
-
     </ui:define>
 
 </ui:composition>
