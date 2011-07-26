@@ -83,6 +83,21 @@ border-right:0 none !important;
     width:98%;
 }
 
+.top-bar {
+    background-color: #666666;
+    color: white;
+}
+
+.top-bar a {
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+.top-bar-disabled {
+    color: white !important;
+}
+
 .footer-bar {
     background-color: #666666;
     bottom: 0;

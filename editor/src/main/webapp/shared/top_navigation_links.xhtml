@@ -1,0 +1,38 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui">
+
+
+    <p:commandLink value="Dashboard" action="/dashboard/dashboard?faces-redirect=true" disabled="#{selected == 'dashboard'}"
+            ajax="false" immediate="true"/>
+    &#160;|&#160;
+    <p:commandLink value="Search" action="/search/search?faces-redirect=true" disabled="#{selected == 'search'}"
+            ajax="false" immediate="true"/>
+    &#160;|&#160;
+    <p:commandLink value="Curate" action="/curate/curate?faces-redirect=true&amp;includeViewParams=true"
+                     rendered="#{userSessionController.hasRole('CURATOR')}"
+                     ajax="false"
+                     disabled="#{selected == 'curate'}" styleClass="top-bar-disabled"
+                     immediate="true"/>
+    &#160;|&#160;
+    <p:commandLink  value="Bulk Op." action="/bulk/bulk_default?faces-redirect=true&amp;includeViewParams=true"
+                     rendered="#{userSessionController.hasRole('CURATOR')}"
+                     ajax="false"
+                     disabled="#{selected == 'bulk'}"
+                     immediate="true"/>
+    &#160;|&#160;
+    <p:commandLink value="Admin" action="/admin/dashboard?faces-redirect=true" disabled="#{selected == 'admin'}"
+                     ajax="false"
+            rendered="#{userSessionController.hasRole('ADMIN')}"
+             immediate="true"/>
+
+    &#160;|&#160;
+    <p:commandLink value="My Notes" action="/notes/mynotes?faces-redirect=true" disabled="#{selected == 'mynotes'}"
+                     ajax="false"
+             immediate="true"/>
+
+
+</ui:composition>

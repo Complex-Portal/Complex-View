@@ -30,6 +30,7 @@ import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.core.config.SequenceCreationException;
 import uk.ac.ebi.intact.core.config.SequenceManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
@@ -72,6 +73,8 @@ public class PublicationController extends AnnotatedObjectController {
     private String identifierToOpen;
     private String identifierToImport;
 
+    private boolean assignToMe = true;
+
     private String datasetToAdd;
     private String[] datasetsToRemove;
     private List<SelectItem> datasetsSelectItems;
@@ -84,6 +87,9 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Autowired
     private UserSessionController userSessionController;
+
+    @Autowired
+    private LifecycleManager lifecycleManager;
 
     public PublicationController() {
     }
@@ -104,6 +110,10 @@ public class PublicationController extends AnnotatedObjectController {
             datasetsSelectItems = new ArrayList<SelectItem>();
 
             loadByAc();
+        }
+
+        if (publication.getCurrentOwner() != null && getCurrentUser().getLogin().equals(publication.getCurrentOwner())) {
+            addWarningMessage("You don't own this publication", "The onwer is '"+publication.getCurrentOwner().getLogin()+"'");
         }
 
         generalLoadChecks();
@@ -269,6 +279,12 @@ public class PublicationController extends AnnotatedObjectController {
 
             addInfoMessage( "Auto-complete successful", "Fetched details for: " + id );
 
+            lifecycleManager.getStartStatus().create(publication, "Editor autocomplete");
+
+            if (assignToMe) {
+                lifecycleManager.getNewStatus().claimOwnership(publication);
+            }
+
         } catch ( Throwable e ) {
             addErrorMessage( "Problem auto-completing publication", e.getMessage() );
             e.printStackTrace();
@@ -278,6 +294,8 @@ public class PublicationController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager")
     public void newEmptyUnassigned( ActionEvent evt ) {
         newEmpty(true);
+
+        lifecycleManager.getStartStatus().create(publication, "Editor unassigned");
     }
 
     @Transactional(value = "transactionManager")
@@ -343,6 +361,10 @@ public class PublicationController extends AnnotatedObjectController {
     public void doClose( ActionEvent evt ) {
         publication = null;
         ac = null;
+    }
+
+    public void claimOwnership(ActionEvent evt) {
+        lifecycleManager.getGlobalStatus().changeOwnership(publication, null);
     }
 
     public void doSaveAndClose( ActionEvent evt ) {
@@ -664,7 +686,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public boolean isToBeReviewed(Publication pub) {
-        if (!Hibernate.isInitialized(pub.getExperiments())) {
+        if (!IntactCore.isInitialized(pub.getExperiments())) {
             pub = getDaoFactory().getPublicationDao().getByAc(pub.getAc());
         }
 
@@ -714,6 +736,12 @@ public class PublicationController extends AnnotatedObjectController {
         copyPublicationTitleToExperiments(null);
         copyPrimaryIdentifierToExperiments();
 
+        lifecycleManager.getReadyForCheckingStatus().accept(publication, null);
+
+        if (!PublicationUtils.isOnHold(publication)) {
+            lifecycleManager.getAcceptedStatus().readyForRelease(publication, "Accepted and not on-hold");
+        }
+
         setUnsavedChanges(true);
     }
 
@@ -729,6 +757,8 @@ public class PublicationController extends AnnotatedObjectController {
         copyAnnotationsToExperiments(null);
         copyPublicationTitleToExperiments(null);
         copyPrimaryIdentifierToExperiments();
+
+        lifecycleManager.getReadyForCheckingStatus().reject(publication, reasonForRejection);
 
         setUnsavedChanges(true);
     }
@@ -886,5 +916,13 @@ public class PublicationController extends AnnotatedObjectController {
     @Override
     public void doPostSave() {
         loadFormFields();
+    }
+
+    public boolean isAssignToMe() {
+        return assignToMe;
+    }
+
+    public void setAssignToMe(boolean assignToMe) {
+        this.assignToMe = assignToMe;
     }
 }

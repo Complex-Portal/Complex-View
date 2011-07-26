@@ -28,23 +28,23 @@
         <h:panelGroup rendered="#{dashboardController.allPublications.rowCount gt 0}">
 
             <p:accordionPanel autoHeight="false">
-            <p:tab title="Publications created by you (#{dashboardController.createdByUser.rowCount})">
-                <ui:include src="publications_table.xhtml">
-                    <ui:param name="publicationsDataModel" value="#{dashboardController.createdByUser}"/>
-                </ui:include>
-            </p:tab>
+                <p:tab title="Publications owned by you (#{dashboardController.ownedByUser.rowCount})">
+                    <ui:include src="publications_table.xhtml">
+                        <ui:param name="publicationsDataModel" value="#{dashboardController.ownedByUser}"/>
+                    </ui:include>
+                </p:tab>
 
-            <p:tab title="Publications updated by you (#{dashboardController.updatedByUser.rowCount})">
-                <ui:include src="publications_table.xhtml">
-                    <ui:param name="publicationsDataModel" value="#{dashboardController.updatedByUser}"/>
-                </ui:include>
-            </p:tab>
+                <p:tab title="Publications reviewed by you (#{dashboardController.reviewedByUser.rowCount})">
+                    <ui:include src="publications_table.xhtml">
+                        <ui:param name="publicationsDataModel" value="#{dashboardController.reviewedByUser}"/>
+                    </ui:include>
+                </p:tab>
 
-            <p:tab title="All the publications (#{dashboardController.allPublications.rowCount})">
-                <ui:include src="publications_table.xhtml">
-                    <ui:param name="publicationsDataModel" value="#{dashboardController.allPublications}"/>
-                </ui:include>
-            </p:tab>
+                <p:tab title="All the publications (#{dashboardController.allPublications.rowCount})">
+                    <ui:include src="publications_table.xhtml">
+                        <ui:param name="publicationsDataModel" value="#{dashboardController.allPublications}"/>
+                    </ui:include>
+                </p:tab>
             </p:accordionPanel>
 
         </h:panelGroup>

@@ -38,6 +38,7 @@
                 <ui:param name="slug" value="publication"/>
             </ui:include>
         </p:submenu>
+        <p:menuitem value="Claim ownership" actionListener="#{publicationController.claimOwnership}" ajax="false"/>
 
     </ui:define>
 
@@ -318,6 +319,42 @@
                             </ui:define>
 
                         </ui:decorate>
+
+                    <p:tab title="Lifecycle">
+
+                        <h:panelGrid columns="2">
+                            <h:outputLabel for="statusTxt" value="Status: "/>
+                            <h:outputText id="statusTxt" value="#{publicationController.publication.status.shortLabel}"/>
+
+                            <h:outputLabel for="ownerTxt" value="Owner: "/>
+                            <h:outputText id="ownerTxt" value="#{publicationController.publication.currentOwner.login}"/>
+
+                            <h:outputLabel for="reviewerTxt" value="Reviewer: "/>
+                            <h:outputText id="reviewerTxt" value="#{publicationController.publication.currentReviewer.login}"/>
+                        </h:panelGrid>
+
+                        <br/>
+
+                        <p:fieldset legend="Events">
+
+                            <p:dataTable var="event" value="#{publicationController.publication.lifecycleEvents}">
+                                <p:column headerText="Date">
+                                    <h:outputText value="#{event.when}"/>
+                                </p:column>
+                                <p:column headerText="Event">
+                                    <h:outputText value="#{event.event.shortLabel}"/>
+                                </p:column>
+                                <p:column headerText="Who">
+                                    <h:outputText value="#{event.who}"/>
+                                </p:column>
+                                <p:column headerText="Comment">
+                                    <h:outputText value="#{event.note}"/>
+                                </p:column>
+                            </p:dataTable>
+
+                        </p:fieldset>
+
+                    </p:tab>
 
                 </p:tabView>
 

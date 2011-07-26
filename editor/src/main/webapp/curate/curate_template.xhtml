@@ -12,7 +12,7 @@
 <ui:param name="title" value="#{annotatedObjectController.annotatedObject != null? curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject) : ''}: #{annotatedObjectController.annotatedObject != null? annotatedObjectController.annotatedObject.shortLabel : ''} | Curate | Editor"/>
 
 <ui:define name="topNavigation">
-    <ui:include src="/shared/top_navigation_bar.xhtml">
+    <ui:include src="/shared/top_navigation_links.xhtml">
         <ui:param name="selected" value="curate"/>
     </ui:include>
 </ui:define>

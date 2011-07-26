@@ -37,14 +37,14 @@
         <p:column headerText="# Inter.">
             <h:outputText value="#{publicationController.countInteractions(publication)}"/>
         </p:column>
-        <p:column headerText="Creator" sortBy="#{publication.creator}">
-            <h:outputText value="#{publication.creator}"/>
+        <p:column headerText="Owner" sortBy="#{publication.currentOwner}">
+            <h:outputText value="#{publication.currentOwner.login}" rendered="#{publication.currentOwner != null}"/>
         </p:column>
-        <p:column headerText="Created" sortBy="#{publication.created}">
-            <h:outputText value="#{publication.created}"/>
+        <p:column headerText="Reviewer" sortBy="#{publication.currentReviewer}">
+            <h:outputText value="#{publication.currentReviewer.login}" rendered="#{publication.currentReviewer != null}"/>
         </p:column>
-        <p:column headerText="Updated" sortBy="#{publication.updated}">
-            <h:outputText value="#{publication.updated}"/>
+        <p:column headerText="Status" sortBy="#{publication.status}">
+            <h:outputText value="#{publication.status.shortLabel}" rendered="#{publication.status != null}"/>
         </p:column>
     </p:dataTable>
 

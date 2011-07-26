@@ -35,8 +35,8 @@ import javax.faces.event.ComponentSystemEvent;
 public class DashboardController extends JpaAwareController {
 
     private LazyDataModel<Publication> allPublications;
-    private LazyDataModel<Publication> createdByUser;
-    private LazyDataModel<Publication> updatedByUser;
+    private LazyDataModel<Publication> ownedByUser;
+    private LazyDataModel<Publication> reviewedByUser;
 
     public DashboardController() {
     }
@@ -49,22 +49,22 @@ public class DashboardController extends JpaAwareController {
         allPublications = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
                                                                     "select p from Publication p", "p", "updated", false);
         
-        createdByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                    "select p from Publication p where p.creator = '"+userId+"'", "p", "updated", false);
+        ownedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
+                                                                    "select p from Publication p where p.currentOwner.login = '"+userId+"'", "p", "updated", false);
 
-        updatedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                    "select p from Publication p where p.updator = '"+userId+"'", "p", "updated", false);
+        reviewedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
+                                                                    "select p from Publication p where p.currentReviewer.login = '"+userId+"'", "p", "updated", false);
     }
 
     public LazyDataModel<Publication> getAllPublications() {
         return allPublications;
     }
 
-    public LazyDataModel<Publication> getCreatedByUser() {
-        return createdByUser;
+    public LazyDataModel<Publication> getOwnedByUser() {
+        return ownedByUser;
     }
 
-    public LazyDataModel<Publication> getUpdatedByUser() {
-        return updatedByUser;
+    public LazyDataModel<Publication> getReviewedByUser() {
+        return reviewedByUser;
     }
 }
