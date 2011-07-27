@@ -50,21 +50,57 @@
             <div class="top-bar">
                  <ui:insert name="topNavigation">
                      <ui:include src="/shared/top_navigation_links.xhtml"/>
+
+
                  </ui:insert>
+
+                <div class="top-menu-right">
+                <ul>
+                    <li>
+                    <!--<h:graphicImage url="/resources/images/user.jpg" alt="User:"/>-->
+
+                    <p:commandLink style=""
+                            value="#{userSessionController.currentUser.firstName} #{userSessionController.currentUser.lastName}"
+                            action="/dashboard/userprofile?faces-redirect=true" ajax="false"/>
+                    </li>
+                    <!--<h:panelGroup rendered="#{userSessionController.hasRole('ADMIN')}">-->
+                    <!--&lt;!&ndash;<h:graphicImage url="/resources/images/database.png" alt="Database: "/>&ndash;&gt;-->
+                    <!--&lt;!&ndash;&#160;&ndash;&gt;-->
+                    <!--<h:outputText value="#{editorConfig.instanceName}" title="Database: #{editorConfig.databaseUrl}"/>-->
+                    <!--|&#160;-->
+                    <!---->
+                    <!--&lt;!&ndash;<h:graphicImage url="/resources/images/users.png" alt="Curators:"/>&ndash;&gt;-->
+                    <!--&lt;!&ndash;&#160;&ndash;&gt;-->
+                    <!--<p:commandLink onclick="loggedUsersDlg.show();" update="loggedUsersTable" >-->
+                                        <!--<h:outputText value="#{userManagerController.loggedInUserCount}"/>-->
+                                    <!--</p:commandLink>-->
+                    <!--|&#160;-->
+                    <!--</h:panelGroup>-->
+                    <!--<h:outputLink value="#{facesContext.externalContext.request.contextPath}/j_spring_security_logout" title="Logout">-->
+                                        <!--<h:graphicImage border="0" url="/resources/images/logout.jpg" alt="Logout"/>-->
+                                    <!--</h:outputLink>-->
+                    <!--&#160;-->
+                    <li>
+                    <h:outputLink style="color: yellow" value="#{facesContext.externalContext.request.contextPath}/j_spring_security_logout" title="Logout">
+                                        <h:outputText value="Logout"/>
+                                    </h:outputLink>
+                    </li>
+                    </ul>
+                    </div>
             </div>
 
             <!--<p:layout fullPage="true">-->
 
                 <!--<p:layoutUnit position="top" resizable="false" height="80" style="position: fixed; width: 99%;">-->
 
-            <div style="z-index:9; width:100%; position:fixed; background: white; -moz-box-shadow: 0px 5px 5px #999; height:95px; background-image: url('#{facesContext.externalContext.request.contextPath}/resources/images/top_background.jpg'); background-repeat: repeat-x">
+            <div style="z-index:9; width:100%; position:fixed; background: white; -moz-box-shadow: 0px 5px 5px #999; height:55px; background-image: url('#{facesContext.externalContext.request.contextPath}/resources/images/top_background.jpg'); background-repeat: repeat-x">
 
-                    <div id="topImage" style="float: left; padding-right: 30px; margin-top: 10px">
+                    <div id="topImage" style="float: left; padding-right: 30px; margin-top: 3px">
                         <h:graphicImage alt="logoImg" url="#{editorConfig.logoUrl}" rendered="#{editorConfig.logoUrl != null}"
                                 width="96" height="48"/>
                     </div>
 
-                    <div id="topNavigation" style="float: left; margin-top: 30px">
+                    <div id="topNavigation" style="float: left; margin-top: 10px">
                         <table>
                             <!--<tr>-->
                                 <!--<td style="vertical-align:top">-->
@@ -81,53 +117,13 @@
                         </table>
                     </div>
 
-                    <div id="userInfo" class="intact-userPanel">
-                        <p:panel style="padding: 0">
-                        <table border="0" cellspacing="0" cellpadding="0" style="width:100%">
-                            <tr>
-                                <td class="verticalTop" style="padding-bottom: 10px;">
-                                    <h:graphicImage url="/resources/images/user.jpg" alt="User:"/>
-                                </td>
-                                <td class="verticalTop" style="padding-bottom: 10px; padding-left: 5px;">
-                                    <p:commandLink value="#{userSessionController.currentUser.firstName == null ? userSessionController.currentUser.login : userSessionController.currentUser.firstName}"
-                                            action="/dashboard/userprofile?faces-redirect=true" ajax="false"/>
-                                </td>
-                                <td class="verticalTop" style="padding-left: 20px;">
-                                    <h:graphicImage url="/resources/images/users.png" alt="Curators:"/>
-                                </td>
-                                <td class="verticalTop" style="padding-left: 5px;">
-                                    <p:commandLink onclick="loggedUsersDlg.show();" update="loggedUsersTable" >
-                                        <h:outputText value="#{userManagerController.loggedInUserCount}"/>
-                                    </p:commandLink>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="verticalTop">
-                                    <h:graphicImage url="/resources/images/database.png" alt="Database: "/>
-                                </td>
-                                <td class="verticalTop" style="padding-left: 5px;">
-                                    <h:outputText value="#{editorConfig.instanceName}" title="Database: #{editorConfig.databaseUrl}"/>
-                                </td>
-                                <td class="verticalTop" style="padding-left: 20px;">
-                                    <h:outputLink value="#{facesContext.externalContext.request.contextPath}/j_spring_security_logout" title="Logout">
-                                        <h:graphicImage border="0" url="/resources/images/logout.jpg" alt="Logout"/>
-                                    </h:outputLink>
-                                </td>
-                                <td class="verticalTop" style="padding-left: 5px;">
-                                    <h:outputLink value="#{facesContext.externalContext.request.contextPath}/j_spring_security_logout" title="Logout">
-                                        <h:outputText value="logout"/>
-                                    </h:outputLink>
-                                </td>
-                            </tr>
-                        </table>
-                        </p:panel>
-                    </div>
-
                 <h:panelGroup id="topSection">
                     <div style="float: right; margin-right: 0px;" >
                         <table>
                             <tr style="vertical-align: middle;">
-
+                                <td style="padding-right: 30px;">
+                                     <ui:insert name="top"/>
+                                </td>
                                 <td class="verticalTop">
                                     <h:panelGrid columns="4">
                                         <h:graphicImage url="/resources/images/search.png" alt="Search:"/>
@@ -141,21 +137,16 @@
                                     <ia:loadingDialog widgetVar="searchDialog" message="Searching..."/>
                                 </td>
                             </tr>
-                            <tr>
-                                <td style="padding-left: 15px">
-                                    <ui:insert name="top"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding-left: 15px">
-                                    <ui:insert name="topRight"/>
-                                </td>
-                            </tr>
+                            <!--<tr>-->
+                                <!--<td style="padding-left: 15px">-->
+                                    <!--<ui:insert name="topRight"/>-->
+                                <!--</td>-->
+                            <!--</tr>-->
                         </table>
                     </div>
                 </h:panelGroup>
 
-                <div id="menuSection" style="width:100%; position:fixed; margin-top: 70px;">
+                <div id="menuSection" style="width:100%; position:fixed; margin-top: 55px;">
                     <ui:insert name="menuBar"/>
                     </div>
             </div>
@@ -163,7 +154,7 @@
                 <!--</p:layoutUnit>-->
 
                 <!--<p:layoutUnit position="center" scrollable="true">-->
-            <div style="width:100%; padding-top:105px; margin-left:5px; margin-right:5px">
+            <div style="width:100%; padding-top:90px; margin-left:5px; margin-right:5px">
 
                     <!--<div id="feedback" class="intact-feedback" onmouseover="this.style.top = '350px'">-->
                         <!--<a href="http://code.google.com/p/intact/issues/entry?template=Editor%20mockup%20feedback"-->
@@ -237,7 +228,7 @@
         </h:form>
 
         <h:form id="dialogsForm">
-            <ui:insert name="dialogs"/>            
+            <ui:insert name="dialogs"/>
         </h:form>
 
     </h:body>

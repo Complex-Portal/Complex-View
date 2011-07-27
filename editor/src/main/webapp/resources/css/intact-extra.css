@@ -14,7 +14,15 @@ a img {
     border: 0;
 }
 
+a {
+   font-weight: bold;
+    text-decoration: none;
+    color: #0074c7;
+}
 
+a:hover {
+    text-decoration: underline;
+}
 
 /** Custom classes **/
 .code {
@@ -84,18 +92,66 @@ border-right:0 none !important;
 }
 
 .top-bar {
-    background-color: #666666;
+    background-color: #555555;
     color: white;
+    height: 25px;
+    padding-top: 3px;
+
 }
 
-.top-bar a {
-    font-weight: bold;
+.top-bar a,
+.top-bar span{
+    /*font-weight: bold;*/
     color: white;
     text-decoration: none;
+    font-size: 11pt;
+    font-family: helvetica;
+    font-weight: normal;
 }
 
-.top-bar-disabled {
+
+.top-bar a:hover {
+    text-decoration: underline;
+}
+
+.top-bar-selected {
     color: white !important;
+    font-weight: bold !important;
+}
+
+.top-menu-right {
+    float: right;
+}
+
+.top-bar ul{
+    list-style: none;
+    display: inline;
+    padding-left: 0px;
+}
+
+.top-bar ul li{
+    list-style: none;
+    display: inline;
+    border-right: 1px #999 solid;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.top-bar-menu a,
+.top-bar-menu span,
+.top-bar-menu img {
+    vertical-align: top;
+}
+
+
+
+.top-title a {
+    font-size: 11pt;
+    font-weight: bold;
+}
+
+.top-title-details a {
+    font-size: 9pt;
 }
 
 .footer-bar {
@@ -187,6 +243,14 @@ border-right:0 none !important;
     background-color:#fff8dc;
     padding: 2px;
     text-align:left;
+}
+
+.important-button {
+    background: #e65555 !important;
+    color:white;
+    font-weight: bold;
+    font-family: helvetica;
+    font-size: 11pt;
 }
 
 /** dialogs **/

@@ -15,6 +15,10 @@
         </f:metadata>
     </ui:define>
 
+    <ui:define name="topTitle">
+
+    </ui:define>
+
     <ui:define name="content">
 
         <h:panelGroup rendered="#{dashboardController.allPublications.rowCount == 0}"> 
@@ -35,16 +39,22 @@
 
             <p:tabView id="publicationDashboard">
                 <p:tab title="Publications owned by you (#{dashboardController.ownedByUser.rowCount})">
-                    <ui:include src="publications_table.xhtml">
-                        <ui:param name="publicationsDataModel" value="#{dashboardController.ownedByUser}"/>
-                    </ui:include>
+                    <h:panelGroup rendered="#{dashboardController.ownedByUser.rowCount gt 0}">
+                        <ui:include src="publications_table.xhtml">
+                            <ui:param name="publicationsDataModel" value="#{dashboardController.ownedByUser}"/>
+                        </ui:include>
+                    </h:panelGroup>
+                    <h:outputText value="You don't own any publication at the moment" rendered="#{dashboardController.ownedByUser.rowCount == 0}"/>
                 </p:tab>
 
                 <p:tab title="Publications reviewed by you (#{dashboardController.reviewedByUser.rowCount})"
                         rendered="#{userSessionController.hasRole('REVIEWER')}">
-                    <ui:include src="publications_table.xhtml">
-                        <ui:param name="publicationsDataModel" value="#{dashboardController.reviewedByUser}"/>
-                    </ui:include>
+                    <h:panelGroup rendered="#{dashboardController.ownedByUser.rowCount gt 0}">
+                        <ui:include src="publications_table.xhtml">
+                            <ui:param name="publicationsDataModel" value="#{dashboardController.reviewedByUser}"/>
+                        </ui:include>
+                    </h:panelGroup>
+                    <h:outputText value="Yay! Nothing to review at this time" rendered="#{dashboardController.reviewedByUser.rowCount == 0}"/>
                 </p:tab>
 
                 <p:tab title="All the publications (#{dashboardController.allPublications.rowCount})">

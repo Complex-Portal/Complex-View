@@ -18,13 +18,13 @@
 </ui:define>
 
 <ui:define name="topTitle">
-    <h:panelGroup rendered="#{publicationController.publication != null}">
+    <h:panelGroup rendered="#{publicationController.publication != null}" styleClass="top-title">
         <h:link outcome="/curate/publication" value="#{publicationController.firstAuthor} et al (#{publicationController.year})" rendered="#{publicationController.firstAuthor != null}"/>
 
-        <h:panelGroup rendered="#{publicationController.publication.publicationId != null}">
+        <h:panelGroup rendered="#{publicationController.publication.publicationId != null}" styleClass="top-title-details">
             (&#160;<h:outputText value="#{publicationController.publication.publicationId}"/> )&#160;&#160;
             <h:outputLink value="http://www.ebi.ac.uk/citexplore/citationDetails.do?externalId=#{publicationController.publication.publicationId}&amp;dataSource=MED"
-                          target="_blank">CiteXplore
+                          target="_blank">Link
                 <span class="ui-icon ui-icon-extlink" style="display:inline-block; vertical-align: bottom"/>
             </h:outputLink>
         </h:panelGroup>
@@ -34,7 +34,7 @@
 <ui:define name="top">
     <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
         <h:panelGroup id="topSavePanel" style="float: right">
-            <p:commandButton type="button" id="topSaveButton" value="Save" onclick="save(); return false" />
+            <p:commandButton type="button" id="topSaveButton" value="Save" styleClass="important-button" onclick="save(); return false" />
             <!--<p:commandButton value="save 2" actionListener="#{annotatedObjectController.doSave}" ajax="false" />-->
 
             <h:panelGroup rendered="#{annotatedObjectController.lastSaved != null}" style="color: #AAAAAA">
