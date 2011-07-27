@@ -16,7 +16,6 @@
     </ui:define>
 
     <ui:define name="content">
-        <p>Hello #{userSessionController.currentUser.firstName}</p>
 
         <h:panelGroup rendered="#{dashboardController.allPublications.rowCount == 0}"> 
             <p:commandButton value="Create sample data" onclick="sampleLoad.show()"
@@ -27,14 +26,22 @@
 
         <h:panelGroup rendered="#{dashboardController.allPublications.rowCount gt 0}">
 
-            <p:accordionPanel autoHeight="false">
+            <p>
+                <h:outputLabel for="boolHide" value="Hide &lt;i>accepted&lt;/i> and &lt;i>released&lt;/i>" escape="false"/>
+                <h:selectBooleanCheckbox id="boolHide" value="#{dashboardController.hideAcceptedAndReleased}">
+                    <p:ajax event="valueChange" update="publicationDashboard" listener="#{dashboardController.refreshTables()}" />
+                </h:selectBooleanCheckbox>
+            </p>
+
+            <p:tabView id="publicationDashboard">
                 <p:tab title="Publications owned by you (#{dashboardController.ownedByUser.rowCount})">
                     <ui:include src="publications_table.xhtml">
                         <ui:param name="publicationsDataModel" value="#{dashboardController.ownedByUser}"/>
                     </ui:include>
                 </p:tab>
 
-                <p:tab title="Publications reviewed by you (#{dashboardController.reviewedByUser.rowCount})">
+                <p:tab title="Publications reviewed by you (#{dashboardController.reviewedByUser.rowCount})"
+                        rendered="#{userSessionController.hasRole('REVIEWER')}">
                     <ui:include src="publications_table.xhtml">
                         <ui:param name="publicationsDataModel" value="#{dashboardController.reviewedByUser}"/>
                     </ui:include>
@@ -45,7 +52,7 @@
                         <ui:param name="publicationsDataModel" value="#{dashboardController.allPublications}"/>
                     </ui:include>
                 </p:tab>
-            </p:accordionPanel>
+            </p:tabView>
 
         </h:panelGroup>
 

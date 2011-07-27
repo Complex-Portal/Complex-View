@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
+import uk.ac.ebi.intact.model.CvPublicationStatusType;
 import uk.ac.ebi.intact.model.Publication;
 
 import javax.faces.event.ActionEvent;
@@ -38,22 +39,40 @@ public class DashboardController extends JpaAwareController {
     private LazyDataModel<Publication> ownedByUser;
     private LazyDataModel<Publication> reviewedByUser;
 
+    private boolean hideAcceptedAndReleased;
+
     public DashboardController() {
+        hideAcceptedAndReleased = true;
     }
 
     @SuppressWarnings("unchecked")
     public void loadData( ComponentSystemEvent event ) {
+        refreshTables();
+    }
+
+    public void refreshTables() {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         final String userId = userSessionController.getCurrentUser().getLogin().toUpperCase();
 
-        allPublications = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                    "select p from Publication p", "p", "updated", false);
-        
+        String hideAcceptedWhereSql = "";
+
+        if (hideAcceptedAndReleased) {
+            hideAcceptedWhereSql = " p.status.identifier <> '"+ CvPublicationStatusType.ACCEPTED.identifier()+"' and "+
+                                   "p.status.identifier <> '"+ CvPublicationStatusType.ACCEPTED_ON_HOLD.identifier()+"' and "+
+                                   "p.status.identifier <> '"+ CvPublicationStatusType.READY_FOR_RELEASE.identifier()+"' and "+
+                                   "p.status.identifier <> '"+ CvPublicationStatusType.RELEASED.identifier()+"' ";
+        }
+
+        allPublications = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+                "select p from Publication p" + (hideAcceptedAndReleased ? " where " + hideAcceptedWhereSql : ""), "p", "updated", false);
+
         ownedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                    "select p from Publication p where p.currentOwner.login = '"+userId+"'", "p", "updated", false);
+                                                                    "select p from Publication p where p.currentOwner.login = '"+userId+"'"+
+                                                                    (hideAcceptedAndReleased? " and "+hideAcceptedWhereSql : ""), "p", "updated", false);
 
         reviewedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                    "select p from Publication p where p.currentReviewer.login = '"+userId+"'", "p", "updated", false);
+                                                                    "select p from Publication p where p.currentReviewer.login = '"+userId+"'"+
+                                                                    (hideAcceptedAndReleased? " and "+hideAcceptedWhereSql : ""), "p", "updated", false);
     }
 
     public LazyDataModel<Publication> getAllPublications() {
@@ -66,5 +85,13 @@ public class DashboardController extends JpaAwareController {
 
     public LazyDataModel<Publication> getReviewedByUser() {
         return reviewedByUser;
+    }
+
+    public boolean isHideAcceptedAndReleased() {
+        return hideAcceptedAndReleased;
+    }
+
+    public void setHideAcceptedAndReleased(boolean hideAcceptedAndReleased) {
+        this.hideAcceptedAndReleased = hideAcceptedAndReleased;
     }
 }
