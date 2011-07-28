@@ -1,0 +1,46 @@
+    <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+
+                template="/reviewer/reviewer_template.xhtml">
+
+    <ui:define name="metadata">
+         <f:metadata>
+          <f:event type="preRenderView" listener="#{reviewerAvailabilityController.loadData}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="content">
+
+         <h1>Reviewer availability</h1>
+
+        <p:dataTable style="width: 400px" var="reviewer" value="#{reviewerAvailabilityController.reviewers}" rows="20"
+                     paginatorAlwaysVisible="false" paginator="true">
+            <p:column headerText="Login">
+                <h:outputText value="#{reviewer.login}"/>
+            </p:column>
+            <p:column headerText="Name">
+                <h:outputText value="#{reviewer.firstName} #{reviewer.lastName}"/>
+            </p:column>
+            <p:column headerText="Availability">
+                <h:inputHidden id="txt2" value="#{reviewerAvailabilityController.wrapReviewer(reviewer).availability}" />
+                <p:slider for="txt2" style="width:200px" step="10" />
+                <h:outputText id="output"  value="#{reviewerAvailabilityController.wrapReviewer(reviewer).availability}"/>
+            </p:column>
+        </p:dataTable>
+
+        <p>
+
+        <h:commandButton actionListener="#{reviewerAvailabilityController.save}"
+                         value="Save"/>
+
+        </p>
+
+    </ui:define>
+
+</ui:composition>

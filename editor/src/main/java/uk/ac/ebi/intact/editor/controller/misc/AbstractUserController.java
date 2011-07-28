@@ -90,8 +90,10 @@ public abstract class AbstractUserController extends JpaAwareController {
     }
 
     public void setInstitution(Institution institution) {
-        setPreference(INSTITUTION_AC, institution.getAc());
-        setPreference(INSTITUTION_NAME, institution.getShortLabel());
+        if (institution != null) {
+            setPreference(INSTITUTION_AC, institution.getAc());
+            setPreference(INSTITUTION_NAME, institution.getShortLabel());
+        }
     }
 
     private String findPreference(String prefKey) {
