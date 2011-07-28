@@ -35,7 +35,9 @@
 
     </h:head>
 
-    <h:body style="margin: 0 0 0 0;">
+    <h:body style="margin: 5 5 5 5;">
+
+        <p:messages showSummary="true" showDetail="true"/>
 
         <h:outputScript library="javascript" name="intact.js"/>
 
@@ -45,7 +47,6 @@
         <h:graphicImage value="/resources/images/users.png"/>&#160;
         <h:outputLink value="/editor/admin/users/list.jsf">View users list</h:outputLink>
 
-
         <br/>
 
         <h2>Import Users</h2>
@@ -54,12 +55,10 @@
 
             <h:panelGroup id="fileUploadPanel" rendered="#{not userAdminController.fileUploaded}">
                 <h:form id="fileUpload" enctype="multipart/form-data">
-                    <p:messages showDetail="true"/>
                     <p:fileUpload value="#{userAdminController.uploadedFile}" mode="simple"/>
                     <br/><br/>
                     <p:commandButton value="Upload" ajax="false" actionListener="#{userAdminController.upload}"
                                      update="userSelection"/>
-
                 </h:form>
             </h:panelGroup>
 
