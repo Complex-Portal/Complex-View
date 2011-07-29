@@ -22,30 +22,54 @@
         <h:link outcome="/curate/publication" value="#{publicationController.firstAuthor} et al (#{publicationController.year})" rendered="#{publicationController.firstAuthor != null}"/>
 
         <h:panelGroup rendered="#{publicationController.publication.publicationId != null}" styleClass="top-title-details">
-            (&#160;<h:outputText value="#{publicationController.publication.publicationId}"/> )&#160;&#160;
+            (&#160;
             <h:outputLink value="http://www.ebi.ac.uk/citexplore/citationDetails.do?externalId=#{publicationController.publication.publicationId}&amp;dataSource=MED"
-                          target="_blank">Link
+                          target="_blank">
+                <h:outputText style="font-weight: normal;" value="#{publicationController.publication.publicationId}"/>
                 <span class="ui-icon ui-icon-extlink" style="display:inline-block; vertical-align: bottom"/>
             </h:outputLink>
+            )
         </h:panelGroup>
     </h:panelGroup>
+
+    <br/>
+    <h:outputText styleClass="subTitle" value="#{publicationController.publication.status.shortLabel}"/>,
+    <h:outputText styleClass="subTitle-text" value=" owned by "
+                  rendered="#{publicationController.publication.currentOwner != null}"/>
+    <h:outputText styleClass="subTitle" value="#{publicationController.publication.currentOwner.login}"
+                  rendered="#{publicationController.publication.currentOwner != null}"/>,
+    <h:outputText styleClass="subTitle-text" value=" reviewed by "
+                  rendered="#{publicationController.publication.currentReviewer != null}"/>
+    <h:outputText styleClass="subTitle" value="#{publicationController.publication.currentReviewer.login}"
+                  rendered="#{publicationController.publication.currentReviewer != null}"/>
+
 </ui:define>
 
-<ui:define name="top">
-    <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
-        <h:panelGroup id="topSavePanel" style="float: right">
-            <p:commandButton type="button" id="topSaveButton" value="Save" styleClass="important-button" onclick="save(); return false" />
-            <!--<p:commandButton value="save 2" actionListener="#{annotatedObjectController.doSave}" ajax="false" />-->
+<ui:define name="actionsBar">
 
-            <h:panelGroup rendered="#{annotatedObjectController.lastSaved != null}" style="color: #AAAAAA">
-                <h:outputText value=" Last Saved: " />
-                <h:outputText value="#{annotatedObjectController.lastSaved}">
-                    <f:convertDateTime pattern="HH:mm (z)"/>
-                </h:outputText>
+    <div class="ui-widget-content top-actions">
+        <ui:insert name="topActionsPanel"/>
+
+        <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
+            <h:panelGroup id="topSavePanel" style="padding-left: 10px; padding-right: 10px">
+                <p:commandButton type="button" id="topSaveButton" value="Save" styleClass="important-button"
+                                 onclick="save(); return false"/>
+                <!--<p:commandButton value="save 2" actionListener="#{annotatedObjectController.doSave}" ajax="false" />-->
+
+                <h:panelGroup rendered="#{annotatedObjectController.lastSaved != null}" style="color: #AAAAAA">
+                    <h:outputText value=" Last Saved: "/>
+                    <h:outputText value="#{annotatedObjectController.lastSaved}">
+                        <f:convertDateTime pattern="HH:mm (z)"/>
+                    </h:outputText>
+                </h:panelGroup>
             </h:panelGroup>
         </h:panelGroup>
-    </h:panelGroup>
+
+    </div>
+
+    <div style="clear:both"/>
 </ui:define>
+
 
 <ui:define name="menuBar">
     <p:menubar id="menubar">
@@ -150,7 +174,7 @@
 
             </h:panelGroup>
 
-            <br/><br/>
+
 
             <ui:insert name="curateContent"/>
 

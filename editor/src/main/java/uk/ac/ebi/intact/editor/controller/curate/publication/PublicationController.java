@@ -363,8 +363,40 @@ public class PublicationController extends AnnotatedObjectController {
         ac = null;
     }
 
+
+
+
+
+    public boolean isCurationInProgress() {
+        return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.CURATION_IN_PROGRESS.identifier());
+    }
+
+    public boolean isReadyForChecking() {
+        return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.READY_FOR_CHECKING.identifier());
+    }
+
+    public boolean isReleased() {
+        return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.RELEASED.identifier());
+    }
+
     public void claimOwnership(ActionEvent evt) {
         lifecycleManager.getGlobalStatus().changeOwnership(publication, null);
+
+        addInfoMessage("Claimed publication ownership", "You are now the owner of this publication");
+    }
+
+    public void markAsReadyForChecking(ActionEvent evt) {
+        if (!userSessionController.getCurrentUser().equals(publication.getCurrentOwner())) {
+            addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this publication");
+            return;
+        }
+
+        // TODO run a proper sanity check
+        boolean sanityCheckPassed = true;
+
+        lifecycleManager.getCurationInProgressStatus().readyForChecking(publication, null, sanityCheckPassed);
+
+        addInfoMessage("Publication ready for checking", "Assigned to reviewer: "+publication.getCurrentReviewer());
     }
 
     public void doSaveAndClose( ActionEvent evt ) {

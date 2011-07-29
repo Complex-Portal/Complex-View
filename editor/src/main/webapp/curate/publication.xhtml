@@ -21,6 +21,13 @@
         </f:metadata>
     </ui:define>
 
+    <ui:define name="topActionsPanel">
+        <p:commandButton value="Ready for checking"
+                         styleClass="important-button-alt"
+                         disabled="#{not publicationController.curationInProgress}"
+                actionListener="#{publicationController.markAsReadyForChecking}" ajax="false"/>
+    </ui:define>
+
     <ui:define name="breadcrumbs">
         <p:breadCrumb>
             <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publicationController.publication.shortLabel}"
@@ -44,8 +51,10 @@
 
     <ui:define name="reviewerContextual">
         <p:menuitem value="Accept publication" actionListener="#{publicationController.acceptPublication}"
-                        update="centralUnit,topSection,unsavedChangesInfo"/>
-        <p:menuitem value="Reject publication" onclick="rejectPublicationDialog.show()"/>
+                    rendered="#{publicationController.readyForChecking}"
+                    update="centralUnit,topSection,unsavedChangesInfo"/>
+        <p:menuitem value="Reject publication" onclick="rejectPublicationDialog.show()"
+                    rendered="#{publicationController.readyForChecking}"/>
     </ui:define>
 
     <ui:define name="curateContent">
@@ -69,6 +78,8 @@
         <h:panelGroup>
 
         <h:panelGroup rendered="#{publicationController.publication != null}">
+
+        <br/>
 
                 <p:panel id="basic" header="Publication Details">
 
@@ -271,6 +282,21 @@
                 <p:remoteCommand name="refreshTabs" update="publicationTabs,messagesComponent"/>
 
                 <br/>
+
+        <p:fieldset legend="Lifecycle: #{publicationController.publication.status.shortLabel}" rendered="#{not publicationController.released}">
+            <p:commandButton value="Claim ownership"
+                actionListener="#{publicationController.claimOwnership}"
+                disabled="#{userContext.user == publicationController.publication.currentOwner}"
+                rendered="#{publicationController.publication.currentOwner != null}"
+                ajax="false"/>
+
+            &#160;
+
+             <p:commandButton value="Ready for checking" disabled="#{not publicationController.curationInProgress}"
+                actionListener="#{publicationController.markAsReadyForChecking}" ajax="false"/>
+        </p:fieldset>
+
+        <br/>
 
                 <p:tabView id="publicationTabs">
 

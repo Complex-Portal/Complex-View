@@ -93,14 +93,14 @@
 
                 <!--<p:layoutUnit position="top" resizable="false" height="80" style="position: fixed; width: 99%;">-->
 
-            <div style="z-index:9; width:100%; position:fixed; margin-top: 25px;background: white; -moz-box-shadow: 0px 5px 5px #999; height:55px; background-image: url('#{facesContext.externalContext.request.contextPath}/resources/images/top_background.jpg'); background-repeat: repeat-x">
+            <div style="z-index:9; width:100%; position:fixed; margin-top: 25px;background: white; -moz-box-shadow: 0px 5px 5px #999; height:55px; background-image: url('#{facesContext.externalContext.request.contextPath}/resources/images/top_background.jpg'); background-repeat: repeat-x; min-width:800px">
 
                     <div id="topImage" style="float: left; padding-right: 30px; margin-top: 3px">
                         <h:graphicImage alt="logoImg" url="#{editorConfig.logoUrl}" rendered="#{editorConfig.logoUrl != null}"
                                 width="96" height="48"/>
                     </div>
 
-                    <div id="topNavigation" style="float: left; margin-top: 10px">
+                    <div id="topNavigation" style="float: left; margin-top: 8px">
                         <table>
                             <!--<tr>-->
                                 <!--<td style="vertical-align:top">-->
@@ -118,43 +118,39 @@
                     </div>
 
                 <h:panelGroup id="topSection">
-                    <div style="float: right; margin-right: 0px;" >
-                        <table>
-                            <tr style="vertical-align: middle;">
-                                <td style="padding-right: 30px;">
-                                     <ui:insert name="top"/>
-                                </td>
-                                <td class="verticalTop">
-                                    <h:panelGrid columns="4">
-                                        <h:graphicImage url="/resources/images/search.png" alt="Search:"/>
-                                        <!--<p:watermark for="queryTxt" value="search query"/>-->
-                                        <p:inputText id="queryTxt" value="#{searchController.quickQuery}" converter="trimmingConverter" onkeyup="handleReturnKey(event, 'topSearchBtn')"/>
-                                        <p:commandButton id="topSearchBtn" value="Search" action="#{searchController.doQuickSearch}" ajax="false"
-                                                         process="queryTxt" global="true"
-                                                onclick="searchDialog.show()"/>
-                                    </h:panelGrid>
+                    <div class="top-search">
+                        <h:panelGrid columns="4">
+                            <h:graphicImage url="/resources/images/search.png" alt="Search:"/>
+                            <!--<p:watermark for="queryTxt" value="search query"/>-->
+                            <p:inputText id="queryTxt" value="#{searchController.quickQuery}"
+                                         converter="trimmingConverter"
+                                         onkeyup="handleReturnKey(event, 'topSearchBtn')"/>
+                            <p:commandButton id="topSearchBtn" value="Search" action="#{searchController.doQuickSearch}"
+                                             ajax="false"
+                                             process="queryTxt" global="true"
+                                             onclick="searchDialog.show()"/>
+                        </h:panelGrid>
 
-                                    <ia:loadingDialog widgetVar="searchDialog" message="Searching..."/>
-                                </td>
-                            </tr>
-                            <!--<tr>-->
-                                <!--<td style="padding-left: 15px">-->
-                                    <!--<ui:insert name="topRight"/>-->
-                                <!--</td>-->
-                            <!--</tr>-->
-                        </table>
+                        <ia:loadingDialog widgetVar="searchDialog" message="Searching..."/>
+
                     </div>
+
+                    <!--<div class="ui-widget-content top-actions">-->
+                         <!--<ui:insert name="topActionsPanel"/>-->
+                    <!--</div>-->
+
                 </h:panelGroup>
 
                 <div id="menuSection" style="width:100%; position:fixed; margin-top: 55px;">
                     <ui:insert name="menuBar"/>
-                    </div>
+                    <ui:insert name="actionsBar"/>
+                </div>
             </div>
 
                 <!--</p:layoutUnit>-->
 
                 <!--<p:layoutUnit position="center" scrollable="true">-->
-            <div style="width:100%; padding-top:90px; margin-left:5px; margin-right:5px">
+            <div style="width:99%; padding-top:120px; padding-left: 5px">
 
                     <!--<div id="feedback" class="intact-feedback" onmouseover="this.style.top = '350px'">-->
                         <!--<a href="http://code.google.com/p/intact/issues/entry?template=Editor%20mockup%20feedback"-->

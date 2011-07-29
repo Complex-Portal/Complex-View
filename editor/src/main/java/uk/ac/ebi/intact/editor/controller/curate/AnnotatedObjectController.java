@@ -43,6 +43,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.validator.ValidatorException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -102,6 +103,29 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                 String who = generalChangesController.whoIsEditingObject(getAnnotatedObject());
 
                 addWarningMessage("This object is already being edited by: "+who, "Modifications may be lost or affect current work by the other curator");
+            }
+
+            PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
+
+            if (publicationController.getPublication() != null) {
+                Publication publication = publicationController.getPublication();
+
+                    if (CvPublicationStatusType.CURATION_IN_PROGRESS.identifier().equals(publication.getStatus().getIdentifier())) {
+                        if (!getCurrentUser().equals(publication.getCurrentOwner())) {
+                            addWarningMessage("Publication being curated by '"+publication.getCurrentOwner().getLogin()+"'", "Please do not modify it without permission");
+                        }
+                    } else if (CvPublicationStatusType.READY_FOR_CHECKING.identifier().equals(publication.getStatus().getIdentifier())) {
+                        if (!getCurrentUser().equals(publication.getCurrentReviewer())) {
+                            addWarningMessage("Publication under review", "This publication is being reviewed by '"+publication.getCurrentReviewer().getLogin()+"'");
+                        }
+                    } else if (CvPublicationStatusType.ACCEPTED_ON_HOLD.identifier().equals(publication.getStatus().getIdentifier())) {
+                        addWarningMessage("Publication on-hold", "Reason: "+publicationController.getOnHold());
+                    } else if (CvPublicationStatusType.RELEASED.identifier().equals(publication.getStatus().getIdentifier())) {
+                        LifecycleEvent event = publication.getLastEventOfType(CvLifecycleEventType.RELEASED.identifier());
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
+                        addInfoMessage("Publication already released", "This publication was released on " + sdf.format(event.getWhen()));
+                    }
             }
         }
     }
