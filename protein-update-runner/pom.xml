@@ -78,6 +78,41 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>update-selection</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-Xmx2096m</argument>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>uk.ac.ebi.intact.service.proteinupdaterunner.ProteinSelectionUpdateRunner</argument>
+                                <!-- repository where to find the log files -->
+                                <argument>${folder}</argument>
+                                <!-- boolean value to enable or not blast process when remapping proteins -->
+                                <argument>${blast}</argument>
+                                <!-- file containing lits of protein acs to update -->
+                                <argument>${inputFile}</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
     </profiles>
 
