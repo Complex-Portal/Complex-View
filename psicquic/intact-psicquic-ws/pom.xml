@@ -28,6 +28,8 @@
 
         <psicquic.properties/>
 
+        <psicquic.filter/>
+
     </properties>
 
     <build>

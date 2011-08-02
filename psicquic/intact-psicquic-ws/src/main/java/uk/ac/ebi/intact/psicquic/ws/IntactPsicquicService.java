@@ -141,6 +141,16 @@ public class IntactPsicquicService implements PsicquicService {
                                                                                   PsicquicServiceException {
         final int blockSize = Math.min(requestInfo.getBlockSize(), BLOCKSIZE_MAX);
 
+        // apply any filter
+        if (config.getQueryFilter() != null && !config.getQueryFilter().isEmpty()) {
+            if ("*".equals(query) || query.trim().isEmpty()) {
+                query = config.getQueryFilter();
+            } else {
+                query = query + " "+config.getQueryFilter();
+                query = query.trim();
+            }
+        }
+
         final String resultType = requestInfo.getResultType();
 
         if (resultType != null && !getSupportedReturnTypes().contains(resultType)) {

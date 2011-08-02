@@ -29,6 +29,7 @@
         <property name="proxyHost" value="${intact.proxy.host}"/>
         <property name="proxyPort" value="${intact.proxy.port}"/>
         <property name="propertiesAsStrings" value="${psicquic.properties}"/>
+        <property name="queryFilter" value="${psicquic.filter}"/>
     </bean>
 
 </beans>

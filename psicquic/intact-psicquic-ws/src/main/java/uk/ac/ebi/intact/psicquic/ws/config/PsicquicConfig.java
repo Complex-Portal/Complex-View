@@ -42,6 +42,7 @@ public class PsicquicConfig {
     private String proxyHost;
     private String proxyPort;
     private String propertiesAsStrings;
+    private String queryFilter;
 
     private String statsDirectory;
 
@@ -110,6 +111,14 @@ public class PsicquicConfig {
 
     public void setProxyPort(String proxyPort) {
         this.proxyPort = proxyPort;
+    }
+
+    public String getQueryFilter() {
+        return queryFilter;
+    }
+
+    public void setQueryFilter(String queryFilter) {
+        this.queryFilter = queryFilter;
     }
 
     @Transactional
