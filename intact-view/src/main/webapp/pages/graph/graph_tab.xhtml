@@ -8,56 +8,6 @@
                 xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions" >
 
     <h1>Network visualisation</h1>
-
-    <table width="100%">
-        <tr>
-            <td width="80%">
-                <h:graphicImage alt="Loading image..." url="#{userQuery.hierarchViewImageUrl}&amp;h=700&amp;w=700"/>
-
-            </td>
-
-            <td width="20%" style="text-align:right; vertical-align:top">
-
-                <p:panel header="Open in Cytoscape" style="width:280px;">
-                    <ot:separateConversationContext>
-
-                    <div style="text-align:center">
-                        <h:outputLink value="/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
-                            <h:graphicImage alt="cytoscapeIcon" url="/images/logos/cytoscape-icon.PNG" shortDesc="Click to start Cytoscape"/>
-                        </h:outputLink>
-                    </div>
-
-                    <br/>
-
-                    <h:outputText value="Click "/>
-                    <h:outputLink url="/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
-                        &#160;here&#160;
-                    </h:outputLink>
-                    <h:outputText value=" or on the icon above to start Cytoscape."/>
-
-                    <br/>
-                    <br/>
-
-                    <h:outputText value="This is going to open current search in a WebStart"/>
-
-                    <h:outputLink value="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp"
-                               target="_blank">
-                        <h:graphicImage alt="helpIcon" url="/images/help.png" style="vertical-align: baseline"/>
-                    </h:outputLink>
-
-                    <h:outputText value=" version of Cytoscape 2.6.3"/>
-
-                    <h:outputLink value="http://www.cytoscape.org/" target="_blank">
-                        <h:graphicImage alt="helpIcon" url="/images/help.png"
-                                        style="vertical-align: baseline"/>
-                    </h:outputLink>
-
-                    </ot:separateConversationContext>
-
-                </p:panel>
-
-            </td>
-        </tr>
-    </table>
+    <ui:include src="/pages/graph/graph.xhtml"/>
 
 </ui:composition>

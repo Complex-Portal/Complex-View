@@ -27,7 +27,7 @@
 
     <properties>
         <core.version>2.4.1-SNAPSHOT</core.version>
-        <dataexchange.version>2.1.3-SNAPSHOT</dataexchange.version>
+        <dataexchange.version>2.1.4-SNAPSHOT</dataexchange.version>
         <spring.version>3.0.2.RELEASE</spring.version>
         
         <debug>false</debug>
@@ -239,7 +239,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psixml-exchange</artifactId>
-            <version>2.1.4-SNAPSHOT</version>
+            <version>${dataexchange.version}</version>
              <exclusions>
                  <exclusion>
                      <groupId>cpdetector</groupId>
@@ -257,7 +257,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
             <artifactId>jaxws-tools</artifactId>
@@ -305,7 +304,7 @@
          <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab</artifactId>
-            <version>1.7.8</version>
+            <version>1.7.10-SNAPSHOT</version>
         </dependency>
 
         <!-- PSICQUIC -->

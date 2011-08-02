@@ -310,17 +310,6 @@
         <url-pattern>/test</url-pattern>
     </servlet-mapping>
 
-    <!-- Cytoscape Servlet -->
-    <servlet>
-        <servlet-name>exportCytoscape</servlet-name>
-        <servlet-class>uk.ac.ebi.intact.view.webapp.servlet.cytoscape.CytoscapeServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>exportCytoscape</servlet-name>
-        <url-pattern>/exportCytoscape</url-pattern>
-    </servlet-mapping>
-
     <!-- Table Header Servlet -->
     <servlet>
         <servlet-name>tableHeader</servlet-name>
@@ -354,6 +343,18 @@
         <url-pattern>/proxy</url-pattern>
     </servlet-mapping>
 
+    <!-- GraphML Servlet-->
+    <servlet>
+        <servlet-name>graphmlDownload</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.view.webapp.servlet.cytoscape.GraphmlServlet</servlet-class>
+    </servlet>
+
+    <!-- Faces Servlet Mappings -->
+    <servlet-mapping>
+        <servlet-name>graphmlDownload</servlet-name>
+        <url-pattern>/graphmlDownload</url-pattern>
+    </servlet-mapping>
+
     <!-- Welcome files -->
     <welcome-file-list>
         <welcome-file>/index.jsp</welcome-file>
@@ -379,11 +380,11 @@
         <location>/main.xhtml?status=exp</location>
     </error-page>
 
-    <!--<resource-env-ref>-->
-        <!--<resource-env-ref-name>${db.jndi}</resource-env-ref-name>-->
-        <!--<resource-env-ref-type>-->
-            <!--javax.sql.DataSource-->
-        <!--</resource-env-ref-type>-->
-    <!--</resource-env-ref>-->
+    <resource-env-ref>
+        <resource-env-ref-name>${db.jndi}</resource-env-ref-name>
+        <resource-env-ref-type>
+            javax.sql.DataSource
+        </resource-env-ref-type>
+    </resource-env-ref>
 
 </web-app>
