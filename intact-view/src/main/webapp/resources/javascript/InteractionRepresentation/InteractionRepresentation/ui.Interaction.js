@@ -102,7 +102,10 @@
 			}
         },
 
-		_ignoreTerms: new Array(),
+		// ignore 'feature type', 'biological feature', 'experimental feature'
+		// and 'polyprotein fragment', 'crosslinker', 'dna overhang' and their children
+		_ignoreTerms: [ "MI:0116", "MI:0252", "MI:0505", "MI:0828", "MI:0911",
+						"MI:0912", "MI:0913", "MI:0853", "MI:0854", "MI:0855"],
 
 		_rangeStatusEquivalents: { "MI:0341": "MI:0340"},
 
