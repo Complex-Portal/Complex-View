@@ -27,7 +27,7 @@ ParticipantDrawer = function(interactionInformation){
     this.drawInteractors = function(){
         var self = this;
         var y = this._interactionInformation._initY;
-        var explanationText = self._shapeDrawer.getText(self._interactionInformation._proteinX, y - 10, 
+        var explanationText = self._shapeDrawer.getText(self._interactionInformation._proteinX, y - 7,
 		"To display a single interaction region please click on it.\n" +
         "Click again to display all interactions.");
         explanationText.hide();
@@ -71,6 +71,9 @@ ParticipantDrawer = function(interactionInformation){
                 explanationText.show();
             }
         });
+
+        this._interactionSet.insertAfter(this._featureSet);
+
         this.drawLegend(10, y + this._interactionInformation._legendDistanceToImage);
     };
     
@@ -112,9 +115,7 @@ ParticipantDrawer = function(interactionInformation){
         var lengthText = "";
         var participantName = "";
         
-        if (interactor == null || interactor === undefined) {
-            console.log(interactorRef);
-            console.log(self._interactionInformation._interactionInformation.interactors);
+        if (interactor === undefined) {
             // if there is no additional information to the features, length = maximum protein length
             // and no name for the participant is provided 
             drawLength = self._interactionInformation._proteinWidth;
@@ -141,6 +142,8 @@ ParticipantDrawer = function(interactionInformation){
 			var parentIds = new Array();
 			if((interactor.xref.primaryRef.refType == "identity") && !(interactor.xref.primaryRef.db == "intact")){
 				uniProtId = interactor.xref.primaryRef.id;
+			}else if(interactor.xref.primaryRef.refType == "identity" && (interactor.xref.primaryRef.db == "intact")){
+				intactId = interactor.xref.primaryRef.id;
 			} else if(interactor.xref.primaryRef.refType == "multiple parent"){
 				parentIds.push(interactor.xref.primaryRef.id);
 			}
@@ -184,6 +187,9 @@ ParticipantDrawer = function(interactionInformation){
             }
         }
         
+		if(uniProtId == ""){
+			uniProtId = intactId;
+		}
         
         // start drawing
         height = self._interactionInformation._positionsOnProtein["top"];
@@ -191,7 +197,7 @@ ParticipantDrawer = function(interactionInformation){
         if (!(curFeatureTrackObject.annotations === undefined)) {
             curTracks = curFeatureTrackObject.annotations["top"].tracks;
             if (!(curTracks === undefined)) {
-                y = self.drawFeatures(participant, curTracks, height, y, length, uniProtId);
+                y = self.drawFeatures(participant, curTracks, height, y, length, uniProtId, participantName);
                 y = y - height; // to draw length text at the same heigth as the last top-feature
             }
             else {
@@ -225,7 +231,7 @@ ParticipantDrawer = function(interactionInformation){
             
             // draw features before protein so that "100AA"-lines are visible
             y++;
-            yBottom = self.drawFeatures(participant, curTracks, height, y, length, uniProtId);
+            yBottom = self.drawFeatures(participant, curTracks, height, y, length, uniProtId, participantName);
             y--;
             
             interactorElement = self.drawProtein(self._interactionInformation._proteinX, y, drawLength, proteinHeight, true);
@@ -238,16 +244,18 @@ ParticipantDrawer = function(interactionInformation){
             height = self._interactionInformation._positionsOnProtein["bottom"];
             if (!(curTracks === undefined)) {
                 y = y + self._interactionInformation._featureGap;
-                y = self.drawFeatures(participant, curTracks, height, y, length, uniProtId);
+                y = self.drawFeatures(participant, curTracks, height, y, length, uniProtId, participantName);
                 y = y - self._interactionInformation._featureGap;
             }
         }
-
+		
+		this.addInteractorClickHandling(uniProtId, participantName, interactorElement);
+		
         return y;
     };
     
     // draw a list of features at the given height
-    this.drawFeatures = function(participant, features, height, curY, interactorLength, interactorId){
+    this.drawFeatures = function(participant, features, height, curY, interactorLength, interactorId, interactorName){
         var self = this;
         $(features).each(function(){
             for (var featureKey in this) {
@@ -366,7 +374,7 @@ ParticipantDrawer = function(interactionInformation){
                             coordinates = self.drawSingleRangeList(categoryKey, colour, rangeColour, opacity, rangeList, curY, height, self._interactionInformation._proteinX, interactorLength, tooltipText, symbol);
                         }
                         
-						self.addOnClickHandling(interactorId, featureId, coordinates);
+						self.addFeatureClickHandling(interactorId, interactorName, featureId, coordinates);
 						
                         // provide the coordinates of linked features
                         var id = feature.id;
@@ -390,13 +398,30 @@ ParticipantDrawer = function(interactionInformation){
 		return this._interactionInformation._utils.HSLtoHEX(HSL);
 	}
 	
-	// add given eventHandling function to each feature
-	this.addOnClickHandling = function(interactorId, featureId, coordinates){
+	// throw "feature_selected" event when the user clicks on a feature
+	this.addFeatureClickHandling = function(interactorId, interactorName, featureId, coordinates){
 		var self = this;
-		if (!(coordinates.eventHandlingElement === undefined) &&  (typeof self._interactionInformation.options.onFeatureClick == 'function')) {
+		if (!(coordinates.eventHandlingElement === undefined)) {
 			coordinates.eventHandlingElement.click(function(event){
-				self._interactionInformation.options.onFeatureClick(
-							interactorId, featureId, event);
+				$(document).trigger("feature_selected", {"event": event, 
+														 "interactorId": interactorId,
+														 "interactorName": interactorName,
+														 "featureId": featureId,
+														 "coordinates": {"x": coordinates.x, "x2": coordinates.x2}
+														});
+			});
+		}
+	}
+	
+	// throw "interactor_selected" event when the user clicks on an interactor
+	this.addInteractorClickHandling = function(interactorId, interactorName, element){
+		var self = this;
+		if (!(element == null)) {
+			element.click(function(event){
+				$(document).trigger("interactor_selected", {"event": event, 
+														    "interactorId": interactorId,
+															"interactorName": interactorName
+														   });
 			});
 		}
 	}
@@ -421,7 +446,7 @@ ParticipantDrawer = function(interactionInformation){
         
         var addText = "\npositions: ";
         var set = this._shapeDrawer.getSet();
-        var singlePositions = new Array();
+        var singlePositions = [];
         
         $(rangeList).each(function(){
             curCoordinates = self.drawSingleRangeList(categoryKey, colour, rangeColour, opacity, this, y, height, featureStart, interactorLength, "", "", symbol);
@@ -450,6 +475,7 @@ ParticipantDrawer = function(interactionInformation){
         var bb = set.getBBox();
         
         coordinates = self.drawConnectingLine(x, x2, set, colour, tooltipText);
+		coordinates["positionArray"] = singlePositions;
         return coordinates;
     }
     
@@ -719,7 +745,7 @@ ParticipantDrawer = function(interactionInformation){
     
     // draw the protein as a black rectangle with dotted lines every 100 AAs
     this.drawProtein = function(x, y, length, height, drawAAlines){
-        var protein = this._shapeDrawer.getRectangle(x, y, length + 1, height);
+        var protein = this._shapeDrawer.getRectangle(x - 1, y, length + 2, height);
         var r = height/10;
 		
 		if (r > 5) {
@@ -757,7 +783,6 @@ ParticipantDrawer = function(interactionInformation){
     
     // arrange interaction levels (so all of them will be clickable)
     this.arrangeInteractions = function(){
-        this._interactionSet.insertAfter(this._featureSet);
         var self = this;
         this._interactions.sort(function(a, b){
             return self.interactionSortFunction(a, b);
@@ -795,7 +820,7 @@ ParticipantDrawer = function(interactionInformation){
         }
 
         if(this._interactionInformation.options.legendPosition == "right"){
-            x = this._interactionInformation.options.width - (legendPictureWidth + legendRangetypeSectionWidth) - gap;
+            x = this._interactionInformation.options.width - (legendPictureWidth + legendRangetypeSectionWidth);
         }
 
         var legendText = this._shapeDrawer.getText(x, y, "Legend:");
@@ -837,13 +862,14 @@ ParticipantDrawer = function(interactionInformation){
     this.calculateLegendPictureWidth = function(legendItemWidth, textGap){
         var width = 0;
         for (var category in this._interactionInformation._typeCategories) {
-			var textObject = this._shapeDrawer.getText(0,0, category);
+			var textObject = this._shapeDrawer.getText(0, 0, category);
             var bb = textObject.getBBox();
             if(bb.width > width){
                 width = bb.width;
             }
             textObject.remove();
         }
+
         return width + ((legendItemWidth/2) * this._interactionInformation._pxPerAA) + 4 * textGap;
     }
 
@@ -856,6 +882,7 @@ ParticipantDrawer = function(interactionInformation){
                 var text = self.getLegendRangetypeItemText(functionName, this.range);
                 var textObject = self._shapeDrawer.getText(0,0,text);
                 var bb = textObject.getBBox();
+
                 if(bb.width > width){
                     width = bb.width;
                 }
@@ -870,18 +897,19 @@ ParticipantDrawer = function(interactionInformation){
 
         var category = functionName.replace(/\d*/g, "");
 
-        if (category == self._multipleRangeKeyword) {
-            legendItemText = "features with non-continuous positions";
-        }
-        else
-
-            if (legendItemText == "undetermined - undetermined"){
-                legendItemText = "non-positional ";
-            }
-
-            if (category != "draw") {
-                legendItemText += category;
-            }
+        if (category == this._multipleRangeKeyword) {
+			legendItemText = "features with non-continuous positions";
+		}
+		else {
+		
+			if (legendItemText == "undetermined - undetermined") {
+				legendItemText = "non-positional ";
+			}
+			
+			if (category != "draw") {
+				legendItemText += category;
+			}
+		}
         return legendItemText;
     }
 

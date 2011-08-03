@@ -4,7 +4,6 @@
             width: 10,
             jsonUrl: '',
             developingMode: false,
-			onFeatureClick: null, // function; parameters: protein_ac, feature_ac, event
             proxyUrl: '',
             useProxyForData: true,
             useProxyForOntology: true,
