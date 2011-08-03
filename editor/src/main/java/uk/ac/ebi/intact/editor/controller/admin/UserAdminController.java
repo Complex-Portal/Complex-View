@@ -24,6 +24,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.model.SelectItem;
 import javax.lang.model.SourceVersion;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,6 +68,8 @@ public class UserAdminController extends AbstractUserController {
 
     private boolean fileUploaded;
 
+    private List<SelectItem> reviewerSelectItems;
+
     /////////////////
     // Users
 
@@ -80,10 +83,18 @@ public class UserAdminController extends AbstractUserController {
 
     ///////////////
     // Actions
-
     public void loadUserToUpdate( ComponentSystemEvent event ) {
 
         log.info( "AbstractUserController.loadUserToUpdate" );
+
+        this.reviewerSelectItems = new ArrayList<SelectItem>();
+        reviewerSelectItems.add(new SelectItem(null, "-- Random --", "Correction assigner", false, false, true));
+
+        List<User> reviewers = getDaoFactory().getUserDao().getReviewers();
+
+        for (User reviewer : reviewers) {
+            reviewerSelectItems.add(new SelectItem(reviewer, reviewer.getLogin()));
+        }
 
         if ( loginParam != null ) {
             // load user and prepare for update
@@ -312,6 +323,41 @@ public class UserAdminController extends AbstractUserController {
         }
     }
 
+    public void importSelectedUsers() {
+        if( selectedUsersToImport == null || selectedUsersToImport.length == 0 ) {
+            addWarningMessage( "Failed", "You must select at least one user to import." );
+            return;
+        }
+
+        Collection<User> users = new ArrayList<User>( );
+        int newUser = 0;
+        int existingUsers = 0;
+        for ( int i = 0; i < selectedUsersToImport.length; i++ ) {
+            UserWrapper wrapper = selectedUsersToImport[i];
+            users.add( wrapper.getUser() );
+            if( wrapper.isAlreadyExistsInDB() ) {
+                existingUsers++;
+            } else {
+                newUser++;
+            }
+        }
+
+        userService.importUsers( users, importUpdateEnabled );
+
+        // clear up data
+        usersToImport = new ArrayList<UserWrapper>();
+        fileUploaded = false;
+        selectedUsersToImport = null;
+
+        String msg = null;
+        if( importUpdateEnabled ) {
+            msg = newUser + " created, " + existingUsers + " updated users.";
+        } else {
+            msg = newUser + " users created.";
+        }
+        addInfoMessage( "Successful", msg );
+    }
+
     public List<UserWrapper> getUsersToImport() {
         return usersToImport;
     }
@@ -379,38 +425,11 @@ public class UserAdminController extends AbstractUserController {
         this.fileUploaded = fileUploaded;
     }
 
-    public void importSelectedUsers() {
-        if( selectedUsersToImport == null || selectedUsersToImport.length == 0 ) {
-            addWarningMessage( "Failed", "You must select at least one user to import." );
-            return;
-        }
+        public List<SelectItem> getReviewerSelectItems() {
+        return reviewerSelectItems;
+    }
 
-        Collection<User> users = new ArrayList<User>( );
-        int newUser = 0;
-        int existingUsers = 0;
-        for ( int i = 0; i < selectedUsersToImport.length; i++ ) {
-            UserWrapper wrapper = selectedUsersToImport[i];
-            users.add( wrapper.getUser() );
-            if( wrapper.isAlreadyExistsInDB() ) {
-                existingUsers++;
-            } else {
-                newUser++;
-            }
-        }
-
-        userService.importUsers( users, importUpdateEnabled );
-
-        // clear up data
-        usersToImport = new ArrayList<UserWrapper>();
-        fileUploaded = false;
-        selectedUsersToImport = null;
-
-        String msg = null;
-        if( importUpdateEnabled ) {
-            msg = newUser + " created, " + existingUsers + " updated users.";
-        } else {
-            msg = newUser + " users created.";
-        }
-        addInfoMessage( "Successful", msg );
+    public void setReviewerSelectItems(List<SelectItem> reviewerSelectItems) {
+        this.reviewerSelectItems = reviewerSelectItems;
     }
 }

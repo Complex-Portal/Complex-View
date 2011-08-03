@@ -283,6 +283,7 @@ public class PublicationController extends AnnotatedObjectController {
 
             if (assignToMe) {
                 lifecycleManager.getNewStatus().claimOwnership(publication);
+                lifecycleManager.getAssignedStatus().startCuration(publication);
             }
 
         } catch ( Throwable e ) {
@@ -363,9 +364,9 @@ public class PublicationController extends AnnotatedObjectController {
         ac = null;
     }
 
-
-
-
+    public boolean isAssigned() {
+        return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.ASSIGNED.identifier());
+    }
 
     public boolean isCurationInProgress() {
         return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.CURATION_IN_PROGRESS.identifier());
@@ -382,11 +383,27 @@ public class PublicationController extends AnnotatedObjectController {
     public void claimOwnership(ActionEvent evt) {
         lifecycleManager.getGlobalStatus().changeOwnership(publication, null);
 
+        // automatically set as curation in progress if no one was assigned before
+        if (isAssigned()) {
+            lifecycleManager.getAssignedStatus().startCuration(publication);
+        }
+
         addInfoMessage("Claimed publication ownership", "You are now the owner of this publication");
     }
 
+    public void markAsCurationInProgress(ActionEvent evt) {
+        if (!userSessionController.isItMe(publication.getCurrentOwner())) {
+            addErrorMessage("Cannot mark as curation in progress", "You are not the owner of this publication");
+            return;
+        }
+
+        lifecycleManager.getAssignedStatus().startCuration(publication);
+
+        addInfoMessage("Curation started", "Curation is now in progress");
+    }
+
     public void markAsReadyForChecking(ActionEvent evt) {
-        if (!userSessionController.getCurrentUser().equals(publication.getCurrentOwner())) {
+        if (!userSessionController.isItMe(publication.getCurrentOwner())) {
             addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this publication");
             return;
         }
@@ -396,7 +413,7 @@ public class PublicationController extends AnnotatedObjectController {
 
         lifecycleManager.getCurationInProgressStatus().readyForChecking(publication, null, sanityCheckPassed);
 
-        addInfoMessage("Publication ready for checking", "Assigned to reviewer: "+publication.getCurrentReviewer());
+        addInfoMessage("Publication ready for checking", "Assigned to reviewer: "+publication.getCurrentReviewer().getLogin());
     }
 
     public void doSaveAndClose( ActionEvent evt ) {

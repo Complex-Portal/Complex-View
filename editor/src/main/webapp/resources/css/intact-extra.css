@@ -291,8 +291,22 @@ border-right:0 none !important;
 
 }
 
+.important-button-good {
+    background: #84bc73 !important;
+    color:white !important;
+
+}
+
+.important-button-bad {
+    background: #feba12 !important;
+    color:white !important;
+
+}
+
 .important-button,
-.important-button-alt {
+.important-button-alt,
+.important-button-good,
+.important-button-bad {
     font-weight: bold !important;
     font-family: helvetica;
     font-size: 11pt;

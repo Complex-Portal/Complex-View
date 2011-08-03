@@ -37,7 +37,8 @@
     <h:outputText styleClass="subTitle-text" value=" owned by "
                   rendered="#{publicationController.publication.currentOwner != null}"/>
     <h:outputText styleClass="subTitle" value="#{publicationController.publication.currentOwner.login}"
-                  rendered="#{publicationController.publication.currentOwner != null}"/>,
+                  rendered="#{publicationController.publication.currentOwner != null}"/>
+    <h:outputText value="," rendered="#{publicationController.publication.currentReviewer != null}"/>
     <h:outputText styleClass="subTitle-text" value=" reviewed by "
                   rendered="#{publicationController.publication.currentReviewer != null}"/>
     <h:outputText styleClass="subTitle" value="#{publicationController.publication.currentReviewer.login}"
@@ -53,6 +54,7 @@
         <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
             <h:panelGroup id="topSavePanel" style="padding-left: 10px; padding-right: 10px">
                 <p:commandButton type="button" id="topSaveButton" value="Save" styleClass="important-button"
+                                 disabled="#{not annotatedObjectController.canIEditIt()}"
                                  onclick="save(); return false"/>
                 <!--<p:commandButton value="save 2" actionListener="#{annotatedObjectController.doSave}" ajax="false" />-->
 
@@ -191,7 +193,8 @@
                         <p:commandButton type="button" id="unsavedSaveButton"
                                          styleClass="important-button"
                                          style="opacity: 1.0; font-weight: bold"
-                                         value="Save" onclick="save(); return false">
+                                         value="Save" onclick="save(); return false"
+                                         disabled="#{not annotatedObjectController.canIEditIt()}">
                         </p:commandButton>
 
 

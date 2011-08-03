@@ -7,8 +7,11 @@ import uk.ac.ebi.intact.model.user.User;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.institution.InstitutionService;
 import uk.ac.ebi.intact.model.Institution;
+import uk.ac.ebi.intact.model.util.UserUtils;
 
+import javax.faces.model.SelectItem;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller used when administrating users.
@@ -93,6 +96,16 @@ public abstract class AbstractUserController extends JpaAwareController {
         if (institution != null) {
             setPreference(INSTITUTION_AC, institution.getAc());
             setPreference(INSTITUTION_NAME, institution.getShortLabel());
+        }
+    }
+
+    public User getMentorReviewer() {
+        return UserUtils.getMentorReviewer(getIntactContext(), getUser());
+    }
+
+    public void setMentorReviewer(User mentor) {
+        if (mentor != null) {
+            UserUtils.setMentorReviewer(user, mentor);
         }
     }
 

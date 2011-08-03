@@ -67,11 +67,11 @@ public class DashboardController extends JpaAwareController {
                 "select p from Publication p" + (hideAcceptedAndReleased ? " where " + hideAcceptedWhereSql : ""), "p", "updated", false);
 
         ownedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                    "select p from Publication p where p.currentOwner.login = '"+userId+"'"+
+                                                                    "select p from Publication p where upper(p.currentOwner.login) = '"+userId+"'"+
                                                                     (hideAcceptedAndReleased? " and "+hideAcceptedWhereSql : ""), "p", "updated", false);
 
         reviewedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                    "select p from Publication p where p.currentReviewer.login = '"+userId+"'"+
+                                                                    "select p from Publication p where upper(p.currentReviewer.login) = '"+userId+"'"+
                                                                     (hideAcceptedAndReleased? " and "+hideAcceptedWhereSql : ""), "p", "updated", false);
     }
 

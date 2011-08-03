@@ -29,14 +29,16 @@
                                showEvent="focus" hideEvent="blur" position="topRight"/>
                 </p:inputText>
 
-                <h:outputLabel for="assignToMeChk" value="Assign to me"/>
-                <h:selectBooleanCheckbox id="assignToMeChk" value="#{publicationController.assignToMe}"/>
+
 
                 <p:commandButton value="Auto-complete" actionListener="#{publicationController.newAutocomplete}" ajax="false"
                                  process="newPmid"
                                  action="/curate/publication?faces-redirect=true" disabled="#{not publicationController.citexploreOnline}"/>
 
                 <br/>
+
+                <h:outputLabel for="assignToMeChk" value="Assign to me"/>
+                <h:selectBooleanCheckbox id="assignToMeChk" value="#{publicationController.assignToMe}"/>
 
                 <div style="width:100%; text-align:right">
                     <ot:separateConversationContext>

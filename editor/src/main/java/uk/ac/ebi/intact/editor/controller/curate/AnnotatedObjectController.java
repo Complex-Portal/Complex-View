@@ -111,11 +111,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                 Publication publication = publicationController.getPublication();
 
                     if (CvPublicationStatusType.CURATION_IN_PROGRESS.identifier().equals(publication.getStatus().getIdentifier())) {
-                        if (!getCurrentUser().equals(publication.getCurrentOwner())) {
+                        if (!getUserSessionController().isItMe(publication.getCurrentOwner())) {
                             addWarningMessage("Publication being curated by '"+publication.getCurrentOwner().getLogin()+"'", "Please do not modify it without permission");
                         }
                     } else if (CvPublicationStatusType.READY_FOR_CHECKING.identifier().equals(publication.getStatus().getIdentifier())) {
-                        if (!getCurrentUser().equals(publication.getCurrentReviewer())) {
+                        if (!getUserSessionController().isItMe(publication.getCurrentOwner())) {
                             addWarningMessage("Publication under review", "This publication is being reviewed by '"+publication.getCurrentReviewer().getLogin()+"'");
                         }
                     } else if (CvPublicationStatusType.ACCEPTED_ON_HOLD.identifier().equals(publication.getStatus().getIdentifier())) {
@@ -745,8 +745,24 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public User getCurrentUser() {
-        UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
+        UserSessionController userSessionController = getUserSessionController();
         return userSessionController.getCurrentUser();
+    }
+
+    public boolean canIEditIt() {
+        PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
+
+        if (publicationController.getPublication() == null) {
+            return true;
+        } else if (publicationController.getPublication().getCurrentOwner() != null) {
+            return getUserSessionController().isItMe(publicationController.getPublication().getCurrentOwner());
+        }
+
+        return true;
+    }
+
+    private UserSessionController getUserSessionController() {
+        return (UserSessionController) getSpringContext().getBean("userSessionController");
     }
 
     public ChangesController getChangesController() {

@@ -79,7 +79,7 @@ public class UserManagerController extends BaseController implements UserListene
         userSessionController.setCurrentUser(user);
 
         // set the user to be used when writing into the database
-        IntactContext.getCurrentInstance().getUserContext().setUserId( user.getLogin().toUpperCase() );
+        IntactContext.getCurrentInstance().getUserContext().setUser( user );
 
         loggedInUsers.add(user);
     }

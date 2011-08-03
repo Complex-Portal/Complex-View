@@ -22,10 +22,26 @@
     </ui:define>
 
     <ui:define name="topActionsPanel">
+        <p:commandButton value="Start curation"
+                         styleClass="important-button-alt"
+                         disabled="#{not userSessionController.isItMe(publicationController.publication.currentOwner)}"
+                         rendered="#{publicationController.assigned}"
+                         actionListener="#{publicationController.markAsCurationInProgress}" ajax="false"/>
         <p:commandButton value="Ready for checking"
                          styleClass="important-button-alt"
-                         disabled="#{not publicationController.curationInProgress}"
-                actionListener="#{publicationController.markAsReadyForChecking}" ajax="false"/>
+                         disabled="#{not userSessionController.isItMe(publicationController.publication.currentOwner)}"
+                         rendered="#{publicationController.curationInProgress}"
+                         actionListener="#{publicationController.markAsReadyForChecking}" ajax="false"/>
+        <p:commandButton value="Accept"
+                         styleClass="important-button-good"
+                         disabled="#{not userSessionController.isItMe(publicationController.publication.currentReviewer)}"
+                         rendered="#{publicationController.readyForChecking}"
+                         actionListener="#{publicationController.acceptPublication}" ajax="false"/>
+        <p:commandButton value="Reject" type="button"
+                         styleClass="important-button-bad"
+                         disabled="#{not userSessionController.isItMe(publicationController.publication.currentReviewer)}"
+                         rendered="#{publicationController.readyForChecking}"
+                         onclick="rejectPublicationDialog.show()"/>
     </ui:define>
 
     <ui:define name="breadcrumbs">
@@ -281,21 +297,6 @@
 
                 <p:remoteCommand name="refreshTabs" update="publicationTabs,messagesComponent"/>
 
-                <br/>
-
-        <p:fieldset legend="Lifecycle: #{publicationController.publication.status.shortLabel}" rendered="#{not publicationController.released}">
-            <p:commandButton value="Claim ownership"
-                actionListener="#{publicationController.claimOwnership}"
-                disabled="#{userContext.user == publicationController.publication.currentOwner}"
-                rendered="#{publicationController.publication.currentOwner != null}"
-                ajax="false"/>
-
-            &#160;
-
-             <p:commandButton value="Ready for checking" disabled="#{not publicationController.curationInProgress}"
-                actionListener="#{publicationController.markAsReadyForChecking}" ajax="false"/>
-        </p:fieldset>
-
         <br/>
 
                 <p:tabView id="publicationTabs">
@@ -365,7 +366,9 @@
 
                             <p:dataTable var="event" value="#{publicationController.publication.lifecycleEvents}">
                                 <p:column headerText="Date">
-                                    <h:outputText value="#{event.when}"/>
+                                    <h:outputText value="#{event.when}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </h:outputText>
                                 </p:column>
                                 <p:column headerText="Event">
                                     <h:outputText value="#{event.event.shortLabel}"/>

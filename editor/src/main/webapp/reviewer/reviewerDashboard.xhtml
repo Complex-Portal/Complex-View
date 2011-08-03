@@ -29,7 +29,7 @@
             </p:column>
             <p:column headerText="Availability">
                 <h:inputHidden id="txt2" value="#{reviewerAvailabilityController.wrapReviewer(reviewer).availability}" />
-                <p:slider for="txt2" style="width:200px" step="10" />
+                <p:slider for="txt2" style="width:200px" step="10" disabled="#{not userSessionController.hasRole('ROLE_ADMIN')}"/>
                 <h:outputText id="output"  value="#{reviewerAvailabilityController.wrapReviewer(reviewer).availability}"/>
             </p:column>
         </p:dataTable>

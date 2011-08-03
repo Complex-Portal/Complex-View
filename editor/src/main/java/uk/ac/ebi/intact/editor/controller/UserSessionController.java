@@ -83,6 +83,10 @@ public class UserSessionController extends JpaAwareController implements Disposa
         return false;
     }
 
+    public boolean isItMe(User user) {
+        return user.equals(currentUser);
+    }
+
     @Transactional
     public void notifyLastActivity() {
         DateTime dateTime = new DateTime();

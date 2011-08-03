@@ -66,6 +66,11 @@
             <h:outputLabel for="guTxt" value="Google username: "/>
             <p:inputText id="guTxt" value="#{userAdminController.googleUsername}" converter="trimmingConverter"/>
 
+            <h:outputLabel value="Default reviewer: " for="mentorSel"/>
+            <h:selectOneMenu id="mentorSel" value="#{userAdminController.mentorReviewer}">
+                <f:selectItems value="#{userAdminController.reviewerSelectItems}"/>
+            </h:selectOneMenu>
+
             <h:outputLabel value="My Notes:" for="notesArea"/>
             <p:inputTextarea id="notesArea" value="#{userAdminController.rawNotes}" rows="10" cols="80"/>
 
