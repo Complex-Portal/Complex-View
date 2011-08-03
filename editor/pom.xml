@@ -31,6 +31,7 @@
 
         <!-- configurable bits -->
         <jetty.port>9192</jetty.port>
+        <jetty.contextPath>/${pom.artifactId}</jetty.contextPath>
 
         <!-- database defaults -->
         <db.jndi>jdbc/IntactEditorDS</db.jndi>
@@ -71,7 +72,7 @@
                     </connectors>
                     <scanIntervalSeconds>0</scanIntervalSeconds>
                     <webAppConfig>
-                        <contextPath>/${pom.artifactId}</contextPath>
+                        <contextPath>${jetty.contextPath}</contextPath>
                         <jettyEnvXml>${build.outputDirectory}/META-INF/jetty-env.xml</jettyEnvXml>
                     </webAppConfig>
                 </configuration>
