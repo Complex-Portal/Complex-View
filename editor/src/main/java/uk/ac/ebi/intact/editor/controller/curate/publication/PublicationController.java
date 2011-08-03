@@ -214,8 +214,16 @@ public class PublicationController extends AnnotatedObjectController {
         newEmpty(false);
         autocomplete( publication, identifier );
 
+        lifecycleManager.getStartStatus().create(publication, "Editor autocomplete");
+
+        if (assignToMe) {
+            lifecycleManager.getNewStatus().claimOwnership(publication);
+            lifecycleManager.getAssignedStatus().startCuration(publication);
+        }
+
         identifier = null;
         identifierToImport = null;
+        assignToMe = true;
 
         getChangesController().markAsUnsaved(publication);
     }
@@ -226,7 +234,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    public void autocomplete( Publication publication, String id ) {
+    public void autocomplete( Publication publication, String id) {
         CitexploreClient citexploreClient = null;
 
         try {
@@ -278,13 +286,6 @@ public class PublicationController extends AnnotatedObjectController {
             setAuthors( sbAuthors.toString() );
 
             addInfoMessage( "Auto-complete successful", "Fetched details for: " + id );
-
-            lifecycleManager.getStartStatus().create(publication, "Editor autocomplete");
-
-            if (assignToMe) {
-                lifecycleManager.getNewStatus().claimOwnership(publication);
-                lifecycleManager.getAssignedStatus().startCuration(publication);
-            }
 
         } catch ( Throwable e ) {
             addErrorMessage( "Problem auto-completing publication", e.getMessage() );
@@ -381,7 +382,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void claimOwnership(ActionEvent evt) {
-        lifecycleManager.getGlobalStatus().changeOwnership(publication, null);
+        lifecycleManager.getGlobalStatus().changeOwnership(publication, getCurrentUser(), null);
 
         // automatically set as curation in progress if no one was assigned before
         if (isAssigned()) {
