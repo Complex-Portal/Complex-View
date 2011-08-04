@@ -813,6 +813,30 @@ public class PublicationController extends AnnotatedObjectController {
         setUnsavedChanges(true);
     }
 
+    public boolean isRejected(Publication publication) {
+        return PublicationUtils.isRejected(publication);
+    }
+
+    public String getReasonForRejection(Publication publication) {
+        LifecycleEvent event = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.REJECTED.identifier());
+
+        if (event != null) {
+            return event.getNote();
+        }
+
+        return null;
+    }
+
+    public String calculateStatusStyle(Publication publication) {
+        if (isAccepted(publication)) {
+            return "ia-accepted";
+        } else if (isRejected(publication)) {
+            return "ia-rejected";
+        }
+
+        return "";
+    }
+
     public void setToBeReviewed(String toBeReviewed) {
         setAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
     }

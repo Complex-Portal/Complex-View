@@ -15,7 +15,7 @@
                  paginatorAlwaysVisible="false"
                  paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                  rowsPerPageTemplate="10,25,50"
-                 rowStyleClass="#{publicationController.isAccepted(publication)? 'ia-accepted' : publicationController.isToBeReviewed(publication)? 'ia-to-be-reviewed' : 'ia-not-accepted'}">
+                 rowStyleClass="#{publicationController.calculateStatusStyle(publication)}">
         <p:column headerText="Publication ID" sortBy="#{publication.shortLabel}">
             <ot:separateConversationContext>
                 <h:link outcome="/curate/publication" value="#{publication.shortLabel}" includeViewParams="true">
@@ -45,6 +45,11 @@
         </p:column>
         <p:column headerText="Status" sortBy="#{publication.status}">
             <h:outputText value="#{publication.status.shortLabel}" rendered="#{publication.status != null}"/>
+        </p:column>
+        <p:column headerText="Comment">
+            <h:outputText value="Rejected: " style="font-weight: bold"/>
+            <h:outputText value="#{publicationController.getReasonForRejection(publication)}"
+                          rendered="#{publicationController.isRejected(publication)}"/>
         </p:column>
     </p:dataTable>
 

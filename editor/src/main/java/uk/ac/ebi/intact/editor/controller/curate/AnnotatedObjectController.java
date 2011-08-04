@@ -34,6 +34,7 @@ import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.user.User;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
+import uk.ac.ebi.intact.model.util.PublicationUtils;
 import uk.ac.ebi.intact.util.go.GoServerProxy;
 import uk.ac.ebi.intact.util.go.GoTerm;
 
@@ -121,7 +122,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                     } else if (CvPublicationStatusType.ACCEPTED_ON_HOLD.identifier().equals(publication.getStatus().getIdentifier())) {
                         addWarningMessage("Publication on-hold", "Reason: "+publicationController.getOnHold());
                     } else if (CvPublicationStatusType.RELEASED.identifier().equals(publication.getStatus().getIdentifier())) {
-                        LifecycleEvent event = publication.getLastEventOfType(CvLifecycleEventType.RELEASED.identifier());
+                        LifecycleEvent event = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.RELEASED.identifier());
 
                         SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
                         addInfoMessage("Publication already released", "This publication was released on " + sdf.format(event.getWhen()));

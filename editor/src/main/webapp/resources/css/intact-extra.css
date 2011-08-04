@@ -343,6 +343,10 @@ border-right:0 none !important;
    /*/background: #fafad2 !important;*/
 }
 
+.ia-rejected {
+    background: #ffecc4 !important;
+}
+
 
 /** dataTable **/
 .ui-datatable .ui-datatable-data td, .ui-datatable .ui-datatable-data-empty td {
