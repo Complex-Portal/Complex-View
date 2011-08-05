@@ -2,7 +2,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://intact.ebi.ac.uk/miscel /WEB-INF/intact-miscel.tld">
@@ -23,7 +22,7 @@
 <h:outputScript library="javascript/cytoscape_web" name="AC_OETags.min.js"/>
 <h:outputScript library="javascript/cytoscape_web" name="cytoscapeweb.min.js"/>
 <h:panelGroup>
-    <div id="rightPanel" style="float:right; width:19%;">
+    <div id="rightPanel" style="float:right; width:24%;">
         <div id="graphController">
             <p:panel header="CytoscapeWeb Controls" style="width:98%;">
                 <table>
@@ -57,12 +56,45 @@
             </p:panel>
 
         </div>
+        <br/>
+        <br/>
+        <p:panel text="Open in Cytoscape" style="font-size:8.5pt;width:98%;">
+
+           <h:panelGrid style="text-align:center;width:100%">
+                <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
+                    <h:graphicImage url="/images/logos/cytoscape-icon.PNG" shortDesc="Click to start Cytoscape"/>
+                </h:outputLink>
+           </h:panelGrid>
+
+            <h:outputText value="Click "/>
+            <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
+                &#160;here&#160;
+            </h:outputLink>
+            <h:outputText value=" or on the icon above to start Cytoscape." />
+
+            <br/>
+            <br/>
+
+            <h:outputText value="This is going to open the current search in a WebStart " />
+
+            <h:outputLink value="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp" target="_blank">
+                <h:graphicImage url="/images/help.png" style="vertical-align: baseline;"/>
+            </h:outputLink>
+
+            <h:outputText value=" version of Cytoscape 2.6.3" />
+
+            <h:outputLink value="http://www.cytoscape.org/" target="_blank">
+                <h:graphicImage url="/images/help.png" style="vertical-align: baseline;"/>
+            </h:outputLink>
+
+        </p:panel>
+
 
         <div id="note" style="position:absolute;">
         </div>
     </div>
 
-    <div id="cytoscapeweb" style="width:80%; height:900px; border:1px solid #d3d3d3;">
+    <div id="cytoscapeweb" style="width:75%; height:900px; border:1px solid #d3d3d3;">
         Interaction Graph should show here in a few moment...
     </div>
 
@@ -70,7 +102,8 @@
 </h:panelGroup>
 <script type="text/javascript">
     //<![CDATA[
-    var mitabUrl = 'http://www.ebi.ac.uk/Tools/webservices/psicquic/intact/webservices/current/search/query/#{searchBean.results.searchQuery.query}';
+    var query = '#{searchBean.results.searchQuery.query}';
+    var mitabUrl = 'http://www.ebi.ac.uk/Tools/webservices/psicquic/intact/webservices/current/search/query/' + query;
     var xmlUrl = '/intact/graphmlDownload?mitabUrl=' + mitabUrl;
 
     // wait for the data to be loaded prior, handy for larger network.

@@ -52,7 +52,9 @@ public class CytoscapeServlet extends HttpServlet {
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
 
         String searchQuery = request.getParameter( PARAM_QUERY );
-
+        if (searchQuery == null) {
+            throw new ServletException("Parameter '"+ PARAM_QUERY +"' was expected");
+        }
         if ( log.isDebugEnabled() ) log.debug( "Generating a JNLP file to start Cytoscape with query: " + searchQuery );
 
         searchQuery = encodeURL( searchQuery );
@@ -62,7 +64,6 @@ public class CytoscapeServlet extends HttpServlet {
 
         final String serverContext = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
         final String exportUrl = serverContext + "/export?query=" + searchQuery + "&format=" + format;
-
         response.setContentType( "application/x-java-jnlp-file" );
 
         // Read the template cytoscape.jnlp from from WEB-INF directory.

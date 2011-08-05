@@ -343,6 +343,17 @@
         <url-pattern>/proxy</url-pattern>
     </servlet-mapping>
 
+    <!-- Cytoscape Servlet -->
+    <servlet>
+        <servlet-name>exportCytoscape</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.view.webapp.servlet.cytoscape.CytoscapeServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>exportCytoscape</servlet-name>
+        <url-pattern>/exportCytoscape</url-pattern>
+    </servlet-mapping>
+
     <!-- GraphML Servlet-->
     <servlet>
         <servlet-name>graphmlDownload</servlet-name>

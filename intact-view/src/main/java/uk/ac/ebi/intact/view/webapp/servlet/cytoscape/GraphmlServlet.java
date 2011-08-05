@@ -31,10 +31,9 @@ public class GraphmlServlet extends HttpServlet {
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
 
         String mitabUrl = request.getParameter("mitabUrl");
-        if( mitabUrl != null ) {
-            mitabUrl = mitabUrl;
-        }
         if (log.isDebugEnabled()) log.debug("mitabUrl: " + mitabUrl );
+
+        mitabUrl = mitabUrl.replaceAll( " ", "%20" );
 
         final URL inputUrl = new URL( mitabUrl );
         final InputStream is = inputUrl.openStream();
