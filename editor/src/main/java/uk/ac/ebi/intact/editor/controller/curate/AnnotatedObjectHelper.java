@@ -44,6 +44,10 @@ public class AnnotatedObjectHelper implements Serializable {
     public AnnotatedObjectHelper() {
     }
 
+    public AnnotatedObjectHelper(AnnotatedObject annotatedObject) {
+        this.annotatedObject = annotatedObject;
+    }
+
     // XREFS
     ///////////////////////////////////////////////
 

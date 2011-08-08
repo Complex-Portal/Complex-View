@@ -24,13 +24,9 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class AppController extends BaseController {
 
-
-
     private String database;
-    private String theme;
 
     public AppController() {
-        theme = "ebi";
     }
 
     public String getDatabase() {
@@ -39,13 +35,5 @@ public class AppController extends BaseController {
 
     public void setDatabase( String database ) {
         this.database = database;
-    }
-
-    public String getTheme() {
-        return theme;
-    }
-
-    public void setTheme(String theme) {
-        this.theme = theme;
     }
 }

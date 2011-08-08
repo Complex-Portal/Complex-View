@@ -26,6 +26,7 @@ import uk.ac.ebi.intact.model.Publication;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.util.Arrays;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -40,9 +41,12 @@ public class DashboardController extends JpaAwareController {
     private LazyDataModel<Publication> reviewedByUser;
 
     private boolean hideAcceptedAndReleased;
+    private String[] statusToShow;
 
     public DashboardController() {
         hideAcceptedAndReleased = true;
+
+        statusToShow = new String[] {"PL:0007", "PL:0008"};
     }
 
     @SuppressWarnings("unchecked")
@@ -54,25 +58,31 @@ public class DashboardController extends JpaAwareController {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         final String userId = userSessionController.getCurrentUser().getLogin().toUpperCase();
 
-        String hideAcceptedWhereSql = "";
-
-        if (hideAcceptedAndReleased) {
-            hideAcceptedWhereSql = " p.status.identifier <> '"+ CvPublicationStatusType.ACCEPTED.identifier()+"' and "+
-                                   "p.status.identifier <> '"+ CvPublicationStatusType.ACCEPTED_ON_HOLD.identifier()+"' and "+
-                                   "p.status.identifier <> '"+ CvPublicationStatusType.READY_FOR_RELEASE.identifier()+"' and "+
-                                   "p.status.identifier <> '"+ CvPublicationStatusType.RELEASED.identifier()+"' ";
+        if (statusToShow.length == 0) {
+           statusToShow = new String[] {"PL:0007", "PL:0008"};
         }
 
+        StringBuilder statusToShowSql = new StringBuilder();
+
+        for (int i=0; i<statusToShow.length; i++) {
+            if (i>0) {
+                statusToShowSql.append(" or");
+            }
+            statusToShowSql.append(" p.status.identifier = '").append(statusToShow[i]).append("'");
+        }
+
+        String additionalSql = statusToShowSql.toString();
+
         allPublications = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
-                "select p from Publication p" + (hideAcceptedAndReleased ? " where " + hideAcceptedWhereSql : ""), "p", "updated", false);
+                "select p from Publication p where " + additionalSql, "p", "updated", false);
 
         ownedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
                                                                     "select p from Publication p where upper(p.currentOwner.login) = '"+userId+"'"+
-                                                                    (hideAcceptedAndReleased? " and "+hideAcceptedWhereSql : ""), "p", "updated", false);
+                                                                    " and "+additionalSql, "p", "updated", false);
 
         reviewedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
                                                                     "select p from Publication p where upper(p.currentReviewer.login) = '"+userId+"'"+
-                                                                    (hideAcceptedAndReleased? " and "+hideAcceptedWhereSql : ""), "p", "updated", false);
+                                                                    " and "+additionalSql, "p", "updated", false);
     }
 
     public LazyDataModel<Publication> getAllPublications() {
@@ -93,5 +103,13 @@ public class DashboardController extends JpaAwareController {
 
     public void setHideAcceptedAndReleased(boolean hideAcceptedAndReleased) {
         this.hideAcceptedAndReleased = hideAcceptedAndReleased;
+    }
+
+    public String[] getStatusToShow() {
+        return statusToShow;
+    }
+
+    public void setStatusToShow(String[] statusToShow) {
+        this.statusToShow = statusToShow;
     }
 }

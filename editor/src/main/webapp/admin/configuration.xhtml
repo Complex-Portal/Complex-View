@@ -12,7 +12,7 @@
         <p:panel header="Look &amp; Feel">
             <h:panelGrid columns="3">
                 <h:outputLabel for="themeSel" value="Default theme: "/>
-                <h:selectOneMenu id="themeSel" value="#{appController.theme}" >
+                <h:selectOneMenu id="themeSel" value="#{editorConfig.theme}" >
                     <f:selectItem itemLabel="Black-Tie" itemValue="black-tie"/>
                     <f:selectItem itemLabel="Casablanca" itemValue="casablanca"/>
                     <f:selectItem itemLabel="EBI" itemValue="ebi"/>
@@ -23,7 +23,7 @@
                 </h:selectOneMenu>
             </h:panelGrid>
 
-            <p:commandButton value="Change" ajax="false"/>
+            <p:commandButton value="Change" ajax="false" actionListener="#{applicationInfo.persistConfig}"/>
         </p:panel>
 
         <br/>
@@ -37,7 +37,7 @@
 
             </h:panelGrid>
 
-            <p:commandButton value="Update" process="defaultsPanel"/>
+            <p:commandButton value="Update" process="defaultsPanel" actionListener="#{applicationInfo.persistConfig}"/>
         </p:panel>
 
         <br/>
@@ -58,7 +58,7 @@
 
             </h:panelGrid>
 
-            <p:commandButton value="Update" process="intactCorePanel"/>
+            <p:commandButton value="Update" process="intactCorePanel" actionListener="#{applicationInfo.persistConfig}"/>
         </p:panel>
 
         <br/>
@@ -87,7 +87,7 @@
 
             </h:panelGrid>
 
-            <p:commandButton value="Update" process="intactCorePanel"/>
+            <p:commandButton value="Update" process="intactCorePanel" actionListener="#{applicationInfo.persistConfig}"/>
         </p:panel>
 
         <br/>

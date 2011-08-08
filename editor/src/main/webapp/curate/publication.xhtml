@@ -29,9 +29,13 @@
                          action="#{publicationController.doSave}" ajax="false"/>
         <p:commandButton value="Ready for checking"
                          styleClass="important-button-alt"
-                         rendered="#{publicationController.curationInProgress and userSessionController.isItMe(publicationController.publication.currentOwner)}"
+                         rendered="#{publicationController.curationInProgress and not publicationController.beenRejectedBefore and userSessionController.isItMe(publicationController.publication.currentOwner)}"
                          actionListener="#{publicationController.markAsReadyForChecking}"
                          action="#{publicationController.doSave}" ajax="false"/>
+        <p:commandButton value="Ready for checking (Again)" type="button"
+                         styleClass="important-button-alt"
+                         rendered="#{publicationController.curationInProgress and publicationController.beenRejectedBefore and userSessionController.isItMe(publicationController.publication.currentOwner)}"
+                         onclick="readyForCheckingPublicationDialog.show()"/>
         <p:commandButton value="Accept Publication"
                          styleClass="important-button-good"
                          rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer)
@@ -397,18 +401,33 @@
         </h:panelGroup>
 
     <!-- DIALOGS -->
-     <p:dialog header="Reject publication" width="600" widgetVar="rejectPublicationDialog" draggable="false"
-                  modal="true" position="center">
-            <h:panelGrid columns="3" style="margin-bottom:10px">
-                    <h:outputLabel for="reasonRejTxt" value="Reason for rejection:"/>
-                    <p:inputTextarea id="reasonRejTxt" value="#{publicationController.reasonForRejection}" rows="4" cols="60" converter="trimmingConverter"/>
+     <!--<p:dialog header="Reject publication" width="600" widgetVar="rejectPublicationDialog" draggable="false"-->
+                  <!--modal="true" position="center">-->
+            <!--<h:panelGrid columns="3" style="margin-bottom:10px">-->
+                    <!--<h:outputLabel for="reasonRejTxt" value="Reason for rejection:"/>-->
+                    <!--<p:inputTextarea id="reasonRejTxt" value="#{publicationController.reasonForRejection}" rows="4" cols="60" converter="trimmingConverter"/>-->
 
-                    <p:commandButton value="Reject" actionListener="#{publicationController.rejectPublication}"
-                                     action="#{publicationController.doSave}"
-                                     process="reasonRejTxt"
-                                     ajax="false"/>
-            </h:panelGrid>
-        </p:dialog>
+                    <!--<p:commandButton value="Reject" actionListener="#{publicationController.rejectPublication}"-->
+                                     <!--action="#{publicationController.doSave}"-->
+                                     <!--process="reasonRejTxt"-->
+                                     <!--ajax="false"/>-->
+            <!--</h:panelGrid>-->
+        <!--</p:dialog>-->
+
+    <p:dialog header="Ready for checking message" width="650" widgetVar="readyForCheckingPublicationDialog" draggable="false"
+              modal="true" position="center">
+        <h:panelGrid columns="3" style="margin-bottom:10px">
+            <h:outputLabel for="reviewerMsgTxt" value="Message to the reviewer:"/>
+            <h:inputTextarea id="reviewerMsgTxt" value="#{publicationController.reasonForReadyForChecking}" rows="4" cols="60"
+                             converter="trimmingConverter"/>
+
+            <p:commandButton value="Ready for checking" actionListener="#{publicationController.markAsReadyForChecking}"
+                             action="#{publicationController.doSave}"
+                             process="reviewerMsgTxt"
+                             onclick="readyForCheckingPublicationDialog.hide()"
+                             ajax="false"/>
+        </h:panelGrid>
+    </p:dialog>
 
     </ui:define>
 

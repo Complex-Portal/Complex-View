@@ -46,18 +46,19 @@
         <p:column headerText="Status" sortBy="#{publication.status}">
             <h:outputText value="#{publication.status.shortLabel}" rendered="#{publication.status != null}"/>
         </p:column>
-        <p:column headerText="Comment">
-            <h:panelGroup rendered="#{publicationController.isRejected(publication)}">
-                <h:outputText value="Rejected " style="font-weight: bold" />
-                <h:outputText value="#{publicationController.getReasonForRejection(publication)}"/>
-            </h:panelGroup>
-        </p:column>
+        <!--<p:column headerText="Comment">-->
+            <!--<h:panelGroup rendered="#{publicationController.isRejected(publication)}">-->
+                <!--<h:outputText value="Rejected " style="font-weight: bold" />-->
+                <!--<h:outputText value="#{publicationController.getReasonForRejection(publication)}"/>-->
+            <!--</h:panelGroup>-->
+        <!--</p:column>-->
     </p:dataTable>
 
     <div class="legend" style="margin-top: 5px; margin-left: 15px">
         <b>Legend:</b>
         <div class="ia-accepted" style="display: inline; border: 1px solid gray;">&#160;&#160;&#160;</div>&#160;Accepted
-        <div class="ia-to-be-reviewed" style="display: inline; border: 1px solid gray;">&#160;&#160;&#160;</div>&#160;To Be Reviewed
+        <div class="ia-rejected" style="display: inline; border: 1px solid gray;">&#160;&#160;&#160;</div>&#160;Rejected
+        <div class="ia-corrected" style="display: inline; border: 1px solid gray;">&#160;&#160;&#160;</div>&#160;Rejections addressed
         <div class="ia-not-accepted" style="display: inline; border: 1px solid gray;">&#160;&#160;&#160;</div>&#160;No Action
     </div>
 

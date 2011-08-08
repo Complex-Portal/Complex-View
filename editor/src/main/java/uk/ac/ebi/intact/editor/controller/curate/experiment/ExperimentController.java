@@ -26,6 +26,7 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ExperimentIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
@@ -252,19 +253,8 @@ public class ExperimentController extends AnnotatedObjectController {
 
         setToBeReviewed(null);
 
-        // check if all experiments for a publication have been accepted to trigger an automatic publication acceptance
-        boolean allAccepted = true;
-
-        for (Experiment exp : publicationController.getPublication().getExperiments()) {
-            if (isToBeReviewed(exp)) {
-                allAccepted = false;
-                break;
-            }
-        }
-
-        if (allAccepted) {
-            publicationController.acceptPublication(null);
-        }
+        // check if all the experiments have been acted upon, be it to accept them or reject them.
+        globalPublicationDecision();
 
         doSave();
     }
@@ -277,7 +267,41 @@ public class ExperimentController extends AnnotatedObjectController {
 
         removeAnnotation(CvTopic.ACCEPTED);
 
+        globalPublicationDecision();
+
         doSave();
+    }
+
+    private void globalPublicationDecision() {
+        int expAccepted = 0;
+        int expRejected = 0;
+
+        final Collection<Experiment> experiments = IntactCore.ensureInitializedExperiments(publicationController.getPublication());
+
+        StringBuilder rejectionComment = new StringBuilder();
+
+        for (Experiment exp : experiments) {
+            if (isToBeReviewed(exp)) {
+                if (expRejected > 0) {
+                    rejectionComment.append(", ");
+                }
+                expRejected++;
+
+                rejectionComment.append("[").append(exp.getShortLabel()).append(": ").append(getToBeReviewed(exp)).append("]");
+            } else if (isAccepted(exp)) {
+                expAccepted++;
+            }
+        }
+
+        boolean allActedUpon = ((expRejected+expAccepted) == experiments.size());
+
+        if (allActedUpon) {
+            if (expRejected == 0) {
+                publicationController.acceptPublication(null);
+            } else {
+                publicationController.rejectPublication("Rejected: "+expRejected+" -> "+rejectionComment.toString());
+            }
+        }
     }
 
     public void setToBeReviewed(String toBeReviewed) {
@@ -290,6 +314,18 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public String getToBeReviewed() {
         return findAnnotationText(CvTopic.TO_BE_REVIEWED);
+    }
+
+    public String getToBeReviewed(Experiment exp) {
+        final Collection<Annotation> annotations = IntactCore.ensureInitializedAnnotations(exp);
+
+        for (Annotation annot : annotations) {
+            if (CvTopic.TO_BE_REVIEWED.equals(annot.getCvTopic().getShortLabel())) {
+                return annot.getAnnotationText();
+            }
+        }
+
+        return null;
     }
 
     public void clearToBeReviewed(ActionEvent evt) {

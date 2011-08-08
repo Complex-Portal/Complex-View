@@ -80,6 +80,7 @@ public class PublicationController extends AnnotatedObjectController {
     private String[] datasetsToRemove;
     private List<SelectItem> datasetsSelectItems;
 
+    private String reasonForReadyForChecking;
     private String reasonForRejection;
 
     private boolean isCitexploreActive;
@@ -413,7 +414,9 @@ public class PublicationController extends AnnotatedObjectController {
         // TODO run a proper sanity check
         boolean sanityCheckPassed = true;
 
-        lifecycleManager.getCurationInProgressStatus().readyForChecking(publication, null, sanityCheckPassed);
+        lifecycleManager.getCurationInProgressStatus().readyForChecking(publication, reasonForReadyForChecking, sanityCheckPassed);
+
+        reasonForReadyForChecking = null;
 
         addInfoMessage("Publication ready for checking", "Assigned to reviewer: "+publication.getCurrentReviewer().getLogin());
     }
@@ -776,6 +779,10 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public boolean isAcceptedOrBeyond(Publication pub) {
+        if (pub == null || pub.getStatus() == null) {
+            return false;
+        }
+
         return pub.getStatus().getIdentifier().equals(CvPublicationStatusType.ACCEPTED.identifier()) ||
                 pub.getStatus().getIdentifier().equals(CvPublicationStatusType.ACCEPTED_ON_HOLD.identifier()) ||
                 pub.getStatus().getIdentifier().equals(CvPublicationStatusType.READY_FOR_RELEASE.identifier()) ||
@@ -863,6 +870,10 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void rejectPublication(ActionEvent evt) {
+        rejectPublication(reasonForRejection);
+    }
+
+    public void rejectPublication(String reasonForRejection) {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         String date = "Rejected " +new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase();
 
@@ -871,8 +882,8 @@ public class PublicationController extends AnnotatedObjectController {
         addInfoMessage("Publication rejected", "");
 
         // refresh experiments with possible changes in publication title, annotations and publication identifier
-        copyAnnotationsToExperiments(null);
-        copyPublicationTitleToExperiments(null);
+        //copyAnnotationsToExperiments(null);
+        //copyPublicationTitleToExperiments(null);
         copyPrimaryIdentifierToExperiments();
 
         lifecycleManager.getReadyForCheckingStatus().reject(publication, reasonForRejection);
@@ -895,11 +906,36 @@ public class PublicationController extends AnnotatedObjectController {
     public String calculateStatusStyle(Publication publication) {
         if (isAccepted(publication)) {
             return "ia-accepted";
-        } else if (isRejected(publication)) {
+        }
+
+        int timesRejected = 0;
+        int timesReadyForChecking = 0;
+
+        for (LifecycleEvent evt : IntactCore.ensureInitializedLifecycleEvents(publication)) {
+            if (CvLifecycleEventType.REJECTED.identifier().equals(evt.getEvent().getIdentifier())) {
+                timesRejected++;
+            } else if (CvLifecycleEventType.READY_FOR_CHECKING.identifier().equals(evt.getEvent().getIdentifier())) {
+                timesReadyForChecking++;
+            }
+        }
+
+        if (timesReadyForChecking > 1) {
+            return "ia-corrected";
+        } else if (timesRejected > 0) {
             return "ia-rejected";
         }
 
         return "";
+    }
+
+    public boolean isBeenRejectedBefore() {
+         for (LifecycleEvent evt : IntactCore.ensureInitializedLifecycleEvents(publication)) {
+            if (CvLifecycleEventType.REJECTED.identifier().equals(evt.getEvent().getIdentifier())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void setToBeReviewed(String toBeReviewed) {
@@ -1067,5 +1103,13 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setAssignToMe(boolean assignToMe) {
         this.assignToMe = assignToMe;
+    }
+
+    public String getReasonForReadyForChecking() {
+        return reasonForReadyForChecking;
+    }
+
+    public void setReasonForReadyForChecking(String reasonForReadyForChecking) {
+        this.reasonForReadyForChecking = reasonForReadyForChecking;
     }
 }

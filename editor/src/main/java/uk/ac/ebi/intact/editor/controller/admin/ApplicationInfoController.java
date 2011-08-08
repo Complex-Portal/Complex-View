@@ -3,15 +3,19 @@ package uk.ac.ebi.intact.editor.controller.admin;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
+import uk.ac.ebi.intact.core.config.ConfigurationHandler;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.DbInfoDao;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.Institution;
+import uk.ac.ebi.intact.model.meta.Application;
+import uk.ac.ebi.intact.model.meta.ApplicationProperty;
 import uk.ac.ebi.intact.model.meta.DbInfo;
 import uk.ac.ebi.kraken.uuw.services.remoting.UniProtJAPI;
 
 import javax.annotation.PostConstruct;
+import javax.faces.event.ActionEvent;
 import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -33,6 +37,8 @@ public class ApplicationInfoController extends JpaAwareController {
     private String lastCvUpdate;
     private String databaseCounts;
 
+    private Application application;
+
     public ApplicationInfoController() {
     }
 
@@ -51,6 +57,24 @@ public class ApplicationInfoController extends JpaAwareController {
         DebugUtil.printDatabaseCounts(ps);
 
         databaseCounts = baos.toString().replaceAll("\n","<br/>");
+
+        application = IntactContext.getCurrentInstance().getApplication();
+    }
+
+    public void saveApplicationProperties(ActionEvent evt) {
+        for (ApplicationProperty prop : application.getProperties()) {
+            getDaoFactory().getApplicationPropertyDao().saveOrUpdate(prop);
+        }
+
+        ConfigurationHandler configurationHandler = getConfigurationHandler();
+        configurationHandler.loadConfiguration(getApplication());
+
+        addInfoMessage("Preferences saved", "");
+    }
+
+    public void persistConfig(ActionEvent evt) {
+        getConfigurationHandler().persistConfiguration();
+        application = getDaoFactory().getApplicationDao().getByAc(application.getAc());
     }
 
     private String getDbInfoValue(DbInfoDao infoDao, String key) {
@@ -124,5 +148,17 @@ public class ApplicationInfoController extends JpaAwareController {
 
     public void setDatabaseCounts(String databaseCounts) {
         this.databaseCounts = databaseCounts;
+    }
+
+    public Application getApplication() {
+        return application;
+    }
+
+    public void setApplication(Application application) {
+        this.application = application;
+    }
+
+    private ConfigurationHandler getConfigurationHandler() {
+        return (ConfigurationHandler) getSpringContext().getBean("configurationHandler");
     }
 }

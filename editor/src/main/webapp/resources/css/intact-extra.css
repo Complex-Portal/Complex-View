@@ -344,6 +344,10 @@ border-right:0 none !important;
 }
 
 .ia-rejected {
+    background: #f8cfcf !important;
+}
+
+.ia-corrected {
     background: #ffecc4 !important;
 }
 

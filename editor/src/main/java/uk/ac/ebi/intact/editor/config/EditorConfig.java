@@ -54,6 +54,9 @@ public class EditorConfig extends BaseController {
     @PersistentProperty(defaultValue = "5")
     private int revertDecisionTime;
 
+    @PersistentProperty(defaultValue = "ebi")
+    private String theme;
+
     public EditorConfig() {
     }
 
@@ -143,5 +146,13 @@ public class EditorConfig extends BaseController {
 
     public void setRevertDecisionTime(int revertDecisionTime) {
         this.revertDecisionTime = revertDecisionTime;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 }

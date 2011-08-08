@@ -114,7 +114,7 @@
 
         <br/>
 
-        <p:panel header="System">
+        <p:panel header="System" collapsed="true" toggleable="true">
             <table>
                 <ui:repeat value="#{applicationInfo.systemPropertyNames}" var="propName">
                     <tr>
@@ -130,7 +130,7 @@
 
         <br/>
 
-        <p:panel header="Spring Beans">
+        <p:panel header="Spring Beans" collapsed="true" toggleable="true">
             <table>
                 <ui:repeat value="#{applicationInfo.beanNames}" var="beanName">
                     <tr>

@@ -12,7 +12,7 @@
 
     <h:head>
         <title>#{title != null? title : 'Editor'}</title>
-        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/#{appController.theme}/skin.css"></link>
+        <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/#{editorConfig.theme}/skin.css"></link>
         <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/intact-extra.css"></link>
 
         <link rel="shortcut icon" href="#{facesContext.externalContext.request.contextPath}/favicon#{facesContext.application.projectStage == 'Development'? '-test' : ''}.ico"/>
