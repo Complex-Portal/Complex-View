@@ -48,7 +48,7 @@
         </p:column>
         <p:column headerText="Comment">
             <h:panelGroup rendered="#{publicationController.isRejected(publication)}">
-                <h:outputText value="Rejected: " style="font-weight: bold" />
+                <h:outputText value="Rejected " style="font-weight: bold" />
                 <h:outputText value="#{publicationController.getReasonForRejection(publication)}"/>
             </h:panelGroup>
         </p:column>

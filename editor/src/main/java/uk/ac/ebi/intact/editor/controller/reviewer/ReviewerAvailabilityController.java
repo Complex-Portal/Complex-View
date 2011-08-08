@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.model.user.Preference;
 import uk.ac.ebi.intact.model.user.User;
 import uk.ac.ebi.intact.model.util.UserUtils;
 
@@ -49,7 +50,12 @@ public class ReviewerAvailabilityController extends JpaAwareController {
     @Transactional
     public void save(ActionEvent evt) {
         for (User reviewer : reviewers) {
-            getCorePersister().saveOrUpdate(reviewer);
+            Preference pref = reviewer.getPreference(Preference.KEY_REVIEWER_AVAILABILITY);
+
+            if (pref != null) {
+                getDaoFactory().getPreferenceDao().saveOrUpdate(pref);
+            }
+
         }
 
         addInfoMessage("Saved", "The reviewer's availability has been updated");
