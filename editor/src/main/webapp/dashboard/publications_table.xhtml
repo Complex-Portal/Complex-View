@@ -47,9 +47,10 @@
             <h:outputText value="#{publication.status.shortLabel}" rendered="#{publication.status != null}"/>
         </p:column>
         <p:column headerText="Comment">
-            <h:outputText value="Rejected: " style="font-weight: bold"/>
-            <h:outputText value="#{publicationController.getReasonForRejection(publication)}"
-                          rendered="#{publicationController.isRejected(publication)}"/>
+            <h:panelGroup rendered="#{publicationController.isRejected(publication)}">
+                <h:outputText value="Rejected: " style="font-weight: bold" />
+                <h:outputText value="#{publicationController.getReasonForRejection(publication)}"/>
+            </h:panelGroup>
         </p:column>
     </p:dataTable>
 

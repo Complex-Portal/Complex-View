@@ -15,6 +15,8 @@
  */
 package uk.ac.ebi.intact.editor.config;
 
+import uk.ac.ebi.intact.core.annotations.PersistentConfiguration;
+import uk.ac.ebi.intact.core.annotations.PersistentProperty;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 
 /**
@@ -23,19 +25,34 @@ import uk.ac.ebi.intact.editor.controller.BaseController;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@PersistentConfiguration
 public class EditorConfig extends BaseController {
 
     private String buildVersion;
     private String buildTimestamp;
+
+    @PersistentProperty
     private String instanceName;
     private String databaseUrl;
     private String usersDatabaseUrl;
+
+    @PersistentProperty
     private String logoUrl;
+
+    @PersistentProperty
     private String googleUsername;
+
+    @PersistentProperty
     private String googlePassword;
 
-    private float defaultStoichiometry = 0;
-    private String defaultCurationDepth = "imex curation";
+    @PersistentProperty(defaultValue = "0")
+    private float defaultStoichiometry;
+
+    @PersistentProperty(defaultValue = "imex curation")
+    private String defaultCurationDepth;
+
+    @PersistentProperty(defaultValue = "5")
+    private int revertDecisionTime;
 
     public EditorConfig() {
     }
@@ -118,5 +135,13 @@ public class EditorConfig extends BaseController {
 
     public void setDefaultCurationDepth(String defaultCurationDepth) {
         this.defaultCurationDepth = defaultCurationDepth;
+    }
+
+    public int getRevertDecisionTime() {
+        return revertDecisionTime;
+    }
+
+    public void setRevertDecisionTime(int revertDecisionTime) {
+        this.revertDecisionTime = revertDecisionTime;
     }
 }

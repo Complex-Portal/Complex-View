@@ -20,6 +20,18 @@
         </f:metadata>
     </ui:define>
 
+    <ui:define name="topActionsPanel">
+        <p:commandButton value="Accept Experiment"
+                         styleClass="important-button-good"
+                         rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer) and not experimentController.accepted}"
+                         actionListener="#{experimentController.acceptExperiment}"
+                         action="#{experimentController.doSave}" ajax="false"/>
+        <p:commandButton value="Reject Experiment" type="button"
+                         styleClass="important-button-bad"
+                         rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer) and experimentController.accepted}"
+                         onclick="rejectExperimentDialog.show()"/>
+    </ui:define>
+
     <ui:define name="breadcrumbs">
         <p:breadCrumb>
             <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publicationController.publication.shortLabel}"

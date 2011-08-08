@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
+import org.joda.time.DateTime;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -110,10 +111,6 @@ public class PublicationController extends AnnotatedObjectController {
             datasetsSelectItems = new ArrayList<SelectItem>();
 
             loadByAc();
-        }
-
-        if (publication.getCurrentOwner() != null && getCurrentUser().getLogin().equals(publication.getCurrentOwner())) {
-            addWarningMessage("You don't own this publication", "The onwer is '"+publication.getCurrentOwner().getLogin()+"'");
         }
 
         generalLoadChecks();
@@ -377,6 +374,10 @@ public class PublicationController extends AnnotatedObjectController {
         return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.READY_FOR_CHECKING.identifier());
     }
 
+    public boolean isReadyForRelease() {
+        return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.READY_FOR_RELEASE.identifier());
+    }
+
     public boolean isReleased() {
         return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.RELEASED.identifier());
     }
@@ -415,6 +416,60 @@ public class PublicationController extends AnnotatedObjectController {
         lifecycleManager.getCurationInProgressStatus().readyForChecking(publication, null, sanityCheckPassed);
 
         addInfoMessage("Publication ready for checking", "Assigned to reviewer: "+publication.getCurrentReviewer().getLogin());
+    }
+
+    @Transactional
+    public void revertReadyForChecking(ActionEvent evt) {
+        LifecycleEvent event = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.READY_FOR_CHECKING.identifier());
+        publication.removeLifecycleEvent(event);
+
+        publication.setStatus(getDaoFactory().getCvObjectDao(CvPublicationStatus.class).getByIdentifier(CvPublicationStatusType.CURATION_IN_PROGRESS.identifier()));
+    }
+
+    @Transactional
+    public void revertAccepted(ActionEvent evt) {
+        LifecycleEvent readyForReleaseEvt = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.READY_FOR_RELEASE.identifier());
+        LifecycleEvent acceptedEvt = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.ACCEPTED.identifier());
+
+        if (readyForReleaseEvt != null) {
+            publication.removeLifecycleEvent(readyForReleaseEvt);
+        }
+
+        if (acceptedEvt != null) {
+            publication.removeLifecycleEvent(acceptedEvt);
+        }
+
+        publication.setStatus(getDaoFactory().getCvObjectDao(CvPublicationStatus.class).getByIdentifier(CvPublicationStatusType.READY_FOR_CHECKING.identifier()));
+    }
+
+    public boolean isAllExperimentsAccepted() {
+        return ExperimentUtils.areAllAccepted(publication.getExperiments());
+    }
+
+    public boolean isBackToCurationButtonRendered() {
+        return isButtonRendered(CvLifecycleEventType.READY_FOR_CHECKING);
+    }
+
+    public boolean isBackToCheckingButtonRendered() {
+        boolean render = isButtonRendered(CvLifecycleEventType.READY_FOR_RELEASE);
+
+        if (!render) {
+            render = isButtonRendered(CvLifecycleEventType.ACCEPTED);
+        }
+
+        return render;
+    }
+
+    private boolean isButtonRendered(CvLifecycleEventType eventType) {
+        LifecycleEvent event = PublicationUtils.getLastEventOfType(publication, eventType.identifier());
+
+        if (event == null) {
+            return false;
+        }
+
+        DateTime eventTime = new DateTime(event.getWhen());
+
+        return new DateTime().isBefore(eventTime.plusMinutes(getEditorConfig().getRevertDecisionTime()));
     }
 
     public void doSaveAndClose( ActionEvent evt ) {
@@ -709,6 +764,8 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(readOnly = true)
     public boolean isAccepted() {
+        if (isAcceptedOrBeyond(publication)) return true;
+
         Collection<Experiment> experiments = publication.getExperiments();
 
         if (!IntactCore.isInitialized(publication.getExperiments())) {
@@ -718,8 +775,17 @@ public class PublicationController extends AnnotatedObjectController {
         return ExperimentUtils.areAllAccepted(experiments);
     }
 
+    public boolean isAcceptedOrBeyond(Publication pub) {
+        return pub.getStatus().getIdentifier().equals(CvPublicationStatusType.ACCEPTED.identifier()) ||
+                pub.getStatus().getIdentifier().equals(CvPublicationStatusType.ACCEPTED_ON_HOLD.identifier()) ||
+                pub.getStatus().getIdentifier().equals(CvPublicationStatusType.READY_FOR_RELEASE.identifier()) ||
+                pub.getStatus().getIdentifier().equals(CvPublicationStatusType.RELEASED.identifier());
+    }
+
     @Transactional(readOnly = true)
     public boolean isAccepted(Publication pub) {
+        if (isAcceptedOrBeyond(pub)) return true;
+
         if (!Hibernate.isInitialized(pub.getExperiments())) {
             pub = getDaoFactory().getPublicationDao().getByAc(pub.getAc());
         }
@@ -774,7 +840,7 @@ public class PublicationController extends AnnotatedObjectController {
         return null;
     }
 
-    public void acceptPublication(ActionEvent actionEvent) {
+    public void acceptPublication(ActionEvent evt) {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
         setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
@@ -792,10 +858,11 @@ public class PublicationController extends AnnotatedObjectController {
             lifecycleManager.getAcceptedStatus().readyForRelease(publication, "Accepted and not on-hold");
         }
 
-        setUnsavedChanges(true);
+        //clear to-be-review
+        setToBeReviewed(null);
     }
 
-    public void rejectPublication(ActionEvent actionEvent) {
+    public void rejectPublication(ActionEvent evt) {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         String date = "Rejected " +new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase();
 
@@ -809,8 +876,6 @@ public class PublicationController extends AnnotatedObjectController {
         copyPrimaryIdentifierToExperiments();
 
         lifecycleManager.getReadyForCheckingStatus().reject(publication, reasonForRejection);
-
-        setUnsavedChanges(true);
     }
 
     public boolean isRejected(Publication publication) {
@@ -838,6 +903,10 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setToBeReviewed(String toBeReviewed) {
+        if (toBeReviewed == null) {
+            removeAnnotation(CvTopic.TO_BE_REVIEWED);
+        }
+
         setAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
     }
 

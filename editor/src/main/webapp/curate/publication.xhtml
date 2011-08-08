@@ -24,24 +24,34 @@
     <ui:define name="topActionsPanel">
         <p:commandButton value="Start curation"
                          styleClass="important-button-alt"
-                         disabled="#{not userSessionController.isItMe(publicationController.publication.currentOwner)}"
-                         rendered="#{publicationController.assigned}"
-                         actionListener="#{publicationController.markAsCurationInProgress}" ajax="false"/>
+                         rendered="#{publicationController.assigned and userSessionController.isItMe(publicationController.publication.currentOwner)}"
+                         actionListener="#{publicationController.markAsCurationInProgress}"
+                         action="#{publicationController.doSave}" ajax="false"/>
         <p:commandButton value="Ready for checking"
                          styleClass="important-button-alt"
-                         disabled="#{not userSessionController.isItMe(publicationController.publication.currentOwner)}"
-                         rendered="#{publicationController.curationInProgress}"
-                         actionListener="#{publicationController.markAsReadyForChecking}" ajax="false"/>
-        <p:commandButton value="Accept"
+                         rendered="#{publicationController.curationInProgress and userSessionController.isItMe(publicationController.publication.currentOwner)}"
+                         actionListener="#{publicationController.markAsReadyForChecking}"
+                         action="#{publicationController.doSave}" ajax="false"/>
+        <p:commandButton value="Accept Publication"
                          styleClass="important-button-good"
-                         disabled="#{not userSessionController.isItMe(publicationController.publication.currentReviewer)}"
-                         rendered="#{publicationController.readyForChecking}"
-                         actionListener="#{publicationController.acceptPublication}" ajax="false"/>
-        <p:commandButton value="Reject" type="button"
-                         styleClass="important-button-bad"
-                         disabled="#{not userSessionController.isItMe(publicationController.publication.currentReviewer)}"
-                         rendered="#{publicationController.readyForChecking}"
-                         onclick="rejectPublicationDialog.show()"/>
+                         rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer)
+                         and publicationController.allExperimentsAccepted}"
+                         actionListener="#{publicationController.acceptPublication}"
+                         action="#{publicationController.doSave}" ajax="false"/>
+        <!--<p:commandButton value="Reject Publication" type="button"-->
+                         <!--styleClass="important-button-bad"-->
+                         <!--rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer)}"-->
+                         <!--onclick="rejectPublicationDialog.show()"/>-->
+        <p:commandButton value="Back to Curation in Progress"
+                         styleClass="important-button-alt"
+                         rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentOwner) and publicationController.backToCurationButtonRendered}"
+                         actionListener="#{publicationController.revertReadyForChecking}"
+                         action="#{publicationController.doSave}" ajax="false"/>
+        <p:commandButton value="Revert Accepted"
+                         styleClass="important-button-alt"
+                         rendered="#{publicationController.readyForRelease and !publicationController.released and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
+                         actionListener="#{publicationController.revertAccepted}"
+                         action="#{publicationController.doSave}" ajax="false"/>
     </ui:define>
 
     <ui:define name="breadcrumbs">
@@ -63,14 +73,6 @@
         </p:submenu>
         <p:menuitem value="Claim ownership" actionListener="#{publicationController.claimOwnership}" ajax="false"/>
 
-    </ui:define>
-
-    <ui:define name="reviewerContextual">
-        <p:menuitem value="Accept publication" actionListener="#{publicationController.acceptPublication}"
-                    rendered="#{publicationController.readyForChecking}"
-                    update="centralUnit,topSection,unsavedChangesInfo"/>
-        <p:menuitem value="Reject publication" onclick="rejectPublicationDialog.show()"
-                    rendered="#{publicationController.readyForChecking}"/>
     </ui:define>
 
     <ui:define name="curateContent">
@@ -100,19 +102,19 @@
                 <p:panel id="basic" header="Publication Details">
 
                     <p:outputPanel id="infoPanels">
-                        <h:panelGroup rendered="#{publicationController.accepted}">
-                            <ia:panelMessage level="ok">
-                                This publication is <b>accepted</b>.&#160;
-                                <h:outputText value="#{publicationController.acceptedMessage}" rendered="#{publicationController.acceptedMessage != null}"/>
+                        <!--<h:panelGroup rendered="#{publicationController.accepted}">-->
+                            <!--<ia:panelMessage level="ok">-->
+                                <!--This publication is <b>accepted</b>.&#160;-->
+                                <!--<h:outputText value="#{publicationController.acceptedMessage}" rendered="#{publicationController.acceptedMessage != null}"/>-->
 
-                                <h:panelGroup rendered="#{publicationController.acceptedMessage == null}">
-                                      <h:outputText value="(All its experiments are accepted)" rendered="#{publicationController.acceptedMessage == null}"/>
-                                      &#160;
-                                    <p:commandLink value="Add annotation to publication" actionListener="#{publicationController.acceptPublication}"
-                                                   update="centralUnit"/>
-                                </h:panelGroup>
-                            </ia:panelMessage>
-                        </h:panelGroup>
+                                <!--<h:panelGroup rendered="#{publicationController.acceptedMessage == null}">-->
+                                      <!--<h:outputText value="(All its experiments are accepted)" rendered="#{publicationController.acceptedMessage == null}"/>-->
+                                      <!--&#160;-->
+                                    <!--<p:commandLink value="Add annotation to publication" actionListener="#{publicationController.acceptPublication}"-->
+                                                   <!--update="centralUnit"/>-->
+                                <!--</h:panelGroup>-->
+                            <!--</ia:panelMessage>-->
+                        <!--</h:panelGroup>-->
 
                         <h:panelGroup rendered="#{not empty publicationController.toBeReviewed}">
                             <ia:panelMessage level="warn">
@@ -317,7 +319,10 @@
                     <p:tab title="Interactions (#{publicationController.interactionDataModel != null? publicationController.interactionDataModel.rowCount : 0})">
                         <!--<ia:experimentsTable value="#{publicationController.publication.experiments}"/>-->
                         <div class="intact-buttonBar">
-                             <p:commandButton value="New interaction" action="#{interactionController.newInteraction(publicationController.publication, null)}" ajax="false"/>
+                             <p:commandButton value="New interaction"
+                                              action="#{interactionController.newInteraction(publicationController.publication, null)}"
+                                              disabled="#{empty publicationController.publication.experiments}"
+                                              ajax="false"/>
                         </div>
 
                         <ui:include src="interactions_table.xhtml">
@@ -399,6 +404,7 @@
                     <p:inputTextarea id="reasonRejTxt" value="#{publicationController.reasonForRejection}" rows="4" cols="60" converter="trimmingConverter"/>
 
                     <p:commandButton value="Reject" actionListener="#{publicationController.rejectPublication}"
+                                     action="#{publicationController.doSave}"
                                      process="reasonRejTxt"
                                      ajax="false"/>
             </h:panelGrid>

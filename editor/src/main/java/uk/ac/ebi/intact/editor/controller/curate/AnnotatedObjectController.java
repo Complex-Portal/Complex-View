@@ -116,7 +116,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                             addWarningMessage("Publication being curated by '"+publication.getCurrentOwner().getLogin()+"'", "Please do not modify it without permission");
                         }
                     } else if (CvPublicationStatusType.READY_FOR_CHECKING.identifier().equals(publication.getStatus().getIdentifier())) {
-                        if (!getUserSessionController().isItMe(publication.getCurrentOwner())) {
+                        if (!getUserSessionController().isItMe(publication.getCurrentReviewer())) {
                             addWarningMessage("Publication under review", "This publication is being reviewed by '"+publication.getCurrentReviewer().getLogin()+"'");
                         }
                     } else if (CvPublicationStatusType.ACCEPTED_ON_HOLD.identifier().equals(publication.getStatus().getIdentifier())) {
@@ -148,6 +148,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         else if (evt.getNewValue() != null && !evt.getNewValue().equals(evt.getOldValue())){
             setUnsavedChanges(true);
         }
+    }
+
+    public String doSave() {
+        doSave(true);
+        return null;
     }
 
     /**

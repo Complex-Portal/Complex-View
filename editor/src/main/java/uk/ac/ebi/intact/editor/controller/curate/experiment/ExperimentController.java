@@ -32,6 +32,7 @@ import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
+import uk.ac.ebi.intact.model.util.PublicationUtils;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -249,7 +250,23 @@ public class ExperimentController extends AnnotatedObjectController {
 
         setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
 
-        setUnsavedChanges(true);
+        setToBeReviewed(null);
+
+        // check if all experiments for a publication have been accepted to trigger an automatic publication acceptance
+        boolean allAccepted = true;
+
+        for (Experiment exp : publicationController.getPublication().getExperiments()) {
+            if (isToBeReviewed(exp)) {
+                allAccepted = false;
+                break;
+            }
+        }
+
+        if (allAccepted) {
+            publicationController.acceptPublication(null);
+        }
+
+        doSave();
     }
 
     public void rejectExperiment(ActionEvent actionEvent) {
@@ -258,10 +275,16 @@ public class ExperimentController extends AnnotatedObjectController {
 
         setToBeReviewed(date+". "+reasonForRejection);
 
-        setUnsavedChanges(true);
+        removeAnnotation(CvTopic.ACCEPTED);
+
+        doSave();
     }
 
     public void setToBeReviewed(String toBeReviewed) {
+        if (toBeReviewed == null) {
+            removeAnnotation(CvTopic.TO_BE_REVIEWED);
+        }
+
         setAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
     }
 
@@ -282,6 +305,10 @@ public class ExperimentController extends AnnotatedObjectController {
             exp = experiment;
         }
         return ExperimentUtils.isAccepted(exp);
+    }
+
+    public boolean isRejected() {
+        return isToBeReviewed(experiment);
     }
 
     /**
