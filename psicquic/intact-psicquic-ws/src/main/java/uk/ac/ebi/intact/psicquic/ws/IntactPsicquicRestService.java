@@ -66,7 +66,7 @@ public class IntactPsicquicRestService implements PsicquicRestService {
             if ("*".equals(query) || query.trim().isEmpty()) {
                 query = config.getQueryFilter();
             } else {
-                query = query + " "+config.getQueryFilter();
+                query = query + " AND " + config.getQueryFilter();
                 query = query.trim();
             }
         }
