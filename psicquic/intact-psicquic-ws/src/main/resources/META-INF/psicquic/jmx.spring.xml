@@ -13,7 +13,7 @@
     <bean id="exporter" class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
         <property name="beans">
             <map>
-                <entry key="psicquicws:name=configuration" value-ref="psicquicConfig"/>
+                <entry key="psicquicws:name=${intact.institution}-configuration" value-ref="psicquicConfig"/>
             </map>
         </property>
     </bean>
