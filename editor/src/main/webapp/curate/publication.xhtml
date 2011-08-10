@@ -22,6 +22,11 @@
     </ui:define>
 
     <ui:define name="topActionsPanel">
+        <p:commandButton value="Claim ownership"
+                         styleClass="important-button-alt"
+                         rendered="#{publicationController.new}"
+                         actionListener="#{publicationController.markAsAssignedToMe}"
+                         action="#{publicationController.doSave}" ajax="false"/>
         <p:commandButton value="Start curation"
                          styleClass="important-button-alt"
                          rendered="#{publicationController.assigned and userSessionController.isItMe(publicationController.publication.currentOwner)}"

@@ -212,16 +212,8 @@ public class PublicationController extends AnnotatedObjectController {
         newEmpty(false);
         autocomplete( publication, identifier );
 
-        lifecycleManager.getStartStatus().create(publication, "Editor autocomplete");
-
-        if (assignToMe) {
-            lifecycleManager.getNewStatus().claimOwnership(publication);
-            lifecycleManager.getAssignedStatus().startCuration(publication);
-        }
-
         identifier = null;
         identifierToImport = null;
-        assignToMe = true;
 
         getChangesController().markAsUnsaved(publication);
     }
@@ -294,8 +286,6 @@ public class PublicationController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager")
     public void newEmptyUnassigned( ActionEvent evt ) {
         newEmpty(true);
-
-        lifecycleManager.getStartStatus().create(publication, "Editor unassigned");
     }
 
     @Transactional(value = "transactionManager")
@@ -335,6 +325,14 @@ public class PublicationController extends AnnotatedObjectController {
         }
 
         setCurationDepth(defaultCurationDepth);
+
+        lifecycleManager.getStartStatus().create(publication, "Created in Editor");
+
+        if (assignToMe) {
+            lifecycleManager.getNewStatus().claimOwnership(publication);
+            lifecycleManager.getAssignedStatus().startCuration(publication);
+        }
+
     }
 
 
@@ -363,6 +361,10 @@ public class PublicationController extends AnnotatedObjectController {
         ac = null;
     }
 
+    public boolean isNew() {
+        return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.NEW.identifier());
+    }
+
     public boolean isAssigned() {
         return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.ASSIGNED.identifier());
     }
@@ -388,11 +390,19 @@ public class PublicationController extends AnnotatedObjectController {
 
         // automatically set as curation in progress if no one was assigned before
         if (isAssigned()) {
-            lifecycleManager.getAssignedStatus().startCuration(publication);
+            markAsCurationInProgress(evt);
         }
 
         addInfoMessage("Claimed publication ownership", "You are now the owner of this publication");
     }
+
+     public void markAsAssignedToMe(ActionEvent evt) {
+         lifecycleManager.getNewStatus().assignToCurator(publication, getCurrentUser());
+
+         addInfoMessage("Ownership claimed", "The publication has been assigned to you");
+
+         markAsCurationInProgress(evt);
+     }
 
     public void markAsCurationInProgress(ActionEvent evt) {
         if (!userSessionController.isItMe(publication.getCurrentOwner())) {
