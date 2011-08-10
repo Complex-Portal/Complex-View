@@ -59,7 +59,8 @@ public class DashboardController extends JpaAwareController {
         final String userId = userSessionController.getCurrentUser().getLogin().toUpperCase();
 
         if (statusToShow.length == 0) {
-           statusToShow = new String[] {"PL:0007", "PL:0008"};
+            addWarningMessage("No statuses selected", "Using default status selection");
+            statusToShow = new String[] {"PL:0007", "PL:0008"};
         }
 
         StringBuilder statusToShowSql = new StringBuilder();
@@ -78,11 +79,11 @@ public class DashboardController extends JpaAwareController {
 
         ownedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
                                                                     "select p from Publication p where upper(p.currentOwner.login) = '"+userId+"'"+
-                                                                    " and "+additionalSql, "p", "updated", false);
+                                                                    " and ("+additionalSql+")", "p", "updated", false);
 
         reviewedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
                                                                     "select p from Publication p where upper(p.currentReviewer.login) = '"+userId+"'"+
-                                                                    " and "+additionalSql, "p", "updated", false);
+                                                                    " and ("+additionalSql+")", "p", "updated", false);
     }
 
     public LazyDataModel<Publication> getAllPublications() {

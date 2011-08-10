@@ -29,7 +29,6 @@
         </h:panelGroup>
 
         <h:panelGroup rendered="#{dashboardController.allPublications.rowCount gt 0}">
-            <div  style="margin-top: -20px">
             <p>
                 To create new publications go to the&#160;
                 <p:commandLink value="Curate" action="/curate/curate?faces-redirect=true&amp;includeViewParams=true"
@@ -41,7 +40,7 @@
 
             <p>
                 <h:panelGrid columns="3">
-                <h:outputLabel for="selStatus" value="Filter tables by:" escape="false"/>
+                <h:outputLabel for="selStatus" value="Show status:" escape="false"/>
                 <!--<h:selectBooleanCheckbox id="selStatus" value="#{dashboardController.hideAcceptedAndReleased}">-->
                     <!--<p:ajax event="valueChange" update="publicationDashboard" listener="#{dashboardController.refreshTables()}" />-->
                 <!--</h:selectBooleanCheckbox>-->
@@ -53,7 +52,7 @@
                     <f:selectItem itemLabel="Ready for release" itemValue="PL:0011"/>
                     <f:selectItem itemLabel="Released" itemValue="PL:0012"/>
                 </h:selectManyCheckbox>
-                    <p:commandButton value="Filter" actionListener="#{dashboardController.refreshTables()}" ajax="false"/>
+                    <p:commandButton value="Refresh" actionListener="#{dashboardController.refreshTables()}" ajax="false"/>
                 </h:panelGrid>
             </p>
 
@@ -84,7 +83,6 @@
                 </p:tab>
             </p:tabView>
 
-            </div>
 
         </h:panelGroup>
 
