@@ -269,6 +269,17 @@
         <url-pattern>*.jsf</url-pattern>
     </servlet-mapping>
 
+    <!-- Proxy Servlet -->
+    <servlet>
+        <servlet-name>proxy</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.editor.servlet.Proxy</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>proxy</servlet-name>
+        <url-pattern>/proxy</url-pattern>
+    </servlet-mapping>
+
     <!-- Primefaces fileupload filter -->
     <filter>
 		<filter-name>PrimeFaces FileUpload Filter</filter-name>

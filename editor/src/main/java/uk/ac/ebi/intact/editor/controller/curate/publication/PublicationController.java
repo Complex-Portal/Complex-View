@@ -582,6 +582,24 @@ public class PublicationController extends AnnotatedObjectController {
         return -1;
     }
 
+    public boolean getParticipantsAvailable(Publication publication){
+        if(countInteractions(publication) == 0){
+            return false;
+        }else{
+            int count = 0;
+            for(Experiment experiment: publication.getExperiments()){
+                for(Interaction interaction: experiment.getInteractions()){
+                    count = interaction.getComponents().size();
+                    if(count > 0){
+                        continue;
+                    }
+                }
+            }
+            return (count > 0);
+        }
+    }
+
+
     public String getAc() {
         if ( ac == null && publication != null ) {
             return publication.getAc();

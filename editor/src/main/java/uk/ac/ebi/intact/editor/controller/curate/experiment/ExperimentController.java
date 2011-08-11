@@ -246,6 +246,21 @@ public class ExperimentController extends AnnotatedObjectController {
         return getDaoFactory().getExperimentDao().countInteractionsForExperimentWithAc(ac);
     }
 
+    public boolean getParticipantsAvailable(Experiment experiment){
+        if(countInteractionsByExperimentAc(experiment.getAc()) == 0){
+            return false;
+        }else{
+            int count = 0;
+            for(Interaction interaction: experiment.getInteractions()){
+                count = interaction.getComponents().size();
+                if(count > 0){
+                    continue;
+                }
+            }
+            return (count > 0);
+        }
+    }
+
     public void acceptExperiment(ActionEvent actionEvent) {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 

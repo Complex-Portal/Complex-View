@@ -863,6 +863,18 @@ public class InteractionController extends ParameterizableObjectController {
         return sb.toString();
     }
 
+    public boolean isFeaturesAvailable(){
+        boolean featuresAvailable = false;
+        Interaction interaction = getInteraction();
+        for(Component component : interaction.getComponents()){
+            featuresAvailable = featuresAvailable || (component.getBindingDomains().size() > 0);
+            if(featuresAvailable){
+                continue;
+            }
+        }
+        return featuresAvailable;
+    }
+
     // Confidence
     ///////////////////////////////////////////////
 

@@ -31,6 +31,8 @@ public interface MiExportService {
     String FORMAT_MITAB25 = "tab25";
     String FORMAT_MITAB25_INTACT = "tab25-intact";
     String FORMAT_HTML = "html";
+    String FORMAT_JSON = "json";
+    String FORMAT_GRAPHML = "graphml";
 
     @GET
     @Path("/publication")
@@ -40,7 +42,7 @@ public interface MiExportService {
     @GET
     @Path("/experiment")
     Object exportExperiment(@QueryParam("ac") String id,
-                             @DefaultValue("tab25") @QueryParam("format") String format);
+                            @DefaultValue("tab25") @QueryParam("format") String format);
 
     @GET
     @Path("/interaction")

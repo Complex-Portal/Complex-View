@@ -15,25 +15,22 @@
  */
 package uk.ac.ebi.intact.editor.ws;
 
-import org.primefaces.model.StreamedContent;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.tab.PsimiTabWriter;
+import psidev.psi.mi.tab.converter.tab2graphml.Tab2Cytoscapeweb;
 import psidev.psi.mi.tab.expansion.SpokeWithoutBaitExpansion;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.xml.PsimiXmlVersion;
 import psidev.psi.mi.xml.PsimiXmlWriter;
+import psidev.psi.mi.xml.converter.ConverterException;
 import psidev.psi.mi.xml.model.EntrySet;
-import psidev.psi.mi.xml.stylesheets.XslTransformException;
 import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.persistence.dao.entry.IntactEntryFactory;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
 import uk.ac.ebi.intact.model.IntactEntry;
 import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
 import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
 
-import javax.faces.event.ActionEvent;
 import javax.persistence.FlushModeType;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
@@ -71,6 +68,10 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
                 writeTab25Intact(outputStream);
             } else if (MiExportService.FORMAT_HTML.equals(format)) {
                 writeHtml(outputStream);
+            } else if (MiExportService.FORMAT_JSON.equals(format)) {
+                writeJson(outputStream);
+            } else if (MiExportService.FORMAT_GRAPHML.equals(format)){
+                writeGraphml(outputStream);
             }
         } catch (Throwable e) {
             throw new IOException(e);
@@ -115,11 +116,47 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
 
             ByteArrayInputStream bais = new ByteArrayInputStream(baos.toString().getBytes());
 
-            XslTransformerUtils.viewPsiMi25( bais, outputStream );
+            XslTransformerUtils.viewPsiMi25(bais, outputStream);
             //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
         }  catch ( Exception e ) {
             throw new IOException("Problem converting to HTML", e);
         }
+    }
+
+    public void writeJson(OutputStream outputStream) throws IOException {
+        EntrySet entrySet = createEntrySet(createIntactEntry());
+        PsimiXmlWriter writer = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        try {
+            writer.write(entrySet, baos);
+
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toString().getBytes());
+
+            XslTransformerUtils.jsonPsiMi(bais, outputStream);
+        } catch (Exception e) {
+            throw new IOException("Problem converting to JSON", e);
+        }
+    }
+
+    public void writeGraphml(OutputStream outputStream) throws IOException {
+        OutputStream miStream = new ByteArrayOutputStream();
+        writeTab25(miStream);
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(miStream.toString().getBytes());
+
+        final Tab2Cytoscapeweb tab2Cytoscapeweb = new Tab2Cytoscapeweb();
+        String output = null;
+        try {
+            output = tab2Cytoscapeweb.convert(bais);
+        } catch (ConverterException e) {
+            throw new IllegalStateException( "Could not parse input MITAB.", e );
+        }
+
+        outputStream.write(output.getBytes());
+        outputStream.flush();
+        outputStream.close();
     }
 
     private EntrySet createEntrySet(IntactEntry intactEntry) {

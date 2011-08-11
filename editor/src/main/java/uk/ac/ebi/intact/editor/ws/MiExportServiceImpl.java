@@ -15,27 +15,12 @@
  */
 package uk.ac.ebi.intact.editor.ws;
 
-import org.primefaces.model.StreamedContent;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import psidev.psi.mi.tab.PsimiTabWriter;
-import psidev.psi.mi.tab.expansion.SpokeWithoutBaitExpansion;
-import psidev.psi.mi.tab.model.BinaryInteraction;
-import psidev.psi.mi.xml.PsimiXmlVersion;
-import psidev.psi.mi.xml.PsimiXmlWriter;
-import psidev.psi.mi.xml.model.EntrySet;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.entry.IntactEntryFactory;
 import uk.ac.ebi.intact.model.IntactEntry;
-import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
-import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
 
-import javax.faces.event.ActionEvent;
-import javax.persistence.FlushModeType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.ByteArrayOutputStream;
-import java.util.Collection;
 
 /**
  * TODO comment this class header.
@@ -118,6 +103,10 @@ public class MiExportServiceImpl implements MiExportService {
             responseType = "text/plain";
         } else if (format.contains("html")) {
             responseType = "text/html";
+        } else if (format.contains("json")) {
+            responseType = "text/json";
+        } else if (format.contains("graphml")) {
+            responseType = "text/plain";
         } else {
             throw new IllegalArgumentException("Unexpected format: "+format);
         }

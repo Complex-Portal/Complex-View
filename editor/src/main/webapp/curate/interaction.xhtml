@@ -143,7 +143,7 @@
 
             <br/>
 
-            <p:tabView id="interactionTabs">
+            <p:tabView id="interactionTabs" onTabChange="handleChange(event, ui)">
                 <p:tab title="Participants (#{interactionController.participants.size()})">
 
                      <p:panel style="padding:0">
@@ -224,6 +224,19 @@
                         </h:selectOneMenu>
                     </h:panelGrid>
                 </p:tab>
+
+               <p:tab id="featuresTab" title="Experimental Features"
+                       disabled="#{not interactionController.featuresAvailable}">
+                   <table style ="width:98%" id="featureTable">
+           <tr>
+               <td style="width:100%;vertical-align:top;text-align:center;" id="featureColumn">
+                         <ia:interactionRepresentation url="/editor/service/export/mi/interaction?ac=#{interaction.ac}" />
+               </td>
+           </tr>
+       </table>
+
+                </p:tab>
+
 
             </p:tabView>
 

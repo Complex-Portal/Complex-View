@@ -310,7 +310,7 @@
 
         <br/>
 
-                <p:tabView id="publicationTabs">
+                <p:tabView id="publicationTabs" onTabShow="handleChangePublication(event, ui)">
 
                     <p:tab title="Experiments (#{fn:length(publicationController.publication.experiments)})">
                         <!--<ia:experimentsTable value="#{publicationController.publication.experiments}"/>-->
@@ -397,6 +397,14 @@
 
                         </p:fieldset>
 
+                    </p:tab>
+
+                    <p:tab title="Graph" id="graphTab"
+                            disabled="#{not publicationController.getParticipantsAvailable(publicationController.publication)}">
+                       <ui:include src="/curate/graph.xhtml">
+                           <ui:param name="object" value="publication"/>
+                           <ui:param name="ac" value="#{publicationController.publication.ac}"/>
+                       </ui:include>
                     </p:tab>
 
                 </p:tabView>
