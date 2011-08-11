@@ -30,6 +30,10 @@
                          styleClass="important-button-bad"
                          rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
                          onclick="rejectExperimentDialog.show()"/>
+        <p:commandButton value="Correction Comment" type="button"
+                         styleClass="important-button-alt"
+                         rendered="#{publicationController.curationInProgress and userSessionController.isItMe(publicationController.publication.currentOwner)}"
+                         onclick="correctionCommentDialog.show()"/>
     </ui:define>
 
     <ui:define name="breadcrumbs">
@@ -90,6 +94,12 @@
                                 &#160;&#160;&#160;
                                 <p:commandButton value="Clear" actionListener="#{experimentController.clearToBeReviewed}" update="centralUnit"/>
                             </ia:panelMessage>
+                    </h:panelGroup>
+
+                    <h:panelGroup rendered="#{experimentController.correctionComment != null}">
+                        <ia:panelMessage level="info">
+                            <b>Correction comment: </b>#{experimentController.correctionComment}
+                        </ia:panelMessage>
                     </h:panelGroup>
 
                     <h:panelGroup rendered="#{not empty experimentController.onHold}">
@@ -216,6 +226,22 @@
 
                     <p:commandButton value="Reject" actionListener="#{experimentController.rejectExperiment}"
                                      process="reasonRejTxt"
+                                     action="#{experimentController.doSave}"
+                                     ajax="false"/>
+            </h:panelGrid>
+        </p:dialog>
+
+         <p:dialog header="Correction comment" width="600" widgetVar="correctionCommentDialog" draggable="false"
+                  modal="true" position="center">
+            <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <h:outputLabel for="corrComTxt" value="Comment to reviewer:"/>
+                    <p:inputTextarea id="corrComTxt" value="#{experimentController.correctionComment}" rows="4" cols="40"
+                                     autoResize="false"
+                                     converter="trimmingConverter"/>
+
+                    <p:commandButton value="Add comment" actionListener="#{experimentController.addCorrectionComment}"
+                                     process="corrComTxt"
+                                     action="#{experimentController.doSave}"
                                      ajax="false"/>
             </h:panelGrid>
         </p:dialog>

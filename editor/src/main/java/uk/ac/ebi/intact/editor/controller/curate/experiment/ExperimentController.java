@@ -28,6 +28,7 @@ import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ExperimentIntactCloner;
+import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
@@ -270,8 +271,6 @@ public class ExperimentController extends AnnotatedObjectController {
 
         // check if all the experiments have been acted upon, be it to accept them or reject them.
         globalPublicationDecision();
-
-        doSave();
     }
 
     public void rejectExperiment(ActionEvent actionEvent) {
@@ -283,8 +282,6 @@ public class ExperimentController extends AnnotatedObjectController {
         removeAnnotation(CvTopic.ACCEPTED);
 
         globalPublicationDecision();
-
-        doSave();
     }
 
     private void globalPublicationDecision() {
@@ -317,6 +314,10 @@ public class ExperimentController extends AnnotatedObjectController {
                 publicationController.rejectPublication("Rejected: "+expRejected+" -> "+rejectionComment.toString());
             }
         }
+    }
+
+    public void addCorrectionComment(ActionEvent evt) {
+        addInfoMessage("Added correction comment", getCorrectionComment());
     }
 
     public void setToBeReviewed(String toBeReviewed) {
@@ -543,5 +544,13 @@ public class ExperimentController extends AnnotatedObjectController {
         addPublicationAcToParentAcs(parentAcs, experiment);
 
         getChangesController().revertExperiment(experiment, parentAcs);
+    }
+
+    public String getCorrectionComment() {
+         return findAnnotationText(CvTopic.CORRECTION_COMMENT);
+    }
+
+    public void setCorrectionComment(String correctionComment) {
+        setAnnotation(CvTopic.CORRECTION_COMMENT, correctionComment);
     }
 }

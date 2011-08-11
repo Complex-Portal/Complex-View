@@ -48,25 +48,27 @@
 
 <ui:define name="actionsBar">
 
-    <div class="ui-widget-content top-actions">
-        <ui:insert name="topActionsPanel"/>
+        <div class="ui-widget-content top-actions">
+            <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
+            <ui:insert name="topActionsPanel"/>
 
-        <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
-            <h:panelGroup id="topSavePanel" style="padding-left: 10px; padding-right: 10px">
-                <p:commandButton type="button" id="topSaveButton" value="Save" styleClass="important-button"
-                                 onclick="save(); return false"/>
-                <!--<p:commandButton value="save 2" actionListener="#{annotatedObjectController.doSave}" ajax="false" />-->
+            <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
+                <h:panelGroup id="topSavePanel" style="padding-left: 10px; padding-right: 10px">
+                    <p:commandButton type="button" id="topSaveButton" value="Save" styleClass="important-button"
+                                     onclick="save(); return false"/>
+                    <!--<p:commandButton value="save 2" actionListener="#{annotatedObjectController.doSave}" ajax="false" />-->
 
-                <h:panelGroup rendered="#{annotatedObjectController.lastSaved != null}" style="color: #AAAAAA">
-                    <h:outputText value=" Last Saved: "/>
-                    <h:outputText value="#{annotatedObjectController.lastSaved}">
-                        <f:convertDateTime pattern="HH:mm (z)"/>
-                    </h:outputText>
+                    <h:panelGroup rendered="#{annotatedObjectController.lastSaved != null}" style="color: #AAAAAA">
+                        <h:outputText value=" Last Saved: "/>
+                        <h:outputText value="#{annotatedObjectController.lastSaved}">
+                            <f:convertDateTime pattern="HH:mm (z)"/>
+                        </h:outputText>
+                    </h:panelGroup>
                 </h:panelGroup>
             </h:panelGroup>
-        </h:panelGroup>
 
-    </div>
+            </h:panelGroup>
+        </div>
 
     <div style="clear:both"/>
 </ui:define>
@@ -103,9 +105,9 @@
                         onclick="if (confirm('Are you sure you sure you want to delete this sucker?')) { deletingDialog.show() } else { return false }" oncomplete="deletingDialog.hide()" />
         </p:submenu>
 
-        <p:submenu label="Reviewer" rendered="#{userSessionController.hasRole('REVIEWER') and annotatedObjectController.annotatedObject != null}">
-            <ui:insert name="reviewerContextual"/>
-        </p:submenu>
+        <!--<p:submenu label="Reviewer" rendered="#{userSessionController.hasRole('REVIEWER') and annotatedObjectController.annotatedObject != null}">-->
+            <!--<ui:insert name="reviewerContextual"/>-->
+        <!--</p:submenu>-->
 
         <p:submenu label="Debug" rendered="#{facesContext.application.projectStage == 'Development' and annotatedObjectController.annotatedObject != null}">
             <p:menuitem value="Changes" action="/curate/debug/changes" ajax="false"/>

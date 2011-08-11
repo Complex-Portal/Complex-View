@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.publication;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
@@ -39,6 +40,7 @@ import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.user.Preference;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
 import uk.ac.ebi.intact.model.util.PublicationUtils;
 
@@ -419,6 +421,22 @@ public class PublicationController extends AnnotatedObjectController {
         if (!userSessionController.isItMe(publication.getCurrentOwner())) {
             addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this publication");
             return;
+        }
+
+
+        if (isBeenRejectedBefore()) {
+            List<String> correctionComments = new ArrayList<String>();
+
+            for (Experiment exp : IntactCore.ensureInitializedExperiments(publication)) {
+                Annotation correctionCommentAnnot = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(exp, CvTopic.CORRECTION_COMMENT);
+
+                if (correctionCommentAnnot != null) {
+                    correctionComments.add(correctionCommentAnnot.getAnnotationText());
+                }
+
+                reasonForReadyForChecking = StringUtils.join(correctionComments, "; ");
+            }
+
         }
 
         // TODO run a proper sanity check
