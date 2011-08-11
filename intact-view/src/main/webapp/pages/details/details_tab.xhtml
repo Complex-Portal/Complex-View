@@ -384,8 +384,8 @@
         </td>
     </tr>
 </table>
-<!-- rendered="#{detailsBean.featuresAvailable}"> -->
-<h:panelGroup>
+
+<h:panelGroup rendered="#{detailsBean.featuresAvailable}">
     <h2>Graphical Representation of Experimental Features</h2>
     <iv:interactionRepresentation url="/intact/json?ac=#{interaction.ac}" />
 </h:panelGroup>

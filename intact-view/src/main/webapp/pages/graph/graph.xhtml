@@ -23,7 +23,39 @@
 <h:outputScript library="javascript/cytoscape_web" name="cytoscapeweb.min.js"/>
 <h:panelGroup>
     <div id="rightPanel" style="float:right; width:24%;">
-        <div id="graphController">
+
+        <p:panel header="Open in Cytoscape">
+
+           <h:panelGrid style="text-align:center;width:100%">
+                <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
+                    <h:graphicImage url="/images/logos/cytoscape-icon.PNG" shortDesc="Click to start Cytoscape"/>
+                </h:outputLink>
+           </h:panelGrid>
+           <div style="font-size:8.5pt;width:98%;">
+                <h:outputText value="Click "/>
+                <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
+                    &#160;here&#160;
+                </h:outputLink>
+                <h:outputText value=" or on the icon above to start Cytoscape." />
+
+                <br/>
+                <br/>
+
+                <h:outputText value="This is going to open the current search in a WebStart " />
+
+                <h:outputLink value="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp" target="_blank">
+                    <h:graphicImage url="/images/help.png" style="vertical-align: baseline;"/>
+                </h:outputLink>
+
+                <h:outputText value=" version of Cytoscape 2.6.3 " />
+
+                <h:outputLink value="http://www.cytoscape.org/" target="_blank">
+                    <h:graphicImage url="/images/help.png" style="vertical-align: baseline;"/>
+                </h:outputLink>
+            </div>
+        </p:panel>
+                <br/>
+
             <p:panel header="CytoscapeWeb Controls" style="width:98%;">
                 <table>
                     <tr>
@@ -54,48 +86,14 @@
                     </tr>
                 </table>
             </p:panel>
-
-        </div>
         <br/>
-        <br/>
-        <p:panel text="Open in Cytoscape" style="font-size:8.5pt;width:98%;">
-
-           <h:panelGrid style="text-align:center;width:100%">
-                <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
-                    <h:graphicImage url="/images/logos/cytoscape-icon.PNG" shortDesc="Click to start Cytoscape"/>
-                </h:outputLink>
-           </h:panelGrid>
-
-            <h:outputText value="Click "/>
-            <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
-                &#160;here&#160;
-            </h:outputLink>
-            <h:outputText value=" or on the icon above to start Cytoscape." />
-
-            <br/>
-            <br/>
-
-            <h:outputText value="This is going to open the current search in a WebStart " />
-
-            <h:outputLink value="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp" target="_blank">
-                <h:graphicImage url="/images/help.png" style="vertical-align: baseline;"/>
-            </h:outputLink>
-
-            <h:outputText value=" version of Cytoscape 2.6.3" />
-
-            <h:outputLink value="http://www.cytoscape.org/" target="_blank">
-                <h:graphicImage url="/images/help.png" style="vertical-align: baseline;"/>
-            </h:outputLink>
-
-        </p:panel>
-
 
         <div id="note" style="position:absolute;">
         </div>
     </div>
 
     <div id="cytoscapeweb" style="width:75%; height:900px; border:1px solid #d3d3d3;">
-        Interaction Graph should show here in a few moment...
+        Interaction Graph should show here in a few moments... <h:graphicImage url="/images/wait_black_indicator.gif" style="vertical-align: baseline;"/>
     </div>
 
 
@@ -120,8 +118,7 @@
             var element = document.getElementById("cytoscapeweb");
             $(element).empty();
             $(element).append("An error occurred while loading the data.");
-        },
-    async: false});
+        }});
 
     // Enables the shapes present in the GraphML input to be displayed in the Flash panel.
 

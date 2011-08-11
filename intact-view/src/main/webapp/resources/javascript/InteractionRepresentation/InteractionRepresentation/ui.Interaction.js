@@ -13,7 +13,8 @@
         },
 
         // used for the query to OLS
-        _MIParent: 'MI:0116', // "feature type"
+        _MIParentFeature: 'MI:0116', // "feature type"
+        _MIParentInteractor: 'MI:0313', // "interactor type"
 
         // possible positions on a protein, specifying the height of features in this position
         _positionsOnProtein: {
@@ -102,9 +103,27 @@
 			}
         },
 
+		_interactorCategories:{
+			"bioactive entity": {
+				"identifiers" : ["MI:1100"],
+				"loadChildren": true,
+				"symbol": "BioactiveEntity"
+			},
+			"gene":{
+				"identifiers" : ["MI:0250"],
+				"loadChildren": true,
+				"symbol": "Gene"
+			},
+			"nucleic acid":{
+				"identifiers" : ["MI:0318"],
+				"loadChildren": true,
+				"symbol": "NucleicAcid"
+			}
+		},
+
 		// ignore 'feature type', 'biological feature', 'experimental feature'
 		// and 'polyprotein fragment', 'crosslinker', 'dna overhang' and their children
-		_ignoreTerms: [ "MI:0116", "MI:0252", "MI:0505", "MI:0828", "MI:0911",
+		_ignoreTerms: [ "MI:0116", "MI:0252", "MI:0505", "MI:0828", "MI:0911", 
 						"MI:0912", "MI:0913", "MI:0853", "MI:0854", "MI:0855"],
 
 		_rangeStatusEquivalents: { "MI:0341": "MI:0340"},
@@ -113,11 +132,11 @@
 		_DASStylesheet: 'http://wwwdev.ebi.ac.uk/das-srv/uniprot/das/uniprot/stylesheet',
 
 		// structures needed to manage data --
-		_featureTracksPerParticipant: null,
-        _featurePositions: null,
-        _linkedFeatures: null,
-		_joinedFeatures: null,
-        _participantsWithFeatures: null,
+		_featureTracksPerParticipant: new Array(),
+        _featurePositions: new Object(),
+        _linkedFeatures: new Object(),
+		_joinedFeatures: new Object(),
+        _participantsWithFeatures: new Object(),
         _error: false,
         // --
 
@@ -135,6 +154,7 @@
         _initY: 0,
 
 		// legend properties --
+		_legendInteractorTypeHeight: 0,
 		_legendDistanceToImage :0,
         _legendItemWidth: 0,
         _legendItemHeight: 0,
@@ -156,6 +176,7 @@
             this._proteinX = 12;
             this._strokeWidth = 0.7;
             this._initY = 20;
+			this._legendInteractorTypeHeight = 12;
 			this._legendDistanceToImage = 50;
             this._featureGap = 2;
             this._proteinGap = 10;
@@ -166,13 +187,6 @@
             this._legendItemOpacity = 1;
             this._tooltipColour = "#696969";
             this._tooltipOpacity = 0.7;
-
-            this._featureTracksPerParticipant = new Array();
-            this._featurePositions = new Object();
-            this._linkedFeatures = new Object();
-		    this._joinedFeatures = new Object();
-            this._participantsWithFeatures = new Object();
-            this._error = false;
         },
 
 		// init function called by widget framework
@@ -182,6 +196,7 @@
             var self = this;
 			// if all data is loaded
             $(this.element).bind('load_finished', function(){
+				
                 $(self.element).empty();
 
                 if(self._error){
@@ -199,10 +214,20 @@
             });
         },
 
+		
+		highlightRegion: function(interactorId, x, x2){
+			this._drawer.highlightRegion(interactorId, x, x2);
+		},
+		
+		unhighlightRegion: function(){
+			this._drawer.unhighlightRegion();
+		},
+		
         _load: function(){
-            this._requestCount = 3;
+            this._requestCount = 4;
             this._loadData();
-            this._loadAllIdentifiers();
+            this._loadFeatureTypes();
+			this._loadInteractorTypes();
 			this._loadColours();
             if(this.options.loadingImageUrl != ''){
                 var loadingImageText = '<img id="progress_image" ' +
@@ -265,19 +290,19 @@
 
 
         // send a request to the EBI-Ontology
-        _loadAllIdentifiers: function(){
+        _loadFeatureTypes: function(){
             var self = this;
             var proxyUrl = this.options.proxyUrl;
             if(!self.options.useProxyForOntology){
                 $.ajax({
-                    url: self._MIOntologyUrl + self._MIParent,
+                    url: self._MIOntologyUrl + self._MIParentFeature,
                     method: "GET",
                     dataType: 'json',
                     success: success,
                     error: error
                 });
             }else{
-                var url = escape(self._MIOntologyUrl) + self._MIParent;
+                var url = escape(self._MIOntologyUrl) + self._MIParentFeature;
                 $.ajax({
                     url: proxyUrl,
                     method: "GET",
@@ -293,7 +318,48 @@
                 if(typeof(json) != 'object'){
                     json = $.parseJSON(json);
                 }
-                self._parseResponse(json);
+                self._parseResponse(json, self._typeCategories);
+                self._finishedRequestCount++;
+                self._checkRequests();
+            }
+
+            function error(){
+                self._alertError(url);
+                self._finishedRequestCount++;
+                self._checkRequests();
+            }
+        },
+
+        // send a request to the EBI-Ontology
+        _loadInteractorTypes: function(){
+            var self = this;
+            var proxyUrl = this.options.proxyUrl;
+            if(!self.options.useProxyForOntology){
+                $.ajax({
+                    url: self._MIOntologyUrl + self._MIParentInteractor,
+                    method: "GET",
+                    dataType: 'json',
+                    success: success,
+                    error: error
+                });
+            }else{
+                var url = escape(self._MIOntologyUrl) + self._MIParentInteractor;
+                $.ajax({
+                    url: proxyUrl,
+                    method: "GET",
+                    dataType: 'json',
+                    data: "url=" + url,
+                    success: success,
+                    error: error
+                });
+            }
+
+            // ajax result handling functions
+            function success(json){
+                if(typeof(json) != 'object'){
+                    json = $.parseJSON(json);
+                }
+                self._parseResponse(json, self._interactorCategories);
                 self._finishedRequestCount++;
                 self._checkRequests();
             }
@@ -344,12 +410,12 @@
 
 		// parse the response of the request sent to the EBI-Ontology
         // add children of a term to the array containing it
-        _parseResponse: function(json){
+        _parseResponse: function(json, categoryObject){
             var self = this;
-            for (var category in this._typeCategories) {
-				if (this._typeCategories[category].loadChildren) {
-					var curArray = this._typeCategories[category].identifiers;
-					if (this._typeCategories[category].loadChildren) {
+            for (var category in categoryObject) {
+				if (categoryObject[category].loadChildren) {
+					var curArray = categoryObject[category].identifiers;
+					if (categoryObject[category].loadChildren) {
 						if ($.inArray(json.id, curArray) > -1) {
 							$(json.children).each(function(){
 								curArray.push(this.id);
@@ -361,7 +427,7 @@
 
             if (!(json.children === undefined)) {
                 $(json.children).each(function(){
-                    self._parseResponse(this);
+                    self._parseResponse(this, categoryObject);
                 });
             }
         },
@@ -641,11 +707,11 @@
             var newFeature = $.extend(true, {}, feature);
             delete newFeature.id;
 
-            if(!(newFeature.xref.primaryRef === undefined) && newFeature.xref.primaryRef.db == "intact"){
+            if(!(newFeature.xref === undefined) && !(newFeature.xref.primaryRef === undefined) && newFeature.xref.primaryRef.db == "intact"){
 				delete newFeature.xref.primaryRef;
 			}
 
-			if (!(feature.xref.secondaryRef === undefined)) {
+			if (!(feature.xref === undefined) && !(feature.xref.secondaryRef === undefined)) {
                 var j = 0;
 				for (var i = 0; i < feature.xref.secondaryRef.length; i++) {
 					if (feature.xref.secondaryRef[i].db == "intact") {

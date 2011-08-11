@@ -208,4 +208,47 @@ ShapeDrawer = function(paper){
 		}
 		return this._paper.path(path);
 	};
+	
+	this.getDiamond = function(x, y, height){
+		var bottomY = y + height;
+		var rightX = x + height;
+		var middleY = y + height/2;
+		var middleX = x + height/2;
+		var path =  "M" + x + "," + middleY + "L" + middleX + "," + y + 
+					"L" + rightX + "," + middleY + "L" + middleX + "," + bottomY + "Z";
+		return this._paper.path(path); 
+	};
+	
+	this.getWave = function(x, y, height){
+		//    x2  x3        x6  
+		//
+		// x        x4  x5
+		
+		height *=2;
+		
+		var sixth = height/6;
+		
+		var x2 = x + sixth;
+		var x3 = x2 + sixth;
+		var x4 = x3 + sixth;
+	
+	// second part of wave has to start a little bit before end of first part	
+		var x32 = x4 - height/12;
+		var x42 = x32 + sixth;
+		
+		var x5 = x42 + sixth;
+		var x6 = x42 + 2*sixth;
+		
+		var bottomY = y + 2*sixth;
+		
+		var y2 = y + sixth;
+		var bottomY2 = y + height/2;
+		
+		
+		var path =  "M" + x + "," + bottomY + "C" + x2 + "," + y + 
+					" " + x3 + "," + y + " " + x4 + "," + bottomY +
+					"M" +  x32 + "," + y2 + "C" + x42 + "," + bottomY2 +
+					" " + x5 + "," + bottomY2 + " " + x6 + "," + y2;
+		return this._paper.path(path);
+	}
 }

@@ -21,6 +21,10 @@ ParticipantDrawer = function(interactionInformation){
     this._saveColours = new Array();
     this._selectedInteraction = {"connections": null, "elements": null};
 	this._connectedElements = new Object();
+
+	this._interactors = new Object();
+	this._curHighlightingRegion;
+	this._highlightingRegions = new Object();
     
     // draw all participants of all interactions in the given data
     // and their features and connect linked features
@@ -87,6 +91,7 @@ ParticipantDrawer = function(interactionInformation){
 		
         y = y + self._interactionInformation._proteinGap;
         
+		var interactorStart = y;
         var interactorRef = curFeatureTrackObject.interactorRef;
         
         var interactor = null;
@@ -191,10 +196,41 @@ ParticipantDrawer = function(interactionInformation){
 			uniProtId = intactId;
 		}
         
+		// ------------------------
+		// find interactor type
+		var interactorTypeId = "";
+		if(interactor.interactorType.xref.primaryRef.refType == "identity" && 
+		   interactor.interactorType.xref.primaryRef.db == "psi-mi"){
+			interactorTypeId = interactor.interactorType.xref.primaryRef.id;
+		}
+		
+		if(interactorTypeId == "" && !(interactor.interactorType.xref.secondaryRef === undefined)){
+			for (var i = 0; i < interactor.interactorType.xref.secondaryRef.length && interactorTypeId == ""; i++) {
+				if (interactor.interactorType.xref.secondaryRef[i].refType == "identity" &&
+					interactor.interactorType.xref.secondaryRef[i].db == "psi-mi") {
+					interactorTypeId = interactor.interactorType.xref.secondaryRef[i].id;
+				}
+			}
+		}
+		
+		// ------------------------
+		
+		// ------------------------
+		// check whether interactor is a protein
+		var interactorSymbol = "";
+		for(var interactorTypeKey in this._interactionInformation._interactorCategories){
+			var curInteractorType = self._interactionInformation._interactorCategories[interactorTypeKey];
+            
+            if (($.inArray(interactorTypeId, curInteractorType.identifiers)) > -1){
+				interactorSymbol = curInteractorType.symbol;
+			}
+		}
+		// ------------------------
+		
         // start drawing
         height = self._interactionInformation._positionsOnProtein["top"];
-        // draw top features
-        if (!(curFeatureTrackObject.annotations === undefined)) {
+        // draw top features if interactor is a protein
+        if (interactorSymbol == "" && !(curFeatureTrackObject.annotations === undefined)) {
             curTracks = curFeatureTrackObject.annotations["top"].tracks;
             if (!(curTracks === undefined)) {
                 y = self.drawFeatures(participant, curTracks, height, y, length, uniProtId, participantName);
@@ -205,16 +241,25 @@ ParticipantDrawer = function(interactionInformation){
             }
         }
         
+		
         // draw length text
-        self.drawLengthText(drawLength + self._interactionInformation._proteinX, y, lengthText);
-        y = y + height;
+		if (interactorSymbol == "") {
+			self.drawLengthText(drawLength + self._interactionInformation._proteinX, y, lengthText);
+		}
         
+		y = y + height;
         height = self._interactionInformation._positionsOnProtein["middle"];
         
-        // draw interactors and middle & bottom features if defined
-        if (curFeatureTrackObject.annotations === undefined || curFeatureTrackObject.annotations["middle"].tracks === undefined) {
-            interactorElement = self.drawProtein(self._interactionInformation._proteinX, y, drawLength, height + self._interactionInformation._featureGap, true);
-            self.drawParticipantName(drawLength + self._interactionInformation._proteinX, y + height / 2, participantName);
+        // draw interactors and middle features if defined
+        if (interactorSymbol != "" || (curFeatureTrackObject.annotations === undefined || curFeatureTrackObject.annotations["middle"].tracks === undefined)) {
+            var nameX = drawLength + self._interactionInformation._proteinX;
+			if (interactorSymbol == "" || !(self["draw" + interactorSymbol])) {
+				interactorElement = self.drawProtein(self._interactionInformation._proteinX, y, drawLength, height + self._interactionInformation._featureGap, true);
+			}else{
+				interactorElement = self["draw" + interactorSymbol](self._interactionInformation._proteinX, y, height + self._interactionInformation._featureGap);
+				nameX = self._interactionInformation._proteinX + height;
+			}
+            self.drawParticipantName(nameX, y + height / 2, participantName);
             y = y + height + this._interactionInformation._featureGap;
         }
         else {
@@ -237,8 +282,8 @@ ParticipantDrawer = function(interactionInformation){
             interactorElement = self.drawProtein(self._interactionInformation._proteinX, y, drawLength, proteinHeight, true);
             y = yBottom + 1;
         }
-		
-		if (!(curFeatureTrackObject.annotations === undefined)) {
+		// draw bottom features if interactor is a protein
+		if (interactorSymbol == "" && !(curFeatureTrackObject.annotations === undefined)) {
             curTracks = curFeatureTrackObject.annotations["bottom"].tracks;
             
             height = self._interactionInformation._positionsOnProtein["bottom"];
@@ -250,6 +295,17 @@ ParticipantDrawer = function(interactionInformation){
         }
 		
 		this.addInteractorClickHandling(uniProtId, participantName, interactorElement);
+
+		var interactorObject = {
+			y: interactorStart,
+			height: y - interactorStart
+		}
+		
+		if (this._interactors[uniProtId] === undefined) {
+			this._interactors[uniProtId] = [interactorObject];
+		}else{
+			this._interactors[uniProtId].push(interactorObject);
+		}
 		
         return y;
     };
@@ -314,6 +370,7 @@ ParticipantDrawer = function(interactionInformation){
                     else {
                         insert = (feature.featureType.xref.primaryRef.id.match(".*" + curFeatureType.identifiers + ".*") != null);
                     }
+					
                     if (insert) {
                         var colour = curFeatureType.colour;
                         var rangeColour = self.getGradientColour(curFeatureType.colour);
@@ -407,7 +464,9 @@ ParticipantDrawer = function(interactionInformation){
 														 "interactorId": interactorId,
 														 "interactorName": interactorName,
 														 "featureId": featureId,
-														 "coordinates": {"x": coordinates.x, "x2": coordinates.x2}
+														 "coordinates": {"x": coordinates.x, 
+														 				 "x2": coordinates.x2,
+																		 "positionArray": coordinates.positionArray}
 														});
 			});
 		}
@@ -418,6 +477,7 @@ ParticipantDrawer = function(interactionInformation){
 		var self = this;
 		if (!(element == null)) {
 			element.click(function(event){
+				self.unhighlight(self._selectedInteraction);
 				$(document).trigger("interactor_selected", {"event": event, 
 														    "interactorId": interactorId,
 															"interactorName": interactorName
@@ -675,6 +735,48 @@ ParticipantDrawer = function(interactionInformation){
 		});
 	}
 	
+	this.highlightRegion = function(interactorId, x, x2){
+		if(!(this._curHighlightingRegion === undefined)){
+			this._curHighlightingRegion.hide();
+		}
+		if(!(this._interactors[interactorId] === undefined)){
+			if (this._highlightingRegions[interactorId + x + x2] === undefined) {
+				x = x * this._interactionInformation._pxPerAA + this._interactionInformation._proteinX;
+				x2 = x2 * this._interactionInformation._pxPerAA + this._interactionInformation._proteinX;
+				
+				var set = this._shapeDrawer.getSet();
+				var self = this;
+				
+				$(this._interactors[interactorId]).each(function(){
+					var y = this.y;
+					var height = this.height;
+				
+					var rect = self._shapeDrawer.getRectangle(x, y + 1, x2 - x, height + 2);
+					rect.attr({
+						"fill": "yellow",
+						"stroke": "yellow",
+						"opacity": 0.7,
+						"fill-opacity": 0.5
+					});
+					
+					set.push(rect);
+				});
+				
+				set.insertBefore(this._interactorSet);
+				this._highlightingRegions[interactorId + x + x2] = set;
+				this._curHighlightingRegion = set;
+			}else{
+				this._highlightingRegions[interactorId + x + x2].show();
+			}
+		}
+	}
+	
+	this.unhighlightRegion = function(){
+		if(!(this._curHighlightingRegion === undefined)){
+			this._curHighlightingRegion.hide();
+		}
+	}
+	
 	// add eventListener to each interaction's elements
 	this.handleClickForConnectionSet = function(coordinates){
 		if (!(coordinates.highlightSet === undefined)) {
@@ -697,7 +799,7 @@ ParticipantDrawer = function(interactionInformation){
 				}
 				else {
 					self.unhighlight(self._selectedInteraction);
-					self._hidden = false;
+					this._selectedInteraction = null;
 				}
 			});
 		}
@@ -724,8 +826,12 @@ ParticipantDrawer = function(interactionInformation){
     // unhighlight a featureSet
     this.unhighlight = function(interaction){
 		this._interactionSet.show();
-        for(var i = 0; i < interaction.elements.length; i++){
-			interaction.elements[i].attr("stroke", this._saveColours[i]);
+		this._hidden = false;
+		
+		if (interaction.elements != null) {
+			for (var i = 0; i < interaction.elements.length; i++) {
+				interaction.elements[i].attr("stroke", this._saveColours[i]);
+			}
 		}
     };
     
@@ -812,52 +918,65 @@ ParticipantDrawer = function(interactionInformation){
         var gap = 2 * this._interactionInformation._featureGap;
         var legendHeight = gap;
 
+		var interactorTypeHeight = this._interactionInformation._legendInteractorTypeHeight;
+
         var legendPictureWidth = this.calculateLegendPictureWidth(legendItemWidth, textGap);
-        var legendRangetypeSectionWidth = this.calculateLegendRangetypeSectionWidth(textGap);
+        var legendRangetypeSectionWidth = this.calculateLegendRangetypeSectionWidth();
+		var legendInteractortypeSectionWidth = 
+			this.calculateLegendInteractortypeSectionWidth(interactorTypeHeight, textGap);
 
         if(legendRangetypeSectionWidth > 0){
             legendRangetypeSectionWidth += this._interactionInformation._legendItemWidth + 3*textGap;
         }
 
         if(this._interactionInformation.options.legendPosition == "right"){
-            x = this._interactionInformation.options.width - (legendPictureWidth + legendRangetypeSectionWidth);
+            x = this._interactionInformation.options.width - 
+					(legendPictureWidth + legendRangetypeSectionWidth + legendInteractortypeSectionWidth);
         }
 
         var legendText = this._shapeDrawer.getText(x, y, "Legend:");
 		legendText.attr("font-size", 12);
         y += 10;
-        var yText = y + this._interactionInformation._legendItemHeight / 2 + gap + 1;
+		var featureX = x + legendInteractortypeSectionWidth;
+		var yText = y + this._interactionInformation._legendItemHeight / 2 + gap + 1;
 		var yLine = y + this._interactionInformation._legendItemHeight + gap + 4;
-		var fTypesText = this._shapeDrawer.getText(x + textGap, yText, "feature types");
-		fTypesText.attr("font-size", 12);
-		var line = this._shapeDrawer.getLine(x + textGap, yLine, x + textGap + fTypesText.getBBox().width, yLine);
-		line.attr("stroke-width",0.5);
-	
+		
 		legendHeight = legendHeight + this._interactionInformation._legendItemHeight + 3*gap;
 		
-		var pictureHeight = this.drawLegendPicture( x, y, legendHeight, legendItemWidth,
+		var interactortypeSectionHeight = this.drawLegendInteractortypeSection(x, y, yText, yLine, legendHeight,
+													interactorTypeHeight, gap + 1, 
+													textGap, legendInteractortypeSectionWidth);
+		
+		var pictureHeight = this.drawLegendPicture( featureX, y, yText, yLine, legendHeight, legendItemWidth,
                                                     this._interactionInformation._legendItemHeight, gap + 1,
                                                     textGap, legendPictureWidth);
-		var itemX = x + legendPictureWidth + textGap;
+		var itemX = featureX + legendPictureWidth + textGap;
         legendHeight = this.drawLegendRangetypeSection(itemX, y, yText, yLine, legendItemWidth, legendHeight, textGap, gap);
 
 		if(pictureHeight > legendHeight){
 			legendHeight = pictureHeight;
 		}
 
-        var legendRect = this._shapeDrawer.getRectangle(x, y, legendPictureWidth + legendRangetypeSectionWidth, legendHeight);
+        var legendRect = this._shapeDrawer.getRectangle(x, y, 
+					legendPictureWidth + legendRangetypeSectionWidth + legendInteractortypeSectionWidth, legendHeight);
 		legendRect.attr({
 			"fill": "white",
 			"stroke-width": 0.5, 
 			"stroke-dasharray": ". "
 		});
+		
 		legendRect.toBack();
-        var line = this._shapeDrawer.getLine(x + legendPictureWidth, y,
-											 x + legendPictureWidth, y + legendHeight);
+        var line = this._shapeDrawer.getLine(x + legendInteractortypeSectionWidth, y,
+											 x + legendInteractortypeSectionWidth, y + legendHeight);
 		line.attr({"stroke-width": 0.5, "stroke-dasharray": ". "});
+		var line2 = this._shapeDrawer.getLine(x + legendInteractortypeSectionWidth + legendPictureWidth, y,
+											  x + legendInteractortypeSectionWidth + legendPictureWidth, 
+											  y + legendHeight);
+		line2.attr({"stroke-width": 0.5, "stroke-dasharray": ". "});
         this._interactionInformation._height = y + legendHeight + 10;
         this._interactionInformation._paper.setSize(this._interactionInformation.options.width, this._interactionInformation._height);
     };
+
 
     this.calculateLegendPictureWidth = function(legendItemWidth, textGap){
         var width = 0;
@@ -874,7 +993,7 @@ ParticipantDrawer = function(interactionInformation){
     }
 
 
-    this.calculateLegendRangetypeSectionWidth = function(textGap){
+    this.calculateLegendRangetypeSectionWidth = function(){
         var width = 0;
         var self = this;
         for (var functionName in this._calledFunctions) {
@@ -891,6 +1010,28 @@ ParticipantDrawer = function(interactionInformation){
         }
         return width;
     };
+
+	this.calculateLegendInteractortypeSectionWidth = function(legendItemHeight, textGap){
+        var width = 0;
+        for (var category in this._interactionInformation._interactorCategories) {
+			var textObject = this._shapeDrawer.getText(0, 0, category);
+            var bb = textObject.getBBox();
+            if(bb.width > width){
+                width = bb.width;
+            }
+            textObject.remove();
+        }
+
+		var textObject = this._shapeDrawer.getText(0,0,"protein");
+		var bb = textObject.getBBox();
+		if(bb.width > width){
+			width = bb.width;
+		}
+		textObject.remove();
+		
+        return width + legendItemHeight*2 +  3*textGap;
+	};
+
 
     this.getLegendRangetypeItemText = function(functionName, range){
         var legendItemText = range.startStatus.names.shortLabel + " - " + range.endStatus.names.shortLabel;
@@ -993,11 +1134,42 @@ ParticipantDrawer = function(interactionInformation){
 					}
 				});
 			}
-	}
+		}
         return legendHeight;
     };
 
-	this.drawLegendPicture = function(x, yLegend, startGap, legendItemWidth, legendItemHeight, gap, textGap, pictureWidth){
+	this.drawLegendInteractortypeSection = function(x, yLegend, yText, yLine, startGap, legendItemHeight, gap, textGap, pictureWidth){
+		var iTypesText = this._shapeDrawer.getText(x + textGap, yText, "interactor types");
+		iTypesText.attr("font-size", 12);
+		var line = this._shapeDrawer.getLine(x + textGap, yLine, x + textGap + iTypesText.getBBox().width, yLine);
+		line.attr("stroke-width",0.5);
+		var pictureHeight = yLegend;
+		var itemX = x + textGap;
+		yLegend += startGap;
+		
+		this.drawProtein(itemX + 1, yLegend, legendItemHeight * 5/3, legendItemHeight, false);
+		var proteinText = this._shapeDrawer.getText(x + textGap + 3* legendItemHeight, 
+													yLegend + legendItemHeight / 2, "protein");
+		
+		yLegend += 2*gap + legendItemHeight;
+		
+		for (var category in this._interactionInformation._interactorCategories) {
+			var curType = this._interactionInformation._interactorCategories[category];
+			if(this["draw" + curType.symbol]){
+				this["draw" + curType.symbol](itemX, yLegend, legendItemHeight);
+				
+				var text = this._shapeDrawer.getText(x + legendItemHeight*3 + textGap, yLegend + legendItemHeight / 2, category);
+				yLegend += 2*gap + legendItemHeight;
+			}
+		}											
+		  
+	}
+
+	this.drawLegendPicture = function(x, yLegend, yText, yLine, startGap, legendItemWidth, legendItemHeight, gap, textGap, pictureWidth){
+		var fTypesText = this._shapeDrawer.getText(x + textGap, yText, "feature types");
+		fTypesText.attr("font-size", 12);
+		var line = this._shapeDrawer.getLine(x + textGap, yLine, x + textGap + fTypesText.getBBox().width, yLine);
+		line.attr("stroke-width",0.5);
 		var pictureHeight = yLegend;
 		var itemX = x + textGap;
 		yLegend += startGap;
@@ -1049,7 +1221,7 @@ ParticipantDrawer = function(interactionInformation){
 		return y;
 	}
 	
-    // add participant name at the end of a protein
+	// add participant name at the end of a protein
     this.drawParticipantName = function(x, y, text){
         var name = this._shapeDrawer.getText(x + 20, y, text);
         this._interactorSet.push(name);
@@ -1066,4 +1238,25 @@ ParticipantDrawer = function(interactionInformation){
     this.draw = function(range, y, height, featureStart, interactorLength, colour, rangeColour, opacity, tooltipText, symbol){
         return this._featureDrawer.drawUnrecognisedRangeType(range, y, height, featureStart, interactorLength, colour, rangeColour, opacity, tooltipText, symbol);
     };
+	
+	// draw interactors with type "bioactive entity"
+	this.drawBioactiveEntity = function(x, y, height){
+		var circle = this._shapeDrawer.getCircle(x, y, height);
+		circle.attr("fill", "black");
+		return circle;
+	};
+	
+	// draw interactors with type "gene"
+	this.drawGene = function(x, y, height){
+		var diamond = this._shapeDrawer.getDiamond(x, y, height);
+		diamond.attr("fill", "black");
+		return diamond;
+	}
+	
+	// draw interactors with type "nucleic acid"
+	this.drawNucleicAcid = function(x, y, height){
+		var wave = this._shapeDrawer.getWave(x, y, height);
+		wave.attr("stroke-width", 3);
+		return wave;
+	}
 }
