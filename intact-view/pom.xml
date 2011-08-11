@@ -26,7 +26,7 @@
     </scm>
 
     <properties>
-        <core.version>2.4.1-SNAPSHOT</core.version>
+        <core.version>2.4.1</core.version>
         <dataexchange.version>2.1.4-SNAPSHOT</dataexchange.version>
         <spring.version>3.0.2.RELEASE</spring.version>
         
@@ -157,8 +157,8 @@
             <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
 
@@ -235,7 +235,6 @@
             <version>${dataexchange.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psixml-exchange</artifactId>
@@ -245,17 +244,17 @@
                      <groupId>cpdetector</groupId>
                      <artifactId>cpdetector</artifactId>
                  </exclusion>
-             <!-- The following exclusions are meant to prevent maven
-            from trying to find 2.0 from the deprecated java.net repo -->
-                <exclusion>
-                    <groupId>com.sun.xml.ws</groupId>
-                    <artifactId>jaxws-tools</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.xml.ws</groupId>
-                    <artifactId>jaxws-rt</artifactId>
-                </exclusion>
-            </exclusions>
+                 <!-- The following exclusions are meant to prevent maven
+                      from trying to find 2.0 from the deprecated java.net repo -->
+                 <exclusion>
+                     <groupId>com.sun.xml.ws</groupId>
+                     <artifactId>jaxws-tools</artifactId>
+                 </exclusion>
+                 <exclusion>
+                     <groupId>com.sun.xml.ws</groupId>
+                     <artifactId>jaxws-rt</artifactId>
+                 </exclusion>
+             </exclusions>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
@@ -317,12 +316,20 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-jdk14</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>serializer</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hupo.psi.mi.psicquic</groupId>
             <artifactId>psicquic-registry-client</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
 
         <!-- other -->
@@ -417,38 +424,6 @@
             <version>1.6.8</version>
         </dependency>
 
-         <!--<dependency>-->
-            <!--<groupId>org.springframework.security</groupId>-->
-            <!--<artifactId>spring-security-taglibs</artifactId>-->
-            <!--<version>2.0.5.RELEASE</version>-->
-            <!--<exclusions>-->
-            	<!--<exclusion>-->
-            		<!--<groupId>org.springframework</groupId>-->
-            		<!--<artifactId>spring-context</artifactId>-->
-            	<!--</exclusion>-->
-            	<!--<exclusion>-->
-            		<!--<groupId>org.springframework</groupId>-->
-            		<!--<artifactId>spring-support</artifactId>-->
-            	<!--</exclusion>-->
-            	<!--<exclusion>-->
-            		<!--<groupId>org.springframework</groupId>-->
-            		<!--<artifactId>spring-core</artifactId>-->
-            	<!--</exclusion>-->
-            	<!--<exclusion>-->
-            		<!--<groupId>org.springframework</groupId>-->
-            		<!--<artifactId>spring-beans</artifactId>-->
-            	<!--</exclusion>-->
-            	<!--<exclusion>-->
-            		<!--<groupId>org.springframework</groupId>-->
-            		<!--<artifactId>spring-aop</artifactId>-->
-            	<!--</exclusion>-->
-                <!--<exclusion>-->
-            		<!--<groupId>org.springframework</groupId>-->
-            		<!--<artifactId>spring-web</artifactId>-->
-            	<!--</exclusion>-->
-            <!--</exclusions>-->
-        <!--</dependency>-->
-
         <!-- JSF (MyFaces) -->
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
@@ -492,22 +467,6 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
-
-        <!-- Apache Trinidad -->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.myfaces.trinidad</groupId>-->
-            <!--<artifactId>trinidad-api</artifactId>-->
-            <!--<version>2.0.0-alpha-2</version>-->
-            <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.myfaces.trinidad</groupId>-->
-            <!--<artifactId>trinidad-impl</artifactId>-->
-            <!--<version>2.0.0.3-SNAPSHOT</version>-->
-            <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-
 
         <!-- MyFaces Orchestra -->
         <dependency>
