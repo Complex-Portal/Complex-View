@@ -84,6 +84,8 @@ public class UserSessionController extends JpaAwareController implements Disposa
     }
 
     public boolean isItMe(User user) {
+        if (user == null) return false;
+
         return user.equals(currentUser);
     }
 
