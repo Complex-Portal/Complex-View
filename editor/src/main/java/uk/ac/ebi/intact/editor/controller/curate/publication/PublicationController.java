@@ -84,6 +84,7 @@ public class PublicationController extends AnnotatedObjectController {
 
     private String reasonForReadyForChecking;
     private String reasonForRejection;
+    private String reasonForOnHoldFromDialog;
 
     private boolean isCitexploreActive;
 
@@ -383,6 +384,10 @@ public class PublicationController extends AnnotatedObjectController {
         return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.READY_FOR_RELEASE.identifier());
     }
 
+    public boolean isAcceptedOnHold() {
+        return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.ACCEPTED_ON_HOLD.identifier());
+    }
+
     public boolean isReleased() {
         return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.RELEASED.identifier());
     }
@@ -471,6 +476,28 @@ public class PublicationController extends AnnotatedObjectController {
         }
 
         publication.setStatus(getDaoFactory().getCvObjectDao(CvPublicationStatus.class).getByIdentifier(CvPublicationStatusType.READY_FOR_CHECKING.identifier()));
+    }
+
+    @Transactional
+    public void putOnHold(ActionEvent evt) {
+        setOnHold(reasonForOnHoldFromDialog);
+
+        if (CvPublicationStatusType.READY_FOR_RELEASE.identifier().equals(publication.getStatus().getIdentifier())) {
+            lifecycleManager.getReadyForReleaseStatus().putOnHold(publication, reasonForOnHoldFromDialog);
+            addInfoMessage("On-hold added to publication", "Publication won't be released until the 'on hold' is removed");
+        } else if (CvPublicationStatusType.RELEASED.identifier().equals(publication.getStatus().getIdentifier())) {
+            lifecycleManager.getReleasedStatus().putOnHold(publication, reasonForOnHoldFromDialog);
+            addInfoMessage("On-hold added to released publication", "Data will be publicly visible until the next release");
+        }
+
+        reasonForOnHoldFromDialog = null;
+    }
+
+    @Transactional
+    public void readyForReleaseFromOnHold(ActionEvent evt) {
+        removeAnnotation(CvTopic.ON_HOLD);
+
+        lifecycleManager.getAcceptedOnHoldStatus().onHoldRemoved(publication, null);
     }
 
     public boolean isAllExperimentsAccepted() {
@@ -1157,5 +1184,13 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setReasonForReadyForChecking(String reasonForReadyForChecking) {
         this.reasonForReadyForChecking = reasonForReadyForChecking;
+    }
+
+    public String getReasonForOnHoldFromDialog() {
+        return reasonForOnHoldFromDialog;
+    }
+
+    public void setReasonForOnHoldFromDialog(String reasonForOnHoldFromDialog) {
+        this.reasonForOnHoldFromDialog = reasonForOnHoldFromDialog;
     }
 }

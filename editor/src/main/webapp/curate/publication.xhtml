@@ -62,6 +62,15 @@
                          rendered="#{publicationController.readyForRelease and !publicationController.released and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
                          actionListener="#{publicationController.revertAccepted}"
                          action="#{publicationController.doSave}" ajax="false"/>
+         <p:commandButton value="Put on hold" type="button"
+                         styleClass="important-button-bad"
+                         rendered="#{(publicationController.readyForRelease or publicationController.released) and (userSessionController.isItMe(publicationController.publication.currentOwner) or userSessionController.isItMe(publicationController.publication.currentReviewer))}"
+                         onclick="putOnHoldDialog.show()"/>
+        <p:commandButton value="Ready for Release (removes on-hold)"
+                         styleClass="important-button-alt"
+                         rendered="#{publicationController.acceptedOnHold and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
+                         actionListener="#{publicationController.readyForReleaseFromOnHold}"
+                         action="#{publicationController.doSave}" ajax="false"/>
     </ui:define>
 
     <ui:define name="breadcrumbs">
@@ -442,6 +451,19 @@
                              <!--ajax="false"/>-->
         <!--</h:panelGrid>-->
     <!--</p:dialog>-->
+
+    <p:dialog header="Put on hold" width="600" widgetVar="putOnHoldDialog" draggable="false"
+                  modal="true" position="center">
+            <h:panelGrid columns="3" style="margin-bottom:10px">
+                    <h:outputLabel for="putOnHoldTxt" value="Reason for on-hold:"/>
+                    <p:inputTextarea id="putOnHoldTxt" value="#{publicationController.reasonForOnHoldFromDialog}" rows="4" cols="60" converter="trimmingConverter"/>
+
+                    <p:commandButton value="Put on hold" actionListener="#{publicationController.putOnHold}"
+                                     action="#{publicationController.doSave}"
+                                     process="putOnHoldTxt"
+                                     ajax="false"/>
+            </h:panelGrid>
+        </p:dialog>
 
     </ui:define>
 
