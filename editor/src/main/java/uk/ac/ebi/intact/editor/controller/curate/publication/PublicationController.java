@@ -255,8 +255,15 @@ public class PublicationController extends AnnotatedObjectController {
 
             publication.setFullName(citation.getTitle());
 
-            setJournal(citation.getJournalIssue().getJournal().getISOAbbreviation() + " (" +
-                    citation.getJournalIssue().getJournal().getISSN() + ")");
+            StringBuilder journalBuf = new StringBuilder(128);
+            final String abbreviation = citation.getJournalIssue().getJournal().getISOAbbreviation();
+            final String issn = citation.getJournalIssue().getJournal().getISSN();
+            journalBuf.append( abbreviation );
+            if( issn != null ) {
+               journalBuf.append( " (" ).append( issn ).append( ")" );
+            }
+            setJournal( journalBuf.toString() );
+
             setYear( citation.getJournalIssue().getYearOfPublication() );
 
             StringBuilder sbAuthors = new StringBuilder( 64 );
