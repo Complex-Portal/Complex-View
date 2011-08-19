@@ -58,10 +58,10 @@
                    width: $("#featureColumn").width(),
                    developingMode: true,
                    jsonUrl : '#{cc.attrs.url}',
-                   proxyUrl: '/intact/proxy',
+                   proxyUrl: '#{facesContext.externalContext.requestContextPath}/proxy',
                    useProxyForData: false,
                    legendPosition: 'right',
-                   loadingImageUrl: '/intact/images/wait_red_indicator.gif'
+                   loadingImageUrl: '#{facesContext.externalContext.requestContextPath}/images/wait_red_indicator.gif'
                });
            });
 
