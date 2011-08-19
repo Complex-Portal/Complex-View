@@ -230,7 +230,7 @@
                    <table style ="width:98%" id="featureTable">
            <tr>
                <td style="width:100%;vertical-align:top;text-align:center;" id="featureColumn">
-                         <ia:interactionRepresentation url="/editor/service/export/mi/interaction?ac=#{interaction.ac}" />
+                         <ia:interactionRepresentation url="#{facesContext.externalContext.requestContextPath}/service/export/mi/interaction?ac=#{interaction.ac}" />
                </td>
            </tr>
        </table>

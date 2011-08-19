@@ -57,10 +57,10 @@
                            width: width,
                            developingMode: true,
                            jsonUrl : '#{cc.attrs.url}' + '&amp;format=json',
-                           proxyUrl: '/editor/proxy',
+                           proxyUrl: '#{facesContext.externalContext.requestContextPath}/proxy',
                            useProxyForData: false,
                            legendPosition: 'right',
-                           loadingImageUrl: '/editor/resources/images/wait_black_indicator.gif'
+                           loadingImageUrl: '#{facesContext.externalContext.requestContextPath}/resources/images/wait_black_indicator.gif'
                        });
                    }
                 });
