@@ -14,7 +14,6 @@
             <link rel="stylesheet" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact-extra.css" type="text/css"/>
         </h:head>
         <h:body>
-            <h:form>
             <f:metadata>
                 <f:viewParam name="identifier" value="#{requestScope.identifier}"/>
                 <f:viewParam name="className" value="#{requestScope.className}"/>
@@ -25,7 +24,6 @@
 
         <iv:cvDetails cv="#{cv}"/>
 
-             </h:form>
         </h:body>
     </f:view>
 
