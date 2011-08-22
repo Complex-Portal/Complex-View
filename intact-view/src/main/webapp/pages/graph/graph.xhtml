@@ -102,7 +102,7 @@
     //<![CDATA[
     var query = '#{searchBean.results.searchQuery.query}';
     var mitabUrl = 'http://www.ebi.ac.uk/Tools/webservices/psicquic/intact/webservices/current/search/query/' + query;
-    var xmlUrl = '/intact/graphmlDownload?mitabUrl=' + mitabUrl;
+    var xmlUrl = '#{facesContext.externalContext.requestContextPath}/graphmlDownload?mitabUrl=' + mitabUrl;
 
     // wait for the data to be loaded prior, handy for larger network.
     var xml;
@@ -125,8 +125,8 @@
     function drawGraph() {
 
         var options = {
-            swfPath: "/intact/resources/swf/CytoscapeWeb",
-            flashInstallerPath: "/intact/resources/swf/playerProductInstall"
+            swfPath: "#{facesContext.externalContext.requestContextPath}/resources/swf/CytoscapeWeb",
+            flashInstallerPath: "#{facesContext.externalContext.requestContextPath}/resources/swf/playerProductInstall"
         };
 
         // whether the edges should be merged or not
