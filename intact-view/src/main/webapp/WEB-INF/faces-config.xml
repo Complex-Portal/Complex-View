@@ -183,12 +183,12 @@
 		</navigation-case>
 	</navigation-rule>
 
-	<navigation-rule>
+	<!--<navigation-rule>
 		<navigation-case>
 			<from-outcome>dialog:configure.columns</from-outcome>
 			<to-view-id>/pages/interactions/configure_columns.xhtml</to-view-id>
 		</navigation-case>
-	</navigation-rule>
+	</navigation-rule>-->
 
 	<!-- filters -->
 	<navigation-rule>
@@ -308,12 +308,12 @@
 		</navigation-case>
 	</navigation-rule>
 
-	<navigation-rule>
+	<!--<navigation-rule>
 		<navigation-case>
 			<from-outcome>dialog:search.browse</from-outcome>
 			<to-view-id>/pages/search/search_browse_dialog.xhtml</to-view-id>
 		</navigation-case>
-	</navigation-rule>
+	</navigation-rule>-->
     <navigation-rule>
         <navigation-case>
           <from-outcome>dialog:faq.psicquic</from-outcome>
@@ -328,11 +328,11 @@
         </navigation-case>
     </navigation-rule>
 
-    <navigation-rule>
+    <!--<navigation-rule>
         <navigation-case>
           <from-outcome>dialog:search.browse</from-outcome>
           <to-view-id>/pages/search/search_browse_dialog.xhtml</to-view-id>
         </navigation-case>
-    </navigation-rule>
+    </navigation-rule>-->
 
 </faces-config>
