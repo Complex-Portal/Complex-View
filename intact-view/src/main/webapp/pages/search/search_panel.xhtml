@@ -62,9 +62,8 @@
                                                                                     userQuery.searchQuery eq '*:*'}"/>
                 </h:selectOneMenu>
                 &#160;
-
-                <h:selectBooleanCheckbox id="notQueryBox" title="NOT" value="#{userQuery.newQueryToken.notQuery}"/>
                 <h:outputText value="NOT"/>
+                <h:selectBooleanCheckbox id="notQueryBox" title="NOT" value="#{userQuery.newQueryToken.notQuery}"/>
 
                 &#160;
                 <h:outputText value="Field: "/>
@@ -76,9 +75,9 @@
                 &#160;
 
                 <h:panelGroup id="newQueryPanel">
-                    <h:inputText id="newQuerytxt" value="#{userQuery.newQueryToken.query}" columns="50"/>
+                    <h:inputText id="newQuerytxt" value="#{userQuery.newQueryToken.query}" columns="50" rendered="#{not userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}"/>
 
-                    <h:selectOneMenu value="#{userQuery.newQueryToken.query}"
+                    <h:selectOneMenu id="selectFieldMap" value="#{userQuery.newQueryToken.query}"
                                      rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}">
                         <f:selectItems value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].selectItems}"/>
                     </h:selectOneMenu>
