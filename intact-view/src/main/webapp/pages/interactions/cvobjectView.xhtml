@@ -5,25 +5,26 @@
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
 
+    <f:metadata>
+        <f:viewParam name="identifier" value="#{requestScope.identifier}"/>
+        <f:viewParam name="className" value="#{requestScope.className}"/>
+        <f:viewParam name="visible" value="#{requestScope.visible}"/>
+    </f:metadata>
+
     <f:view>
         <h:head>
             <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/contents.css" type="text/css"/>
-        <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/userstyles.css" type="text/css"/>
-        <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/sidebars.css" type="text/css"/>
-             <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/ebi/skin.css"></link>
+            <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/userstyles.css" type="text/css"/>
+            <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/sidebars.css" type="text/css"/>
+            <link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.request.contextPath}/resources/css/ebi/skin.css"></link>
             <link rel="stylesheet" href="#{facesContext.externalContext.request.contextPath}/resources/css/intact-extra.css" type="text/css"/>
         </h:head>
         <h:body>
-            <f:metadata>
-                <f:viewParam name="identifier" value="#{requestScope.identifier}"/>
-                <f:viewParam name="className" value="#{requestScope.className}"/>
-                <f:viewParam name="visible" value="#{requestScope.visible}"/>
-            </f:metadata>
+            <h:form>
+                <ui:param name="cv" value="#{cvLazyPopupController.fetch(requestScope.className, requestScope.identifier)}"/>
 
-            <ui:param name="cv" value="#{cvLazyPopupController.fetch(requestScope.className, requestScope.identifier)}"/>
-
-        <iv:cvDetails cv="#{cv}"/>
-
+                <iv:cvDetails cv="#{cv}"/>
+            </h:form>
         </h:body>
     </f:view>
 
