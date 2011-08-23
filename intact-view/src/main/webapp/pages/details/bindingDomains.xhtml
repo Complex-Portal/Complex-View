@@ -10,14 +10,14 @@
     <tr:iterator value="#{bindingDomains}" var="domain">
           <tr:panelHorizontalLayout>
               <strong>
-                <tr:outputText value="#{domain.cvFeatureType.shortLabel}" />
+                <h:outputText value="#{domain.cvFeatureType.shortLabel}" />
               </strong>
               
                 &#160;
-                <tr:outputText value="#{domain.shortLabel} of #{domain.component.interactor.shortLabel}" />
+                <h:outputText value="#{domain.shortLabel} of #{domain.component.interactor.shortLabel}" />
                 &#160;
                 <tr:iterator value="#{domain.ranges}" var="range">
-                    <tr:outputText value="#{range}" />
+                    <h:outputText value="#{range}" />
                 </tr:iterator>
             </tr:panelHorizontalLayout>
     </tr:iterator>
