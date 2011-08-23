@@ -30,7 +30,7 @@
             </p:commandLink>
 
             <p:dialog header="Participant: #{cc.attrs.participant.interactor.fullName}"
-                      widgetVar="participantDlg" height="700" width="600" fixedCenter="true"
+                      widgetVar="participantDlg" height="400" width="750" fixedCenter="true"
                       constrainToViewport="true" modal="false">
 
                 <h:panelGroup id="participantDetailsPanel">
@@ -48,8 +48,10 @@
                     </iv:panelLabelAndMessage>
     
                     <iv:panelLabelAndMessage label="Primary identifier:" labelStyle="font-weight:bold;">
-                        <ui:repeat var="xref" value="#{iaf:getIdentityXrefs(participant.interactor)}" varStatus="rowStatus">
-                            <h:outputLink text="#{xref.primaryId}" value="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}" target="_blank"/>
+                        <ui:repeat var="xref" value="#{iaf:getIdentityXrefs(participant.interactor)}">
+                            <h:outputLink value="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}" target="_blank">
+                                <h:outputText value="#{xref.primaryId}"/>
+                                </h:outputLink>
                         </ui:repeat>
                     </iv:panelLabelAndMessage>
     
