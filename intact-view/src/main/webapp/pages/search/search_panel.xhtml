@@ -40,10 +40,10 @@
                              disabled="#{userQuery.showNewFieldPanel}"/>
             &#160;
             <p:commandLink id="addFieldBtn" value="Show Advanced Fields »"
-                           style="font-weight:bold" process="addFieldBtn"
+                           style="font-weight:bold" process="searchPanel"
                            actionListener="#{userQuery.doShowAddFieldPanel}"
                            disabled="#{userQuery.showNewFieldPanel}"
-                           update="searchPanelDetails,searchPanel"/>
+                           update="searchPanelDetails,searchPanel" />
 
         </h:panelGroup>
 
@@ -55,18 +55,21 @@
 
             <h:panelGroup>
 
-                <h:selectOneMenu value="#{userQuery.newQueryToken.operandStr}"
+                <h:selectOneMenu id="chooseOperator" value="#{userQuery.newQueryToken.operandStr}"
                                  disabled="#{userQuery.wildcardQuery}">
                     <f:selectItem itemValue="AND" itemLabel="AND"/>
                     <f:selectItem itemValue="OR" itemLabel="OR" itemDisabled="#{empty userQuery.searchQuery or
                                                                                     userQuery.searchQuery eq '*:*'}"/>
+                    <f:selectItem itemValue="NOT" itemLabel="NOT"/>
                 </h:selectOneMenu>
                 &#160;
 
-                <h:selectBooleanCheckbox label="NOT" value="#{userQuery.newQueryToken.notQuery}"/>
-                &#160;
+                <h:selectBooleanCheckbox id="notQueryBox" title="NOT" value="#{userQuery.newQueryToken.notQuery}"/>
+                <h:outputText value="NOT"/>
 
-                <h:selectOneMenu id="newQueryField" label="Field: " value="#{userQuery.newQueryToken.field}"
+                &#160;
+                <h:outputText value="Field: "/>
+                <h:selectOneMenu id="newQueryField" title="Field: " value="#{userQuery.newQueryToken.field}"
                                  immediate="true">
                     <p:ajax event="change" update="newQueryPanel" process="newQueryField"/>
                     <f:selectItems value="#{userQuery.searchFieldSelectItems}"/>
@@ -74,7 +77,7 @@
                 &#160;
 
                 <h:panelGroup id="newQueryPanel">
-                    <h:inputText value="#{userQuery.newQueryToken.query}" columns="50"/>
+                    <h:inputText id="newQuerytxt" value="#{userQuery.newQueryToken.query}" columns="50"/>
 
                     <h:selectOneMenu value="#{userQuery.newQueryToken.query}"
                                      rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}">
