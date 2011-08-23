@@ -11,57 +11,47 @@
     <!-- Include this hack to avoid using the "general" conversation -->
     <ui:include src="/pages/inc/dialogConversationHack.xhtml"/>
 
-    <tr:document title="What is this view?">
+    <h2>Browsing (Browse Tab)</h2>
+    This tab is meant to give you access to more content based on the currently
+    selected set of interaction. As you can see, in this tab we have grouped
+    features under the interacting molecule types. Please note that some of these
+    functionalities will only allow you to include up to 200 molecules , if you exceed
+    this number you will see the warning icon . Now let’s look at the features
+    available to you:
 
-        <tr:panelHeader text="Browsing (Browse Tab)" inlineStyle="margin-left: 10px; margin-right:10px">
-            This tab is meant to give you access to more content based on the currently
-            selected set of interaction. As you can see, in this tab we have grouped
-            features under the interacting molecule types. Please note that some of these
-            functionalities will only allow you to include up to 200 molecules , if you exceed
-            this number you will see the warning icon . Now let’s look at the features
-            available to you:
+    <h2>Listing the molecules involved by specific type</h2>
+    Clicking on the ‘List All’ present under each molecule type will open
+    the corresponding list of molecule in the List Tab.
 
-            <tr:panelHeader text="Listing the molecules involved by specific type">
-                Clicking on the ‘List All’ present under each molecule type will open
-                the corresponding list of molecule in the List Tab.
-            </tr:panelHeader>
+    <h2>Limiting the scope of the current dataset with the GO ontology</h2>
+    Allows users to browse the GO hierarchy as a tree and select terms
+    in order to narrow down their dataset. Once a term is selected,
+    you are taken back to the interaction tab to review your dataset.
 
-            <tr:panelHeader text="Limiting the scope of the current dataset with the GO ontology">
-                Allows users to browse the GO hierarchy as a tree and select terms
-                in order to narrow down their dataset. Once a term is selected,
-                you are taken back to the interaction tab to review your dataset.
-            </tr:panelHeader>
+    <h2>Limiting the scope of the current dataset with the ChEBI ontology</h2>
+    Allows users to browse the ChEBI hierarchy as a tree and select terms in order
+    to narrow down their dataset. Once a term is selected, you are taken back
+    to the interaction tab to review your dataset.
 
-            <tr:panelHeader text="Limiting the scope of the current dataset with the ChEBI ontology">
-                Allows users to browse the ChEBI hierarchy as a tree and select terms in order
-                to narrow down their dataset. Once a term is selected, you are taken back
-                to the interaction tab to review your dataset.
-            </tr:panelHeader>
+    <h2>Bulk linking to third party resources by using involved proteins</h2>
 
-            <tr:panelHeader text="Bulk linking to third party resources by using involved proteins">
+    <ul>
+        <li><strong>Proteins by InterPro domain</strong>: Opens the InterPro domain search and shows in a
+            single display the proteins interacting in your interaction set.
+        </li>
 
-                <ul>
-                    <li><strong>Proteins by InterPro domain</strong>: Opens the InterPro domain search and shows in a
-                        single display the proteins interacting in your interaction set.
-                    </li>
+        <li><strong>Proteins by Reactome pathway</strong>: Sends your proteins to the Reactome SkyPainter
+            that will show you the pathways in which these molecules are know to play a role.
+        </li>
 
-                    <li><strong>Proteins by Reactome pathway</strong>: Sends your proteins to the Reactome SkyPainter
-                        that will show you the pathways in which these molecules are know to play a role.
-                    </li>
+        <li><strong>Proteins by Chromosomal location</strong>: Sends your list of proteins to Ensembl’s
+            Karyotype viewer and overlays the proteins on the chromosomes.
+        </li>
 
-                    <li><strong>Proteins by Chromosomal location</strong>: Sends your list of proteins to Ensembl’s
-                        Karyotype viewer and overlays the proteins on the chromosomes.
-                    </li>
-
-                    <li>
-                        <strong>Proteins by mRNA expression</strong>: Sends your set of proteins to the ArrayExpress Atlas
-                        that will show the known gene expression based on experimental studies.
-                    </li>
-                </ul>
-            </tr:panelHeader>
-
-        </tr:panelHeader>
-
-    </tr:document>
+        <li>
+            <strong>Proteins by mRNA expression</strong>: Sends your set of proteins to the ArrayExpress Atlas
+            that will show the known gene expression based on experimental studies.
+        </li>
+    </ul>
 
 </ui:composition>
