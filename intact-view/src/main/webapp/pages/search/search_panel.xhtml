@@ -23,7 +23,8 @@
         </p:dialog>
 
         <h:panelGroup id="searchPanel" style="vertical-align:top">
-            <h:inputText label="Search: " id="queryTxt"
+            <h:outputText value="Search: "/>
+            <h:inputText title="Search: " id="queryTxt"
                          size="60" value="#{userQuery.searchQuery}"
                          rows="#{(fn:length(userQuery.searchQuery) / 60) + 1}"
                          disabled="#{userQuery.showNewFieldPanel}"/>
