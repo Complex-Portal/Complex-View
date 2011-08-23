@@ -32,7 +32,7 @@
     <ui:param name="addPPRListenerFunc" value="_#{parentId}_#{id}_addPPRListenerFunc"/>
     <ui:param name="checkEmptyEditFunc" value="_#{parentId}_#{id}_checkEmptyEditFunc"/>
 
-    <tr:inputHidden id="#{id}" value="#{value}" />
+    <h:inputHidden id="#{id}" value="#{value}" />
     <f:subview id="#{autocompleteSubformId}">
         <trh:script>
 
@@ -166,21 +166,21 @@
 
         </trh:script>
 
-        <tr:inputText id="#{editId}" autoComplete="off"
-                      inlineStyle="#{contentStyle}"
-                     columns="#{columns}"
+        <h:inputText id="#{editId}" autoComplete="off"
+                     style="#{contentStyle}"
+                     maxlength="#{columns}"
                     readOnly="#{readOnly}"
                     onkeydown="return #{editKeydownFunc}(event);"
                     onfocus="this.select();"
                     onblur="window.clearTimeout(#{timeoutVar}); #{checkEmptyEditFunc}(); #{timeoutVar}=window.setTimeout('#{hideResultTableFunc}();',1000);"
                     value="#{value}"/>
 
-        <tr:commandButton id="action" inlineStyle="display: none;"
+        <h:commandButton id="action" style="display: none;"
                                  actionListener="#{locateBackingBean[locateActionListenerName]}"
-                                 partialSubmit="true" text="" immediate="true"
+                                 value="" immediate="true"
                                  onclick="#{addPPRListenerFunc}(); return true;">
             <f:param name="searchFieldRequestParamName" value="#{jsEditId}"/>
-        </tr:commandButton>
+        </h:commandButton>
 
         <!--<tr:table inlineStyle="position:absolute; z-index:100; #{empty autocompleteResult ? 'display:none': ''}" onclick="#{hideResultTableFunc}2(this);"-->
              <!--var="row" value="#{autocompleteResult}" rows="#{maxSuggestions == null? 20 : maxSuggestions}" width="100%" partialTriggers="action" varStatus="status">-->
