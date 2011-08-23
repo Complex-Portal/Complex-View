@@ -12,36 +12,38 @@
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-                 template="/WEB-INF/facelets/layout/template.xhtml">
+                template="/WEB-INF/facelets/layout/template.xhtml">
 
-        <!-- Mandatorty params -->
-        <ui:param name="sectionTitle" value="Contact"/>
+    <!-- Mandatorty params -->
+    <ui:param name="sectionTitle" value="Contact"/>
 
-        <ui:define name="content">
+    <ui:define name="content">
 
-            <h1>Contact us:</h1>
+        <h1>Contact us:</h1>
 
-                Should you require help on any matter related to IntAct, please submit your question to our
-               <a href="http://www.ebi.ac.uk/support/index.php?query=intact" target="_blank">helpdesk</a>.
+        Should you require help on any matter related to IntAct, please submit your question to our
+        <a href="http://www.ebi.ac.uk/support/index.php?query=intact" target="_blank">helpdesk</a>.
 
-            <br/>
-            <br/>
+        <br/>
+        <br/>
 
-            <h1>Mailing lists, bug reports:</h1>
+        <h1>Mailing lists, bug reports:</h1>
 
-            The following mailing lists have been set up:
-            <ul>
-                <li>intact-developers@googlegroups.com <br/>
-                    <tr:goLink destination="http://groups.google.com/group/intact-developers"
-                               text="IntAct mailing list" targetFrame="_blank"/>
-                    <br/>
-                </li>
-                <li>
-                    You might also want to submit a <a href="http://code.google.com/p/intact/issues/list" target="_blank">feature
-                    request or bug report</a>. <br/>
-                </li>
-            </ul>
+        The following mailing lists have been set up:
+        <ul>
+            <li>intact-developers@googlegroups.com <br/>
+                <h:outputLink value="http://groups.google.com/group/intact-developers"
+                              target="_blank">
+                    <h:outputText value="IntAct mailing list"/>
+                </h:outputLink>
+                <br/>
+            </li>
+            <li>
+                You might also want to submit a <a href="http://code.google.com/p/intact/issues/list" target="_blank">feature
+                request or bug report</a>. <br/>
+            </li>
+        </ul>
 
-        </ui:define>
+    </ui:define>
 
-    </ui:composition>
+</ui:composition>

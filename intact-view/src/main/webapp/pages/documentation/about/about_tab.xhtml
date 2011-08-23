@@ -57,9 +57,16 @@
 
     <tr:panelHeader text="Acknowledgements">
         DrugPort has been created as a result of a public-private partnership between EBI and the<tr:outputText
-            value=" "/><tr:goLink text="EBI Industry Partners" targetFrame="_blank"
-                                  destination="http://www.ebi.ac.uk/industry/ind-prog-index.html"/>. The current version of DrugPort is populated with curated, publicly available data imported from<tr:outputText
-            value=" "/><tr:goLink text="DrugBank." targetFrame="_blank" destination="http://www.drugbank.ca/"/>
+            value=" "/>
+        <h:outputLink value="http://www.ebi.ac.uk/industry/ind-prog-index.html"
+                          target="_blank">
+                <h:outputText value="EBI Industry Partners"/>
+            </h:outputLink>.
+        The current version of DrugPort is populated with curated, publicly available data imported from
+        <h:outputLink value="http://www.drugbank.ca/"
+                          target="_blank">
+                <h:outputText value=" DrugBank."/>
+            </h:outputLink>
 
     </tr:panelHeader>
 

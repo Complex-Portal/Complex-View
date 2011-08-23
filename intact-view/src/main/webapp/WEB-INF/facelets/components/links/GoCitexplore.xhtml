@@ -6,13 +6,13 @@
                 xmlns:tr="http://myfaces.apache.org/trinidad"
                 xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                
+
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
-    <tr:goLink targetFrame="citexplore" text="#{(text != null)? text : query}"
-               disabled="#{disabled != null? disabled : false}"
-            destination="http://www.ebi.ac.uk/citexplore/citationDetails.do?externalId=#{query}&amp;dataSource=MED">
+    <h:outputLink value="http://www.ebi.ac.uk/citexplore/citationDetails.do?externalId=#{query}&amp;dataSource=MED"
+                  target="citexplore" disabled="#{disabled != null? disabled : false}">
+                  <h:outputText value="#{(text != null)? text : query}"/>
         <ui:insert/>
-    </tr:goLink>
+    </h:outputLink>
 </ui:composition>

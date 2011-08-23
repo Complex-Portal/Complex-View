@@ -10,11 +10,10 @@
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
-    <tr:goLink
-            destination="#{intactViewConfiguration.hierarchViewUrl}?query=#{query}"
-            targetFrame="_blank">
-        <tr:image
-                source="#{intactViewConfiguration.hierarchViewImageUrl}?query=#{query}&amp;w=#{width != null? width : 600}&amp;h=#{height != null? height : 600}"/>
-    </tr:goLink>
+    <h:outputLink value="#{intactViewConfiguration.hierarchViewUrl}?query=#{query}"
+                  target="_blank">
+        <h:graphicImage
+                url="#{intactViewConfiguration.hierarchViewImageUrl}?query=#{query}&amp;w=#{width != null? width : 600}&amp;h=#{height != null? height : 600}"/>
+    </h:outputLink>
 
 </ui:composition>
