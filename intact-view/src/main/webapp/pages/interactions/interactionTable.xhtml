@@ -7,7 +7,7 @@
                 xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
-                
+
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
 
 
@@ -56,21 +56,18 @@
                           actionListener="#{columnContext.selectExpandedColumns()}" action="interactions"/>
           </p:menuButton>
 
-
-
-
         </p:toolbarGroup>
     </p:toolbar>
 
     <br/>
 
-    <p:dialog header="Columns displayed" widgetVar="columnsDialog" width="300" height="400">
+    <p:dialog id="updateColumns" header="Columns displayed" widgetVar="columnsDialog" width="300" height="400" modal="true">
         Select:
-        <p:commandLink value="Minimal" actionListener="#{columnContext.selectMininumColumns()}" update="columnSelection"/>
+        <p:commandLink value="Minimal" actionListener="#{columnContext.selectMininumColumns()}" update="columnSelection" process="updateColumns"/>
         &#160;|&#160;
-        <p:commandLink value="Standard" actionListener="#{columnContext.selectStandardColumns()}" update="columnSelection"/>
+        <p:commandLink value="Standard" actionListener="#{columnContext.selectStandardColumns()}" update="columnSelection" process="updateColumns"/>
         &#160;|&#160;
-        <p:commandLink value="Expanded" actionListener="#{columnContext.selectExpandedColumns()}" update="columnSelection"/>
+        <p:commandLink value="Expanded" actionListener="#{columnContext.selectExpandedColumns()}" update="columnSelection" process="updateColumns"/>
         <hr/>
 
         <div style="height:300px; width: 100%;overflow-x: auto;">
@@ -79,7 +76,10 @@
             </h:selectManyCheckbox>
         </div>
         <hr/>
-        <h:commandButton value="Update" action="interactions"/>
+        <p:commandButton value="Update" action="interactions"
+                                 update="resultsTable"
+                                 oncomplete="columnsDialog.hide()"
+                                 process="columnSelection" />
     </p:dialog>
 
     <iv:cvLazyDialog dialogVar="cvInfoDialog"/>
