@@ -4,80 +4,85 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
-                template="/WEB-INF/facelets/layout/template.xhtml">
+                template="/WEB-INF/facelets/layout/template.xhtml"
+                xmlns:p="http://primefaces.prime.com.tr/ui">
 
     <!-- content -->
     <ui:define name="content">
 
-        <tr:panelHeader text="Webapp Status">
+        <h2>Webapp Status</h2>
 
-            <tr:panelTabbed position="above">
-                <tr:showDetailItem text="JPA Statistics">
+            <p:tabView>
+                <p:tab title="JPA Statistics">
 
-                    #{statusBean.statistics}
+                    <h:outputText value="#{statusBean.statistics}"/>
 
-                    <tr:panelList>
+                    <h:panelGrid columns="1">
                         <h:outputText
                                 value="Query execution max time: #{statusBean.statistics.queryExecutionMaxTime}"/>
                         <h:outputText
                                 value="Query execution max time String: #{statusBean.statistics.queryExecutionMaxTimeQueryString}"/>
-                    </tr:panelList>
+                    </h:panelGrid>
 
-                    <tr:separator/>
 
-                    <tr:table var="qs" value="#{statusBean.queryStatisticsList}"
-                              rowBandingInterval="1" rows="50">
-                        <tr:column headerText="Query" sortable="true" sortProperty="query">
+                    <p:dataTable var="qs" value="#{statusBean.queryStatisticsList}"
+                              rows="50">
+                        <p:column sortBy="#{qs.query}">
+                            <f:facet name="header"><h:outputText value="Query"/></f:facet>
                             <h:outputText value="#{qs.query}"/>
-                        </tr:column>
-                        <tr:column headerText="Execution Count" sortable="true" sortProperty="executionCount">
+                        </p:column>
+                        <p:column sortBy="#{qs.executionCount}">
+                            <f:facet name="header"><h:outputText value="Execution Count"/></f:facet>
                             <h:outputText value="#{qs.queryStats.executionCount}"/>
-                        </tr:column>
-                        <tr:column headerText="Execution Avg Time" sortable="true" sortProperty="executionAvgTime">
+                        </p:column>
+                        <p:column sortBy="#{qs.executionAvgTime}">
+                            <f:facet name="header"><h:outputText value="Execution Avg Time"/></f:facet>
                             <h:outputText value="#{qs.queryStats.executionAvgTime}"/>
-                        </tr:column>
-                        <tr:column headerText="Execution Min Time" sortable="true" sortProperty="executionMinTime">
+                        </p:column>
+                        <p:column sortBy="#{qs.executionMinTime}">
+                            <f:facet name="header"><h:outputText value="Execution Min Time"/></f:facet>
                             <h:outputText value="#{qs.queryStats.executionMinTime}"/>
-                        </tr:column>
-                        <tr:column headerText="Execution Max Time" sortable="true" sortProperty="executionMaxTime">
+                        </p:column>
+                        <p:column sortBy="#{qs.executionMaxTime}">
+                            <f:facet name="header"><h:outputText value="Execution Max Time"/></f:facet>
                             <h:outputText value="#{qs.queryStats.executionMaxTime}"/>
-                        </tr:column>
-                        <tr:column headerText="Execution Row Count" sortable="true" sortProperty="executionRowCount">
+                        </p:column>
+                        <p:column sortBy="#{qs.executionRowCount}">
+                            <f:facet name="header"><h:outputText value="Execution Row Count"/></f:facet>
                             <h:outputText value="#{qs.queryStats.executionRowCount}"/>
-                        </tr:column>
+                        </p:column>
 
-                    </tr:table>
+                    </p:dataTable>
 
-                </tr:showDetailItem>
-                <tr:showDetailItem text="Conversations">
-                       <tr:table var="conversation" value="#{statusBean.activeConversations}" emptyText="No active conversations">
-                           <tr:column headerText="Name" sortable="true" sortProperty="name">
+                </p:tab>
+                <p:tab title="Conversations">
+                       <p:dataTable var="conversation" value="#{statusBean.activeConversations}" emptyMessage="No active conversations">
+                           <p:column sortBy="#{conversation.name}">
+                               <f:facet name="header"><h:outputText value="Name"/></f:facet>
                                <h:outputText value="#{conversation.name}"/>
-                           </tr:column>
-                           <tr:column headerText="Active" sortable="true" sortProperty="active">
+                           </p:column>
+                           <p:column sortBy="#{conversation.active}">
+                               <f:facet name="header"><h:outputText value="Active"/></f:facet>
                                <h:outputText value="#{conversation.active}"/>
-                           </tr:column>
-                           <tr:column headerText="Last Access" sortable="true" sortProperty="lastAccess">
+                           </p:column>
+                           <p:column sortBy="#{conversation.lastAccess}">
+                               <f:facet name="header"><h:outputText value="Last Access"/></f:facet>
                                <h:outputText value="#{iaf:toDateTime(conversation.lastAccess)}"/>
-                           </tr:column>
-                           <tr:column headerText="Bean Name">
+                           </p:column>
+                           <p:column>
+                               <f:facet name="header"><h:outputText value="Bean Name"/></f:facet>
                                <h:outputText value="#{conversation.conversationInfo.beanName}"/>
-                           </tr:column>
-                       </tr:table>
+                           </p:column>
+                       </p:dataTable>
 
-                </tr:showDetailItem>
+                </p:tab>
 
-            </tr:panelTabbed>
-
-
-        </tr:panelHeader>
+            </p:tabView>
 
     </ui:define>
 
