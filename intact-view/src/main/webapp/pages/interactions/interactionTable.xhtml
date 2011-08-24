@@ -90,15 +90,19 @@
              paginator="#{searchBean.results.rowCount gt userQuery.pageSize}"
              rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'}">
 <p:column>
-    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-        <h:link outcome="/pages/details/details?faces-redirect=true&amp;includeViewParams=true">
-            <f:param name="interactionAc" value="#{searchBean.getIntactAc(binaryInteraction)}"/>
-            <!--<f:setPropertyActionListener value="#{searchBean.getIntactAc(binaryInteraction)}"-->
-            <!--target="#{detailsBean.interactionAc}"/>-->
-            <!--<f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>-->
-            <h:graphicImage url="/images/magnify.png" alt="details" />
-        </h:link>
-    </h:panelGroup>
+    <ui:repeat var="xref" value="#{binaryInteraction.interactionAcs}"
+               varStatus="rowStatus">
+        <h:panelGroup rendered="#{xref.database == 'intact'}">
+            <h:panelGroup>
+                <h:commandLink action="details">
+                    <f:setPropertyActionListener value="#{xref.identifier}" target="#{detailsBean.interactionAc}"/>
+                    <f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>
+                    <h:graphicImage url="/images/magnify.png" alt="details" />
+                </h:commandLink>
+                <br/>
+            </h:panelGroup>
+        </h:panelGroup>
+    </ui:repeat>
 </p:column>
 <p:column>
     <f:facet name="header">
