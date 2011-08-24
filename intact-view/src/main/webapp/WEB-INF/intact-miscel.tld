@@ -48,7 +48,7 @@
             <name>rendered</name>
         </attribute>
     </tag>
-    <tag>
+    <!--<tag>
         <name>inputAutocomplete</name>
         <attribute>
             <name>id</name>
@@ -90,6 +90,6 @@
         <attribute>
             <name>required</name>
         </attribute>
-    </tag>
+    </tag>-->
     
 </taglib>

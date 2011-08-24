@@ -10,10 +10,10 @@
         <tag-name>customShowDetail</tag-name>
         <source>facelets/components/miscel/CustomShowDetail.xhtml</source>
     </tag>
-    <tag>
+    <!--<tag>
         <tag-name>inputAutocomplete</tag-name>
         <source>facelets/components/miscel/InputAutocomplete.xhtml</source>
-    </tag>
+    </tag>-->
 
     <tag>
         <tag-name>collapsibleIterator</tag-name>

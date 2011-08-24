@@ -191,12 +191,12 @@
 	</navigation-rule>-->
 
 	<!-- filters -->
-	<navigation-rule>
+	<!--<navigation-rule>
 		<navigation-case>
 			<from-outcome>dialog:filters</from-outcome>
 			<to-view-id>/pages/inc/filters_dialog.xhtml</to-view-id>
 		</navigation-case>
-	</navigation-rule>
+	</navigation-rule>-->
 
 	<!--dataset of the month-->
 	<navigation-rule>
