@@ -31,7 +31,7 @@
         <p:tree var="otw" value="#{browserController.ontologyTreeNode}"
                 dynamic="true" cache="true"
                 selectionMode="single" selection="#{browserController.selectedNode}"
-                nodeSelectListener="#{browserController.searchNode}">
+                nodeSelectListener="#{browserController.searchNode}" style="width:50%;">
             <p:treeNode>
                 <h:outputText value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
             </p:treeNode>
