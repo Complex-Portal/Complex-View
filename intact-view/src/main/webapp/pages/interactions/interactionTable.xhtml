@@ -37,7 +37,7 @@
 
         <p:commandButton id="showHideColumns" type="button" value="Show/hide columns" onclick="columnsDialog.show()" />
 
-        <p:dialog id="updateColumns" header="Columns displayed" widgetVar="columnsDialog" width="300" height="400" modal="true">
+        <p:dialog id="updateColumns" header="Columns displayed" widgetVar="columnsDialog" width="300" height="450">
             Select:
             <p:commandLink id="selectMinimalColumns" value="Minimal" actionListener="#{columnContext.selectMininumColumns()}" update="columnSelection" process="updateColumns"/>
             &#160;|&#160;
