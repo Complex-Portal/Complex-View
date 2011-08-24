@@ -77,12 +77,14 @@
         </div>
         <hr/>
         <p:commandButton id="updateColumnSelection" value="Update" action="interactions"
-                                 update="resultsTable"
+                                 update="interactionList"
                                  oncomplete="columnsDialog.hide()"
-                                 process="updateColumnSelection" />
+                                 process="updateColumns" ajax="true"/>
     </p:dialog>
 
     <iv:cvLazyDialog dialogVar="cvInfoDialog"/>
+
+    <h:panelGroup id="interactionlist">
 
     <p:dataTable id="resultsTable" var="binaryInteraction" value="#{searchBean.results}"
                      rows="#{userQuery.pageSize}"
@@ -385,5 +387,6 @@
            </p:column>
 
     </p:dataTable>
+</h:panelGroup>
 
 </ui:composition>
