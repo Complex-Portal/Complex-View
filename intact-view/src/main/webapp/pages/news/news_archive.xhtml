@@ -7,9 +7,6 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-
                 template="/WEB-INF/facelets/layout/template.xhtml">
 
 
@@ -18,10 +15,10 @@
 
     <ui:define name="content">
 
-        <tr:panelHeader text="News - Archive"/>
+        <h2>"News - Archive"</h2>
 
         <ul>
-            <c:forEach var="pieceOfNews" items="#{newsBean.news}">
+            <ui:repeat var="pieceOfNews" value="#{newsBean.news}">
                 <li>
                     <p>
                         <strong>#{pieceOfNews.title}</strong>
@@ -36,14 +33,12 @@
                         <h:outputText value="#{pieceOfNews.description.value}"
                                       escape="#{pieceOfNews.description.escape}"/>
                         &#160;
-                        <c:if test="#{pieceOfNews.moreLink != null}">
-                            <h:outputLink value="#{pieceOfNews.moreLink}" target="_blank">
-                                <h:outputText value="[more]"/>
-                            </h:outputLink>
-                        </c:if>
+                        <h:outputLink value="#{pieceOfNews.moreLink}" target="_blank" rendered="#{pieceOfNews.moreLink != null}">
+                            <h:outputText value="[more]"/>
+                        </h:outputLink>
                     </p>
                 </li>
-            </c:forEach>
+            </ui:repeat>
         </ul>
 
     </ui:define>

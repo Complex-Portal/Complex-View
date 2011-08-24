@@ -6,8 +6,6 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jstl/core"
 	xmlns:sf="http://www.ebi.ac.uk/faces/site"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:tr="http://myfaces.apache.org/trinidad"
 	template="/WEB-INF/facelets/layout/template.xhtml">
 
 	<!-- Mandatorty params -->
@@ -15,37 +13,35 @@
 
 	<ui:define name="content">
 
-		<tr:panelHeader text="FAQ - Frequently Asked Questions" />
+		<h2>"FAQ - Frequently Asked Questions"</h2>
 
-		<c:forEach var="topic" items="#{faqBean.topics}">
+		<ui:repeat var="topic" value="#{faqBean.topics}">
 			<h2>#{topic.topicInformation.name}
 			- <i><font color="#808080">#{topic.topicInformation.description}</font></i></h2>
 
 			<ul type="square">
-				<c:forEach var="item" items="#{topic.items}">
-					<a href="##{item.id}">
-					<li>#{item.question}</li>
-					</a>
-				</c:forEach>
+				<ui:repeat var="item" value="#{topic.items}">
+					<li><a href="##{item.id}">#{item.question}</a></li>
+				</ui:repeat>
 			</ul>
-		</c:forEach>
+		</ui:repeat>
 
 		<hr />
 		<br/><br/>
-		<c:forEach var="topic" items="#{faqBean.topics}">
+		<ui:repeat var="topic" value="#{faqBean.topics}">
 
 			<h2>#{topic.topicInformation.name} - <i><font color="#808080">#{topic.topicInformation.description}</font></i></h2>
 
-			<c:forEach var="item" items="#{topic.items}">
+			<ui:repeat var="item" value="#{topic.items}">
 				<div id="#{item.id}">
 					<h3>#{item.question}</h3>
 					<br />
 					<h:outputText value="#{item.answer.value}" escape="#{item.answer.escape}"/>
                 </div>
                 <br/>
-			</c:forEach>
+			</ui:repeat>
 
-		</c:forEach>
+		</ui:repeat>
 
 	</ui:define>
 
