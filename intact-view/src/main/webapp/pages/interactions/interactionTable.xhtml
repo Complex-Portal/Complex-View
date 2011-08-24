@@ -11,382 +11,382 @@
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
 
 
-    <p:toolbar >
+<p:toolbar >
 
-        <p:toolbarGroup align="left">
+    <p:toolbarGroup align="left">
 
         <h:selectOneMenu id="exportFormatSelect"
-                                value="#{searchBean.exportFormat}">
+                         value="#{searchBean.exportFormat}">
             <p:ajax event="change" onstart="document.getElementById('exportBtn').disabled=true"
                     update="exportBtn"/>
-                <f:selectItem itemLabel="-- Select format to Download --" itemValue="#{null}"/>
-                <f:selectItem itemLabel="MI-TAB" itemValue="mitab"/>
-                <f:selectItem itemLabel="MI-TAB (Expanded)" itemValue="mitab_intact"/>
-                <f:selectItem itemLabel="MI-XML 2.5.3" itemValue="xml_2_53" disabled="#{searchBean.results.rowCount ge 500}"/>
-                <f:selectItem itemLabel="MI-XML 2.5.4" itemValue="xml_2_54" disabled="#{searchBean.results.rowCount ge 500}"/>
-                <f:selectItem itemLabel="MI-XML 2.5(HTML view)" itemValue="xml_html"
-                               disabled="#{searchBean.results.rowCount ge 500}"/>
-            </h:selectOneMenu>
+            <f:selectItem itemLabel="-- Select format to Download --" itemValue="#{null}"/>
+            <f:selectItem itemLabel="MI-TAB" itemValue="mitab"/>
+            <f:selectItem itemLabel="MI-TAB (Expanded)" itemValue="mitab_intact"/>
+            <f:selectItem itemLabel="MI-XML 2.5.3" itemValue="xml_2_53" disabled="#{searchBean.results.rowCount ge 500}"/>
+            <f:selectItem itemLabel="MI-XML 2.5.4" itemValue="xml_2_54" disabled="#{searchBean.results.rowCount ge 500}"/>
+            <f:selectItem itemLabel="MI-XML 2.5(HTML view)" itemValue="xml_html"
+                          disabled="#{searchBean.results.rowCount ge 500}"/>
+        </h:selectOneMenu>
 
-            <p:commandButton type="button" id="exportBtn" value="Download"
+        <p:commandButton type="button" id="exportBtn" value="Download"
                          disabled="#{searchBean.exportFormat == null}"
                          onclick="var newWindow = window.open('#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}', '_blank'); newWindow.focus()"/>
 
-            <p:divider/>
+        <p:divider/>
 
 
-            <p:commandButton id="showHideColumns" type="button" value="Show/hide columns" onclick="columnsDialog.show()" />
+        <p:commandButton id="showHideColumns" type="button" value="Show/hide columns" onclick="columnsDialog.show()" />
+
+        <p:dialog id="updateColumns" header="Columns displayed" widgetVar="columnsDialog" width="300" height="400" modal="true">
+            Select:
+            <p:commandLink id="selectMinimalColumns" value="Minimal" actionListener="#{columnContext.selectMininumColumns()}" update="columnSelection" process="updateColumns"/>
+            &#160;|&#160;
+            <p:commandLink id="selectStandardColumns" value="Standard" actionListener="#{columnContext.selectStandardColumns()}" update="columnSelection" process="updateColumns"/>
+            &#160;|&#160;
+            <p:commandLink id="selectExpandedColumns" value="Expanded" actionListener="#{columnContext.selectExpandedColumns()}" update="columnSelection" process="updateColumns"/>
+            <hr/>
+
+            <div style="height:300px; width: 100%;overflow-x: auto;">
+                <h:selectManyCheckbox id="columnSelection" value="#{columnContext.selectedColumns}" layout="pageDirection">
+                    <f:selectItems value="#{columnContext.columnsSelectItems}"/>
+                </h:selectManyCheckbox>
+            </div>
+            <hr/>
+            <p:commandButton id="updateColumnSelection" value="Update"
+                             update="interactionList"
+                             oncomplete="columnsDialog.hide()"
+                             process="updateColumns" ajax="true"/>
+        </p:dialog>
 
 
-            <h:selectBooleanCheckbox id="showTypeBool" value="#{columnContext.showIcons}">
-                <f:ajax event="valueChange" render="resultsTable" execute="@this"/>
-            </h:selectBooleanCheckbox>
-            <h:outputLabel for="showTypeBool" value="Show icons"/>
+        <h:selectBooleanCheckbox id="showTypeBool" value="#{columnContext.showIcons}">
+            <f:ajax event="valueChange" render="resultsTable" execute="@this"/>
+        </h:selectBooleanCheckbox>
+        <h:outputLabel for="showTypeBool" value="Show icons"/>
 
-            <p:divider/>
+        <p:divider/>
 
-          <p:menuButton id="changeTableMenu" value="Change table preset...">
-              <p:menuitem value="Minimal" ajax="false"
-                          actionListener="#{columnContext.selectMininumColumns()}" action="interactions"/>
-              <p:menuitem value="Basic" ajax="false"
-                          actionListener="#{columnContext.selectBasicColumns()}" action="interactions"/>
-              <p:menuitem value="Standard" ajax="false"
-                          actionListener="#{columnContext.selectStandardColumns()}" action="interactions"/>
-              <p:menuitem value="Expanded" ajax="false"
-                          actionListener="#{columnContext.selectExpandedColumns()}" action="interactions"/>
-          </p:menuButton>
+        <p:menuButton id="changeTableMenu" value="Change table preset...">
+            <p:menuitem value="Minimal" ajax="false"
+                        actionListener="#{columnContext.selectMininumColumns()}" action="interactions"/>
+            <p:menuitem value="Basic" ajax="false"
+                        actionListener="#{columnContext.selectBasicColumns()}" action="interactions"/>
+            <p:menuitem value="Standard" ajax="false"
+                        actionListener="#{columnContext.selectStandardColumns()}" action="interactions"/>
+            <p:menuitem value="Expanded" ajax="false"
+                        actionListener="#{columnContext.selectExpandedColumns()}" action="interactions"/>
+        </p:menuButton>
 
-        </p:toolbarGroup>
-    </p:toolbar>
+    </p:toolbarGroup>
+</p:toolbar>
 
-    <br/>
+<br/>
 
-    <p:dialog id="updateColumns" header="Columns displayed" widgetVar="columnsDialog" width="300" height="400" modal="true">
-        Select:
-        <p:commandLink id="selectMinimalColumns" value="Minimal" actionListener="#{columnContext.selectMininumColumns()}" update="columnSelection" process="updateColumns"/>
-        &#160;|&#160;
-        <p:commandLink id="selectStandardColumns" value="Standard" actionListener="#{columnContext.selectStandardColumns()}" update="columnSelection" process="updateColumns"/>
-        &#160;|&#160;
-        <p:commandLink id="selectExpandedColumns" value="Expanded" actionListener="#{columnContext.selectExpandedColumns()}" update="columnSelection" process="updateColumns"/>
-        <hr/>
+<iv:cvLazyDialog dialogVar="cvInfoDialog"/>
 
-        <div style="height:300px; width: 100%;overflow-x: auto;">
-            <h:selectManyCheckbox id="columnSelection" value="#{columnContext.selectedColumns}" layout="pageDirection">
-                <f:selectItems value="#{columnContext.columnsSelectItems}"/>
-            </h:selectManyCheckbox>
-        </div>
-        <hr/>
-        <p:commandButton id="updateColumnSelection" value="Update" action="interactions"
-                                 update="interactionList"
-                                 oncomplete="columnsDialog.hide()"
-                                 process="updateColumns" ajax="true"/>
-    </p:dialog>
+<h:panelGroup id="interactionlist">
 
-    <iv:cvLazyDialog dialogVar="cvInfoDialog"/>
+<p:dataTable id="resultsTable" var="binaryInteraction" value="#{searchBean.results}"
+             rows="#{userQuery.pageSize}"
+             dynamic="true" lazy="true" rowIndexVar="row" paginatorPosition="both"
+             paginator="#{searchBean.results.rowCount gt userQuery.pageSize}"
+             rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'}">
+<p:column>
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+        <h:link outcome="/pages/details/details?faces-redirect=true&amp;includeViewParams=true">
+            <f:param name="interactionAc" value="#{searchBean.getIntactAc(binaryInteraction)}"/>
+            <!--<f:setPropertyActionListener value="#{searchBean.getIntactAc(binaryInteraction)}"-->
+            <!--target="#{detailsBean.interactionAc}"/>-->
+            <!--<f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>-->
+            <h:graphicImage url="/images/magnify.png" alt="details" />
+        </h:link>
+    </h:panelGroup>
+</p:column>
+<p:column>
+    <f:facet name="header">
+        <h:outputText value="#"/>
+    </f:facet>
+    <h:outputText value="#{row + 1}"/>
+</p:column>
 
-    <h:panelGroup id="interactionlist">
+<p:column rendered="#{columnContext.isColumnVisible('moleculeA.name')}">
+    <f:facet name="header">
+        <h:outputText value="#{messages['moleculeA.name']}"/>
+    </f:facet>
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+        <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
+    </h:panelGroup>
 
-    <p:dataTable id="resultsTable" var="binaryInteraction" value="#{searchBean.results}"
-                     rows="#{userQuery.pageSize}"
-                     dynamic="true" lazy="true" rowIndexVar="row" paginatorPosition="both"
-                     paginator="#{searchBean.results.rowCount gt userQuery.pageSize}"
-                     rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'}">
-        <p:column>
-                <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-                    <h:link outcome="/pages/details/details?faces-redirect=true&amp;includeViewParams=true">
-                        <f:param name="interactionAc" value="#{searchBean.getIntactAc(binaryInteraction)}"/>
-                        <!--<f:setPropertyActionListener value="#{searchBean.getIntactAc(binaryInteraction)}"-->
-                                                     <!--target="#{detailsBean.interactionAc}"/>-->
-                        <!--<f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>-->
-                        <h:graphicImage url="/images/magnify.png" alt="details" />
-                    </h:link>
-                </h:panelGroup>
-            </p:column>
-        <p:column>
-            <f:facet name="header">
-                    <h:outputText value="#"/>
-                </f:facet>
-              <h:outputText value="#{row + 1}"/>
-        </p:column>
+    <h:panelGroup rendered="#{columnContext.showIcons}">
+        <iv:moleculeBoxes interactor="#{binaryInteraction.interactorA}"/>
+    </h:panelGroup>
+</p:column>
 
-            <p:column rendered="#{columnContext.isColumnVisible('moleculeA.name')}">
-                <f:facet name="header">
-                    <h:outputText value="#{messages['moleculeA.name']}"/>
-                </f:facet>
-                <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-                    <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorA)}"/>
-                </h:panelGroup>
+<p:column rendered="#{columnContext.isColumnVisible('moleculeA.links')}">
+    <f:facet name="header">
+        <h:outputText value="#{messages['moleculeA.links']}"/>
+    </f:facet>
+    <iv:interactorLinkLogos interactor="#{binaryInteraction.interactorA}"
+                            display="#{not searchBean.results.sameThanPrevious}"
+                            displayAsText="#{not columnContext.showIcons}"/>
+</p:column>
 
-                <h:panelGroup rendered="#{columnContext.showIcons}">
-                    <iv:moleculeBoxes interactor="#{binaryInteraction.interactorA}"/>
-                </h:panelGroup>
-            </p:column>
+<p:column rendered="#{columnContext.isColumnVisible('moleculeB.name')}">
+    <f:facet name="header">
+        <h:outputText value="#{messages['moleculeB.name']}"/>
+    </f:facet>
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
 
-            <p:column rendered="#{columnContext.isColumnVisible('moleculeA.links')}">
-                <f:facet name="header">
-                    <h:outputText value="#{messages['moleculeA.links']}"/>
-                </f:facet>
-                <iv:interactorLinkLogos interactor="#{binaryInteraction.interactorA}"
-                        display="#{not searchBean.results.sameThanPrevious}"
-                        displayAsText="#{not columnContext.showIcons}"/>
-            </p:column>
+        <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorB)}"/>
 
-            <p:column rendered="#{columnContext.isColumnVisible('moleculeB.name')}">
-                <f:facet name="header">
-                    <h:outputText value="#{messages['moleculeB.name']}"/>
-                </f:facet>
-                <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+        <!--For MoleculeType, Role Initials -->
 
-                    <h:outputText value="#{iamf:getInteractorDisplayName(binaryInteraction.interactorB)}"/>
+    </h:panelGroup>
 
-                    <!--For MoleculeType, Role Initials -->
+    <h:panelGroup rendered="#{columnContext.showIcons}">
+        <iv:moleculeBoxes interactor="#{binaryInteraction.interactorB}"/>
+    </h:panelGroup>
+</p:column>
 
-                </h:panelGroup>
+<p:column styleClass="cellTextCompound"
+          rendered="#{columnContext.isColumnVisible('moleculeB.links')}">
+    <f:facet name="header">
+        <h:outputText value="#{messages['moleculeB.links']}"/>
+    </f:facet>
+    <iv:interactorLinkLogos interactor="#{binaryInteraction.interactorB}"
+                            display="#{not searchBean.results.sameThanPrevious}"
+                            displayAsText="#{not columnContext.showIcons}"/>
+</p:column>
 
-                <h:panelGroup rendered="#{columnContext.showIcons}">
-                    <iv:moleculeBoxes interactor="#{binaryInteraction.interactorB}"/>
-                </h:panelGroup>
-            </p:column>
+<p:column styleClass="cellTextCompound"
+          rendered="#{columnContext.isColumnVisible('moleculeA.aliases')}">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeA.aliases']}"/></f:facet>
 
-            <p:column styleClass="cellTextCompound"
-                      rendered="#{columnContext.isColumnVisible('moleculeB.links')}">
-                <f:facet name="header">
-                    <h:outputText value="#{messages['moleculeB.links']}"/>
-                </f:facet>
-                <iv:interactorLinkLogos interactor="#{binaryInteraction.interactorB}"
-                        display="#{not searchBean.results.sameThanPrevious}"
-                        displayAsText="#{not columnContext.showIcons}"/>
-            </p:column>
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+        <iam:collapsibleIterator disclosed="#{searchBean.showAlternativeIds}"
+                                 value="#{iamf:getExclusionFilteredCrossReferences(binaryInteraction.interactorA.alternativeIdentifiers,null,'rogid')}"
+                                 maxShown="3">
+            <h:outputText value="#{item.identifier}" style="white-space:nowrap;"/>
+        </iam:collapsibleIterator>
+    </h:panelGroup>
+</p:column>
 
-        <p:column styleClass="cellTextCompound"
-                  rendered="#{columnContext.isColumnVisible('moleculeA.aliases')}">
-            <f:facet name="header"><h:outputText value="#{messages['moleculeA.aliases']}"/></f:facet>
+<p:column styleClass="cellTextCompound"
+          rendered="#{columnContext.isColumnVisible('moleculeB.aliases')}">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeB.aliases']}"/></f:facet>
 
-            <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-                <iam:collapsibleIterator disclosed="#{searchBean.showAlternativeIds}"
-                                         value="#{iamf:getExclusionFilteredCrossReferences(binaryInteraction.interactorA.alternativeIdentifiers,null,'rogid')}"
-                                         maxShown="3">
-                    <h:outputText value="#{item.identifier}" style="white-space:nowrap;"/>
-                </iam:collapsibleIterator>
-            </h:panelGroup>
-        </p:column>
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+        <iam:collapsibleIterator disclosed="#{searchBean.showAlternativeIds}"
+                                 value="#{iamf:getExclusionFilteredCrossReferences(binaryInteraction.interactorB.alternativeIdentifiers,null,'rogid')}"
+                                 maxShown="3">
+            <h:outputText value="#{item.identifier}" style="white-space:nowrap;"/>
+        </iam:collapsibleIterator>
+    </h:panelGroup>
+</p:column>
 
-        <p:column styleClass="cellTextCompound"
-                  rendered="#{columnContext.isColumnVisible('moleculeB.aliases')}">
-            <f:facet name="header"><h:outputText value="#{messages['moleculeB.aliases']}"/></f:facet>
+<p:column styleClass="cellTextCompound"
+          rendered="#{columnContext.isColumnVisible('moleculeA.species')}">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeA.species']}"/></f:facet>
 
-            <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-                <iam:collapsibleIterator disclosed="#{searchBean.showAlternativeIds}"
-                                         value="#{iamf:getExclusionFilteredCrossReferences(binaryInteraction.interactorB.alternativeIdentifiers,null,'rogid')}"
-                                         maxShown="3">
-                    <h:outputText value="#{item.identifier}" style="white-space:nowrap;"/>
-                </iam:collapsibleIterator>
-            </h:panelGroup>
-        </p:column>
-
-        <p:column styleClass="cellTextCompound"
-                  rendered="#{columnContext.isColumnVisible('moleculeA.species')}">
-            <f:facet name="header"><h:outputText value="#{messages['moleculeA.species']}"/></f:facet>
-
-            <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-                <h:panelGroup rendered="#{binaryInteraction.interactorA.interactorType.identifier != 'MI:0328'}">
-                    <ui:include src="/pages/interactions/organism.xhtml">
-                        <ui:param name="organism" value="#{binaryInteraction.interactorA.organism}"/>
-                    </ui:include>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{binaryInteraction.interactorA.interactorType.identifier == 'MI:0328'}">
-                    N/A
-                </h:panelGroup>
-            </h:panelGroup>
-        </p:column>
-
-        <p:column styleClass="cellTextCompound"
-                  rendered="#{columnContext.isColumnVisible('moleculeB.species')}">
-            <f:facet name="header"><h:outputText value="#{messages['moleculeB.species']}"/></f:facet>
-
-            <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
-                <h:panelGroup rendered="#{binaryInteraction.interactorB.interactorType.identifier != 'MI:0328'}">
-                    <ui:include src="/pages/interactions/organism.xhtml">
-                        <ui:param name="organism" value="#{binaryInteraction.interactorB.organism}"/>
-                    </ui:include>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{binaryInteraction.interactorB.interactorType.identifier == 'MI:0328'}">
-                    N/A
-                </h:panelGroup>
-            </h:panelGroup>
-        </p:column>
-
-        <p:column rendered="#{columnContext.isColumnVisible('interaction.firstauthor')}"
-                  styleClass="cellTextInteraction">
-            <f:facet name="header"><h:outputText value="#{messages['interaction.firstauthor']}"/></f:facet>
-
-            <ui:repeat var="author" value="#{binaryInteraction.authors}">
-                <span style="display:block">
-                        <h:outputText value="#{author.name}" style="white-space:nowrap;"/>
-                </span>
-            </ui:repeat>
-        </p:column>
-
-        <p:column  rendered="#{columnContext.isColumnVisible('interaction.pubmedid')}"
-                   styleClass="cellTextInteraction">
-            <f:facet name="header"><h:outputText value="#{messages['interaction.pubmedid']}"/></f:facet>
-            <iav:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
-        </p:column>
-
-        <p:column rendered="#{columnContext.isColumnVisible('interaction.interactiontype')}"
-                  styleClass="cellTextInteraction">
-            <f:facet name="header"><h:outputText value="#{messages['interaction.interactiontype']}"/></f:facet>
-            <iv:cvLazyPopup text="#{binaryInteraction.interactionTypes[0].text}" dialogVar="cvInfoDialog"
-                            cvClassName="uk.ac.ebi.intact.model.CvInteractionType"
-                            cvIdentifier="#{binaryInteraction.interactionTypes[0].identifier}"/>
-        </p:column>
-
-        <p:column rendered="#{columnContext.isColumnVisible('interaction.detectionmethod')}"
-                  styleClass="cellTextInteraction">
-            <f:facet name="header"><h:outputText value="#{messages['interaction.detectionmethod']}"/></f:facet>
-            <iv:cvLazyPopup text="#{binaryInteraction.detectionMethods[0].text}" dialogVar="cvInfoDialog"
-                            cvClassName="uk.ac.ebi.intact.model.CvInteraction"
-                            cvIdentifier="#{binaryInteraction.detectionMethods[0].identifier}"/>
-        </p:column>
-
-        <p:column rendered="#{columnContext.isColumnVisible('interaction.sourcedb')}"
-                  styleClass="cellTextInteraction">
-            <f:facet name="header"><h:outputText value="#{messages['interaction.sourcedb']}"/></f:facet>
-            <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
-        </p:column>
-
-        <p:column rendered="#{columnContext.isColumnVisible('interaction.ac')}">
-            <f:facet name="header"><h:outputText value="#{messages['interaction.ac']}"/></f:facet>
-
-                <ui:repeat var="xref" value="#{binaryInteraction.interactionAcs}"
-                           varStatus="rowStatus">
-                    <h:panelGroup rendered="#{xref.database == 'intact'}">
-                        <h:panelGroup>
-                            <h:commandLink action="details" value="#{xref.identifier}">
-                                <f:setPropertyActionListener value="#{xref.identifier}" target="#{detailsBean.interactionAc}"/>
-                                <f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>
-                            </h:commandLink>
-                            <br/>
-                        </h:panelGroup>
-                    </h:panelGroup>
-                    <h:panelGroup rendered="#{xref.database != 'intact' and xref.database != 'irefindex'}">
-                        <h:outputText value="#{iav:xrefToString(xref, true, true, false)}" style="white-space: pre;"/>
-                        <br/>
-                    </h:panelGroup>
-                </ui:repeat>
-            </p:column>
-
-           <p:column rendered="#{columnContext.isColumnVisible('interaction.confidencevalue')}"
-                     styleClass="cellTextInteraction">
-               <f:facet name="header"><h:outputText value="#{messages['interaction.confidencevalue']}"/></f:facet>
-               <ui:repeat var="confidence" value="#{binaryInteraction.confidenceValues}" rows="0">
-                    <span style="display:block">
-                            <h:outputText value="#{confidence.type}:#{confidence.value}" style="white-space:nowrap"/>
-                    </span>
-               </ui:repeat>
-           </p:column>
-
-        <p:column rendered="#{columnContext.isColumnVisible('moleculeA.exprole')}"
-                  styleClass="cellTextCompound">
-            <f:facet name="header"><h:outputText value="#{messages['moleculeA.exprole']}"/></f:facet>
-
-            <iv:cvLazyPopup text="#{binaryInteraction.interactorA.experimentalRoles[0].text}"  dialogVar="cvInfoDialog"
-                            cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"
-                            cvIdentifier="#{binaryInteraction.interactorA.experimentalRoles[0].identifier}"/>
-        </p:column>
-        <p:column rendered="#{columnContext.isColumnVisible('moleculeB.exprole')}"
-                  styleClass="cellTextCompound">
-            <f:facet name="header"><h:outputText value="#{messages['moleculeB.exprole']}"/></f:facet>
-
-           <iv:cvLazyPopup text="#{binaryInteraction.interactorB.experimentalRoles[0].text}"  dialogVar="cvInfoDialog"
-                        cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"
-                        cvIdentifier="#{binaryInteraction.interactorB.experimentalRoles[0].identifier}"/>
-        </p:column>
-
-        <p:column rendered="#{columnContext.isColumnVisible('moleculeA.biorole')}"
-                  styleClass="cellTextCompound">
-            <f:facet name="header"><h:outputText value="#{messages['moleculeA.biorole']}"/></f:facet>
-
-            <iv:cvLazyPopup text="#{binaryInteraction.interactorA.biologicalRoles[0].text}"  dialogVar="cvInfoDialog"
-                            cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"
-                            cvIdentifier="#{binaryInteraction.interactorA.biologicalRoles[0].identifier}"/>
-        </p:column>
-        <p:column rendered="#{columnContext.isColumnVisible('moleculeB.biorole')}"
-                  styleClass="cellTextCompound">
-            <f:facet name="header"><h:outputText value="#{messages['moleculeB.biorole']}"/></f:facet>
-
-           <iv:cvLazyPopup text="#{binaryInteraction.interactorB.biologicalRoles[0].text}"  dialogVar="cvInfoDialog"
-                        cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"
-                        cvIdentifier="#{binaryInteraction.interactorB.biologicalRoles[0].identifier}"/>
-        </p:column>
-
-        <p:column rendered="#{columnContext.isColumnVisible('moleculeA.properties')}"
-                  styleClass="cellTextCompound">
-            <f:facet name="header"><h:outputText value="#{messages['moleculeA.properties']}"/></f:facet>
-            <iam:collapsibleIterator  disclosed="#{searchBean.showProperties}"
-                                     value="#{binaryInteraction.interactorA.properties}"
-                                     maxShown="5">
-                <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
-                <h:outputLink value="#{xrefUrl}" title="#{item.text}"
-                              target="_blank" disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
-            </iam:collapsibleIterator>
-        </p:column>
-
-    <p:column rendered="#{columnContext.isColumnVisible('moleculeB.properties')}"
-                  styleClass="cellTextCompound">
-            <f:facet name="header"><h:outputText value="#{messages['moleculeB.properties']}"/></f:facet>
-            <iam:collapsibleIterator disclosed="#{searchBean.showProperties}"
-                                     value="#{binaryInteraction.interactorB.properties}"
-                                     maxShown="5">
-                <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
-                <h:outputLink value="#{xrefUrl}" title="#{item.text}"
-                              target="_blank" disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
-            </iam:collapsibleIterator>
-        </p:column>
-
-     <p:column rendered="#{columnContext.isColumnVisible('moleculeA.interactortype')}"
-                  styleClass="cellTextCompound">
-            <f:facet name="header"><h:outputText value="#{messages['moleculeA.interactortype']}"/></f:facet>
-
-            <iv:cvLazyPopup text="#{binaryInteraction.interactorA.interactorType.text}"  dialogVar="cvInfoDialog"
-                            cvClassName="uk.ac.ebi.intact.model.CvInteractorType"
-                            cvIdentifier="#{binaryInteraction.interactorA.interactorType.identifier}"/>
-        </p:column>
-        <p:column rendered="#{columnContext.isColumnVisible('moleculeB.interactortype')}"
-                  styleClass="cellTextCompound">
-            <f:facet name="header"><h:outputText value="#{messages['moleculeB.interactortype']}"/></f:facet>
-
-           <iv:cvLazyPopup text="#{binaryInteraction.interactorB.interactorType.text}"  dialogVar="cvInfoDialog"
-                        cvClassName="uk.ac.ebi.intact.model.CvInteractorType"
-                        cvIdentifier="#{binaryInteraction.interactorB.interactorType.identifier}"/>
-        </p:column>
-
-        <p:column styleClass="cellTextCompound"
-                  rendered="#{columnContext.isColumnVisible('interaction.hostorganism')}">
-            <f:facet name="header"><h:outputText value="#{messages['interaction.hostorganism']}"/></f:facet>
-
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+        <h:panelGroup rendered="#{binaryInteraction.interactorA.interactorType.identifier != 'MI:0328'}">
             <ui:include src="/pages/interactions/organism.xhtml">
                 <ui:param name="organism" value="#{binaryInteraction.interactorA.organism}"/>
             </ui:include>
-        </p:column>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{binaryInteraction.interactorA.interactorType.identifier == 'MI:0328'}">
+            N/A
+        </h:panelGroup>
+    </h:panelGroup>
+</p:column>
 
-        <p:column rendered="#{columnContext.isColumnVisible('interaction.expansionmethod')}"
-                  styleClass="cellTextInteraction">
-            <f:facet name="header"><h:outputText value="#{messages['interaction.expansionmethod']}"/></f:facet>
-            <p:commandLink type="button" onclick="complexExpansionDialog.show()" value="#{binaryInteraction.expansionMethod}"/>
-        </p:column>
+<p:column styleClass="cellTextCompound"
+          rendered="#{columnContext.isColumnVisible('moleculeB.species')}">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeB.species']}"/></f:facet>
 
-        <p:column rendered="#{columnContext.isColumnVisible('interaction.dataset')}"
-                     styleClass="cellTextInteraction">
-               <f:facet name="header"><h:outputText value="#{messages['interaction.dataset']}"/></f:facet>
-               <ui:repeat var="dataset" value="#{binaryInteraction.dataset}">
+    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
+        <h:panelGroup rendered="#{binaryInteraction.interactorB.interactorType.identifier != 'MI:0328'}">
+            <ui:include src="/pages/interactions/organism.xhtml">
+                <ui:param name="organism" value="#{binaryInteraction.interactorB.organism}"/>
+            </ui:include>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{binaryInteraction.interactorB.interactorType.identifier == 'MI:0328'}">
+            N/A
+        </h:panelGroup>
+    </h:panelGroup>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('interaction.firstauthor')}"
+          styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.firstauthor']}"/></f:facet>
+
+    <ui:repeat var="author" value="#{binaryInteraction.authors}">
+                <span style="display:block">
+                        <h:outputText value="#{author.name}" style="white-space:nowrap;"/>
+                </span>
+    </ui:repeat>
+</p:column>
+
+<p:column  rendered="#{columnContext.isColumnVisible('interaction.pubmedid')}"
+           styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.pubmedid']}"/></f:facet>
+    <iav:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('interaction.interactiontype')}"
+          styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.interactiontype']}"/></f:facet>
+    <iv:cvLazyPopup text="#{binaryInteraction.interactionTypes[0].text}" dialogVar="cvInfoDialog"
+                    cvClassName="uk.ac.ebi.intact.model.CvInteractionType"
+                    cvIdentifier="#{binaryInteraction.interactionTypes[0].identifier}"/>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('interaction.detectionmethod')}"
+          styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.detectionmethod']}"/></f:facet>
+    <iv:cvLazyPopup text="#{binaryInteraction.detectionMethods[0].text}" dialogVar="cvInfoDialog"
+                    cvClassName="uk.ac.ebi.intact.model.CvInteraction"
+                    cvIdentifier="#{binaryInteraction.detectionMethods[0].identifier}"/>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('interaction.sourcedb')}"
+          styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.sourcedb']}"/></f:facet>
+    <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('interaction.ac')}">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.ac']}"/></f:facet>
+
+    <ui:repeat var="xref" value="#{binaryInteraction.interactionAcs}"
+               varStatus="rowStatus">
+        <h:panelGroup rendered="#{xref.database == 'intact'}">
+            <h:panelGroup>
+                <h:commandLink action="details" value="#{xref.identifier}">
+                    <f:setPropertyActionListener value="#{xref.identifier}" target="#{detailsBean.interactionAc}"/>
+                    <f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>
+                </h:commandLink>
+                <br/>
+            </h:panelGroup>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{xref.database != 'intact' and xref.database != 'irefindex'}">
+            <h:outputText value="#{iav:xrefToString(xref, true, true, false)}" style="white-space: pre;"/>
+            <br/>
+        </h:panelGroup>
+    </ui:repeat>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('interaction.confidencevalue')}"
+          styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.confidencevalue']}"/></f:facet>
+    <ui:repeat var="confidence" value="#{binaryInteraction.confidenceValues}" rows="0">
+                    <span style="display:block">
+                            <h:outputText value="#{confidence.type}:#{confidence.value}" style="white-space:nowrap"/>
+                    </span>
+    </ui:repeat>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('moleculeA.exprole')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeA.exprole']}"/></f:facet>
+
+    <iv:cvLazyPopup text="#{binaryInteraction.interactorA.experimentalRoles[0].text}"  dialogVar="cvInfoDialog"
+                    cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"
+                    cvIdentifier="#{binaryInteraction.interactorA.experimentalRoles[0].identifier}"/>
+</p:column>
+<p:column rendered="#{columnContext.isColumnVisible('moleculeB.exprole')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeB.exprole']}"/></f:facet>
+
+    <iv:cvLazyPopup text="#{binaryInteraction.interactorB.experimentalRoles[0].text}"  dialogVar="cvInfoDialog"
+                    cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"
+                    cvIdentifier="#{binaryInteraction.interactorB.experimentalRoles[0].identifier}"/>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('moleculeA.biorole')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeA.biorole']}"/></f:facet>
+
+    <iv:cvLazyPopup text="#{binaryInteraction.interactorA.biologicalRoles[0].text}"  dialogVar="cvInfoDialog"
+                    cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"
+                    cvIdentifier="#{binaryInteraction.interactorA.biologicalRoles[0].identifier}"/>
+</p:column>
+<p:column rendered="#{columnContext.isColumnVisible('moleculeB.biorole')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeB.biorole']}"/></f:facet>
+
+    <iv:cvLazyPopup text="#{binaryInteraction.interactorB.biologicalRoles[0].text}"  dialogVar="cvInfoDialog"
+                    cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"
+                    cvIdentifier="#{binaryInteraction.interactorB.biologicalRoles[0].identifier}"/>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('moleculeA.properties')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeA.properties']}"/></f:facet>
+    <iam:collapsibleIterator  disclosed="#{searchBean.showProperties}"
+                              value="#{binaryInteraction.interactorA.properties}"
+                              maxShown="5">
+        <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
+        <h:outputLink value="#{xrefUrl}" title="#{item.text}"
+                      target="_blank" disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
+    </iam:collapsibleIterator>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('moleculeB.properties')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeB.properties']}"/></f:facet>
+    <iam:collapsibleIterator disclosed="#{searchBean.showProperties}"
+                             value="#{binaryInteraction.interactorB.properties}"
+                             maxShown="5">
+        <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
+        <h:outputLink value="#{xrefUrl}" title="#{item.text}"
+                      target="_blank" disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
+    </iam:collapsibleIterator>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('moleculeA.interactortype')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeA.interactortype']}"/></f:facet>
+
+    <iv:cvLazyPopup text="#{binaryInteraction.interactorA.interactorType.text}"  dialogVar="cvInfoDialog"
+                    cvClassName="uk.ac.ebi.intact.model.CvInteractorType"
+                    cvIdentifier="#{binaryInteraction.interactorA.interactorType.identifier}"/>
+</p:column>
+<p:column rendered="#{columnContext.isColumnVisible('moleculeB.interactortype')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeB.interactortype']}"/></f:facet>
+
+    <iv:cvLazyPopup text="#{binaryInteraction.interactorB.interactorType.text}"  dialogVar="cvInfoDialog"
+                    cvClassName="uk.ac.ebi.intact.model.CvInteractorType"
+                    cvIdentifier="#{binaryInteraction.interactorB.interactorType.identifier}"/>
+</p:column>
+
+<p:column styleClass="cellTextCompound"
+          rendered="#{columnContext.isColumnVisible('interaction.hostorganism')}">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.hostorganism']}"/></f:facet>
+
+    <ui:include src="/pages/interactions/organism.xhtml">
+        <ui:param name="organism" value="#{binaryInteraction.interactorA.organism}"/>
+    </ui:include>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('interaction.expansionmethod')}"
+          styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.expansionmethod']}"/></f:facet>
+    <p:commandLink type="button" onclick="complexExpansionDialog.show()" value="#{binaryInteraction.expansionMethod}"/>
+</p:column>
+
+<p:column rendered="#{columnContext.isColumnVisible('interaction.dataset')}"
+          styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.dataset']}"/></f:facet>
+    <ui:repeat var="dataset" value="#{binaryInteraction.dataset}">
                     <span style="display:block">
                             <h:outputText value="#{dataset}" style="white-space:nowrap"/>
                     </span>
-               </ui:repeat>
-           </p:column>
+    </ui:repeat>
+</p:column>
 
-    </p:dataTable>
+</p:dataTable>
 </h:panelGroup>
 
 </ui:composition>
