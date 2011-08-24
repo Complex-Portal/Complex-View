@@ -35,7 +35,7 @@
             <p:divider/>
 
 
-            <p:commandButton type="button" value="Show/hide columns" onclick="columnsDialog.show()" />
+            <p:commandButton id="showHideColumns" type="button" value="Show/hide columns" onclick="columnsDialog.show()" />
 
 
             <h:selectBooleanCheckbox id="showTypeBool" value="#{columnContext.showIcons}">
@@ -45,7 +45,7 @@
 
             <p:divider/>
 
-          <p:menuButton value="Change table preset...">
+          <p:menuButton id="changeTableMenu" value="Change table preset...">
               <p:menuitem value="Minimal" ajax="false"
                           actionListener="#{columnContext.selectMininumColumns()}" action="interactions"/>
               <p:menuitem value="Basic" ajax="false"
@@ -63,11 +63,11 @@
 
     <p:dialog id="updateColumns" header="Columns displayed" widgetVar="columnsDialog" width="300" height="400" modal="true">
         Select:
-        <p:commandLink value="Minimal" actionListener="#{columnContext.selectMininumColumns()}" update="columnSelection" process="updateColumns"/>
+        <p:commandLink id="selectMinimalColumns" value="Minimal" actionListener="#{columnContext.selectMininumColumns()}" update="columnSelection" process="updateColumns"/>
         &#160;|&#160;
-        <p:commandLink value="Standard" actionListener="#{columnContext.selectStandardColumns()}" update="columnSelection" process="updateColumns"/>
+        <p:commandLink id="selectStandardColumns" value="Standard" actionListener="#{columnContext.selectStandardColumns()}" update="columnSelection" process="updateColumns"/>
         &#160;|&#160;
-        <p:commandLink value="Expanded" actionListener="#{columnContext.selectExpandedColumns()}" update="columnSelection" process="updateColumns"/>
+        <p:commandLink id="selectExpandedColumns" value="Expanded" actionListener="#{columnContext.selectExpandedColumns()}" update="columnSelection" process="updateColumns"/>
         <hr/>
 
         <div style="height:300px; width: 100%;overflow-x: auto;">
@@ -76,10 +76,10 @@
             </h:selectManyCheckbox>
         </div>
         <hr/>
-        <p:commandButton value="Update" action="interactions"
+        <p:commandButton id="updateColumnSelection" value="Update" action="interactions"
                                  update="resultsTable"
                                  oncomplete="columnsDialog.hide()"
-                                 process="columnSelection" />
+                                 process="updateColumnSelection" />
     </p:dialog>
 
     <iv:cvLazyDialog dialogVar="cvInfoDialog"/>
