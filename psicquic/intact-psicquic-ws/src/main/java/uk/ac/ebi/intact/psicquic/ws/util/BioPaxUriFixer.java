@@ -21,6 +21,7 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import org.biopax.paxtools.model.BioPAXLevel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,34 +37,48 @@ public class BioPaxUriFixer {
 
     private static final String NEW_LINE = System.getProperty("line.separator");
 
-    private static final String BIOPAX_NS = "http://www.biopax.org/release/biopax-level3.owl";
-
     public BioPaxUriFixer() {
 
     }
 
-    public Map<String,String> findMappings(OntModel model) {
+    public Map<String,String> findMappings(OntModel model, BioPAXLevel biopaxLevel) {
         Map<String,String> uriMappings = Maps.newHashMap();
 
-        final Resource unificationXrefRes = model.getOntResource(BIOPAX_NS+"#UnificationXref");
-        final Resource relationshipXrefRes = model.getOntResource(BIOPAX_NS+"#RelationshipXref");
-        final Resource pubXrefRes = model.getOntResource(BIOPAX_NS+"#PublicationXref");
 
-        uriMappings.putAll(findMappingsForResource(unificationXrefRes, model));
-        uriMappings.putAll(findMappingsForResource(relationshipXrefRes, model));
-        uriMappings.putAll(findMappingsForResource(pubXrefRes, model));
+        if (biopaxLevel == BioPAXLevel.L2) {
+            String biopaxUri = "http://www.biopax.org/release/biopax-level2.owl#";
+
+//            final Resource unificationXrefRes = model.getOntResource(biopaxUri+"unificationXref");
+//            final Resource relationshipXrefRes = model.getOntResource(biopaxUri+"relationshipXref");
+//            final Resource pubXrefRes = model.getOntResource(biopaxUri+"publicationXref");
+//
+//            uriMappings.putAll(findMappingsForResource(unificationXrefRes, model, biopaxUri));
+//            uriMappings.putAll(findMappingsForResource(relationshipXrefRes, model, biopaxUri));
+//            uriMappings.putAll(findMappingsForResource(pubXrefRes, model, biopaxUri));
+
+        } else if (biopaxLevel == BioPAXLevel.L3) {
+            String biopaxUri = "http://www.biopax.org/release/biopax-level3.owl#";
+
+            final Resource unificationXrefRes = model.getOntResource(biopaxUri+"UnificationXref");
+           final Resource relationshipXrefRes = model.getOntResource(biopaxUri+"RelationshipXref");
+           final Resource pubXrefRes = model.getOntResource(biopaxUri+"PublicationXref");
+
+           uriMappings.putAll(findMappingsForResource(unificationXrefRes, model, biopaxUri));
+           uriMappings.putAll(findMappingsForResource(relationshipXrefRes, model, biopaxUri));
+           uriMappings.putAll(findMappingsForResource(pubXrefRes, model, biopaxUri));
+        }
 
         return uriMappings;
 
     }
 
-    private Map<String,String> findMappingsForResource(Resource unificationXrefRes, OntModel model) {
+    private Map<String,String> findMappingsForResource(Resource unificationXrefRes, OntModel model, String biopaxUri) {
         Map<String,String> uriMappings = Maps.newHashMap();
 
         final ExtendedIterator<Individual> iterator = model.listIndividuals(unificationXrefRes);
 
-        final Property idProp = model.getProperty(BIOPAX_NS + "#id");
-        final Property dbProp = model.getProperty(BIOPAX_NS + "#db");
+        final Property idProp = model.getProperty(biopaxUri + "id");
+        final Property dbProp = model.getProperty(biopaxUri + "db");
 
 
         while (iterator.hasNext()) {
@@ -97,7 +112,7 @@ public class BioPaxUriFixer {
     public void fixBioPaxUris(Reader reader, Writer writer, Map<String,String> uriMappings) throws IOException {
         BufferedReader in = new BufferedReader(reader);
         String str;
-          while ((str = in.readLine()) != null) {
+        while ((str = in.readLine()) != null) {
             if (str.contains("HTTP://PATHWAYCOMMONS.ORG/")) {
                 for (Map.Entry<String, String> entry : uriMappings.entrySet()) {
                     final String oldUri = entry.getKey();
