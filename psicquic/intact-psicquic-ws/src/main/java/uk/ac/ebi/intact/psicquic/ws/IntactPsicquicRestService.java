@@ -22,6 +22,7 @@ import psidev.psi.mi.xml.converter.impl254.EntrySetConverter;
 import psidev.psi.mi.xml.dao.inMemory.InMemoryDAOFactory;
 import psidev.psi.mi.xml254.jaxb.EntrySet;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
+import uk.ac.ebi.intact.psicquic.ws.util.BioPaxUriFixer;
 import uk.ac.ebi.intact.psicquic.ws.util.PsicquicStreamingOutput;
 
 import javax.ws.rs.core.MediaType;
@@ -106,21 +107,24 @@ public class IntactPsicquicRestService implements PsicquicRestService {
 
                 final String baseUri = "http://www.ebi.ac.uk/intact/";
 
-                OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+                OntModel jenaModel = createJenaModel(new StringReader(os.toString()), baseUri);
 
-                final RDFReader rdfReader = new JenaReader();
-                rdfReader.read(model, new StringReader(os.toString()), baseUri);
-
-                final RDFWriter rdfWriter = model.getWriter(rdfFormat);
+                final RDFWriter rdfWriter = jenaModel.getWriter(rdfFormat);
                 rdfWriter.setProperty("xmlbase", baseUri);
-                model.setNsPrefix("", baseUri);
+                jenaModel.setNsPrefix("", baseUri);
 
                 Writer writer = new StringWriter();
-                rdfWriter.write(model, writer, baseUri);
-                
-                String rdfOutputStr = writer.toString();
-                
-                return Response.status(200).type(mediaType).entity(rdfOutputStr).build();
+                rdfWriter.write(jenaModel, writer, baseUri);
+
+                // fix mappings
+                Reader reader = new StringReader(writer.toString());
+                Writer resultRdfWriter = new StringWriter();
+
+                BioPaxUriFixer fixer = new BioPaxUriFixer();
+                Map<String, String> uriMappings = fixer.findMappings(jenaModel);
+                fixer.fixBioPaxUris(reader, resultRdfWriter, uriMappings);
+
+                return Response.status(200).type(mediaType).entity(resultRdfWriter.toString()).build();
 
             } else if (format.startsWith(IntactPsicquicService.RETURN_TYPE_BIOPAX)) {
                 String[] formatElements = format.split("-");
@@ -136,7 +140,27 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                 ByteArrayOutputStream os = new ByteArrayOutputStream();
                 convertToBioPAX(os, bioPAXLevel, query, firstResult, maxResults);
 
-                return Response.status(200).type(MediaType.APPLICATION_XML_TYPE).entity(os.toString()).build();
+                final String biopaxOutput = os.toString();
+
+                String output = "";
+
+                if (!biopaxOutput.isEmpty()) {
+                    final String baseUri = "http://www.ebi.ac.uk/intact/";
+
+                    // fix the biopax non-dereferenciable URIs
+                    OntModel jenaModel = createJenaModel(new StringReader(biopaxOutput), baseUri);
+
+                    Reader reader = new StringReader(biopaxOutput);
+                    Writer writer = new StringWriter();
+
+                    BioPaxUriFixer fixer = new BioPaxUriFixer();
+                    final Map<String, String> mappings = fixer.findMappings(jenaModel);
+                    fixer.fixBioPaxUris(reader, writer, mappings);
+
+                    output = writer.toString();
+                }
+
+                return Response.status(200).type(MediaType.APPLICATION_XML_TYPE).entity(output).build();
 
             } else if (IntactPsicquicService.RETURN_TYPE_COUNT.equalsIgnoreCase(format)) {
                 return count(query);
@@ -155,8 +179,20 @@ public class IntactPsicquicRestService implements PsicquicRestService {
 
     }
 
+    private OntModel createJenaModel(Reader reader, String baseUri) {
+        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+
+        final RDFReader rdfReader = new JenaReader();
+        rdfReader.read(model, reader, baseUri);
+        return model;
+    }
+
     protected void convertToBioPAX(OutputStream os, BioPAXLevel biopaxLevel, String query, int firstResult, int maxResults) throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException, ConverterException, PsimiXmlWriterException, IOException, PsimiXmlReaderException {
         final EntrySet entrySet254 = getByQueryXml(query, firstResult, maxResults);
+
+        if (entrySet254.getEntries().isEmpty()) {
+            return;
+        }
 
         EntrySetConverter converter254 = new EntrySetConverter();
         converter254.setDAOFactory(new InMemoryDAOFactory());
