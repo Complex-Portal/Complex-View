@@ -97,18 +97,21 @@ public class BioPaxUriFixer {
     public void fixBioPaxUris(Reader reader, Writer writer, Map<String,String> uriMappings) throws IOException {
         BufferedReader in = new BufferedReader(reader);
         String str;
-        while ((str = in.readLine()) != null) {
-            if (str.contains("bp:xref")) {
+          while ((str = in.readLine()) != null) {
+            if (str.contains("HTTP://PATHWAYCOMMONS.ORG/")) {
                 for (Map.Entry<String, String> entry : uriMappings.entrySet()) {
                     final String oldUri = entry.getKey();
                     final String newUri = entry.getValue();
 
-                    if (str.contains("HTTP://PATHWAYCOMMONS.ORG/")) {
-                        str = str.replaceAll(oldUri, newUri);
-                    } else {
-                        String uriFromHash = oldUri.substring(oldUri.indexOf("#"));
-                        str = str.replaceAll(uriFromHash, newUri);
-                    }
+                   str = str.replaceAll(oldUri, newUri);
+                }
+            } else if (str.contains("bp:xref")) {
+                for (Map.Entry<String, String> entry : uriMappings.entrySet()) {
+                    final String oldUri = entry.getKey();
+                    final String newUri = entry.getValue();
+
+                    String uriFromHash = oldUri.substring(oldUri.indexOf("#"));
+                    str = str.replaceAll(uriFromHash, newUri);
                 }
             } else if (str.contains("rdf:ID")) {
                 for (Map.Entry<String, String> entry : uriMappings.entrySet()) {
@@ -117,13 +120,6 @@ public class BioPaxUriFixer {
 
                     String uriFromHashWithout = oldUri.substring(oldUri.indexOf("#") + 1);
                     str = str.replaceAll(uriFromHashWithout, newUri);
-                }
-            } else if (str.contains("rdf:about")) {
-               for (Map.Entry<String, String> entry : uriMappings.entrySet()) {
-                    final String oldUri = entry.getKey();
-                    final String newUri = entry.getValue();
-
-                   str = str.replaceAll(oldUri, newUri);
                 }
             }
 
