@@ -119,7 +119,11 @@ public class BioPaxUriFixer {
                     final String newUri = entry.getValue();
 
                     String uriFromHashWithout = oldUri.substring(oldUri.indexOf("#") + 1);
-                    str = str.replaceAll(uriFromHashWithout, newUri);
+
+                    if (str.contains(uriFromHashWithout)) {
+                        str = str.replaceAll("rdf:ID", "rdf:about");
+                        str = str.replaceAll(uriFromHashWithout, newUri);
+                    }
                 }
             }
 
