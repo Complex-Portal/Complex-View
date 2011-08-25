@@ -81,6 +81,8 @@ public class BioPaxUriFixer {
                         db = "obo.go";
                     } else if ("psi-mi".equals(db)) {
                         db = "obo.mi";
+                    } else if (db.endsWith("pdb")) {
+                        db = "pdb";
                     }
 
                     final String newUri = "http://identifiers.org/"+db+"/" + id;
