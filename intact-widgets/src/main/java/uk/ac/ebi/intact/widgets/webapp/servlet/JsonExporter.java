@@ -49,7 +49,7 @@ public class JsonExporter extends HttpServlet {
         }
 
         // read xml file
-        InputStream xmlStream = new FileInputStream(getServletContext().getRealPath("/examples/xml/" + interactionAc + ".xml"));
+        InputStream xmlStream = new FileInputStream(getServletContext().getRealPath("/files/xml/" + interactionAc + ".xml"));
 
         try {
             // transform xml to json
