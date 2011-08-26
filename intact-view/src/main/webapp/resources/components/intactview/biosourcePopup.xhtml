@@ -22,15 +22,11 @@
 
         <h:panelGroup rendered="#{cc.attrs.visible}">
 
-            <p:commandLink id="biosourceLink" type="button" onclick="biosourceDlg.show();">
-                <h:outputText value="#{cc.attrs.bioSource.fullName}" />    
-            </p:commandLink>
+            <p:commandLink id="biosourceLink" type="button" onclick="biosourceDlg.show();" value="#{cc.attrs.bioSource.fullName}"/>
 
             <p:dialog header="Organism: #{cc.attrs.bioSource.fullName}"
-                      widgetVar="biosourceDlg" height="700" width="600" fixedCenter="true"
+                      widgetVar="biosourceDlg" height="400" width="750" fixedCenter="true"
                       constrainToViewport="true" modal="false">
-
-                <h3>Organism</h3>
 
                 <p:panel>
                     <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
