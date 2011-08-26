@@ -15,11 +15,11 @@
         </strong>
         &#160;&#160;
 
-        <h:outputText value="Select molecules by clicking on the row. Select more than one molecule by holding the Control key"
-                rendered="#{empty nucleicAcidListController.selected}"/>
+        <h:outputText value="Select molecules by clicking on the row."/>
 
-        <h:panelGroup rendered="#{not empty nucleicAcidListController.selected}">
-            <h:commandButton value="Search Interactions"
+        <br/>
+        <h:panelGroup>
+            <h:commandLink value="Search Interactions"
                              actionListener="#{searchBean.doSearchInteractionsFromDnaListSelection}"
                              action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
         </h:panelGroup>

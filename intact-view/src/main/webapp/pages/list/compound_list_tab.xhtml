@@ -16,11 +16,10 @@
         </strong>
         &#160;&#160;
 
-        <h:outputText value="Select molecules by clicking on the row. Select more than one molecule by holding the Control key"
-                rendered="#{empty compoundListController.selected}"/>
-
-        <h:panelGroup rendered="#{not empty compoundListController.selected}">
-            <h:commandButton value="Search Interactions"
+        <h:outputText value="Select molecules by clicking on the row."/>
+        <br/>
+        <h:panelGroup>
+            <h:commandLink value="Search Interactions"
                              actionListener="#{searchBean.doSearchInteractionsFromCompoundListSelection}"
                              action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
         </h:panelGroup>
