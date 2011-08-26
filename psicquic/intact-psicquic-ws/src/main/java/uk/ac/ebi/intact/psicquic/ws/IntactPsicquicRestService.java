@@ -3,13 +3,13 @@ package uk.ac.ebi.intact.psicquic.ws;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.arp.JenaReader;
-import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.rdf.model.RDFWriter;
 import org.apache.commons.lang.StringUtils;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.hupo.psi.mi.psicquic.*;
+import org.hupo.psi.mi.rdf.PsimiRdfConverter;
+import org.hupo.psi.mi.rdf.RdfFormat;
 import org.mskcc.psibiopax.converter.PSIMIBioPAXConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,7 +22,6 @@ import psidev.psi.mi.xml.converter.impl254.EntrySetConverter;
 import psidev.psi.mi.xml.dao.inMemory.InMemoryDAOFactory;
 import psidev.psi.mi.xml254.jaxb.EntrySet;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
-import uk.ac.ebi.intact.psicquic.ws.util.BioPaxUriFixer;
 import uk.ac.ebi.intact.psicquic.ws.util.PsicquicStreamingOutput;
 
 import javax.ws.rs.core.MediaType;
@@ -98,69 +97,18 @@ public class IntactPsicquicRestService implements PsicquicRestService {
             if (strippedMime(IntactPsicquicService.RETURN_TYPE_XML25).equalsIgnoreCase(format)) {
                 final EntrySet entrySet = getByQueryXml(query, firstResult, maxResults);
                 return Response.status(200).type(MediaType.APPLICATION_XML_TYPE).entity(entrySet).build();
-            } else if (format.toLowerCase().startsWith("rdf")) {
+            } else if (format.toLowerCase().startsWith("rdf") || format.toLowerCase().startsWith("biopax")) {
                 String rdfFormat = getRdfFormatName(format);
-                String mediaType = format.contains("xml")? MediaType.APPLICATION_XML : MediaType.TEXT_PLAIN;
+                String mediaType = (format.contains("xml") || format.toLowerCase().startsWith("biopax")) ? MediaType.APPLICATION_XML : MediaType.TEXT_PLAIN;
 
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
-                convertToBioPAX(os, BioPAXLevel.L3, query, firstResult, maxResults);
+                psidev.psi.mi.xml.model.EntrySet entrySet = createEntrySet(query, firstResult, maxResults);
 
-                final String baseUri = "http://www.ebi.ac.uk/intact/";
+                StringWriter sw = new StringWriter();
 
-                OntModel jenaModel = createJenaModel(new StringReader(os.toString()), baseUri);
+                PsimiRdfConverter rdfConverter = new PsimiRdfConverter();
+                rdfConverter.convert(entrySet, rdfFormat, sw);
 
-                final RDFWriter rdfWriter = jenaModel.getWriter(rdfFormat);
-                rdfWriter.setProperty("xmlbase", baseUri);
-                jenaModel.setNsPrefix("", baseUri);
-
-                Writer writer = new StringWriter();
-                rdfWriter.write(jenaModel, writer, baseUri);
-
-                // fix mappings
-                Reader reader = new StringReader(writer.toString());
-                Writer resultRdfWriter = new StringWriter();
-
-                BioPaxUriFixer fixer = new BioPaxUriFixer();
-                Map<String, String> uriMappings = fixer.findMappings(jenaModel, BioPAXLevel.L3);
-                fixer.fixBioPaxUris(reader, resultRdfWriter, uriMappings);
-
-                return Response.status(200).type(mediaType).entity(resultRdfWriter.toString()).build();
-
-            } else if (format.startsWith(IntactPsicquicService.RETURN_TYPE_BIOPAX)) {
-                String[] formatElements = format.split("-");
-                String biopaxLevel = "L3";
-
-                if (formatElements.length == 2) {
-                    biopaxLevel = formatElements[1].toUpperCase();
-                    biopaxLevel = biopaxLevel.replaceAll("LEVEL", "L");
-                }
-
-                BioPAXLevel bioPAXLevel = BioPAXLevel.valueOf(biopaxLevel);
-
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
-                convertToBioPAX(os, bioPAXLevel, query, firstResult, maxResults);
-
-                final String biopaxOutput = os.toString();
-
-                String output = "";
-
-                if (!biopaxOutput.isEmpty()) {
-                    final String baseUri = "http://www.ebi.ac.uk/intact/";
-
-                    // fix the biopax non-dereferenciable URIs
-                    OntModel jenaModel = createJenaModel(new StringReader(biopaxOutput), baseUri);
-
-                    Reader reader = new StringReader(biopaxOutput);
-                    Writer writer = new StringWriter();
-
-                    BioPaxUriFixer fixer = new BioPaxUriFixer();
-                    final Map<String, String> mappings = fixer.findMappings(jenaModel, bioPAXLevel);
-                    fixer.fixBioPaxUris(reader, writer, mappings);
-
-                    output = writer.toString();
-                }
-
-                return Response.status(200).type(MediaType.APPLICATION_XML_TYPE).entity(output).build();
+                return Response.status(200).type(mediaType).entity(sw.toString()).build();
 
             } else if (IntactPsicquicService.RETURN_TYPE_COUNT.equalsIgnoreCase(format)) {
                 return count(query);
@@ -179,38 +127,13 @@ public class IntactPsicquicRestService implements PsicquicRestService {
 
     }
 
-    private OntModel createJenaModel(Reader reader, String baseUri) {
-        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-
-        final RDFReader rdfReader = new JenaReader();
-        rdfReader.read(model, reader, baseUri);
-        return model;
-    }
-
-    protected void convertToBioPAX(OutputStream os, BioPAXLevel biopaxLevel, String query, int firstResult, int maxResults) throws PsicquicServiceException, NotSupportedMethodException, NotSupportedTypeException, ConverterException, PsimiXmlWriterException, IOException, PsimiXmlReaderException {
-        final EntrySet entrySet254 = getByQueryXml(query, firstResult, maxResults);
-
-        if (entrySet254.getEntries().isEmpty()) {
-            return;
+   private String getRdfFormatName(String format) {
+        if (format.equalsIgnoreCase("biopax") || format.equalsIgnoreCase("biopax-L3")) {
+            return RdfFormat.BIOPAX_L3.getName();
+        } else if (format.equalsIgnoreCase("biopax-L2")) {
+            return RdfFormat.BIOPAX_L2.getName();
         }
 
-        EntrySetConverter converter254 = new EntrySetConverter();
-        converter254.setDAOFactory(new InMemoryDAOFactory());
-
-        final psidev.psi.mi.xml.model.EntrySet entrySet = converter254.fromJaxb(entrySet254);
-
-        ByteArrayOutputStream psimiData = new ByteArrayOutputStream();
-
-        PsimiXmlWriter psiWriter = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254);
-        psiWriter.write(entrySet, psimiData);
-
-        InputStream is = new ByteArrayInputStream(psimiData.toByteArray());
-        PSIMIBioPAXConverter biopaxConverter = new PSIMIBioPAXConverter(biopaxLevel);
-
-        biopaxConverter.convert(is, os);
-    }
-
-    private String getRdfFormatName(String format) {
         format = format.substring(4);
 
         String rdfFormat;
