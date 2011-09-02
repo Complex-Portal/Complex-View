@@ -290,45 +290,33 @@
         <ui:param name="parameterCount" value="#{fn:length(participant.parameters)}"/>
         <ui:param name="domainCount" value="#{fn:length(participant.bindingDomains)}"/>
 
-        <table width="30" cellSpacing="2" cellPadding="2" border="0">
-            <tr>
-                <td style="background-color:#{annotationCount>0 ? '#a7cf9b' : 'lightgray'};"
-                    width="10"> <!-- green cell -->
+        <div class="extra" style="border: 0px; width:100px; ">
+            <div class="#{annotationCount>0 ? 'ia-annotation' : 'ia-legend-gray'}" style="width:10px; display: inline; border: 1px solid gray;" align="center">
+                <p:commandLink id="participantLink" type="button" onclick="participantDlg.show();" update="participantDetailsPanel" rendered="#{annotationCount gt 0}">
+                    <h:outputText value="A" style="color: white;"/>
+                </p:commandLink>
+                <h:outputText value="A" rendered="#{annotationCount eq 0}" />
+            </div>
+            <div class="#{parameterCount>0 ? 'ia-parameter' : 'ia-legend-gray'}" style="width:10px; display: inline; border: 1px solid gray;" align="center">
+                <p:commandLink id="participantLink" type="button" onclick="participantDlg.show();" update="participantDetailsPanel" rendered="#{parameterCount gt 0}">
+                    <h:outputText value="P" style="color: white;"/>
+                </p:commandLink>
+                <h:outputText value="P" rendered="#{parameterCount eq 0}" />
+            </div>
+            <div class="#{domainCount>0 ? 'ia-feature' : 'ia-legend-gray'}" style="width:10px; display: inline; border: 1px solid gray;" align="center">
+                <p:commandLink id="participantLink" type="button" onclick="participantDlg.show();" update="participantDetailsPanel" rendered="#{domainCount gt 0}">
+                    <h:outputText value="F" style="color: white;"/>
+                </p:commandLink>
+                <h:outputText value="F" rendered="#{domainCount eq 0}" />
+            </div>
+            <div class="#{participant.stoichiometry>0 ? 'ia-stoichiometry' : 'ia-legend-gray'}" style="width:10px; display: inline; border: 1px solid gray;" align="center">
+                <p:commandLink id="participantLink" type="button" onclick="participantDlg.show();" update="participantDetailsPanel" rendered="#{participant.stoichiometry gt 0}">
+                    <h:outputText value="S" style="color: white;"/>
+                </p:commandLink>
+                <h:outputText value="S" rendered="#{participant.stoichiometry eq 0}" />
+            </div>
 
-                    <iv:participantPopup participant="#{participant}" text="A" style="font-weight:bold; color:white;"
-                                         visible="#{annotationCount>0}"/>
-
-                    <h:outputText value="A" shortDesc="#{annotationCount} Annotation" rendered="#{annotationCount == 0}"
-                                  style="font-weight:bold; color:white;"/>
-                </td>
-                <td style="background-color:#{parameterCount>0 ? '#a1c7c7' : 'lightgray'};"
-                    width="10"> <!-- blue cell -->
-
-                    <iv:participantPopup participant="#{participant}" text="P" style="font-weight:bold; color:white;"
-                                         visible="#{parameterCount>0}"/>
-
-                    <h:outputText value="P" shortDesc="#{parameterCount} Parameter" rendered="#{parameterCount == 0}"
-                                  style="font-weight:bold;color:white;"/>
-                </td>
-                <td style="background-color:#{participant.stoichiometry > 0 ? '#9e9e9e' : 'lightgray'};"
-                    width="10"> <!-- gray cell -->
-
-                    <iv:participantPopup participant="#{participant}" text="S" style="font-weight:bold; color:white;"
-                                         visible="#{participant.stoichiometry gt 0}"/>
-
-                    <h:outputText value="S" shortDesc="Stoichiometry: none" rendered="#{participant.stoichiometry eq 0}"
-                                  style="font-weight:bold;color:white;"/>
-                </td>
-                <td style="background-color:#{domainCount>0 ? '#ed8585' : 'lightgray'};" width="10">  <!-- red cell -->
-
-                    <iv:participantPopup participant="#{participant}" text="F" style="font-weight:bold; color:white;"
-                                         visible="#{domainCount>0}"/>
-
-                    <h:outputText value="F" shortDesc="#{domainCount} feature" rendered="#{domainCount == 0}"
-                                  style="font-weight:bold; color:white;"/>
-                </td>
-            </tr>
-        </table>
+        </div>
 
     </p:column>
 
@@ -336,59 +324,93 @@
 
 <br/>
 
-<table width="100%">
-    <tr>
-        <td style="width:75%;"></td>
-        <td style="vertical-align:top; text-align:right;">
+    <div class="legend" style="margin-top: 5px; margin-left: 15px;" align="right">
+        <b>Legend:</b>
+        <div class="ia-annotation" style="display: inline; border: 1px solid gray;">A</div>Annotation &#160;&#160;
+        <div class="ia-parameter" style="display: inline; border: 1px solid gray;">P</div>Experimental Parameter &#160;&#160;
+        <div class="ia-stoichiometry" style="display: inline; border: 1px solid gray;">S</div>Stoichiometry &#160;&#160;
+        <div class="ia-feature" style="display: inline; border: 1px solid gray;">F</div>Experimental Feature
+    </div>
 
-            <p:panel style="vertical-align:top; text-align:right;">
+    <p:dialog header="Participant: #{cc.attrs.participant.interactor.fullName}"
+              widgetVar="participantDlg" height="400" width="750" fixedCenter="true"
+              constrainToViewport="true" modal="false">
 
-                <h:outputText value="Legend: " style="font-weight:bold;"/>
+        <h:panelGroup id="participantDetailsPanel">
 
-                <table cellSpacing="2" cellPadding="2">
-                    <tr>
-                        <td style="background-color:#a7cf9b;" width="10"> <!-- green cell -->
-                            <h:outputText value="A" style="font-weight:bold;color:white;"/>
-                        </td>
-                        <td style="text-align:left;">
-                            <h:outputText value="Participant annotation available"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="background-color:#a1c7c7;" width="10"> <!-- blue cell -->
-                            <h:outputText value="P" style="font-weight:bold;color:white;"/>
-                        </td>
-                        <td style="text-align:left;">
-                            <h:outputText value="Participant experimental parameter available"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="background-color:#9e9e9e;" width="10"> <!-- gray cell -->
-                            <h:outputText value="S" style="font-weight:bold;color:white;"/>
-                        </td>
-                        <td style="text-align:left;">
-                            <h:outputText value="Participant stoichiometry available"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="background-color:#ed8585;" width="10">  <!-- red cell -->
-                            <h:outputText value="F" style="font-weight:bold;color:white;"/>
-                        </td>
-                        <td style="text-align:left;">
-                            <h:outputText value="Experimental feature information available"/>
-                        </td>
-                    </tr>
-                </table>
-            </p:panel>
+        <h3>Participant: #{participant.ac}</h3>
 
-        </td>
-    </tr>
-</table>
+        <!--<tr:panelFormLayout inlineStyle="width:100%">-->
 
-<h:panelGroup rendered="#{detailsBean.featuresAvailable}">
-    <h2>Graphical Representation of Experimental Features</h2>
-    <iv:interactionRepresentation url="/intact/json?ac=#{interaction.ac}" />
-</h:panelGroup>
+            <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                <h:outputText value="#{participant.ac}"/>
+            </iv:panelLabelAndMessage>
+
+            <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                <h:outputText value="#{participant.interactor.shortLabel}"/>
+            </iv:panelLabelAndMessage>
+
+            <iv:panelLabelAndMessage label="Primary identifier:" labelStyle="font-weight:bold;">
+                <ui:repeat var="xref" value="#{iaf:getIdentityXrefs(participant.interactor)}">
+                    <h:outputLink value="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}" target="_blank">
+                        <h:outputText value="#{xref.primaryId}"/>
+                        </h:outputLink>
+                </ui:repeat>
+            </iv:panelLabelAndMessage>
+
+            <iv:panelLabelAndMessage label="Molecule type:" labelStyle="font-weight:bold;">
+                    <h:outputText value="#{participant.interactor.cvInteractorType.shortLabel}"/>
+            </iv:panelLabelAndMessage>
+
+            <iv:panelLabelAndMessage label="Stoichiometry:" labelStyle="font-weight:bold;" visible="#{participant.stoichiometry > 0}">
+                <h:outputText value="#{participant.stoichiometry}"/>
+            </iv:panelLabelAndMessage>
+
+        <!--</tr:panelFormLayout>-->
+
+        <!--<tr:panelFormLayout inlineStyle="width:100%;">-->
+
+            <!--<iv:spacer height="10" rendered="#{not empty participant.xrefs}"/>-->
+            <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty participant.xrefs}"
+                                     labelStyle="font-weight:bold;">
+                 <iv:xrefTable xrefs="#{participant.xrefs}" />
+            </iv:panelLabelAndMessage>
+
+            <!--<tr:spacer height="10" rendered="#{not empty participant.annotations}"/>-->
+            <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty participant.annotations}"
+                                     labelStyle="font-weight:bold;">
+                <iv:annotationTable annotations="#{participant.annotations}" />
+            </iv:panelLabelAndMessage>
+
+            <!--<tr:spacer height="10" rendered="#{not empty participant.bindingDomains}"/>-->
+            <iv:panelLabelAndMessage label="Experimental features:" visible="#{not empty participant.bindingDomains}"
+                                     labelStyle="font-weight:bold;">
+
+                <ui:decorate template="/pages/details/bindingDomains.xhtml">
+                    <ui:param name="bindingDomains" value="#{participant.bindingDomains}"/>
+                </ui:decorate>
+            </iv:panelLabelAndMessage>
+
+            <!--<tr:spacer height="10" rendered="#{not empty participant.parameters}"/>-->
+            <iv:panelLabelAndMessage label="Experimental Parameters:" visible="#{not empty participant.parameters}"
+                                     labelStyle="font-weight:bold;">
+
+                <ui:decorate template="/pages/details/parameters.xhtml">
+                    <ui:param name="parameters" value="#{participant.parameters}"/>
+                </ui:decorate>
+            </iv:panelLabelAndMessage>
+
+        <!--</tr:panelFormLayout>-->
+        </h:panelGroup>
+
+    </p:dialog>
+
+
+    <h:panelGroup rendered="#{detailsBean.featuresAvailable}">
+        <h2>Graphical Representation of Experimental Features</h2>
+        <iv:interactionRepresentation url="/intact/json?ac=#{interaction.ac}" />
+    </h:panelGroup>
+
 </h:panelGroup>
 
 </h:panelGroup>

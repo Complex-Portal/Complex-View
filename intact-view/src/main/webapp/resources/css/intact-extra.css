@@ -60,3 +60,45 @@ td.compoundStructure {
 .ui-datatable table tbody tr.ui-selected{
    background: #ffecc4;
 }
+
+/* Participant Legend */
+
+.ia-annotation {
+    background: #a7cf9b !important;
+    color:white;
+    padding-right:2px;
+    padding-left:2px;
+    margin-right:5px;
+}
+
+.ia-parameter {
+    background: #a1c7c7 !important;
+    color:white;
+    padding-right:2px;
+    padding-left:2px;
+    margin-right:5px;
+}
+
+.ia-stoichiometry {
+    background: #DEC316 !important;
+    color:white;
+    padding-right:2px;
+    padding-left:2px;
+    margin-right:5px;
+}
+
+.ia-feature {
+    background: #ed8585 !important;
+    color:white;
+    padding-right:2px;
+    padding-left:2px;
+    margin-right:5px;
+}
+
+.ia-legend-gray {
+    background: lightgray !important;
+    color:white;
+    padding-right:2px;
+    padding-left:2px;
+    margin-right:5px;
+}
