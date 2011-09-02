@@ -28,7 +28,7 @@
 
            <h:panelGrid style="text-align:center;width:100%">
                 <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
-                    <h:graphicImage url="/images/logos/cytoscape-icon.PNG" shortDesc="Click to start Cytoscape"/>
+                    <h:graphicImage alt="cytoscape-icon" url="/images/logos/cytoscape-icon.PNG" shortDesc="Click to start Cytoscape"/>
                 </h:outputLink>
            </h:panelGrid>
            <div style="font-size:8.5pt;width:98%;">
@@ -44,13 +44,13 @@
                 <h:outputText value="This is going to open the current search in a WebStart " />
 
                 <h:outputLink value="http://java.sun.com/javase/technologies/desktop/javawebstart/index.jsp" target="_blank">
-                    <h:graphicImage url="/images/help.png" style="vertical-align: baseline;"/>
+                    <h:graphicImage alt="help" url="/images/help.png" style="vertical-align: baseline;"/>
                 </h:outputLink>
 
                 <h:outputText value=" version of Cytoscape 2.6.3 " />
 
                 <h:outputLink value="http://www.cytoscape.org/" target="_blank">
-                    <h:graphicImage url="/images/help.png" style="vertical-align: baseline;"/>
+                    <h:graphicImage alt="help" url="/images/help.png" style="vertical-align: baseline;"/>
                 </h:outputLink>
             </div>
         </p:panel>
@@ -93,7 +93,7 @@
     </div>
 
     <div id="cytoscapeweb" style="width:75%; height:900px; border:1px solid #d3d3d3;">
-        Interaction Graph should show here in a few moments... <h:graphicImage url="/images/wait_black_indicator.gif" style="vertical-align: baseline;"/>
+        Interaction Graph should show here in a few moments... <h:graphicImage alt="loading..." url="/images/wait_black_indicator.gif" style="vertical-align: baseline;"/>
     </div>
 
 
