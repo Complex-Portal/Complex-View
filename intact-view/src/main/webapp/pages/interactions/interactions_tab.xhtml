@@ -5,7 +5,8 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
 
-        xmlns:iv="http://java.sun.com/jsf/composite/components/intactview">
+                xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
+                xmlns:ot="http://myfaces.apache.org/orchestra">
 
 <!-- Info section on top of the results -->
 <div style="float:right">
@@ -58,11 +59,14 @@
     <h:panelGroup rendered="#{psicquicController.countInOtherDatabases gt 0}">
         <br/>
         <h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
-        <h:outputLink value="#{intactViewConfiguration.psicquicViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
-            <h:outputText value="#{psicquicController.countInOtherDatabases}" style="font-weight:bold">
-                <f:convertNumber pattern="#,###"/>
-            </h:outputText>
-        </h:outputLink>
+
+        <ot:separateConversationContext>
+           <h:outputLink value="#{intactViewConfiguration.psicquicViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
+               <h:outputText value="#{psicquicController.countInOtherDatabases}" style="font-weight:bold">
+                   <f:convertNumber pattern="#,###"/>
+               </h:outputText>
+           </h:outputLink>
+        </ot:separateConversationContext>
 
         interaction evidences from <strong>#{psicquicController.otherDatabasesWithResults}</strong> other databases.
         <p:commandLink type="button" onclick="psicquicDialog.show()">
@@ -73,11 +77,13 @@
     <h:panelGroup rendered="#{psicquicController.countInOtherDatabases gt 0 and psicquicController.countInOtherImexDatabases gt 0}">
         <br/>
         <h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
-        <h:outputLink value="#{intactViewConfiguration.imexViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
-            <h:outputText value="#{psicquicController.countInOtherImexDatabases}" style="font-weight:bold">
-                <f:convertNumber pattern="#,###"/>
-            </h:outputText>
-        </h:outputLink>
+        <ot:separateConversationContext>
+           <h:outputLink value="#{intactViewConfiguration.imexViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
+               <h:outputText value="#{psicquicController.countInOtherImexDatabases}" style="font-weight:bold">
+                   <f:convertNumber pattern="#,###"/>
+               </h:outputText>
+           </h:outputLink>
+        </ot:separateConversationContext>
 
         interaction evidences from <strong>#{psicquicController.otherImexDatabasesWithResults}</strong> other IMEx databases.
         <p:commandLink type="button" onclick="psicquicImexDialog.show()">
