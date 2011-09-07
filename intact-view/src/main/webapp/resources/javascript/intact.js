@@ -45,6 +45,40 @@ function ia_createHiddenInput(name,value) {
     return input;
 }
 
+function showhide(id){
+    if (document.getElementById){
+        obj = document.getElementById(id);
+        if (obj.style.display == "none"){
+            obj.style.display = "";
+        } else {
+            obj.style.display = "none";
+        }
+    }
+}
+
+function show(id){
+    if (document.getElementById){
+        obj = document.getElementById(id);
+        if( obj == null ) {
+            alert("SHOW: Could not find : 'id'")
+        }
+        if (obj.style.display == "none"){
+            obj.style.display = "block";
+        }
+    }
+}
+
+function hide(id){
+    if (document.getElementById){
+        obj = document.getElementById(id);
+        if( obj == null ) {
+            alert("HIDE: Could not find : 'id'")
+        }
+        if (obj.style == null || obj.style.display == "block" || obj.style.display == ""){
+            obj.style.display = "none";
+        }
+    }
+}
 
 ///////////////////////////////
 // Cytoscape Web interactions
