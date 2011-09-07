@@ -21,8 +21,6 @@
 
     <ui:define name="detailsTabContent">
 
-        <!--<iv:spacer height="5"/>-->
-
         <h:panelGroup valign="middle">
             <h:graphicImage alt="back" url="/images/back_arrow.gif"/>
             <h:commandLink action="details">
@@ -33,35 +31,39 @@
         <ui:param name="matrix" value="#{detailsBean.similarInteractionMatrix}"/>
         <ui:param name="interaction" value="#{detailsBean.interaction}"/>
 
-        <h3>Similarity search for complex interaction</h3>
+        <h2>Similarity search for complex interaction</h2>
 
-            <div style="float:right; z-index:10; position:relative;">
-                <p:panel header="What does that table mean?" closable="true">
-                    <h:outputText
-                            value="This view shows interactions similar to ${interaction.shortLabel}. That is, having at least one participant in common."/>
-                    <br/>
+            <p:dialog header="What is this view?" widgetVar="whatIsSimilarityDialog" width="700" height="500">
+                <br/>
+                <h:outputText value="This view shows interactions similar to ${interaction.shortLabel}. That is, having at least one participant in common."/>
+                <br/>
+                <br/>
+                <h:graphicImage url="/images/documentation/complex-table-doc.png" alt="help" width="500"/>
+            </p:dialog>
 
-                    <h:graphicImage url="/images/documentation/complex-table-doc.png" alt="help" width="500"/>
-
-                </p:panel>
+            <div style="float:right; margin-top: -5px">
+                <p:commandLink type="button" onclick="whatIsSimilarityDialog.show()">
+                    What is this view
+                    <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+                </p:commandLink>
             </div>
 
 
-            <h:panelGroup style="width:100%">
+            <h:panelGroup style="width:700px">
 
-                <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Accession:" labelStyleClass="textLabel">
                     <h:outputText value="#{interaction.ac}"/>
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Name:" labelStyleClass="textLabel">
                     <h:outputText value="#{interaction.shortLabel}"/>
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Participant count:" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Participant count:" labelStyleClass="textLabel">
                     <h:outputText value="#{fn:length( interaction.components )}"/>
                 </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Similar interaction count:" labelStyle="font-weight:bold;">
+                <iv:panelLabelAndMessage label="Similar interaction count:" labelStyleClass="textLabel">
                     <h:outputText value="#{fn:length( matrix.similarInteractions )}"/>
                 </iv:panelLabelAndMessage>
 
@@ -126,7 +128,7 @@
                         </td>
 
                         <td>
-                            <iam2:collapsibleIterator id="mtx_participant_#{status.index}"
+                            <iam:collapsibleIterator id="mtx_participant_#{status.index}"
                                                      disclosed="false"
                                                      value="#{si.others}"
                                                      maxShown="3">
@@ -136,40 +138,30 @@
                                     <h:outputText value="#{item.shortLabel}" />
                                 </h:commandLink>
 
-                            </iam2:collapsibleIterator>
+                            </iam:collapsibleIterator>
                         </td>
 
                     </tr>
 
                 </ui:repeat>
-                <tr>
-                    <td colspan="#{fn:length(matrix.members) + 3}" align="right">
-                        &#160;
-                    </td>
-                </tr>
+           </table>
 
-                <tr>
-                    <td colspan="#{fn:length(matrix.members) + 3}" align="right">
-                        <h:panelGroup>
-                            <h:outputText value="Legend: " inlineStyle="font-weight:bold;"/>
+           <br/>
 
-                            <!--<tr:spacer width="30" />-->
+            <h:panelGroup>
+                <h:outputText value="Legend: " style="font-weight:bold;"/>
 
-                            <table cellSpacing="10">
-                                <tr>
-                                    <td width="10">  <!-- light red cell -->
-                                        <h:outputText value="x/y" inlineStyle="font-weight:bold; color:#a7cf9b;"/>
-                                    </td>
-                                    <td >
-                                        <h:outputText value="Count of matching molecules / Total count of participants in this interaction"/>
-                                    </td>
-                                </tr>
-                            </table>
-                        </h:panelGroup>
-                    </td>
-                </tr>
-
-            </table>
+                <table cellSpacing="10">
+                    <tr>
+                        <td width="10">  <!-- light red cell -->
+                            <h:outputText value="x/y" style="font-weight:bold; color:#a7cf9b;"/>
+                        </td>
+                        <td >
+                            <h:outputText value="Count of matching molecules / Total count of participants in this interaction"/>
+                        </td>
+                    </tr>
+                </table>
+            </h:panelGroup>
 
             </h:panelGroup>
 
