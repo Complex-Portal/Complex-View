@@ -89,7 +89,7 @@
                                               action="#{searchBean.doNewBinarySearch}"/>
                         </f:facet>
 
-                        <h:inputText id="searchInTabTxt" size="30" value="#{userQuery.searchQuery}"
+                        <h:inputText id="searchInTabTxt" size="40" value="#{userQuery.searchQuery}"
                                       onfocus="this.select()"
                                       onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>
                     </iv:panelLabelAndMessage>
@@ -117,7 +117,7 @@
                                         var="term" itemLabel="#{term.label}" itemValue="#{term}"
                                         typeAhead="true" completeMethod="#{ontologyBean.fillAutocomplete}"
                                         autoHighlight="true" forceSelection="true"
-                                        maxResults="20"/>
+                                        maxResults="20" size="40"/>
 
                         <f:facet name="help">
                             <h:panelGroup>
