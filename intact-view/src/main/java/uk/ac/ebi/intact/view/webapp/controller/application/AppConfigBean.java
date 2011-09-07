@@ -17,12 +17,14 @@ package uk.ac.ebi.intact.view.webapp.controller.application;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.core.IntactException;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -31,7 +33,7 @@ import java.io.Serializable;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class AppConfigBean implements Serializable {
+public class AppConfigBean implements Serializable, InitializingBean {
 
     private Log log = LogFactory.getLog(AppConfigBean.class);
 
@@ -48,18 +50,21 @@ public class AppConfigBean implements Serializable {
     public AppConfigBean() {
     }
 
-    @PostConstruct
-    public void setup() {
+    @Override
+    public void afterPropertiesSet() throws Exception {
+
         configFileLocation = intactViewConfiguration.getConfigFile();
 
-        if (!new File(configFileLocation).exists()) {
+        if ( ! new File(configFileLocation).exists() ) {
             if (log.isInfoEnabled()) log.info("No configuration File found. First time setup");
-        } else {
-            try {
-                ontologyBean.loadOntologies();
-            } catch (Exception e) {
-                throw new IntactException("Problem loading ontologies", e);
-            }
+        }
+
+        try {
+            System.out.println(" +++ Loading ontologies...");
+            ontologyBean.loadOntologies();
+            System.out.println( " +++ Completed to load ontologies..." );
+        } catch ( IOException e ) {
+            throw new IntactException("Problem loading ontologies", e);
         }
 
         if (log.isInfoEnabled()) log.info("Initializing xref link context...");
@@ -85,4 +90,6 @@ public class AppConfigBean implements Serializable {
     public boolean isConfigFileExists() {
         return new File(configFileLocation).exists();
     }
+
+
 }
