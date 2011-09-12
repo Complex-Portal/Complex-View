@@ -48,6 +48,7 @@ public class OntologyBean extends BaseController {
     private static final Log log = LogFactory.getLog( OntologyBean.class );
 
     private Directory ontologyIndexDirectory;
+
     private OntologiesIndexSearcher ontologiesIndexSearcher;
 
     @Autowired
@@ -57,6 +58,9 @@ public class OntologyBean extends BaseController {
     private ApplicationContext applicationContext;
 
     public OntologyBean() {
+
+        System.out.println( " +++ Creating OntologyBean" );
+
         String tempDir = System.getProperty("java.io.tmpdir");
         File dir = new File(tempDir, "intact-view-"+System.currentTimeMillis());
 
@@ -91,7 +95,7 @@ public class OntologyBean extends BaseController {
         try {
             term = ontologiesIndexSearcher.findById(id);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Problem loading term: "+id);
+            throw new IllegalArgumentException("Problem loading term: "+id, e);
         }
         return term;
     }
