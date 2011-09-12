@@ -60,9 +60,9 @@ public class AppConfigBean implements Serializable, InitializingBean {
         }
 
         try {
-            System.out.println(" +++ Loading ontologies...");
+            log.debug(" +++ Loading ontologies...");
             ontologyBean.loadOntologies();
-            System.out.println( " +++ Completed to load ontologies..." );
+            log.debug( " +++ Completed to load ontologies..." );
         } catch ( IOException e ) {
             throw new IntactException("Problem loading ontologies", e);
         }
