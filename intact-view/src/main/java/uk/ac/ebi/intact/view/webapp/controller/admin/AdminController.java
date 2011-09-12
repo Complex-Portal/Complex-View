@@ -58,7 +58,6 @@ public class AdminController {
             log.info("Reloading application lists and filters");
         }
 
-        appConfigBean.setup();
         filterPopulatorController.loadFilters();
         statisticsController.calculateStats();
         cvObjectService.clear();

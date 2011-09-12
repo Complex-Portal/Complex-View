@@ -20,17 +20,25 @@
             <p:ajax event="change" onstart="document.getElementById('exportBtn').disabled=true"
                     update="exportBtn"/>
             <f:selectItem itemLabel="-- Select format to Download --" itemValue="#{null}"/>
-            <f:selectItem itemLabel="MI-TAB" itemValue="mitab"/>
+            <f:selectItem itemLabel="MI-TAB" itemValue="mitab"
+                    onclick="_gaq.push(['_trackEvent', 'Export', 'MI-TAB', ''])"/>
             <f:selectItem itemLabel="MI-TAB (Expanded)" itemValue="mitab_intact"/>
             <f:selectItem itemLabel="MI-XML 2.5.3" itemValue="xml_2_53" disabled="#{searchBean.results.rowCount ge 500}"/>
             <f:selectItem itemLabel="MI-XML 2.5.4" itemValue="xml_2_54" disabled="#{searchBean.results.rowCount ge 500}"/>
             <f:selectItem itemLabel="MI-XML 2.5(HTML view)" itemValue="xml_html"
                           disabled="#{searchBean.results.rowCount ge 500}"/>
+            <f:selectItem itemLabel="BioPAX (Level 3)" itemValue="biopax_l3" disabled="#{searchBean.results.rowCount ge 500}"/>
+            <f:selectItem itemLabel="BioPAX (Level 2)" itemValue="biopax_l2" disabled="#{searchBean.results.rowCount ge 500}"/>
+            <f:selectItem itemLabel="RDF/XML" itemValue="rdf_xml" disabled="#{searchBean.results.rowCount ge 500}"/>
+            <f:selectItem itemLabel="RDF/XML (Abbrev)" itemValue="rdf_xml_abbrev" disabled="#{searchBean.results.rowCount ge 500}"/>
+            <f:selectItem itemLabel="RDF (N3)" itemValue="rdf_n3" disabled="#{searchBean.results.rowCount ge 500}"/>
+            <f:selectItem itemLabel="RDF (N-Triples)" itemValue="rdf_triple" disabled="#{searchBean.results.rowCount ge 500}"/>
+            <f:selectItem itemLabel="RDF (Turtle)" itemValue="rdf_turtle" disabled="#{searchBean.results.rowCount ge 500}"/>
         </h:selectOneMenu>
 
         <p:commandButton type="button" id="exportBtn" value="Download"
                          disabled="#{searchBean.exportFormat == null}"
-                         onclick="var newWindow = window.open('#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}', '_blank'); newWindow.focus()"/>
+                         onclick="var selector = document.getElementById('exportFormatSelect');_gaq.push(['_trackEvent', 'Export', selector.options[selector.selectedIndex].text,'#{userQuery.searchQuery}']); var newWindow = window.open('#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}', '_blank'); newWindow.focus()"/>
 
         <p:divider/>
 
