@@ -66,7 +66,7 @@ public class RequestConfigBean implements Serializable {
         try {
             return URLEncoder.encode( callback, "UTF-8" );
         } catch ( UnsupportedEncodingException e ) {
-            throw new RuntimeException( "Could not encode callback URL", e );
+            throw new RuntimeException( "Could not encode callback URL:" + callback, e );
         }
     }
 
