@@ -15,12 +15,15 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
 import uk.ac.ebi.intact.view.webapp.controller.search.facet.ExpansionCount;
 import uk.ac.ebi.intact.view.webapp.controller.search.facet.InteractorTypeCount;
 import uk.ac.ebi.intact.view.webapp.model.LazySearchResultDataModel;
@@ -35,13 +38,14 @@ import uk.ac.ebi.intact.view.webapp.model.LazySearchResultDataModel;
 @Scope("request")
 public class FacetController {
 
+    private static final Log log = LogFactory.getLog( FacetController.class );
+
     @Autowired
     private SearchController searchController;
 
     public FacetController() {
 
     }
-
 
     public ExpansionCount getExpansionCount() {
         FacetField facetField = getFacetField(FieldNames.EXPANSION);
@@ -54,14 +58,23 @@ public class FacetController {
     }
 
     private FacetField getFacetField(String field) {
+        System.out.println( "FacetController.getFacetField(\""+ field +"\")" );
         LazySearchResultDataModel model = searchController.getResults();
 
         if (model == null) {
             return null;
+        } else {
+            log.error( "LazySearchResultDataModel is null" );
         }
 
-        QueryResponse queryResponse = model.getResult().getQueryResponse();
+        final SolrSearchResult result = model.getResult();
+        if( result != null ) {
+            QueryResponse queryResponse = result.getQueryResponse();
+            return queryResponse.getFacetField(field);
+        } else {
+            log.error( "SolrSearchResult is null" );
+        }
 
-        return queryResponse.getFacetField(field);
+        return null;
     }
 }
