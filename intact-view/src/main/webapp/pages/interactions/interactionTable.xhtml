@@ -106,11 +106,12 @@
                varStatus="rowStatus">
         <h:panelGroup rendered="#{xref.database == 'intact'}">
             <h:panelGroup>
-                <h:commandLink action="details" onclick="_gaq.push(['_trackEvent', 'Navigation', 'Interaction details','#{detailsBean.interactionAc}'])">
-                    <f:setPropertyActionListener value="#{xref.identifier}" target="#{detailsBean.interactionAc}"/>
-                    <f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>
+                <h:outputLink value="#{request.contextPath}/interaction/#{xref.identifier}" onclick="_gaq.push(['_trackEvent', 'Navigation', 'Interaction details','#{detailsBean.interactionAc}'])">
+                    <!--<f:param name="interactionAc" value="#{xref.identifier}"/>-->
+                    <!--<f:setPropertyActionListener value="#{xref.identifier}" target="#{detailsBean.interactionAc}"/>-->
+                    <!--<f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>-->
                     <h:graphicImage url="/images/magnify.png" alt="details" />
-                </h:commandLink>
+                </h:outputLink>
                 <br/>
             </h:panelGroup>
         </h:panelGroup>
