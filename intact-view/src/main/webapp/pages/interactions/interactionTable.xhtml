@@ -43,7 +43,7 @@
         <p:divider/>
 
 
-        <p:commandButton id="showHideColumns" type="button" value="Show/hide columns" onclick="columnsDialog.show()" />
+        <p:commandButton id="showHideColumns" type="button" value="Show/hide columns" onclick="columnsDialog.show(); _gaq.push(['_trackEvent', 'Interactions table', 'Show/hide columns', '#{userQuery.searchQuery}'])" />
 
         <p:dialog id="updateColumns" header="Columns displayed" widgetVar="columnsDialog" width="300" height="450">
             Select:
@@ -68,7 +68,7 @@
 
 
         <h:selectBooleanCheckbox id="showTypeBool" value="#{columnContext.showIcons}">
-            <f:ajax event="valueChange" render="resultsTable" execute="@this"/>
+            <f:ajax event="valueChange" render="resultsTable" execute="@this" onevent="_gaq.push(['_trackEvent', 'Interactions table', 'Toggle icons', this.checked])"/>
         </h:selectBooleanCheckbox>
         <h:outputLabel for="showTypeBool" value="Show icons"/>
 
@@ -76,13 +76,17 @@
 
         <p:menuButton id="changeTableMenu" value="Change table preset...">
             <p:menuitem value="Minimal" ajax="false"
-                        actionListener="#{columnContext.selectMininumColumns()}" action="interactions"/>
+                        actionListener="#{columnContext.selectMininumColumns()}" action="interactions"
+                        onclick="_gaq.push(['_trackEvent', 'Interactions table', 'Change table preset', 'Minimum'])"/>
             <p:menuitem value="Basic" ajax="false"
-                        actionListener="#{columnContext.selectBasicColumns()}" action="interactions"/>
+                        actionListener="#{columnContext.selectBasicColumns()}" action="interactions"
+                        onclick="_gaq.push(['_trackEvent', 'Interactions table', 'Change table preset', 'Basic'])"/>
             <p:menuitem value="Standard" ajax="false"
-                        actionListener="#{columnContext.selectStandardColumns()}" action="interactions"/>
+                        actionListener="#{columnContext.selectStandardColumns()}" action="interactions"
+                        onclick="_gaq.push(['_trackEvent', 'Interactions table', 'Change table preset', 'Standard'])"/>
             <p:menuitem value="Expanded" ajax="false"
-                        actionListener="#{columnContext.selectExpandedColumns()}" action="interactions"/>
+                        actionListener="#{columnContext.selectExpandedColumns()}" action="interactions"
+                        onclick="_gaq.push(['_trackEvent', 'Interactions table', 'Change table preset', 'Expanded'])"/>
         </p:menuButton>
 
     </p:toolbarGroup>
@@ -102,7 +106,7 @@
                varStatus="rowStatus">
         <h:panelGroup rendered="#{xref.database == 'intact'}">
             <h:panelGroup>
-                <h:commandLink action="details">
+                <h:commandLink action="details" onclick="_gaq.push(['_trackEvent', 'Navigation', 'Interaction details','#{detailsBean.interactionAc}'])">
                     <f:setPropertyActionListener value="#{xref.identifier}" target="#{detailsBean.interactionAc}"/>
                     <f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>
                     <h:graphicImage url="/images/magnify.png" alt="details" />

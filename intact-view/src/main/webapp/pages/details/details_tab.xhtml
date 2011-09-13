@@ -61,7 +61,7 @@
 
 
 <ui:param name="publication" value="#{experiment.publication}"/>
-<ui:param name="pmid" value="#{iaf:getPubmedId(experiment)}"/>
+<ui:param name="pmid" value="#{publication.publicationId}"/>
 
 <h2>Publication</h2>
 
@@ -104,7 +104,8 @@
         <td width="20%" style="text-align: right; vertical-align: top;">
 
             <p:panel id="publicationLinks" header="Links">
-                <h:commandLink value="Show all interactions" action="#{searchBean.doBinarySearchAction}">
+                <h:commandLink value="Show all interactions" action="#{searchBean.doBinarySearchAction}"
+                        onclick="_gaq.push(['_trackEvent', 'Details', 'Show all interactions', '#{pmid}'])">
                     <f:setPropertyActionListener value="pubid:#{pmid}" target="#{userQuery.searchQuery}"/>
                     <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
                 </h:commandLink>
@@ -161,7 +162,7 @@
                 <p:panel id="interactionLinks" header="Links">
 
                     <h:commandLink value="Find similar interactions" action="browse.complex"
-                                   onclick="document.getElementById('progress_image').style.display = 'block'; document.getElementById('progress_text').style.display = 'block';"/>
+                                   onclick="document.getElementById('mainPanels:progress_image').style.display = 'block'; document.getElementById('mainPanels:progress_text').style.display = 'block'; _gaq.push(['_trackEvent', 'Details', 'Find similar interactions', '#{interaction.ac}'])"/>
 
                     <br/>
 

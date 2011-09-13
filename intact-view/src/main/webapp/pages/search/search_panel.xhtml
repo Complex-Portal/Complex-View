@@ -30,6 +30,7 @@
                          disabled="#{userQuery.showNewFieldPanel}"/>
             &#160;
             <p:commandButton id="quickSearchBtn" ajax="false"
+                             onclick="queryTxt = document.getElementById('queryTxt'); _gaq.push(['_trackEvent', 'SearchPanel', 'Search', queryTxt.value])"
                              value="Search"
                              disabled="#{userQuery.showNewFieldPanel}"
                              action="#{searchBean.doBinarySearchAction}">
@@ -37,10 +38,11 @@
             </p:commandButton>
             &#160;
             <p:commandButton type="button" id="clearSearchBtn" value="Clear"
-                             onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus()"
+                             onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus(); _gaq.push(['_trackEvent', 'SearchPanel', 'Clear', ''])"
                              disabled="#{userQuery.showNewFieldPanel}"/>
             &#160;
             <p:commandLink id="addFieldBtn" value="Show Advanced Fields »"
+                           onclick="_gaq.push(['_trackEvent', 'SearchPanel', 'Show advanced', '#{userQuery.searchQuery}'])"
                            style="font-weight:bold" process="searchPanel"
                            actionListener="#{userQuery.doShowAddFieldPanel}"
                            disabled="#{userQuery.showNewFieldPanel}"
