@@ -117,7 +117,7 @@
                                         var="term" itemLabel="#{term.label}" itemValue="#{term}"
                                         typeAhead="true" completeMethod="#{ontologyBean.fillAutocomplete}"
                                         autoHighlight="true" forceSelection="true"
-                                        maxResults="20" size="40"/>
+                                        maxResults="20" size="30"/>
 
                         <f:facet name="help">
                             <h:panelGroup>
@@ -219,10 +219,12 @@
 
 <h2>Other Searches</h2>
 
-    <p:panel header="Chemical Search" toggleable="true" collapsed="true">
+    <p:panel header="Chemical Search" toggleable="true" collapsed="true" >
 
-            <iframe frameborder="0" width="1200" height="1300"
-                    src="#{intactViewConfiguration.chebiUrl}#{intactViewConfiguration.chebiChemicalSearchPath}&amp;callbackUrl=#{requestConfigBean.encodedCallBackUrl}"/>
+         <p:ajax event="toggle" oncomplete="document.getElementById('lalaFrame').src = '#{intactViewConfiguration.chebiUrl}#{intactViewConfiguration.chebiChemicalSearchPath}&amp;callbackUrl=#{requestConfigBean.encodedCallBackUrl}'" />
+
+            <iframe id="lalaFrame" frameborder="0" width="1200" height="1300"
+                    src=""/>
 
     </p:panel>
 

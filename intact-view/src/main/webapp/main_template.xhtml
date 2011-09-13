@@ -88,7 +88,7 @@
 
         <p:tabView id="mainPanels" cache="false" dynamic="true" activeIndex="#{contextController.activeTabIndex}"
                    widgetVar="mainTabsWidget" onTabChange="_gaq.push(['_trackEvent', 'Navigation', 'Tab change', index])">
-            <p:ajax event="tabChange" listener="#{searchBean.onTabChanged}" />
+            <p:ajax event="tabChange" listener="#{searchBean.onTabChanged}"/>
 
             <p:tab id="homeTab" title="Home">
                         <p:messages/>
