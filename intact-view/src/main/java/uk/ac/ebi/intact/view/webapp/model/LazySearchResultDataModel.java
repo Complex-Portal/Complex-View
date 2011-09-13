@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 import psidev.psi.mi.tab.model.Alias;
 import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
@@ -63,7 +64,7 @@ public class LazySearchResultDataModel extends LazyDataModel<IntactBinaryInterac
     }
 
     @Override
-    public List<IntactBinaryInteraction> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
+    public List<IntactBinaryInteraction> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
         if (solrQuery == null) {
             throw new IllegalStateException("Trying to fetch results for a null SolrQuery");
         }
@@ -102,7 +103,7 @@ public class LazySearchResultDataModel extends LazyDataModel<IntactBinaryInterac
 
     public int getRowCount() {
         if (result == null) {
-            load(0,0, null, false, null);
+            load(0,0, null, SortOrder.ASCENDING, null);
         }
         return Long.valueOf(result.getTotalCount()).intValue();
     }

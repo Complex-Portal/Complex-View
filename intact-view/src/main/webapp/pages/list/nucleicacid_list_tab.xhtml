@@ -15,9 +15,6 @@
         </strong>
         &#160;&#160;
 
-        <h:outputText value="Select molecules by clicking on the row."/>
-
-        <br/>
         <h:panelGroup>
             <h:commandLink value="Search Interactions"
                              actionListener="#{searchBean.doSearchInteractionsFromDnaListSelection}"
@@ -31,8 +28,10 @@
                  rowIndexVar="status"
                  lazy="true" dynamic="true" emptyMessage="No nucleic acids found matching the query."
                  rows="#{userQuery.pageSize}" loadingMessage="Loading nucleic acids..."
-                 selection="#{nucleicAcidListController.selected}" selectionMode="multiple"
-                update="nucleicAcidSelectionButtons">
+                 paginator="true" paginatorAlwaysVisible="false"
+                 selection="#{nucleicAcidListController.selected}">
+
+            <p:column selectionMode="multiple" />
 
             <p:column>
                 <h:outputText value="#{status + 1}"/>
@@ -50,7 +49,7 @@
 
             <p:column>
                 <f:facet name="header"><h:outputText value="Interactions"/></f:facet>
-                <h:commandLink action="#{searchBean.doBinarySearchAction}" text="#{interactorWrapper.count}">
+                <h:commandLink action="#{searchBean.doBinarySearchAction}" value="#{interactorWrapper.count}">
                     <f:setPropertyActionListener value="(#{userQuery.searchQuery}) AND #{interactorWrapper.interactor.ac}" target="#{userQuery.searchQuery}"/>
             </h:commandLink>
             </p:column>

@@ -204,10 +204,10 @@ public class SearchController extends JpaBaseController {
 
 
     public void onTabChanged(TabChangeEvent evt) {
-        if (evt.getTab() != null && "Lists".equals(evt.getTab().getTitle())) {
+        if (evt.getTab() != null && "listsTab".equals(evt.getTab().getId())) {
             doInteractorsSearch();
 
-        } else if ("Browse".equals(evt.getTab().getTitle())){
+        } else if ("browseTab".equals(evt.getTab().getId())){
             BrowseController browseController = (BrowseController) getBean("browseBean");
             browseController.createListOfIdentifiers();
         }

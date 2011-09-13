@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,13 +59,12 @@ public class FacetController {
     }
 
     private FacetField getFacetField(String field) {
-        System.out.println( "FacetController.getFacetField(\""+ field +"\")" );
         LazySearchResultDataModel model = searchController.getResults();
 
         if (model == null) {
             return null;
         } else {
-            log.error( "LazySearchResultDataModel is null" );
+            log.debug( "LazySearchResultDataModel is null for FacetController.getFacetField(\""+ field +"\")" );
         }
 
         final SolrSearchResult result = model.getResult();
@@ -72,7 +72,7 @@ public class FacetController {
             QueryResponse queryResponse = result.getQueryResponse();
             return queryResponse.getFacetField(field);
         } else {
-            log.error( "SolrSearchResult is null" );
+            log.debug( "SolrSearchResult is null" );
         }
 
         return null;

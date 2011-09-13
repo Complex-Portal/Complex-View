@@ -87,7 +87,9 @@
 
 
         <p:tabView id="mainPanels" cache="false" dynamic="true" activeIndex="#{contextController.activeTabIndex}"
-                   widgetVar="mainTabsWidget" tabChangeListener="#{searchBean.onTabChanged}" >
+                   widgetVar="mainTabsWidget" >
+            <p:ajax event="tabChange" listener="#{searchBean.onTabChanged}" />
+
             <p:tab id="homeTab" title="Home">
                         <p:messages/>
                         <ui:insert name="aboutTabContent"/>

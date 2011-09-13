@@ -17,13 +17,15 @@ package uk.ac.ebi.intact.view.webapp.model;
 
 import uk.ac.ebi.intact.model.Interactor;
 
+import java.io.Serializable;
+
 /**
  * Wrapper of the interactor, in order to provide convenient methods when used as data results.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class InteractorWrapper {
+public class InteractorWrapper implements Serializable {
 
     private Interactor interactor;
     private long count;

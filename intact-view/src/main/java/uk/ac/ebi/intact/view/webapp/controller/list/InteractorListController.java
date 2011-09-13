@@ -29,9 +29,6 @@ import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
  * @version $Id$
  * @since 0.9
  */
-@Controller
-@Scope( "conversation.access" )
-@ConversationName( "general" )
 public abstract class InteractorListController extends BaseController {
 
     private InteractorWrapper[] selected;

@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.core.context.DataContext;
 import uk.ac.ebi.intact.core.context.IntactContext;
@@ -29,7 +30,10 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.InteractorIdCount;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.model.InteractorXref;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 
+import javax.faces.model.DataModelEvent;
+import javax.faces.model.DataModelListener;
 import javax.persistence.Query;
 import java.util.*;
 
@@ -39,7 +43,7 @@ import java.util.*;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class InteractorSearchResultDataModel extends LazyDataModel<InteractorIdCount> {
+public class InteractorSearchResultDataModel extends LazyDataModel<InteractorWrapper> {
 
     private static final Log log = LogFactory.getLog(InteractorSearchResultDataModel.class);
 
@@ -50,7 +54,8 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorIdC
 
     private String[] interactorTypeMis;
 
-    private List<InteractorIdCount> idCounts;
+    private List<InteractorWrapper> idCounts;
+    private int totalCount;
 
     private int rowIndex = -1;
     private int firstResult = 0;
@@ -77,25 +82,40 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorIdC
 
 
     @Override
-    public List<InteractorIdCount> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
+    public List<InteractorWrapper> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
+        if (pageSize == 0) pageSize = 20;
+
         if (solrQuery == null) {
             throw new IllegalStateException("Trying to fetch results for a null SolrQuery");
         }
 
         String cacheKey = solrQuery+"_"+ Arrays.toString(interactorTypeMis);
 
+        List<InteractorIdCount> allIdCounts;
+
         if (cache.containsKey(cacheKey)) {
             if (log.isDebugEnabled()) log.debug("Fetching interactors for query (cache hit): "+solrQuery);
 
-            idCounts = cache.get(cacheKey);
+            allIdCounts = cache.get(cacheKey);
         } else {
             if (log.isDebugEnabled()) log.debug("Fetching interactors for query: "+solrQuery);
 
             IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
             final Multimap<String,InteractorIdCount> idCountMultimap = searcher.searchInteractors(solrQuery, interactorTypeMis);
-            idCounts = new ArrayList<InteractorIdCount>(idCountMultimap.values());
 
-            cache.put(cacheKey, idCounts);
+            idCounts = new ArrayList<InteractorWrapper>();
+
+            allIdCounts = new ArrayList(idCountMultimap.values());
+
+            cache.put(cacheKey, allIdCounts);
+        }
+
+        totalCount = allIdCounts.size();
+
+        idCounts.clear();
+
+        for (InteractorIdCount iic : allIdCounts.subList(first, Math.min(totalCount, first + pageSize))) {
+            idCounts.add(wrap(iic));
         }
 
         return idCounts;
@@ -103,9 +123,9 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorIdC
 
     public int getRowCount() {
         if (idCounts == null) {
-            this.load(0,0, null, false, null);
+            this.load(0,0, null, SortOrder.ASCENDING, null);
         }
-        return idCounts.size();
+        return totalCount;
     }
 
     public Object getRowData() {
@@ -117,8 +137,12 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorIdC
             throw new IllegalArgumentException("row is unavailable");
         }
 
-        InteractorIdCount idCount = idCounts.get(getRowIndex());
+        InteractorWrapper idCount = idCounts.get(getRowIndex());
+        
+        return idCount;
+    }
 
+    private InteractorWrapper wrap(InteractorIdCount idCount) {
         if (interactorCache.containsKey(idCount.getAc())) {
             return interactorCache.get(idCount.getAc());
         }
@@ -143,7 +167,7 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorIdC
         dataContext.commitTransaction(transactionStatus);
 
         interactorCache.put(idCount.getAc(), wrapper);
-        
+
         return wrapper;
     }
 
@@ -151,46 +175,26 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorIdC
         return idCounts;
     }
 
-//    public boolean isRowAvailable() {
-//        if (idCounts == null) {
-//            return false;
-//        }
-//
-//        return rowIndex >= 0 && rowIndex < getRowCount();
-//    }
-//
-//    public void setRowIndex(int rowIndex) {
-//        if (rowIndex < -1) {
-//            throw new IllegalArgumentException("illegal rowIndex " + rowIndex);
-//        }
-//        int oldRowIndex = rowIndex;
-//        this.rowIndex = rowIndex;
-//        if (idCounts != null && oldRowIndex != this.rowIndex) {
-//            Object data = isRowAvailable() ? getRowData() : null;
-//            DataModelEvent event = new DataModelEvent(this, this.rowIndex, data);
-//            DataModelListener[] listeners = getDataModelListeners();
-//            for (int i = 0; i < listeners.length; i++) {
-//                listeners[i].rowSelected(event);
-//            }
-//        }
-//    }
-//
-//    public Object getRowKey() {
-//        return isRowAvailable()
-//               ? getRowIndex()
-//               : null;
-//    }
-//
-//    public void setRowKey(Object key) {
-//        if (key == null) {
-//            setRowIndex(-1);
-//        } else {
-//            setRowIndex((Integer) key);
-//        }
-//    }
+    @Override
+    public InteractorWrapper getRowData(String rowKey) {
+        for (InteractorWrapper iic : idCounts) {
+            if (iic.getInteractor().getAc().equals(rowKey)) {
+                return iic;
+            }
+        }
+        return null;
+    }
 
+    @Override
+    public Object getRowKey(InteractorWrapper object) {
+        if (object.getInteractor() != null) {
+            return object.getInteractor().getAc();
+        }
 
-    public List<InteractorIdCount> getInteractorIdCounts() {
+        return null;
+    }
+
+    public List<InteractorWrapper> getInteractorIdCounts() {
         return idCounts;
     }
 
