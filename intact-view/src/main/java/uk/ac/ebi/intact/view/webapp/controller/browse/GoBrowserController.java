@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
@@ -28,7 +29,8 @@ import uk.ac.ebi.intact.view.webapp.util.RootTerm;
  * @version $Id$
  */
 @Controller("goBrowser")
-@Scope("request")
+@Scope("conversation.access")
+@ConversationName("browse")
 public class GoBrowserController extends OntologyBrowserController {
 
     public static final String FIELD_NAME = "go_expanded_id";

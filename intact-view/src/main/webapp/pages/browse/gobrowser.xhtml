@@ -2,11 +2,10 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
 
                 template="/pages/browse/browser_template.xhtml">
-
-    <ui:param name="title" value="GO Ontology Browser"/>
-    <ui:param name="browserController" value="#{goBrowser}"/>
 
     <f:metadata>
         <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(3)}"/>
@@ -14,5 +13,31 @@
         <f:viewParam name="ontologyQuery" value="#{userQuery.ontologySearchQuery}"/>
         <f:event type="preRenderView" listener="#{searchBean.searchOnLoad}"/>
     </f:metadata>
+
+    <ui:define name="browseTabContent">
+
+        <h:panelGroup>
+            <h:graphicImage alt="Back" url="/images/back_arrow.gif" />
+            <p:commandLink value="Back to Browse options" action="/pages/browse/browse?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
+        </h:panelGroup>
+
+        <br/>
+
+        <h2>GO Ontology Browser</h2>
+
+        <p:tree var="otw" value="#{goBrowser.ontologyTreeNode}"
+                dynamic="true" cache="true"
+                selectionMode="single" selection="#{goBrowser.selectedNode}"
+                style="width:50%;">
+
+            <p:ajax event="select" listener="#{goBrowser.onNodeSelect}" />
+
+            <p:treeNode>
+                <h:outputText value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
+            </p:treeNode>
+        </p:tree>
+
+
+    </ui:define>
 
 </ui:composition>

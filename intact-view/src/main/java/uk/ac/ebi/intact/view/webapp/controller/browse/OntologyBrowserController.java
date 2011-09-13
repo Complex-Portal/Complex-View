@@ -127,8 +127,7 @@ public abstract class OntologyBrowserController extends BaseController {
         return treeNode;
     }
 
-    public void searchNode(NodeSelectEvent evt) {
-        ContextController contextController = (ContextController) getBean("contextController");
+    public void onNodeSelect(NodeSelectEvent evt) {
         SearchController searchController = (SearchController) getBean("searchBean");
 
         final OntologyTermWrapper otw = (OntologyTermWrapper) evt.getTreeNode().getData();

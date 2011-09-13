@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.view.webapp.controller.browse;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 import uk.ac.ebi.intact.view.webapp.util.RootTerm;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -26,7 +27,7 @@ import java.util.*;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class OntologyTermWrapper {
+public class OntologyTermWrapper implements Serializable {
 
     private OntologyTerm term;
     private long interactionCount;
