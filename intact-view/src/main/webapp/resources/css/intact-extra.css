@@ -61,6 +61,14 @@ td.compoundStructure {
    background: #ffecc4;
 }
 
+.ui-dialog-titlebar {
+    padding:  inherit !important;
+}
+
+.ui-dialog .ui-dialog-title {
+    margin:  0 !important;
+}
+
 /* Participant Legend */
 
 .ia-annotation {
