@@ -35,11 +35,11 @@
         <!-- Google Analytics -->
         <ui:param name="googleTracker" value="#{intactViewConfiguration.googleAnalyticsTracker}"/>
 
-        <h:panelGroup rendered="#{not empty googleTracker}">
+        <h:panelGroup>
             <script type="text/javascript">
 
                 var _gaq = _gaq || [];
-                _gaq.push(['_setAccount', 'UA-672146-1']);
+                _gaq.push(['_setAccount', '#{intactViewConfiguration.googleAnalyticsTracker}']);
                 _gaq.push(['_trackPageview']);
 
                 (function() {
