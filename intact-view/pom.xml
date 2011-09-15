@@ -501,11 +501,11 @@
         </dependency>
 
         <!-- PretyFaces -->
-        <dependency>
-            <groupId>com.ocpsoft</groupId>
-            <artifactId>prettyfaces-jsf2</artifactId>
-            <version>3.3.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.ocpsoft</groupId>-->
+            <!--<artifactId>prettyfaces-jsf2</artifactId>-->
+            <!--<version>3.3.0</version>-->
+        <!--</dependency>-->
 
         <!-- Other server stuff -->
         <dependency>
