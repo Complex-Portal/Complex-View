@@ -26,7 +26,6 @@ import uk.ac.ebi.intact.model.InteractorXref;
 import uk.ac.ebi.intact.model.util.ProteinUtils;
 import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
 
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -91,7 +90,7 @@ public class ProteinListController extends InteractorListController {
     }
 
     public void openInInterpro(ActionEvent evt) {
-        String url = "http://www.ebi.ac.uk/interpro/ISpy?ac="+StringUtils.join(getSelectedUniprotIds());
+        String url = "http://www.ebi.ac.uk/interpro/ISpy?ac="+StringUtils.join(getSelectedUniprotIds(), ",");
         executeUrlRedirection(url);
     }
 
