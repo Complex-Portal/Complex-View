@@ -16,6 +16,8 @@
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hupo.psi.mi.psicquic.registry.ServiceType;
 import org.hupo.psi.mi.psicquic.registry.client.PsicquicRegistryClientException;
 import org.hupo.psi.mi.psicquic.registry.client.registry.DefaultPsicquicRegistryClient;
@@ -42,6 +44,8 @@ import java.util.concurrent.TimeUnit;
 @Controller
 @Scope("currentSearch")
 public class PsicquicController extends BaseController {
+
+    private static final Log log = LogFactory.getLog(PsicquicController.class);
 
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
@@ -152,15 +156,17 @@ public class PsicquicController extends BaseController {
     private int countInPsicquicService(ServiceType service, String query) {
         int psicquicCount = 0;
 
+        String url = null;
+
         try {
             String encoded = URLEncoder.encode(query, "UTF-8");
             encoded = encoded.replaceAll("\\+", "%20");
 
-            String url = service.getRestUrl()+"query/"+ encoded +"?format=count";
+            url = service.getRestUrl()+"query/"+ encoded +"?format=count";
             String strCount = IOUtils.toString(new URL(url).openStream());
             psicquicCount = Integer.parseInt(strCount);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Problem connecting to PSICQUIC service '"+service.getName()+"': "+url);
         }
 
         return psicquicCount;
