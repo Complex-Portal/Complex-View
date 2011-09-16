@@ -98,13 +98,14 @@
                                 <p:tree id="ontologyTree" var="otw" value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.ontologyTreeNode}"
                                         selectionMode="single" selection="#{userQuery.selectedSearchTerm}"
                                         dynamic="true" cache="true"
-                                        nodeSelectListener="#{userQuery.doSelectCvTerm}"
-                                        update="newQueryPanel"
-                                        onselectComplete="browseCvDialog.hide()" style="width:50%;">
+                                        style="width:50%;">
+                                    <p:ajax event="select" listener="#{userQuery.doSelectCvTerm}" oncomplete="browseCvDialog.hide()" update="newQueryPanel" />
+
                                     <p:treeNode id="ontologyTreeNode">
                                         <h:outputText id="termTxt" value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
                                     </p:treeNode>
                                 </p:tree>
+
                             </p:dialog>
 
                     </h:panelGroup>
