@@ -84,8 +84,8 @@ function hide(id){
 // Cytoscape Web interactions
 
 function selectMerged() {
-    document.getElementById('mergeOn').style.fontWeight='bold';
-    document.getElementById('mergeOff').style.fontWeight='normal';
+    document.getElementById('mainPanels:mergeOn').style.fontWeight='bold';
+    document.getElementById('mainPanels:mergeOff').style.fontWeight='normal';
 
     merged = true;
     vis.edgesMerged( merged );
