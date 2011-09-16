@@ -14,7 +14,7 @@
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-                xmlns:ot="http://myfaces.apache.org/orchestra">
+                >
 
 <h:panelGroup id="experimentPanel" rendered="#{detailsBean.experiment != null}">
 
@@ -186,212 +186,149 @@
 
 <h:panelGroup rendered="#{interaction != null}">
 
-<h2>Participant#{(participantCount > 1 ? text : '')}</h2>
+    <h2>Participant#{(participantCount > 1 ? text : '')}</h2>
 
-<iv:cvLazyDialog dialogVar="cvInfoDialog"/>
+    <iv:cvLazyDialog dialogVar="cvInfoDialog"/>
 
-<p:dataTable var="participant" value="#{interaction.components}" paginator="false" dynamic="false" lazy="false" style="width: 600px">
+    <p:dataTable var="participant" value="#{interaction.components}" paginator="false" dynamic="false" lazy="false">
 
-    <ui:param name="interactor" value="#{participant.interactor}"/>
+        <ui:param name="interactor" value="#{participant.interactor}"/>
 
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="View"/>
-        </f:facet>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Name"/>
+            </f:facet>
+            <h:outputText value="#{interactor.shortLabel}"/>
+        </p:column>
 
-        <p:dialog header="Participant: #{participant.interactor.fullName}"
-                  widgetVar="participantDlg" height="400" width="750" fixedCenter="true"
-                  constrainToViewport="true" modal="false">
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Links"/>
+            </f:facet>
+            <iv:dbInteractorLinkLogos interactor="#{interactor}"/>
+        </p:column>
 
-            <h:panelGroup id="participantDetailsPanel">
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Primary Identifier"/>
+            </f:facet>
+            <ui:repeat var="xref" value="#{iaf:getIdentityXrefs(interactor)}" varStatus="rowStatus">
+                <h:outputLink value="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}" target="_blank">
+                    <h:outputText value="#{xref.primaryId}"/>
+                </h:outputLink>
+            </ui:repeat>
+        </p:column>
 
-            <h3>Participant: #{participant.ac}</h3>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Aliases"/>
+            </f:facet>
+            <iam:collapsibleIterator id="csd_aliases_#{status.index}"
+                                     disclosed="false"
+                                     value="#{interactor.aliases}"
+                                     maxShown="5">
+                <h:outputText value="#{item.name}" shortDesc="#{item.cvAliasType.shortLabel}"/>
+            </iam:collapsibleIterator>
+        </p:column>
 
-            <table id="participantTable" width="100%">
-            <tr>
-            <td width="80%">
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Description"/>
+            </f:facet>
+            <h:outputText value="#{interactor.fullName}"/>
+        </p:column>
 
-                <h:outputText value="Accession:" style="font-weight:bold;"/>
-                <h:outputText value="#{participant.ac}"/>
-                <br/>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Species"/>
+            </f:facet>
+            <iv:biosourcePopup bioSource="#{interactor.bioSource}" visible="#{interactor.bioSource != null}"/>
+            <h:outputText value="-" rendered="#{interactor.bioSource == null}"/>
+        </p:column>
 
-                <h:outputText value="Name:" style="font-weight:bold;"/>
-                    <h:outputText value="#{interactor.shortLabel}"/>
-                <br/>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Expression system"/>
+            </f:facet>
+            <iv:biosourcePopup bioSource="#{participant.expressedIn}" visible="#{participant.expressedIn != null}"/>
+            <h:outputText value="-" rendered="#{participant.expressedIn == null}"/>
+        </p:column>
 
-                <h:outputText value="Primary identifier:" style="font-weight:bold;"/>
-                <ui:repeat var="xref" value="#{iaf:getIdentityXrefs(interactor)}">
-                    <ot:separateConversationContext>
-                       <h:outputLink value="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}" target="_blank">
-                           <h:outputText value="#{xref.primaryId}"/>
-                       </h:outputLink>
-                    </ot:separateConversationContext>
-                </ui:repeat>
-                <br/>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Experimental role"/>
+            </f:facet>
+            <iv:cvLazyPopup cvIdentifier="#{participant.cvExperimentalRole.identifier}" dialogVar="cvInfoDialog"
+                            text="#{participant.cvExperimentalRole.shortLabel}"
+                            cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"/>
+        </p:column>
 
-                <h:outputText value="Molecule type:" style="font-weight:bold;"/>
-                <h:outputText value="#{interactor.cvInteractorType.shortLabel}"/>
-                <br/>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Biological role"/>
+            </f:facet>
+            <iv:cvLazyPopup cvIdentifier="#{participant.cvBiologicalRole.identifier}" dialogVar="cvInfoDialog"
+                            text="#{participant.cvBiologicalRole.shortLabel}"
+                            cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"/>
+        </p:column>
 
-                <h:outputText value="Stoichiometry:" style="font-weight:bold;"/>
-                <h:outputText value="#{participant.stoichiometry}"/>
-                <br/>
+        <p:column>
+            <f:facet name="header">
+                <h:outputText value="Interactor type"/>
+            </f:facet>
+            <iv:cvLazyPopup cvIdentifier="#{interactor.cvInteractorType.identifier}" dialogVar="cvInfoDialog"
+                            text="#{interactor.cvInteractorType.shortLabel}"
+                            cvClassName="uk.ac.ebi.intact.model.CvInteractorType"/>
+        </p:column>
 
-                <h:panelGroup rendered="#{not empty participant.xrefs}">
-                    <br/>
-                <h:outputText value="Cross References:" style="font-weight:bold;"/>
-                <iv:xrefTable xrefs="#{participant.xrefs}" />
-                </h:panelGroup>
+        <p:column>
 
-                <h:panelGroup rendered="#{not empty participant.annotations}">
-                    <br/>
-                    <h:outputText value="Annotations:" style="font-weight:bold;"/>
-                    <iv:annotationTable annotations="#{participant.annotations}" />
-                </h:panelGroup>
+            <f:facet name="header">
+                <h:outputText value="More..."/>
+            </f:facet>
 
-                <h:panelGroup rendered="#{not empty participant.bindingDomains}">
-                    <br/>
-                    <h:outputText value="Experimental features:" style="font-weight:bold;"/>
-                    <ui:decorate template="/pages/details/bindingDomains.xhtml">
-                        <ui:param name="bindingDomains" value="#{participant.bindingDomains}"/>
-                    </ui:decorate>
-                </h:panelGroup>
+            <ui:param name="annotationCount"
+                      value="#{fn:length(participant.xrefs) + fn:length(participant.annotations) + fn:length(participant.aliases)}"/>
+            <ui:param name="parameterCount" value="#{fn:length(participant.parameters)}"/>
+            <ui:param name="domainCount" value="#{fn:length(participant.bindingDomains)}"/>
 
-                <h:panelGroup rendered="#{not empty participant.parameters}">
-                    <br/>
-                    <h:outputText value="Experimental Parameters:" style="font-weight:bold;"/>
-                    <ui:decorate template="/pages/details/parameters.xhtml">
-                        <ui:param name="parameters" value="#{participant.parameters}"/>
-                    </ui:decorate>
-                </h:panelGroup>
+            <div class="extra" style="border: 0px; width:100px; ">
+                <div class="#{annotationCount>0 ? 'ia-annotation' : 'ia-legend-gray'}" style="width:10px; display: inline; border: 1px solid gray;" align="center">
+                    <iv:participantPopup participant="#{participant}" text="A" style="font-weight:bold; color:white;"
+                                             visible="#{annotationCount>0}"/>
 
-                </td>
-                </tr>
-                </table>
+                        <h:outputText value="A" shortDesc="#{annotationCount} Annotation" rendered="#{annotationCount == 0}"
+                                      style="font-weight:bold; color:white;"/>
+                </div>
+                <div class="#{parameterCount>0 ? 'ia-parameter' : 'ia-legend-gray'}" style="width:10px; display: inline; border: 1px solid gray;" align="center">
+                    <iv:participantPopup participant="#{participant}" text="P" style="font-weight:bold; color:white;"
+                                             visible="#{parameterCount>0}"/>
 
-            </h:panelGroup>
-        </p:dialog>
+                        <h:outputText value="P" shortDesc="#{parameterCount} Parameter" rendered="#{parameterCount == 0}"
+                                      style="font-weight:bold;color:white;"/>
+                </div>
+                <div class="#{participant.stoichiometry>0 ? 'ia-stoichiometry' : 'ia-legend-gray'}" style="width:10px; display: inline; border: 1px solid gray;" align="center">
+                    <iv:participantPopup participant="#{participant}" text="S" style="font-weight:bold; color:white;"
+                                             visible="#{participant.stoichiometry gt 0}"/>
 
-        <p:commandLink id="participantLink" type="button" onclick="participantDlg.show();" update="participantDetailsPanel">
-            <h:graphicImage url="/images/magnify.png" alt="details" />
-        </p:commandLink>
-    </p:column>
+                        <h:outputText value="S" shortDesc="Stoichiometry: none" rendered="#{participant.stoichiometry eq 0}"
+                                      style="font-weight:bold;color:white;"/>
+                </div>
+                <div class="#{domainCount>0 ? 'ia-feature' : 'ia-legend-gray'}" style="width:10px; display: inline; border: 1px solid gray;" align="center">
+                    <iv:participantPopup participant="#{participant}" text="F" style="font-weight:bold; color:white;"
+                                             visible="#{domainCount>0}"/>
 
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="Name"/>
-        </f:facet>
-        <h:outputText value="#{interactor.shortLabel}"/>
-    </p:column>
+                        <h:outputText value="F" shortDesc="#{domainCount} feature" rendered="#{domainCount == 0}"
+                                      style="font-weight:bold; color:white;"/>
+                </div>
 
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="Links"/>
-        </f:facet>
-        <iv:dbInteractorLinkLogos interactor="#{interactor}"/>
-    </p:column>
-
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="Primary Identifier"/>
-        </f:facet>
-        <ui:repeat var="xref" value="#{iaf:getIdentityXrefs(interactor)}" varStatus="rowStatus">
-            <h:outputLink value="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}" target="_blank">
-                <h:outputText value="#{xref.primaryId}"/>
-            </h:outputLink>
-        </ui:repeat>
-    </p:column>
-
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="Aliases"/>
-        </f:facet>
-        <iam:collapsibleIterator id="csd_aliases_#{status.index}"
-                                 disclosed="false"
-                                 value="#{interactor.aliases}"
-                                 maxShown="5">
-            <h:outputText value="#{item.name}" shortDesc="#{item.cvAliasType.shortLabel}"/>
-        </iam:collapsibleIterator>
-    </p:column>
-
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="Description"/>
-        </f:facet>
-        <h:outputText value="#{interactor.fullName}"/>
-    </p:column>
-
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="Species"/>
-        </f:facet>
-        <iv:biosourcePopup bioSource="#{interactor.bioSource}" visible="#{interactor.bioSource != null}"/>
-        <h:outputText value="-" rendered="#{interactor.bioSource == null}"/>
-    </p:column>
-
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="Expression system"/>
-        </f:facet>
-        <iv:biosourcePopup bioSource="#{participant.expressedIn}" visible="#{participant.expressedIn != null}"/>
-        <h:outputText value="-" rendered="#{participant.expressedIn == null}"/>
-    </p:column>
-
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="Experimental role"/>
-        </f:facet>
-        <iv:cvLazyPopup cvIdentifier="#{participant.cvExperimentalRole.identifier}" dialogVar="cvInfoDialog"
-                        text="#{participant.cvExperimentalRole.shortLabel}"
-                        cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"/>
-    </p:column>
-
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="Biological role"/>
-        </f:facet>
-        <iv:cvLazyPopup cvIdentifier="#{participant.cvBiologicalRole.identifier}" dialogVar="cvInfoDialog"
-                        text="#{participant.cvBiologicalRole.shortLabel}"
-                        cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"/>
-    </p:column>
-
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="Interactor type"/>
-        </f:facet>
-        <iv:cvLazyPopup cvIdentifier="#{interactor.cvInteractorType.identifier}" dialogVar="cvInfoDialog"
-                        text="#{interactor.cvInteractorType.shortLabel}"
-                        cvClassName="uk.ac.ebi.intact.model.CvInteractorType"/>
-    </p:column>
-
-    <p:column>
-        <f:facet name="header">
-            <h:outputText value="More..."/>
-        </f:facet>
-
-        <ui:param name="annotationCount" value="#{fn:length(participant.xrefs) + fn:length(participant.annotations) + fn:length(participant.aliases)}"/>
-        <ui:param name="parameterCount" value="#{fn:length(participant.parameters)}"/>
-        <ui:param name="domainCount" value="#{fn:length(participant.bindingDomains)}"/>
-
-        <div class="extra" style="border: 0px; width:100px; ">
-            <div class="#{annotationCount>0 ? 'ia-annotation' : 'ia-legend-gray'}" style="display: inline; border: 1px solid gray;" align="center">
-                <h:outputText value="A"/>
             </div>
-            <div class="#{parameterCount>0 ? 'ia-parameter' : 'ia-legend-gray'}" style="display: inline; border: 1px solid gray;" align="center">
-                <h:outputText value="P"/>
-            </div>
-            <div class="#{participant.stoichiometry>0 ? 'ia-stoichiometry' : 'ia-legend-gray'}" style="display: inline; border: 1px solid gray;" align="center">
-                <h:outputText value="S"/>
-            </div>
-            <div class="#{domainCount>0 ? 'ia-feature' : 'ia-legend-gray'}" style="display: inline; border: 1px solid gray;" align="center">
-                <h:outputText value="F"/>
-            </div>
-        </div>
-    </p:column>
 
-</p:dataTable>
+        </p:column>
 
-<br/>
+    </p:dataTable>
+
+    <br/>
 
     <div class="legend" style="margin-top: 5px; margin-left: 15px;" align="right">
         <b>Legend:</b>
@@ -405,7 +342,6 @@
         <h2>Graphical Representation of Experimental Features</h2>
         <iv:interactionRepresentation url="/intact/json?ac=#{interaction.ac}" />
     </h:panelGroup>
-
 </h:panelGroup>
 
 </h:panelGroup>
