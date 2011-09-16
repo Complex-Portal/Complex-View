@@ -92,31 +92,31 @@ function selectMerged() {
 }
 
 function unselectMerged() {
-    document.getElementById('mergeOn').style.fontWeight='normal';
-    document.getElementById('mergeOff').style.fontWeight='bold';
+    document.getElementById('mainPanels:mergeOn').style.fontWeight='normal';
+    document.getElementById('mainPanels:mergeOff').style.fontWeight='bold';
 
     merged = false;
     vis.edgesMerged( merged );
 }
 
 function selectForceDirectedLayout() {
-    document.getElementById('forceDirectedLayout').style.fontWeight='bold';
-    document.getElementById('radialLayout').style.fontWeight='normal';
-    document.getElementById('circleLayout').style.fontWeight='normal';
+    document.getElementById('mainPanels:forceDirectedLayout').style.fontWeight='bold';
+    document.getElementById('mainPanels:radialLayout').style.fontWeight='normal';
+    document.getElementById('mainPanels:circleLayout').style.fontWeight='normal';
     vis.layout('ForceDirected');
 }
 
 function selectRadialLayout() {
-    document.getElementById('forceDirectedLayout').style.fontWeight='normal';
-    document.getElementById('radialLayout').style.fontWeight='bold';
-    document.getElementById('circleLayout').style.fontWeight='normal';
+    document.getElementById('mainPanels:forceDirectedLayout').style.fontWeight='normal';
+    document.getElementById('mainPanels:radialLayout').style.fontWeight='bold';
+    document.getElementById('mainPanels:circleLayout').style.fontWeight='normal';
     vis.layout('Radial');
 }
 
 function selectCircleLayout() {
-    document.getElementById('forceDirectedLayout').style.fontWeight='normal';
-    document.getElementById('radialLayout').style.fontWeight='normal';
-    document.getElementById('circleLayout').style.fontWeight='bold';
+    document.getElementById('mainPanels:forceDirectedLayout').style.fontWeight='normal';
+    document.getElementById('mainPanels:radialLayout').style.fontWeight='normal';
+    document.getElementById('mainPanels:circleLayout').style.fontWeight='bold';
     vis.layout('Circle');
 }
 
