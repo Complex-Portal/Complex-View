@@ -32,8 +32,8 @@
         
         <debug>false</debug>
 
-        <jetty.port>9095</jetty.port>
-        <jetty.context>view</jetty.context>
+        <jetty.port>8080</jetty.port>
+        <jetty.contextPath>/intact</jetty.contextPath>
 
         <appRoot>/intact</appRoot>
 
@@ -103,6 +103,10 @@
                         </connector>
                     </connectors>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <webAppConfig>
+                        <contextPath>${jetty.contextPath}</contextPath>
+                        <jettyEnvXml>${build.outputDirectory}/META-INF/jetty-env.xml</jettyEnvXml>
+                    </webAppConfig>
                     <systemProperties>
                         <systemProperty>
                             <name>org.eclipse.jetty.server.Request.maxFormContentSize</name>
