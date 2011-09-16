@@ -103,10 +103,6 @@
                         </connector>
                     </connectors>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <webAppConfig>
-                        <contextPath>/intact</contextPath>
-                        <jettyEnvXml>${build.outputDirectory}/META-INF/jetty-env.xml</jettyEnvXml>
-                    </webAppConfig>
                     <systemProperties>
                         <systemProperty>
                             <name>org.eclipse.jetty.server.Request.maxFormContentSize</name>
@@ -278,6 +274,10 @@
                 <exclusion>
                     <groupId>org.apache.solr</groupId>
                     <artifactId>solr-lucene-highlighter</artifactId>
+                </exclusion>
+                 <exclusion>
+                    <groupId>woodstox</groupId>
+                    <artifactId>wstx-asl</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
