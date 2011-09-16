@@ -78,7 +78,7 @@ public class ProteinListController extends InteractorListController {
         RequestContext context = RequestContext.getCurrentInstance();
 
         if (getSelected().length > 0) {
-            context.execute("ia_submitToReactome('"+ StringUtils.join(getSelectedUniprotIds())+"')");
+            context.execute("ia_submitToReactome('"+ StringUtils.join(getSelectedUniprotIds(), ",")+"')");
         } else {
             alertNoSelection();
         }
