@@ -14,8 +14,16 @@
             404 Page not found
         </p:panel>
 
-            <h:commandLink value="Go to the main page" action="main"
-                    immediate="true"/>
+        <p>
+
+            <ot:separateConversationContext>
+                <h:outputLink value="#{request.contextPath}/main.xhtml">
+                    <h:outputText value="Go to the main page"/>
+                </h:outputLink>
+            </ot:separateConversationContext>
+
+        </p>
+
     </ui:define>
 
 </ui:composition>

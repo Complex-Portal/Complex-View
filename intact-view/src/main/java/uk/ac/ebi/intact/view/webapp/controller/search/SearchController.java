@@ -27,6 +27,7 @@ import uk.ac.ebi.intact.view.webapp.util.MitabFunctions;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -200,6 +201,12 @@ public class SearchController extends JpaBaseController {
         }
 
         contextController.clearLoadedTabs();
+    }
+
+    public String doClearSearchAndGoHome() {
+        getUserQuery().reset();
+
+        return "/main?forces-redirect=true";
     }
 
 
@@ -461,5 +468,11 @@ public class SearchController extends JpaBaseController {
 
     private UserQuery getUserQuery() {
         return (UserQuery) getBean("userQuery");
+    }
+
+    public static void main(String[] args) throws Exception {
+        String segment = "type:\"MI:0407\"";
+        final URI uri = new URI(("http://localhost/" + segment).replace(" ", "%20").replace("\"", "%22"));
+        System.out.println(uri.getPath().substring(1));
     }
 }

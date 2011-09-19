@@ -4,6 +4,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
 				xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
 
                 template="/WEB-INF/facelets/layout/template.xhtml">
 
@@ -14,8 +15,14 @@
             500 Internal Server Error. Sorry!
         </p:panel>
 
-            <h:commandLink value="Go to the main page" action="main"
-                    immediate="true"/>
+        <p>
+            <ot:separateConversationContext>
+                <h:outputLink value="#{request.contextPath}/main.xhtml">
+                    <h:outputText value="Go to the main page"/>
+                </h:outputLink>
+            </ot:separateConversationContext>
+
+        </p>
     </ui:define>
 
 </ui:composition>
