@@ -60,6 +60,13 @@ public class ExperimentIntactCloner extends EditorIntactCloner {
                 Experiment experiment = (Experiment)clone;
                 experiment.getInteractions().clear();
             }
+        } else if (clone instanceof Experiment) {
+
+            final Experiment experiment = (Experiment) clone;
+
+            for (Interaction interaction : experiment.getInteractions()) {
+                interaction.getExperiments().add(experiment);
+            }
         }
 
         if (ao == clone) {
