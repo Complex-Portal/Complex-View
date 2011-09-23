@@ -25,7 +25,7 @@
                          styleClass="important-button-good"
                          rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
                          actionListener="#{experimentController.acceptExperiment}"
-                         action="#{experimentController.doSave}" ajax="false"/>
+                         action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"/>
         <p:commandButton value="Reject Experiment" type="button"
                          styleClass="important-button-bad"
                          rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
@@ -64,11 +64,11 @@
 
     </ui:define>
 
-    <ui:define name="reviewerContextual">
-        <p:menuitem value="Accept experiment" actionListener="#{experimentController.acceptExperiment}"
-                        update="centralUnit,topSection"/>
-        <p:menuitem value="Reject experiment" onclick="rejectExperimentDialog.show()"/>
-    </ui:define>
+    <!--<ui:define name="reviewerContextual">-->
+        <!--<p:menuitem value="Accept experiment" actionListener="#{experimentController.acceptExperiment}"-->
+                        <!--update="centralUnit,topSection"/>-->
+        <!--<p:menuitem value="Reject experiment" onclick="rejectExperimentDialog.show()"/>-->
+    <!--</ui:define>-->
 
     <ui:define name="curateContent">
 
@@ -225,9 +225,7 @@
                                      converter="trimmingConverter"/>
 
                     <p:commandButton value="Reject" actionListener="#{experimentController.rejectExperiment}"
-                                     process="reasonRejTxt"
-                                     action="#{experimentController.doSave}"
-                                     ajax="false"/>
+                                     process="reasonRejTxt" oncomplete="rejectExperimentDialog.hide()"/>
             </h:panelGrid>
         </p:dialog>
 
@@ -258,6 +256,25 @@
                                      process="pubToMove"
                                      ajax="false" oncomplete="moveToPublicationDialog.hide()"/>
             </h:panelGrid>
+        </p:dialog>
+
+        <!-- All experiments accepted/rejected -->
+        <p:dialog header="Decision about publication" width="400" widgetVar="publicationActionDlg" draggable="false"
+                  modal="true" position="center">
+            <h:panelGroup style="margin-bottom:10px">
+                    <h:outputText value="Some experiments are still rejected. What do you want to do?"/>
+
+                <br/>
+
+                    <p:commandButton value="Reject publication (back to curator)" actionListener="#{publicationController.rejectPublication}"
+                                     action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"
+                                     process="pubToMove"
+                                     ajax="false" />
+
+                   <p:commandButton value="Continue reviewing" action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"
+                                     ajax="false" />
+
+            </h:panelGroup>
         </p:dialog>
 
     </ui:define>

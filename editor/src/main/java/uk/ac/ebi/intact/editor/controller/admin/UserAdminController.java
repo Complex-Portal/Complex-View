@@ -87,14 +87,7 @@ public class UserAdminController extends AbstractUserController {
 
         log.info( "AbstractUserController.loadUserToUpdate" );
 
-        this.reviewerSelectItems = new ArrayList<SelectItem>();
-        reviewerSelectItems.add(new SelectItem(null, "-- Random --", "Correction assigner", false, false, true));
-
-        List<User> reviewers = getDaoFactory().getUserDao().getReviewers();
-
-        for (User reviewer : reviewers) {
-            reviewerSelectItems.add(new SelectItem(reviewer, reviewer.getLogin()));
-        }
+        loadReviewerSelectItems();
 
         if ( loginParam != null ) {
             // load user and prepare for update
@@ -110,6 +103,17 @@ public class UserAdminController extends AbstractUserController {
         } else {
             // prepare for the creation of the new user
             setUser(new User());
+        }
+    }
+
+    private void loadReviewerSelectItems() {
+        this.reviewerSelectItems = new ArrayList<SelectItem>();
+        reviewerSelectItems.add(new SelectItem(null, "-- Random --", "Correction assigner", false, false, true));
+
+        List<User> reviewers = getDaoFactory().getUserDao().getReviewers();
+
+        for (User reviewer : reviewers) {
+            reviewerSelectItems.add(new SelectItem(reviewer, reviewer.getLogin()));
         }
     }
 
@@ -425,7 +429,11 @@ public class UserAdminController extends AbstractUserController {
         this.fileUploaded = fileUploaded;
     }
 
-        public List<SelectItem> getReviewerSelectItems() {
+    public List<SelectItem> getReviewerSelectItems() {
+        if (reviewerSelectItems == null) {
+            loadReviewerSelectItems();
+        }
+
         return reviewerSelectItems;
     }
 

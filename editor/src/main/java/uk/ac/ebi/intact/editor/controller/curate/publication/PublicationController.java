@@ -29,13 +29,16 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.cdb.webservice.Author;
 import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
+import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 import uk.ac.ebi.intact.core.config.SequenceCreationException;
 import uk.ac.ebi.intact.core.config.SequenceManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
 import uk.ac.ebi.intact.core.persister.IntactCore;
+import uk.ac.ebi.intact.dataexchange.cvutils.CvUpdater;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
@@ -950,7 +953,18 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void rejectPublication(ActionEvent evt) {
-        rejectPublication(reasonForRejection);
+
+        List<String> rejectionComments = new ArrayList<String>();
+
+        for (Experiment exp : IntactCore.ensureInitializedExperiments(publication)) {
+            if (ExperimentUtils.isToBeReviewed(exp)) {
+                ExperimentController experimentController = (ExperimentController) getSpringContext().getBean("experimentController");
+                rejectionComments.add("["+exp.getShortLabel()+": "+experimentController.getToBeReviewed(exp)+"]");
+            }
+        }
+
+        rejectPublication(reasonForRejection + (rejectionComments.isEmpty()? "" : " - "+StringUtils.join(rejectionComments, ", ")));
+
     }
 
     public void rejectPublication(String reasonForRejection) {

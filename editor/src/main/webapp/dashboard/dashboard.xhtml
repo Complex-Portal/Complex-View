@@ -21,14 +21,7 @@
 
     <ui:define name="content">
 
-        <h:panelGroup rendered="#{dashboardController.allPublications.rowCount == 0}"> 
-            <p:commandButton value="Create sample data" onclick="sampleLoad.show()"
-                             actionListener="#{importController.createSampleData}" ajax="false"/>
-
-            <ia:loadingDialog widgetVar="sampleLoad" message="Creating sample data"/>
-        </h:panelGroup>
-
-        <h:panelGroup rendered="#{dashboardController.allPublications.rowCount gt 0}">
+        <h:panelGroup>
             <p>
                 To create new publications go to the&#160;
                 <p:commandLink value="Curate" action="/curate/curate?faces-redirect=true&amp;includeViewParams=true"

@@ -380,8 +380,16 @@
                             <h:outputLabel for="ownerTxt" value="Owner: "/>
                             <h:outputText id="ownerTxt" value="#{publicationController.publication.currentOwner.login}"/>
 
-                            <h:outputLabel for="reviewerTxt" value="Reviewer: "/>
-                            <h:outputText id="reviewerTxt" value="#{publicationController.publication.currentReviewer.login}"/>
+                            <h:outputLabel value="Reviewer: " rendered="#{publicationController.publication.currentReviewer != null}"/>
+
+                            <h:outputText value="#{publicationController.publication.currentReviewer.login}"
+                                    rendered="#{!userSessionController.hasRole('ADMIN') and publicationController.publication.currentReviewer != null}"/>
+
+                            <h:selectOneMenu value="#{publicationController.publication.currentReviewer}" hideNoSelectionOption="true"
+                                    rendered="#{userSessionController.hasRole('ADMIN') and publicationController.publication.currentReviewer != null}"
+                                    onchange="markAsUnsaved()">
+                                <f:selectItems value="#{userAdminController.reviewerSelectItems}"/>
+                            </h:selectOneMenu>
                         </h:panelGrid>
 
                         <br/>

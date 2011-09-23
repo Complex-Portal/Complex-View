@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.editor.controller.curate.experiment;
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -104,6 +105,10 @@ public class ExperimentController extends AnnotatedObjectController {
 
             if ( experiment != null && publicationController.getPublication() == null ) {
                 publicationController.setPublication( experiment.getPublication() );
+            }
+
+            if (reasonForRejection == null) {
+                reasonForRejection = getToBeReviewed(experiment);
             }
         }
 
@@ -267,7 +272,12 @@ public class ExperimentController extends AnnotatedObjectController {
 
         setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
 
-        setToBeReviewed(null);
+        removeAnnotation(CvTopic.TO_BE_REVIEWED);
+        removeAnnotation(CvTopic.CORRECTION_COMMENT);
+
+        doSave(actionEvent);
+
+        addInfoMessage("Experiment accepted", experiment.getShortLabel());
 
         // check if all the experiments have been acted upon, be it to accept them or reject them.
         globalPublicationDecision();
@@ -279,7 +289,13 @@ public class ExperimentController extends AnnotatedObjectController {
 
         setToBeReviewed(date+". "+reasonForRejection);
 
+        removeAnnotation(CvTopic.CORRECTION_COMMENT);
+
         removeAnnotation(CvTopic.ACCEPTED);
+
+        doSave(actionEvent);
+
+        addInfoMessage("Experiment rejected", experiment.getShortLabel());
 
         globalPublicationDecision();
     }
@@ -290,16 +306,9 @@ public class ExperimentController extends AnnotatedObjectController {
 
         final Collection<Experiment> experiments = IntactCore.ensureInitializedExperiments(publicationController.getPublication());
 
-        StringBuilder rejectionComment = new StringBuilder();
-
         for (Experiment exp : experiments) {
             if (isToBeReviewed(exp)) {
-                if (expRejected > 0) {
-                    rejectionComment.append(", ");
-                }
                 expRejected++;
-
-                rejectionComment.append("[").append(exp.getShortLabel()).append(": ").append(getToBeReviewed(exp)).append("]");
             } else if (isAccepted(exp)) {
                 expAccepted++;
             }
@@ -307,12 +316,19 @@ public class ExperimentController extends AnnotatedObjectController {
 
         boolean allActedUpon = ((expRejected+expAccepted) == experiments.size());
 
-        if (allActedUpon) {
-            if (expRejected == 0) {
-                publicationController.acceptPublication(null);
-            } else {
-                publicationController.rejectPublication("Rejected: "+expRejected+" -> "+rejectionComment.toString());
-            }
+        boolean allAccepted = expAccepted == experiments.size();
+        boolean allRejected = expRejected == experiments.size();
+
+        if (allAccepted) {
+            publicationController.acceptPublication(null);
+            publicationController.doSave();
+
+            addInfoMessage("Publication accepted", "All of its experiments have been accepted");
+
+        } else if (allActedUpon) {
+            RequestContext requestContext = RequestContext.getCurrentInstance();
+            requestContext.execute("publicationActionDlg.show()");
+
         }
     }
 
