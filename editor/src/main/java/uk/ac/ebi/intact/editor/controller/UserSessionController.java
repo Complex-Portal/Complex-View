@@ -105,7 +105,7 @@ public class UserSessionController extends JpaAwareController implements Disposa
 
             currentUser.getPreferences().add(pref);
 
-            userDao.saveOrUpdate(currentUser);
+            getDaoFactory().getPreferenceDao().saveOrUpdate(pref);
         }
     }
 

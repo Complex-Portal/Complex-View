@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.reviewer;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.user.Preference;
@@ -26,6 +27,7 @@ import uk.ac.ebi.intact.model.util.UserUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,18 +49,19 @@ public class ReviewerAvailabilityController extends JpaAwareController {
         reviewers = getDaoFactory().getUserDao().getReviewers();
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void save(ActionEvent evt) {
         for (User reviewer : reviewers) {
+
             Preference pref = reviewer.getPreference(Preference.KEY_REVIEWER_AVAILABILITY);
 
             if (pref != null) {
-                getDaoFactory().getPreferenceDao().saveOrUpdate(pref);
+                getDaoFactory().getPreferenceDao().merge(pref);
             }
 
         }
 
-        addInfoMessage("Saved", "The reviewer's availability has been updated");
+        addInfoMessage("Saved", "The reviewers' availability has been updated");
     }
 
     public ReviewerWrapper wrapReviewer(User user) {

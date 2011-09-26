@@ -916,11 +916,6 @@ public class ChangesController extends JpaAwareController implements UserListene
         getHiddenUnsavedChangesForCurrentUser().clear();
     }
 
-    private User getCurrentUser() {
-        UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
-        return userSessionController.getCurrentUser();
-    }
-
     public List<UnsavedChange> getUnsavedChangesForCurrentUser() {
         return getUnsavedChangesForUser(getCurrentUser().getLogin());
     }

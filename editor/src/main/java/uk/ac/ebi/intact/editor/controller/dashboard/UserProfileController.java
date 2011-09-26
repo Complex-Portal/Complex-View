@@ -50,10 +50,6 @@ public class UserProfileController extends AbstractUserController {
         return "/dashboard/dashboard";
     }
 
-    private UserSessionController getUserSessionController() {
-        return (UserSessionController) getSpringContext().getBean("userSessionController");
-    }
-
     public String getNewPassword1() {
         return newPassword1;
     }

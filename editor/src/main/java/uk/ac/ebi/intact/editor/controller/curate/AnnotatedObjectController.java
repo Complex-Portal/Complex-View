@@ -750,11 +750,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return curateController;
     }
 
-    public User getCurrentUser() {
-        UserSessionController userSessionController = getUserSessionController();
-        return userSessionController.getCurrentUser();
-    }
-
     public boolean canIEditIt() {
         PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
 
@@ -765,10 +760,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
 
         return true;
-    }
-
-    private UserSessionController getUserSessionController() {
-        return (UserSessionController) getSpringContext().getBean("userSessionController");
     }
 
     public ChangesController getChangesController() {
