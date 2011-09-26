@@ -22,7 +22,7 @@
         <p:commandLink id="cvLink" type="button" onclick="cvDlg.show();" value="#{cc.attrs.cv.shortLabel}" />
 
         <p:dialog widgetVar="cvDlg" header="#{cc.attrs.cv.class.simpleName}: #{cc.attrs.cv.shortLabel}"
-                  height="400" width="750" fixedCenter="true" constrainToViewport="true" modal="false">
+                  height="400" width="750">
 
            <iv:cvDetails cv="#{cc.attrs.cv}"/>
 
