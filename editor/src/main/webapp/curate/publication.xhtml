@@ -68,7 +68,7 @@
                          onclick="putOnHoldDialog.show()"/>
         <p:commandButton value="Ready for Release (removes on-hold)"
                          styleClass="important-button-alt"
-                         rendered="#{publicationController.acceptedOnHold and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
+                         rendered="#{publicationController.acceptedOnHold and (userSessionController.isItMe(publicationController.publication.currentReviewer) or userSessionController.isItMe(publicationController.publication.currentOwner))}"
                          actionListener="#{publicationController.readyForReleaseFromOnHold}"
                          action="#{publicationController.doSave}" ajax="false"/>
     </ui:define>
