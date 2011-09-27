@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.experiment;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
 import org.primefaces.context.RequestContext;
@@ -283,8 +284,14 @@ public class ExperimentController extends AnnotatedObjectController {
         globalPublicationDecision();
     }
 
+
     public void rejectExperiment(ActionEvent actionEvent) {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
+
+        if (reasonForRejection.startsWith("Rejected")) {
+            reasonForRejection = reasonForRejection.substring(reasonForRejection.indexOf(".")+2);
+        }
+
         String date = "Rejected " +new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase();
 
         setToBeReviewed(date+". "+reasonForRejection);
@@ -295,7 +302,7 @@ public class ExperimentController extends AnnotatedObjectController {
 
         doSave(actionEvent);
 
-        addInfoMessage("Experiment rejected", experiment.getShortLabel());
+        addInfoMessage("Experiment rejected", experiment.getShortLabel()+": "+reasonForRejection);
 
         globalPublicationDecision();
     }

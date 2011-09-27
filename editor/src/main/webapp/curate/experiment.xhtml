@@ -225,7 +225,7 @@
                                      converter="trimmingConverter"/>
 
                     <p:commandButton value="Reject" actionListener="#{experimentController.rejectExperiment}"
-                                     process="reasonRejTxt" oncomplete="rejectExperimentDialog.hide()"/>
+                                     process="reasonRejTxt" update="intactForm,messagesComponent" oncomplete="rejectExperimentDialog.hide()"/>
             </h:panelGrid>
         </p:dialog>
 
