@@ -57,7 +57,7 @@ public class AssignmentReportController extends JpaAwareController {
                 "e.event.identifier = :cvEventId and e.when >= :dateFrom and e.when <= :dateTo and e.note is null order by e.when");
         query.setParameter("cvEventId", CvLifecycleEventType.READY_FOR_CHECKING.identifier());
         query.setParameter("dateFrom", fromDate);
-        query.setParameter("dateTo", toDate);
+        query.setParameter("dateTo", new DateTime(toDate).plusDays(1).minusSeconds(1));
 
         List<LifecycleEvent> events = query.getResultList();
 

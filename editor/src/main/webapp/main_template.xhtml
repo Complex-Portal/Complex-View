@@ -18,12 +18,9 @@
         <link rel="shortcut icon" href="#{facesContext.externalContext.request.contextPath}/favicon#{facesContext.application.projectStage == 'Development'? '-test' : ''}.ico"/>
 
         <script type="text/javascript">
-            function fnCallback(e) {
-                document.getElementById("intact-blockingDiv").style.display = 'none';
-                //blockingDialog.hide();
-            }
-
-            YAHOO.util.Event.addListener(window, "load", fnCallback);
+            $(document).ready(function() {
+                 document.getElementById("intact-blockingDiv").style.display = 'none';
+            });
         </script>
 
     </h:head>
@@ -34,10 +31,6 @@
         <h:outputScript library="javascript" name="intact.js"/>
 
         <!--<ia:loadingDialog widgetVar="blockingDialog" modal="true" message="Loading page..."/>-->
-
-        <!--<script type="text/javascript">-->
-            <!--blockingDialog.show();-->
-        <!--</script>-->
 
         <!-- The debug element is causing problems with the Browse Cv Objects trees in dialogs... -->
         <!--<ui:debug hotkey="e" rendered="#{facesContext.application.projectStage == 'Development'}"/>-->
@@ -218,8 +211,6 @@
 
             <iframe id="easterEgg" style="width:600px; height:300px; border-width: 0; overflow: hidden;"></iframe>
         </p:dialog>
-
-            <ui:include src="main_dialogs.xhtml"/>
 
         </h:form>
 
