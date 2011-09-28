@@ -57,6 +57,11 @@
                          rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentOwner) and publicationController.backToCurationButtonRendered}"
                          actionListener="#{publicationController.revertReadyForChecking}"
                          action="#{publicationController.doSave}" ajax="false"/>
+        <p:commandButton value="Send Back to Curation"
+                         styleClass="important-button-alt"
+                         rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
+                         actionListener="#{publicationController.rejectPublication}"
+                         action="#{publicationController.doSave}" ajax="false"/>
         <p:commandButton value="Revert Accepted"
                          styleClass="important-button-alt"
                          rendered="#{publicationController.readyForRelease and !publicationController.released and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
