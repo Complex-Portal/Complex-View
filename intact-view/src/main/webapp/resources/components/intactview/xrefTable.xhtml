@@ -56,9 +56,10 @@
             <f:facet name="header">
                 <h:outputText value="Qualifier"/>
             </f:facet>
-            <!-- TODO nested use of cvPopup isn't working -->
-            <!--<iv:cvPopup cv="#{xref.cvXrefQualifier}" />-->
-            <h:outputText value="#{xref.cvXrefQualifier.shortLabel}" />
+            />
+            <h:outputLink value="#{request.contextPath}/cv/#{xref.cvXrefQualifier.ac}">
+                <h:outputText value="#{xref.cvXrefQualifier.shortLabel}"/>
+            </h:outputLink>
         </p:column>
 
     </p:dataTable>
