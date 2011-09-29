@@ -7,9 +7,9 @@
     <ul>
         <ui:repeat value="#{parameters}" var="parameter">
             <li>
-                <ui:decorate template="/pages/details/cvPopup.xhtml">
-                    <ui:param name="cv" value="#{parameter.cvParameterType}"/>
-                </ui:decorate>
+                <h:outputLink value="#{request.contextPath}/cv/#{parameter.cvParameterType.ac}">
+                    <h:outputText value="#{parameter.cvParameterType.shortLabel}" />
+                </h:outputLink>
 
                 &#160;
 
@@ -17,9 +17,9 @@
 
                 &#160;
 
-                <ui:decorate template="/pages/details/cvPopup.xhtml">
-                    <ui:param name="cv" value="#{parameter.cvParameterUnit}"/>
-                </ui:decorate>
+                <h:outputLink value="#{request.contextPath}/cv/#{parameter.cvParameterUnit.ac}">
+                    <h:outputText value="#{parameter.cvParameterUnit.shortLabel}" />
+                </h:outputLink>
             </li>
         </ui:repeat>
     </ul>

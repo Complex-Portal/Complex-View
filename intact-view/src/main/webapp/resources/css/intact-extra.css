@@ -19,6 +19,15 @@ a img {
     white-space: nowrap;
 }
 
+/** cols **/
+.labelColumn {
+    font-weight: bold;
+    white-space: nowrap;
+    vertical-align: top;
+    text-align: right;
+    padding-right: 10px;
+}
+
 /** interactions table **/
 td.notSameThanPrevious {
     border-top: 1px solid #CDCDCD !important;

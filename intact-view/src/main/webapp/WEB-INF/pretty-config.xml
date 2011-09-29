@@ -35,44 +35,10 @@
         <view-id>/pages/details/details.xhtml</view-id>
     </url-mapping>
 
-    <!--<url-mapping id="publication">-->
-        <!--<pattern value="/publication/#{ac}" />-->
-        <!--<view-id>/curate/publication.jsf</view-id>-->
-    <!--</url-mapping>-->
 
-    <!--<url-mapping id="experiment">-->
-        <!--<pattern value="/experiment/#{ac}" />-->
-        <!--<view-id>/curate/experiment.jsf</view-id>-->
-    <!--</url-mapping>-->
-
-    <!--<url-mapping id="interaction">-->
-        <!--<pattern value="/interaction/#{ac}" />-->
-        <!--<view-id>/curate/interaction.jsf</view-id>-->
-    <!--</url-mapping>-->
-
-    <!--<url-mapping id="interactor">-->
-        <!--<pattern value="/interactor/#{ac}" />-->
-        <!--<view-id>/curate/interactor.jsf</view-id>-->
-    <!--</url-mapping>-->
-
-    <!--<url-mapping id="participant">-->
-        <!--<pattern value="/participant/#{ac}" />-->
-        <!--<view-id>/curate/participant.jsf</view-id>-->
-    <!--</url-mapping>-->
-
-    <!--<url-mapping id="feature">-->
-        <!--<pattern value="/feature/#{ac}" />-->
-        <!--<view-id>/curate/feature.jsf</view-id>-->
-    <!--</url-mapping>-->
-
-    <!--<url-mapping id="organism">-->
-        <!--<pattern value="/organism/#{ac}" />-->
-        <!--<view-id>/curate/organism.jsf</view-id>-->
-    <!--</url-mapping>-->
-
-    <!--<url-mapping id="cvobject">-->
-        <!--<pattern value="/cv/#{ac}" />-->
-        <!--<view-id>/curate/cvobject.jsf</view-id>-->
-    <!--</url-mapping>-->
+    <url-mapping id="cvobject">
+        <pattern value="/cv/#{ac}" />
+        <view-id>/pages/details/cv.xhtml</view-id>
+    </url-mapping>
 
 </pretty-config>

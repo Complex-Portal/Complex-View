@@ -39,11 +39,15 @@
     </iv:panelLabelAndMessage>
 
     <iv:panelLabelAndMessage label="Interaction Detection Method:" labelStyleClass="textLabel">
-        <iv:cvPopup cv="#{experiment.cvInteraction}"/>
+        <h:outputLink value="#{request.contextPath}/cv/#{experiment.cvInteraction.ac}">
+            <h:outputText value="#{experiment.cvInteraction.shortLabel}"/>
+        </h:outputLink>
     </iv:panelLabelAndMessage>
 
     <iv:panelLabelAndMessage label="Participant Identification Method:" labelStyleClass="textLabel">
-        <iv:cvPopup cv="#{experiment.cvIdentification}"/>
+        <h:outputLink value="#{request.contextPath}/cv/#{experiment.cvIdentification.ac}">
+            <h:outputText value="#{experiment.cvIdentification.shortLabel}"/>
+        </h:outputLink>
     </iv:panelLabelAndMessage>
 
     <table border="0">
@@ -137,7 +141,9 @@
                 </iv:panelLabelAndMessage>
 
                 <iv:panelLabelAndMessage label="Type:" labelStyleClass="textLabel">
-                    <iv:cvPopup cv="#{interaction.cvInteractionType}"/>
+                    <h:outputLink value="#{request.contextPath}/cv/#{interaction.cvInteractionType.ac}">
+                        <h:outputText value="#{interaction.cvInteractionType.shortLabel}"/>
+                    </h:outputLink>
                 </iv:panelLabelAndMessage>
 
                 <table border="0">
@@ -258,27 +264,27 @@
             <f:facet name="header">
                 <h:outputText value="Experimental role"/>
             </f:facet>
-            <iv:cvLazyPopup cvIdentifier="#{participant.cvExperimentalRole.identifier}" dialogVar="cvInfoDialog"
-                            text="#{participant.cvExperimentalRole.shortLabel}"
-                            cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"/>
+            <h:outputLink value="#{request.contextPath}/cv/#{participant.cvExperimentalRole.ac}">
+                <h:outputText value="#{participant.cvExperimentalRole.ac}"/>
+            </h:outputLink>
         </p:column>
 
         <p:column>
             <f:facet name="header">
                 <h:outputText value="Biological role"/>
             </f:facet>
-            <iv:cvLazyPopup cvIdentifier="#{participant.cvBiologicalRole.identifier}" dialogVar="cvInfoDialog"
-                            text="#{participant.cvBiologicalRole.shortLabel}"
-                            cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"/>
+            <h:outputLink value="#{request.contextPath}/cv/#{participant.cvBiologicalRole.ac}">
+                <h:outputText value="#{participant.cvBiologicalRole.ac}"/>
+            </h:outputLink>
         </p:column>
 
         <p:column>
             <f:facet name="header">
                 <h:outputText value="Interactor type"/>
             </f:facet>
-            <iv:cvLazyPopup cvIdentifier="#{interactor.cvInteractorType.identifier}" dialogVar="cvInfoDialog"
-                            text="#{interactor.cvInteractorType.shortLabel}"
-                            cvClassName="uk.ac.ebi.intact.model.CvInteractorType"/>
+            <h:outputLink value="#{request.contextPath}/cv/#{interactor.cvInteractorType.ac}">
+                <h:outputText value="#{interactor.cvInteractorType.ac}"/>
+            </h:outputLink>
         </p:column>
 
         <p:column>

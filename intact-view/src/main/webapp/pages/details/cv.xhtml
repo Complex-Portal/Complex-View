@@ -8,57 +8,51 @@
 
                 xmlns:iv="http://java.sun.com/jsf/composite/components/intactview"
 
-                xmlns:iav="http://intact.ebi.ac.uk/view" xmlns:p="http://primefaces.prime.com.tr/ui">
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
 
-    swap me for iv:cvPopup !!!
+                template="/main_content_template.xhtml">
 
-    <!--<tr:document title="#{cvBean.className}: #{cvBean.cvObject.shortLabel}">-->
-    <!--<tr:form>-->
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(5)}"/>
+        <f:viewParam name="ac" value="#{cvObjectController.ac}"/>
+        <f:event type="preRenderView" listener="#{cvObjectController.load}"/>
+    </f:metadata>
 
-    <!--<h3>#{cvBean.className}</h3>-->
+     <ui:define name="detailsTabContent">
 
-    <!--<p:panel style="width:550px;">-->
-        <!--<iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">-->
-            <!--<h:outputText value="#{cvBean.cvObject.ac}"/>-->
-        <!--</iv:panelLabelAndMessage>-->
+        <h:panelGroup>
+            <h:graphicImage alt="Back" url="/images/back_arrow.gif" />
+            <p:commandLink value="Back to Interaction Details" action="/pages/details/details?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
+        </h:panelGroup>
 
-        <!--<iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">-->
-            <!--<h:outputText value="#{cvBean.cvObject.shortLabel}"/>-->
-        <!--</iv:panelLabelAndMessage>-->
+        <br/>
 
-        <!--<iv:panelLabelAndMessage label="Description:"-->
-                                 <!--visible="#{cvBean.cvObject.shortLabel != cvBean.cvObject.fullName}"-->
-                                 <!--labelStyle="font-weight:bold;">-->
-            <!--<h:outputText value="#{(cvBean.cvObject.fullName == null ? '-' : cvBean.cvObject.fullName )}"/>-->
-        <!--</iv:panelLabelAndMessage>-->
+        <h2>CV Term: #{cvObjectController.cv.shortLabel}</h2>
 
-    <!--</p:panel>-->
+         <h:panelGrid columns="2" columnClasses="labelColumn,none">
+             <h:outputLabel for="identTxt" value="Identifier: "/>
+             <h:outputText id="identTxt" value="#{cvObjectController.cv.identifier}"/>
 
-    <!--<table width="690" cellPadding="3" cellSpacing="0">-->
-        <!--<h:panelGroup rendered="#{not empty cvBean.cvObject.xrefs}">-->
-            <!--<tr>-->
-                <!--<td valign="top">-->
-                    <!--<h:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>-->
-                <!--</td>-->
-                <!--<td>-->
-                    <!--<ui:include src="/pages/details/xrefs.xhtml">-->
-                        <!--<ui:param name="xrefs" value="#{cvBean.cvObject.xrefs}"/>-->
-                    <!--</ui:include>-->
-                <!--</td>-->
-            <!--</tr>-->
-        <!--</h:panelGroup>-->
-        <!--<h:panelGroup rendered="#{not empty cvBean.cvObject.annotations}">-->
-            <!--<tr>-->
-                <!--<td valign="top">-->
-                    <!--<h:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>-->
-                <!--</td>-->
-                <!--<td>-->
-                    <!--<ui:decorate template="/pages/details/annotations.xhtml">-->
-                        <!--<ui:param name="annotations" value="#{cvBean.cvObject.annotations}"/>-->
-                    <!--</ui:decorate>-->
-                <!--</td>-->
-            <!--</tr>-->
-        <!--</h:panelGroup>-->
-    <!--</table>-->
+             <h:outputLabel for="fullNameTxt" value="Description: "/>
+             <h:outputText id="fullNameTxt" value="#{cvObjectController.cvDescription != null? cvObjectController.cvDescription : '-'}"/>
+
+             <h:outputLabel for="fullNameTxt" value="Cross References: "/>
+
+             <h:panelGroup rendered="#{not empty cvObjectController.cv.xrefs}">
+                <iv:xrefTable xrefs="#{cvObjectController.cv.xrefs}"/>
+             </h:panelGroup>
+             <h:outputText value="None" rendered="#{empty cvObjectController.cv.xrefs}"/>
+
+             <h:outputLabel for="fullNameTxt" value="Annotations: "/>
+             <h:panelGroup rendered="#{not empty cvObjectController.cvAnnotations}">
+                <iv:annotationTable annotations="#{cvObjectController.cvAnnotations}"/>
+             </h:panelGroup>
+
+             <h:outputText value="None" rendered="#{empty cvObjectController.cvAnnotations}"/>
+         </h:panelGrid>
+
+
+    </ui:define>
 
 </ui:composition>

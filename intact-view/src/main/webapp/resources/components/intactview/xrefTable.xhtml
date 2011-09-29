@@ -25,9 +25,9 @@
             <f:facet name="header">
                 <h:outputText value="Database"/>
             </f:facet>
-            <h:outputText value="#{xref.cvDatabase.shortLabel}" />
-            <!-- TODO nested use of cvPopup isn't working -->
-            <!--<iv:cvPopup cv="#{xref.cvDatabase}" />-->
+            <h:outputLink value="#{request.contextPath}/cv/#{xref.cvDatabase.ac}">
+                    <h:outputText value="#{xref.cvDatabase.shortLabel}" />
+                </h:outputLink>
         </p:column>
 
         <p:column >

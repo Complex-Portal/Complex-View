@@ -24,8 +24,10 @@
                 <f:facet name="header">
                     <h:outputText value="Topic"/>
                 </f:facet>
-                <h:outputText value="#{annot.cvTopic.shortLabel}" />
-                <!--<iv:cvPopup cv="#{annot.cvTopic}" />-->
+                <h:outputLink value="#{request.contextPath}/cv/#{annot.cvTopic.ac}">
+                    <h:outputText value="#{annot.cvTopic.shortLabel}" />
+                </h:outputLink>
+
             </p:column>
             <p:column>
                 <f:facet name="header">
