@@ -93,12 +93,15 @@
                             </td>
                             <td colspan="2">
                                 <h:selectManyCheckbox id="usedInTxt" value="#{cvObjectController.usedIn}"
-                                                      required="true" requiredMessage="Used in is required"
-                                        onchange="markAsUnsaved()">
+                                                      required="true" requiredMessage="Used in is required">
+                                    <f:ajax render="cvobjectTabs changesPanel unsavedChangesInfo" listener="#{cvObjectController.changed(null)}"/>
                                     <f:selectItem itemLabel="Publication" itemValue="uk.ac.ebi.intact.model.Publication"/>
                                     <f:selectItem itemLabel="Experiment" itemValue="uk.ac.ebi.intact.model.Experiment"/>
                                     <f:selectItem itemLabel="Interaction" itemValue="uk.ac.ebi.intact.model.Interaction"/>
                                     <f:selectItem itemLabel="Interactor" itemValue="uk.ac.ebi.intact.model.Interactor"/>
+                                    <f:selectItem itemLabel="Protein" itemValue="uk.ac.ebi.intact.model.Protein"/>
+                                    <f:selectItem itemLabel="Small Molecule" itemValue="uk.ac.ebi.intact.model.SmallMolecule"/>
+                                    <f:selectItem itemLabel="Nucleic Acid" itemValue="uk.ac.ebi.intact.model.NucleicAcid"/>
                                     <f:selectItem itemLabel="Participant" itemValue="uk.ac.ebi.intact.model.Component"/>
                                     <f:selectItem itemLabel="Feature" itemValue="uk.ac.ebi.intact.model.Feature"/>
                                     <f:selectItem itemLabel="Cv Object" itemValue="uk.ac.ebi.intact.model.CvObject"/>

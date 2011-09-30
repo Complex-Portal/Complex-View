@@ -139,8 +139,15 @@ public class CvObjectController extends AnnotatedObjectController {
         if (usedInArr == null) {
             return new String[0];
         }
+        
+        String[] rawClasses = usedInArr.split(",");
+        String[] classes = new String[rawClasses.length];
+        
+        for (int i=0; i<rawClasses.length; i++) {
+            classes[i] = rawClasses[i].trim();
+        }
 
-        return usedInArr.split(",");
+        return classes;
     }
 
     public void setUsedIn(String[] usedIn) {
