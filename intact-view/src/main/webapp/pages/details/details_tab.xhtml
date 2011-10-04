@@ -265,7 +265,7 @@
                 <h:outputText value="Experimental role"/>
             </f:facet>
             <h:outputLink value="#{request.contextPath}/cv/#{participant.cvExperimentalRole.ac}">
-                <h:outputText value="#{participant.cvExperimentalRole.ac}"/>
+                <h:outputText value="#{participant.cvExperimentalRole.shortLabel}"/>
             </h:outputLink>
         </p:column>
 
@@ -274,7 +274,7 @@
                 <h:outputText value="Biological role"/>
             </f:facet>
             <h:outputLink value="#{request.contextPath}/cv/#{participant.cvBiologicalRole.ac}">
-                <h:outputText value="#{participant.cvBiologicalRole.ac}"/>
+                <h:outputText value="#{participant.cvBiologicalRole.shortLabel}"/>
             </h:outputLink>
         </p:column>
 
@@ -283,7 +283,7 @@
                 <h:outputText value="Interactor type"/>
             </f:facet>
             <h:outputLink value="#{request.contextPath}/cv/#{interactor.cvInteractorType.ac}">
-                <h:outputText value="#{interactor.cvInteractorType.ac}"/>
+                <h:outputText value="#{interactor.cvInteractorType.shortLabel}"/>
             </h:outputLink>
         </p:column>
 
