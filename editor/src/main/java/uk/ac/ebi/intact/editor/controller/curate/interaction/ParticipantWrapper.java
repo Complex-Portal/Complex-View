@@ -1,11 +1,13 @@
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
 import uk.ac.ebi.intact.model.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -69,8 +71,9 @@ public class ParticipantWrapper {
 
     public CvExperimentalPreparation getFirstExperimentalPreparation() {
         if( participant.getInteractor() != null ) {
-            if( ! participant.getExperimentalPreparations().isEmpty() ) {
-                return participant.getExperimentalPreparations().iterator().next();
+            final Collection<CvExperimentalPreparation> expPreparations = IntactCore.ensureInitializedExperimentalPreparations(participant);
+            if( ! expPreparations.isEmpty() ) {
+                return expPreparations.iterator().next();
             }
         }
 
