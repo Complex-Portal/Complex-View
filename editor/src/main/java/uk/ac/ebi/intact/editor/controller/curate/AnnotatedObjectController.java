@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.IntactObjectDao;
 import uk.ac.ebi.intact.core.persister.Finder;
@@ -111,7 +112,14 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             if (publicationController.getPublication() != null) {
                 Publication publication = publicationController.getPublication();
 
-                    if (CvPublicationStatusType.CURATION_IN_PROGRESS.identifier().equals(publication.getStatus().getIdentifier())) {
+                    if (publication.getStatus() == null) {
+                        // we assume for now that null status means that the publication has been created using an external process (ie. XML import)
+                        LifecycleManager lifecycleManager = getSpringContext().getBean(LifecycleManager.class);
+                        lifecycleManager.getStartStatus().create(publication, "Imported from external source");
+
+                        addWarningMessage("Publication without status", "Assuming that it has been imported. Save it if you are happy with this assumption");
+                        setUnsavedChanges(true);
+                    } else if (CvPublicationStatusType.CURATION_IN_PROGRESS.identifier().equals(publication.getStatus().getIdentifier())) {
                         if (!getUserSessionController().isItMe(publication.getCurrentOwner())) {
                             addWarningMessage("Publication being curated by '"+publication.getCurrentOwner().getLogin()+"'", "Please do not modify it without permission");
                         }
