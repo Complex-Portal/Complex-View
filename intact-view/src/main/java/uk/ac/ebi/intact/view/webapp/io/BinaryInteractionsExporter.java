@@ -172,7 +172,7 @@ public class BinaryInteractionsExporter {
         try {
             writer.write(entrySet, out);
         } catch (Exception e) {
-            throw new IntactViewException("Problem writing XML", e);
+            throw new IntactViewException("Problem writing XML (format "+format+") for query: "+solrQuery, e);
         }
     }
 
