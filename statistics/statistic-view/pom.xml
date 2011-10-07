@@ -29,10 +29,7 @@
     <properties>
         <jetty.port>9090</jetty.port>
 
-        <hibernate.driver>${db.driver}</hibernate.driver>
-        <hibernate.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</hibernate.url>
-        <hibernate.user>${db.user}</hibernate.user>
-        <hibernate.password>${db.password}</hibernate.password>
+        <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
     </properties>
 
     <build>
