@@ -406,6 +406,7 @@ public class ValidatorWebContent {
             setPsiMiCvMapping(cvRulesReader.read(cvConfig));
             //preLoadOntologySynonyms(this.psiMiCvMapping, this.psiMiOntologyManager);
         } catch (CvRuleReaderException e) {
+            e.printStackTrace();
             String body = "A problem occurred when reading the psi-mi cv-mapping rules. \n" +
                     "The validator will not be able to validate controlled-vocabulary usages.\n" + ExceptionUtils.getFullStackTrace(e);
             context.sendEmail("Cannot read the cv-mapping rules for psi-mi", body);

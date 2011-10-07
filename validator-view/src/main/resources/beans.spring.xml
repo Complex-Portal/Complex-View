@@ -11,6 +11,8 @@
 
     <context:component-scan base-package="uk.ac.ebi.intact.services.validator"/>
 
+    <context:property-placeholder location="ValidatorConfig.properties"/>
+
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
@@ -25,7 +27,7 @@
     </bean>
 
     <bean id="validatorConfig" class="uk.ac.ebi.intact.services.validator.ValidatorConfig">
-        <property name="notificationEmails" value="${notification.emails}"/>
+        <property name="notificationEmails" value="${notify}"/>
     </bean>
 
 </beans>

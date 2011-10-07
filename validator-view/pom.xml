@@ -24,6 +24,7 @@
 
         <psimi.obo.url>file:/ebi/sp/pro6/intact/local/data/psi/mi/rel25/data/psi-mi25.obo</psimi.obo.url>
         <psimod.obo.url>file:/ebi/sp/pro6/intact/local/data/psi/mod/data/PSI-MOD.obo</psimod.obo.url>
+        <psipar.obo.url>file:/ebi/sp/pro6/intact/local/data/psi/mi/controlledVocab/proteomeBinder/psi-par.obo</psipar.obo.url>
 
         <notification.emails></notification.emails>
     </properties>
