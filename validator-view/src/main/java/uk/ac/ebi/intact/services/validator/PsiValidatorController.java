@@ -16,6 +16,7 @@ import uk.ac.ebi.faces.controller.BaseController;
 import uk.ac.ebi.intact.services.validator.context.ValidatorWebContent;
 import uk.ac.ebi.intact.services.validator.context.ValidatorWebContext;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -121,18 +122,23 @@ public class PsiValidatorController extends BaseController {
      */
     public PsiValidatorController() {
         //this.uploadLocalFile = true;
+
+    }
+
+    @PostConstruct
+    public void init() {
         this.mapOfRules = new HashMap<Integer, ObjectRule>();
 
-        ValidatorWebContext context = ValidatorWebContext.getInstance();
+                ValidatorWebContext context = ValidatorWebContext.getInstance();
 
-        ValidatorWebContent content = context.getValidatorWebContent();
+                ValidatorWebContent content = context.getValidatorWebContent();
 
-        Map<ValidationScope, Set<ObjectRule>> rules = content.getPsiMiObjectRules();
+                Map<ValidationScope, Set<ObjectRule>> rules = content.getPsiMiObjectRules();
 
-        itemRules = new HashMap<ValidationScope, List<SelectItem>>();
-        customizedRules = new HashMap<ValidationScope, List<Integer>>();
+                itemRules = new HashMap<ValidationScope, List<SelectItem>>();
+                customizedRules = new HashMap<ValidationScope, List<Integer>>();
 
-        initialiseCustomizedRules(rules);
+                initialiseCustomizedRules(rules);
     }
 
     private void initialiseCustomizedRules(Map<ValidationScope, Set<ObjectRule>> rules){
