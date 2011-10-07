@@ -24,4 +24,8 @@
         </property>
     </bean>
 
+    <bean id="validatorConfig" class="uk.ac.ebi.intact.services.validator.ValidatorConfig">
+        <property name="notificationEmails" value="${notification.emails}"/>
+    </bean>
+
 </beans>

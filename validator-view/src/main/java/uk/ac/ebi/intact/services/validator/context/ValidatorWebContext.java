@@ -5,6 +5,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import uk.ac.ebi.intact.services.validator.ValidatorConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,11 @@ public class ValidatorWebContext {
      * The MailSender
      */
     private MailSender mailSender;
+
+    /**
+     * Configuration
+     */
+    private ValidatorConfig validatorConfig;
 
     /**
      * The e-mail sender
@@ -68,6 +74,7 @@ public class ValidatorWebContext {
         String[] configFiles = new String[]{"/beans.spring.xml"};
         BeanFactory beanFactory = new ClassPathXmlApplicationContext( configFiles );
         this.mailSender = ( MailSender ) beanFactory.getBean( "mailSender" );
+        this.validatorConfig = ( ValidatorConfig ) beanFactory.getBean( "validatorConfig" );
 
         setUpEMailRecipients();
 
@@ -105,9 +112,9 @@ public class ValidatorWebContext {
     private void setUpEMailRecipients(){
         emailRecipients.clear();
 
-        emailRecipients.add("marine@ebi.ac.uk");
-        emailRecipients.add("baranda@ebi.ac.uk");
-        emailRecipients.add("skerrien@ebi.ac.uk");
+        for (String email : validatorConfig.getNotificationEmailsAsArray()) {
+            emailRecipients.add(email.trim());
+        }
     }
 
     /**
