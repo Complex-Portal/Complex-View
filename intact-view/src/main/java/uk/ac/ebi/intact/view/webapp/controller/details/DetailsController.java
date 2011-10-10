@@ -148,7 +148,7 @@ public class DetailsController extends JpaBaseController {
     }
 
     @Transactional(readOnly = true)
-    private void setExperimentAc( String experimentAc ) {
+    public void setExperimentAc( String experimentAc ) {
         if ( log.isDebugEnabled() ) log.debug( "Calling setExperimentAc( '" + experimentAc + "' )..." );
         experiment = getDaoFactory().getExperimentDao().getByAc( experimentAc );
         if ( experiment == null ) {
