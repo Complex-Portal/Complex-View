@@ -20,6 +20,6 @@
     </New>
     <New class="org.eclipse.jetty.plus.jndi.EnvEntry">
         <Arg>jsf/ProjectStage</Arg>
-        <Arg type="java.lang.String">Development</Arg>
+        <Arg type="java.lang.String">${project.stage}</Arg>
     </New>
 </Configure>
