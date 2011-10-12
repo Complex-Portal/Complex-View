@@ -209,6 +209,15 @@
         <servlet-name>faces</servlet-name>
     </filter-mapping>
 
+    <filter>
+        <filter-name>HealthFilter</filter-name>
+        <filter-class>uk.ac.ebi.intact.view.webapp.filter.HealthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>HealthFilter</filter-name>
+        <url-pattern>/test</url-pattern>
+    </filter-mapping>
+
     <!-- Spring Framework -->
     <listener>
         <listener-class>
