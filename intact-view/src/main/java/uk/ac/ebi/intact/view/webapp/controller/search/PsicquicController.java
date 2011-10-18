@@ -169,7 +169,7 @@ public class PsicquicController extends BaseController {
             input.close();
             psicquicCount = Integer.parseInt(strCount);
         } catch (IOException e) {
-            log.error("Problem connecting to PSICQUIC service '"+service.getName()+"': "+url+" / proxy "+System.getProperty("http.proxyHost")+":"+System.getProperty("http.proxyPort"), e);
+            log.error("Problem connecting to PSICQUIC service '"+service.getName()+"': "+url+" / proxy "+intactViewConfiguration.getProxyHost()+":"+intactViewConfiguration.getProxyPort(), e);
         }
 
         return psicquicCount;
