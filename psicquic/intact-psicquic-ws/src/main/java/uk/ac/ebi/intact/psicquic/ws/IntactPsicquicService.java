@@ -41,6 +41,8 @@ import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
 import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
 
+import javax.annotation.PostConstruct;
+import java.net.MalformedURLException;
 import java.util.*;
 
 /**
@@ -74,8 +76,19 @@ public class IntactPsicquicService implements PsicquicService {
     private static final String IDENTIFIER_FIELD = "identifier";
     private static final String ALIAS_FIELD = "alias";
     private static final String INTERACTION_ID_FIELD = "interaction_id";
+    
+    private CommonsHttpSolrServer solrServer;
 
     public IntactPsicquicService() { 
+    }
+    
+    @PostConstruct
+    public void createSolrServer() {
+        try {
+            solrServer = new CommonsHttpSolrServer(config.getSolrServerUrl(), createHttpClient());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Problem creating SOLR server instance: ",e);
+        }
     }
 
 
@@ -164,7 +177,6 @@ public class IntactPsicquicService implements PsicquicService {
         SolrSearchResult solrSearchResult;
 
         try {
-            CommonsHttpSolrServer solrServer = new CommonsHttpSolrServer(config.getSolrServerUrl(), createHttpClient());
             solrServer.setConnectionTimeout(100 * 1000);
             solrServer.setSoTimeout(100 * 1000);
             solrServer.setAllowCompression(true);
