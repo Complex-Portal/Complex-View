@@ -47,6 +47,8 @@ public class HealthCheckServlet extends HttpServlet {
         resp.setContentType("text/plain");
         resp.getWriter().write("Application: OK\n");
 
+        boolean allOk = true;
+
         // db check
         final IntactContext intactContext = (IntactContext) applicationContext.getBean("intactContext");
         final DaoFactory daoFactory = intactContext.getDataContext().getDaoFactory();
@@ -66,5 +68,12 @@ public class HealthCheckServlet extends HttpServlet {
 
         boolean solrOk = (solrPingResponse.getStatus() == 0);
         resp.getWriter().write("SOLR Index: "+(solrOk? "OK" : "FAILED ("+solrPingResponse.getStatus()+")"));
+
+        if (!dbOk || !solrOk) {
+            allOk = false;
+        }
+
+
+        resp.getWriter().write("\nGlobal status: "+(allOk? "ALL_OK" : "UNHAPPY"));
     }
 }
