@@ -110,6 +110,9 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private String psicquicViewUrl;
     private String imexViewUrl;
 
+    private CommonsHttpSolrServer solrServer;
+    private CommonsHttpSolrServer ontologySolrServer;
+
     public IntactViewConfiguration() {
     }
     
@@ -420,17 +423,23 @@ public class IntactViewConfiguration extends BaseController implements Initializ
 
     public SolrServer getOntologySolrServer() {
         if (solrInteractionsUrl != null) {
-            try {
-                return createSolrServer(solrOntologiesUrl);
-            } catch (MalformedURLException e) {
-                throw new IntactViewException("Malformed Solr URL: "+ solrOntologiesUrl, e);
+            if (ontologySolrServer == null) {
+                try {
+                    ontologySolrServer = createSolrServer(solrOntologiesUrl);
+                } catch (MalformedURLException e) {
+                    throw new IntactViewException("Malformed Solr URL: "+ solrOntologiesUrl, e);
+                }
             }
+
+            return ontologySolrServer;
         }
 
         return null;
     }
 
     private CommonsHttpSolrServer createSolrServer(String solrUrl) throws MalformedURLException {
+        if (solrServer == null) {
+
         HttpClient httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 
         if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
@@ -438,9 +447,11 @@ public class IntactViewConfiguration extends BaseController implements Initializ
             httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
         }
 
-        final CommonsHttpSolrServer solrServer = new CommonsHttpSolrServer(solrUrl, httpClient);
-        solrServer.setMaxTotalConnections(128);
-        solrServer.setDefaultMaxConnectionsPerHost(32);
+            solrServer = new CommonsHttpSolrServer(solrUrl, httpClient);
+            solrServer.setMaxTotalConnections(128);
+            solrServer.setDefaultMaxConnectionsPerHost(32);
+        }
+
         return solrServer;
     }
 
