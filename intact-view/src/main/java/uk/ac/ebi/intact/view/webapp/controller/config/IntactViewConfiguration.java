@@ -445,6 +445,10 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
                 isValueSet(proxyPort) && proxyPort.trim().length() > 0) {
             httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+
+            log.info("Creating connection to SOLR server: "+solrUrl+" , using proxy: "+proxyHost+":"+proxyPort);
+        } else {
+            log.info("Creating connection to SOLR server: "+solrUrl+" , NO PROXY");
         }
 
             solrServer = new CommonsHttpSolrServer(solrUrl, httpClient);
