@@ -29,6 +29,7 @@ import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -163,7 +164,9 @@ public class PsicquicController extends BaseController {
             encoded = encoded.replaceAll("\\+", "%20");
 
             url = service.getRestUrl()+"query/"+ encoded +"?format=count";
-            String strCount = IOUtils.toString(new URL(url).openStream());
+            final InputStream input = new URL(url).openStream();
+            String strCount = IOUtils.toString(input);
+            input.close();
             psicquicCount = Integer.parseInt(strCount);
         } catch (IOException e) {
             log.error("Problem connecting to PSICQUIC service '"+service.getName()+"': "+url+" / proxy "+System.getProperty("http.proxyHost")+":"+System.getProperty("http.proxyPort"), e);
