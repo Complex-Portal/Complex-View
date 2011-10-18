@@ -82,13 +82,22 @@ public class IntactPsicquicService implements PsicquicService {
     public IntactPsicquicService() { 
     }
     
-    @PostConstruct
-    public void createSolrServer() {
-        try {
-            solrServer = new CommonsHttpSolrServer(config.getSolrServerUrl(), createHttpClient());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Problem creating SOLR server instance: ",e);
+    public CommonsHttpSolrServer getSolrServer() {
+        if (solrServer == null) {
+            try {
+                solrServer = new CommonsHttpSolrServer(config.getSolrServerUrl(), createHttpClient());
+
+                solrServer.setConnectionTimeout(100 * 1000);
+                solrServer.setSoTimeout(100 * 1000);
+                solrServer.setAllowCompression(true);
+
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Problem creating SOLR server instance: ", e);
+            }
         }
+
+        return solrServer;
+
     }
 
 
@@ -176,11 +185,9 @@ public class IntactPsicquicService implements PsicquicService {
 
         SolrSearchResult solrSearchResult;
 
-        try {
-            solrServer.setConnectionTimeout(100 * 1000);
-            solrServer.setSoTimeout(100 * 1000);
-            solrServer.setAllowCompression(true);
+        CommonsHttpSolrServer solrServer = getSolrServer();
 
+        try {
             IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
             solrSearchResult = searcher.search(query, requestInfo.getFirstResult(), blockSize);
 
