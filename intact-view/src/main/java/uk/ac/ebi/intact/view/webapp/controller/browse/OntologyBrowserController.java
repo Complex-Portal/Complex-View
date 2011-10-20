@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.params.FacetParams;
@@ -72,7 +73,8 @@ public abstract class OntologyBrowserController extends BaseController {
 
     @PostConstruct
     public void init() {
-        OntologySearcher ontologySearcher = new OntologySearcher(intactViewConfiguration.getOntologySolrServer());
+        final SolrServer ontologySolrServer = intactViewConfiguration.getOntologySolrServer();
+        OntologySearcher ontologySearcher = new OntologySearcher(ontologySolrServer);
         ontologyTreeNode = createOntologyTreeModel(createRootTerm(ontologySearcher));
     }
 

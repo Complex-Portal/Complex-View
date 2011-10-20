@@ -411,11 +411,16 @@ public class IntactViewConfiguration extends BaseController implements Initializ
 
     public SolrServer getInteractionSolrServer() {
         if (solrInteractionsUrl != null) {
-            try {
-                return createSolrServer(solrInteractionsUrl);
-            } catch (MalformedURLException e) {
-                throw new IntactViewException("Malformed Solr URL: "+ solrInteractionsUrl, e);
+            if (solrServer == null) {
+                try {
+                    solrServer = createSolrServer(solrInteractionsUrl);
+                } catch (MalformedURLException e) {
+                    throw new IntactViewException("Malformed Solr URL: " + solrInteractionsUrl, e);
+                }
+
             }
+
+            return solrServer;
         }
 
         return null;
@@ -438,8 +443,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     }
 
     private CommonsHttpSolrServer createSolrServer(String solrUrl) throws MalformedURLException {
-        if (solrServer == null) {
-
         HttpClient httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 
         if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
@@ -451,10 +454,10 @@ public class IntactViewConfiguration extends BaseController implements Initializ
             log.info("Creating connection to SOLR server: "+solrUrl+" , NO PROXY");
         }
 
-            solrServer = new CommonsHttpSolrServer(solrUrl, httpClient);
-            solrServer.setMaxTotalConnections(128);
-            solrServer.setDefaultMaxConnectionsPerHost(32);
-        }
+        CommonsHttpSolrServer solrServer = new CommonsHttpSolrServer(solrUrl, httpClient);
+        solrServer.setMaxTotalConnections(128);
+        solrServer.setDefaultMaxConnectionsPerHost(32);
+
 
         return solrServer;
     }
