@@ -422,7 +422,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     }
 
     public SolrServer getOntologySolrServer() {
-        if (solrInteractionsUrl != null) {
+        if (solrOntologiesUrl != null) {
             if (ontologySolrServer == null) {
                 try {
                     ontologySolrServer = createSolrServer(solrOntologiesUrl);
