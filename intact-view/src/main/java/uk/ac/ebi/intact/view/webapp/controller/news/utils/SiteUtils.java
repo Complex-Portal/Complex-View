@@ -23,6 +23,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,14 +41,21 @@ public class SiteUtils {
 
     public static List<Datasets.Dataset> readDatasets( String datasetsXml ) throws IntactViewException {
         List<Datasets.Dataset> dataSets;
-        Datasets datasets;
+        Datasets datasets = null;
+
         try {
             URL datasetsUrl = new URL( datasetsXml );
-            final InputStream is = datasetsUrl.openStream();
+            final URLConnection urlConnection = datasetsUrl.openConnection();
+            urlConnection.setConnectTimeout(1000);
+            urlConnection.setReadTimeout(1000);
+            
+            urlConnection.connect();
+            
+            final InputStream is = urlConnection.getInputStream();
             datasets = ( Datasets ) readDatasetsXml( is );
             is.close();
         } catch ( Throwable e ) {
-            throw new IntactViewException( e );
+            e.printStackTrace();
         }
 
         if ( datasets != null ) {

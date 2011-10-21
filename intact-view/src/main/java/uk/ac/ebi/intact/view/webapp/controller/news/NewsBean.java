@@ -75,6 +75,8 @@ public class NewsBean implements Serializable {
         } catch (Throwable e) {
             e.printStackTrace();
         }
+
+
     }
 
     public void exportFeed( ActionEvent evt ) {
