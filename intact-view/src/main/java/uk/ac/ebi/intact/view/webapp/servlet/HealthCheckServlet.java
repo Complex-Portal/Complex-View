@@ -15,8 +15,11 @@
  */
 package uk.ac.ebi.intact.view.webapp.servlet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.SolrPingResponse;
+import org.springframework.beans.BeansException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import uk.ac.ebi.intact.core.context.IntactContext;
@@ -36,6 +39,8 @@ import java.io.IOException;
  */
 public class HealthCheckServlet extends HttpServlet {
 
+    private static final Log log = LogFactory.getLog( HealthCheckServlet.class );
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletContext context = getServletContext();
@@ -47,33 +52,32 @@ public class HealthCheckServlet extends HttpServlet {
         resp.setContentType("text/plain");
         resp.getWriter().write("Application: OK\n");
 
-        boolean allOk = true;
-
         // db check
-        final IntactContext intactContext = (IntactContext) applicationContext.getBean("intactContext");
-        final DaoFactory daoFactory = intactContext.getDataContext().getDaoFactory();
-        final int count = daoFactory.getInstitutionDao().countAll();
-
-        boolean dbOk = (count > 0);
-        resp.getWriter().write("Database: "+(dbOk? "OK" : "FAILED"));
+        boolean dbOk = false;
+        try {
+            final IntactContext intactContext = (IntactContext) applicationContext.getBean("intactContext");
+            final DaoFactory daoFactory = intactContext.getDataContext().getDaoFactory();
+            final int count = daoFactory.getInstitutionDao().countAll();
+            dbOk = (count > 0);
+        } catch ( Throwable t ) {
+            log.error( "Health Check failed on database.", t );
+        }
+        resp.getWriter().write("Database: " + (dbOk ? "OK" : "FAILED"));
         resp.getWriter().write("\n");
 
         // index check
         final SolrPingResponse solrPingResponse;
+        boolean solrOk = false;
         try {
             solrPingResponse = config.getInteractionSolrServer().ping();
-        } catch (SolrServerException e) {
-            throw new ServletException(e);
+            solrOk = (solrPingResponse.getStatus() == 0);
+        } catch ( Throwable t ) {
+            log.error( "Health Check failed on SOLR.", t );
         }
+        resp.getWriter().write("SOLR Index: " + (solrOk ? "OK" : "FAILED"));
 
-        boolean solrOk = (solrPingResponse.getStatus() == 0);
-        resp.getWriter().write("SOLR Index: "+(solrOk? "OK" : "FAILED ("+solrPingResponse.getStatus()+")"));
-
-        if (!dbOk || !solrOk) {
-            allOk = false;
-        }
-
-
-        resp.getWriter().write("\nGlobal status: "+(allOk? "ALL_OK" : "UNHAPPY"));
+        // The EBI load balancer looks for the keyword ALL_OK
+        boolean allOk = dbOk && solrOk;
+        resp.getWriter().write("\nGlobal status: "+(allOk? "ALL_OK" : "FAILED"));
     }
 }
