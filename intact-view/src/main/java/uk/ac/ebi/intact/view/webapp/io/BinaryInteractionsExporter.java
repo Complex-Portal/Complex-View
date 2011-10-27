@@ -15,10 +15,16 @@
  */
 package uk.ac.ebi.intact.view.webapp.io;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import org.hupo.psi.calimocho.io.DocumentConverter;
+import org.hupo.psi.calimocho.model.DocumentDefinition;
+import org.hupo.psi.calimocho.tab.model.ColumnBasedDocumentDefinition;
+import org.hupo.psi.calimocho.tab.util.MitabDocumentDefinitionFactory;
+import org.hupo.psi.calimocho.xgmml.XGMMLDocumentDefinition;
 import org.hupo.psi.mi.rdf.PsimiRdfConverter;
 import org.hupo.psi.mi.rdf.RdfFormat;
 import psidev.psi.mi.tab.PsimiTabWriter;
@@ -42,6 +48,7 @@ import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Exports to MITAB
@@ -67,6 +74,7 @@ public class BinaryInteractionsExporter {
     private static final String RDF_N3_PP = "rdf_n3_pp";
     private static final String RDF_TRIPLE = "rdf_triple";
     private static final String RDF_TURTLE = "rdf_turtle";
+    private static final String XGMML = "xgmml";
 
     public BinaryInteractionsExporter(SolrServer solrServer) {
         this.solrServer = solrServer;
@@ -97,12 +105,15 @@ public class BinaryInteractionsExporter {
             exportToRdf(os, searchQuery, RdfFormat.N_TRIPLE);
         } else if (RDF_TURTLE.equals(format)) {
             exportToRdf(os, searchQuery, RdfFormat.TURTLE);
+        } else if (XGMML.equals(format)) {
+            exportToXGMML(os, searchQuery);
         } else {
             throw new IntactViewException( "Format is not correct: " + format + ". Possible values: mitab, mitab_intact." );
         }
        
     }
-    
+
+
     public void exportToMiTab(OutputStream os, SolrQuery searchQuery) throws IOException {
          PsimiTabWriter writer = new PsimiTabWriter();
          Writer out = new OutputStreamWriter(os);
@@ -200,19 +211,22 @@ public class BinaryInteractionsExporter {
         converter.convert(entrySet, format, out);
     }
 
+    private void exportToXGMML(OutputStream os, SolrQuery solrQuery) throws IOException {
+        SolrSearchResult result = findResult(solrQuery);
+
+        Collection<String> interactions = result.getLineList();
+        
+        ColumnBasedDocumentDefinition mitabDefinition = MitabDocumentDefinitionFactory.mitab25Intact();
+        DocumentDefinition definition = new XGMMLDocumentDefinition("IntAct Export", "Results for query: "+solrQuery.getQuery(), "IntAct");
+        
+        DocumentConverter converter = new DocumentConverter( mitabDefinition, definition );
+        
+        InputStream is = new ByteArrayInputStream(StringUtils.join(interactions, System.getProperty("line.separator")).getBytes());
+        converter.convert( is, os );
+    }
+
     private EntrySet createEntrySet(SolrQuery solrQuery) {
-        IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
-
-        SolrSearchResult result1 = searcher.search(solrQuery);
-
-        if (result1.getTotalCount() > 1000) {
-            throw new IntactViewException("Too many interactions to export to XML. Maximum is 1000");
-        }
-
-        //SolrSearchResult result = searcher.search(searchQuery, null, null);
-        solrQuery.setRows(Integer.MAX_VALUE);
-        SolrSearchResult result = searcher.search(solrQuery);
-        Collection<IntactBinaryInteraction> interactions = result.getBinaryInteractionList();
+        Collection<IntactBinaryInteraction> interactions = findBinaryInteractions(solrQuery);
 
         Tab2Xml tab2Xml = new IntactTab2Xml();
 
@@ -223,6 +237,25 @@ public class BinaryInteractionsExporter {
             throw new IntactViewException("Problem converting interactions from MITAB to XML", e);
         }
         return entrySet;
+    }
+
+    private Collection<IntactBinaryInteraction> findBinaryInteractions(SolrQuery solrQuery) {
+        SolrSearchResult result = findResult(solrQuery);
+        return result.getBinaryInteractionList();
+    }
+
+    private SolrSearchResult findResult(SolrQuery solrQuery) {
+        IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
+
+        SolrSearchResult result1 = searcher.search(solrQuery);
+
+        if (result1.getTotalCount() > 5000) {
+            throw new IntactViewException("Too many interactions to export to XML. Maximum is 5000");
+        }
+
+        //SolrSearchResult result = searcher.search(searchQuery, null, null);
+        solrQuery.setRows(Integer.MAX_VALUE);
+        return searcher.search(solrQuery);
     }
 
 

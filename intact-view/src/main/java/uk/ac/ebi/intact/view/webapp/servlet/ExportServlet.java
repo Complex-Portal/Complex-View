@@ -23,6 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.params.UrlSolrParams;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
+import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 import uk.ac.ebi.intact.view.webapp.io.BinaryInteractionsExporter;
 
 import javax.servlet.ServletConfig;
@@ -68,6 +69,8 @@ public class ExportServlet extends HttpServlet {
 
         if( searchQuery != null ) {
             searchQuery = URLDecoder.decode( searchQuery, "UTF-8" );
+        } else {
+            searchQuery = ((UserQuery)applicationContext.getBean("userQuery")).getSearchQuery();
         }
 
         String format = request.getParameter(PARAM_FORMAT);
