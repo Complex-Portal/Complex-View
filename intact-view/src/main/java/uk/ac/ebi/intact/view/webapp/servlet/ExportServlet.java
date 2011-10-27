@@ -72,6 +72,7 @@ public class ExportServlet extends HttpServlet {
             searchQuery = URLDecoder.decode( searchQuery, "UTF-8" );
         } else {
             searchQuery = (String) request.getSession().getAttribute(UserQuery.SESSION_SOLR_QUERY_KEY);
+            searchQuery = URLDecoder.decode( searchQuery, "UTF-8" );
         }
 
         if (searchQuery == null) {
@@ -97,7 +98,7 @@ public class ExportServlet extends HttpServlet {
     }
 
     private SolrQuery convertToSolrQuery(String searchQuery) {
-
+        System.out.println("QUERY: "+searchQuery);
          if (searchQuery == null) {
              throw new NullPointerException("You must give a non null searchQuery");
          }
@@ -111,6 +112,8 @@ public class ExportServlet extends HttpServlet {
              log.debug("Given Solr query:     " + searchQuery);
              log.debug("converted Solr Query: " + solrQuery.toString());
          }
+
+        System.out.println("SOLR: "+solrQuery);
 
          return solrQuery;
      }
