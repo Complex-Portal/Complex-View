@@ -39,7 +39,7 @@
 
         <p:commandButton type="button" id="exportBtn" value="Download"
                          disabled="#{searchBean.exportFormat == null}"
-                         onclick="var selector = document.getElementById('mainPanels:exportFormatSelect');_gaq.push(['_trackEvent', 'Export', selector.options[selector.selectedIndex].text,'#{userQuery.searchQuery}']); var newWindow = window.open('#{requestConfigBean.absoluteContextPath}/export?query=#{iamf:encodeURL(searchBean.results.searchQuery)}&amp;format=#{searchBean.exportFormat}', '_blank'); newWindow.focus()"/>
+                         onclick="var selector = document.getElementById('mainPanels:exportFormatSelect');_gaq.push(['_trackEvent', 'Export', selector.options[selector.selectedIndex].text,'#{userQuery.searchQuery}']); var newWindow = window.open('#{requestConfigBean.absoluteContextPath}/export?format=#{searchBean.exportFormat}', '_blank'); newWindow.focus()"/>
 
         <p:divider/>
 

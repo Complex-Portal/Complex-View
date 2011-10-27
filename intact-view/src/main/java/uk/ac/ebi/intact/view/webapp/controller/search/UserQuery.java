@@ -56,6 +56,8 @@ public class UserQuery extends BaseController {
 
     private static final Log log = LogFactory.getLog( UserQuery.class );
 
+    public static final String SESSION_SOLR_QUERY_KEY = "UserQuery.SOLR_QUERY";
+
     private static final String TERM_NAME_PARAM = "termName";
     public static final String STAR_QUERY = "*:*";
 
@@ -138,7 +140,7 @@ public class UserQuery extends BaseController {
                 new SearchField("", "All"),
                 new SearchField(FieldNames.IDENTIFIER, "Participant Id"),
                 new SearchField(FieldNames.INTERACTION_ID, "Interaction Id"),
-//                new SearchField(FieldNames.GENE_NAME, "Gene name"),
+                new SearchField(FieldNames.GENE_NAME, "Gene name"),
                 new SearchField(FieldNames.DETMETHOD, "Interaction detection method", "detectionMethodBrowser"),
                 new SearchField(FieldNames.TYPE, "Interaction type", "interactionTypeBrowser"),
                 new SearchField("species", "Organism", "taxonomyBrowser"),
@@ -190,6 +192,10 @@ public class UserQuery extends BaseController {
 
         SolrQuery query = new SolrQuery( searchQuery );
         query.setSortField(userSortColumn, (userSortOrder)? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc);
+
+        // store it in the HTTP Session - so it can be used by servlets (e.g. ExportServlet)
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(SESSION_SOLR_QUERY_KEY, query.toString());
+
         query.setRows(pageSize);
 
         return query;
