@@ -37,12 +37,14 @@ public class PsicquicConfig {
     private String groupId;
     private String artifactId;
     private String version;
-    private String specVersion;
+    private String restSpecVersion;
+    private String soapSpecVersion;
     private String solrServerUrl;
     private String proxyHost;
     private String proxyPort;
     private String propertiesAsStrings;
     private String queryFilter;
+    private String implementationName;
 
     private String statsDirectory;
 
@@ -73,12 +75,20 @@ public class PsicquicConfig {
         this.version = version;
     }
 
-    public String getSpecVersion() {
-        return specVersion;
+    public String getRestSpecVersion() {
+        return restSpecVersion;
     }
 
-    public void setSpecVersion(String specVersion) {
-        this.specVersion = specVersion;
+    public void setRestSpecVersion(String restSpecVersion) {
+        this.restSpecVersion = restSpecVersion;
+    }
+
+    public String getSoapSpecVersion() {
+        return soapSpecVersion;
+    }
+
+    public void setSoapSpecVersion(String soapSpecVersion) {
+        this.soapSpecVersion = soapSpecVersion;
     }
 
     public String getSolrServerUrl() {
@@ -146,8 +156,9 @@ public class PsicquicConfig {
             propMap.put(dbInfo.getKey(), dbInfo.getValue());
         }
 
-        propMap.put("psicquic.spec.version", getSpecVersion());
-        propMap.put("psicquic.implementation.name", "IntAct Implementation");
+        propMap.put("psicquic.rest.spec.version", getRestSpecVersion());
+        propMap.put("psicquic.soap.spec.version", getSoapSpecVersion());
+        propMap.put("psicquic.implementation.name", getImplementationName());
         propMap.put("psicquic.implementation.version", getVersion());
 
         return propMap;
@@ -159,5 +170,13 @@ public class PsicquicConfig {
 
     public void setPropertiesAsStrings(String propertiesAsStrings) {
         this.propertiesAsStrings = propertiesAsStrings;
+    }
+
+    public String getImplementationName() {
+        return implementationName;
+    }
+
+    public void setImplementationName(String implementationName) {
+        this.implementationName = implementationName;
     }
 }

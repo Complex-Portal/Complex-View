@@ -59,8 +59,6 @@ public class IntactPsicquicService implements PsicquicService {
 
     public static final String RETURN_TYPE_XML25 = "psi-mi/xml25";
     public static final String RETURN_TYPE_MITAB25 = "psi-mi/tab25";
-    public static final String RETURN_TYPE_BIOPAX = "biopax";
-    public static final String RETURN_TYPE_MITAB25_BIN = "psi-mi/tab25-bin";
     public static final String RETURN_TYPE_COUNT = "count";
 
     private static final String NEW_LINE = System.getProperty("line.separator");
@@ -68,8 +66,9 @@ public class IntactPsicquicService implements PsicquicService {
     private static final int BLOCKSIZE_MAX = 200;
     private static final String RETURN_TYPE_DEFAULT = RETURN_TYPE_MITAB25;
 
-    public static final List<String> SUPPORTED_RETURN_TYPES = Arrays.asList(RETURN_TYPE_XML25, RETURN_TYPE_MITAB25, RETURN_TYPE_BIOPAX, RETURN_TYPE_COUNT);
-    
+    public static final List<String> SUPPORTED_SOAP_RETURN_TYPES = Arrays.asList(RETURN_TYPE_XML25,
+                RETURN_TYPE_MITAB25, RETURN_TYPE_COUNT);
+
     @Autowired
     private PsicquicConfig config;
     
@@ -245,7 +244,7 @@ public class IntactPsicquicService implements PsicquicService {
     }
 
     public List<String> getSupportedReturnTypes()  {
-        return SUPPORTED_RETURN_TYPES;
+        return SUPPORTED_SOAP_RETURN_TYPES;
     }
 
     public List<String> getSupportedDbAcs() {

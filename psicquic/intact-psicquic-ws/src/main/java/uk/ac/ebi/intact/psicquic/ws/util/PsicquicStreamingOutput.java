@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.psicquic.ws.util;
 import org.hupo.psi.mi.psicquic.PsicquicService;
 import org.hupo.psi.mi.psicquic.QueryResponse;
 import org.hupo.psi.mi.psicquic.RequestInfo;
+import org.hupo.psi.mi.psicquic.ResultInfo;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
@@ -27,7 +28,7 @@ import java.io.PrintWriter;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * TODO write description of the class.
+ * Streams results in MITAB format.
  *
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -51,6 +52,27 @@ public class PsicquicStreamingOutput implements StreamingOutput {
         this.firstResult = firstResult;
         this.maxResults = maxResults;
         this.gzip = gzip;
+
+
+    }
+
+    public int countResults() throws IOException {
+        int results = 0;
+
+        // count
+        RequestInfo reqInfo = new RequestInfo();
+        reqInfo.setResultType("psi-mi/tab25");
+        reqInfo.setFirstResult(0);
+        reqInfo.setBlockSize(0);
+
+        try {
+            ResultInfo resultInfo = psicquicService.getByQuery(query, reqInfo).getResultInfo();
+            results = resultInfo.getTotalResults();
+        } catch (Throwable e) {
+            throw new IOException("Problem counting results for query: "+query, e);
+        }
+
+        return results;
     }
 
     public void write(OutputStream outputStream) throws IOException, WebApplicationException {

@@ -78,7 +78,7 @@ public class IntactPsicquicRestServiceTest {
 
     @Test
     public void testGetByQuery() throws Exception {
-        ResponseImpl response = (ResponseImpl) service.getByQuery("imatinib", "tab25", "0", "200");
+        ResponseImpl response = (ResponseImpl) service.getByQuery("imatinib", "tab25", "0", "200", "n");
 
         PsicquicStreamingOutput pso = (PsicquicStreamingOutput) response.getEntity();
 
@@ -90,7 +90,7 @@ public class IntactPsicquicRestServiceTest {
 
     @Test
     public void testGetByQuery_maxResults() throws Exception {
-        ResponseImpl response = (ResponseImpl) service.getByQuery("imatinib", "tab25", "0", "3");
+        ResponseImpl response = (ResponseImpl) service.getByQuery("imatinib", "tab25", "0", "3", "n");
 
         PsicquicStreamingOutput pso = (PsicquicStreamingOutput) response.getEntity();
 
@@ -102,7 +102,7 @@ public class IntactPsicquicRestServiceTest {
 
     @Test
     public void testGetByQuery_maxResults_nolimit() throws Exception {
-        ResponseImpl response = (ResponseImpl) service.getByQuery("imatinib", "tab25", "0", String.valueOf(Integer.MAX_VALUE));
+        ResponseImpl response = (ResponseImpl) service.getByQuery("imatinib", "tab25", "0", String.valueOf(Integer.MAX_VALUE), "n");
 
         PsicquicStreamingOutput pso = (PsicquicStreamingOutput) response.getEntity();
 
@@ -114,7 +114,7 @@ public class IntactPsicquicRestServiceTest {
     
     @Test
     public void testGetByQuery_bin() throws Exception {
-        ResponseImpl response = (ResponseImpl) service.getByQuery("imatinib", "tab25-bin", "0", "200");
+        ResponseImpl response = (ResponseImpl) service.getByQuery("imatinib", "tab25-bin", "0", "200", "n");
 
         PsicquicStreamingOutput pso = (PsicquicStreamingOutput) response.getEntity();
 

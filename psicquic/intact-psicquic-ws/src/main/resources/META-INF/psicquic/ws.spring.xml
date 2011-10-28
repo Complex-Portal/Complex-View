@@ -23,7 +23,8 @@
 
 
     <bean name="restService10" class="uk.ac.ebi.intact.psicquic.ws.legacy.IntactPsicquicRestService10"/>
-    <bean name="restService11" class="uk.ac.ebi.intact.psicquic.ws.IntactPsicquicRestService"/>
+    <bean name="restService11" class="uk.ac.ebi.intact.psicquic.ws.legacy.IntactPsicquicRestService11"/>
+    <bean name="restService12" class="uk.ac.ebi.intact.psicquic.ws.IntactPsicquicRestService"/>
 
 	<!-- Service endpoint -->
 	<!-- See http://incubator.apache.org/cxf/faq.html regarding CXF + Spring AOP -->
@@ -39,15 +40,21 @@
         </jaxrs:serviceBeans>
     </jaxrs:server>
 
-     <jaxrs:server id="psicquicRestService" address="/v1.1">
+     <jaxrs:server id="psicquicRestService11" address="/v1.1">
         <jaxrs:serviceBeans>
             <ref bean="restService11"/>
         </jaxrs:serviceBeans>
     </jaxrs:server>
 
+    <jaxrs:server id="psicquicRestService12" address="/v1.2">
+            <jaxrs:serviceBeans>
+                <ref bean="restService12"/>
+            </jaxrs:serviceBeans>
+        </jaxrs:server>
+
     <jaxrs:server id="psicquicRestServiceCurrent" address="/current">
         <jaxrs:serviceBeans>
-            <ref bean="restService11"/>
+            <ref bean="restService12"/>
         </jaxrs:serviceBeans>
     </jaxrs:server>
 
