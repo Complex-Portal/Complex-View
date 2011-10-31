@@ -33,4 +33,5 @@
 		<servlet-name>CXFServlet</servlet-name>
 		<url-pattern>/webservices/*</url-pattern>
 	</servlet-mapping>
+
 </web-app>
