@@ -62,7 +62,7 @@ public class ProteinUpdateRunner {
             updateProcessor.updateAll();
 
             System.out.println("Finished the global protein update.");
-            //System.exit(0);
+            System.exit(0);
 
         } catch (IOException e) {
             System.err.println("The repository " + filename + " cannot be found. We cannot write log files and so we cannot run a global protein update.");
