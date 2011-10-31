@@ -64,7 +64,7 @@
                         <configuration>
                             <executable>java</executable>
                             <arguments>
-                                <argument>-Xmx2096m</argument>
+                                <argument>-Xmx2024m</argument>
                                 <argument>-classpath</argument>
                                 <classpath/>
                                 <argument>uk.ac.ebi.intact.service.proteinupdaterunner.ProteinUpdateRunner</argument>
@@ -97,7 +97,7 @@
                         <configuration>
                             <executable>java</executable>
                             <arguments>
-                                <argument>-Xmx2096m</argument>
+                                <argument>-Xmx2024m</argument>
                                 <argument>-classpath</argument>
                                 <classpath/>
                                 <argument>uk.ac.ebi.intact.service.proteinupdaterunner.ProteinSelectionUpdateRunner</argument>
