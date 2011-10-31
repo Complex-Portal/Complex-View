@@ -60,10 +60,9 @@ public class ProteinUpdateRunner {
             ProteinUpdateProcessor updateProcessor = new ProteinUpdateProcessor();
             System.out.println("Starting the global update");
             updateProcessor.updateAll();
-            //List<Protein> proteins = updateProcessor.retrieveAndUpdateProteinFromUniprot("Q9XYZ4");
-            //List<String> acs = new ArrayList<String>();
-            //acs.add("EBI-3044019");
-            //updateProcessor.updateByACs(acs);
+
+            System.out.println("Finished the global protein update.");
+            System.exit(0);
 
         } catch (IOException e) {
             System.err.println("The repository " + filename + " cannot be found. We cannot write log files and so we cannot run a global protein update.");

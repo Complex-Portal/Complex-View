@@ -70,6 +70,9 @@ public class ProteinSelectionUpdateRunner {
             System.out.println("Starting the protein update for a selection of "+proteinAcs.size()+" proteins");
             updateProcessor.updateByACs(proteinAcs);
 
+            System.out.println("Finished the update of " + proteinAcs.size() + " proteins");
+            System.exit(0);
+
         } catch (IOException e) {
             System.err.println("The repository " + filename + " cannot be found. We cannot write log files and so we cannot run a global protein update.");
             e.printStackTrace();
