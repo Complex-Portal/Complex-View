@@ -33,24 +33,14 @@
             </h:commandLink>
         </h:column>
         <h:column>
-            <h:panelGrid columns="1" cellpadding="0" cellspacing="0">
-                <h:outputLink
-                        value="#{intactViewConfiguration.ftpUrl}/psi25/pmid/#{(pubmed.year == null)? dataSet.year : pubmed.year}/#{pubmed.id}.zip">
-                    <h:graphicImage alt="PSI 2.5" value="/images/psi25.png"
-                                    style="border:0"/>
-                </h:outputLink>
-                <h:outputLink
-                        value="#{intactViewConfiguration.ftpUrl}/psi1/pmid/#{(pubmed.year == null)? dataSet.year : pubmed.year}/#{pubmed.id}.zip">
-                    <h:graphicImage alt="PSI 1.0" value="/images/psi10.png"
-                                    style="border:0"/>
-                </h:outputLink>
-            </h:panelGrid>
+            <h:outputLink
+                    value="#{intactViewConfiguration.ftpUrl}/psi25/pmid/#{(pubmed.year == null)? dataSet.year : pubmed.year}/#{pubmed.id}.zip">
+                <h:graphicImage alt="PSI 2.5" value="/images/psi25.png" style="border:0"/>
+            </h:outputLink>
         </h:column>
         <h:column>
-            <h:outputLink
-                    value="#{intactViewConfiguration.ftpUrl}/psimitab/pmid/#{(pubmed.year == null)? dataSet.year : pubmed.year}/#{pubmed.id}.txt">
-                <h:graphicImage alt="PSIMITAB" value="/images/mitab.png"
-                                style="border:0"/>
+            <h:outputLink value="#{intactViewConfiguration.ftpUrl}/psimitab/pmid/#{(pubmed.year == null)? dataSet.year : pubmed.year}/#{pubmed.id}.txt">
+                <h:graphicImage alt="PSIMITAB" value="/images/mitab.png" style="border:0"/>
             </h:outputLink>
         </h:column>
     </h:dataTable>
