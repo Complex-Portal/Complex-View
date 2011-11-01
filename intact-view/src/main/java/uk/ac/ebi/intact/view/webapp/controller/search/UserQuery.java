@@ -72,6 +72,7 @@ public class UserQuery extends BaseController {
 
     private String searchQuery = STAR_QUERY;
     private String ontologySearchQuery;
+    private String friendlyQuery;
 
     private OntologyTerm ontologyTerm;
 
@@ -493,6 +494,8 @@ public class UserQuery extends BaseController {
         }
         return searchQuery;
     }
+    
+    
 
     public void setSearchQuery(String searchQuery) {
 
@@ -505,6 +508,21 @@ public class UserQuery extends BaseController {
 
         this.searchQuery = searchQuery;
         this.ontologySearchQuery = null;
+    }
+
+    public String getUrlFriendlyQuery() {
+        return friendlyQuery;
+    }
+    
+    public void setUrlFriendlyQuery(String query) {
+        if (query.length() > 200) {
+            friendlyQuery =  "longquery:"+System.nanoTime();
+        } else {
+            friendlyQuery = searchQuery;
+        }
+        
+        searchQuery = query;
+        
     }
 
     public void resetSearchQuery(){
