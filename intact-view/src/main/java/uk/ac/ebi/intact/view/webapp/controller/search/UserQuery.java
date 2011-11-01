@@ -72,7 +72,7 @@ public class UserQuery extends BaseController {
 
     private String searchQuery = STAR_QUERY;
     private String ontologySearchQuery;
-    private String friendlyQuery;
+    private String urlFriendlyQuery;
 
     private OntologyTerm ontologyTerm;
 
@@ -336,7 +336,7 @@ public class UserQuery extends BaseController {
 
     private SolrQuery createSolrQueryForHierarchView() {
         // export all available rows
-        return createSolrQuery( true ).setRows( 0 );
+        return createSolrQuery( true ).setRows(0);
     }
 
     /**
@@ -344,7 +344,7 @@ public class UserQuery extends BaseController {
      * @return a non null string.
      */
     public String getSolrQueryString() {
-        return getSolrQueryString( createSolrQuery( true ).setRows( 0 ));
+        return getSolrQueryString(createSolrQuery(true).setRows(0));
     }
 
     private String getSolrQueryString( SolrQuery query ) {
@@ -377,7 +377,7 @@ public class UserQuery extends BaseController {
     }
 
     public String getHierarchViewUrl() {
-        return buildHierarchViewURL( intactViewConfiguration.getHierarchViewUrl() );
+        return buildHierarchViewURL(intactViewConfiguration.getHierarchViewUrl());
     }
 
     private String buildHierarchViewURL( String prefix ) {
@@ -508,21 +508,31 @@ public class UserQuery extends BaseController {
 
         this.searchQuery = searchQuery;
         this.ontologySearchQuery = null;
+
+        if (searchQuery != null && !searchQuery.equals(urlFriendlyQuery)) {
+            urlFriendlyQuery = prepareUrlFriendlyQuery(searchQuery);
+        }
     }
 
     public String getUrlFriendlyQuery() {
-        return friendlyQuery;
+        return urlFriendlyQuery;
     }
     
     public void setUrlFriendlyQuery(String query) {
-        if (query.length() > 200) {
-            friendlyQuery =  "longquery:"+System.nanoTime();
+        urlFriendlyQuery = prepareUrlFriendlyQuery(query);
+        setSearchQuery(query);
+    }
+
+    private String prepareUrlFriendlyQuery(String searchQuery) {
+        String friendlyQuery;
+
+        if (searchQuery.length() > 200) {
+            friendlyQuery = "longquery:" + System.nanoTime();
         } else {
             friendlyQuery = searchQuery;
         }
-        
-        searchQuery = query;
-        
+
+        return friendlyQuery;
     }
 
     public void resetSearchQuery(){
