@@ -78,6 +78,8 @@ public class UserQuery extends BaseController {
 
     private List<QueryToken> queryTokenList;
 
+    private Map<String,String> longQueriesMap;
+
     private String[] datasets;
     private String[] sources;
     private String[] expansions;
@@ -110,6 +112,7 @@ public class UserQuery extends BaseController {
 
     public UserQuery() {
         this.queryTokenList = new ArrayList<QueryToken>();
+        this.longQueriesMap = new HashMap<String, String>();
     }
 
     @PostConstruct
@@ -520,6 +523,11 @@ public class UserQuery extends BaseController {
     
     public void setUrlFriendlyQuery(String query) {
         urlFriendlyQuery = prepareUrlFriendlyQuery(query);
+
+        if (query.startsWith("longquery:")) {
+            query = longQueriesMap.get(query);
+        }
+
         setSearchQuery(query);
     }
 
@@ -528,6 +536,7 @@ public class UserQuery extends BaseController {
 
         if (searchQuery.length() > 200) {
             friendlyQuery = "longquery:" + System.nanoTime();
+            longQueriesMap.put(friendlyQuery, searchQuery);
         } else {
             friendlyQuery = searchQuery;
         }
@@ -537,6 +546,7 @@ public class UserQuery extends BaseController {
 
     public void resetSearchQuery(){
         this.searchQuery = null;
+        this.urlFriendlyQuery = null;
     }
 
     public String getOntologySearchQuery() {
