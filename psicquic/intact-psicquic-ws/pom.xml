@@ -36,7 +36,7 @@
     </properties>
 
     <build>
-        <finalName>${service.name}-${artifactId}-${version}</finalName>
+        <finalName>${service.name}-psicquic-ws-${version}</finalName>
 
          <resources>
             <resource>
