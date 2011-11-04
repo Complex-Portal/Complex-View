@@ -36,7 +36,7 @@
     </properties>
 
     <build>
-        <finalName>${artifactId}-${version}</finalName>
+        <finalName>${service.name}-${artifactId}-${version}</finalName>
 
          <resources>
             <resource>
