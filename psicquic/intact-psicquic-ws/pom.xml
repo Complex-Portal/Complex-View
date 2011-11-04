@@ -22,9 +22,9 @@
         <spring.version>3.0.3.RELEASE</spring.version>
 
         <!-- configurable bits -->
+        <service.name>intact</service.name>
         <jetty.port>9090</jetty.port>
 
-        <intact.institution>intact</intact.institution>
         <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
 
         <db.jndi>jdbc/IntactDS</db.jndi>
