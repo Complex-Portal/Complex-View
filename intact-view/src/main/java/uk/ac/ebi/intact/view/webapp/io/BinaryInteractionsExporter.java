@@ -80,33 +80,46 @@ public class BinaryInteractionsExporter {
         this.solrServer = solrServer;
     }
 
-    public void searchAndExport( OutputStream os, SolrQuery searchQuery, String format ) throws IOException {
+    public String searchAndExport( OutputStream os, SolrQuery searchQuery, String format ) throws IOException {
         if ( MITAB.equals( format ) ) {
             exportToMiTab( os, searchQuery );
+            return "text/plain";
         } else if ( MITAB_INTACT.equals( format ) ) {
             exportToMiTabIntact( os, searchQuery );
+            return "text/plain";
         } else if ( XML_2_53.equals( format ) || XML_2_54.equals( format ) ) {
             exportToMiXml( os, searchQuery, format );
+            return "application/xml";
         } else if ( XML_HTML.equals( format ) ) {
             exportToMiXmlTransformed( os, searchQuery );
+            return "text/html";
         } else if ( BIOPAX_L2.equals(format)) {
             exportToRdf(os, searchQuery, RdfFormat.BIOPAX_L2);
+            return "application/xml";
         } else if (BIOPAX_L3.equals(format)) {
             exportToRdf(os, searchQuery, RdfFormat.BIOPAX_L3);
+            return "application/xml";
         } else if (RDF_XML.equals(format)) {
             exportToRdf(os, searchQuery, RdfFormat.RDF_XML);
+            return "application/rdf+xml";
         } else if (RDF_XML_ABBREV.equals(format)) {
             exportToRdf(os, searchQuery, RdfFormat.RDF_XML_ABBREV);
+            return "application/rdf+xml";
         } else if (RDF_N3.equals(format)) {
             exportToRdf(os, searchQuery, RdfFormat.N3);
+            return "text/plain";
         } else if (RDF_N3_PP.equals(format)) {
             exportToRdf(os, searchQuery, RdfFormat.N3_PP);
+            return "text/plain";
         } else if (RDF_TRIPLE.equals(format)) {
             exportToRdf(os, searchQuery, RdfFormat.N_TRIPLE);
+            return "text/plain";
         } else if (RDF_TURTLE.equals(format)) {
             exportToRdf(os, searchQuery, RdfFormat.TURTLE);
+            return "text/plain";
         } else if (XGMML.equals(format)) {
             exportToXGMML(os, searchQuery);
+            return "application/xgmml";
         } else {
             throw new IntactViewException( "Format is not correct: " + format + ". Possible values: mitab, mitab_intact." );
         }

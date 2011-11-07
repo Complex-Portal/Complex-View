@@ -94,11 +94,11 @@ public class ExportServlet extends HttpServlet {
         }
 
         BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(solrServer);
-        exporter.searchAndExport(response.getOutputStream(), solrQuery, format);
+        String contentType = exporter.searchAndExport(response.getOutputStream(), solrQuery, format);
+        response.setContentType(contentType);
     }
 
     private SolrQuery convertToSolrQuery(String searchQuery) {
-        System.out.println("QUERY: "+searchQuery);
          if (searchQuery == null) {
              throw new NullPointerException("You must give a non null searchQuery");
          }
@@ -112,8 +112,6 @@ public class ExportServlet extends HttpServlet {
              log.debug("Given Solr query:     " + searchQuery);
              log.debug("converted Solr Query: " + solrQuery.toString());
          }
-
-        System.out.println("SOLR: "+solrQuery);
 
          return solrQuery;
      }
