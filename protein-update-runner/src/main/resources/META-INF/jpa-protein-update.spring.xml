@@ -17,7 +17,7 @@
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
-        <property name="dataSource" ref="intactReleaseDataSource"/>
+        <property name="dataSource" ref="intactProteinUpdateDataSource"/>
     </bean>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
@@ -26,7 +26,7 @@
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="intact-core-default"/>
-        <property name="dataSource" ref="intactReleaseDataSource"/>
+        <property name="dataSource" ref="intactProteinUpdateDataSource"/>
 
         <property name="jpaProperties">
             <props>
@@ -45,7 +45,7 @@
         </property>
     </bean>
 
-    <bean id="intactReleaseDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <bean id="intactProteinUpdateDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${db.driver}"/>
         <property name="url" value="${db.url}"/>
         <property name="username" value="${db.user}"/>

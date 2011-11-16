@@ -39,7 +39,7 @@ public class ProteinSelectionUpdateRunner {
         System.out.println("Blast enabled = " + isBlastEnabled);
         System.out.println("File containing protein acs to update = " + fileInputName);
 
-        IntactContext.initContext(new String[]{"/META-INF/jpa.spring.xml", "/META-INF/proteinupdaterunner.spring.xml"});
+        IntactContext.initContext(new String[]{"/META-INF/jpa-protein-update.spring.xml", "/META-INF/proteinupdaterunner.spring.xml"});
 
         ProteinUpdateProcessorConfig config = ProteinUpdateContext.getInstance().getConfig();
         config.setDeleteProteinTranscriptWithoutInteractions(true);
