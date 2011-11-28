@@ -169,8 +169,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         maxOntologySuggestions = Integer.parseInt(properties.getProperty(INTACT_SEARCH_ONTOLOGIES_MAXSUGGESTIONS, String.valueOf(maxOntologySuggestions)));
         googleAnalyticsTracker = properties.getProperty(INTACT_GOOGLE_ANALYTICS_TRACKER, googleAnalyticsTracker);
         mailRecipients = properties.getProperty(INTACT_RECIPIENTS, mailRecipients);
-        proxyHost = properties.getProperty(PROXY_HOST, proxyHost);
-        proxyPort = properties.getProperty(PROXY_PORT, proxyPort);
         psicquicRegistryUrl = properties.getProperty(PSICQUIC_REGISTRY_URL, psicquicRegistryUrl);
         psicquicViewUrl = properties.getProperty(PSICQUIC_VIEW_URL, psicquicViewUrl);
         imexViewUrl = properties.getProperty(IMEX_VIEW_URL, imexViewUrl);
@@ -204,8 +202,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         addProperty(properties, INTACT_SEARCH_ONTOLOGIES_MAXSUGGESTIONS, String.valueOf(maxOntologySuggestions));
         addProperty(properties, INTACT_GOOGLE_ANALYTICS_TRACKER, googleAnalyticsTracker);
         addProperty(properties, INTACT_RECIPIENTS, mailRecipients);
-        addProperty(properties, PROXY_HOST, proxyHost);
-        addProperty(properties, PROXY_PORT, proxyPort);
         addProperty(properties, PSICQUIC_REGISTRY_URL, psicquicRegistryUrl);
         addProperty(properties, PSICQUIC_VIEW_URL, psicquicViewUrl);
         addProperty(properties, IMEX_VIEW_URL, imexViewUrl);
@@ -223,7 +219,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     }
 
     private boolean isValueSet(String value) {
-        return value != null && !value.startsWith("$");
+        return value != null && !value.startsWith("$") && value.length() > 0;
     }
 
     public void closeEntityManagerFactory() {
@@ -460,8 +456,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         if (httpClient == null) {
             httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 
-            if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
-                    isValueSet(proxyPort) && proxyPort.trim().length() > 0) {
+            if (isValueSet(proxyHost) && isValueSet(proxyPort)) {
                 httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
 
                 log.info("Setting HTTPClient using proxy: " + proxyHost + ":" + proxyPort);
