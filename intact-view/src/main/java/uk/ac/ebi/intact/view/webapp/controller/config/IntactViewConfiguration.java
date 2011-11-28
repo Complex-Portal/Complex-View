@@ -112,6 +112,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
 
     private CommonsHttpSolrServer solrServer;
     private CommonsHttpSolrServer ontologySolrServer;
+    private HttpClient httpClient;
 
     public IntactViewConfiguration() {
     }
@@ -443,16 +444,9 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     }
 
     private CommonsHttpSolrServer createSolrServer(String solrUrl) throws MalformedURLException {
-        HttpClient httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
+        HttpClient httpClient = getHttpClient();
 
-        if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
-                isValueSet(proxyPort) && proxyPort.trim().length() > 0) {
-            httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
 
-            log.info("Creating connection to SOLR server: "+solrUrl+" , using proxy: "+proxyHost+":"+proxyPort);
-        } else {
-            log.info("Creating connection to SOLR server: "+solrUrl+" , NO PROXY");
-        }
 
         CommonsHttpSolrServer solrServer = new CommonsHttpSolrServer(solrUrl, httpClient);
         solrServer.setMaxTotalConnections(128);
@@ -460,6 +454,24 @@ public class IntactViewConfiguration extends BaseController implements Initializ
 
 
         return solrServer;
+    }
+
+    public HttpClient getHttpClient() {
+        if (httpClient == null) {
+            httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
+
+            if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
+                    isValueSet(proxyPort) && proxyPort.trim().length() > 0) {
+                httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+
+                log.info("Setting HTTPClient using proxy: " + proxyHost + ":" + proxyPort);
+            } else {
+                log.info("Setting HTTPClient using proxy with NO PROXY");
+            }
+
+        }
+
+        return httpClient;
     }
 
     public void setSolrOntologiesUrl(String solrOntologiesUrl) {

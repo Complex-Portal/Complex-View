@@ -15,6 +15,9 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.search;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -160,14 +163,26 @@ public class PsicquicController extends BaseController {
         String url = null;
 
         try {
+            HttpClient httpClient = intactViewConfiguration.getHttpClient();
+
+
+
             String encoded = URLEncoder.encode(query, "UTF-8");
             encoded = encoded.replaceAll("\\+", "%20");
 
             url = service.getRestUrl()+"query/"+ encoded +"?format=count";
-            final InputStream input = new URL(url).openStream();
-            String strCount = IOUtils.toString(input);
-            input.close();
-            psicquicCount = Integer.parseInt(strCount);
+
+            HttpMethod method = new GetMethod(url);
+            final int returnCode = httpClient.executeMethod(method);
+
+            if (returnCode != 200) {
+                log.error("HTTP Error "+returnCode+" connecting to PSICQUIC service '"+service.getName()+"': "+url+" / proxy "+intactViewConfiguration.getProxyHost()+":"+intactViewConfiguration.getProxyPort());
+            } else {
+                final InputStream input = method.getResponseBodyAsStream();
+                String strCount = IOUtils.toString(input);
+                input.close();
+                psicquicCount = Integer.parseInt(strCount);
+            }
         } catch (IOException e) {
             log.error("Problem connecting to PSICQUIC service '"+service.getName()+"': "+url+" / proxy "+intactViewConfiguration.getProxyHost()+":"+intactViewConfiguration.getProxyPort(), e);
         }
