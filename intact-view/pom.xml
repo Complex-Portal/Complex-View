@@ -33,7 +33,7 @@
         <debug>false</debug>
         <project.stage>Development</project.stage>
 
-        <jetty.port>8080</jetty.port>
+        <jetty.port>9095</jetty.port>
         <jetty.contextPath>/intact</jetty.contextPath>
 
         <appRoot>/intact</appRoot>
