@@ -440,9 +440,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     }
 
     private CommonsHttpSolrServer createSolrServer(String solrUrl) throws MalformedURLException {
-        HttpClient httpClient = getHttpClient();
-
-
+        HttpClient httpClient =  new HttpClient(new MultiThreadedHttpConnectionManager());
 
         CommonsHttpSolrServer solrServer = new CommonsHttpSolrServer(solrUrl, httpClient);
         solrServer.setMaxTotalConnections(128);
