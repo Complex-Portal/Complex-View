@@ -31,7 +31,6 @@
 
     <modules>
         <module>commons</module>
-        <module>search</module>
         <module>editor</module>
         <module>statistics</module>
         <module>imex</module>
