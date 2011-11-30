@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -35,7 +36,7 @@
 
         <!-- database defaults -->
         <db.jndi>jdbc/IntactEditorDS</db.jndi>
-        
+
         <!--<db.url>jdbc:h2:editordb;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.url>-->
         <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
         <db.hbm2ddl>none</db.hbm2ddl>
@@ -52,7 +53,7 @@
     <build>
         <finalName>${artifactId}-${version}</finalName>
 
-         <resources>
+        <resources>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
@@ -78,7 +79,6 @@
                     </webAppConfig>
                 </configuration>
                 <dependencies>
-
 
                     <dependency>
                         <groupId>javax.servlet.jsp</groupId>
@@ -130,7 +130,7 @@
 
     <profiles>
         <profile>
-            <id>h2</id>
+            <id>integration-tests</id>
             <properties>
                 <db.url>jdbc:h2:editordb;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.url>
                 <db.driver>org.h2.Driver</db.driver>
@@ -139,12 +139,114 @@
                 <db.password></db.password>
                 <db.hbm2ddl>update</db.hbm2ddl>
             </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.10</version>
+                        <configuration>
+                            <parallel>methods</parallel>
+                            <threadCount>10</threadCount>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>run-tests</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <version>7.2.0.RC0</version>
+                        <configuration>
+                            <connectors>
+                                <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                                    <port>33445</port>
+                                    <maxIdleTime>600000</maxIdleTime>
+                                </connector>
+                            </connectors>
+                            <scanIntervalSeconds>0</scanIntervalSeconds>
+                            <webAppConfig>
+                                <contextPath>${jetty.contextPath}</contextPath>
+                                <jettyEnvXml>${build.outputDirectory}/META-INF/jetty-env.xml</jettyEnvXml>
+                            </webAppConfig>
+                            <stopPort>9966</stopPort>
+                            <stopKey>die!!!!</stopKey>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start-jetty</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <daemon>true</daemon>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>stop-jetty</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
+                        <dependencies>
+                            <dependency>
+                                <groupId>javax.servlet.jsp</groupId>
+                                <artifactId>jsp-api</artifactId>
+                                <version>2.2</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>javax.el</groupId>
+                                <artifactId>el-api</artifactId>
+                                <version>2.2.1-b01</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.glassfish.web</groupId>
+                                <artifactId>el-impl</artifactId>
+                                <version>2.2.1-b01</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.mortbay.jetty</groupId>
+                                <artifactId>jsp-2.1-glassfish</artifactId>
+                                <version>9.1.1.B60.25.p2</version>
+                                <exclusions>
+                                    <exclusion>
+                                        <groupId>org.mortbay.jetty</groupId>
+                                        <artifactId>jsp-api-2.1</artifactId>
+                                    </exclusion>
+                                    <exclusion>
+                                        <groupId>org.mortbay.jetty</groupId>
+                                        <artifactId>start</artifactId>
+                                    </exclusion>
+                                    <exclusion>
+                                        <groupId>org.mortbay.jetty</groupId>
+                                        <artifactId>jetty-annotations</artifactId>
+                                    </exclusion>
+                                </exclusions>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.h2database</groupId>
+                                <artifactId>h2</artifactId>
+                                <version>1.2.121</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+
             <dependencies>
-                <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
-                    <version>1.2.121</version>
-                </dependency>
+
             </dependencies>
         </profile>
     </profiles>
@@ -189,7 +291,7 @@
             <artifactId>intact-go</artifactId>
             <version>${bridges.version}</version>
         </dependency>
-        
+
         <!-- PSIMI -->
         <dependency>
             <groupId>psidev.psi.mi</groupId>
@@ -213,7 +315,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.6.1</version>
-<!--            <optional>true</optional>-->
+            <!--            <optional>true</optional>-->
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -244,12 +346,12 @@
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psixml-exchange</artifactId>
             <version>2.1.4-SNAPSHOT</version>
-             <exclusions>
-                 <exclusion>
-                     <groupId>cpdetector</groupId>
-                     <artifactId>cpdetector</artifactId>
-                 </exclusion>
-             </exclusions>
+            <exclusions>
+                <exclusion>
+                    <groupId>cpdetector</groupId>
+                    <artifactId>cpdetector</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -286,14 +388,14 @@
 
         <!-- PSICQUIC -->
         <!--<dependency>-->
-            <!--<groupId>org.hupo.psi.mi.psicquic</groupId>-->
-            <!--<artifactId>psicquic-client</artifactId>-->
-            <!--<version>1.3-SNAPSHOT</version>-->
+        <!--<groupId>org.hupo.psi.mi.psicquic</groupId>-->
+        <!--<artifactId>psicquic-client</artifactId>-->
+        <!--<version>1.3-SNAPSHOT</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.hupo.psi.mi.psicquic</groupId>-->
-            <!--<artifactId>psicquic-registry-client</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
+        <!--<groupId>org.hupo.psi.mi.psicquic</groupId>-->
+        <!--<artifactId>psicquic-registry-client</artifactId>-->
+        <!--<version>1.0-SNAPSHOT</version>-->
         <!--</dependency>-->
 
         <!-- other -->
@@ -332,21 +434,21 @@
         </dependency>
 
         <!-- JSP 2.2 support (methods etc). May not be needed in recent J2EE 6 app containers -->
-<!--
+        <!--
+                <dependency>
+                    <groupId>javax.el</groupId>
+                    <artifactId>el-api</artifactId>
+                    <version>2.2</version>
+                    <scope>compile</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>el-impl</artifactId>
+                    <version>2.2</version>
+                    <scope>runtime</scope>
+                </dependency>
+        -->
         <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>el-api</artifactId>
-            <version>2.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>el-impl</artifactId>
-            <version>2.2</version>
-            <scope>runtime</scope>
-        </dependency>
--->
-         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
@@ -368,24 +470,24 @@
 
         <!-- MyFaces Ext-scripting -->
         <!--<dependency>-->
-            <!--<groupId>org.apache.myfaces.extensions.scripting</groupId>-->
-            <!--<artifactId>extscript-myfaces20-bundle</artifactId>-->
-            <!--<version>1.0-SNAPSHOT</version>-->
+        <!--<groupId>org.apache.myfaces.extensions.scripting</groupId>-->
+        <!--<artifactId>extscript-myfaces20-bundle</artifactId>-->
+        <!--<version>1.0-SNAPSHOT</version>-->
         <!--</dependency>-->
-        
+
 
         <!-- MyFaces ExtVal (validation) -->
         <!--<dependency>-->
-            <!--<groupId>org.apache.myfaces.extensions.validator.validation-modules</groupId>-->
-            <!--<artifactId>myfaces-extval-bean-validation</artifactId>-->
-            <!--<version>2.0.3</version>-->
+        <!--<groupId>org.apache.myfaces.extensions.validator.validation-modules</groupId>-->
+        <!--<artifactId>myfaces-extval-bean-validation</artifactId>-->
+        <!--<version>2.0.3</version>-->
         <!--</dependency>-->
 
         <!-- MyFaces ExtVal - Optional PrimeFaces Support -->
         <!--<dependency>-->
-            <!--<groupId>org.apache.myfaces.extensions.validator.component-support-modules</groupId>-->
-            <!--<artifactId>myfaces-extval-primefaces-support</artifactId>-->
-            <!--<version>1.2.2-SNAPSHOT</version>-->
+        <!--<groupId>org.apache.myfaces.extensions.validator.component-support-modules</groupId>-->
+        <!--<artifactId>myfaces-extval-primefaces-support</artifactId>-->
+        <!--<version>1.2.2-SNAPSHOT</version>-->
         <!--</dependency>-->
 
         <!-- Primefaces -->
@@ -434,35 +536,35 @@
         </dependency>
 
         <!-- Spring -->
-         <dependency>
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-taglibs</artifactId>
             <version>2.0.5.RELEASE</version>
             <exclusions>
-            	<exclusion>
-            		<groupId>org.springframework</groupId>
-            		<artifactId>spring-context</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.springframework</groupId>
-            		<artifactId>spring-support</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.springframework</groupId>
-            		<artifactId>spring-core</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.springframework</groupId>
-            		<artifactId>spring-beans</artifactId>
-            	</exclusion>
-            	<exclusion>
-            		<groupId>org.springframework</groupId>
-            		<artifactId>spring-aop</artifactId>
-            	</exclusion>
                 <exclusion>
-            		<groupId>org.springframework</groupId>
-            		<artifactId>spring-web</artifactId>
-            	</exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-support</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-aop</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-web</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -479,10 +581,10 @@
             </exclusions>
         </dependency>
         <dependency>
-      <groupId>org.apache.xmlbeans</groupId>
-      <artifactId>xmlbeans</artifactId>
-      <version>2.4.0</version>
-   </dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>2.4.0</version>
+        </dependency>
 
         <!-- Google -->
         <dependency>
@@ -502,8 +604,13 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.1</version>
+            <version>4.10</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>2.8.0</version>
         </dependency>
     </dependencies>
 
@@ -516,13 +623,13 @@
     </repositories>
 
     <pluginRepositories>
-      <pluginRepository>
+        <pluginRepository>
             <id>intact.nexus</id>
             <name>IntAct Nexus</name>
             <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
-       </pluginRepository>
-        
-   </pluginRepositories>
+        </pluginRepository>
+
+    </pluginRepositories>
 
 
 </project>

@@ -9,6 +9,8 @@
 
                 template="/dashboard/dashboard_template.xhtml">
 
+        <ui:param name="title" value="Dashboard"/>
+
     <ui:define name="metadata">
          <f:metadata>
           <f:event type="preRenderView" listener="#{dashboardController.loadData}"/>
