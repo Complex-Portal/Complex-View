@@ -15,10 +15,13 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate;
 
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
 import uk.ac.ebi.intact.model.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,27 +32,61 @@ import java.util.List;
 public class ParameterizableObjectHelper {
 
     private Parameterizable annotatedObject;
+    private DaoFactory daoFactory;
 
-    public ParameterizableObjectHelper(Parameterizable annotatedObject) {
+    public ParameterizableObjectHelper(Parameterizable annotatedObject, DaoFactory dao) {
         this.annotatedObject = annotatedObject;
+        this.daoFactory = dao;
     }
-    
-     // Parameters
+
+    // Parameters
     ///////////////////////////////////////////////
-    
+
     public void newParameter() {
-         if (annotatedObject instanceof Interaction) {
-             InteractionParameter parameter = new InteractionParameter();
-             ((Interaction) annotatedObject).addParameter(parameter);
-         } else if (annotatedObject instanceof Component) {
-             ComponentParameter parameter = new ComponentParameter();
-             ((Component) annotatedObject).addParameter(parameter);
-         } else {
-             throw new IllegalArgumentException("Annotated object is not parameterizable: "+annotatedObject);
-         }
+        if (annotatedObject instanceof Interaction) {
+            Interaction interaction = (Interaction) annotatedObject;
+            InteractionParameter parameter = new InteractionParameter();
+            interaction.addParameter(parameter);
+
+            Collection<Experiment> experiments;
+
+            if (IntactCore.isInitialized(interaction.getExperiments())) {
+                experiments = interaction.getExperiments();
+            } else {
+                experiments = daoFactory.getInteractionDao().getByAc(interaction.getAc()).getExperiments();
+            }
+
+            if (!experiments.isEmpty()){
+                parameter.setExperiment(experiments.iterator().next());
+            }
+
+        } else if (annotatedObject instanceof Component) {
+            Component component = (Component) annotatedObject;
+            ComponentParameter parameter = new ComponentParameter();
+            component.addParameter(parameter);
+
+            if (component.getInteraction() != null){
+                Interaction interaction = component.getInteraction();
+
+                Collection<Experiment> experiments;
+
+                if (IntactCore.isInitialized(interaction.getExperiments())) {
+                    experiments = interaction.getExperiments();
+                } else {
+                    experiments = daoFactory.getInteractionDao().getByAc(interaction.getAc()).getExperiments();
+                }
+
+                if (!experiments.isEmpty()){
+                    parameter.setExperiment(experiments.iterator().next());
+                }
+            }
+
+        } else {
+            throw new IllegalArgumentException("Annotated object is not parameterizable: "+annotatedObject);
+        }
 
     }
-    
+
     public List<Parameter> getParameters() {
         if ( annotatedObject == null ) {
             return Collections.EMPTY_LIST;
@@ -63,7 +100,7 @@ public class ParameterizableObjectHelper {
 
     public void removeParameter( Parameter parameter ) {
         annotatedObject.getParameters().remove( parameter );
-        
+
     }
 
     public Parameterizable getAnnotatedObject() {

@@ -241,9 +241,9 @@ public class InteractionController extends ParameterizableObjectController {
 
     public String completeExperimentLabel(Experiment e) {
         return e.getShortLabel()+" | "+
-                                (e.getCvInteraction() != null? e.getCvInteraction().getShortLabel()+", " : "")+
-                                (e.getCvIdentification() != null? e.getCvIdentification().getShortLabel()+", " : "")+
-                                (e.getBioSource() != null? e.getBioSource().getShortLabel() : "");
+                (e.getCvInteraction() != null? e.getCvInteraction().getShortLabel()+", " : "")+
+                (e.getCvIdentification() != null? e.getCvIdentification().getShortLabel()+", " : "")+
+                (e.getBioSource() != null? e.getBioSource().getShortLabel() : "");
     }
 
     public void forceRefreshCurrentViewObject(){
@@ -367,6 +367,7 @@ public class InteractionController extends ParameterizableObjectController {
         }
 
         interaction.addExperiment(newExp);
+        updateParametersExperiment(interaction, newExp);
 
         experimentsToUpdate.add(newExp);
 
@@ -524,6 +525,8 @@ public class InteractionController extends ParameterizableObjectController {
             // add the new experiment
             newInteraction.addExperiment(experiment);
 
+            updateParametersExperiment(newInteraction, experiment);
+
         } else {
             return null;
         }
@@ -554,6 +557,9 @@ public class InteractionController extends ParameterizableObjectController {
             // add new experiment
             interaction.addExperiment(experiment);
 
+            updateParametersExperiment(interaction, experiment);
+
+
         } else {
             return null;
         }
@@ -567,6 +573,26 @@ public class InteractionController extends ParameterizableObjectController {
         addInfoMessage("Moved interaction", "To experiment: "+experimentToMoveTo);
 
         return null;
+    }
+
+    private void updateParametersExperiment(Interaction interaction, Experiment experiment) {
+        // update interaction parameters if any
+        if (!interaction.getParameters().isEmpty()){
+            for (InteractionParameter param : interaction.getParameters()){
+                param.setExperiment(experiment);
+            }
+        }
+
+        // update component parameters if any
+        if (!interaction.getComponents().isEmpty()){
+            for (Component component : interaction.getComponents()){
+                if (!component.getParameters().isEmpty()){
+                    for (ComponentParameter param : component.getParameters()){
+                        param.setExperiment(experiment);
+                    }
+                }
+            }
+        }
     }
 
     private Experiment findExperimentByAcOrLabel(String acOrLabel) {
@@ -754,7 +780,7 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public void unlinkFeature(Feature feature) {
-       clearBoundDomain(feature);
+        clearBoundDomain(feature);
 
         addInfoMessage("Feature unlinked", DebugUtil.intactObjectToString(feature, false));
         setUnsavedChanges(true);
@@ -836,7 +862,7 @@ public class InteractionController extends ParameterizableObjectController {
         this.experimentToCopyTo = experimentToCopyTo;
     }
 
-     public String getFigureLegend() {
+    public String getFigureLegend() {
         return findAnnotationText(FIG_LEGEND);
     }
 

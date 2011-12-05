@@ -27,7 +27,7 @@ import java.util.List;
 public abstract class ParameterizableObjectController extends AnnotatedObjectController {
 
     public ParameterizableObjectHelper getParameterizableObjectHelper() {
-        return new ParameterizableObjectHelper((Parameterizable) getAnnotatedObject());
+        return new ParameterizableObjectHelper((Parameterizable) getAnnotatedObject(), getDaoFactory());
     }
 
     public void newParameter() {
