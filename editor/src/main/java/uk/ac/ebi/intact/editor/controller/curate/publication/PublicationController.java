@@ -29,13 +29,11 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.cdb.webservice.Author;
 import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
-import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 import uk.ac.ebi.intact.core.config.SequenceCreationException;
 import uk.ac.ebi.intact.core.config.SequenceManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
 import uk.ac.ebi.intact.core.persister.IntactCore;
-import uk.ac.ebi.intact.dataexchange.cvutils.CvUpdater;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
@@ -937,6 +935,9 @@ public class PublicationController extends AnnotatedObjectController {
 
         addInfoMessage("Publication accepted", "");
 
+        //clear to-be-reviewed
+        removeAnnotation(CvTopic.TO_BE_REVIEWED);
+
         // refresh experiments with possible changes in publication title, annotations and publication identifier
         copyAnnotationsToExperiments(null);
         copyPublicationTitleToExperiments(null);
@@ -947,9 +948,6 @@ public class PublicationController extends AnnotatedObjectController {
         if (!PublicationUtils.isOnHold(publication)) {
             lifecycleManager.getAcceptedStatus().readyForRelease(publication, "Accepted and not on-hold");
         }
-
-        //clear to-be-review
-        setToBeReviewed(null);
     }
 
     public void rejectPublication(ActionEvent evt) {

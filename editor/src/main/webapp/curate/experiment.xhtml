@@ -25,7 +25,8 @@
                          styleClass="important-button-good"
                          rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
                          actionListener="#{experimentController.acceptExperiment}"
-                         action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"/>
+                         action="/curate/experiment?faces-redirect=true&amp;includeViewParams=true"/>
+
         <p:commandButton value="Reject Experiment" type="button"
                          styleClass="important-button-bad"
                          rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
@@ -92,7 +93,7 @@
                             <ia:panelMessage level="warn">
                                 <b>To be reviewed: </b> #{experimentController.toBeReviewed}
                                 &#160;&#160;&#160;
-                                <p:commandButton value="Clear" actionListener="#{experimentController.clearToBeReviewed}" update="centralUnit"/>
+                                <p:commandButton id="clearToBeReviewed" value="Clear" rendered="#{userSessionController.isItMe(publicationController.publication.currentReviewer)}" actionListener="#{experimentController.clearToBeReviewed}" update="centralUnit"/>
                             </ia:panelMessage>
                     </h:panelGroup>
 

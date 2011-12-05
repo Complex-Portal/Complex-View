@@ -63,7 +63,7 @@
 
                 <p:tab title="Publications reviewed by you (#{dashboardController.reviewedByUser.rowCount})"
                         rendered="#{userSessionController.hasRole('REVIEWER')}">
-                    <h:panelGroup rendered="#{dashboardController.ownedByUser.rowCount gt 0}">
+                    <h:panelGroup rendered="#{dashboardController.reviewedByUser.rowCount gt 0}">
                         <ui:include src="publications_table.xhtml">
                             <ui:param name="publicationsDataModel" value="#{dashboardController.reviewedByUser}"/>
                         </ui:include>
