@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.experiment;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
 import org.primefaces.context.RequestContext;
@@ -28,15 +27,12 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
-import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ExperimentIntactCloner;
-import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
-import uk.ac.ebi.intact.model.util.PublicationUtils;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -45,6 +41,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -61,6 +59,8 @@ public class ExperimentController extends AnnotatedObjectController {
 
     private String reasonForRejection;
     private String publicationToMoveTo;
+
+    private Pattern EXP_SHORTLABEL_PATTERN = Pattern.compile("([0-9]|[a-zA-Z])+");
 
     @Autowired
     private PublicationController publicationController;
@@ -210,10 +210,23 @@ public class ExperimentController extends AnnotatedObjectController {
 
         } else {
             author = publicationController.getFirstAuthor();
+            StringBuffer authorBuffer = new StringBuffer(author.length());
 
             // clean reserved characters
-            author = author.replaceAll("-", "_");
+            Matcher matcher = EXP_SHORTLABEL_PATTERN.matcher(author.trim().toLowerCase());
+
+            while (matcher.find()){
+                authorBuffer.append(matcher.group());
+
+                if (matcher.end() < author.length() - 1){
+                    authorBuffer.append("_");
+                }
+            }
+
+            author = authorBuffer.toString();
+            /*author = author.replaceAll("-", "_");
             author = author.replaceAll(" ", "_");
+            author = author.replaceAll("'", "_");*/
         }
 
         String year;
