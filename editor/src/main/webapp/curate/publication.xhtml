@@ -201,7 +201,8 @@
                                     <p:commandButton id="autocompleteBtn" value="Auto-complete"
                                                      actionListener="#{publicationController.doFormAutocomplete}" async="true"
                                                      process="idTxt"
-                                                     update="basic,northUnit,messagesComponent,unsavedChangesInfo">
+                                                     update="basic,publicationTabs,changesPanel,messagesComponent,unsavedChangesInfo">
+                                        <f:setPropertyActionListener value="#{true}" target="#{publicationController.unsavedChanges}"/>
                                         <!--<p:confirmDialog yesLabel="Auto-complete" noLabel="Not now" width="300px"-->
                                         <!--draggable="false"-->
                                         <!--message="Auto-completing an existing publication will update its cross references and annotations. Are you sure?"-->

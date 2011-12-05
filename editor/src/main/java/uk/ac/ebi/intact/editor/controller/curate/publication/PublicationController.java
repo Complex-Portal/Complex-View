@@ -286,6 +286,8 @@ public class PublicationController extends AnnotatedObjectController {
 
             setAuthors( sbAuthors.toString() );
 
+            getChangesController().markAsUnsaved(publication);
+
             addInfoMessage( "Auto-complete successful", "Fetched details for: " + id );
 
         } catch ( Throwable e ) {
@@ -344,6 +346,7 @@ public class PublicationController extends AnnotatedObjectController {
             lifecycleManager.getAssignedStatus().startCuration(publication);
         }
 
+        getChangesController().markAsUnsaved(publication);
     }
 
 
