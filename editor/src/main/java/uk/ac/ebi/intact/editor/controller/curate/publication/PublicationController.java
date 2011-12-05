@@ -811,7 +811,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void publicationYearChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
-        setExperimentAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, (String) evt.getNewValue());
+        setExperimentAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, Short.toString((Short) evt.getNewValue()));
     }
 
     public void publicationTitleChanged(ValueChangeEvent evt) {
