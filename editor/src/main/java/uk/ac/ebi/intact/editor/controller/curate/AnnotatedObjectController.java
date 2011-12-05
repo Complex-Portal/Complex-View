@@ -26,14 +26,12 @@ import uk.ac.ebi.intact.core.persister.Finder;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.EditorIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
-import uk.ac.ebi.intact.model.user.User;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.model.util.PublicationUtils;
 import uk.ac.ebi.intact.util.go.GoServerProxy;
@@ -500,7 +498,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                         xref.setCvDatabase(goDb);
                         xref.setSecondaryId(goTerm.getName());
 
-                        CvXrefQualifier qualifier = calculateQualifier(goTerm.getCategory());
+                        GoTerm goCategory = goTerm.getCategory();
+                        // we have a root term
+                        if (goCategory == null){
+                           goCategory = goTerm;
+                        }
+                        CvXrefQualifier qualifier = calculateQualifier(goCategory);
                         xref.setCvXrefQualifier(qualifier);
                     }
                 } catch (GoServerProxy.GoIdNotFoundException notFoundExc) {
@@ -522,7 +525,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         if ("GO:0008150".equals(goId)) {
             return cvObjectDao.getByIdentifier(CvXrefQualifier.PROCESS_MI_REF);
-        } else if ("GO:0005554".equals(goId)) {
+        } else if ("GO:0003674".equals(goId)) { // GO:0005554 was an alternative id for molecular function
             return cvObjectDao.getByIdentifier(CvXrefQualifier.FUNCTION_MI_REF);
         } else if ("GO:0005575".equals(goId)) {
             return cvObjectDao.getByIdentifier(CvXrefQualifier.COMPONENT_MI_REF);
