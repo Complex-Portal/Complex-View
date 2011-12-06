@@ -36,6 +36,7 @@ import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 
+import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
@@ -71,6 +72,9 @@ public class ParticipantController extends ParameterizableObjectController {
     private List<SelectItem> featureToLink1RangeSelectItems;
     private List<SelectItem> featureToLink2RangeSelectItems;
 
+    private CvExperimentalRole unspecifiedExperimentalRole;
+    private CvBiologicalRole unspecifiedBiologicalRole;
+
     /**
      * The AC of the participant to be loaded.
      */
@@ -86,6 +90,12 @@ public class ParticipantController extends ParameterizableObjectController {
     private InteractionController interactionController;
 
     public ParticipantController() {
+    }
+
+    @PostConstruct
+    public void initializeDefaultRoles(){
+        unspecifiedExperimentalRole = getDaoFactory().getCvObjectDao(CvExperimentalRole.class).getByIdentifier(CvExperimentalRole.UNSPECIFIED_PSI_REF);
+        unspecifiedBiologicalRole = getDaoFactory().getCvObjectDao(CvBiologicalRole.class).getByIdentifier(CvBiologicalRole.UNSPECIFIED_PSI_REF);
     }
 
     @Override
@@ -255,10 +265,8 @@ public class ParticipantController extends ParameterizableObjectController {
     public String newParticipant(Interaction interaction) {
         this.interactor = null;
 
-        Component participant = new Component("N/A", interaction, new InteractorImpl(), new CvExperimentalRole(), new CvBiologicalRole());
+        Component participant = new Component("N/A", interaction, new InteractorImpl(), unspecifiedExperimentalRole, unspecifiedBiologicalRole);
         participant.setInteractor(null);
-        participant.getExperimentalRoles().clear();
-        participant.setCvBiologicalRole(null);
         participant.setStoichiometry(getEditorConfig().getDefaultStoichiometry());
 
         // by setting the interaction of a participant, we don't add the participant to the collection of participants for this interaction so if we revert, it will not affect anything.

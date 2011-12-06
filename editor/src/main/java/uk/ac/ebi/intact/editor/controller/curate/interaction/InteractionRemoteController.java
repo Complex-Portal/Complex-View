@@ -181,8 +181,8 @@ public class InteractionRemoteController extends JpaAwareController {
         // import the proteins
         Interaction interaction = interactionController.getInteraction();
 
-        CvExperimentalRole unspecifiedExpRole = getDaoFactory().getCvObjectDao(CvExperimentalRole.class).getByIdentifier(CvExperimentalRole.UNSPECIFIED_PSI_REF);
-        CvBiologicalRole unspecifiedBioRole = getDaoFactory().getCvObjectDao(CvBiologicalRole.class).getByIdentifier(CvBiologicalRole.UNSPECIFIED_PSI_REF);
+        CvExperimentalRole unspecifiedExpRole = participantImportController.getCvExperimentalRole();
+        CvBiologicalRole unspecifiedBioRole = participantImportController.getCvBiologicalRole();
 
         for (ImportCandidate candidate : candidates) {
             Interactor interactor = candidate.getInteractor();

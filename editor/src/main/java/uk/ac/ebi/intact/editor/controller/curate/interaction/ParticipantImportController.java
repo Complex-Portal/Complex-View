@@ -92,6 +92,12 @@ public class ParticipantImportController extends BaseController {
 
         // set the biosource service of protein service
         this.proteinService.setBiosourceService(bioSourceService);
+        cvExperimentalRole = interactionController.getDaoFactory().getCvObjectDao(CvExperimentalRole.class).getByIdentifier(CvExperimentalRole.UNSPECIFIED_PSI_REF);
+        cvBiologicalRole = interactionController.getDaoFactory().getCvObjectDao(CvBiologicalRole.class).getByIdentifier(CvBiologicalRole.UNSPECIFIED_PSI_REF);
+    }
+        @PostConstruct
+    public void initializeDefaultRoles(){
+
     }
 
     public void importParticipants( ActionEvent evt ) {
