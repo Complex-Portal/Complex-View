@@ -318,7 +318,9 @@ public class ParticipantImportController extends BaseController {
         }
 
         if (cvExperimentalPreparation != null) {
-            component.setExperimentalPreparations(Collections.singleton(cvExperimentalPreparation));
+            Collection<CvExperimentalPreparation> experimentalPreparations = new ArrayList<CvExperimentalPreparation>();
+            experimentalPreparations.add(cvExperimentalPreparation);
+            component.setExperimentalPreparations(experimentalPreparations);
         }
 
         return component;

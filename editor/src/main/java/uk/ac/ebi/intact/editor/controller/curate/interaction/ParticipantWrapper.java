@@ -25,7 +25,7 @@ public class ParticipantWrapper {
     private List<FeatureWrapper> features;
 
     private boolean deleted;
-    
+
     public ParticipantWrapper( Component participant, ChangesController changesController ) {
         this.participant = participant;
         this.annotatedObjectHelper = newAnnotatedObjectHelper(participant);
@@ -72,7 +72,7 @@ public class ParticipantWrapper {
     public CvExperimentalPreparation getFirstExperimentalPreparation() {
         if( participant.getInteractor() != null ) {
             final Collection<CvExperimentalPreparation> expPreparations = IntactCore.ensureInitializedExperimentalPreparations(participant);
-            if( ! expPreparations.isEmpty() ) {
+            if( expPreparations != null && ! expPreparations.isEmpty() ) {
                 return expPreparations.iterator().next();
             }
         }
@@ -81,10 +81,14 @@ public class ParticipantWrapper {
     }
 
     public void setFirstExperimentalPreparation( CvExperimentalPreparation prep ) {
-            if( ! participant.getExperimentalPreparations().contains( prep ) ) {
-                participant.getExperimentalPreparations().clear();
-                participant.getExperimentalPreparations().add( prep );
-            }
+        if (participant.getExperimentalPreparations() == null){
+           participant.setExperimentalPreparations(new ArrayList<CvExperimentalPreparation>());
+        }
+
+        if( ! participant.getExperimentalPreparations().contains( prep ) ) {
+            participant.getExperimentalPreparations().clear();
+            participant.getExperimentalPreparations().add( prep );
+        }
     }
 
     public boolean isDeleted() {
