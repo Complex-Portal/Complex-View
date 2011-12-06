@@ -30,8 +30,8 @@ import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedChange;
-import uk.ac.ebi.intact.editor.controller.curate.cloner.EditorIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.InteractionIntactCloner;
+import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
@@ -732,7 +732,7 @@ public class InteractionController extends ParameterizableObjectController {
     public void cloneParticipant(ParticipantWrapper participantWrapper) {
         Component participant = participantWrapper.getParticipant();
 
-        IntactCloner cloner = new EditorIntactCloner();
+        IntactCloner cloner = new ParticipantIntactCloner();
 
         try {
             Component clone = cloner.clone(participant);
