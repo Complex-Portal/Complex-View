@@ -261,7 +261,7 @@ public class PublicationController extends AnnotatedObjectController {
             final String issn = citation.getJournalIssue().getJournal().getISSN();
             journalBuf.append( abbreviation );
             if( issn != null ) {
-               journalBuf.append( " (" ).append( issn ).append( ")" );
+                journalBuf.append( " (" ).append( issn ).append( ")" );
             }
             setJournal( journalBuf.toString() );
 
@@ -317,12 +317,17 @@ public class PublicationController extends AnnotatedObjectController {
             Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
 
             if ( existingPublication != null ) {
-                newEmpty(true);
+                setPublication(existingPublication);
+                addWarningMessage( "Publication already exists", "Loaded from the database" );
+                return;
             }
         }
 
         Publication publication = new Publication( userSessionController.getUserInstitution(), identifier );
         setPublication(publication);
+
+        // add the primary reference xref
+        setPrimaryReference( identifier );
 
         getChangesController().markAsUnsaved(publication);
 
@@ -414,13 +419,13 @@ public class PublicationController extends AnnotatedObjectController {
         addInfoMessage("Claimed publication ownership", "You are now the owner of this publication");
     }
 
-     public void markAsAssignedToMe(ActionEvent evt) {
-         lifecycleManager.getNewStatus().assignToCurator(publication, getCurrentUser());
+    public void markAsAssignedToMe(ActionEvent evt) {
+        lifecycleManager.getNewStatus().assignToCurator(publication, getCurrentUser());
 
-         addInfoMessage("Ownership claimed", "The publication has been assigned to you");
+        addInfoMessage("Ownership claimed", "The publication has been assigned to you");
 
-         markAsCurationInProgress(evt);
-     }
+        markAsCurationInProgress(evt);
+    }
 
     public void markAsCurationInProgress(ActionEvent evt) {
         if (!userSessionController.isItMe(publication.getCurrentOwner())) {
@@ -1024,7 +1029,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public boolean isBeenRejectedBefore() {
-         for (LifecycleEvent evt : IntactCore.ensureInitializedLifecycleEvents(publication)) {
+        for (LifecycleEvent evt : IntactCore.ensureInitializedLifecycleEvents(publication)) {
             if (CvLifecycleEventType.REJECTED.identifier().equals(evt.getEvent().getIdentifier())) {
                 return true;
             }
