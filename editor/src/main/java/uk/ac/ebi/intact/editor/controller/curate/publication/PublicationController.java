@@ -1195,6 +1195,7 @@ public class PublicationController extends AnnotatedObjectController {
     @Override
     public void doPostSave() {
         loadFormFields();
+        refreshDataModels();
     }
 
     public boolean isAssignToMe() {

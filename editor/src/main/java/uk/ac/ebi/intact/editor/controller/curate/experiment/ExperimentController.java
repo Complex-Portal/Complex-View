@@ -60,7 +60,7 @@ public class ExperimentController extends AnnotatedObjectController {
     private String reasonForRejection;
     private String publicationToMoveTo;
 
-    private Pattern EXP_SHORTLABEL_PATTERN = Pattern.compile("([0-9]|[a-zA-Z])+");
+    private Pattern EXP_SHORTLABEL_PATTERN = Pattern.compile("[^0-9a-zA-Z]+");
 
     @Autowired
     private PublicationController publicationController;
@@ -142,6 +142,11 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     @Override
+    public void doPostSave(){
+        refreshInteractions();
+    }
+
+    @Override
     public void modifyClone(AnnotatedObject clone) {
         clone.setShortLabel(createExperimentShortLabel());
 
@@ -209,24 +214,12 @@ public class ExperimentController extends AnnotatedObjectController {
             author = "anonymous";
 
         } else {
-            author = publicationController.getFirstAuthor();
-            StringBuffer authorBuffer = new StringBuffer(author.length());
-
             // clean reserved characters
-            Matcher matcher = EXP_SHORTLABEL_PATTERN.matcher(author.trim().toLowerCase());
+            Matcher matcher = EXP_SHORTLABEL_PATTERN.matcher(publicationController.getFirstAuthor().trim().toLowerCase());
 
-            while (matcher.find()){
-                authorBuffer.append(matcher.group());
-
-                if (matcher.end() < author.length() - 1){
-                    authorBuffer.append("_");
-                }
-            }
-
-            author = authorBuffer.toString();
+            author = matcher.replaceAll("_");
             /*author = author.replaceAll("-", "_");
-            author = author.replaceAll(" ", "_");
-            author = author.replaceAll("'", "_");*/
+            author = author.replaceAll(" ", "_");*/
         }
 
         String year;
