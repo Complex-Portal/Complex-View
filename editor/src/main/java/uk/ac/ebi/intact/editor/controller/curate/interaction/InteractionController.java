@@ -283,6 +283,10 @@ public class InteractionController extends ParameterizableObjectController {
         }
 
         // Reload experiments
+        if (!Hibernate.isInitialized(interaction.getExperiments())){
+            interaction = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao(), ac);
+        }
+
         Collection<Experiment> experiments = new ArrayList<Experiment>( interaction.getExperiments() );
 
         if (interaction.getExperiments().isEmpty() && experiment != null){
@@ -510,20 +514,20 @@ public class InteractionController extends ParameterizableObjectController {
             Experiment experiment = findExperimentByAcOrLabel(experimentToCopyTo);
 
             if (experiment == null) {
-                addErrorMessage("Cannot copy", "No experiment found with this AC or short label: "+experimentToMoveTo);
+                addErrorMessage("Cannot copy", "No experiment found with this AC or short label: "+experimentToCopyTo);
                 return null;
             }
 
-            newInteraction = cloneAnnotatedObject(interaction, newClonerInstance());
+            newInteraction = cloneAnnotatedObject(interaction, new InteractionIntactCloner(experiment));
 
             // remove all experiments attached to the new interaction
-            Collection<Experiment> experiments = new ArrayList(newInteraction.getExperiments());
+            /*Collection<Experiment> experiments = new ArrayList(newInteraction.getExperiments());
             for (Experiment exp : experiments){
                 newInteraction.removeExperiment(exp);
             }
 
             // add the new experiment
-            newInteraction.addExperiment(experiment);
+            newInteraction.addExperiment(experiment);*/
 
             updateParametersExperiment(newInteraction, experiment);
 
@@ -838,6 +842,7 @@ public class InteractionController extends ParameterizableObjectController {
 
             if ( Hibernate.isInitialized(interaction.getExperiments()) && !interaction.getExperiments().isEmpty()) {
                 experimentController.setExperiment(interaction.getExperiments().iterator().next());
+                this.experiment = experimentController.getExperiment();
             }
         }
     }

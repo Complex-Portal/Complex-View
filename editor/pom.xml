@@ -26,9 +26,9 @@
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <core.version>2.5.1-beta-20110927</core.version>
+        <core.version>2.5.1-SNAPSHOT</core.version>
         <spring.version>3.0.3.RELEASE</spring.version>
-        <bridges.version>2.1.4-SNAPSHOT</bridges.version>
+        <bridges.version>2.1.4</bridges.version>
 
         <!-- configurable bits -->
         <jetty.port>9192</jetty.port>
