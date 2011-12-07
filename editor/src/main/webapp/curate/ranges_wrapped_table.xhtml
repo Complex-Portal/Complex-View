@@ -71,12 +71,15 @@
                 <h:outputText value="Link"/>
             </f:facet>
             <h:selectBooleanCheckbox value="#{rangeWrapper.range.linked}">
-                <ed:curation/>
+                <f:ajax event="valueChange" render=":editorForm:rangesTable :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                        process="@this" onevent="markAsUnsaved"/>
              </h:selectBooleanCheckbox>
 
-            <p:commandLink onclick="load_feature.show()" action="#{curateController.edit(rangeWrapper.range.feature.boundDomain)}"
+            <!--A link range is different from link feature. We should not associate link range to link feature-->
+            <!--TODO needs to be reviewed with curators-->
+            <!--<p:commandLink onclick="load_feature.show()" action="#{curateController.edit(rangeWrapper.range.feature.boundDomain)}"
                            rendered="#{rangeWrapper.range.linked and rangeWrapper.range.feature.boundDomain != null}"
-                           value="#{rangeWrapper.range.feature.boundDomain.shortLabel}" ajax="false"/>
+                           value="#{rangeWrapper.range.feature.boundDomain.shortLabel}" ajax="false"/>-->
         </p:column>
         <p:column>
             <f:facet name="header">

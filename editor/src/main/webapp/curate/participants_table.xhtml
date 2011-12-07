@@ -126,7 +126,7 @@
                                    <p:commandButton value="Yes Sure"
                                            actionListener="#{interactionController.unlinkFeature(featureWrapper.feature)}"
                                            ajax="false"/>
-                                   <p:commandLink value="Not Yet" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()" type="button" />
+                                   <p:commandButton value="Not Yet" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()" />
                              </p:confirmDialog>
 
                      </h:column>
