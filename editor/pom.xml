@@ -48,6 +48,8 @@
         <google.password></google.password>
         <maintainer.emails>skerrien@ebi.ac.uk</maintainer.emails>
 
+        <userContext.scope>session</userContext.scope>
+
     </properties>
 
     <build>
@@ -132,16 +134,49 @@
         <profile>
             <id>integration-tests</id>
             <properties>
-                <db.url>jdbc:h2:editordb;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.url>
+                <db.url>jdbc:h2:tcp:localhost:39101/intact-editor;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.url>
                 <db.driver>org.h2.Driver</db.driver>
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <db.user>sa</db.user>
                 <db.password></db.password>
-                <db.hbm2ddl>update</db.hbm2ddl>
+                <db.hbm2ddl>create</db.hbm2ddl>
+
+                <userContext.scope>singleton</userContext.scope>
             </properties>
 
             <build>
                 <plugins>
+                    <plugin>
+                      <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <!-- start server before integration tests -->
+                                <id>start</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>uk.ac.ebi.intact.editor.StartH2Server</mainClass>
+                                    <classpathScope>test</classpathScope>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <!-- stop server after integration tests -->
+                                <id>stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>uk.ac.ebi.intact.editor.StopH2Server</mainClass>
+                                    <classpathScope>test</classpathScope>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
@@ -597,7 +632,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.2.121</version>
+            <version>1.2.143</version>
         </dependency>
 
         <!-- Tests -->
@@ -611,6 +646,18 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>2.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-jndi</artifactId>
+            <version>7.1.5.v20100705</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>7.1.5.v20100705</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

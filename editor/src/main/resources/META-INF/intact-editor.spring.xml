@@ -17,7 +17,7 @@
         <property name="autoUpdateInteractionLabel" value="true"/>
     </bean>
 
-    <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext" scope="session">
+    <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext" scope="${userContext.scope}">
         <property name="userId" value="EDITOR_USER"/>
         <aop:scoped-proxy/>
     </bean>
