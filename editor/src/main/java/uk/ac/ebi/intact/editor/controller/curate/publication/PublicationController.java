@@ -750,6 +750,23 @@ public class PublicationController extends AnnotatedObjectController {
 
         if ( identifier != null && getAnnotatedObject() != null ) {
             setPrimaryReference( identifier );
+
+            Collection<Experiment> experiments = publication.getExperiments();
+
+            if (!IntactCore.isInitialized(publication.getExperiments())) {
+                experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+            }
+            if (!experiments.isEmpty()){
+                Collection<String> parentAcs = new ArrayList<String>();
+                if (publication.getAc() != null){
+                    parentAcs.add(publication.getAc());
+                }
+                for (Experiment experiment : experiments) {
+                    newAnnotatedObjectHelper(experiment).setXref(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, identifier, null);
+
+                    getChangesController().markAsUnsaved(experiment, parentAcs);
+                }
+            }
         }
     }
 
@@ -831,7 +848,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void publicationIdentifierChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
-        copyPrimaryIdentifierToExperiments();
+        setIdentifier((String) evt.getNewValue());
     }
 
     public String getAcceptedMessage() {
