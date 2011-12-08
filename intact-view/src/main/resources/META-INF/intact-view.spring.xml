@@ -24,7 +24,7 @@
     </bean>
 
 
-    <bean id="statisticsController" class="uk.ac.ebi.intact.view.webapp.controller.application.StatisticsController">
+    <bean id="statisticsController" class="uk.ac.ebi.intact.view.webapp.controller.application.StatisticsController" lazy-init="true">
         <aop:scoped-proxy/>
     </bean>
 

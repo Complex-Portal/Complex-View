@@ -18,7 +18,10 @@ package uk.ac.ebi.intact.view.webapp.controller.admin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
 import uk.ac.ebi.intact.view.webapp.controller.application.CvObjectService;
 import uk.ac.ebi.intact.view.webapp.controller.application.StatisticsController;
@@ -38,16 +41,7 @@ public class AdminController {
     private static final Log log = LogFactory.getLog( AdminController.class );
 
     @Autowired
-    private AppConfigBean appConfigBean;
-
-    @Autowired
-    private FilterPopulatorController filterPopulatorController;
-
-    @Autowired
-    private StatisticsController statisticsController;
-
-    @Autowired
-    private CvObjectService cvObjectService;
+    private ApplicationContext applicationContext;
 
     public AdminController() {
 
@@ -57,6 +51,10 @@ public class AdminController {
         if (log.isInfoEnabled()) {
             log.info("Reloading application lists and filters");
         }
+
+        StatisticsController statisticsController = (StatisticsController) applicationContext.getBean("statisticsController");
+        CvObjectService cvObjectService = (CvObjectService) applicationContext.getBean("cvObjectService");
+        FilterPopulatorController filterPopulatorController = (FilterPopulatorController) applicationContext.getBean("filterPopulatorController");
 
         filterPopulatorController.loadFilters();
         statisticsController.calculateStats();

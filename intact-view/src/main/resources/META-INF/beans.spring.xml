@@ -16,13 +16,13 @@
     <context:property-placeholder location="classpath:/META-INF/intactview.properties"/>
     <context:property-placeholder location="classpath:/uk/ac/ebi/intact/binarysearch/BuildInfo.properties"/>
 
-    <bean id="appConfigBean" class="uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean" />
-    <bean id="ontologyBean" class="uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean" />
+    <bean id="appConfigBean" class="uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean" lazy-init="true"/>
+    <bean id="ontologyBean" class="uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean" lazy-init="true"/>
 
     <!--<bean id="sqlStatistics" class="uk.ac.ebi.intact.services.search.stats.StatusController"request"/>-->
 
     <bean id="intactViewConfiguration"
-          class="uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration">
+          class="uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration" lazy-init="true">
         <property name="webappName" value="${webapp.name}"/>
         <property name="webappLogoUrl" value="${webapp.logo.url}"/>
         <property name="appRoot" value="${intact.view.approot}"/>
