@@ -194,7 +194,12 @@ public class InteractionController extends ParameterizableObjectController {
         else if (currentExperiment == null){
             experimentController.setExperiment( null );
         }
-        else if (!experimentController.getExperiment().getAc().equalsIgnoreCase(currentExperiment.getAc())){
+        else if (experimentController.getExperiment().getAc() != null && !experimentController.getExperiment().getAc().equalsIgnoreCase(currentExperiment.getAc())){
+            experimentController.setExperiment( currentExperiment );
+        }
+        // if an experiment has been cloned with interactions, we must be able to go in the interaction even if experiment has not been saved
+        // we must add the experiment to the publication
+        else if (experimentController.getExperiment().getAc() == null){
             experimentController.setExperiment( currentExperiment );
         }
     }
