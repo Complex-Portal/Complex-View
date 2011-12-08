@@ -16,6 +16,8 @@
 package uk.ac.ebi.intact.editor;
 
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -39,5 +41,12 @@ public abstract class EditorIT extends IntactBasicTestCase {
     protected void willLoginAs(String login) {
         IntactContext.getCurrentInstance().getUserContext().setUser(getDaoFactory().getUserDao().getByLogin(login));
     }
+
+    protected void loginAs(String user, WebDriver driver) {
+            driver.findElement(By.id("j_username")).sendKeys(user);
+            driver.findElement(By.id("j_password_clear")).sendKeys(user);
+            driver.findElement(By.id("login")).click();
+        }
+
 
 }

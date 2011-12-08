@@ -41,13 +41,9 @@ public class LoginIT extends EditorIT {
         final Publication publicationRandom = getMockBuilder().createPublicationRandom();
         getCorePersister().saveOrUpdate(publicationRandom);
 
-
-		driver.get(BASE_URL);
-
         // when
-		driver.findElement(By.id("j_username")).sendKeys("admin");
-		driver.findElement(By.id("j_password_clear")).sendKeys("admin");
-		driver.findElement(By.id("login")).click();
+        driver.get(BASE_URL);
+        loginAs("admin", driver);
 
         // then
         assertThat(driver.getTitle(), is(equalTo("Dashboard")));
