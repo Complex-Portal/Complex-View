@@ -131,7 +131,7 @@ public class AnnotatedObjectHelper implements Serializable {
                         String qualifierShortLabel = xref.getCvXrefQualifier() != null ? xref.getCvXrefQualifier().getShortLabel() : null;
 
                         if ( (qualifierIdOrLabel.equals( qualifierId )
-                            || qualifierIdOrLabel.equals( qualifierShortLabel )) && !primaryId.equals( xref.getPrimaryId() ) ) {
+                                || qualifierIdOrLabel.equals( qualifierShortLabel )) && !primaryId.equals( xref.getPrimaryId() ) ) {
                             xref.setPrimaryId( primaryId );
                         }
                         xref.setSecondaryId( secondaryId );
@@ -540,13 +540,22 @@ public class AnnotatedObjectHelper implements Serializable {
                     aliasTypeIdOrLabel.equals( aliasShortLabel ) ) {
                 // replace
                 alias.setName( text );
+                found = true;
             }
         }
 
         if( !found ) {
             // create new
+            CvAliasType type = getCvObjectService().findCvObject( CvAliasType.class, aliasTypeIdOrLabel );
+
+            if (type == null){
+                throw new IllegalArgumentException("The alias type " + aliasTypeIdOrLabel + " does not exist in the database and must be created first before creating an alias of this type.");
+            }
+
             final Alias alias = newAliasInstance();
             alias.setName( text );
+            alias.setCvAliasType(type);
+            getAnnotatedObject().addAlias(alias);
         }
 
     }

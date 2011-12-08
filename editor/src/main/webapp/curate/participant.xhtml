@@ -94,9 +94,7 @@
                         </td>
                         <td colspan="2">
                             <p:inputText id="authorGivenNameTxt" value="#{participantController.participantWrapper.authorGivenName}" size="10" converter="trimmingConverter">
-                                <ed:ajax event="valueChange" timeout="0" process="@this"
-                                         beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                            listener="#{annotatedObjectController.changed}"/>
+                                <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo participantTabs"/>
                              </p:inputText>
                         </td>
                     </tr>

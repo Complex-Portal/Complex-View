@@ -52,7 +52,8 @@ public class ParticipantWrapper {
     }
 
     public void setAuthorGivenName( String name ) {
-        annotatedObjectHelper.addOrReplace(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF, name  );
+        changesController.markAsUnsaved(participant);
+        annotatedObjectHelper.setAlias(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF, name  );
     }
 
     public CvExperimentalRole getFirstExperimentalRole() {
