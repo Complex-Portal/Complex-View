@@ -40,6 +40,7 @@
 
         <db.jndi>jdbc/IntactDS</db.jndi>
         <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
+        <db.hbm2ddl>none</db.hbm2ddl>
         
         <!-- Webapp default config -->
         <intact.instance.name>default</intact.instance.name>
@@ -284,9 +285,9 @@
                         <executions>
                             <execution>
                                 <id>run-tests</id>
-                                <phase>integration-test</phase>
                                 <goals>
                                     <goal>integration-test</goal>
+                                    <goal>verify</goal>
                                 </goals>
                             </execution>
                         </executions>

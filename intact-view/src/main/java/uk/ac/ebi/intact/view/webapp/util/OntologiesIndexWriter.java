@@ -144,8 +144,6 @@ public class OntologiesIndexWriter {
                 .addFacetField(fieldName)
                 .setFacetSort(FacetParams.FACET_SORT_COUNT);
 
-        System.out.println("*** QUERY: "+query);
-
         QueryResponse queryResponse = solrServer.query(query);
 
         FacetField facetField = queryResponse.getFacetField(fieldName);

@@ -33,7 +33,6 @@ import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -163,9 +162,7 @@ public class PsicquicController extends BaseController {
         String url = null;
 
         try {
-            HttpClient httpClient = intactViewConfiguration.getHttpClient();
-
-
+            HttpClient httpClient = intactViewConfiguration.getHttpClient(true);
 
             String encoded = URLEncoder.encode(query, "UTF-8");
             encoded = encoded.replaceAll("\\+", "%20");

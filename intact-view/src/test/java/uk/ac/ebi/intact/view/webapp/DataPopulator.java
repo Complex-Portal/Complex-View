@@ -2,24 +2,26 @@ package uk.ac.ebi.intact.view.webapp;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.stereotype.Controller;
 import psidev.psi.mi.tab.PsimiTabWriter;
+import psidev.psi.mi.tab.converter.xml2tab.TabConversionException;
 import psidev.psi.mi.tab.converter.xml2tab.Xml2Tab;
 import psidev.psi.mi.tab.expansion.SpokeWithoutBaitExpansion;
 import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.xml.PsimiXmlReader;
+import psidev.psi.mi.xml.converter.ConverterException;
 import psidev.psi.mi.xml.model.EntrySet;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.unit.IntactMockBuilder;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrIndexer;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
 import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.model.IntactEntry;
 import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.Publication;
 import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
-import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,18 +47,20 @@ public class DataPopulator implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         System.out.println("POPULATING DATA SERVERS (H2/SOLR)...");
         
-        IntactMockBuilder mockBuilder = new IntactMockBuilder(intactContext.getInstitution());
+//        IntactMockBuilder mockBuilder = new IntactMockBuilder(intactContext.getInstitution());
+//
+//        Publication publication = mockBuilder.createPublication("1234567");
+//        Experiment experiment = mockBuilder.createExperimentRandom(4);
+//        experiment.setPublication(null);
+//        publication.addExperiment(experiment);
+//
+//        storePublication(publication);
 
-        Publication publication = mockBuilder.createPublication("1234567");
-        Experiment experiment = mockBuilder.createExperimentRandom(4);
-        experiment.setPublication(null);
-        publication.addExperiment(experiment);
 
-        storePublication(publication);
+        PsimiXmlReader reader = new PsimiXmlReader();
 
-
-//        Interaction interaction1 = mockBuilder.createInteractionRandomBinary();
-//        interaction1.getExperiments().iterator().next().setPublication(publication);
+        storeEntrySet(reader.read(DatabasePopulator.class.getResourceAsStream("/META-INF/data/10514511.xml")));
+        storeEntrySet(reader.read(DatabasePopulator.class.getResourceAsStream("/META-INF/data/11554746.xml")));
 
     }
 
@@ -64,20 +68,25 @@ public class DataPopulator implements InitializingBean {
         intactContext.getCorePersister().saveOrUpdate(publication);
 
         EntrySet entrySet = psiExchange.exportToEntrySet(toIntactEntry(publication));
+        storeEntrySet(entrySet);
+    }
 
+    public void storeEntrySet(EntrySet entrySet) throws TabConversionException, IOException, ConverterException {
         Xml2Tab xml2tab = new IntactXml2Tab();
         xml2tab.setExpansionStrategy(new SpokeWithoutBaitExpansion());
 
         Collection<BinaryInteraction> binaryInteractions = xml2tab.convert(entrySet);
 
+        storeBinaryInteractions(binaryInteractions);
+    }
+
+    public void storeBinaryInteractions(Collection<BinaryInteraction> binaryInteractions) throws IOException, ConverterException {
         StringWriter sw = new StringWriter();
 
         PsimiTabWriter psimitabWriter = new PsimiTabWriter();
         psimitabWriter.write(binaryInteractions, sw);
 
-        System.out.println(sw.toString());
-
-        solrServerTestController.getIndexer().indexMitab(new ByteArrayInputStream(sw.toString().getBytes()), false);
+        solrServerTestController.getIndexer().indexMitab(new ByteArrayInputStream(sw.toString().getBytes()), true);
     }
 
     private IntactEntry toIntactEntry(Publication publication) {

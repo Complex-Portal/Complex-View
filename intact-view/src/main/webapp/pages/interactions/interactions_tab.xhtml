@@ -30,7 +30,7 @@
 
 <hr/>
 
-    > <strong><h:outputText value="#{searchBean.totalResults}">
+    > <strong><h:outputText id="totalResultsOut" value="#{searchBean.totalResults}">
             <f:convertNumber pattern="#,###"/>
         </h:outputText></strong> binary interaction#{searchBean.totalResults != 1? 's were' : ' was'} found in #{intactViewConfiguration.webappName}.
 
