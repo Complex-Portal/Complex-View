@@ -166,7 +166,9 @@ public class ExperimentController extends AnnotatedObjectController {
 
     @Transactional
     public String cloneWithInteractions() {
-        IntactCore.initialize(experiment.getInteractions());
+        if (!getDaoFactory().getEntityManager().contains(experiment) && !IntactCore.isInitialized(experiment.getInteractions())){
+             getDaoFactory().getEntityManager().merge(experiment);
+        }
 
         return clone(experiment, new ExperimentIntactCloner(true));
     }
