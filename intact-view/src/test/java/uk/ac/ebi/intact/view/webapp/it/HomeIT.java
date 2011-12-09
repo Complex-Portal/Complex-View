@@ -14,8 +14,6 @@ public class HomeIT extends IntactViewIT {
 	@Test
 	public void mainPageAllInteractionsLoadedByDefault() throws Exception {
         // Given: I want to feel informed
-        driver.get(BASE_URL);
-
 
         // When: I go to the home page for the first time
         driver.get(BASE_URL);
