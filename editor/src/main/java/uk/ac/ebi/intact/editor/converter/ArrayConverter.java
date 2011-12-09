@@ -38,6 +38,7 @@ public class ArrayConverter implements Converter {
         if ( arrStr == null || arrStr.trim().isEmpty()) return new String[0];
 
         arrStr = arrStr.replaceAll(" ", "");
+        arrStr = arrStr.replaceAll("\r", "");
 
         String[] lines = arrStr.split("\n");
         List<String> items = new ArrayList<String>();
