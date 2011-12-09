@@ -16,7 +16,6 @@ public class AdvancedSearchIT extends IntactViewIT {
         // Given: I want to do a query using the advanced search
         driver.get(BASE_URL);
 
-
         // When: I query 11554746 using Publication ID and click on the Add & Search button
         driver.findElement(By.id("addFieldBtn")).click();
         waitUntilElementIsVisible(By.id("newQuerytxt"));
@@ -24,8 +23,6 @@ public class AdvancedSearchIT extends IntactViewIT {
         waitUntilLoadingIsComplete();
         driver.findElement(By.id("newQuerytxt")).sendKeys("11554746");
         driver.findElement(By.id("addAndSearchBtn")).click();
-
-        takeScreenshot("/tmp/lala4.png", driver);
 
         // Then: I expect 4 interactions in total
         Assert.assertThat(numberOfResultsDisplayed(), is(equalTo(4)));
