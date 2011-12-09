@@ -15,10 +15,13 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
+
+import java.util.Collection;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -35,15 +38,34 @@ public class ExperimentIntactCloner extends EditorIntactCloner {
 
     @Override
     public Experiment cloneExperiment(Experiment experiment) throws IntactClonerException {
-        return super.cloneExperiment(experiment);
+        if (experiment == null) return null;
+        Experiment clone = new Experiment();
+
+        clonerManager.addClone(experiment, clone);
+
+        clone.setCvIdentification(clone(experiment.getCvIdentification()));
+        clone.setCvInteraction(clone(experiment.getCvInteraction()));
+        clone.setBioSource(clone(experiment.getBioSource()));
+        clone.setPublication(clone(experiment.getPublication()));
+
+        if (isCollectionClonable(experiment.getInteractions()) && cloneInteractions) {
+            Collection<Interaction> interactions = IntactCore.ensureInitializedInteractions(experiment);
+
+            for (Interaction i : interactions) {
+                clone.addInteraction(clone(i));
+            }
+        }
+
+        return clone;
     }
 
-    @Override
+    // no need to override cloning interactions
+    /*@Override
     public Interaction cloneInteraction(Interaction interaction) throws IntactClonerException {
         final Interaction clone = super.cloneInteraction( interaction );
         clone.getExperiments().clear();
         return clone;
-    }
+    }*/
 
     @Override
     protected AnnotatedObject cloneAnnotatedObjectCommon(AnnotatedObject<?, ?> ao, AnnotatedObject clone) throws IntactClonerException {
@@ -52,7 +74,8 @@ public class ExperimentIntactCloner extends EditorIntactCloner {
             return null;
         }
 
-        if (!cloneInteractions) {
+        // not optimized, do not need to clone interactions and then clear if we don't want to clone interactions. If we don't want to clone interactions, just don't clone them
+        /*if (!cloneInteractions) {
             if (clone instanceof Interaction) {
                 Interaction interaction = (Interaction)clone;
                 interaction.getExperiments().clear();
@@ -67,7 +90,7 @@ public class ExperimentIntactCloner extends EditorIntactCloner {
             for (Interaction interaction : experiment.getInteractions()) {
                 interaction.getExperiments().add(experiment);
             }
-        }
+        }*/
 
         if (ao == clone) {
             return ao;
