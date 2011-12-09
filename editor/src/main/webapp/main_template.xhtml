@@ -28,6 +28,11 @@
     <h:body style="margin: 0 0 0 0;">
         <div id="intact-blockingDiv"></div>
 
+        <div id="statusIndicator" class="status-normal"></div>
+
+        <p:ajaxStatus onstart="document.getElementById('statusIndicator').setAttribute('class', 'status-busy')"
+                      oncomplete="document.getElementById('statusIndicator').setAttribute('class', 'status-normal')"/>
+
         <h:outputScript library="javascript" name="intact.js"/>
 
         <!--<ia:loadingDialog widgetVar="blockingDialog" modal="true" message="Loading page..."/>-->

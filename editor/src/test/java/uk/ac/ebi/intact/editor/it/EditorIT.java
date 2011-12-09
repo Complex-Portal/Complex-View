@@ -13,17 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.intact.editor;
+package uk.ac.ebi.intact.editor.it;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -38,6 +49,43 @@ import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
         "classpath*:/META-INF/editor.jpa-test.spring.xml"}, inheritLocations = false)
 public abstract class EditorIT extends IntactBasicTestCase {
 
+    protected WebDriver driver;
+    protected WebDriverWait wait;
+
+    @Before
+    	public void setUp() throws Exception {
+            this.driver = new FirefoxDriver();
+            wait = new WebDriverWait(driver, 30, 500);
+        }
+
+        @After
+    	public void tearDown() throws Exception {
+    		driver.quit();
+    	}
+
+        protected void waitUntilElementIsVisible(final By by) {
+            wait.until(new ExpectedCondition<Boolean>() {
+                public Boolean apply(WebDriver webDriver) {
+                    return driver.findElement(by) != null;
+                }
+            });
+        }
+
+        protected void waitUntilLoadingIsComplete() {
+            wait.until(new ExpectedCondition<Boolean>() {
+                public Boolean apply(WebDriver webDriver) {
+                    System.out.println("Searching ...");
+                    return "status-normal".equals(webDriver.findElement(By.id("statusIndicator")).getAttribute("class"));
+                }
+            });
+        }
+
+        protected void takeScreenshot(String filename, WebDriver driver) throws IOException {
+            File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            FileUtils.copyFile(scrFile, new File(filename));
+            System.out.println(scrFile);
+        }
+
     protected void willLoginAs(String login) {
         IntactContext.getCurrentInstance().getUserContext().setUser(getDaoFactory().getUserDao().getByLogin(login));
     }
@@ -47,6 +95,7 @@ public abstract class EditorIT extends IntactBasicTestCase {
             driver.findElement(By.id("j_password_clear")).sendKeys(user);
             driver.findElement(By.id("login")).click();
         }
+
 
 
 }

@@ -7,19 +7,19 @@
 
     <ul>
         <li>
-            <p:commandLink value="Dashboard" action="/dashboard/dashboard?faces-redirect=true"
+            <p:commandLink id="dashboardNavLink" value="Dashboard" action="/dashboard/dashboard?faces-redirect=true"
                            styleClass="#{selected == 'dashboard'? 'top-bar-selected' : ''}"
                            ajax="false" immediate="true"/>
         </li>
         <li>
 
-            <p:commandLink value="Search" action="/search/search?faces-redirect=true"
+            <p:commandLink id="searchNavLink" value="Search" action="/search/search?faces-redirect=true"
                            styleClass="#{selected == 'curate'? 'searchd' : ''}"
                            ajax="false" immediate="true"/>
         </li>
         <li>
 
-            <p:commandLink value="Curate" action="/curate/curate?faces-redirect=true&amp;includeViewParams=true"
+            <p:commandLink id="curateNavLink" value="Curate" action="/curate/curate?faces-redirect=true&amp;includeViewParams=true"
                            rendered="#{userSessionController.hasRole('CURATOR')}"
                            ajax="false"
                            styleClass="#{selected == 'curate'? 'top-bar-selected' : ''}"
@@ -27,7 +27,7 @@
         </li>
         <li>
 
-            <p:commandLink value="Sanity Check" action="/sanity/sanityDashboard?faces-redirect=true&amp;includeViewParams=true"
+            <p:commandLink id="sanityCheckNavLink" value="Sanity Check" action="/sanity/sanityDashboard?faces-redirect=true&amp;includeViewParams=true"
                            rendered="#{userSessionController.hasRole('CURATOR')}"
                            ajax="false"
                            styleClass="#{selected == 'sanity'? 'top-bar-selected' : ''}"
@@ -35,14 +35,14 @@
         </li>
         <li>
 
-            <p:commandLink value="Bulk Op." action="/bulk/bulk_default?faces-redirect=true&amp;includeViewParams=true"
+            <p:commandLink id="bulkOpNavLink" value="Bulk Op." action="/bulk/bulk_default?faces-redirect=true&amp;includeViewParams=true"
                            rendered="#{userSessionController.hasRole('CURATOR')}"
                            ajax="false"
                            styleClass="#{selected == 'bulk'? 'top-bar-selected' : ''}"
                            immediate="true"/>
         </li>
         <li>
-            <p:commandLink value="Reviewer" action="/reviewer/reviewerDashboard?faces-redirect=true"
+            <p:commandLink id="reviewerdNavLink" value="Reviewer" action="/reviewer/reviewerDashboard?faces-redirect=true"
                            styleClass="#{selected == 'reviewer'? 'top-bar-selected' : ''}"
                            ajax="false"
                            rendered="#{userSessionController.hasRole('REVIEWER')}"
@@ -50,7 +50,7 @@
 
         </li>
         <li>
-            <p:commandLink value="Admin" action="/admin/dashboard?faces-redirect=true"
+            <p:commandLink id="adminNavLink" value="Admin" action="/admin/dashboard?faces-redirect=true"
                            styleClass="#{selected == 'admin'? 'top-bar-selected' : ''}"
                            ajax="false"
                            rendered="#{userSessionController.hasRole('ADMIN')}"
@@ -58,7 +58,7 @@
 
         </li>
         <li>
-            <p:commandLink value="My Notes" action="/notes/mynotes?faces-redirect=true"
+            <p:commandLink id="myNotesNavLink" value="My Notes" action="/notes/mynotes?faces-redirect=true"
                            styleClass="#{selected == 'mynotes'? 'top-bar-selected' : ''}"
                            ajax="false"
                            immediate="true"/>

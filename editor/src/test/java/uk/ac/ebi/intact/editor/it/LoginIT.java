@@ -1,4 +1,4 @@
-package uk.ac.ebi.intact.editor;
+package uk.ac.ebi.intact.editor.it;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -9,11 +9,13 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.unit.IntactMockBuilder;
+import uk.ac.ebi.intact.dataexchange.enricher.standard.ExperimentEnricher;
 import uk.ac.ebi.intact.model.Publication;
 
 import java.io.File;
@@ -26,37 +28,31 @@ import static uk.ac.ebi.intact.editor.Constants.BASE_URL;
 
 public class LoginIT extends EditorIT {
 
-    private WebDriver driver;
-	
-    @Before
-	public void setUp() throws Exception {
-		driver = new FirefoxDriver();
-	}
+    @Test
+    public void successfulLoginBringsMeToTheDashboard() throws Exception {
+        // Given: I want to use the editor
 
-	@Test
-	public void logginAsAdminIGoToDashboard() throws Exception {
-        // given
-        willLoginAs("admin");
-
-        final Publication publicationRandom = getMockBuilder().createPublicationRandom();
-        getCorePersister().saveOrUpdate(publicationRandom);
-
-        // when
+        // When: I go to the main page and I authenticate correctly as admin
         driver.get(BASE_URL);
+
         loginAs("admin", driver);
 
-        // then
+        // Then: the page displayed should be the Dashboard
         assertThat(driver.getTitle(), is(equalTo("Dashboard")));
+    }
 
-//        File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-//        FileUtils.copyFile(scrFile, new File("/tmp/lala.png"));
-//        System.out.println(scrFile);
-	}
+    @Test
+    public void unsuccessfulLoginBringsMeToTheLoginAgain() throws Exception {
+        // Given: I want to use the editor
+
+        // When: I go to the main page and I authenticate as wrong user "lala"
+        driver.get(BASE_URL);
+
+        loginAs("lala", driver);
+
+        // Then: the page displayed should be the Login
+        assertThat(driver.getTitle(), is(equalTo("Editor Login")));
+    }
 
 
-
-    @After
-	public void tearDown() throws Exception {
-		driver.quit();
-	}
 }
