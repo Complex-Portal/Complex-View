@@ -36,29 +36,31 @@
         </div>
         <div id="newsBox1" class="iconboxcontents" style="display:block; #{sf:isBrowserExplorer()? 'width:143px;' : ''}">
 
-            <ui:repeat var="newsItem" value="#{newsBean.news}" size="#{max-1}">
-                <strong>
-                    <h:outputText value="#{sf:convertToDate(newsItem.date,'yyyyMMdd')}">
-                        <f:convertDateTime pattern="dd/MM/yyyy"/>
-                    </h:outputText>
+            <h:panelGroup rendered="#{not empty newsBean.news}">
+                <ui:repeat var="newsItem" value="#{newsBean.news}" size="#{max-1}">
+                    <strong>
+                        <h:outputText value="#{sf:convertToDate(newsItem.date,'yyyyMMdd')}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                        <br/>
+
+                        #{newsItem.title}</strong>
+
+                    <p>
+
+                        <h:outputText value="#{newsItem.description.value}" escape="#{newsItem.description.escape}"/>
+
+                        <h:panelGroup rendered="#{newsItem.moreLink != null}">
+                            <h:outputText value=" "/>
+                            <h:outputLink value="#{newsItem.moreLink}">
+                                <h:outputText value="[more]"/>
+                            </h:outputLink>
+                        </h:panelGroup>
+
+                    </p>
                     <br/>
-
-                    #{newsItem.title}</strong>
-
-                <p>
-
-                    <h:outputText value="#{newsItem.description.value}" escape="#{newsItem.description.escape}"/>
-
-                    <h:panelGroup rendered="#{newsItem.moreLink != null}">
-                        <h:outputText value=" "/>
-                        <h:outputLink value="#{newsItem.moreLink}">
-                            <h:outputText value="[more]"/>
-                        </h:outputLink>
-                    </h:panelGroup>
-
-                </p>
-                <br/>
-            </ui:repeat>
+                </ui:repeat>
+            </h:panelGroup>
 
             <h:outputText value="No news found" rendered="#{empty newsBean.news}"/>
 

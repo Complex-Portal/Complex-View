@@ -24,10 +24,10 @@ import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
 import uk.ac.ebi.intact.view.webapp.model.LazySearchResultDataModel;
 import uk.ac.ebi.intact.view.webapp.util.MitabFunctions;
 
+import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -89,20 +89,22 @@ public class SearchController extends JpaBaseController {
     public SearchController() {
     }
 
+    @PostConstruct
+    public void initialSearch() {
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            UserQuery userQuery = getUserQuery();
+            SolrQuery solrQuery = userQuery.createSolrQuery();
+            doBinarySearch( solrQuery );
+        }
+    }
+
     public void searchOnLoad(ComponentSystemEvent evt) {
         FacesContext context = FacesContext.getCurrentInstance();
-
-        UserQuery userQuery = getUserQuery();
 
         String statusParam = context.getExternalContext().getRequestParameterMap().get("status");
 
         if (statusParam != null && "exp".equals(statusParam)) {
             addWarningMessage("Session expired", "The user session was expired due to intactivity or the server being restarted");
-        }
-
-        if (!FacesContext.getCurrentInstance().isPostback()) {
-            SolrQuery solrQuery = userQuery.createSolrQuery();
-            doBinarySearch( solrQuery );
         }
     }
 
@@ -110,7 +112,7 @@ public class SearchController extends JpaBaseController {
         UserQuery userQuery = getUserQuery();
         SolrQuery solrQuery = userQuery.createSolrQuery();
 
-        doBinarySearch( solrQuery );
+        doBinarySearch(solrQuery);
 
         return "/pages/interactions/interactions.xhtml?faces-redirect=true&includeViewParams=true";
     }
@@ -176,10 +178,6 @@ public class SearchController extends JpaBaseController {
 
             if ( log.isDebugEnabled() ) log.debug( "\tResults: " + results.getRowCount() );
 
-//            if ( totalResults == 0 ) {
-//                addInfoMessage( "Your query didn't return any results in "+intactViewConfiguration.getWebappName(), "Try a different query" );
-//            }
-
         } catch ( uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrException solrException ) {
 
             final String query = solrQuery.getQuery();
@@ -211,7 +209,6 @@ public class SearchController extends JpaBaseController {
 
 
     public void onTabChanged(TabChangeEvent evt) {
-//        System.out.println("CLICKED: "+evt.getTab().getTitle());
         if (evt.getTab() != null && "listsTab".equals(evt.getTab().getId())) {
             doInteractorsSearch();
 
@@ -470,9 +467,4 @@ public class SearchController extends JpaBaseController {
         return (UserQuery) getBean("userQuery");
     }
 
-    public static void main(String[] args) throws Exception {
-        String segment = "type:\"MI:0407\"";
-        final URI uri = new URI(("http://localhost/" + segment).replace(" ", "%20").replace("\"", "%22"));
-        System.out.println(uri.getPath().substring(1));
-    }
 }

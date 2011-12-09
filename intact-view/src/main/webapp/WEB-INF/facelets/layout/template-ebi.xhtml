@@ -109,7 +109,10 @@
                             <!--</f:facet>-->
                         <!--</tr:statusIndicator>-->
 
-                        <p:ajaxStatus>
+                        <div id="statusIndicator" class="status-normal"></div>
+
+                        <p:ajaxStatus onstart="document.getElementById('statusIndicator').setAttribute('class', 'status-busy')"
+                                      oncomplete="document.getElementById('statusIndicator').setAttribute('class', 'status-normal')">
                             <f:facet name="start">
                                 <div class="busyStatus">
                                     <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
@@ -120,15 +123,14 @@
                             </f:facet>
 
                             <f:facet name="complete">
-                                <h:outputText value="" />
+                                <div>
+                                    <h:outputText value="" />
+                                </div>
                             </f:facet>
 
                             <f:facet name="success">
-                                 <div class="busyStatus">
-                                    <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
-                                                    style="vertical-align:middle;"/>
-                                    &#160;
-                                    <h:outputText value="Success!!"/>
+                                 <div>
+                                    <h:outputText value="" />
                                 </div>
                             </f:facet>
 

@@ -2,8 +2,12 @@ package uk.ac.ebi.intact.view.webapp;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.tab.PsimiTabWriter;
 import psidev.psi.mi.tab.converter.xml2tab.TabConversionException;
 import psidev.psi.mi.tab.converter.xml2tab.Xml2Tab;
@@ -18,6 +22,7 @@ import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.model.IntactEntry;
 import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.Publication;
+import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
 import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
 
 import java.io.ByteArrayInputStream;
@@ -31,10 +36,8 @@ import java.util.Collection;
  * @version $Id$
  */
 @Controller
+@DependsOn("intactInitializer")
 public class DataPopulator implements InitializingBean {
-
-    @Autowired
-    private IntactContext intactContext;
 
     @Autowired
     private PsiExchange psiExchange;
@@ -47,16 +50,6 @@ public class DataPopulator implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         System.out.println("POPULATING DATA SERVERS (H2/SOLR)...");
         
-//        IntactMockBuilder mockBuilder = new IntactMockBuilder(intactContext.getInstitution());
-//
-//        Publication publication = mockBuilder.createPublication("1234567");
-//        Experiment experiment = mockBuilder.createExperimentRandom(4);
-//        experiment.setPublication(null);
-//        publication.addExperiment(experiment);
-//
-//        storePublication(publication);
-
-
         PsimiXmlReader reader = new PsimiXmlReader();
 
         storeEntrySet(reader.read(DatabasePopulator.class.getResourceAsStream("/META-INF/data/10514511.xml")));
@@ -64,14 +57,9 @@ public class DataPopulator implements InitializingBean {
 
     }
 
-    public void storePublication(Publication publication) throws Exception {
-        intactContext.getCorePersister().saveOrUpdate(publication);
-
-        EntrySet entrySet = psiExchange.exportToEntrySet(toIntactEntry(publication));
-        storeEntrySet(entrySet);
-    }
-
     public void storeEntrySet(EntrySet entrySet) throws TabConversionException, IOException, ConverterException {
+        psiExchange.importIntoIntact(entrySet);
+
         Xml2Tab xml2tab = new IntactXml2Tab();
         xml2tab.setExpansionStrategy(new SpokeWithoutBaitExpansion());
 
@@ -80,23 +68,13 @@ public class DataPopulator implements InitializingBean {
         storeBinaryInteractions(binaryInteractions);
     }
 
-    public void storeBinaryInteractions(Collection<BinaryInteraction> binaryInteractions) throws IOException, ConverterException {
+    private void storeBinaryInteractions(Collection<BinaryInteraction> binaryInteractions) throws IOException, ConverterException {
         StringWriter sw = new StringWriter();
 
-        PsimiTabWriter psimitabWriter = new PsimiTabWriter();
+        PsimiTabWriter psimitabWriter = new IntactPsimiTabWriter();
         psimitabWriter.write(binaryInteractions, sw);
 
         solrServerTestController.getIndexer().indexMitab(new ByteArrayInputStream(sw.toString().getBytes()), true);
-    }
-
-    private IntactEntry toIntactEntry(Publication publication) {
-        Collection<Interaction> interactions = new ArrayList<Interaction>();
-
-        for (Experiment exp : publication.getExperiments()) {
-            interactions.addAll(exp.getInteractions());
-        }
-
-        return new IntactEntry(interactions);
     }
 
 }

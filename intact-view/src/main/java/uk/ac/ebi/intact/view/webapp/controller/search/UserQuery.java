@@ -275,6 +275,7 @@ public class UserQuery extends BaseController {
     public void doAddFieldToQuery(QueryToken queryToken) {
         searchQuery = surroundByBracesIfNecessary(searchQuery);
 
+
         if (!isWildcardQuery(queryToken.getQuery())) {
 
             if (isWildcardQuery(searchQuery)) {

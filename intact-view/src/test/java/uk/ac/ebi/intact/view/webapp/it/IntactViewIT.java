@@ -16,15 +16,17 @@
 package uk.ac.ebi.intact.view.webapp.it;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.test.context.ContextConfiguration;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
-import uk.ac.ebi.intact.view.webapp.selenium.VisibilityOfElementLocated;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,13 +46,32 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
     protected WebDriver driver;
     protected WebDriverWait wait;
 
-    protected IntactViewIT() {
+    @Before
+	public void setUp() throws Exception {
         this.driver = new FirefoxDriver();
-        wait = new WebDriverWait(driver, 15);
+        wait = new WebDriverWait(driver, 30, 500);
     }
 
-    protected VisibilityOfElementLocated elementIsVisible(By by) {
-        return new VisibilityOfElementLocated(by);
+    @After
+	public void tearDown() throws Exception {
+		driver.quit();
+	}
+
+    protected void waitUntilElementIsVisible(final By by) {
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver webDriver) {
+                return driver.findElement(by) != null;
+            }
+        });
+    }
+
+    protected void waitUntilLoadingIsComplete() {
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver webDriver) {
+                System.out.println("Searching ...");
+                return "status-normal".equals(webDriver.findElement(By.id("statusIndicator")).getAttribute("class"));
+            }
+        });
     }
 
     protected void takeScreenshot(String filename, WebDriver driver) throws IOException {
