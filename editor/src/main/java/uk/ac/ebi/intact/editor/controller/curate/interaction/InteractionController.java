@@ -184,7 +184,10 @@ public class InteractionController extends ParameterizableObjectController {
         else if (currentPublication == null){
             publicationController.setPublication( null );
         }
-        else if (!publicationController.getPublication().getAc().equalsIgnoreCase(currentPublication.getAc())){
+        else if (publicationController.getPublication().getAc() != null && !publicationController.getPublication().getAc().equalsIgnoreCase(currentPublication.getAc())){
+            publicationController.setPublication( currentPublication );
+        }
+        else if (publicationController.getPublication().getAc() == null){
             publicationController.setPublication( currentPublication );
         }
 
