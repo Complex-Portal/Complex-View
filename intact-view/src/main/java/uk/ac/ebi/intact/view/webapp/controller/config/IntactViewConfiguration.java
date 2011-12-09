@@ -71,6 +71,8 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private static final String PSICQUIC_REGISTRY_URL = "psicquic.registry.url";
     private static final String PSICQUIC_VIEW_URL = "psicquic.view.url";
     private static final String IMEX_VIEW_URL = "imex.view.url";
+    private static final String MAX_SIZE_XML_EXPORT = "intact.maxsize.xml";
+    private static final String MAX_SIZE_XGMML_EXPORT = "intact.maxsize.xgmml";
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -105,6 +107,8 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private String dastyUrl;
     private String proxyHost;
     private String proxyPort;
+    private int maxSizeXmlExport;
+    private int maxSizeXgmmlExport;
 
     private String psicquicRegistryUrl;
     private String psicquicViewUrl;
@@ -172,6 +176,8 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         psicquicRegistryUrl = properties.getProperty(PSICQUIC_REGISTRY_URL, psicquicRegistryUrl);
         psicquicViewUrl = properties.getProperty(PSICQUIC_VIEW_URL, psicquicViewUrl);
         imexViewUrl = properties.getProperty(IMEX_VIEW_URL, imexViewUrl);
+        maxSizeXmlExport = Integer.parseInt(properties.getProperty(MAX_SIZE_XML_EXPORT, String.valueOf(maxSizeXmlExport)));
+        maxSizeXgmmlExport = Integer.parseInt(properties.getProperty(MAX_SIZE_XGMML_EXPORT, String.valueOf(maxSizeXgmmlExport)));
     }
 
     public void storeConfiguration() throws IOException {
@@ -205,6 +211,8 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         addProperty(properties, PSICQUIC_REGISTRY_URL, psicquicRegistryUrl);
         addProperty(properties, PSICQUIC_VIEW_URL, psicquicViewUrl);
         addProperty(properties, IMEX_VIEW_URL, imexViewUrl);
+        addProperty(properties, MAX_SIZE_XML_EXPORT, String.valueOf(maxSizeXmlExport));
+        addProperty(properties, MAX_SIZE_XGMML_EXPORT, String.valueOf(maxSizeXgmmlExport));
 
         final FileOutputStream os = new FileOutputStream( configFile );
         properties.store( os, webappName+ " configuration");
@@ -454,7 +462,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         if (httpClient == null) {
             httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 
-            if (isValueSet(proxyHost) && isValueSet(proxyPort)) {
+            if (useProxyIfConfigured && isValueSet(proxyHost) && isValueSet(proxyPort)) {
                 httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
 
                 log.info("Setting HTTPClient using proxy: " + proxyHost + ":" + proxyPort);
@@ -521,5 +529,21 @@ public class IntactViewConfiguration extends BaseController implements Initializ
 
     public void setImexViewUrl(String imexViewUrl) {
         this.imexViewUrl = imexViewUrl;
+    }
+
+    public int getMaxSizeXmlExport() {
+        return maxSizeXmlExport;
+    }
+
+    public void setMaxSizeXmlExport(int maxSizeXmlExport) {
+        this.maxSizeXmlExport = maxSizeXmlExport;
+    }
+
+    public int getMaxSizeXgmmlExport() {
+        return maxSizeXgmmlExport;
+    }
+
+    public void setMaxSizeXgmmlExport(int maxSizeXgmmlExport) {
+        this.maxSizeXgmmlExport = maxSizeXgmmlExport;
     }
 }

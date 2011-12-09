@@ -23,19 +23,20 @@
             <f:selectItem itemLabel="MI-TAB" itemValue="mitab"
                     onclick="_gaq.push(['_trackEvent', 'Export', 'MI-TAB', ''])"/>
             <f:selectItem itemLabel="MI-TAB (Expanded)" itemValue="mitab_intact"/>
-            <f:selectItem itemLabel="MI-XML 2.5.3" itemValue="xml_2_53" disabled="#{searchBean.results.rowCount ge 500}"/>
-            <f:selectItem itemLabel="MI-XML 2.5.4" itemValue="xml_2_54" disabled="#{searchBean.results.rowCount ge 500}"/>
+            <f:selectItem itemLabel="MI-XML 2.5.3" itemValue="xml_2_53" itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXmlExport}"/>
+            <f:selectItem itemLabel="MI-XML 2.5.4" itemValue="xml_2_54" itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXmlExport}"/>
             <f:selectItem itemLabel="MI-XML 2.5(HTML view)" itemValue="xml_html"
-                          disabled="#{searchBean.results.rowCount ge 500}"/>
-            <f:selectItem itemLabel="BioPAX (Level 3)" itemValue="biopax_l3" disabled="#{searchBean.results.rowCount ge 500}"/>
-            <f:selectItem itemLabel="BioPAX (Level 2)" itemValue="biopax_l2" disabled="#{searchBean.results.rowCount ge 500}"/>
-            <f:selectItem itemLabel="RDF/XML" itemValue="rdf_xml" disabled="#{searchBean.results.rowCount ge 500}"/>
-            <f:selectItem itemLabel="RDF/XML (Abbrev)" itemValue="rdf_xml_abbrev" disabled="#{searchBean.results.rowCount ge 500}"/>
-            <f:selectItem itemLabel="RDF (N3)" itemValue="rdf_n3" disabled="#{searchBean.results.rowCount ge 500}"/>
-            <f:selectItem itemLabel="RDF (N-Triples)" itemValue="rdf_triple" disabled="#{searchBean.results.rowCount ge 500}"/>
-            <f:selectItem itemLabel="RDF (Turtle)" itemValue="rdf_turtle" disabled="#{searchBean.results.rowCount ge 500}"/>
-            <f:selectItem itemLabel="XGMML (Cytoscape)" itemValue="xgmml" disabled="#{searchBean.results.rowCount ge 5000}"/>
+                          itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXmlExport}"/>
+            <f:selectItem itemLabel="BioPAX (Level 3)" itemValue="biopax_l3" itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXmlExport}"/>
+            <f:selectItem itemLabel="BioPAX (Level 2)" itemValue="biopax_l2" itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXmlExport}"/>
+            <f:selectItem itemLabel="RDF/XML" itemValue="rdf_xml" itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXmlExport}"/>
+            <f:selectItem itemLabel="RDF/XML (Abbrev)" itemValue="rdf_xml_abbrev" itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXmlExport}"/>
+            <f:selectItem itemLabel="RDF (N3)" itemValue="rdf_n3" itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXmlExport}"/>
+            <f:selectItem itemLabel="RDF (N-Triples)" itemValue="rdf_triple" itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXmlExport}"/>
+            <f:selectItem itemLabel="RDF (Turtle)" itemValue="rdf_turtle" itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXmlExport}"/>
+            <f:selectItem itemLabel="XGMML (Cytoscape)" itemValue="xgmml" itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXgmmlExport}"/>
         </h:selectOneMenu>
+
 
         <p:commandButton type="button" id="exportBtn" value="Download"
                          disabled="#{searchBean.exportFormat == null}"
@@ -96,6 +97,10 @@
 <br/>
 
 <iv:cvLazyDialog dialogVar="cvInfoDialog"/>
+
+disabled: #{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXgmmlExport}/
+        #{searchBean.results.rowCount}/
+        #{intactViewConfiguration.maxSizeXgmmlExport}
 
 <p:dataTable id="resultsTable" var="binaryInteraction" value="#{searchBean.results}"
              rows="#{userQuery.pageSize}"

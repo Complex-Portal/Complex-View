@@ -54,6 +54,10 @@
         <intact.webapp.name>IntAct</intact.webapp.name>
         <intact.webapp.logo.url>http://www.ebi.ac.uk/~intact/site/images/logo_intact_small.gif</intact.webapp.logo.url>
 
+        <!-- Export limits -->
+        <intact.maxsize.xml>500</intact.maxsize.xml>
+        <intact.maxsize.xgmml>5000</intact.maxsize.xgmml>
+
         <google.analytics.tracker></google.analytics.tracker>
 
         <!-- Other intact apps -->
@@ -219,6 +223,9 @@
                 <db.password></db.password>
                 <db.hbm2ddl>create</db.hbm2ddl>
                 <db.alias>test</db.alias>
+
+                <intact.maxsize.xml>8</intact.maxsize.xml>
+                <intact.maxsize.xgmml>12</intact.maxsize.xgmml>
 
                 <!-- SOLR -->
                 <intact.solr.interactions.url>http://localhost:33445/solr/core_pub</intact.solr.interactions.url>

@@ -68,7 +68,6 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
     protected void waitUntilLoadingIsComplete() {
         wait.until(new ExpectedCondition<Boolean>() {
             public Boolean apply(WebDriver webDriver) {
-                System.out.println("Searching ...");
                 return "status-normal".equals(webDriver.findElement(By.id("statusIndicator")).getAttribute("class"));
             }
         });
@@ -78,6 +77,22 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         FileUtils.copyFile(scrFile, new File(filename));
         System.out.println(scrFile);
+    }
+
+    protected void goToInteractionsTab() {
+        driver.findElement(By.linkText("Interactions (14)")).click();
+        waitUntilLoadingIsComplete();
+    }
+
+    protected void search(String query) {
+        driver.findElement(By.id("queryTxt")).clear();
+        driver.findElement(By.id("queryTxt")).sendKeys(query);
+        driver.findElement(By.id("quickSearchBtn")).click();
+        waitUntilLoadingIsComplete();
+    }
+
+    protected int numberOfResultsDisplayed() {
+        return Integer.parseInt(driver.findElement(By.id("mainPanels:totalResultsOut")).getText());
     }
 
 }

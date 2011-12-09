@@ -32,8 +32,4 @@ public class AdvancedSearchIT extends IntactViewIT {
         Select select = new Select(driver.findElement(element));
         select.selectByValue(value);
     }
-
-    private int numberOfResultsDisplayed() {
-        return Integer.parseInt(driver.findElement(By.id("mainPanels:totalResultsOut")).getText());
-    }
 }

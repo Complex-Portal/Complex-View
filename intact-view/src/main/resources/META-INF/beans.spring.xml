@@ -52,6 +52,8 @@
         <property name="psicquicRegistryUrl" value="${psicquic.registry.url}"/>
         <property name="psicquicViewUrl" value="${psicquic.view.url}"/>
         <property name="imexViewUrl" value="${imex.view.url}"/>
+        <property name="maxSizeXmlExport" value="${intact.maxsize.xml}"/>
+        <property name="maxSizeXgmmlExport" value="${intact.maxsize.xgmml}"/>
         <property name="webappVersion" value="${version}"/>
         <property name="webappBuildNumber" value="${buildNumber}"/>
     </bean>
