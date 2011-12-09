@@ -315,6 +315,30 @@ public class ParticipantController extends ParameterizableObjectController {
         }
     }
 
+    @Override
+    public String doDelete(){
+        if (!participant.getFeatures().isEmpty()){
+            for (Feature f : participant.getFeatures()){
+                if (f.getBoundDomain() != null){
+                    Feature bound = f.getBoundDomain();
+
+                    if (bound.getBoundDomain() != null && f.getAc() != null && f.getAc().equalsIgnoreCase(bound.getBoundDomain().getAc())){
+                        bound.setBoundDomain(null);
+                        getPersistenceController().doSave(bound);
+                    }
+                    else if (bound.getBoundDomain() != null && f.getAc() == null && f.equals(bound.getBoundDomain())){
+                        bound.setBoundDomain(null);
+                        getPersistenceController().doSave(bound);
+                    }
+
+                    f.setBoundDomain(null);
+                }
+            }
+        }
+
+        return super.doDelete();
+    }
+
     public void markFeatureToDelete(Feature feature) {
 
         // don't forget to unlink features first

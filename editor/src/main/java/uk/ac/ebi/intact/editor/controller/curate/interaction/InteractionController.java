@@ -317,6 +317,13 @@ public class InteractionController extends ParameterizableObjectController {
     public void markParticipantToDelete(Component component) {
         if (component == null) return;
 
+        // unlink feature before deleting participant
+        if (!component.getFeatures().isEmpty()){
+            for (Feature f : component.getFeatures()){
+                unlinkFeature(f);
+            }
+        }
+
         if (component.getAc() == null) {
             interaction.removeComponent(component);
             refreshParticipants();
