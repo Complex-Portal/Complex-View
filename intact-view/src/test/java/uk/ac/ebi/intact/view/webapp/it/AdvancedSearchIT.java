@@ -13,7 +13,7 @@ public class AdvancedSearchIT extends IntactViewIT {
 
 	@Test
 	public void whenIClickOnAddAndSearchIShouldHaveCorrectResults() throws Exception {
-        // Given: I want to do a query using the advanced search
+        // Given: I want to do a query using the advanced search from the home page
         driver.get(BASE_URL);
 
         // When: I query 11554746 using Publication ID and click on the Add & Search button
