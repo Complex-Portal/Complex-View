@@ -52,8 +52,15 @@ public class ParticipantWrapper {
     }
 
     public void setAuthorGivenName( String name ) {
-        changesController.markAsUnsaved(participant);
-        annotatedObjectHelper.setAlias(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF, name  );
+        String author = annotatedObjectHelper.findAliasName(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF);
+        if ((name == null && author != null) || (name != null && author == null)){
+            changesController.markAsUnsaved(participant);
+            annotatedObjectHelper.setAlias(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF, name  );
+        }
+        else if (name != null && !name.equalsIgnoreCase(author)){
+            changesController.markAsUnsaved(participant);
+            annotatedObjectHelper.setAlias(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF, name  );
+        }
     }
 
     public CvExperimentalRole getFirstExperimentalRole() {
@@ -83,7 +90,7 @@ public class ParticipantWrapper {
 
     public void setFirstExperimentalPreparation( CvExperimentalPreparation prep ) {
         if (participant.getExperimentalPreparations() == null){
-           participant.setExperimentalPreparations(new ArrayList<CvExperimentalPreparation>());
+            participant.setExperimentalPreparations(new ArrayList<CvExperimentalPreparation>());
         }
 
         if( ! participant.getExperimentalPreparations().contains( prep ) ) {

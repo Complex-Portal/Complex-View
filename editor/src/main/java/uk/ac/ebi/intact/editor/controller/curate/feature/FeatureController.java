@@ -296,6 +296,26 @@ public class FeatureController extends AnnotatedObjectController {
         }
     }
 
+    @Override
+    public String doDelete(){
+        if (feature.getBoundDomain() != null){
+            Feature bound = feature.getBoundDomain();
+
+            if (bound.getBoundDomain() != null && feature.getAc() != null && feature.getAc().equalsIgnoreCase(bound.getBoundDomain().getAc())){
+                bound.setBoundDomain(null);
+                getPersistenceController().doSave(bound);
+            }
+            else if (bound.getBoundDomain() != null && feature.getAc() == null && feature.equals(bound.getBoundDomain())){
+                bound.setBoundDomain(null);
+                getPersistenceController().doSave(bound);
+            }
+
+            feature.setBoundDomain(null);
+        }
+
+        return super.doDelete();
+    }
+
     public String getNewRangeValue() {
         return newRangeValue;
     }

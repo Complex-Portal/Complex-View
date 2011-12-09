@@ -316,9 +316,30 @@ public class ParticipantController extends ParameterizableObjectController {
     }
 
     public void markFeatureToDelete(Feature feature) {
+
+        // don't forget to unlink features first
         if (feature.getAc() == null) {
+            if (feature.getBoundDomain() != null){
+                Feature bound = feature.getBoundDomain();
+
+                if (bound.getBoundDomain() != null && bound.getBoundDomain().equals(feature)){
+                    bound.setBoundDomain(null);
+                    getChangesController().markAsUnsaved(bound);
+                }
+                feature.setBoundDomain(null);
+            }
             participant.removeFeature(feature);
         } else {
+            if (feature.getBoundDomain() != null){
+                Feature bound = feature.getBoundDomain();
+
+                if (bound.getBoundDomain() != null && feature.getAc().equalsIgnoreCase(bound.getBoundDomain().getAc())){
+                    bound.setBoundDomain(null);
+                    getChangesController().markAsUnsaved(bound);
+                }
+                feature.setBoundDomain(null);
+            }
+
             getChangesController().markToDelete(feature, feature.getComponent());
         }
     }
