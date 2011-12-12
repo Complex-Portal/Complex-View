@@ -98,10 +98,6 @@
 
 <iv:cvLazyDialog dialogVar="cvInfoDialog"/>
 
-disabled: #{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXgmmlExport}/
-        #{searchBean.results.rowCount}/
-        #{intactViewConfiguration.maxSizeXgmmlExport}
-
 <p:dataTable id="resultsTable" var="binaryInteraction" value="#{searchBean.results}"
              rows="#{userQuery.pageSize}"
              dynamic="true" lazy="true" rowIndexVar="row" paginatorPosition="both"
