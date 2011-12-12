@@ -204,13 +204,12 @@
                             <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.experimentTopicSelectItems}"/>
                     </ui:decorate>
 
-                <p:tab title="Graph" id="graphTab"
-                       disabled="#{not experimentController.getParticipantsAvailable(experimentController.experiment)}">
-                   <ui:include src="/curate/graph.xhtml">
-                       <ui:param name="object" value="experiment"/>
-                       <ui:param name="ac" value="#{experimentController.experiment.ac}"/>
-                   </ui:include>
-                </p:tab>
+                <!--<p:tab title="Graph" id="graphTab">-->
+                   <!--<ui:include src="/curate/graph.xhtml">-->
+                       <!--<ui:param name="object" value="experiment"/>-->
+                       <!--<ui:param name="ac" value="#{experimentController.experiment.ac}"/>-->
+                   <!--</ui:include>-->
+                <!--</p:tab>-->
             </p:tabView>
 
 

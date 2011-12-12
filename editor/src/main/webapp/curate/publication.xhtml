@@ -423,13 +423,12 @@
 
                     </p:tab>
 
-                    <p:tab title="Graph" id="graphTab"
-                            disabled="#{not publicationController.getParticipantsAvailable(publicationController.publication)}">
-                       <ui:include src="/curate/graph.xhtml">
-                           <ui:param name="object" value="publication"/>
-                           <ui:param name="ac" value="#{publicationController.publication.ac}"/>
-                       </ui:include>
-                    </p:tab>
+                    <!--<p:tab title="Graph" id="graphTab">-->
+                       <!--<ui:include src="/curate/graph.xhtml">-->
+                           <!--<ui:param name="object" value="publication"/>-->
+                           <!--<ui:param name="ac" value="#{publicationController.publication.ac}"/>-->
+                       <!--</ui:include>-->
+                    <!--</p:tab>-->
 
                 </p:tabView>
 
