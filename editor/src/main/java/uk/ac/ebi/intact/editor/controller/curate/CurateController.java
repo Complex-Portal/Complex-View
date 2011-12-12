@@ -54,15 +54,27 @@ public class CurateController extends JpaAwareController {
 
         ac = ac.trim();
 
-        Class<? extends AnnotatedObject> aoClass = IntactCore.classForAc(getIntactContext(), ac);
+        try {
+            Class<? extends AnnotatedObject> aoClass = IntactCore.classForAc(getIntactContext(), ac);
 
-        if (aoClass == null) {
-            addErrorMessage("Illegal AC", "No annotated object found with this AC: "+ac);
-            FacesContext.getCurrentInstance().renderResponse();
+            if (aoClass == null) {
+                addErrorMessage("Illegal AC", "No annotated object found with this AC: "+ac);
+                FacesContext.getCurrentInstance().renderResponse();
+            }
+
+            AnnotatedObject ao = getDaoFactory().getAnnotatedObjectDao(aoClass).getByAc(ac);
+
+            if ( ao == null ) {
+                addErrorMessage( "AC not found", "There is no IntAct object with ac '" + ac + "'" );
+                return "";
+            } else {
+                return edit(ao);
+            }
+        } catch (IllegalArgumentException e){
+            addErrorMessage( "AC not found", "There is no IntAct object with ac '" + ac + "'" );
+            return "";
         }
 
-        AnnotatedObject ao = getDaoFactory().getAnnotatedObjectDao(aoClass).getByAc(ac);
-        return edit(ao);
     }
 
     public void save(IntactObject intactObject) {
@@ -132,7 +144,7 @@ public class CurateController extends JpaAwareController {
             BioSourceController bioSourceController = (BioSourceController) getSpringContext().getBean("bioSourceController");
             bioSourceController.setBioSource((BioSource) intactObject);
             return new CurateObjectMetadata(bioSourceController, "organism");
-         } else if (Institution.class.isAssignableFrom(iaClass)) {
+        } else if (Institution.class.isAssignableFrom(iaClass)) {
             InstitutionController institutionController = (InstitutionController) getSpringContext().getBean("institutionController");
             institutionController.setInstitution((Institution) intactObject);
             return new CurateObjectMetadata(institutionController, "institution");
