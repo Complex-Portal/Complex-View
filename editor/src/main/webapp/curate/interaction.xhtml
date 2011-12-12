@@ -79,7 +79,7 @@
                             <p:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30"
                                          validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
                                     required="true" requiredMessage="Shortlabel is required">
-                                <ed:ajax event="valueChange" timeout="0" process="@this" beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"/>
+                                <p:ajax event="valueChange" process="@this" oncomplete="markAsUnsaved()" update="changesPanel unsavedChangesInfo"/>
                             </p:inputText>
                         </td>
                         <td style="padding-left: 50px;">

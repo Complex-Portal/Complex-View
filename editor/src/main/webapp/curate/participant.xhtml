@@ -94,7 +94,7 @@
                         </td>
                         <td colspan="2">
                             <p:inputText id="authorGivenNameTxt" value="#{participantController.participantWrapper.authorGivenName}" size="10" converter="trimmingConverter">
-                                <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo participantTabs" process="@this" onChange="markAsUnsaved()"/>
+                                <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo participantTabs" process="@this"/>
                              </p:inputText>
                         </td>
                     </tr>
