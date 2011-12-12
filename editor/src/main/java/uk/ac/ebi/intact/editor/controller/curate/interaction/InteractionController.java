@@ -551,6 +551,7 @@ public class InteractionController extends ParameterizableObjectController {
         }
 
         setInteraction(newInteraction);
+        refreshExperimentLists();
         setUnsavedChanges(true);
 
         addInfoMessage("Copied interaction", "To experiment: "+experimentToCopyTo);
