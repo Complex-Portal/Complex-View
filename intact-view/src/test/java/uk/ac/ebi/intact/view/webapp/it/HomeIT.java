@@ -7,7 +7,7 @@ import org.openqa.selenium.WebElement;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static uk.ac.ebi.intact.view.webapp.Constants.BASE_URL;
+import static org.junit.Assert.assertThat;
 
 public class HomeIT extends IntactViewIT {
 
@@ -16,11 +16,11 @@ public class HomeIT extends IntactViewIT {
         // Given: I want to feel informed
 
         // When: I go to the home page for the first time
-        driver.get(BASE_URL);
+        goToTheStartPage();
 
         // Then: I expect the Interactions tab to be active and display the total number of interactions in the database
         WebElement interactionsTabLink = driver.findElement(By.linkText("Interactions (14)"));
-        Assert.assertThat(interactionsTabLink, is(notNullValue()));
+        assertThat(interactionsTabLink, is(notNullValue()));
 
 	}
 }

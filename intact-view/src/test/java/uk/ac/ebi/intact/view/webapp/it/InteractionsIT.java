@@ -10,13 +10,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static uk.ac.ebi.intact.view.webapp.Constants.BASE_URL;
 
 public class InteractionsIT extends IntactViewIT {
 
@@ -28,7 +25,7 @@ public class InteractionsIT extends IntactViewIT {
     @Test
     public void moreResultsThanTheXmlAndXgmmlLimitsShouldDisableTheOptions() throws Exception {
         // Given: the export of XML formats is limited to 8 and the export of XGMML is limited to 12
-        driver.get(BASE_URL);
+        goToTheStartPage();
 
 
         // When: I go to the Interactions tab and check the options of the export formats list
@@ -37,7 +34,7 @@ public class InteractionsIT extends IntactViewIT {
 
         // Then: I will obtain 14 results, so the MITAB based formats should be enabled and the MIXML based formats should be disabled
         // and the XGMML format should be disabled
-        Assert.assertThat(numberOfResultsDisplayed(), is(equalTo(14)));
+        assertThat(numberOfResultsDisplayed(), is(equalTo(14)));
 
         for (String mitabBasedFormat : MITAB_BASED_FORMATS) {
             assertThat(mitabBasedFormat, isEnabled(exportFormatSelect));
@@ -53,7 +50,7 @@ public class InteractionsIT extends IntactViewIT {
     @Test
     public void moreResultsThanTheXmlLimitsShouldDisableSomeOptionsButNotXgmml() throws Exception {
         // Given: the export of XML formats is limited to 8 and the export of XGMML is limited to 12
-        driver.get(BASE_URL);
+        goToTheStartPage();
 
 
         // When: I search for "10514511"
@@ -62,7 +59,7 @@ public class InteractionsIT extends IntactViewIT {
 
         // Then: I will obtain 10 results, so the MITAB based formats should be enabled and the MIXML based formats should be disabled
         // and the XGMML format should be enabled
-        Assert.assertThat(numberOfResultsDisplayed(), is(equalTo(10)));
+        assertThat(numberOfResultsDisplayed(), is(equalTo(10)));
 
         for (String mitabBasedFormat : MITAB_BASED_FORMATS) {
             assertThat(mitabBasedFormat, isEnabled(exportFormatSelect));
@@ -80,7 +77,7 @@ public class InteractionsIT extends IntactViewIT {
     @Test
     public void fewResultsAllOptionsEnabled() throws Exception {
         // Given: the export of XML formats is limited to 8 and the export of XGMML is limited to 12
-        driver.get(BASE_URL);
+        goToTheStartPage();
 
 
         // When: I search for "11554746"
@@ -89,7 +86,7 @@ public class InteractionsIT extends IntactViewIT {
 
         // Then: I will obtain 4 results, so the MITAB based formats should be enabled and the MIXML based formats should be enabled
         // and the XGMML format should be enabled
-        Assert.assertThat(numberOfResultsDisplayed(), is(equalTo(4)));
+        assertThat(numberOfResultsDisplayed(), is(equalTo(4)));
 
         for (String mitabBasedFormat : MITAB_BASED_FORMATS) {
             assertThat(mitabBasedFormat, isEnabled(exportFormatSelect));

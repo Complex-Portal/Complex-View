@@ -31,6 +31,8 @@ import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import java.io.File;
 import java.io.IOException;
 
+import static uk.ac.ebi.intact.view.webapp.Constants.BASE_URL;
+
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -76,7 +78,6 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
     protected void takeScreenshot(String filename, WebDriver driver) throws IOException {
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         FileUtils.copyFile(scrFile, new File(filename));
-        System.out.println(scrFile);
     }
 
     protected void goToInteractionsTab() {
@@ -95,4 +96,7 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
         return Integer.parseInt(driver.findElement(By.id("mainPanels:totalResultsOut")).getText());
     }
 
+    protected void goToTheStartPage() {
+        driver.get(BASE_URL);
+    }
 }

@@ -1,20 +1,19 @@
 package uk.ac.ebi.intact.view.webapp.it;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static uk.ac.ebi.intact.view.webapp.Constants.BASE_URL;
+import static org.junit.Assert.assertThat;
 
 public class AdvancedSearchIT extends IntactViewIT {
 
 	@Test
 	public void whenIClickOnAddAndSearchIShouldHaveCorrectResults() throws Exception {
         // Given: I want to do a query using the advanced search from the home page
-        driver.get(BASE_URL);
+        goToTheStartPage();
 
         // When: I query 11554746 using Publication ID and click on the Add & Search button
         driver.findElement(By.id("addFieldBtn")).click();
@@ -25,7 +24,7 @@ public class AdvancedSearchIT extends IntactViewIT {
         driver.findElement(By.id("addAndSearchBtn")).click();
 
         // Then: I expect 4 interactions in total
-        Assert.assertThat(numberOfResultsDisplayed(), is(equalTo(4)));
+        assertThat(numberOfResultsDisplayed(), is(equalTo(4)));
 	}
 
     private void changeSelectToValue(By element, String value) {
