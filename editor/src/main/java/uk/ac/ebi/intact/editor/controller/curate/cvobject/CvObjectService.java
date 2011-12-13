@@ -270,10 +270,12 @@ public class CvObjectService extends JpaAwareController {
         interactorTypeSelectItems = createSelectItems( interactorTypes, "-- Select type --" );
 
         experimentalRoles = getSortedList( CvExperimentalRole.class, cvObjectsByClass);
-        experimentalRoleSelectItems = createSelectItems( experimentalRoles, "-- Select role --" );
+        // must have one experimental role
+        experimentalRoleSelectItems = createSelectItems( experimentalRoles, null );
 
         biologicalRoles = getSortedList( CvBiologicalRole.class, cvObjectsByClass);
-        biologicalRoleSelectItems = createSelectItems( biologicalRoles, "-- Select role --" );
+        // must have one biological role
+        biologicalRoleSelectItems = createSelectItems( biologicalRoles, null );
 
         featureDetectionMethods = getSortedList( CvFeatureIdentification.class, cvObjectsByClass);
         featureDetectionMethodSelectItems = createSelectItems( featureDetectionMethods, "-- Select method --" );
