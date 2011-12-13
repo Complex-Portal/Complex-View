@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class SearchIT extends IntactViewIT {
@@ -14,10 +13,10 @@ public class SearchIT extends IntactViewIT {
         // Given: I want to do a search using a cv synonym
         goToTheStartPage();
 
-        // When: I do the search using "2 hybrid" (synonym of "2 hybrid");
+        // When: I do the search using "2 hybrid" (synonym of "two hybrid");
         search("detmethod:\"2 hybrid\"");
 
-        // Then: I expect to obtain the 2 interactions that display "2 hybrid" as detection method
+        // Then: I expect to obtain the 2 interactions that display "two hybrid" as detection method
         assertThat(numberOfResultsDisplayed(), is(equalTo(2)));
 	}
 

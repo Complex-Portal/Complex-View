@@ -77,7 +77,17 @@ public class RootTerm implements OntologyTerm {
         return getChildren();
     }
 
+    @Override
+    public Set<OntologyTerm> getSynonyms() {
+        return Collections.EMPTY_SET;
+    }
+
     public Set<OntologyTerm> getAllParentsToRoot() {
+        return Collections.EMPTY_SET;
+    }
+
+    @Override
+    public Set<OntologyTerm> getAllParentsToRoot(boolean b) {
         return Collections.EMPTY_SET;
     }
 
