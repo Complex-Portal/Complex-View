@@ -308,7 +308,7 @@ function configuration()
 						//feature_url[1] = {id : 'msdmotif', url : feature_url_prefix + 'http://www.ebi.ac.uk/msd-srv/msdmotif/das/s3dm/'};
 						//feature_url[2] = {id : 'netphos', url : feature_url_prefix + 'http://genome.cbs.dtu.dk:9000/das/netphos/'};
 						//feature_url[3] = {id : 'uniprot2', url : feature_url_prefix + 'http://tc-test-1.ebi.ac.uk:8113/tc-test/proteomics/das-srv/uniprot/das/uniprot/'};
-						//feature_url[4] = {id : 'interpro', url : feature_url_prefix + 'http://das.ensembl.org/das/interpro/'};
+						//feature_url[4] = {id : 'interpro', url : feature_url_prefix + 'http://www.ebi.ac.uk/das-srv/interpro/das/InterPro/'};
 					
 					/**
 					* SPECIFIC DAS ANNOTATION SERVERS. LOCAL COPIES.

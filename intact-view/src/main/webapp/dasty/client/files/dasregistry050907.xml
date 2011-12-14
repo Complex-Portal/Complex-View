@@ -2049,7 +2049,7 @@
     <MAINTAINER email="js5@sanger.ac.uk" />
     <VERSION uri="DS_327" created="2006-11-28">
       <COORDINATES uri="http://www.dasregistry.org/dasregistry/coordsys/CS_DS6" source="Protein Sequence" authority="UniProt" test_range="O00329">UniProt,Protein Sequence</COORDINATES>
-      <CAPABILITY type="das1:features" query_uri="http://das.ensembl.org/das/interpro/features" />
+      <CAPABILITY type="das1:features" query_uri="http://www.ebi.ac.uk/das-srv/interpro/das/InterPro/features" />
       <PROPERTY name="label" value="BioSapiens" />
       <PROP name="label" value="BioSapiens" />
       <PROP name="leaseTime" value="2007-09-05" />
