@@ -33,6 +33,8 @@ import uk.ac.ebi.intact.model.user.User;
 import java.io.File;
 import java.io.IOException;
 
+import static uk.ac.ebi.intact.editor.Constants.BASE_URL;
+
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
@@ -99,4 +101,7 @@ public abstract class EditorIT extends IntactBasicTestCase {
     }
 
 
+    protected void goToExperimentPage(String ac) {
+        driver.get(BASE_URL+"/experiment/"+ac);
+    }
 }

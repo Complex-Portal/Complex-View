@@ -76,7 +76,7 @@ public class DataPopulator implements InitializingBean {
 
         corePersister.saveOrUpdate(reviewer);
 
-        importXmlDataAs(curator);
+//        importXmlDataAs(curator);
     }
 
     private void importXmlDataAs(User user) throws IOException, PsimiXmlReaderException {

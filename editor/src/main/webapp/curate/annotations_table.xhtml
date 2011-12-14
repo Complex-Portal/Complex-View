@@ -14,7 +14,7 @@
                                  update="#{update}" process="@this"/>
         </div>
 
-        <p:dataTable var="annotation" value="#{annotatedObjectController.annotations}">
+        <p:dataTable id="annotationsTable" var="annotation" value="#{annotatedObjectController.annotations}">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="AC"/>
@@ -49,7 +49,7 @@
                 <f:facet name="header">
                     <h:outputText value="Text"/>
                 </f:facet>
-                   <p:inputTextarea value="#{annotation.annotationText}" cols="50"
+                   <p:inputTextarea id="annotationTxt" value="#{annotation.annotationText}" cols="50"
                                     autoResize="true"
                              converter="trimmingConverter">
                        <ed:curation/>
