@@ -1,17 +1,14 @@
 package uk.ac.ebi.intact.editor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.stereotype.Controller;
-import psidev.psi.mi.tab.PsimiTabWriter;
-import psidev.psi.mi.tab.converter.xml2tab.TabConversionException;
-import psidev.psi.mi.tab.converter.xml2tab.Xml2Tab;
-import psidev.psi.mi.tab.expansion.SpokeWithoutBaitExpansion;
-import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.xml.PsimiXmlReader;
-import psidev.psi.mi.xml.converter.ConverterException;
+import psidev.psi.mi.xml.PsimiXmlReaderException;
 import psidev.psi.mi.xml.model.EntrySet;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
@@ -22,13 +19,8 @@ import uk.ac.ebi.intact.dataexchange.cvutils.CvUpdater;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
 import uk.ac.ebi.intact.model.Publication;
 import uk.ac.ebi.intact.model.user.User;
-import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
-import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Collection;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -37,10 +29,11 @@ import java.util.Collection;
 @Controller
 @DependsOn("intactInitializer")
 public class DataPopulator implements InitializingBean {
+    private static final Log log = LogFactory.getLog(DataPopulator.class);
 
     @Autowired
     private IntactContext intactContext;
-    
+
     @Autowired
     private CorePersister corePersister;
 
@@ -53,6 +46,9 @@ public class DataPopulator implements InitializingBean {
     @Autowired
     private LifecycleManager lifecycleManager;
 
+    @Autowired
+    private PsiExchange psiExchange;
+
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -64,14 +60,41 @@ public class DataPopulator implements InitializingBean {
         cvUpdater.executeUpdateWithLatestCVs();
 
         IntactMockBuilder mockBuilder = new IntactMockBuilder(intactContext.getInstitution());
-        
+
         Publication publicationRandom = mockBuilder.createPublicationRandom();
         lifecycleManager.getNewStatus().claimOwnership(publicationRandom);
         lifecycleManager.getAssignedStatus().startCuration(publicationRandom);
         corePersister.saveOrUpdate(publicationRandom);
 
+        User curator = mockBuilder.createCurator("curator", "CuratorName", "CuratorLast", "curator@example.com");
+        curator.setPassword("103b9534772356f52e338307c9cf42294a3f28f7");
 
+        corePersister.saveOrUpdate(curator);
+
+        User reviewer = mockBuilder.createCurator("reviewer", "ReviewerName", "ReviewerLast", "reviewer@example.com");
+        reviewer.setPassword("0b7cec9c67d6e0cfa008efe01c74ab89b5c5513f");
+
+        corePersister.saveOrUpdate(reviewer);
+
+        importXmlDataAs(curator);
     }
 
+    private void importXmlDataAs(User user) throws IOException, PsimiXmlReaderException {
+        if (log.isInfoEnabled()) log.info("Importing some XML data...");
+        User currentUser = intactContext.getUserContext().getUser();
+
+        intactContext.getUserContext().setUser(user);
+
+        PsimiXmlReader reader = new PsimiXmlReader();
+
+        storeEntrySet(reader.read(DatabasePopulator.class.getResourceAsStream("/META-INF/data/10514511.xml")));
+        storeEntrySet(reader.read(DatabasePopulator.class.getResourceAsStream("/META-INF/data/11554746.xml")));
+
+        intactContext.getUserContext().setUser(currentUser);
+    }
+
+    public void storeEntrySet(EntrySet entrySet) throws IOException {
+        psiExchange.importIntoIntact(entrySet);
+    }
 
 }

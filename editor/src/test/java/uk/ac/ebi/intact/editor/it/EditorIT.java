@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.editor.it;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -27,11 +26,9 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
+import uk.ac.ebi.intact.model.user.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,49 +50,53 @@ public abstract class EditorIT extends IntactBasicTestCase {
     protected WebDriverWait wait;
 
     @Before
-    	public void setUp() throws Exception {
-            this.driver = new FirefoxDriver();
-            wait = new WebDriverWait(driver, 30, 500);
-        }
+    public void setUp() throws Exception {
+        this.driver = new FirefoxDriver();
+        wait = new WebDriverWait(driver, 30, 500);
+    }
 
-        @After
-    	public void tearDown() throws Exception {
-    		driver.quit();
-    	}
+    @After
+    public void tearDown() throws Exception {
+        driver.quit();
+    }
 
-        protected void waitUntilElementIsVisible(final By by) {
-            wait.until(new ExpectedCondition<Boolean>() {
-                public Boolean apply(WebDriver webDriver) {
-                    return driver.findElement(by) != null;
-                }
-            });
-        }
+    protected void waitUntilElementIsVisible(final By by) {
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver webDriver) {
+                return driver.findElement(by) != null;
+            }
+        });
+    }
 
-        protected void waitUntilLoadingIsComplete() {
-            wait.until(new ExpectedCondition<Boolean>() {
-                public Boolean apply(WebDriver webDriver) {
-                    System.out.println("Searching ...");
-                    return "status-normal".equals(webDriver.findElement(By.id("statusIndicator")).getAttribute("class"));
-                }
-            });
-        }
+    protected void waitUntilLoadingIsComplete() {
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver webDriver) {
+                System.out.println("Searching ...");
+                return "status-normal".equals(webDriver.findElement(By.id("statusIndicator")).getAttribute("class"));
+            }
+        });
+    }
 
-        protected void takeScreenshot(String filename, WebDriver driver) throws IOException {
-            File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-            FileUtils.copyFile(scrFile, new File(filename));
-            System.out.println(scrFile);
-        }
+    protected void takeScreenshot(String filename, WebDriver driver) throws IOException {
+        File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(scrFile, new File(filename));
+        System.out.println(scrFile);
+    }
 
     protected void willLoginAs(String login) {
         IntactContext.getCurrentInstance().getUserContext().setUser(getDaoFactory().getUserDao().getByLogin(login));
     }
 
     protected void loginAs(String user, WebDriver driver) {
-            driver.findElement(By.id("j_username")).sendKeys(user);
-            driver.findElement(By.id("j_password_clear")).sendKeys(user);
-            driver.findElement(By.id("login")).click();
-        }
+        driver.findElement(By.id("j_username")).sendKeys(user);
+        driver.findElement(By.id("j_password_clear")).sendKeys(user);
+        driver.findElement(By.id("login")).click();
+    }
 
+    protected User getUserByLogin(String login){
+
+        return getDaoFactory().getUserDao().getByLogin(login);
+    }
 
 
 }
