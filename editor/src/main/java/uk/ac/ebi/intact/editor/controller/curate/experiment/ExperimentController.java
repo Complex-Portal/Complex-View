@@ -58,6 +58,8 @@ public class ExperimentController extends AnnotatedObjectController {
     private LazyDataModel<Interaction> interactionDataModel;
 
     private String reasonForRejection;
+    private String correctedComment;
+
     private String publicationToMoveTo;
 
     private Pattern EXP_SHORTLABEL_PATTERN = Pattern.compile("[^0-9a-zA-Z]+");
@@ -110,6 +112,9 @@ public class ExperimentController extends AnnotatedObjectController {
 
             if (reasonForRejection == null) {
                 reasonForRejection = getToBeReviewed(experiment);
+            }
+            if (correctedComment == null) {
+                correctedComment = getCorrectionComment();
             }
         }
 
@@ -348,7 +353,8 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public void addCorrectionComment(ActionEvent evt) {
-        addInfoMessage("Added correction comment", getCorrectionComment());
+        addInfoMessage("Added correction comment", correctedComment);
+        setCorrectionComment(correctedComment);
     }
 
     public void setToBeReviewed(String toBeReviewed) {
@@ -583,5 +589,13 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public void setCorrectionComment(String correctionComment) {
         setAnnotation(CvTopic.CORRECTION_COMMENT, correctionComment);
+    }
+
+    public String getCorrectedComment() {
+        return correctedComment;
+    }
+
+    public void setCorrectedComment(String correctedComment) {
+        this.correctedComment = correctedComment;
     }
 }
