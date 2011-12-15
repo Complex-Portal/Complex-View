@@ -55,7 +55,7 @@
         <property name="maxSizeXmlExport" value="${intact.maxsize.xml}"/>
         <property name="maxSizeXgmmlExport" value="${intact.maxsize.xgmml}"/>
         <property name="webappVersion" value="${version}"/>
-        <property name="webappBuildNumber" value="${buildNumber}"/>
+        <property name="webappBuildNumber" value="0"/>
     </bean>
 
         <!-- this bean must not be lazily initialized if the exporting is to happen -->

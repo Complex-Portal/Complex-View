@@ -78,7 +78,7 @@
     </properties>
 
     <build>
-        <finalName>${artifactId}-${intact.instance.name}-${db.alias}-${version}-${buildNumber}</finalName>
+        <finalName>${artifactId}-${intact.instance.name}-${db.alias}-${version}</finalName>
 
         <resources>
             <resource>
@@ -100,11 +100,6 @@
         </testResources>
 
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>maven-buildnumber-plugin</artifactId>
-            </plugin>
-
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
