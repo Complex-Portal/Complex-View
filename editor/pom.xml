@@ -50,6 +50,8 @@
 
         <userContext.scope>session</userContext.scope>
 
+        <projectStage>Development</projectStage>
+
     </properties>
 
     <build>
