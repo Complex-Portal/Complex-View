@@ -138,7 +138,13 @@ public class CvObjectService extends JpaAwareController {
 
     @PostConstruct
     public void loadData() {
+        createAdditionalCVs();
+        
         refresh( null );
+    }
+
+    private void createAdditionalCVs() {
+         createCvTopicIfNecessary(CvTopic.TO_BE_REVIEWED);
     }
 
     @Transactional(value = "transactionManager")
@@ -379,6 +385,12 @@ public class CvObjectService extends JpaAwareController {
         return null;
     }
 
+    private void createCvTopicIfNecessary(String label) {
+        if (getDaoFactory().getCvObjectDao(CvTopic.class).getByShortLabel(label) == null) {
+            CvTopic topic = new CvTopic(label);
+            getCorePersister().saveOrUpdate(topic);
+        }
+    }
 
     public class CvKey {
         private String id;

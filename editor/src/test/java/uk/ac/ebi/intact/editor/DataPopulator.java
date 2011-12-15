@@ -17,8 +17,11 @@ import uk.ac.ebi.intact.core.persister.CorePersister;
 import uk.ac.ebi.intact.core.unit.IntactMockBuilder;
 import uk.ac.ebi.intact.dataexchange.cvutils.CvUpdater;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
+import uk.ac.ebi.intact.model.BioSource;
+import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Publication;
 import uk.ac.ebi.intact.model.user.User;
+import uk.ac.ebi.intact.model.util.CvObjectBuilder;
 
 import java.io.IOException;
 
@@ -61,10 +64,8 @@ public class DataPopulator implements InitializingBean {
 
         IntactMockBuilder mockBuilder = new IntactMockBuilder(intactContext.getInstitution());
 
-        Publication publicationRandom = mockBuilder.createPublicationRandom();
-        lifecycleManager.getNewStatus().claimOwnership(publicationRandom);
-        lifecycleManager.getAssignedStatus().startCuration(publicationRandom);
-        corePersister.saveOrUpdate(publicationRandom);
+        createRandomPublication(mockBuilder);
+        createBioSourceHuman(mockBuilder);
 
         User curator = mockBuilder.createCurator("curator", "CuratorName", "CuratorLast", "curator@example.com");
         curator.setPassword("103b9534772356f52e338307c9cf42294a3f28f7");
@@ -77,6 +78,18 @@ public class DataPopulator implements InitializingBean {
         corePersister.saveOrUpdate(reviewer);
 
 //        importXmlDataAs(curator);
+    }
+
+    private void createBioSourceHuman(IntactMockBuilder mockBuilder) {
+        BioSource human = mockBuilder.createBioSource(9606, "human");
+        corePersister.saveOrUpdate(human);
+    }
+
+    private void createRandomPublication(IntactMockBuilder mockBuilder) {
+        Publication publicationRandom = mockBuilder.createPublicationRandom();
+        lifecycleManager.getNewStatus().claimOwnership(publicationRandom);
+        lifecycleManager.getAssignedStatus().startCuration(publicationRandom);
+        corePersister.saveOrUpdate(publicationRandom);
     }
 
     private void importXmlDataAs(User user) throws IOException, PsimiXmlReaderException {

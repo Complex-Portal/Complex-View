@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
 import uk.ac.ebi.intact.core.unit.IntactMockBuilder;
 import uk.ac.ebi.intact.model.Annotation;
@@ -67,12 +68,12 @@ public class CheckingIT extends EditorIT {
         Experiment exp = publication.getExperiments().iterator().next();
         
         lifecycleManager.getCurationInProgressStatus().readyForChecking(publication, "Ready!", true);
-
-        setToBeReviewed(exp);
-        
         lifecycleManager.getReadyForCheckingStatus().reject(publication, "This is wrong!");
 
+        setToBeReviewed(exp);
         getCorePersister().saveOrUpdate(publication);
+
+        getEntityManager().flush();
 
         goToExperimentPage(exp.getAc());
         loginAs("reviewer", driver);
@@ -98,7 +99,7 @@ public class CheckingIT extends EditorIT {
     }
 
     private void setToBeReviewed(Experiment exp) {
-        Annotation toBeReviewAnnot = new IntactMockBuilder().createAnnotation("This is wrong!", null, CvTopic.TO_BE_REVIEWED);
+        Annotation toBeReviewAnnot = new IntactMockBuilder().createAnnotation("This is wrong!", getDaoFactory().getCvObjectDao(CvTopic.class).getByShortLabel(CvTopic.TO_BE_REVIEWED));
         exp.addAnnotation(toBeReviewAnnot);
     }
 
@@ -109,6 +110,7 @@ public class CheckingIT extends EditorIT {
 
         Experiment randomExp = getMockBuilder().createExperimentRandom(1);
         randomExp.setPublication(publicationRandom);
+        randomExp.setBioSource(getDaoFactory().getBioSourceDao().getAll().get(0));
         publicationRandom.addExperiment(randomExp);
         return publicationRandom;
     }

@@ -95,25 +95,9 @@
                 <hostOrganismList>
                     <hostOrganism ncbiTaxId="9606">
                         <names>
-                            <shortLabel>human-293t</shortLabel>
-                            <fullName>Homo sapiens 293 cells transformed with SV40 large T antigen</fullName>
+                            <shortLabel>human</shortLabel>
+                            <fullName>Homo sapiens</fullName>
                         </names>
-                        <cellType>
-                            <names>
-                                <shortLabel>293t</shortLabel>
-                                <fullName>293 cells expressing SV40 large T antigen.</fullName>
-                            </names>
-                            <xref>
-                                <primaryRef refTypeAc="MI:0356" refType="identity" id="ACC 635" dbAc="MI:0246" db="cabri"/>
-                                <secondaryRef refTypeAc="MI:0356" refType="identity" id="ICLC HTL04001" dbAc="MI:0246" db="cabri"/>
-                                <secondaryRef refTypeAc="MI:0358" refType="primary-reference" id="3031469" dbAc="MI:0446" db="pubmed"/>
-                                <secondaryRef refTypeAc="MI:0356" refType="identity" id="IA:0074" dbAc="MI:0469" db="intact"/>
-                                <secondaryRef refTypeAc="MI:0356" refType="identity" id="EBI-308000" dbAc="MI:0469" db="intact"/>
-                            </xref>
-                            <attributeList>
-                                <attribute nameAc="MI:0612" name="comment">The original designation of this cell line was 293tsA1609neo. It is not in Cabri,ATCC or HyperCLDB.</attribute>
-                            </attributeList>
-                        </cellType>
                     </hostOrganism>
                 </hostOrganismList>
                 <interactionDetectionMethod>

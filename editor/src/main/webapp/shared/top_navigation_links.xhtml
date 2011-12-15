@@ -25,14 +25,14 @@
                            styleClass="#{selected == 'curate'? 'top-bar-selected' : ''}"
                            immediate="true"/>
         </li>
-        <li>
+        <!--<li>-->
 
-            <p:commandLink id="sanityCheckNavLink" value="Sanity Check" action="/sanity/sanityDashboard?faces-redirect=true&amp;includeViewParams=true"
-                           rendered="#{userSessionController.hasRole('CURATOR')}"
-                           ajax="false"
-                           styleClass="#{selected == 'sanity'? 'top-bar-selected' : ''}"
-                           immediate="true"/>
-        </li>
+            <!--<p:commandLink id="sanityCheckNavLink" value="Sanity Check" action="/sanity/sanityDashboard?faces-redirect=true&amp;includeViewParams=true"-->
+                           <!--rendered="#{userSessionController.hasRole('CURATOR')}"-->
+                           <!--ajax="false"-->
+                           <!--styleClass="#{selected == 'sanity'? 'top-bar-selected' : ''}"-->
+                           <!--immediate="true"/>-->
+        <!--</li>-->
         <li>
 
             <p:commandLink id="bulkOpNavLink" value="Bulk Op." action="/bulk/bulk_default?faces-redirect=true&amp;includeViewParams=true"
@@ -41,22 +41,24 @@
                            styleClass="#{selected == 'bulk'? 'top-bar-selected' : ''}"
                            immediate="true"/>
         </li>
-        <li>
-            <p:commandLink id="reviewerdNavLink" value="Reviewer" action="/reviewer/reviewerDashboard?faces-redirect=true"
-                           styleClass="#{selected == 'reviewer'? 'top-bar-selected' : ''}"
-                           ajax="false"
-                           rendered="#{userSessionController.hasRole('REVIEWER')}"
-                           immediate="true"/>
+        <h:panelGroup rendered="#{userSessionController.hasRole('REVIEWER')}">
+            <li>
+                <p:commandLink id="reviewerdNavLink" value="Reviewer" action="/reviewer/reviewerDashboard?faces-redirect=true"
+                               styleClass="#{selected == 'reviewer'? 'top-bar-selected' : ''}"
+                               ajax="false"
+                               immediate="true"/>
 
-        </li>
-        <li>
-            <p:commandLink id="adminNavLink" value="Admin" action="/admin/dashboard?faces-redirect=true"
-                           styleClass="#{selected == 'admin'? 'top-bar-selected' : ''}"
-                           ajax="false"
-                           rendered="#{userSessionController.hasRole('ADMIN')}"
-                           immediate="true"/>
+            </li>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{userSessionController.hasRole('ADMIN')}">
+            <li>
+                <p:commandLink id="adminNavLink" value="Admin" action="/admin/dashboard?faces-redirect=true"
+                               styleClass="#{selected == 'admin'? 'top-bar-selected' : ''}"
+                               ajax="false"
+                               immediate="true"/>
 
-        </li>
+            </li>
+        </h:panelGroup>
         <li>
             <p:commandLink id="myNotesNavLink" value="My Notes" action="/notes/mynotes?faces-redirect=true"
                            styleClass="#{selected == 'mynotes'? 'top-bar-selected' : ''}"
