@@ -301,25 +301,25 @@
         <servlet-name>Faces Servlet</servlet-name>
     </filter-mapping>
 
-    <!--<servlet>-->
-        <!--<servlet-name>Comet Servlet</servlet-name>-->
-        <!--<servlet-class>org.primefaces.comet.PrimeFacesCometServlet</servlet-class>-->
-        <!--<load-on-startup>0</load-on-startup>-->
-    <!--</servlet>-->
-    <!--<servlet-mapping>-->
-        <!--<servlet-name>Comet Servlet</servlet-name>-->
-        <!--<url-pattern>/primefaces_comet/*</url-pattern>-->
-    <!--</servlet-mapping>-->
+    <!-- Health check Servlet -->
+    <filter>
+        <filter-name>HealthFilter</filter-name>
+        <filter-class>uk.ac.ebi.intact.editor.servlet.HealthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>HealthFilter</filter-name>
+        <url-pattern>/test</url-pattern>
+    </filter-mapping>
 
-     <!--MyFaces Ext-Scripting filter -->
-    <!--<filter>-->
-       <!--<filter-name>scriptingFilter</filter-name>-->
-       <!--<filter-class>org.apache.myfaces.extensions.scripting.servlet.ScriptingServletFilter</filter-class>-->
-    <!--</filter>-->
-    <!--<filter-mapping>-->
-       <!--<filter-name>scriptingFilter</filter-name>-->
-       <!--<servlet-name>Faces Servlet</servlet-name>-->
-    <!--</filter-mapping>-->
+    <servlet>
+        <servlet-name>health</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.editor.servlet.HealthCheckServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>health</servlet-name>
+        <url-pattern>/test</url-pattern>
+    </servlet-mapping>
 
     <welcome-file-list>
         <welcome-file>/dashboard/dashboard.jsf</welcome-file>

@@ -14,6 +14,7 @@
 
         <intercept-url pattern="/login.jsf" filters="none"/>
         <intercept-url pattern="/error" filters="none"/>
+        <intercept-url pattern="/test" filters="none"/>
         <intercept-url pattern="/viewExpired*" filters="none"/>
         <intercept-url pattern="/javax.faces.resource/**" filters="none"/>
         <intercept-url pattern="/primefaces_resource/**" filters="none" />
