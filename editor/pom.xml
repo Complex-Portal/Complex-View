@@ -17,7 +17,7 @@
     <name>Service :: IntAct Editor</name>
 
     <scm>
-        <connection>scm:svn:http://intact.googlecode.com/svn/repo/service/trunk/editor</connection>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/editor</connection>
         <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/editor</developerConnection>
         <url>http://code.google.com/p/intact/wiki/Editor</url>
     </scm>
