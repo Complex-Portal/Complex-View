@@ -22,6 +22,7 @@
         <property name="logoUrl" value="${webapp.logo.url}"/>
         <property name="googleUsername" value="${google.username}"/>
         <property name="googlePassword" value="${google.password}"/>
+        <property name="theme" value="ui-lightness" />
     </bean>
 
     <!-- Uniprot -->
