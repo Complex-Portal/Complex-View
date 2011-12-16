@@ -29,6 +29,8 @@
         <core.version>2.5.1-SNAPSHOT</core.version>
         <spring.version>3.0.3.RELEASE</spring.version>
         <bridges.version>2.1.4</bridges.version>
+        <!--<h2.version>1.3.162</h2.version>-->
+        <h2.version>1.2.143</h2.version>
 
         <!-- configurable bits -->
         <jetty.port>9192</jetty.port>
@@ -133,6 +135,141 @@
     </build>
 
     <profiles>
+        <profile>
+            <!-- export MAVEN_OPTS="-XX:MaxPermSize=256m -Xmx1024m" -->
+            <id>standalone</id>
+            <properties>
+                <db.url>jdbc:h2:tcp:localhost:39101/intact-editor;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.url>
+                <db.driver>org.h2.Driver</db.driver>
+                <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
+                <db.user>sa</db.user>
+                <db.password></db.password>
+                <db.hbm2ddl>update</db.hbm2ddl>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <!-- start server before integration tests -->
+                                <id>start</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>uk.ac.ebi.intact.editor.StartH2Server</mainClass>
+                                    <classpathScope>test</classpathScope>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <!-- stop server after integration tests -->
+                                <id>stop</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>uk.ac.ebi.intact.editor.StopH2Server</mainClass>
+                                    <classpathScope>test</classpathScope>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <version>7.2.0.RC0</version>
+                        <configuration>
+                            <connectors>
+                                <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                                    <port>33445</port>
+                                    <maxIdleTime>600000</maxIdleTime>
+                                </connector>
+                            </connectors>
+                            <scanIntervalSeconds>0</scanIntervalSeconds>
+                            <webAppConfig>
+                                <contextPath>${jetty.contextPath}</contextPath>
+                                <jettyEnvXml>${build.outputDirectory}/META-INF/jetty-env.xml</jettyEnvXml>
+                            </webAppConfig>
+                            <stopPort>9966</stopPort>
+                            <stopKey>die!!!!</stopKey>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start-jetty</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <daemon>true</daemon>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>stop-jetty</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
+                        <dependencies>
+                            <dependency>
+                                <groupId>javax.servlet.jsp</groupId>
+                                <artifactId>jsp-api</artifactId>
+                                <version>2.2</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>javax.el</groupId>
+                                <artifactId>el-api</artifactId>
+                                <version>2.2.1-b01</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.glassfish.web</groupId>
+                                <artifactId>el-impl</artifactId>
+                                <version>2.2.1-b01</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.mortbay.jetty</groupId>
+                                <artifactId>jsp-2.1-glassfish</artifactId>
+                                <version>9.1.1.B60.25.p2</version>
+                                <exclusions>
+                                    <exclusion>
+                                        <groupId>org.mortbay.jetty</groupId>
+                                        <artifactId>jsp-api-2.1</artifactId>
+                                    </exclusion>
+                                    <exclusion>
+                                        <groupId>org.mortbay.jetty</groupId>
+                                        <artifactId>start</artifactId>
+                                    </exclusion>
+                                    <exclusion>
+                                        <groupId>org.mortbay.jetty</groupId>
+                                        <artifactId>jetty-annotations</artifactId>
+                                    </exclusion>
+                                </exclusions>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.h2database</groupId>
+                                <artifactId>h2</artifactId>
+                                <version>${h2.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <version>${h2.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
         <profile>
             <id>integration-tests</id>
             <properties>
@@ -271,16 +408,12 @@
                             <dependency>
                                 <groupId>com.h2database</groupId>
                                 <artifactId>h2</artifactId>
-                                <version>1.2.121</version>
+                                <version>${h2.version}</version>
                             </dependency>
                         </dependencies>
                     </plugin>
                 </plugins>
             </build>
-
-            <dependencies>
-
-            </dependencies>
         </profile>
     </profiles>
 
@@ -626,7 +759,7 @@
             <version>1.41.3</version>
         </dependency>
 
-        <!-- H2 for user management -->
+        <!--&lt;!&ndash; H2 for user management &ndash;&gt;-->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
