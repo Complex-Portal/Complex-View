@@ -29,8 +29,7 @@
         <core.version>2.5.1-SNAPSHOT</core.version>
         <spring.version>3.0.3.RELEASE</spring.version>
         <bridges.version>2.1.4</bridges.version>
-        <!--<h2.version>1.3.162</h2.version>-->
-        <h2.version>1.2.143</h2.version>
+        <h2.version>1.3.162</h2.version>
 
         <!-- configurable bits -->
         <jetty.port>9192</jetty.port>
@@ -136,10 +135,18 @@
 
     <profiles>
         <profile>
-            <!-- export MAVEN_OPTS="-XX:MaxPermSize=256m -Xmx1024m" -->
+
+            <!-- Documentation: http://code.google.com/p/intact/wiki/Editor  -->
+
             <id>standalone</id>
             <properties>
-                <db.url>jdbc:h2:tcp:localhost:39101/intact-editor;DB_CLOSE_DELAY=-1;LOCK_MODE=0</db.url>
+
+                <!-- LOCK_MODE=3:      Transaction Isolation = Read Committed (docs: http://goo.gl/LqADa) -->
+                <!-- CACHE_SIZE=X:     The H2 cache measured in Kb, here set to 128Mb (docs: http://goo.gl/KpXiY) -->
+                <!-- MVCC=TRUE:        Prevents table locking when using LOCK_MODE=3 -->
+                <!-- AUTO_SERVER=TRUE: Allows multiple TCP connection, delegates to H2 the client or server mode management -->
+                <db.url>jdbc:h2:~/editor-db;AUTO_SERVER=TRUE;LOCK_MODE=3;MVCC=TRUE;CACHE_SIZE=131072</db.url>
+
                 <db.driver>org.h2.Driver</db.driver>
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <db.user>sa</db.user>
