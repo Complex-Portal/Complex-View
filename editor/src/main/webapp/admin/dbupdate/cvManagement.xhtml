@@ -13,6 +13,13 @@
 
         <p:commandButton value="Update CVs" actionListener="#{cvManagement.updateCvs()}" async="true" update="growl"/>
 
+        <br/>
+        <br/>
+
+        <h:link outcome="/admin/jobSummary" >
+            <h:outputText value="View Job Status" />
+        </h:link>
+
         <p:outputPanel id="statsPanel">
             <h:panelGroup rendered="#{cvManagement.cvUpdaterStatistics != null}">
                  <h3>Created</h3>
