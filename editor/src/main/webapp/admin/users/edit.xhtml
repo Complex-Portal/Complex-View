@@ -38,13 +38,16 @@
             <h:selectBooleanCheckbox id="disabledChk" value="#{userAdminController.user.disabled}"/>
 
             <h:outputLabel value="First name:" for="firstNameTxt"/>
-            <p:inputText id="firstNameTxt" value="#{userAdminController.user.firstName}" converter="trimmingConverter"/>
+            <p:inputText id="firstNameTxt" value="#{userAdminController.user.firstName}" converter="trimmingConverter"
+                         required="true" requiredMessage="You must provide a first name" />
 
             <h:outputLabel value="Last name:" for="lastNameTxt"/>
-            <p:inputText id="lastNameTxt" value="#{userAdminController.user.lastName}" converter="trimmingConverter"/>
+            <p:inputText id="lastNameTxt" value="#{userAdminController.user.lastName}" converter="trimmingConverter"
+                         required="true" requiredMessage="You must provide a last name"/>
 
             <h:outputLabel value="Email:" for="emailTxt"/>
-            <p:inputText id="emailTxt" value="#{userAdminController.user.email}" required="true" requiredMessage="You must enter an email address" converter="trimmingConverter"/>
+            <p:inputText id="emailTxt" value="#{userAdminController.user.email}" converter="trimmingConverter"
+                         required="true" requiredMessage="You must enter an email address" />
 
             <h:outputLabel value="Institution: " for="institutionTxt"/>
             <h:selectOneMenu id="institutionTxt" value="#{userAdminController.institution}">
@@ -58,7 +61,6 @@
 
             <h:outputLabel value="Default curation depth:" for="depthSel"/>
             <h:selectOneMenu id="depthSel" value="#{userAdminController.curationDepth}" >
-                <f:selectItem itemLabel="-- Not specified --"/>
                 <f:selectItem itemLabel="IMEx" itemValue="imex curation"/>
                 <f:selectItem itemLabel="MIMIx" itemValue="mimix curation"/>
             </h:selectOneMenu>
