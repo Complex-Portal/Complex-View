@@ -3,6 +3,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:p="http://primefaces.prime.com.tr/ui"
 
                 template="/admin/admin_template.xhtml">
@@ -21,9 +22,15 @@
          </p:panel>
 
         <br/>
-        
+
+        <ui:param name="runsOnH2" value="#{fn:contains(editorConfig.databaseUrl, 'h2')}" />
         <p:panel header="Database">
             <h:panelGrid columns="2">
+
+                <h:graphicImage alt="Warning" url="/resources/images/warn.gif" rendered="#{runsOnH2}" />
+                <h:outputText value="You appear to be running on an H2 database, you must not run a production system
+                                     on H2 and we recommend you migrate to Oracle or PostgreSQL ASAP !!"
+                              rendered="#{runsOnH2}"/>
 
                 <h:outputText value="Instance name:" style="font-weight:bold"/>
                 <h:outputText value="#{editorConfig.instanceName}"/>
