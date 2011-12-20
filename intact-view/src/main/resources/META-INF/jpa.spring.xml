@@ -52,21 +52,7 @@
     <jee:jndi-lookup id="dataSourceJdni" jndi-name="${db.jndi}" resource-ref="true" expected-type="javax.sql.DataSource"/>
 
     <bean id="intactViewDataSource" class="org.apache.myfaces.orchestra.connectionManager.ConnectionManagerDataSource">
-        <property name="dataSource" ref="dataSourceJdni">
-            <!--<bean class="org.apache.commons.dbcp.BasicDataSource">-->
-                <!--<property name="url" value="${db.url}"/>-->
-                <!--<property name="username" value="${db.user}"/>-->
-                <!--<property name="password" value="${db.password}"/>-->
-                <!--<property name="driverClassName" value="${db.driver}"/>-->
-                <!--<property name="maxActive" value="30"/>-->
-                <!--<property name="maxIdle" value="10"/>-->
-                <!--<property name="minIdle" value="2"/>-->
-                <!--<property name="maxWait" value="5000"/>-->
-                <!--<property name="minEvictableIdleTimeMillis" value="25000"/>-->
-                <!--<property name="timeBetweenEvictionRunsMillis" value="30000"/>-->
-            <!--</bean>-->
-        </property>
+        <property name="dataSource" ref="dataSourceJdni" />
     </bean>
-
 
 </beans>
