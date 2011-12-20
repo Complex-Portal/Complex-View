@@ -9,7 +9,7 @@ import static org.junit.Assert.assertThat;
 public class SearchIT extends IntactViewIT {
 
 	@Test
-	public void searchUsingCvSynonymS() throws Exception {
+	public void searchUsingCvSynonyms() throws Exception {
         // Given: I want to do a search using a cv synonym
         goToTheStartPage();
 
@@ -19,5 +19,17 @@ public class SearchIT extends IntactViewIT {
         // Then: I expect to obtain the 2 interactions that display "two hybrid" as detection method
         assertThat(numberOfResultsDisplayed(), is(equalTo(2)));
 	}
+
+    @Test
+    public void searchUsingCvSynonymsWithNonExistentTerm() throws Exception {
+        // Given: I want to do a search using a cv synonym
+        goToTheStartPage();
+
+        // When: I do the search using "lala";
+        search("detmethod:\"lalala\"");
+
+        // Then: I expect to obtain 0 interactions
+        assertThat(numberOfResultsDisplayed(), is(equalTo(0)));
+    }
 
 }
