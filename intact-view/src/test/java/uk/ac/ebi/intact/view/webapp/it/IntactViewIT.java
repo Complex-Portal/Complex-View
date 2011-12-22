@@ -75,7 +75,7 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
         });
     }
 
-    protected void takeScreenshot(String filename, WebDriver driver) throws IOException {
+    protected void takeScreenshot(String filename) throws IOException {
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         FileUtils.copyFile(scrFile, new File(filename));
     }
@@ -98,5 +98,13 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
 
     protected void goToTheStartPage() {
         driver.get(BASE_URL);
+    }
+
+    protected void goToInteractionDetailsPage(String interactionAc) {
+        driver.get(BASE_URL+"/interaction/"+interactionAc);
+    }
+
+    protected int rowCountForDataTableWithId(String id) {
+        return driver.findElements(By.xpath("//div[@id=\""+id+"\"]/table/tbody/tr")).size();
     }
 }

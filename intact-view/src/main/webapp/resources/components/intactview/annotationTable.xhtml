@@ -19,12 +19,12 @@
   <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <p:dataTable dynamic="false" lazy="false" var="annot" value="#{cc.attrs.annotations}">
+        <p:dataTable id="#{cc.id}" dynamic="false" lazy="false" var="annot" value="#{cc.attrs.annotations}">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Topic"/>
                 </f:facet>
-                <h:outputLink value="#{request.contextPath}/cv/#{annot.cvTopic.ac}">
+                <h:outputLink id="topicLink" value="#{request.contextPath}/cv/#{annot.cvTopic.ac}">
                     <h:outputText value="#{annot.cvTopic.shortLabel}" />
                 </h:outputLink>
 
@@ -34,8 +34,8 @@
                     <h:outputText value="Text"/>
                 </f:facet>
                 <ui:param name="isUrl" value="#{annot.cvTopic.identifier == 'MI:0614'}" />
-                <h:outputText value="#{(annot.annotationText == null ? '-' : annot.annotationText )}" rendered="#{not isUrl}"/>
-                <h:outputLink text="#{annot.annotationText}" destination="#{annot.annotationText}" targetFrame="_blank" rendered="#{isUrl}"/>
+                <h:outputText id="annotText" value="#{(annot.annotationText == null ? '-' : annot.annotationText )}" rendered="#{not isUrl}"/>
+                <h:outputLink id="annotTextLink" text="#{annot.annotationText}" destination="#{annot.annotationText}" targetFrame="_blank" rendered="#{isUrl}"/>
             </p:column>
         </p:dataTable>
 

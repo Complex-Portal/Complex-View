@@ -51,14 +51,18 @@
     </iv:panelLabelAndMessage>
 
     <table border="0">
-        <tr>
-            <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
-            <td><iv:xrefTable xrefs="#{experiment.xrefs}"/></td>
-        </tr>
-        <tr>
-            <td style="font-weight:bold; vertical-align:top; text-align:right;">Annotations:</td>
-            <td><iv:annotationTable annotations="#{detailsBean.experimentAnnotations}"/></td>
-        </tr>
+        <h:panelGroup rendered="#{not empty experiment.xrefs}">
+            <tr>
+                <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
+                <td><iv:xrefTable id="experimentXrefTable" xrefs="#{experiment.xrefs}"/></td>
+            </tr>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{not empty detailsBean.experimentAnnotations}">
+            <tr>
+                <td style="font-weight:bold; vertical-align:top; text-align:right;">Annotations:</td>
+                <td><iv:annotationTable id="experimentAnnotsTable" annotations="#{detailsBean.experimentAnnotations}"/></td>
+            </tr>
+        </h:panelGroup>
     </table>
 
 </h:panelGroup>
@@ -93,15 +97,20 @@
                 <h:outputText value="#{pmid}"/>
             </iv:panelLabelAndMessage>
 
-            <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty publication.xrefs}"
-                                     labelStyleClass="textLabel">
-                <iv:xrefTable xrefs="#{publication.xrefs}"/>
-            </iv:panelLabelAndMessage>
-
-            <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty publication.annotations}"
-                                     labelStyleClass="textLabel">
-                <iv:annotationTable annotations="#{publication.annotations}"/>
-            </iv:panelLabelAndMessage>
+            <table border="0">
+                <h:panelGroup rendered="#{not empty publication.xrefs}">
+                    <tr>
+                        <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
+                        <td><iv:xrefTable id="publicationXrefTable" xrefs="#{publication.xrefs}"/></td>
+                    </tr>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not empty detailsBean.publicationAnnotations}">
+                    <tr>
+                        <td style="font-weight:bold; vertical-align:top; text-align:right;">Annotations:</td>
+                        <td><iv:annotationTable id="publicationAnnotTable" annotations="#{detailsBean.publicationAnnotations}"/></td>
+                    </tr>
+                </h:panelGroup>
+            </table>
 
         </td>
 

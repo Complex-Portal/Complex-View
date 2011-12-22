@@ -61,6 +61,20 @@ public class DetailsController extends JpaBaseController {
     private static final String EXPERIMENT_AC_PARAM = "experimentAc";
     private static final String BINARY_PARAM = "binary";
 
+    private static final String AUTHOR_LIST = "MI:0636";
+
+    private static final Collection<String> publicationTopics = new ArrayList<String>();
+    private static final String JOURNAL = "MI:0885";
+    private static final String PUBLICATION_YEAR = "MI:0886";
+
+    private static final String CONTACT_EMAIL = "MI:0634";
+
+    static {
+        publicationTopics.add( AUTHOR_LIST );
+        publicationTopics.add( JOURNAL );
+        publicationTopics.add( PUBLICATION_YEAR );
+    }
+
     private String interactionAc;
     private String experimentAc;
     private String binary;
@@ -199,28 +213,36 @@ public class DetailsController extends JpaBaseController {
         return exp;
     }
 
-    private static Collection<String> publicationTopics = new ArrayList<String>();
-
-    private static final String AUTHOR_LIST = "MI:0636";
-    private static final String JOURNAL = "MI:0885";
-    private static final String PUBLICATION_YEAR = "MI:0886";
-    private static final String CONTACT_EMAIL = "MI:0634";
-
-    static {
-        publicationTopics.add( AUTHOR_LIST );
-        publicationTopics.add( JOURNAL );
-        publicationTopics.add( PUBLICATION_YEAR );
-        publicationTopics.add( CONTACT_EMAIL );
-    }
-
     public Collection<Annotation> getExperimentAnnotations() {
         final Experiment experiment = getExperiment();
         Collection<Annotation> selectedAnnotations = new ArrayList<Annotation>( experiment.getAnnotations().size() );
         for ( Annotation annotation : experiment.getAnnotations() ) {
+            boolean found = false;
+            
+            for (Annotation pubAnnotation : experiment.getPublication().getAnnotations()) {
+                if ( pubAnnotation.getCvTopic().getIdentifier().equals(annotation.getCvTopic().getIdentifier()) ) {
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (!found) {
+                selectedAnnotations.add( annotation );
+            }
+        }
+        return selectedAnnotations;
+    }
+    
+    public Collection<Annotation> getPublicationAnnotations() {
+        final Publication publication = getExperiment().getPublication();
+        Collection<Annotation> selectedAnnotations = new ArrayList<Annotation>( publication.getAnnotations().size() );
+        
+        for ( Annotation annotation : publication.getAnnotations() ) {
             if ( !publicationTopics.contains( annotation.getCvTopic().getIdentifier() ) ) {
                 selectedAnnotations.add( annotation );
             }
         }
+            
         return selectedAnnotations;
     }
 

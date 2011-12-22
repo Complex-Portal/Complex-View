@@ -19,7 +19,7 @@
   <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-    <p:dataTable var="xref" value="#{cc.attrs.xrefs}" paginator="false" dynamic="false" lazy="false">
+    <p:dataTable id="#{cc.id}" var="xref" value="#{cc.attrs.xrefs}" paginator="false" dynamic="false" lazy="false">
 
         <p:column>
             <f:facet name="header">
