@@ -16,7 +16,7 @@ public class AdvancedSearchIT extends IntactViewIT {
         goToTheStartPage();
 
         // When: I query 11554746 using Publication ID and click on the Add & Search button
-        displayAdvancedFields();
+        showAdvancedFields();
         selectAdvancedFieldByLabel("Pubmed Id");
         typeAdvancedQuery("11554746");
         clickOnAddAndSearch();
@@ -31,7 +31,7 @@ public class AdvancedSearchIT extends IntactViewIT {
         goToTheStartPage();
 
         // When: I choose Detection Method and browse the tree selecting "imaging technique"
-        displayAdvancedFields();
+        showAdvancedFields();
         selectAdvancedFieldByLabel("Interaction detection method");
         clickOnBrowseIcon();
         selectImagingTechniqueInDialog();
@@ -52,7 +52,7 @@ public class AdvancedSearchIT extends IntactViewIT {
         waitUntilLoadingIsComplete();
     }
 
-    private void displayAdvancedFields() {
+    private void showAdvancedFields() {
         driver.findElement(By.id("addFieldBtn")).click();
         waitUntilElementIsVisible(By.id("newQuerytxt"));
     }
