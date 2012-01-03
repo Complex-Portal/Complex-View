@@ -2,7 +2,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:p="http://primefaces.org/ui"
 
                 xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
@@ -42,7 +42,7 @@
                          disabled="#{searchBean.exportFormat == null}"
                          onclick="var selector = document.getElementById('mainPanels:exportFormatSelect');_gaq.push(['_trackEvent', 'Export', selector.options[selector.selectedIndex].text,'#{userQuery.searchQuery}']); var newWindow = window.open('#{requestConfigBean.absoluteContextPath}/export?format=#{searchBean.exportFormat}', '_blank'); newWindow.focus()"/>
 
-        <p:divider/>
+        <p:separator/>
 
 
         <p:commandButton id="showHideColumns" type="button" value="Show/hide columns" onclick="columnsDialog.show(); _gaq.push(['_trackEvent', 'Interactions table', 'Show/hide columns', '#{userQuery.searchQuery}'])" />
@@ -74,7 +74,7 @@
         </h:selectBooleanCheckbox>
         <h:outputLabel for="showTypeBool" value="Show icons"/>
 
-        <p:divider/>
+        <p:separator/>
 
         <p:menuButton id="changeTableMenu" value="Change table preset...">
             <p:menuitem value="Minimal" ajax="false"

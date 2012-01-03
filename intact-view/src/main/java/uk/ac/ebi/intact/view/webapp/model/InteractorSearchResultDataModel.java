@@ -128,7 +128,7 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorWra
         return totalCount;
     }
 
-    public Object getRowData() {
+    public InteractorWrapper getRowData() {
         if (idCounts == null) {
             return null;
         }

@@ -688,7 +688,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>3.0.RC1-intact-SNAPSHOT</version>
+            <version>3.0.RC2</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
