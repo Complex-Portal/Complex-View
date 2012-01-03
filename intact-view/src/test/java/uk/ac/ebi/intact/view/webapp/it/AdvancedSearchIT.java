@@ -33,13 +33,9 @@ public class AdvancedSearchIT extends IntactViewIT {
         // When: I choose Detection Method and browse the tree selecting "imaging technique"
         showAdvancedFields();
         selectAdvancedFieldByLabel("Interaction detection method");
-        takeScreenshot("d:/temp/lala1.png");
         clickOnBrowseIcon();
-        takeScreenshot("d:/temp/lala2.png");
         selectImagingTechniqueInDialog();
-        takeScreenshot("d:/temp/lala3.png");
         clickOnAddAndSearch();
-        takeScreenshot("d:/temp/lala4.png");
 
         // Then: I expect 2 interactions in total
         assertThat(numberOfResultsDisplayed(), is(equalTo(2)));
