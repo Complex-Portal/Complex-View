@@ -108,12 +108,11 @@ public class OntologyTermWrapper implements Serializable {
     private class OntologyTermWrapperComparator implements Comparator<OntologyTermWrapper> {
 
         public int compare(OntologyTermWrapper o1, OntologyTermWrapper o2) {
-            
-            if (o1.getInteractionCount() > o2.getInteractionCount()) {
-                return -1;
-            } else {
-                return +1;
+            if (o1.getInteractionCount() != o2.getInteractionCount()) {
+                return Long.valueOf(o2.getInteractionCount()).compareTo(o1.getInteractionCount());
             }
+            
+            return o1.getTerm().getName().compareTo(o2.getTerm().getName());
         }
     }
 
