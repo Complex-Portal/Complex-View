@@ -3,7 +3,6 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:ot="http://myfaces.apache.org/orchestra"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions" >
 
     <p:panel style="width:100%">
@@ -70,8 +69,7 @@
 
                 &#160;
                 <h:outputText value="Field: "/>
-                <h:selectOneMenu id="newQueryField" title="Field: " value="#{userQuery.newQueryToken.field}"
-                                 immediate="true">
+                <h:selectOneMenu id="newQueryField" title="Field: " value="#{userQuery.newQueryToken.field}">
                     <p:ajax event="change" update="newQueryPanel" process="newQueryField"/>
                     <f:selectItems value="#{userQuery.searchFieldSelectItems}"/>
                 </h:selectOneMenu>
@@ -87,39 +85,36 @@
 
                     <h:panelGroup rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}">
                         <p:commandLink id="browseOntology" onclick="browseCvDialog.show()">
-                            <h:graphicImage alt="Browse" url="/images/magnify.png"/>
+                            <h:graphicImage id="browseOntologyImg" alt="Browse" url="/images/magnify.png"/>
                         </p:commandLink>
+
 
                         <p:dialog id="ontologyDialog" header="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].displayName}" widgetVar="browseCvDialog" fixedCenter="true"
                                   width="800" height="600">
-                                <p><b>Choose a term by clicking on its name. The identifier will be used as the value for the search.</b></p>
-                                <br/>
+                            <p><b>Choose a term by clicking on its name. The identifier will be used as the value for the search.</b></p>
+                            <br/>
 
-                                <p:tree id="ontologyTree" var="otw" value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.ontologyTreeNode}"
-                                        selectionMode="single" selection="#{userQuery.selectedSearchTerm}"
-                                        dynamic="true" cache="true"
-                                        style="width:50%;">
-                                    <p:ajax event="select" listener="#{userQuery.doSelectCvTerm}" oncomplete="browseCvDialog.hide()" update="newQueryPanel" />
+                            <p:tree id="ontologyTree" var="otw" value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.ontologyTreeNode}"
+                                    selectionMode="single" selection="#{userQuery.selectedSearchTerm}"
+                                    dynamic="true" cache="true"
+                                    style="width:50%;">
+                                <p:ajax event="select" listener="#{userQuery.doSelectCvTerm}" oncomplete="browseCvDialog.hide()" update="newQueryPanel" />
 
-                                    <p:treeNode id="ontologyTreeNode">
-                                        <h:outputText id="termTxt" value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
-                                    </p:treeNode>
-                                </p:tree>
+                                <p:treeNode id="ontologyTreeNode">
+                                    <h:outputText id="termTxt" value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
+                                </p:treeNode>
+                            </p:tree>
 
-                            </p:dialog>
+
+                        </p:dialog>
+
+
 
                     </h:panelGroup>
 
-
-                    <!--<tr:inputListOfValues value="#{userQuery.newQueryToken.query}" columns="50"-->
-                    <!--rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}"-->
-                    <!--icon="/images/magnify.png" windowHeight="500" windowWidth="400"-->
-                    <!--action="dialog:search.browse" -->
-                    <!--searchDesc="Click to get a value">-->
-                    <!--<f:setPropertyActionListener target="#{searchBrowseDialogController.beanName}" value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browserControllerName}"/>-->
-                    <!--</tr:inputListOfValues>-->
-
                 </h:panelGroup>
+
+
                 &#160;
 
                 <h:commandButton id="addAndSearchBtn" value="Add &amp; Search"

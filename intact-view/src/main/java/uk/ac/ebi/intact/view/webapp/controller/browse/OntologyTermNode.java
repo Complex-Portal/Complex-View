@@ -18,14 +18,15 @@ package uk.ac.ebi.intact.view.webapp.controller.browse;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
 public class OntologyTermNode extends DefaultTreeNode {
+
+    private Set<TreeNode> childrenNode = null;
 
     public OntologyTermNode(OntologyTermWrapper ontologyTermWrapper) {
         this(ontologyTermWrapper, null);
@@ -38,18 +39,24 @@ public class OntologyTermNode extends DefaultTreeNode {
 
     @Override
     public List<TreeNode> getChildren() {
+        if (childrenNode != null) {
+            return new ArrayList<TreeNode>(childrenNode);
+        }
+
+        childrenNode = new LinkedHashSet<TreeNode>();
+
         OntologyTermWrapper otw = getOntologyTermWrapper();
         final List<OntologyTermWrapper> ontologyTermWrappers = otw.getChildren();
 
-        List<TreeNode> treeNodes = new ArrayList<TreeNode>();
 
         for (OntologyTermWrapper otwChild : ontologyTermWrappers) {
-            treeNodes.add(new OntologyTermNode(otwChild, this));
+            childrenNode.add(new OntologyTermNode(otwChild, this));
         }
 
-        setChildren(treeNodes);
+        final List<TreeNode> childrenList = new LinkedList<TreeNode>(childrenNode);
+        setChildren(childrenList);
 
-        return treeNodes;
+        return childrenList;
     }
 
     @Override

@@ -119,6 +119,6 @@ public class OntologyTermWrapper implements Serializable {
 
     @Override
     public String toString() {
-        return "OntologyTermWrapper{"+term.getId()+"}";
+        return "OntologyTermWrapper{"+term.getId()+":"+term.getName()+"}";
     }
 }

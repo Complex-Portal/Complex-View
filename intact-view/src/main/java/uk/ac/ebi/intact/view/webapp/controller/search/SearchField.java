@@ -104,6 +104,8 @@ public class SearchField {
     }
 
     public OntologyBrowserController getBrowser() {
+        if (!isOntologyBrowser()) return null;
+
         return (OntologyBrowserController) IntactContext.getCurrentInstance().getSpringContext().getBean(browserControllerName);
     }
 

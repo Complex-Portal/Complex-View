@@ -16,19 +16,63 @@ public class AdvancedSearchIT extends IntactViewIT {
         goToTheStartPage();
 
         // When: I query 11554746 using Publication ID and click on the Add & Search button
-        driver.findElement(By.id("addFieldBtn")).click();
-        waitUntilElementIsVisible(By.id("newQuerytxt"));
-        changeSelectToValue(By.id("newQueryField"), "pubid");
-        waitUntilLoadingIsComplete();
-        driver.findElement(By.id("newQuerytxt")).sendKeys("11554746");
-        driver.findElement(By.id("addAndSearchBtn")).click();
+        displayAdvancedFields();
+        selectAdvancedFieldByLabel("Pubmed Id");
+        typeAdvancedQuery("11554746");
+        clickOnAddAndSearch();
 
         // Then: I expect 4 interactions in total
         assertThat(numberOfResultsDisplayed(), is(equalTo(4)));
 	}
 
-    private void changeSelectToValue(By element, String value) {
+    @Test
+    public void whenISelectDetectionMethodUsingTreeIShouldHaveCorrectResults() throws Exception {
+        // Given: I want to do a query using the advanced search from the home page
+        goToTheStartPage();
+
+        // When: I choose Detection Method and browse the tree selecting "imaging technique"
+        displayAdvancedFields();
+        selectAdvancedFieldByLabel("Interaction detection method");
+        clickOnBrowseIcon();
+        selectImagingTechniqueInDialog();
+        clickOnAddAndSearch();
+
+        // Then: I expect 2 interactions in total
+        assertThat(numberOfResultsDisplayed(), is(equalTo(2)));
+    }
+
+
+
+    private void typeAdvancedQuery(String search) {
+        driver.findElement(By.id("newQuerytxt")).sendKeys(search);
+    }
+
+    private void selectAdvancedFieldByLabel(String fieldValue) {
+        changeSelectToLabel(By.id("newQueryField"), fieldValue);
+        waitUntilLoadingIsComplete();
+    }
+
+    private void displayAdvancedFields() {
+        driver.findElement(By.id("addFieldBtn")).click();
+        waitUntilElementIsVisible(By.id("newQuerytxt"));
+    }
+
+    private void changeSelectToLabel(By element, String label) {
         Select select = new Select(driver.findElement(element));
-        select.selectByValue(value);
+        select.selectByVisibleText(label);
+    }
+
+    private void clickOnAddAndSearch() {
+        driver.findElement(By.id("addAndSearchBtn")).click();
+    }
+
+    private void selectImagingTechniqueInDialog() {
+        driver.findElement(By.xpath("//li[@id='ontologyTree_node_0']/div/span/span")).click();
+        waitUntilElementIsVisible(By.id("ontologyTree:0_1:termTxt"));
+        driver.findElement(By.id("ontologyTree:0_1:termTxt")).click();
+    }
+
+    private void clickOnBrowseIcon() {
+        driver.findElement(By.id("browseOntologyImg")).click();
     }
 }

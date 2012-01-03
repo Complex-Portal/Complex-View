@@ -98,4 +98,9 @@ public class RootTerm implements OntologyTerm {
     public OntologySearcher getOntologySearcher() {
         return ontologySearcher;
     }
+
+    @Override
+    public String toString() {
+        return "RootTerm{"+name+"}";
+    }
 }
