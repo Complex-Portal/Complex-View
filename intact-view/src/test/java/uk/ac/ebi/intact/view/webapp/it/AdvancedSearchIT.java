@@ -72,7 +72,7 @@ public class AdvancedSearchIT extends IntactViewIT {
         driver.findElement(By.id("ontologyTree:0_1:termTxt")).click();
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
