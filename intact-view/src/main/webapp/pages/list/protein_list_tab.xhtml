@@ -38,7 +38,7 @@
 
     <p:dataTable id="proteinListResults" value="#{searchBean.proteinResults}" var="interactorWrapper"
                  rowIndexVar="status"
-                 lazy="true" dynamic="true" emptyMessage="No proteins found matching the query."
+                 dynamic="true" emptyMessage="No proteins found matching the query."
                  rows="#{userQuery.pageSize}" loadingMessage="Loading proteins..."
                  paginator="true" paginatorAlwaysVisible="false"
                  selection="#{proteinListController.selected}" >

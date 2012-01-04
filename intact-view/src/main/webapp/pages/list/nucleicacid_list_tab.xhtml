@@ -26,7 +26,7 @@
 
     <p:dataTable id="nucleicAcidListResults" value="#{searchBean.nucleicAcidResults}" var="interactorWrapper"
                  rowIndexVar="status"
-                 lazy="true" dynamic="true" emptyMessage="No nucleic acids found matching the query."
+                 dynamic="true" emptyMessage="No nucleic acids found matching the query."
                  rows="#{userQuery.pageSize}" loadingMessage="Loading nucleic acids..."
                  paginator="true" paginatorAlwaysVisible="false"
                  selection="#{nucleicAcidListController.selected}">

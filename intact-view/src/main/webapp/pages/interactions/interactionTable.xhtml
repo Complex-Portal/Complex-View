@@ -100,7 +100,7 @@
 
 <p:dataTable id="resultsTable" var="binaryInteraction" value="#{searchBean.results}"
              rows="#{userQuery.pageSize}"
-             dynamic="true" lazy="true" rowIndexVar="row" paginatorPosition="both"
+             dynamic="true" rowIndexVar="row" paginatorPosition="both"
              paginator="#{searchBean.results.rowCount gt userQuery.pageSize}"
              rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'}">
 <p:column>

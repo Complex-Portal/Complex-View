@@ -27,7 +27,7 @@
 
     <p:dataTable id="compoundListResults" value="#{searchBean.smallMoleculeResults}" var="interactorWrapper"
                  rowIndexVar="status"
-                 lazy="true" dynamic="true" emptyMessage="No compounds found matching the query."
+                 dynamic="true" emptyMessage="No compounds found matching the query."
                  rows="#{userQuery.pageSize}" loadingMessage="Loading compounds..."
                  paginator="true" paginatorAlwaysVisible="false"
                  selection="#{compoundListController.selected}">
