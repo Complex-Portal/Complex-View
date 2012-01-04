@@ -30,6 +30,16 @@
 
         <h:outputScript library="javascript" name="intact.js"/>
 
+        <script type="text/javascript">
+            // fixup for an issue of the jsf2.0 and 2.1 ajax
+            // spec to deal with multiple forms per page.
+            // => ViewExpiredException occurs if you heavy use ajax within
+            //    more than one form (MYFACES-3159)
+            window.myfaces = window.myfaces || {};
+            myfaces.config = myfaces.config || {};
+            myfaces.config.no_portlet_env = true;
+        </script>
+
         <ui:insert name="additionalHeader"/>
 
         <!-- Google Analytics -->
