@@ -279,7 +279,8 @@ public class UserQuery extends BaseController {
         if (!isWildcardQuery(queryToken.getQuery())) {
 
             if (isWildcardQuery(searchQuery)) {
-                searchQuery = queryToken.toQuerySyntax(true);
+                final boolean excludeOperand = true;
+                searchQuery = queryToken.toQuerySyntax(excludeOperand);
             } else {
                 searchQuery = searchQuery + " " + queryToken.toQuerySyntax();
             }
@@ -373,11 +374,11 @@ public class UserQuery extends BaseController {
     }
 
     public String getHierarchViewImageUrl() {
-        return buildHierarchViewURL( intactViewConfiguration.getHierarchViewImageUrl() );
+        return buildHierarchViewURL(intactViewConfiguration.getHierarchViewImageUrl());
     }
 
     public String getHierarchViewSearchUrl() {
-        return buildHierarchViewURL( intactViewConfiguration.getHierarchViewSearchUrl() );
+        return buildHierarchViewURL(intactViewConfiguration.getHierarchViewSearchUrl());
     }
 
     public String getHierarchViewUrl() {

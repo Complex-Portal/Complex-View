@@ -66,10 +66,16 @@ public class AdvancedSearchIT extends IntactViewIT {
         driver.findElement(By.id("addAndSearchBtn")).click();
     }
 
-    private void selectImagingTechniqueInDialog() {
+    private void selectImagingTechniqueInDialog()  {
         driver.findElement(By.xpath("//li[@id='ontologyTree_node_0']/div/span/span")).click();
         waitUntilElementIsVisible(By.id("ontologyTree:0_1:termTxt"));
         driver.findElement(By.id("ontologyTree:0_1:termTxt")).click();
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void clickOnBrowseIcon() {

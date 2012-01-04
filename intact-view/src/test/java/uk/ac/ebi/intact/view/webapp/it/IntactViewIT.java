@@ -67,6 +67,14 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
         });
     }
 
+    protected void waitUntilElementIsNotVisible(final By by) {
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver webDriver) {
+                return driver.findElement(by) == null;
+            }
+        });
+    }
+
     protected void waitUntilLoadingIsComplete() {
         wait.until(new ExpectedCondition<Boolean>() {
             public Boolean apply(WebDriver webDriver) {
