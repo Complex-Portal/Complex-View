@@ -24,6 +24,7 @@ import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.CvPublicationStatusType;
 import uk.ac.ebi.intact.model.Publication;
 
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import java.util.Arrays;
@@ -51,7 +52,9 @@ public class DashboardController extends JpaAwareController {
 
     @SuppressWarnings("unchecked")
     public void loadData( ComponentSystemEvent event ) {
-        refreshTables();
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            refreshTables();
+        }
     }
 
     public void refreshTables() {

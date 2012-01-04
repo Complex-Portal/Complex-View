@@ -13,9 +13,9 @@
         </locale-config>
     </application>
 
-    <factory>
-       <exception-handler-factory>uk.ac.ebi.intact.editor.application.EditorExceptionHandlerFactory</exception-handler-factory>
-   </factory>
+    <!--<factory>-->
+       <!--<exception-handler-factory>uk.ac.ebi.intact.editor.application.EditorExceptionHandlerFactory</exception-handler-factory>-->
+   <!--</factory>-->
 
     <lifecycle>
         <!--<phase-listener>uk.ac.ebi.intact.editor.application.DebugPhaseListener</phase-listener>-->

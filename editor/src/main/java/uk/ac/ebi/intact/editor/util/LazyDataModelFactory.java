@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.SortField;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -41,7 +42,7 @@ public class LazyDataModelFactory {
     public static <T> LazyDataModel<T> createEmptyDataModel() {
         return new LazyDataModel<T>() {
             @Override
-            public List<T> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
+            public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 return Collections.EMPTY_LIST;
             }
         };
@@ -119,7 +120,8 @@ public class LazyDataModelFactory {
     public static <T> LazyDataModel<T> createLazyDataModel( final Collection<T> collection ) {
         LazyDataModel<T> lazyDataModel = new LazyDataModel<T>() {
 
-            public List<T> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
+            @Override
+            public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 List<T> list = new ArrayList<T>(collection);
 
                 if (first >= list.size()) {

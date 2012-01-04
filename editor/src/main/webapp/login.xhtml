@@ -3,7 +3,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:p="http://primefaces.org/ui"
      xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
 <f:view contentType="text/html">
@@ -106,12 +106,11 @@
                             id="login"
                             action="#{loginController.doLogin}"
                             value="Login"
-                            onclick="login_load.show(); document.getElementById('j_password').value = hex_sha1(document.getElementById('j_password_clear').value);"/>
+                            onclick="document.getElementById('j_password').value = hex_sha1(document.getElementById('j_password_clear').value);"/>
                 </p:panel>
                     </div>
             </div>
-            
-            <ia:loadingDialog widgetVar="login_load" message="Logging in..."/>
+
 
         </h:form>
 

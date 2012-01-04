@@ -3,7 +3,7 @@
 <html xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.prime.com.tr/ui"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
 <f:view contentType="text/html">
@@ -117,7 +117,7 @@
 
                 <h:panelGroup id="topSection">
                     <div class="top-search">
-                        <h:panelGrid columns="4">
+                        <h:panelGrid columns="3">
                             <h:graphicImage url="/resources/images/search.png" alt="Search:"/>
                             <!--<p:watermark for="queryTxt" value="search query"/>-->
                             <p:inputText id="queryTxt" value="#{searchController.quickQuery}"

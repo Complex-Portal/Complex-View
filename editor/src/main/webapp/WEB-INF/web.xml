@@ -79,6 +79,11 @@
         <param-value>AES</param-value>
     </context-param>
 
+    <context-param>
+        <param-name>org.apache.myfaces.USE_ENCRYPTION</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
     <!-- Defines the default mode and padding used for the encryption algorithm -->
     <context-param>
         <param-name>org.apache.myfaces.ALGORITHM.PARAMETERS</param-name>
@@ -117,30 +122,16 @@
         <param-value>YWJjZDEyMzQ=</param-value>
     </context-param>
 
-    <!-- MyFaces Ext-scripting -->
-    <!--<context-param>-->
-        <!--<description>-->
-            <!--Enables our scripting engine support plugins-->
-        <!--</description>-->
-        <!--<param-name>org.apache.myfaces.FACES_INIT_PLUGINS</param-name>-->
-        <!--<param-value>org.apache.myfaces.extensions.scripting.servlet.StartupServletContextPluginChainLoader</param-value>-->
-    <!--</context-param>-->
-    <!--<context-param>-->
-        <!--<description>Additional comma separated loader paths to allow direct editing on the sources directory instead-->
-            <!--of the deployment dir-->
-        <!--</description>-->
-        <!--<param-name>org.apache.myfaces.extensions.scripting.java.LOADER_PATHS</param-name>-->
-        <!--<param-value>-->
-            <!--d:/projects/intact-current/service/editor/src/main/java-->
-        <!--</param-value>-->
-    <!--</context-param>-->
-    <!--<context-param>-->
-        <!--<description>a comma separated whitelist of root packages which are compiled those and nothing else-->
-            <!--will be compiled during all compile stages, all other files stay permanently as they are-->
-        <!--</description>-->
-        <!--<param-name>org.apache.myfaces.extensions.scripting.PGK_WHITELIST</param-name>-->
-        <!--<param-value>uk.ac.ebi.intact.editor.component</param-value>-->
-    <!--</context-param>-->
+    <context-param>
+        <param-name>org.apache.myfaces.SECRET.CACHE</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.apache.myfaces.MAC_SECRET.CACHE</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
 
     <!-- MyFaces orchestra params -->
     <context-param>

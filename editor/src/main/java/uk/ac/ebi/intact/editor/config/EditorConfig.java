@@ -55,7 +55,7 @@ public class EditorConfig extends BaseController {
     private int revertDecisionTime;
 
     @PersistentProperty(defaultValue = "ebi")
-    private String theme;
+    private String theme = "ebi";
 
     public EditorConfig() {
     }

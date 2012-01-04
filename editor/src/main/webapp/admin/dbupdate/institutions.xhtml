@@ -3,7 +3,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
-                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:p="http://primefaces.org/ui"
 
                 template="/admin/admin_template.xhtml">
 
@@ -15,7 +15,7 @@
 
     <ui:define name="adminContent">
 
-        <p:tabView>
+        <p:tabView dynamic="true">
             <p:tab title="Institutions">
                 <p:commandButton value="New institution"
                                  action="#{institutionController.newInstitution()}" ajax="false"/>

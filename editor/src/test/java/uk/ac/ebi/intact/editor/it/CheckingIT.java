@@ -41,12 +41,13 @@ public class CheckingIT extends EditorIT {
         getCorePersister().saveOrUpdate(publication);
 
         goToExperimentPage(exp.getAc());
+
         loginAs("curator", driver);
 
         // When: I update the annotation text and click on save
         clickOnTheExperimentAnnotationsTab();
 
-        final String correctionCommentTextBoxId = "annotationsTable:0:0:annotationTxt";
+        final String correctionCommentTextBoxId = "experimentTabs:annotationsTable:0:annotationTxt_input";
         final WebElement correctionTextBox = driver.findElement(By.id(correctionCommentTextBoxId));
 
         correctionTextBox.click();
@@ -81,7 +82,7 @@ public class CheckingIT extends EditorIT {
         // When: I update the annotation text and click on save
         clickOnTheExperimentAnnotationsTab();
 
-        final String toBeReviewedTextBoxId = "annotationsTable:0:0:annotationTxt";
+        final String toBeReviewedTextBoxId = "experimentTabs:annotationsTable:0:annotationTxt_input";
         final WebElement toBeReviewedTextBox = driver.findElement(By.id(toBeReviewedTextBoxId));
         
         String oldToBeReviewed = toBeReviewedTextBox.getText();
@@ -116,6 +117,6 @@ public class CheckingIT extends EditorIT {
     }
 
     private void clickOnTheExperimentAnnotationsTab() {
-        driver.findElement(By.xpath("//div[@id='experimentTabs']/ul/li[3]/a/em")).click();
+        driver.findElement(By.xpath("//div[@id='experimentTabs']/ul/li[3]/a")).click();
     }
 }

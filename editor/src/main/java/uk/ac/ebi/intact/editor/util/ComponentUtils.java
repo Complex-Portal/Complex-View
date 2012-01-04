@@ -46,7 +46,8 @@ public final class ComponentUtils {
         writer.write(" }\n");
 
         for (String event : events) {
-            writer.write("YAHOO.util.Event.addListener('"+component.getClientId()+"', '"+event+"', "+callbackFunction+"); ");
+            String jQueryFriendlyId = component.getClientId().replaceAll(":", "\\\\\\\\:");
+            writer.write("$('#"+jQueryFriendlyId+"').bind('"+event+"', "+callbackFunction+"); ");
         }
 
         writer.endElement("script");

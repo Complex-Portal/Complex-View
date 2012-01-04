@@ -4,7 +4,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:p="http://primefaces.org/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
                 xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
 
@@ -115,13 +115,13 @@
 
             <br/>
 
-             <p:tabView id="featureTabs">
+             <p:tabView id="featureTabs" dynamic="true">
 
                 <p:tab title="Ranges (#{feature.ranges.size()})">
 
                     <div class="intact-buttonBar">
                         <p:inputText id="newRangeTxt" value="#{featureController.newRangeValue}" converter="trimmingConverter"/>
-                        <p:tooltip value="Type a range (e.g. '23-25') and then click the 'New Range' button" forElement="newRangeTxt" targetPosition="topRight" position="bottomLeft"/>
+                        <p:tooltip value="Type a range (e.g. '23-25') and then click the 'New Range' button" for="newRangeTxt" />
 
                         <p:commandButton value="New range" actionListener="#{featureController.newRange}" update="rangeTable messagesComponent"
                                 onclick="markAsUnsaved()" process="newRangeTxt"/>

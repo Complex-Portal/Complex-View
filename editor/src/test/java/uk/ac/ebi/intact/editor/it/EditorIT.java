@@ -79,14 +79,9 @@ public abstract class EditorIT extends IntactBasicTestCase {
         });
     }
 
-    protected void takeScreenshot(String filename, WebDriver driver) throws IOException {
+    protected void takeScreenshot(String filename) throws IOException {
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         FileUtils.copyFile(scrFile, new File(filename));
-        System.out.println(scrFile);
-    }
-
-    protected void willLoginAs(String login) {
-        IntactContext.getCurrentInstance().getUserContext().setUser(getDaoFactory().getUserDao().getByLogin(login));
     }
 
     protected void loginAs(String user, WebDriver driver) {

@@ -18,6 +18,8 @@ package uk.ac.ebi.intact.editor.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+import uk.ac.ebi.intact.model.IntactObject;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -28,7 +30,7 @@ import java.util.Map;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class HqlLazyDataModel<T> extends LazyDataModel<T> {
+public class HqlLazyDataModel<T extends IntactObject> extends LazyDataModel<T> {
 
     private static final Log log = LogFactory.getLog( HqlLazyDataModel.class );
 
@@ -54,14 +56,14 @@ public class HqlLazyDataModel<T> extends LazyDataModel<T> {
         this.var = var;
     }
 
-
-    public List<T> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
-        log.debug("Loading the lazy data between "+first+" and "+(first+pageSize));
+    @Override
+    public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
+        log.debug("Loading the lazy data between " + first + " and " + (first + pageSize));
 
         String queryToRun = hqlQuery;
 
         if (sortField != null) {
-            queryToRun = queryToRun+" order by "+var+"."+sortField+" "+(sortOrder? "asc" : "desc");
+            queryToRun = queryToRun+" order by "+var+"."+sortField+" "+(sortOrder == SortOrder.DESCENDING? "desc" : "asc");
         } else if (initialSortField != null) {
             queryToRun = queryToRun+" order by "+var+"."+initialSortField+" "+(initialSortOrder? "asc" : "desc");
         }
@@ -86,4 +88,6 @@ public class HqlLazyDataModel<T> extends LazyDataModel<T> {
 
         return results;
     }
+
+
 }
