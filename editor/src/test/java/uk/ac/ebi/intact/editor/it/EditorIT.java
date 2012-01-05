@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.it;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -28,6 +29,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.test.context.ContextConfiguration;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
+import uk.ac.ebi.intact.editor.it.util.ScreenShotOnFailureRule;
 import uk.ac.ebi.intact.model.user.User;
 
 import java.io.File;
@@ -51,10 +53,18 @@ public abstract class EditorIT extends IntactBasicTestCase {
     protected WebDriver driver;
     protected WebDriverWait wait;
 
+    @Rule
+    public ScreenShotOnFailureRule screenshotOnFailureRule = new ScreenShotOnFailureRule();
+
+    protected EditorIT() {
+    }
+
     @Before
     public void setUp() throws Exception {
         this.driver = new FirefoxDriver();
         wait = new WebDriverWait(driver, 30, 500);
+
+        screenshotOnFailureRule.setDriver(driver);
     }
 
     @After
@@ -98,5 +108,9 @@ public abstract class EditorIT extends IntactBasicTestCase {
 
     protected void goToExperimentPage(String ac) {
         driver.get(BASE_URL+"/experiment/"+ac);
+    }
+
+    protected WebDriver getDriver() {
+        return driver;
     }
 }

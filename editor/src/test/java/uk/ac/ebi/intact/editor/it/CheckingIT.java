@@ -48,7 +48,7 @@ public class CheckingIT extends EditorIT {
         clickOnTheExperimentAnnotationsTab();
 
         final String correctionCommentTextBoxId = "experimentTabs:annotationsTable:0:annotationTxt_input";
-        final WebElement correctionTextBox = driver.findElement(By.id(correctionCommentTextBoxId));
+        final WebElement correctionTextBox = waitAndFindElement(By.id(correctionCommentTextBoxId));
 
         correctionTextBox.click();
         correctionTextBox.clear();
@@ -82,8 +82,10 @@ public class CheckingIT extends EditorIT {
         // When: I update the annotation text and click on save
         clickOnTheExperimentAnnotationsTab();
 
+        System.out.println(driver.getPageSource());
+
         final String toBeReviewedTextBoxId = "experimentTabs:annotationsTable:0:annotationTxt_input";
-        final WebElement toBeReviewedTextBox = driver.findElement(By.id(toBeReviewedTextBoxId));
+        final WebElement toBeReviewedTextBox = waitAndFindElement(By.id(toBeReviewedTextBoxId));
         
         String oldToBeReviewed = toBeReviewedTextBox.getText();
 
@@ -117,6 +119,11 @@ public class CheckingIT extends EditorIT {
     }
 
     private void clickOnTheExperimentAnnotationsTab() {
-        driver.findElement(By.xpath("//div[@id='experimentTabs']/ul/li[3]/a")).click();
+        driver.findElement(By.xpath("//a[contains(@href, '#experimentTabs:annotationsTab')]")).click();
+    }
+
+    private WebElement waitAndFindElement(By by) {
+        waitUntilElementIsVisible(by);
+        return driver.findElement(by);
     }
 }
