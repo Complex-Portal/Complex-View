@@ -104,10 +104,17 @@ public abstract class EditorIT extends IntactBasicTestCase {
 
         return getDaoFactory().getUserDao().getByLogin(login);
     }
-
+    
+    protected void goToPageInContext(String path) {
+        driver.get(BASE_URL+path);
+    }
 
     protected void goToExperimentPage(String ac) {
-        driver.get(BASE_URL+"/experiment/"+ac);
+        goToPageInContext("/experiment/"+ac);
+    }
+
+    protected String titleForCurrentPage() {
+        return driver.getTitle();
     }
 
     protected WebDriver getDriver() {

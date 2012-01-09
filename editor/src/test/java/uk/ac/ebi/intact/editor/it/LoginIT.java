@@ -38,7 +38,7 @@ public class LoginIT extends EditorIT {
         loginAs("admin", driver);
 
         // Then: the page displayed should be the Dashboard
-        assertThat(driver.getTitle(), is(equalTo("Dashboard")));
+        assertThat(titleForCurrentPage(), is(equalTo("Dashboard")));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class LoginIT extends EditorIT {
         loginAs("lala", driver);
 
         // Then: the page displayed should be the Login
-        assertThat(driver.getTitle(), is(equalTo("Editor Login")));
+        assertThat(titleForCurrentPage(), is(equalTo("Editor Login")));
     }
 
 
