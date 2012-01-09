@@ -21,13 +21,10 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
-import uk.ac.ebi.intact.model.CvPublicationStatusType;
 import uk.ac.ebi.intact.model.Publication;
 
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
-import java.util.Arrays;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -63,7 +60,7 @@ public class DashboardController extends JpaAwareController {
 
         if (statusToShow.length == 0) {
             addWarningMessage("No statuses selected", "Using default status selection");
-            statusToShow = new String[] {"PL:0007", "PL:0008"};
+            statusToShow = new String[] {"PL:0004", "PL:0007", "PL:0008"};
         }
 
         StringBuilder statusToShowSql = new StringBuilder();

@@ -85,7 +85,7 @@ Feature: Detailed experiment view
     Then the figure legend should be "Fig. 3"
 
   Scenario: comment displayed
-    Given the figure legend should be displayed if present
+    Given comment should be displayed if present
     When I look at interaction with label prp17-sap61
     Then the comment should be "This interaction is very nice"
 

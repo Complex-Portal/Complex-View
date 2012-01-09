@@ -125,8 +125,7 @@
                                          onkeyup="handleReturnKey(event, 'topSearchBtn')"/>
                             <p:commandButton id="topSearchBtn" value="Search" action="#{searchController.doQuickSearch}"
                                              ajax="false"
-                                             process="queryTxt" global="true"
-                                             onclick="searchDialog.show()"/>
+                                             process="queryTxt" global="true"/>
                         </h:panelGrid>
 
                         <ia:loadingDialog widgetVar="searchDialog" message="Searching..."/>

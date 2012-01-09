@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
 import uk.ac.ebi.intact.core.unit.IntactMockBuilder;
 import uk.ac.ebi.intact.model.Annotation;
@@ -42,7 +41,7 @@ public class CheckingIT extends EditorIT {
 
         goToExperimentPage(exp.getAc());
 
-        loginAs("curator", driver);
+        loginAs("curator");
 
         // When: I update the annotation text and click on save
         clickOnTheExperimentAnnotationsTab();
@@ -77,7 +76,7 @@ public class CheckingIT extends EditorIT {
         getEntityManager().flush();
 
         goToExperimentPage(exp.getAc());
-        loginAs("reviewer", driver);
+        loginAs("reviewer");
 
         // When: I update the annotation text and click on save
         clickOnTheExperimentAnnotationsTab();

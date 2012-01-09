@@ -15,6 +15,10 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.experiment;
 
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.Experiment;
 
@@ -25,12 +29,18 @@ import javax.faces.event.ComponentSystemEvent;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-public class DetailedExperimentViewController extends JpaAwareController {
+@Controller
+@Scope( "conversation.access" )
+@ConversationName( "general" )
+public class ExperimentDetailedViewController extends JpaAwareController {
     
     private String ac;
     private ExperimentWrapper experimentWrapper;
 
-    public DetailedExperimentViewController() {
+    @Autowired
+    private ExperimentController experimentController;
+
+    public ExperimentDetailedViewController() {
     }
 
     public void loadData( ComponentSystemEvent event ) {
@@ -38,6 +48,7 @@ public class DetailedExperimentViewController extends JpaAwareController {
             if (ac != null) {
                 Experiment experiment = getDaoFactory().getExperimentDao().getByAc(ac);
                 this.experimentWrapper = new ExperimentWrapper(experiment, getDaoFactory().getEntityManager());
+                experimentController.setExperiment(experiment);
             }
         }
         

@@ -16,18 +16,17 @@
 package uk.ac.ebi.intact.editor.it;
 
 import org.apache.commons.io.FileUtils;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
-import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.test.context.ContextConfiguration;
-import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.editor.it.util.ScreenShotOnFailureRule;
 import uk.ac.ebi.intact.model.user.User;
@@ -94,7 +93,7 @@ public abstract class EditorIT extends IntactBasicTestCase {
         FileUtils.copyFile(scrFile, new File(filename));
     }
 
-    protected void loginAs(String user, WebDriver driver) {
+    protected void loginAs(String user) {
         driver.findElement(By.id("j_username")).sendKeys(user);
         driver.findElement(By.id("j_password_clear")).sendKeys(user);
         driver.findElement(By.id("login")).click();
@@ -117,7 +116,43 @@ public abstract class EditorIT extends IntactBasicTestCase {
         return driver.getTitle();
     }
 
+    protected String infoMessageSummary() {
+        final By infoMessage = By.xpath("//span[@class='ui-messages-info-summary']");
+        waitUntilElementIsVisible(infoMessage);
+        final WebElement info = driver.findElement(infoMessage);
+        return info.getText();
+    }
+
     protected WebDriver getDriver() {
         return driver;
+    }
+
+
+    protected Matcher<String> contains(final String substring) {
+        return new BaseMatcher<String>() {
+            @Override
+            public boolean matches(Object o) {
+                return o.toString().contains(substring);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("contains: ").appendValue(substring);
+            }
+        };
+    }
+
+    protected Matcher<String> startsWith(final String substring) {
+        return new BaseMatcher<String>() {
+            @Override
+            public boolean matches(Object o) {
+                return o.toString().startsWith(substring);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("starts with: ").appendValue(substring);
+            }
+        };
     }
 }

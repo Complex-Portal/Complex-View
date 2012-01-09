@@ -8,76 +8,18 @@
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
                 xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
 
-                template="/curate/curate_template.xhtml">
-
-    <ui:param name="annotatedObjectController" value="#{experimentController}"/>
+                template="/curate/experiment_template.xhtml">
 
     <ui:define name="metadata">
-        <f:metadata>
-            <f:viewParam name="ac" value="#{experimentController.ac}"/>
-            <f:event type="preRenderView" listener="#{experimentController.loadData}"/>
-            <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(experimentController)}"/>
-        </f:metadata>
+            <f:metadata>
+                <f:viewParam name="ac" value="#{experimentController.ac}"/>
+                <f:event type="preRenderView" listener="#{experimentController.loadData}"/>
+                <f:event type="preRenderView"
+                         listener="#{curateController.setCurrentAnnotatedObjectController(experimentController)}"/>
+            </f:metadata>
     </ui:define>
 
-    <ui:define name="topActionsPanel">
-        <p:commandButton value="Accept Experiment"
-                         styleClass="important-button-good"
-                         rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
-                         actionListener="#{experimentController.acceptExperiment}"
-                         action="/curate/experiment?faces-redirect=true&amp;includeViewParams=true"/>
-
-        <p:commandButton value="Reject Experiment" type="button"
-                         styleClass="important-button-bad"
-                         rendered="#{publicationController.readyForChecking and userSessionController.isItMe(publicationController.publication.currentReviewer)}"
-                         onclick="rejectExperimentDialog.show()"/>
-        <p:commandButton value="Correction Comment" type="button"
-                         styleClass="important-button-alt"
-                         rendered="#{publicationController.curationInProgress and userSessionController.isItMe(publicationController.publication.currentOwner)}"
-                         onclick="correctionCommentDialog.show()"/>
-    </ui:define>
-
-    <ui:define name="breadcrumbs">
-        <p:breadCrumb>
-            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publicationController.publication.shortLabel}"
-                        action="#{curateController.edit(publicationController.publication)}"
-                        process="@this"/>
-            <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{publicationController.publication.shortLabel} (#{publicationController.showCurationDepth})"
-                        action="#{curateController.edit(publicationController.publication)}"
-                        process="@this"/>
-            <p:menuitem value="#{experimentController.experiment.shortLabel}" process="@this"/>
-        </p:breadCrumb>
-    </ui:define>
-
-    <ui:define name="toolsContextual">
-        <p:menuitem value="Clone w/ Interactions" action="#{experimentController.cloneWithInteractions}" ajax="false"
-                    onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"/>
-        <p:menuitem value="Copy Publication annotations" actionListener="#{experimentController.copyPublicationAnnotations}"
-                    ajax="false"/>
-        <p:menuitem value="Move to Publication" ajax="true"
-                        onclick="moveToPublicationDialog.show()" />
-
-        <p:submenu label="Export">
-            <ui:include src="export_submenu.xhtml">
-                <ui:param name="slug" value="experiment"/>
-            </ui:include>
-        </p:submenu>
-
-    </ui:define>
-
-    <!--<ui:define name="reviewerContextual">-->
-        <!--<p:menuitem value="Accept experiment" actionListener="#{experimentController.acceptExperiment}"-->
-                        <!--update="centralUnit,topSection"/>-->
-        <!--<p:menuitem value="Reject experiment" onclick="rejectExperimentDialog.show()"/>-->
-    <!--</ui:define>-->
-
-    <ui:define name="curateContent">
-
-        <h:panelGroup rendered="#{experimentController.experiment == null}">
-            No experiment loaded!
-        </h:panelGroup>
-
-        <h:panelGroup rendered="#{experimentController.experiment != null}">
+    <ui:define name="experimentContent">
 
             <p:panel id="basic" header="Experiment Details">
 
@@ -207,70 +149,6 @@
             </p:tabView>
 
 
-        </h:panelGroup>
-
-     <!-- DIALOGS -->
-     <p:dialog header="Reject experiment" width="600" widgetVar="rejectExperimentDialog" draggable="false"
-                  modal="true" position="center">
-            <h:panelGrid columns="3" style="margin-bottom:10px">
-                    <h:outputLabel for="reasonRejTxt" value="Reason for rejection:"/>
-                    <p:inputTextarea id="reasonRejTxt" value="#{experimentController.reasonForRejection}" rows="4" cols="40"
-                                     autoResize="false"
-                                     converter="trimmingConverter"/>
-
-                    <p:commandButton value="Reject" actionListener="#{experimentController.rejectExperiment}"
-                                     process="reasonRejTxt" update="editorForm" oncomplete="rejectExperimentDialog.hide()"/>
-            </h:panelGrid>
-        </p:dialog>
-
-         <p:dialog header="Correction comment" width="600" widgetVar="correctionCommentDialog" draggable="false"
-                  modal="true" position="center">
-            <h:panelGrid columns="3" style="margin-bottom:10px">
-                    <h:outputLabel for="corrComTxt" value="Comment to reviewer:"/>
-                    <p:inputTextarea id="corrComTxt" value="#{experimentController.correctedComment}" rows="4" cols="40"
-                                     autoResize="false"
-                                     converter="trimmingConverter"/>
-
-                    <p:commandButton value="Add comment" actionListener="#{experimentController.addCorrectionComment}"
-                                     process="corrComTxt"
-                                     action="#{experimentController.doSave}"
-                                     ajax="false"/>
-            </h:panelGrid>
-        </p:dialog>
-
-
-        <!-- Move to Publication dialog -->
-        <p:dialog header="Move to Publication" width="400" widgetVar="moveToPublicationDialog" draggable="false"
-                  modal="true" position="center">
-            <h:panelGrid columns="3" style="margin-bottom:10px">
-                    <h:outputLabel for="pubToMove" value="Publication AC or PMID:"/>
-                    <p:inputText id="pubToMove" value="#{experimentController.publicationToMoveTo}" converter="trimmingConverter"/>
-
-                    <p:commandButton value="Move" action="#{experimentController.moveToPublication}"
-                                     process="pubToMove"
-                                     ajax="false" oncomplete="moveToPublicationDialog.hide()"/>
-            </h:panelGrid>
-        </p:dialog>
-
-        <!-- All experiments accepted/rejected -->
-        <p:dialog header="Decision about publication" width="400" widgetVar="publicationActionDlg" draggable="false"
-                  modal="true" position="center">
-            <h:panelGroup style="margin-bottom:10px">
-                    <h:outputText value="Some experiments are still rejected. What do you want to do?"/>
-
-                <br/>
-
-                    <p:commandButton value="Reject publication (back to curator)" actionListener="#{publicationController.rejectPublication}"
-                                     action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"
-                                     process="pubToMove"
-                                     ajax="false" />
-
-                   <p:commandButton value="Continue reviewing" action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"
-                                     ajax="false" />
-
-            </h:panelGroup>
-        </p:dialog>
-
-    </ui:define>
+     </ui:define>
 
 </ui:composition>

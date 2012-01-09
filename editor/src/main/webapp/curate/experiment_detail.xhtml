@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ia="http://java.sun.com/jsf/composite/components/intact"
+                xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
+
+                template="/curate/experiment_template.xhtml">
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="ac" value="#{experimentDetailedViewController.ac}"/>
+            <f:event type="preRenderView" listener="#{experimentDetailedViewController.loadData}"/>
+            <f:event type="preRenderView"
+                     listener="#{curateController.setCurrentAnnotatedObjectController(experimentController)}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="experimentContent">
+         EXPERIMENT DETAIL!
+    </ui:define>
+
+
+</ui:composition>

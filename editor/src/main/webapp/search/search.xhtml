@@ -130,7 +130,7 @@
 
             <p:dataTable id="searchMoleculeTable" var="molecule" value="#{searchController.molecules}"
                          paginator="#{searchController.molecules.rowCount > 10}"
-                         rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
+                         rows="10" dynamic="true" paginatorPosition="bottom">
                 <p:column headerText="AC">
                     <h:link outcome="/curate/interactor" value="#{molecule.ac}" includeViewParams="true">
                         <f:param name="ac" value="#{molecule.ac}"/>
@@ -166,7 +166,7 @@
 
               <p:dataTable id="searchCvObjectTable" var="cvobject" value="#{searchController.cvobjects}"
                          paginator="#{searchController.cvobjects.rowCount > 10}"
-                         rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
+                         rows="10" dynamic="true" paginatorPosition="bottom">
                 <p:column headerText="Name" sortBy="#{cvobject.shortLabel}">
                     <h:link outcome="/curate/cvobject" value="#{cvobject.shortLabel}" includeViewParams="true">
                         <f:param name="ac" value="#{cvobject.ac}"/>
@@ -195,7 +195,7 @@
 
               <p:dataTable id="searchFeaturesTable" var="feature" value="#{searchController.features}"
                          paginator="#{searchController.features.rowCount > 10}"
-                         rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
+                         rows="10" dynamic="true" paginatorPosition="bottom">
                 <p:column headerText="Name" sortBy="#{feature.shortLabel}">
                     <ot:separateConversationContext>
                         <h:link outcome="/curate/feature" value="#{feature.ac}" includeViewParams="true">
@@ -220,7 +220,7 @@
 
               <p:dataTable id="organismFeaturesTable" var="organism" value="#{searchController.organisms}"
                          paginator="#{searchController.organisms.rowCount > 10}"
-                         rows="10" dynamic="true" lazy="true" paginatorPosition="bottom">
+                         rows="10" dynamic="true" paginatorPosition="bottom">
                 <p:column headerText="Shortlabel" sortBy="#{organism.shortLabel}">
                     <h:link outcome="/curate/organism" value="#{organism.shortLabel}" includeViewParams="true">
                         <f:param name="ac" value="#{organism.ac}"/>

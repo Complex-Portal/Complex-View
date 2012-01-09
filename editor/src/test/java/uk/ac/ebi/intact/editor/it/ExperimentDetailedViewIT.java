@@ -1,20 +1,8 @@
 package uk.ac.ebi.intact.editor.it;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.springframework.beans.factory.annotation.Autowired;
-import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
-import uk.ac.ebi.intact.core.unit.IntactMockBuilder;
-import uk.ac.ebi.intact.model.Annotation;
-import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.Publication;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -29,6 +17,7 @@ import static org.junit.Assert.assertTrue;
  * @since <pre>14/12/11</pre>
  */
 
+@Ignore
 public class ExperimentDetailedViewIT extends EditorIT {
 
     @Test
@@ -40,7 +29,7 @@ public class ExperimentDetailedViewIT extends EditorIT {
         clickOnLinkWithText("dre4-luc7");
 
         // Then I should navigate to the page for interaction with label dre4-luc7
-        assertThat(titleForCurrentPage(), contains("Interaction: dre4-luc7"));
+        assertThat(titleForCurrentPage(), startsWith("Interaction: dre4-luc7"));
     }
 
     @Test
@@ -52,14 +41,26 @@ public class ExperimentDetailedViewIT extends EditorIT {
         clickOnLinkWithText("O59734");
 
         // Then I should navigate to the page for interaction with label dre4-luc7
-        assertThat(titleForCurrentPage(), contains("Participant: O59734"));
+        assertThat(titleForCurrentPage(), startsWith("Participant: O59734"));
+    }
+    
+    @Test
+    public void navigateToExperimentPage() throws Exception {
+        // Given I want to go to the experiment page
+        goToExperimentDetailedViewPageFor("ren-2011-1");
+
+        // When I click on the navigation element to the experiment page
+        clickOnGoToExperimentPage();
+
+        // Then I should go to the experiment page
+        assertThat(titleForCurrentPage(), startsWith("Experiment: ren-2011-1"));
     }
 
     @Test
     public void interactionsArePaginated() throws Exception {
         // Given bigexp-2012-1 is an experiment with 60 interactions
         // And the default number of interactions per page is 50
-        
+
         // When I am in the detailed page for that experiment
         goToExperimentDetailedViewPageFor("bigexp-2012-1");
 
@@ -70,6 +71,50 @@ public class ExperimentDetailedViewIT extends EditorIT {
         assertTrue(paginatorIsPresent());
     }
 
+    @Test
+    public void figureLegendDisplayed() throws Exception {
+        // Given the figure legend should be displayed if present
+        // When I look at interaction with label dre4-luc7
+        // Then the figure legend should be "Fig. 3"
+        assertThat(figureLegendForInteraction("dre4-luc7"), is(equalTo("Fig. 3")));
+    }
+
+    @Test
+    public void commentDisplayed() throws Exception {
+        // Given comment should be displayed if present
+        // When I look at interaction with label prp17-sap61
+        // Then the comment should be "This interaction is very nice"
+        assertThat(commentForInteraction("prp17-sap61"), is(equalTo("This interaction is very nice")));
+    }
+
+    @Test
+    public void oneFeatureInParticipant() throws Exception {
+        // Given a comma-separated list of features is shown for the participants
+        // When I look at the participant Q09685 in interaction with label dre4-luc7
+        // Then the features should be "region[?-?]"
+        assertThat(featuresForParticipant("Q09685"), is(equalTo("region[?-?]")));
+    }
+
+    @Test
+    public void multipleFeaturesInParticipants() throws Exception {
+        // Given a comma-separated list of features is shown for the participants
+        // When I look at the participant O13615 in interaction with label dre4-luc7
+        // Then the features should be "mut[5-6], region[1-4]"
+        assertThat(featuresForParticipant("O13615"), is(equalTo("mut[5-6], region[1-4]")));
+    }
+
+    @Test
+    public void iconForLinkedFeature() throws Exception {
+        // Given an icon is displayed for linked features
+        // When I look at the features for participant O14011 in interaction with label dre4-luc7
+        // Then the "linked-feature" icon should be displayed after the feature
+        assertTrue(linkedFeatureIconIsPresentIn("014011"));
+    }
+
+    private void clickOnGoToExperimentPage() {
+
+    }
+
     private int interactionsInThePage() {
         return 0;
     }
@@ -78,25 +123,27 @@ public class ExperimentDetailedViewIT extends EditorIT {
         return false;
     }
 
-    private Matcher<String> contains(final String substring) {
-        return new BaseMatcher<String>() {
-            @Override
-            public boolean matches(Object o) {
-                return o.toString().contains(substring);
-            }
+    private String figureLegendForInteraction(String interactionLabel) {
+        return null;
+    }
 
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("contains: ");
-            }
-        };
+    private String commentForInteraction(String interactionLabel) {
+        return null;
+    }
+
+    private String featuresForParticipant(String participantPrimaryId) {
+        return null;
+    }
+
+    private boolean linkedFeatureIconIsPresentIn(String participantPrimaryId) {
+        return false;
     }
 
     private void goToExperimentDetailedViewPageFor(String experimentLabel) {
         Experiment exp = getDaoFactory().getExperimentDao().getByShortLabel(experimentLabel);
-        goToPageInContext("/experiment/"+exp.getAc());
+        goToPageInContext("/expdetail/" + exp.getAc());
 
-        loginAs("curator", driver);
+        loginAs("curator");
     }
 
     private void clickOnLinkWithText(String linkText) {

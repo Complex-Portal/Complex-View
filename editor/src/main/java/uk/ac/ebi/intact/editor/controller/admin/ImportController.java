@@ -14,9 +14,7 @@ import javax.faces.event.ActionEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -45,32 +43,35 @@ public class ImportController extends BaseController {
     }
 
     public void startImport(ActionEvent evt) {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-
         final PsiExchange psiExchange = PsiExchangeFactory.createPsiExchange(IntactContext.getCurrentInstance().getSpringContext());
 
+//        ExecutorService executorService = Executors.newSingleThreadExecutor();
+//
+//
         for (final URL url : urlsToImport) {
-            Runnable runnable = new Runnable() {
-                public void run() {
+//            Runnable runnable = new Runnable() {
+//                public void run() {
                     try {
                         if (log.isInfoEnabled()) log.info("Importing: "+url);
                         psiExchange.importIntoIntact(url.openStream());
                     } catch (IOException e) {
-                        throw new RuntimeException("Problem importing: "+url, e);
+                        handleException(e);
+                        return;
                     }
-                }
-            };
-
-            executorService.submit(runnable);
+//                }
+//            };
+//
+//            executorService.submit(runnable);
         }
-
-        executorService.shutdown();
-
-        try {
-            executorService.awaitTermination(1, TimeUnit.HOURS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//
+//        executorService.shutdown();
+//
+//        try {
+//            executorService.awaitTermination(1, TimeUnit.HOURS);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        addInfoMessage("File successfully imported", Arrays.asList(urlsToImport).toString());
     }
 
     public URL[] getUrlsToImport() {

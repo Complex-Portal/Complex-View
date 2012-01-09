@@ -40,6 +40,7 @@
                     <!--<p:ajax event="valueChange" update="publicationDashboard" listener="#{dashboardController.refreshTables()}" />-->
                 <!--</h:selectBooleanCheckbox>-->
                 <h:selectManyCheckbox id="selStatus" value="#{dashboardController.statusToShow}">
+                    <f:selectItem itemLabel="New" itemValue="PL:0004"/>
                     <f:selectItem itemLabel="Curation in progress" itemValue="PL:0007"/>
                     <f:selectItem itemLabel="Ready for checking" itemValue="PL:0008"/>
                     <!--<f:selectItem itemLabel="Accepted" itemValue="PL:0009"/>-->
