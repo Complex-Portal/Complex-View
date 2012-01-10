@@ -10,6 +10,8 @@
 
                 template="/curate/experiment_template.xhtml">
 
+    <ui:param name="title" value="#{experimentController.experiment != null? 'Experiment Details: ' : ''}: #{experimentController.experiment != null? experimentController.experiment.shortLabel : ''} | Curate | Editor"/>
+
     <ui:define name="metadata">
         <f:metadata>
             <f:viewParam name="ac" value="#{experimentDetailedViewController.ac}"/>
@@ -20,7 +22,43 @@
     </ui:define>
 
     <ui:define name="experimentContent">
-         EXPERIMENT DETAIL!
+         <p:panel header="Experiment: #{experimentDetailedViewController.experimentWrapper.experiment.shortLabel}">
+             <p:dataList id="interactionDataList" var="interaction"
+                         value="#{experimentDetailedViewController.experimentWrapper.experiment.interactions}"
+                         type="definition"
+                         paginatorAlwaysVisible="false" paginator="true" rows="50">
+
+                 <div class="interaction-item">
+
+                 <p:column>
+                     <h:outputText value="Interaction: "/>
+
+                     <p:commandLink id="interactionLink"
+                                    styleClass="#{interaction.shortLabel}" onclick="load_int.show()"
+                                    action="/curate/interaction?faces-redirect=true&amp;includeViewParams=true"
+                                    value="#{interaction.shortLabel}" ajax="false">
+                         <f:setPropertyActionListener value="#{interaction}"
+                                                      target="#{interactionController.interaction}"/>
+                     </p:commandLink>
+                 </p:column>
+
+                 <f:facet name="description">
+                     <h:panelGroup
+                             rendered="#{experimentDetailedViewController.figureLegendForInteraction(interaction) != null}">
+                         <p>
+                             Fig. legend: <h:outputText styleClass="fig-legend-value #{interaction.shortLabel}"
+                                 value="#{experimentDetailedViewController.figureLegendForInteraction(interaction)}"/>
+                         </p>
+                     </h:panelGroup>
+                 </f:facet>
+
+                 </div>
+
+             </p:dataList>
+         </p:panel>
+
+        <ia:loadingDialog widgetVar="load_int" message="Loading interaction..."/>
+        <ia:loadingDialog widgetVar="load_participant" message="Loading participant..."/>
     </ui:define>
 
 

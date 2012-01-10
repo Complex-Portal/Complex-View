@@ -67,7 +67,7 @@ public class DataPopulator implements InitializingBean {
 
         createBioSourceHuman(mockBuilder);
         createPublication(createPublication_Ren2011_simplified(mockBuilder));
-//        createPublicationWithManyInteractions(mockBuilder, 60);
+        createPublicationWithManyInteractions(mockBuilder, 55);
 
         User curator = mockBuilder.createCurator("curator", "CuratorName", "CuratorLast", "curator@example.com");
         curator.setPassword("103b9534772356f52e338307c9cf42294a3f28f7");

@@ -1,13 +1,13 @@
 package uk.ac.ebi.intact.editor.it;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import uk.ac.ebi.intact.model.Experiment;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * TODO comment this
@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
  * @since <pre>14/12/11</pre>
  */
 
-@Ignore
 public class ExperimentDetailedViewIT extends EditorIT {
 
     @Test
@@ -57,8 +56,23 @@ public class ExperimentDetailedViewIT extends EditorIT {
     }
 
     @Test
-    public void interactionsArePaginated() throws Exception {
-        // Given bigexp-2012-1 is an experiment with 60 interactions
+    public void interactionsNotPaginatedWhenLessThan50() throws Exception {
+        // Given ren-2011-1 is an experiment with less than 50 interactions
+        // And the default number of interactions per page is 50
+
+        // When I am in the detailed page for that experiment
+        goToExperimentDetailedViewPageFor("ren-2011-1");
+
+        // Then I whould see only 50 interactions
+        assertThat(interactionsInThePage(), is(equalTo(3)));
+
+        // And the paginator to navigate to other results
+        assertFalse(paginatorIsPresent());
+    }
+
+    @Test
+    public void interactionsArePaginatedWhenMoreThan50() throws Exception {
+        // Given bigexp-2012-1 is an experiment with more than 50 interactions
         // And the default number of interactions per page is 50
 
         // When I am in the detailed page for that experiment
@@ -112,31 +126,33 @@ public class ExperimentDetailedViewIT extends EditorIT {
     }
 
     private void clickOnGoToExperimentPage() {
-
+        throw new UnsupportedOperationException();
     }
 
     private int interactionsInThePage() {
-        return 0;
+        return driver.findElements(By.xpath("//div[@class='interaction-item']")).size();
     }
 
     private boolean paginatorIsPresent() {
-        return false;
+        return isElementPresent(By.xpath("//div[@id='interactionDataList_paginator_top']"));
     }
 
     private String figureLegendForInteraction(String interactionLabel) {
-        return null;
+        final WebElement element = driver.findElement(By.xpath("//span[@class='fig-legend-value "+interactionLabel+"']"));
+        return element.getText();
     }
 
     private String commentForInteraction(String interactionLabel) {
-        return null;
+        final WebElement element = driver.findElement(By.xpath("//span[@class='comment-value "+interactionLabel+"']"));
+        return element.getText();
     }
 
     private String featuresForParticipant(String participantPrimaryId) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     private boolean linkedFeatureIconIsPresentIn(String participantPrimaryId) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     private void goToExperimentDetailedViewPageFor(String experimentLabel) {
@@ -147,7 +163,7 @@ public class ExperimentDetailedViewIT extends EditorIT {
     }
 
     private void clickOnLinkWithText(String linkText) {
-
+        driver.findElement(By.linkText(linkText)).click();
     }
 
 

@@ -174,9 +174,11 @@
                         <p:messages showSummary="true" showDetail="true"/>
                     </h:panelGroup>
 
-                    <div id="contentSection" style="width:100%">
+                    <h:panelGroup id="contentSection">
+                        <div style="width:100%">
                             <ui:insert name="content"/>
                         </div>
+                    </h:panelGroup>
 
                         <div id="footerSection" style="width:100%">
                             <ui:insert name="footer"/>

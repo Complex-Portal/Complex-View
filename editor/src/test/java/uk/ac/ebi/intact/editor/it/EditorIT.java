@@ -116,6 +116,15 @@ public abstract class EditorIT extends IntactBasicTestCase {
         return driver.getTitle();
     }
 
+    protected boolean isElementPresent(By by) {
+        try {
+            driver.findElement(by);
+            return true;
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
     protected String infoMessageSummary() {
         final By infoMessage = By.xpath("//span[@class='ui-messages-info-summary']");
         waitUntilElementIsVisible(infoMessage);

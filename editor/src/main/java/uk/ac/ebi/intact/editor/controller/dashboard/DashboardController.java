@@ -34,6 +34,7 @@ import javax.faces.event.ComponentSystemEvent;
 @Scope( "session" )
 public class DashboardController extends JpaAwareController {
 
+    private static final String[] DEFAULT_STATUS_SHOWN = new String[]{"PL:0004", "PL:0007", "PL:0008"};
     private LazyDataModel<Publication> allPublications;
     private LazyDataModel<Publication> ownedByUser;
     private LazyDataModel<Publication> reviewedByUser;
@@ -44,7 +45,7 @@ public class DashboardController extends JpaAwareController {
     public DashboardController() {
         hideAcceptedAndReleased = true;
 
-        statusToShow = new String[] {"PL:0007", "PL:0008"};
+        statusToShow = DEFAULT_STATUS_SHOWN;
     }
 
     @SuppressWarnings("unchecked")
@@ -60,7 +61,7 @@ public class DashboardController extends JpaAwareController {
 
         if (statusToShow.length == 0) {
             addWarningMessage("No statuses selected", "Using default status selection");
-            statusToShow = new String[] {"PL:0004", "PL:0007", "PL:0008"};
+            statusToShow = DEFAULT_STATUS_SHOWN;
         }
 
         StringBuilder statusToShowSql = new StringBuilder();
