@@ -71,12 +71,10 @@ public class DataPopulator implements InitializingBean {
 
         User curator = mockBuilder.createCurator("curator", "CuratorName", "CuratorLast", "curator@example.com");
         curator.setPassword("103b9534772356f52e338307c9cf42294a3f28f7");
-
         corePersister.saveOrUpdate(curator);
 
         User reviewer = mockBuilder.createReviewer("reviewer", "ReviewerName", "ReviewerLast", "reviewer@example.com");
         reviewer.setPassword("0b7cec9c67d6e0cfa008efe01c74ab89b5c5513f");
-
         corePersister.saveOrUpdate(reviewer);
 
 //        importXmlDataAs(curator);
