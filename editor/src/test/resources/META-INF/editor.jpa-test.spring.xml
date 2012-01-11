@@ -55,7 +55,7 @@
     </bean>
 
     <bean id="coreDataSource" class="org.apache.commons.dbcp.BasicDataSource">
-        <property name="url" value="jdbc:h2:tcp:localhost:39101/intact-editor"/>
+        <property name="url" value="jdbc:h2:tcp:localhost:39101/intact-editor;DB_CLOSE_DELAY=-1;LOCK_MODE=0"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
         <property name="driverClassName" value="org.h2.Driver"/>

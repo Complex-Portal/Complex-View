@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionStatus;
 import psidev.psi.mi.xml.PsimiXmlReader;
 import psidev.psi.mi.xml.PsimiXmlReaderException;
 import psidev.psi.mi.xml.model.EntrySet;
@@ -30,32 +31,47 @@ import java.util.ArrayList;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller
-@DependsOn("intactInitializer")
-public class DataPopulator implements InitializingBean {
+public class DataPopulator {
     private static final Log log = LogFactory.getLog(DataPopulator.class);
 
-    @Autowired
     private IntactContext intactContext;
 
-    @Autowired
     private CorePersister corePersister;
 
-    @Autowired
     private DaoFactory daoFactory;
 
-    @Autowired
     private CvUpdater cvUpdater;
 
-    @Autowired
     private LifecycleManager lifecycleManager;
 
-    @Autowired
     private PsiExchange psiExchange;
 
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    public DataPopulator(IntactContext intactContext) {
+        this.intactContext = intactContext;
+        this.corePersister = intactContext.getCorePersister();
+        this.daoFactory = intactContext.getDaoFactory();
+        this.cvUpdater = (CvUpdater) intactContext.getSpringContext().getBean("cvUpdater");
+        this.lifecycleManager = intactContext.getLifecycleManager();
+        this.psiExchange = (PsiExchange) intactContext.getSpringContext().getBean("psiExchange");
+    }
+
+    public static void main(String[] args) throws Exception {
+        IntactContext.initContext(new String[]{"classpath*:/META-INF/intact-batch.spring.xml",
+                "classpath*:/META-INF/editor-test.spring.xml",
+                "classpath*:/META-INF/editor.jpa-test.spring.xml"});
+
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
+        DataPopulator dataPopulator = new DataPopulator(IntactContext.getCurrentInstance());
+        dataPopulator.populateTestData();
+
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+
+        IntactContext.getCurrentInstance().destroy();
+    }
+
+    public void populateTestData() throws Exception {
         log.info("POPULATING TEST DATA...");
 
         User admin = daoFactory.getUserDao().getByLogin("admin");
