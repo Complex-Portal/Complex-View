@@ -162,12 +162,13 @@ public class PsicquicController extends BaseController {
         String url = null;
 
         try {
-            HttpClient httpClient = intactViewConfiguration.getHttpClient(true);
 
             String encoded = URLEncoder.encode(query, "UTF-8");
             encoded = encoded.replaceAll("\\+", "%20");
 
             url = service.getRestUrl()+"query/"+ encoded +"?format=count";
+
+            HttpClient httpClient = intactViewConfiguration.getHttpClientBasedOnUrl(url);
 
             HttpMethod method = new GetMethod(url);
             final int returnCode = httpClient.executeMethod(method);

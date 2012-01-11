@@ -116,7 +116,8 @@ public class IntactViewConfiguration extends BaseController implements Initializ
 
     private CommonsHttpSolrServer solrServer;
     private CommonsHttpSolrServer ontologySolrServer;
-    private HttpClient httpClient;
+    private HttpClient httpClientWithProxy;
+    private HttpClient httpClientWithoutProxy;
 
     public IntactViewConfiguration() {
     }
@@ -448,7 +449,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     }
 
     private CommonsHttpSolrServer createSolrServer(String solrUrl) throws MalformedURLException {
-        HttpClient httpClient = getHttpClient(!solrUrl.contains("localhost"));
+        HttpClient httpClient = getHttpClientBasedOnUrl(solrUrl);
 
         CommonsHttpSolrServer solrServer = new CommonsHttpSolrServer(solrUrl, httpClient);
         solrServer.setMaxTotalConnections(128);
@@ -458,12 +459,19 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         return solrServer;
     }
 
-    public HttpClient getHttpClient(boolean useProxyIfConfigured) {
-        if (httpClient == null) {
-            httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
+    public HttpClient getHttpClientBasedOnUrl(String url) {
+        if (url.contains("localhost")) {
+            return getHttpClientWithoutProxy();
+        }
+        return getHttpClientWithProxy();
+    }
 
-            if (useProxyIfConfigured && isValueSet(proxyHost) && isValueSet(proxyPort)) {
-                httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+    protected HttpClient getHttpClientWithProxy() {
+        if (httpClientWithProxy == null) {
+            httpClientWithProxy = new HttpClient(new MultiThreadedHttpConnectionManager());
+
+            if (isValueSet(proxyHost) && isValueSet(proxyPort)) {
+                httpClientWithProxy.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
 
                 log.info("Setting HTTPClient using proxy: " + proxyHost + ":" + proxyPort);
             } else {
@@ -472,7 +480,15 @@ public class IntactViewConfiguration extends BaseController implements Initializ
 
         }
 
-        return httpClient;
+        return httpClientWithProxy;
+    }
+
+    protected HttpClient getHttpClientWithoutProxy() {
+        if (httpClientWithoutProxy == null) {
+            httpClientWithoutProxy = new HttpClient(new MultiThreadedHttpConnectionManager());
+        }
+
+        return httpClientWithProxy;
     }
 
     public void setSolrOntologiesUrl(String solrOntologiesUrl) {
@@ -546,4 +562,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     public void setMaxSizeXgmmlExport(int maxSizeXgmmlExport) {
         this.maxSizeXgmmlExport = maxSizeXgmmlExport;
     }
+
+
 }
