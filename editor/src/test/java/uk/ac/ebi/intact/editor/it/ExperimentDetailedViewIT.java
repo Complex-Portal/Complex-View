@@ -88,6 +88,8 @@ public class ExperimentDetailedViewIT extends EditorIT {
     @Test
     public void figureLegendDisplayed() throws Exception {
         // Given the figure legend should be displayed if present
+        goToExperimentDetailedViewPageFor("ren-2011-1");
+
         // When I look at interaction with label dre4-luc7
         // Then the figure legend should be "Fig. 3"
         assertThat(figureLegendForInteraction("dre4-luc7"), is(equalTo("Fig. 3")));
