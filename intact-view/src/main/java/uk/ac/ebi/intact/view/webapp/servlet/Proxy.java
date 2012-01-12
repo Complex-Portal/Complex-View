@@ -23,34 +23,35 @@ public class Proxy extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String url = req.getParameter("url");
-        if (url == null) {
-            throw new ServletException("Parameter 'url' was expected");
-        }
+        try {
+            String url = req.getParameter("url");
+            if (url == null) {
+                throw new ServletException("Parameter 'url' was expected");
+            }
 
-        url = URLDecoder.decode(url, "UTF-8");
-        externalRequest(url, resp.getWriter());
+            url = URLDecoder.decode(url, "UTF-8");
+            externalRequest(url, resp.getWriter());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // the jsonExporter also acts as an Proxy for the internal javascript AJAX requests
     private void externalRequest(String url, Writer outputWriter) throws IOException {
         final IntactViewConfiguration configuration = (IntactViewConfiguration) IntactContext.getCurrentInstance().getSpringContext().getBean("intactViewConfiguration");
 
-        try {
-            HttpClient client = configuration.getHttpClientBasedOnUrl(url);
-            GetMethod method = new GetMethod(url);
+        HttpClient client = configuration.getHttpClientBasedOnUrl(url);
+        GetMethod method = new GetMethod(url);
 
-            int statusCode = client.executeMethod(method);
-            InputStream inputStream = method.getResponseBodyAsStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        int statusCode = client.executeMethod(method);
+        InputStream inputStream = method.getResponseBodyAsStream();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-            String line = "";
-            while ((line = bufferedReader.readLine()) != null){
-                outputWriter.append(line);
-            }
-            bufferedReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        String line = "";
+        while ((line = bufferedReader.readLine()) != null) {
+            outputWriter.append(line);
         }
+        bufferedReader.close();
     }
 }
