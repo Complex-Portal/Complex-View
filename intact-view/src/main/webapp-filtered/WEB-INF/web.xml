@@ -385,15 +385,15 @@
     </session-config>
 
     <!-- Handling of the HTTP error 404(Not found) and 500(internal server error)-->
-    <error-page>
-        <error-code>404</error-code>
-        <location>/error/404.xhtml</location>
-    </error-page>
+    <!--<error-page>-->
+        <!--<error-code>404</error-code>-->
+        <!--<location>/error/404.xhtml</location>-->
+    <!--</error-page>-->
 
-    <error-page>
-        <error-code>500</error-code>
-        <location>/error/500.xhtml</location>
-    </error-page>
+    <!--<error-page>-->
+        <!--<error-code>500</error-code>-->
+        <!--<location>/error/500.xhtml</location>-->
+    <!--</error-page>-->
 
     <error-page>
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>
