@@ -460,7 +460,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     }
 
     public HttpClient getHttpClientBasedOnUrl(String url) {
-        if (url.contains("localhost") || url.contains("hx-") || url.contains("ebi.ac.uk") || url.contains("127.0.0.1")) {
+        if (url.contains("localhost") || url.contains("127.0.0.1")) {
             return getHttpClientWithoutProxy();
         }
         return getHttpClientWithProxy();
