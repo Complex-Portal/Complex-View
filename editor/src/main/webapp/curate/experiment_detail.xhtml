@@ -23,6 +23,11 @@
 
     <ui:define name="experimentContent">
          <p:panel header="Experiment: #{experimentDetailedViewController.experimentWrapper.experiment.shortLabel}">
+
+             <p:commandLink id="goBackExp" value="Go to the Experiment" action="/curate/experiment?faces-redirect=true&amp;includeViewParams=true"
+                            ajax="false"/>
+
+
              <p:dataList id="interactionDataList" var="interaction"
                          value="#{experimentDetailedViewController.experimentWrapper.experiment.interactions}"
                          type="definition"

@@ -128,7 +128,7 @@ public class ExperimentDetailedViewIT extends EditorIT {
     }
 
     private void clickOnGoToExperimentPage() {
-        throw new UnsupportedOperationException();
+        driver.findElement(By.id("goBackExp")).click();
     }
 
     private int interactionsInThePage() {

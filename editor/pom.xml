@@ -252,7 +252,7 @@
                                     <maxIdleTime>600000</maxIdleTime>
                                 </connector>
                             </connectors>
-                            <scanIntervalSeconds>0</scanIntervalSeconds>
+                            <scanIntervalSeconds>5</scanIntervalSeconds>
                             <webAppConfig>
                                 <contextPath>${jetty.contextPath}</contextPath>
                                 <jettyEnvXml>${build.outputDirectory}/META-INF/jetty-env.xml</jettyEnvXml>
