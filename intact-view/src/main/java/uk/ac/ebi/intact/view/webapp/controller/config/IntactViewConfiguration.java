@@ -488,7 +488,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
             httpClientWithoutProxy = new HttpClient(new MultiThreadedHttpConnectionManager());
         }
 
-        return httpClientWithProxy;
+        return httpClientWithoutProxy;
     }
 
     public void setSolrOntologiesUrl(String solrOntologiesUrl) {
