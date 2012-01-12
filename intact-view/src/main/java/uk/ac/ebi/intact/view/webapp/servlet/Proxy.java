@@ -2,6 +2,8 @@ package uk.ac.ebi.intact.view.webapp.servlet;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,7 +34,9 @@ public class Proxy extends HttpServlet {
 
     // the jsonExporter also acts as an Proxy for the internal javascript AJAX requests
     private void externalRequest(String url, Writer outputWriter) throws IOException {
-        HttpClient client = new HttpClient();
+        final IntactViewConfiguration configuration = (IntactViewConfiguration) IntactContext.getCurrentInstance().getSpringContext().getBean("intactViewConfiguration");
+
+        HttpClient client = configuration.getHttpClientBasedOnUrl(url);
         GetMethod method = new GetMethod(url);
 
         int statusCode = client.executeMethod(method);
