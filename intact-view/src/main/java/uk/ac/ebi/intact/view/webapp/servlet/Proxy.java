@@ -36,17 +36,21 @@ public class Proxy extends HttpServlet {
     private void externalRequest(String url, Writer outputWriter) throws IOException {
         final IntactViewConfiguration configuration = (IntactViewConfiguration) IntactContext.getCurrentInstance().getSpringContext().getBean("intactViewConfiguration");
 
-        HttpClient client = configuration.getHttpClientBasedOnUrl(url);
-        GetMethod method = new GetMethod(url);
+        try {
+            HttpClient client = configuration.getHttpClientBasedOnUrl(url);
+            GetMethod method = new GetMethod(url);
 
-        int statusCode = client.executeMethod(method);
-        InputStream inputStream = method.getResponseBodyAsStream();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            int statusCode = client.executeMethod(method);
+            InputStream inputStream = method.getResponseBodyAsStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-        String line = "";
-        while ((line = bufferedReader.readLine()) != null){
-            outputWriter.append(line);
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null){
+                outputWriter.append(line);
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        bufferedReader.close();
     }
 }
