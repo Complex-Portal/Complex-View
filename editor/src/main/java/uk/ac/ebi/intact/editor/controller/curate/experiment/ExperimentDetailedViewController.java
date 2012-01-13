@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.Annotation;
+import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
@@ -42,6 +43,7 @@ public class ExperimentDetailedViewController extends JpaAwareController {
 
     @Autowired
     private ExperimentController experimentController;
+    private String commentForInteraction;
 
     public ExperimentDetailedViewController() {
     }
@@ -58,9 +60,19 @@ public class ExperimentDetailedViewController extends JpaAwareController {
     }
 
     public String figureLegendForInteraction(Interaction interaction) {
+        return findAnnotationText(interaction, "MI:0599");
+    }
+
+
+
+    public String commentForInteraction(Interaction interaction) {
+        return findAnnotationText(interaction, CvTopic.COMMENT_MI_REF);
+    }
+
+    private String findAnnotationText(Interaction interaction, String miOrLabel) {
         if (interaction == null) return null;
 
-        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(interaction, "MI:0599");
+        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(interaction, miOrLabel);
 
         if (annotation != null) {
             return annotation.getAnnotationText();
@@ -80,4 +92,6 @@ public class ExperimentDetailedViewController extends JpaAwareController {
     public ExperimentWrapper getExperimentWrapper() {
         return experimentWrapper;
     }
+
+    
 }

@@ -47,6 +47,8 @@ public class ExperimentWrapper {
     }
     
     public List<Component> sortedParticipants(Interaction interaction) {
+        if (interaction == null ) return Collections.EMPTY_LIST;
+
         List<Component> components = new ArrayList<Component>(interaction.getComponents());
         Collections.sort(components, new ComponentOrder());
         return components;

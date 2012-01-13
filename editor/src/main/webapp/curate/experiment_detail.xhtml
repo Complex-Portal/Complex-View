@@ -48,13 +48,41 @@
                  </p:column>
 
                  <f:facet name="description">
-                     <h:panelGroup
-                             rendered="#{experimentDetailedViewController.figureLegendForInteraction(interaction) != null}">
-                         <p>
-                             Fig. legend: <h:outputText styleClass="fig-legend-value #{interaction.shortLabel}"
-                                 value="#{experimentDetailedViewController.figureLegendForInteraction(interaction)}"/>
-                         </p>
+                     <h:panelGroup rendered="#{experimentDetailedViewController.figureLegendForInteraction(interaction) != null}">
+                         Fig. legend: <h:outputText styleClass="fig-legend-value #{interaction.shortLabel}"
+                                                    value="#{experimentDetailedViewController.figureLegendForInteraction(interaction)}"/>
+                         <br/>
                      </h:panelGroup>
+                     <h:panelGroup rendered="#{experimentDetailedViewController.commentForInteraction(interaction) != null}">
+                         Comment: <h:outputText styleClass="comment-value #{interaction.shortLabel}"
+                                                value="#{experimentDetailedViewController.commentForInteraction(interaction)}"/>
+                         <br/>
+                     </h:panelGroup>
+
+
+
+                     <p:dataTable var="participant" value="#{experimentDetailedViewController.experimentWrapper.sortedParticipants(interaction)}" >
+                         <f:facet name="header">
+                             Participants: #{interaction.components.size()}
+                          </f:facet>
+
+                         <p:column>
+                             <h:outputText value="#{participant.interactor.shortLabel}"/>
+                         </p:column>
+                         <p:column>
+                             <h:outputText value="#{participant.cvExperimentalRole.shortLabel}"/>
+                         </p:column>
+                         <p:column>
+                             <h:outputText value="#{participant.cvBiologicalRole.shortLabel}"/>
+                         </p:column>
+                         <p:column>
+                             <h:outputText value="#{(participant.expressedIn != null)? participant.expressedIn.shortLabel : '-'}"/>
+                         </p:column>
+                         <p:column>
+                             <h:outputText value="S: #{participant.stoichiometry}"/>
+                         </p:column>
+                     </p:dataTable>
+
                  </f:facet>
 
                  </div>

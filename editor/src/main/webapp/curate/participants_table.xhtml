@@ -70,7 +70,7 @@
             </p:column>
 
             <p:column headerText="Experimental role">
-                <h:selectOneMenu id="expRoleTxt" value="#{wrapper.participant.cvExperimentalRole}" onchange="markAsUnsaved()"
+                <h:selectOneMenu id="expRoleTxt" value="#{wrapper.firstExperimentalRole}" onchange="markAsUnsaved()"
                         rendered="#{value.size() lt 5}">
                         <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
                     <ed:ajax process="@this" event="valueChange"

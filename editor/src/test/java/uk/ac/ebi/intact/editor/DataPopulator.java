@@ -4,11 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.obo.dataadapter.OBOParseException;
 import org.obo.datamodel.OBOSession;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionStatus;
 import psidev.psi.mi.xml.PsimiXmlReader;
 import psidev.psi.mi.xml.PsimiXmlReaderException;
@@ -189,6 +185,10 @@ public class DataPopulator {
 
         c3.addFeature(f4);
 
+        interaction1.getExperiments().clear();
+        interaction2.getExperiments().clear();
+        interaction3.getExperiments().clear();
+
         experiment.addInteraction(interaction1);
         experiment.addInteraction(interaction2);
         experiment.addInteraction(interaction3);
@@ -200,7 +200,7 @@ public class DataPopulator {
     }
 
     private void addComment(IntactMockBuilder mockBuilder, Interaction interaction, String text) {
-        interaction.addAnnotation(mockBuilder.createAnnotation(text, CvTopic.COMMENT, CvTopic.COMMENT_MI_REF));
+        interaction.addAnnotation(mockBuilder.createAnnotation(text, CvTopic.COMMENT_MI_REF, CvTopic.COMMENT));
     }
 
     private void addFigureLegend(IntactMockBuilder mockBuilder, Interaction interaction, String legend) {

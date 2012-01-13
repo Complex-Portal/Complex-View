@@ -41,15 +41,15 @@
         <script type="text/javascript">
            var width = document.getElementById("featureColumn").clientWidth;
 
-           function handleChange(event, ui){
-               if(ui.panel.id == 'featuresTab'){
-                   jQuery('#interactionTabs').trigger('featuresSelected', [event, ui]);
+           function handleChange(index){
+               if(index == 7){
+                   jQuery('#interactionTabs').trigger('featuresSelected');
                }
            }
 
            jQuery(function(){
                var intRes = null;
-               $('#interactionTabs').bind('featuresSelected', function(eventName, event, ui){
+               $('#interactionTabs').bind('featuresSelected', function(){
                    var elementPosition = $('#featureColumn').offset();
                    width -= elementPosition.left;
                    if(intRes == null){
