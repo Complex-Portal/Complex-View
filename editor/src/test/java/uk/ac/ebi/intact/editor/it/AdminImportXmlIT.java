@@ -2,6 +2,7 @@ package uk.ac.ebi.intact.editor.it;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.net.URL;
 
@@ -21,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 public class AdminImportXmlIT extends EditorIT {
 
     @Test
+    @DirtiesContext
     public void importXmlFile() throws Exception {
         // Given: I want to import an XML file as an Admin
         goToPageInContext("/admin/dbupdate/importXml.jsf");
