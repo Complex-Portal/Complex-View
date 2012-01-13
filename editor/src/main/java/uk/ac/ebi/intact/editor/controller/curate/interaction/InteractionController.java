@@ -774,8 +774,6 @@ public class InteractionController extends ParameterizableObjectController {
             }
         }
 
-        System.out.println("Selected "+selected.size()+": "+selected);
-
         if (selected.size() != 2) {
             addErrorMessage("Incorrect feature selection", "Two features need to be selected if you want to link them. Currently selected: "+selected.size());
             return;

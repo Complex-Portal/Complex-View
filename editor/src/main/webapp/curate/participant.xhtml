@@ -10,6 +10,9 @@
 
                 template="/curate/curate_template.xhtml">
 
+    <ui:param name="title" value="Participant: #{participantController.participantPrimaryId(participantController.participant)} | Curate | Editor"/>
+
+
     <ui:param name="annotatedObjectController" value="#{participantController}"/>
 
     <ui:param name="participant" value="#{participantController.participant}" />

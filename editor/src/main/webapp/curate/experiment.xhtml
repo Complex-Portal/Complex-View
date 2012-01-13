@@ -134,7 +134,13 @@
                     <div class="intact-buttonBar">
                         <p:commandButton value="New interaction" actionListener="#{annotatedObjectController.doSaveIfNecessary}" process="editorForm"
                                              action="#{interactionController.newInteraction(experimentController.experiment.publication, experimentController.experiment)}" ajax="false" />
-                        </div>
+
+                        |&#160;
+
+                        <p:commandLink id="overviewLink" value="Summary view" action="/curate/experiment_overview?faces-redirect=true&amp;includeViewParams=true" ajax="false">
+                            <f:param name="ac" value="#{experimentController.experiment.ac}"/>
+                        </p:commandLink>
+                    </div>
 
                     <ui:include src="interactions_table.xhtml">
                         <ui:param name="value" value="#{experimentController.interactionDataModel}"/>

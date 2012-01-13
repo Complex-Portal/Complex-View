@@ -45,9 +45,9 @@
         <view-id>/curate/experiment.jsf</view-id>
     </url-mapping>
 
-    <url-mapping id="experiment">
-            <pattern value="/expdetail/#{ac}" />
-            <view-id>/curate/experiment_detail.jsf</view-id>
+    <url-mapping id="experiment_overview">
+            <pattern value="/expview/#{ac}" />
+            <view-id>/curate/experiment_overview.jsf</view-id>
         </url-mapping>
 
     <url-mapping id="interaction">

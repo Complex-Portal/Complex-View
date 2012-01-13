@@ -29,6 +29,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.test.context.ContextConfiguration;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.editor.it.util.ScreenShotOnFailureRule;
+import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.model.user.User;
 
 import java.io.File;
@@ -101,6 +102,11 @@ public abstract class EditorIT extends BaseIT {
     
     protected void goToPageInContext(String path) {
         driver.get(BASE_URL+path);
+    }
+
+    protected void goToExperimentPageByLabel(String expLabel) {
+        Experiment experiment = getDaoFactory().getExperimentDao().getByShortLabel(expLabel);
+        goToPageInContext("/experiment/"+experiment.getAc());
     }
 
     protected void goToExperimentPage(String ac) {

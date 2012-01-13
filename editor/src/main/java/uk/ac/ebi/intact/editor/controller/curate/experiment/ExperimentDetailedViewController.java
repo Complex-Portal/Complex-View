@@ -15,19 +15,22 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.experiment;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.model.Annotation;
-import uk.ac.ebi.intact.model.CvTopic;
-import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.Interaction;
+import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
+import uk.ac.ebi.intact.model.util.FeatureUtils;
+import uk.ac.ebi.intact.model.util.XrefUtils;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -43,7 +46,6 @@ public class ExperimentDetailedViewController extends JpaAwareController {
 
     @Autowired
     private ExperimentController experimentController;
-    private String commentForInteraction;
 
     public ExperimentDetailedViewController() {
     }
@@ -52,8 +54,13 @@ public class ExperimentDetailedViewController extends JpaAwareController {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if (ac != null) {
                 Experiment experiment = getDaoFactory().getExperimentDao().getByAc(ac);
-                this.experimentWrapper = new ExperimentWrapper(experiment, getDaoFactory().getEntityManager());
-                experimentController.setExperiment(experiment);
+
+                if (experiment != null) {
+                    this.experimentWrapper = new ExperimentWrapper(experiment, getDaoFactory().getEntityManager());
+                    experimentController.setExperiment(experiment);
+                } else {
+                    addErrorMessage("No experiment with this AC", "Verify the URL");
+                }
             }
         }
         
@@ -63,10 +70,27 @@ public class ExperimentDetailedViewController extends JpaAwareController {
         return findAnnotationText(interaction, "MI:0599");
     }
 
-
-
     public String commentForInteraction(Interaction interaction) {
         return findAnnotationText(interaction, CvTopic.COMMENT_MI_REF);
+    }
+    
+    public String featureAsString(Feature feature) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(feature.getShortLabel());
+
+        final Collection<Range> ranges = feature.getRanges();
+        final Iterator<Range> iterator = ranges.iterator();
+
+        while (iterator.hasNext()) {
+            Range next = iterator.next();
+            sb.append("[");
+            sb.append(FeatureUtils.convertRangeIntoString(next));
+            sb.append("]");
+
+            if (iterator.hasNext()) sb.append(", ");
+        }
+
+        return sb.toString();
     }
 
     private String findAnnotationText(Interaction interaction, String miOrLabel) {

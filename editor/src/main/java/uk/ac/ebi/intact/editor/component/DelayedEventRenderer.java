@@ -90,8 +90,6 @@ public class DelayedEventRenderer extends Renderer {
 
         writer.write("}\n");
 
-        System.out.println("DELAED: "+delayedJavascript);
-
         writer.write("\nfunction "+delayedFunction+" {\n");
         writer.write(delayedJavascript+";");
         //writer.write("alert('lololo');");

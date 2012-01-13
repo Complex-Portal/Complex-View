@@ -22,6 +22,7 @@ import uk.ac.ebi.intact.model.user.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -149,6 +150,8 @@ public class DataPopulator {
         addFigureLegend(mockBuilder, interaction1, "Fig. 3");
         
         Component c1 = interaction1.getComponents().iterator().next();
+        c1.getFeatures().clear();
+
         Feature f1 = mockBuilder.createFeature("region", mockBuilder.createCvObject(CvFeatureType.class, CvFeatureType.EXPERIMENTAL_FEATURE_MI_REF, CvFeatureType.EXPERIMENTAL_FEATURE));
         f1.addRange(mockBuilder.createRangeUndetermined());
 
@@ -166,22 +169,31 @@ public class DataPopulator {
                 mockBuilder.createComponentNeutral(mockBuilder.createProtein("O13615", "PRP46_SCHPO", schpo)),
                 mockBuilder.createComponentNeutral(mockBuilder.createProtein("O14011", "CWF8_SCHPO", schpo)));
 
-        Component c2 = interaction3.getComponents().iterator().next();
+        List<Component> components3 = new ArrayList<Component>(interaction3.getComponents());
+
+        Component c2 = components3.get(0);
+        c2.getFeatures().clear();
+
         Feature f2 = mockBuilder.createFeature("mut", mockBuilder.createCvObject(CvFeatureType.class, CvFeatureType.MUTATION_INCREASING_MI_REF, CvFeatureType.MUTATION_INCREASING));
         f2.addRange(mockBuilder.createRange(5, 5, 6, 6));
 
         Feature f3 = mockBuilder.createFeature("region", mockBuilder.createCvObject(CvFeatureType.class, CvFeatureType.EXPERIMENTAL_FEATURE_MI_REF, CvFeatureType.EXPERIMENTAL_FEATURE));
-        f3.addRange(mockBuilder.createRangeUndetermined());
+        f3.addRange(mockBuilder.createRange(1, 1, 4, 4));
 
         c2.addFeature(f2);
         c2.addFeature(f3);
+
+        components3.get(1).getFeatures().clear();
         
-        Component c3 = new ArrayList<Component>(interaction3.getComponents()).get(2);
+        Component c3 = components3.get(2);
+        c3.getFeatures().clear();
 
         Feature f4 = mockBuilder.createFeature("region", mockBuilder.createCvObject(CvFeatureType.class, CvFeatureType.EXPERIMENTAL_FEATURE_MI_REF, CvFeatureType.EXPERIMENTAL_FEATURE));
         Range rangeUndetermined = mockBuilder.createRangeUndetermined();
-        rangeUndetermined.setLinked(true);
         f4.addRange(rangeUndetermined);
+
+        f3.setBoundDomain(f4);
+        f4.setBoundDomain(f3);
 
         c3.addFeature(f4);
 

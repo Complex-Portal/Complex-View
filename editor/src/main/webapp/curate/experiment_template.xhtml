@@ -65,7 +65,7 @@
 
     <ui:define name="curateContent">
 
-        <h:panelGroup rendered="#{experimentController.experiment == null}">
+        <h:panelGroup id="noExpLoaded" rendered="#{experimentController.experiment == null}">
             No experiment loaded!
         </h:panelGroup>
 

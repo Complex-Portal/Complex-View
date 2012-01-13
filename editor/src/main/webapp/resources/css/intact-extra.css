@@ -315,7 +315,8 @@ border-right:0 none !important;
 
 
 .interaction-item {
-    margin-bottom: 15px;
+    margin-top: 15px;
+    margin-bottom: 7px;
 }
 
 /** dialogs **/

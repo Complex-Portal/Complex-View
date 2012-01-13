@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.participant;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
@@ -35,6 +36,7 @@ import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationControll
 import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
+import uk.ac.ebi.intact.model.util.XrefUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -160,7 +162,6 @@ public class ParticipantController extends ParameterizableObjectController {
 
             if (participant.getInteractor() != null) {
                 interactor = participant.getInteractor().getShortLabel();
-                System.out.println("Interactor: "+interactor);
             }
         }
 
@@ -419,6 +420,29 @@ public class ParticipantController extends ParameterizableObjectController {
         }
 
         return null;
+    }
+    
+    public String participantPrimaryId(Component component) {
+        if (component == null) return null;
+        if (component.getInteractor() == null) return null;
+
+        final Collection<InteractorXref> xrefs = XrefUtils.getIdentityXrefs(component.getInteractor());
+
+        if (xrefs.isEmpty()) {
+            return component.getInteractor().getAc();
+        }
+
+        return joinIds(xrefs);
+    }
+
+    private String joinIds(Collection<InteractorXref> xrefs) {
+        Collection<String> ids = new ArrayList<String>(xrefs.size());
+
+        for (InteractorXref xref : xrefs) {
+            ids.add(xref.getPrimaryId());
+        }
+
+        return StringUtils.join(ids, ", ");
     }
 
     public String getInteractor() {

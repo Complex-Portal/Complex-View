@@ -243,7 +243,6 @@ public class UserAdminController extends AbstractUserController {
     }
 
     public String getSelectedUsersLogin( String separator ) {
-        System.out.println( "UserAdminController.selectedUsersLogin(\""+ separator +"\")" );
         String logins = null;
         if( this.selectedUsers != null ) {
             StringBuilder sb = new StringBuilder( 128 );
@@ -258,8 +257,6 @@ public class UserAdminController extends AbstractUserController {
             }
             logins = sb.toString();
         }
-
-        System.out.println( "UserAdminController.selectedUsersLogin returns: '"+ logins +"'" );
 
         return logins;
     }
