@@ -96,7 +96,6 @@ public abstract class EditorIT extends BaseIT {
     }
 
     protected User getUserByLogin(String login){
-
         return getDaoFactory().getUserDao().getByLogin(login);
     }
     
@@ -126,11 +125,17 @@ public abstract class EditorIT extends BaseIT {
         }
     }
 
-    protected String infoMessageSummary() {
-        final By infoMessage = By.xpath("//span[@class='ui-messages-info-summary']");
-        waitUntilElementIsVisible(infoMessage);
-        final WebElement info = driver.findElement(infoMessage);
-        return info.getText();
+    protected boolean infoMessageSummaryExists(String summary) {
+        final By byInfoMessage = By.xpath("//span[@class='ui-messages-info-summary']");
+        waitUntilElementIsVisible(byInfoMessage); 
+        
+        for (WebElement element : driver.findElements(byInfoMessage)) {
+            if (summary.equals(element.getText())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected WebDriver getDriver() {

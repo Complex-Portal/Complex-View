@@ -32,7 +32,7 @@ public class AdminImportXmlIT extends EditorIT {
         startImport();
 
         // Then: it should be imported
-        assertThat(infoMessageSummary(), is(equalTo("File successfully imported")));
+        assertTrue(infoMessageSummaryExists("File successfully imported"));
     }
 
     private void typeUrlToImport(URL url) {

@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
 import uk.ac.ebi.intact.core.unit.IntactMockBuilder;
 import uk.ac.ebi.intact.model.Annotation;
@@ -29,6 +30,7 @@ public class CheckingIT extends EditorIT {
     private LifecycleManager lifecycleManager;
 
     @Test
+    @DirtiesContext
     public void changeCorrectionCommentUsingAnnotations() throws Exception {
         // Given: I am in experiment page and I want to update a correction comment using the annotation tab
         Publication publication = createRandomPublicationAs("curator");
@@ -62,6 +64,7 @@ public class CheckingIT extends EditorIT {
     }
 
     @Test
+    @DirtiesContext
     public void changeToBeReviewedUsingAnnotations() throws Exception {
         // Given: I am in experiment page and I want to update a correction comment using the annotation tab
         Publication publication = createRandomPublicationAs("curator");
