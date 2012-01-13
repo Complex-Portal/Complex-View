@@ -42,12 +42,7 @@ import static uk.ac.ebi.intact.editor.Constants.BASE_URL;
  *
  *
  */
-@ContextConfiguration(locations = {
-        "classpath*:/META-INF/intact.spring.xml",
-        "classpath*:/META-INF/intact-batch.spring.xml",
-        "classpath*:/META-INF/editor-test.spring.xml",
-        "classpath*:/META-INF/editor.jpa-test.spring.xml"}, inheritLocations = false)
-public abstract class EditorIT extends IntactBasicTestCase {
+public abstract class EditorIT extends BaseIT {
 
     protected WebDriver driver;
     protected WebDriverWait wait;

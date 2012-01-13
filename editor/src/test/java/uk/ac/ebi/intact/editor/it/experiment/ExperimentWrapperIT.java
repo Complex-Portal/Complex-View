@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ac.ebi.intact.editor.controller.curate.experiment;
+package uk.ac.ebi.intact.editor.it.experiment;
 
 import org.apache.commons.lang.StringUtils;
 import org.hamcrest.CoreMatchers;
@@ -28,6 +28,8 @@ import org.springframework.test.context.ContextConfiguration;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.core.unit.IntactMockBuilder;
 import uk.ac.ebi.intact.core.util.DebugUtil;
+import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentWrapper;
+import uk.ac.ebi.intact.editor.it.BaseIT;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.XrefUtils;
 
@@ -40,19 +42,18 @@ import static org.junit.Assert.*;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@ContextConfiguration(locations = {
-        "classpath*:/META-INF/intact.spring.xml",
-        "classpath*:/META-INF/intact-batch.spring.xml"})
-public class ExperimentWrapperIT extends IntactBasicTestCase{
+public class ExperimentWrapperIT extends BaseIT{
     
     private ExperimentWrapper experimentWrapper;
     
     @Before
     public void setupExperiment() {
         // experiment illustrated in story detailed_experiment_view.txt
-        Experiment expRen2011_4 = getDaoFactory().getExperimentDao().getByShortLabel("ren-2011-1");
+        Experiment expren20111 = getDaoFactory().getExperimentDao().getByShortLabel("ren-2011-1");
+
+        assertThat(expren20111, is(notNullValue()));
         
-        experimentWrapper = new ExperimentWrapper(expRen2011_4, getEntityManager());
+        experimentWrapper = new ExperimentWrapper(expren20111, getEntityManager());
     }
 
     @Test
