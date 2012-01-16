@@ -520,38 +520,38 @@
             <tr:iterator value="#{msg.context.contexts}" var="ctxt" rows="3" first="0">
                 <h:panelGroup styleClass="errorContext">
                     <tr:goLink destination="#e#{ctxt.experimentId}" rendered="#{ctxt.experimentId != -1}">
-                        <nobr><tr:outputText value="Experiment ##{ctxt.experimentId}" /></nobr>
+                        <nobr><tr:outputText value="Experiment #{ctxt.experimentId}" /></nobr>
                     </tr:goLink>
                     <tr:goLink destination="#ix#{ctxt.interactionId}" rendered="#{ctxt.interactionId != -1}">
-                        <nobr><tr:outputText value="Interaction ##{ctxt.interactionId}" /></nobr>
+                        <nobr><tr:outputText value="Interaction #{ctxt.interactionId}" /></nobr>
                     </tr:goLink>
                     <tr:goLink destination="#p#{ctxt.participantId}" rendered="#{ctxt.participantId != -1}">
-                        <nobr><tr:outputText value="Participant ##{ctxt.participantId}" /></nobr>
+                        <nobr><tr:outputText value="Participant #{ctxt.participantId}" /></nobr>
                     </tr:goLink>
                     <tr:goLink destination="#i#{ctxt.interactorId}" rendered="#{ctxt.interactorId != -1}">
-                        <nobr><tr:outputText value="Interactor ##{ctxt.interactorId}" /></nobr>
+                        <nobr><tr:outputText value="Interactor #{ctxt.interactorId}" /></nobr>
                     </tr:goLink>
                     <tr:goLink destination="#f#{ctxt.featureId}" rendered="#{ctxt.featureId != -1}">
-                        <nobr><tr:outputText value="Feature ##{ctxt.featureId}" /></nobr>
+                        <nobr><tr:outputText value="Feature #{ctxt.featureId}" /></nobr>
                     </tr:goLink>
                 </h:panelGroup>
             </tr:iterator>
             <tr:iterator value="#{msg.context.contexts}" var="ctxt" first="3">
                 <h:panelGroup styleClass="errorContext errorContextDetails">
                     <tr:goLink destination="#e#{ctxt.experimentId}" rendered="#{ctxt.experimentId != -1}">
-                        <nobr><tr:outputText value="Experiment ##{ctxt.experimentId}" /></nobr>
+                        <nobr><tr:outputText value="Experiment #{ctxt.experimentId}" /></nobr>
                     </tr:goLink>
                     <tr:goLink destination="#ix#{ctxt.interactionId}" rendered="#{ctxt.interactionId != -1}">
-                        <nobr><tr:outputText value="Interaction ##{ctxt.interactionId}" /></nobr>
+                        <nobr><tr:outputText value="Interaction #{ctxt.interactionId}" /></nobr>
                     </tr:goLink>
                     <tr:goLink destination="#p#{ctxt.participantId}" rendered="#{ctxt.participantId != -1}">
-                        <nobr><tr:outputText value="Participant ##{ctxt.participantId}" /></nobr>
+                        <nobr><tr:outputText value="Participant #{ctxt.participantId}" /></nobr>
                     </tr:goLink>
                     <tr:goLink destination="#i#{ctxt.interactorId}" rendered="#{ctxt.interactorId != -1}">
-                        <nobr><tr:outputText value="Interactor ##{ctxt.interactorId}" /></nobr>
+                        <nobr><tr:outputText value="Interactor #{ctxt.interactorId}" /></nobr>
                     </tr:goLink>
                     <tr:goLink destination="#f#{ctxt.featureId}" rendered="#{ctxt.featureId != -1}">
-                        <nobr><tr:outputText value="Feature ##{ctxt.featureId}" /></nobr>
+                        <nobr><tr:outputText value="Feature #{ctxt.featureId}" /></nobr>
                     </tr:goLink>
                 </h:panelGroup>
             </tr:iterator>
