@@ -298,7 +298,7 @@
                         <configuration>
                             <connectors>
                                 <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                                    <port>33445</port>
+                                    <port>33444</port>
                                     <maxIdleTime>600000</maxIdleTime>
                                 </connector>
                             </connectors>
