@@ -223,8 +223,8 @@
                 <intact.maxsize.xgmml>12</intact.maxsize.xgmml>
 
                 <!-- SOLR -->
-                <intact.solr.interactions.url>http://localhost:33445/solr/core_pub</intact.solr.interactions.url>
-                <intact.solr.ontologies.url>http://localhost:33445/solr/core_ontology_pub</intact.solr.ontologies.url>
+                <intact.solr.interactions.url>http://localhost:33444/solr/core_pub</intact.solr.interactions.url>
+                <intact.solr.ontologies.url>http://localhost:33444/solr/core_ontology_pub</intact.solr.ontologies.url>
 
                 <intact.configfile>${project.build.testOutputDirectory}/intact-view-test.cfg</intact.configfile>
 

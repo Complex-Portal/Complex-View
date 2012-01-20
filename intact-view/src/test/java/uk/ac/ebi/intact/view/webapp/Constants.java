@@ -6,6 +6,6 @@ package uk.ac.ebi.intact.view.webapp;
  */
 public interface Constants {
     
-    String BASE_URL = "http://localhost:33445/intact";
-    String SOLR_URL = "http://localhost:33445/solr";
+    String BASE_URL = "http://localhost:33444/intact";
+    String SOLR_URL = "http://localhost:33444/solr";
 }
