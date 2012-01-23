@@ -64,8 +64,6 @@
                                 <argument>-classpath</argument>
                                 <classpath/>
                                 <argument>uk.ac.ebi.intact.service.CvUpdateRunner</argument>
-                                <!-- repository where to find the log files -->
-                                <argument>${folder}</argument>
                             </arguments>
                         </configuration>
                     </plugin>
