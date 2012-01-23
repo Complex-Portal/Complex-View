@@ -1,10 +1,7 @@
 package uk.ac.ebi.intact.service;
 
 import uk.ac.ebi.intact.core.context.IntactContext;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import uk.ac.ebi.intact.dbupdate.cv.CvUpdateManager;
 
 /**
  * Hello world!
@@ -14,25 +11,17 @@ public class CvUpdateRunner
 {
     public static void main( String[] args )
     {
-        final String filename = args[0];
+        IntactContext.initContext(new String[]{"/META-INF/jpa-cv-update.spring.xml", "/META-INF/cvupdaterunner.spring.xml",
+                "/META-INF/cvupdate.spring.xml"});
 
-        System.out.println( "folder where are the log files = " + filename );
+        CvUpdateManager cm = (CvUpdateManager)
+                IntactContext.getCurrentInstance().getSpringContext().getBean("cvManager");
 
-        IntactContext.initContext(new String[]{"/META-INF/jpa-cv-update.spring.xml", "/META-INF/cvupdaterunner.spring.xml"});
+        System.out.println( "folder where are the log files = " + cm.getReportDirectory().getAbsolutePath() );
 
-        try {
-            InputStream ontologyConfig = CvUpdateRunner.class.getResource("/ontologies.xml").openStream();
+        System.out.println("Starting the global update for PSI-MI and PSI-MOD");
+        cm.updateAll();
 
-            ProteinUpdateProcessor updateProcessor = new ProteinUpdateProcessor();
-            System.out.println("Starting the global update");
-            updateProcessor.updateAll();
-
-            System.out.println("Finished the global protein update.");
-            config.getUniprotService().close();
-
-        } catch (IOException e) {
-            System.err.println("The repository " + filename + " cannot be found. We cannot write log files and so we cannot run a global protein update.");
-            e.printStackTrace();
-        }
+        System.out.println("Finished the global cv update.");
     }
 }

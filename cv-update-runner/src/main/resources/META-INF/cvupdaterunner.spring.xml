@@ -29,7 +29,4 @@
         <property name="userId" value="CV_UPDATE_RUNNER"/>
     </bean>
 
-
-
-
 </beans>
