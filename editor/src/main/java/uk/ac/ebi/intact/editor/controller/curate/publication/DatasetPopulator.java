@@ -66,7 +66,10 @@ public class DatasetPopulator extends JpaAwareController {
         allDatasetSelectItems.add( new SelectItem( null, "-- Select Dataset --" ) );
 
         for ( String dataset : allDatasets ) {
-            allDatasetSelectItems.add( createSelectItem( dataset ) );
+            if (dataset != null) {
+                final SelectItem selectItem = createSelectItem(dataset);
+                allDatasetSelectItems.add(selectItem);
+            }
         }
     }
 
@@ -79,15 +82,14 @@ public class DatasetPopulator extends JpaAwareController {
     }
 
     public SelectItem createSelectItem( String dataset ) {
+        if (dataset == null) throw new IllegalArgumentException("null dataset passed");
         SelectItem selectItem = null;
 
-        if ( dataset != null ) {
-            if ( dataset.contains( "-" ) ) {
-                String[] tokens = dataset.split( "-" );
-                selectItem = new SelectItem( dataset, tokens[0].trim() );
-            } else {
-                selectItem = new SelectItem( dataset );
-            }
+        if ( dataset.contains( "-" ) ) {
+            String[] tokens = dataset.split( "-" );
+            selectItem = new SelectItem( dataset, tokens[0].trim() );
+        } else {
+            selectItem = new SelectItem( dataset );
         }
 
         return selectItem;
