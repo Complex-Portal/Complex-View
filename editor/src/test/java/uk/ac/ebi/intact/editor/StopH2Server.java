@@ -28,7 +28,7 @@ public class StopH2Server {
         System.out.println("// Stopping H2 database   //");
         System.out.println("////////////////////////////");
 
-        Server.shutdownTcpServer("tcp://localhost:39101", "", true, false);
+        Server.shutdownTcpServer("tcp://localhost:39102", "", true, false);
     }
 
 }
