@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.apache.commons.httpclient.HttpClient;
 import uk.ac.ebi.intact.psicquic.ws.IntactPsicquicService;
-import uk.ac.ebi.intact.psicquic.ws.jms.StatsConsumer;
 
 /**
  * Psicquic Initializing Bean.

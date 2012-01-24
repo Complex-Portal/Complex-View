@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.psicquic.ws;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.cxf.feature.Features;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.common.SolrDocument;
@@ -384,15 +385,18 @@ public class IntactPsicquicService implements PsicquicService {
     }
 
      private HttpClient createHttpClient() {
-        HttpClient httpClient = new HttpClient();
+        HttpClient httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
 
-        String proxyHost = config.getProxyHost();
-        String proxyPort = config.getProxyPort();
+         String proxyHost = config.getProxyHost();
+         String proxyPort = config.getProxyPort();
 
-        if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
-                isValueSet(proxyPort) && proxyPort.trim().length() > 0) {
-            httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
-        }
+         System.out.println("CREATING HTTP CLIENT "+proxyHost+":"+proxyPort);
+
+//        if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
+//                isValueSet(proxyPort) && proxyPort.trim().length() > 0) {
+//            httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+//        }
+
         return httpClient;
     }
 
