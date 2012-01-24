@@ -24,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
@@ -358,10 +359,12 @@ public class CvObjectService extends JpaAwareController {
     }
 
     private SelectItem createSelectItem( CvObject cv ) {
+        if (!IntactCore.isInitialized(cv.getAnnotations())) {
+            cv = getDaoFactory().getCvObjectDao().getByAc(cv.getAc());
+        }
+        
         boolean obsolete = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( cv, CvTopic.OBSOLETE_MI_REF ) != null;
         return new SelectItem( cv, cv.getShortLabel()+((obsolete? " (obsolete)" : "")), cv.getFullName());
-
-        //return new SelectItem( cv, cv.getShortLabel(), cv.getFullName(), obsolete );
     }
 
     public CvObject findCvObjectByAc( String ac ) {
