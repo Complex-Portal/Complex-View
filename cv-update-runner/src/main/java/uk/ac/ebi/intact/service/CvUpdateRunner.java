@@ -4,7 +4,7 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.dbupdate.cv.CvUpdateManager;
 
 /**
- * Hello world!
+ * The global cv update runner
  *
  */
 public class CvUpdateRunner
@@ -15,7 +15,7 @@ public class CvUpdateRunner
                 "/META-INF/cvupdate.spring.xml"});
 
         CvUpdateManager cm = (CvUpdateManager)
-                IntactContext.getCurrentInstance().getSpringContext().getBean("cvManager");
+                IntactContext.getCurrentInstance().getSpringContext().getBean("cvUpdateManager");
 
         System.out.println( "folder where are the log files = " + cm.getReportDirectory().getAbsolutePath() );
 

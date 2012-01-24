@@ -15,7 +15,7 @@
            http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations" value="classpath*:/META-INF/intact-cvupdate.properties"/>
+        <property name="locations" value="classpath*:/META-INF/cv-update.properties"/>
     </bean>
 
     <!-- IntAct -->
@@ -27,6 +27,16 @@
 
     <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext">
         <property name="userId" value="CV_UPDATE_RUNNER"/>
+    </bean>
+
+    <!-- Cv manager -->
+    <bean id="cvUpdateManager" class="uk.ac.ebi.intact.dbupdate.cv.CvUpdateManager">
+
+        <property name="cvImporter" ref="cvImporter"/>
+        <property name="cvUpdater" ref="cvUpdater"/>
+        <property name="cvRemapper" ref="obsoleteRemapper"/>
+        <property name="errorFactory" ref="errorFactory"/>
+        <property name="reportDirectory" value="${update.report}"/>
     </bean>
 
 </beans>
