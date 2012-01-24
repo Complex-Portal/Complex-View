@@ -319,7 +319,7 @@
                                   <contextPath>/solr</contextPath>
                                 </contextHandler>
                             </contextHandlers>
-                            <stopPort>9966</stopPort>
+                            <stopPort>9969</stopPort>
                             <stopKey>die!!!!</stopKey>
                         </configuration>
                         <executions>
