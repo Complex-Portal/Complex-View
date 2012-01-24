@@ -20,7 +20,6 @@
     <scm>
         <connection>scm:svn:http://intact.googlecode.com/svn/repo/service/trunk/protein-update-runner</connection>
         <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/protein-update-runner</developerConnection>
-        <url>http://code.google.com/p/intact/wiki/Editor</url>
     </scm>
     <properties>
         <blast>false</blast>
