@@ -251,7 +251,7 @@
                         <configuration>
                             <connectors>
                                 <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                                    <port>33445</port>
+                                    <port>33442</port>
                                     <maxIdleTime>600000</maxIdleTime>
                                 </connector>
                             </connectors>
@@ -260,7 +260,7 @@
                                 <contextPath>${jetty.contextPath}</contextPath>
                                 <jettyEnvXml>${build.outputDirectory}/META-INF/jetty-env.xml</jettyEnvXml>
                             </webAppConfig>
-                            <stopPort>9966</stopPort>
+                            <stopPort>29966</stopPort>
                             <stopKey>die!!!!</stopKey>
                         </configuration>
                         <executions>
