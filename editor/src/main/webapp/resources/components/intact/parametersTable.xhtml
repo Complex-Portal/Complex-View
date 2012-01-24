@@ -14,7 +14,6 @@
       <composite:attribute name="annotatedObjectController"
                            type="uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController"
                            required="true"/>
-      <composite:attribute name="beforeTimeoutEvent" default=""/>
       <composite:attribute name="update"/>
        <composite:attribute name="oncomplete"/>
       <composite:attribute name="parameterTypeSelectItems"/>
@@ -30,9 +29,9 @@
             <tr>
                 <td>
         <div class="intact-buttonBar">
-            <p:commandButton value="New Parameter"
+            <p:commandButton id="newParamBtn" value="New Parameter"
                              actionListener="#{cc.attrs.annotatedObjectController.newParameter}"
-                             process="@this"
+                             process="newParamBtn"
                              update="#{cc.attrs.update}"/>
         </div>
 
@@ -56,7 +55,7 @@
                 </f:facet>
                      <p:inputText value="#{parameter.factor}" required="true" requiredMessage="Parameter value is required">
                          <f:convertNumber/>
-                        <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
+                        <f:ajax event="valueChange" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </p:inputText>
@@ -67,8 +66,8 @@
                 </f:facet>
                 <h:selectOneMenu value="#{parameter.cvParameterUnit}" rendered="#{cc.attrs.parameterUnitSelectItems != null}">
                     <f:selectItems value="#{cc.attrs.parameterUnitSelectItems}"/>
-                    <ed:ajax event="valueChange" update="#{cc.attrs.update}" process="@this"
-                             timeout="0" beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
+                    <f:ajax event="valueChange" update="#{cc.attrs.update}" process="@this"
+                             oncomplete="#{cc.attrs.oncomplete}"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                 </h:selectOneMenu>
@@ -80,7 +79,7 @@
                 </f:facet>
                      <p:inputText value="#{parameter.base}">
                          <f:convertNumber/>
-                        <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
+                        <f:ajax event="valueChange" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </p:inputText>
@@ -91,7 +90,7 @@
                 </f:facet>
                      <p:inputText value="#{parameter.exponent}">
                          <f:convertNumber/>
-                        <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
+                        <f:ajax event="valueChange" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </p:inputText>
@@ -102,7 +101,7 @@
                 </f:facet>
                      <p:inputText value="#{parameter.uncertainty}">
                          <f:convertNumber/>
-                        <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
+                        <f:ajax event="valueChange" update="#{cc.attrs.update}" process="@this"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </p:inputText>
@@ -111,7 +110,7 @@
                 <f:facet name="header">
                      <h:outputText value="Actions"/>
                 </f:facet>
-                <p:commandLink styleClass="ui-icon ui-icon-closethick" process="@this"
+                <p:commandLink id="removeParamBtn" styleClass="ui-icon ui-icon-closethick" process="removeParamBtn"
                                actionListener="#{cc.attrs.annotatedObjectController.annotatedObject.removeParameter(parameter)}"
                                oncomplete="markAsUnsaved()"
                                update="#{cc.attrs.update}"/>

@@ -9,13 +9,13 @@
                 xmlns:ed="http://ebi.ac.uk/intact/editor/ui">
 
     <p:tab id="xrefsTab" title="Xrefs (#{annotatedObjectController.annotatedObject.xrefs.size()})">
-        <h:panelGroup id="xrefsPanel">
+        <p:outputPanel id="xrefsPanel" autoUpdate="true">
             <ui:decorate template="xrefs_table.xhtml">
 
                 <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
                  <ui:param name="databaseSelectItems" value="#{cvObjectService.databaseSelectItems}"/>
                  <ui:param name="qualifierSelectItems" value="#{cvObjectService.qualifierSelectItems}"/>
-                 <ui:param name="update" value="xrefsPanel changesPanel unsavedChangesInfo messagesComponent #{updateOnChange}"/>
+                 <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent #{updateOnChange}"/>
                  <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
                  <ui:param name="valueChangeAwareObject" value="#{annotatedObjectController}"/>
 
@@ -24,16 +24,16 @@
             </ui:define>
 
         </ui:decorate>
-        </h:panelGroup>
+        </p:outputPanel>
 
     </p:tab>
 
     <p:tab id="annotationsTab" title="Annotations (#{annotatedObjectController.annotatedObject.annotations.size()})">
-         <h:panelGroup id="annotationsPanel">
+         <p:outputPanel id="annotationsPanel" autoUpdate="true">
              <ui:decorate template="annotations_table.xhtml">
                  <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
                  <ui:param name="topicSelectItems" value="#{annotatedObjectSelectItems}"/>
-                 <ui:param name="update" value="annotationsPanel changesPanel unsavedChangesInfo messagesComponent #{updateOnChange}"/>
+                 <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent #{updateOnChange}"/>
                  <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
                  <ui:param name="valueChangeAwareObject" value="#{annotatedObjectController}"/>
 
@@ -42,19 +42,19 @@
                  </ui:define>
 
              </ui:decorate>
-         </h:panelGroup>
+         </p:outputPanel>
 
     </p:tab>
 
     <p:tab id="aliasesTab" title="Aliases (#{annotatedObjectController.annotatedObject.aliases.size()})">
-         <h:panelGroup id="aliasesPanel">
+         <p:outputPanel id="aliasesPanel" autoUpdate="true">
             <ia:aliasTable annotatedObjectController="#{annotatedObjectController}"
                            aliasTypeSelectItems="#{cvObjectService.aliasTypeSelectItems}"
-                           beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                           update="aliasesPanel changesPanel unsavedChangesInfo messagesComponent #{updateOnChange}"
+                           oncomplete="ia_enableSave()"
+                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent #{updateOnChange}"
                            valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                            valueChangeAwareObject="#{annotatedObjectController}"/>
-        </h:panelGroup>
+        </p:outputPanel>
      </p:tab>
 
 

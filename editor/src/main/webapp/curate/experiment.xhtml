@@ -35,7 +35,8 @@
                             <ia:panelMessage level="warn">
                                 <b>To be reviewed: </b> #{experimentController.toBeReviewed}
                                 &#160;&#160;&#160;
-                                <p:commandButton id="clearToBeReviewed" value="Clear" rendered="#{userSessionController.isItMe(publicationController.publication.currentReviewer)}" actionListener="#{experimentController.clearToBeReviewed}" update="centralUnit"/>
+                                <p:commandButton id="clearToBeReviewed" value="Clear" rendered="#{userSessionController.isItMe(publicationController.publication.currentReviewer)}" actionListener="#{experimentController.clearToBeReviewed}"
+                                                 update=":editorForm:centralUnit"/>
                             </ia:panelMessage>
                     </h:panelGroup>
 
@@ -71,9 +72,6 @@
                                 <p:inputText id="shortLabelTxt" value="#{experimentController.experiment.shortLabel}" size="20"
                                              validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
                                         required="true" requiredMessage="Short label is required">
-                                    <ed:ajax event="valueChange" timeout="0" update="changesPanel unsavedChangesInfo" process="@this"
-                                             beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                            listener="#{experimentController.changed()}"/>
                                 </p:inputText>
                             </td>
                             <td style="padding-left: 50px;" colspan="2">
@@ -91,7 +89,7 @@
                                     selectItems="#{bioSourceService.bioSourceSelectItems}"
                                     required="true" requiredMessage="Host organism is required"
                                      beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                    update="changesPanel unsavedChangesInfo"
+                                    update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                     valueChangeAwareObject="#{experimentController}"/>
                             </td>
                         </tr>
@@ -105,7 +103,7 @@
                                                   cvIdentifier="MI:0001"
                                                   beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                   required="true" requiredMessage="Interaction detection method is required"
-                                                  update="changesPanel unsavedChangesInfo messagesComponent"
+                                                  update=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"
                                                   valueChangeAwareObject="#{experimentController}"/>
                             </td>
                         </tr>
@@ -117,7 +115,7 @@
                                                   cvIdentifier="MI:0002"
                                                   beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
                                                   required="true" requiredMessage="Participant identification method is required"
-                                                  update="changesPanel unsavedChangesInfo messagesComponent"
+                                                  update=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"
                                                   valueChangeAwareObject="#{experimentController}"/>
                             </td>
                         </tr>
@@ -128,7 +126,7 @@
 
             <br/>
 
-            <p:tabView id="experimentTabs" dynamic="true">
+            <p:tabView id="experimentTabs">
 
                 <p:tab title="Interactions (#{experimentController.interactionDataModel.rowCount})">
                     <div class="intact-buttonBar">

@@ -106,10 +106,12 @@
                             id="login"
                             action="#{loginController.doLogin}"
                             value="Login"
-                            onclick="document.getElementById('j_password').value = hex_sha1(document.getElementById('j_password_clear').value);"/>
+                            onclick="loginDialog.show(); document.getElementById('j_password').value = hex_sha1(document.getElementById('j_password_clear').value);"/>
                 </p:panel>
                     </div>
             </div>
+
+            <ia:loadingDialog widgetVar="loginDialog" message="Logging in..."/>
 
 
         </h:form>

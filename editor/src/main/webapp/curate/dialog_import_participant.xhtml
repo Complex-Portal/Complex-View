@@ -9,13 +9,15 @@
               position="center"
               width="500">
 
-        <ia:panelDialogLayout>
+        <ia:panelDialogLayout id="ipDialogPanel">
             <f:facet name="buttonBar">
                 <p:commandButton id="participantSearchBtn" value="Search" actionListener="#{participantImportController.importParticipants}"
-                                 update="messagesComponent,candidatesContent"
-                                 process="ipDialog"
+                                 process="searchParticipantTxt"
+                                 update=":editorForm:messagesComponent"
                                  onstart="searching_load.show()"
-                                 oncomplete="searching_load.hide(); importParticipantDialog.hide(); candidatesDialog.show()" />
+                                 onerror="alert('Error opening candidates dialog')"
+                                 oncomplete="searching_load.hide(); importParticipantDialog.hide()"
+                                 onsuccess="candidatesDialog.show()"/>
             </f:facet>
 
             <h:panelGrid columns="2">
@@ -35,20 +37,20 @@
     <ia:loadingDialog widgetVar="searching_load" message="Searching interactors..."/>
     <ia:loadingDialog widgetVar="adding_load" message="Adding participants..." modal="false"/>
 
-    <p:dialog id="candidatesDialog" widgetVar="candidatesDialog" header="Import participants" modal="true"
+    <p:dialog id="candidatesDialog" widgetVar="candidatesDialog" header="Import participants" modal="true" dynamic="true"
               position="center"
               width="800">
         <p:outputPanel id="candidatesContent">
-            <ia:panelDialogLayout>
+            <ia:panelDialogLayout id="candidatesDialogContent">
                 <f:facet name="buttonBar">
-                    <h:panelGroup>
-                    <p:commandButton value="Import selected" rendered="#{not empty participantImportController.importCandidates}"
-                                     actionListener="#{participantImportController.importSelected}"
-                                     onstart="candidatesDialog.hide();adding_load.show()" onerror="adding_load.hide(); candidatesDialog.show();"
-                                     oncomplete="adding_load.hide();  "
-                                     update="growl,centralUnit,topSection,changesPanel" process="candidatesDialog"/>
-                    <p:commandButton type="button" value="Back" rendered="#{empty participantImportController.importCandidates}"
-                                     onclick="candidatesDialog.hide(); importParticipantDialog.show()"/>
+                    <h:panelGroup id="candidatesButtonGroup">
+                        <p:commandButton id="importSelected" value="Import selected" rendered="#{not empty participantImportController.importCandidates}"
+                                         actionListener="#{participantImportController.importSelected}"
+                                         onstart="candidatesDialog.hide();adding_load.show()" onerror="adding_load.hide(); candidatesDialog.show();"
+                                         oncomplete="adding_load.hide(); " process=":editorForm:interactionTabs:candidatesDialog"
+                                         update=":editorForm"/>
+                        <p:commandButton type="button" value="Back" rendered="#{empty participantImportController.importCandidates}"
+                                         onclick="candidatesDialog.hide(); importParticipantDialog.show()"/>
                     </h:panelGroup>
                 </f:facet>
 

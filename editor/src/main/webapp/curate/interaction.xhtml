@@ -79,7 +79,7 @@
                             <p:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30"
                                          validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
                                     required="true" requiredMessage="Shortlabel is required">
-                                <p:ajax event="valueChange" process="@this" oncomplete="markAsUnsaved()" update="changesPanel unsavedChangesInfo"/>
+                                <p:ajax event="valueChange" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"/>
                             </p:inputText>
                         </td>
                         <td style="padding-left: 50px;">
@@ -101,7 +101,7 @@
                                               value="#{interaction.cvInteractionType}"
                                               selectItems="#{cvObjectService.interactionTypeSelectItems}"
                                               required="true" requiredMessage="Interaction type is required"
-                                              beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                                              oncomplete="ia_enableSave()"
                                               update="changesPanel unsavedChangesInfo"
                                               valueChangeAwareObject="#{interactionController}"/>
                         </td>
@@ -125,7 +125,7 @@
                             <h:selectOneMenu id="experimentLists"
                                              value="#{interactionController.experiment}"
                                              required="true" requiredMessage="You must set an experiment">
-                                <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo editorForm"
+                                <p:ajax event="valueChange" update=":editorForm"
                                                 process="@this" listener="#{interactionController.experimentChanged}" async="true"/>
                                  <f:selectItems value="#{interactionController.experimentSelectItems}"/>
                             </h:selectOneMenu>
@@ -144,13 +144,13 @@
             <br/>
 
             <p:tabView id="interactionTabs" onTabChange="handleChange(index)" >
-                <p:tab title="Participants (#{interactionController.participants.size()})">
+                <p:tab id="participantsTab" title="Participants (#{interactionController.participants.size()})">
 
                      <p:panel style="padding:0">
                          Participants:&#160;
                         <p:commandButton value="New participant" action="#{participantController.newParticipant(interactionController.interaction)}"
                                              ajax="false"/>
-                         <p:commandButton value="Import..." type="button" onclick="importParticipantDialog.show()"/>
+                         <p:commandButton id="importParticipantBtn" value="Import..." type="button" onclick="importParticipantDialog.show()"/>
                          &#160;| Features:&#160;
                          <p:commandButton value="Link features" actionListener="#{interactionController.linkSelectedFeatures}" ajax="false"/>
                      </p:panel>
@@ -159,9 +159,11 @@
 
                     <ui:include src="dialog_import_participant.xhtml"/>
 
+                    <p:outputPanel id="participantsPanel" autoUpdate="true">
                         <ui:include src="participants_table.xhtml">
                             <ui:param name="value" value="#{interactionController.participants}"/>
                         </ui:include>
+                    </p:outputPanel>
                 </p:tab>
 
 
@@ -179,28 +181,28 @@
 
                 <p:tab id="parametersTab" title="Parameters (#{interaction.parameters.size()})">
 
-                    <h:panelGroup id="parametersPanel">
+                    <p:outputPanel id="parametersPanel" autoUpdate="true">
                        <ia:parametersTable annotatedObjectController="#{annotatedObjectController}"
                            parameterTypeSelectItems="#{cvObjectService.parameterTypeSelectItems}"
                            parameterUnitSelectItems="#{cvObjectService.parameterUnitSelectItems}"
-                           update="parametersPanel parametersTab changesPanel unsavedChangesInfo"
-                           beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                           oncomplete="ia_enableSave()"
                            valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                            valueChangeAwareObject="#{annotatedObjectController}"/>
-                    </h:panelGroup>
+                    </p:outputPanel>
 
                 </p:tab>
 
                 <p:tab id="confidencesTab" title="Confidences (#{interaction.confidences.size()})">
 
-                    <h:panelGroup id="confidencesPanel">
+                    <p:outputPanel id="confidencesPanel" autoUpdate="true">
                        <ia:confidencesTable annotatedObjectController="#{annotatedObjectController}"
                            confidenceTypeSelectItems="#{cvObjectService.confidenceTypeSelectItems}"
-                           update="confidencesPanel confidencesTab changesPanel unsavedChangesInfo"
-                           beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                           oncomplete="ia_enableSave()"
                            valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                            valueChangeAwareObject="#{annotatedObjectController}"/>
-                    </h:panelGroup>
+                    </p:outputPanel>
 
                 </p:tab>
 

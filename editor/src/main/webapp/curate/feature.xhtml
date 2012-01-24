@@ -92,8 +92,7 @@
                             <ia:inputCvObject id="featureTypeTxt" cvIdentifier="MI:0116" value="#{feature.cvFeatureType}"
                                     selectItems="#{cvObjectService.featureTypeSelectItems}"
                                     required="true" requiredMessage="Feature type is required"
-                                    beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                           update="changesPanel unsavedChangesInfo"
+                                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                         </td>
                     </tr>
@@ -104,8 +103,7 @@
                         <td colspan="2">
                             <ia:inputCvObject id="featureDetectionTxt" cvIdentifier="MI:0003" value="#{feature.cvFeatureIdentification}"
                                     selectItems="#{cvObjectService.featureDetectionMethodSelectItems}"
-                                    beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                           update="changesPanel unsavedChangesInfo"
+                                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                         </td>
                     </tr>
@@ -119,16 +117,17 @@
 
                 <p:tab title="Ranges (#{feature.ranges.size()})">
 
+                    <p:outputPanel id="rangesPanel" autoUpdate="true">
+
                     <div class="intact-buttonBar">
                         <p:inputText id="newRangeTxt" value="#{featureController.newRangeValue}" converter="trimmingConverter"/>
                         <p:tooltip value="Type a range (e.g. '23-25') and then click the 'New Range' button" for="newRangeTxt" />
 
-                        <p:commandButton value="New range" actionListener="#{featureController.newRange}" update="rangeTable messagesComponent"
-                                onclick="markAsUnsaved()" process="newRangeTxt"/>
+                        <p:commandButton id="newRangeBtn" value="New range" actionListener="#{featureController.newRange}"
+                                process="newRangeTxt" onsuccess="markAsUnsaved()"/>
                      </div>
 
-                    <p:outputPanel id="rangeTable">
-                        <h:panelGroup id="rangesTable">
+
 
                         <ui:param name="rangeToDeleteCount" value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Range', featureController.ac).size()}"/>
 
@@ -142,7 +141,6 @@
                             <ui:param name="value" value="#{featureController.wrappedRanges}"/>
                         </ui:include>
 
-                        </h:panelGroup>
                     </p:outputPanel>
 
                 </p:tab>

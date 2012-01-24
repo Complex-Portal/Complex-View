@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
-    <h:panelGroup id="featuresTable">
+    <h:panelGroup id="featuresGroup">
 
         <ui:param name="featuresToDeleteCount" value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Feature', participantController.ac).size()}"/>
 
@@ -17,14 +17,14 @@
             </ia:panelMessage>
         </h:panelGroup>
 
-        <p:dataTable var="feature" value="#{value}" emptyMessage="No features defined"
-                     paginator="#{value.size() > 10}" rows="10"
+        <p:dataTable id="featuresTable" var="feature" value="#{value}" emptyMessage="No features defined"
+                     paginator="#{value.rowCount > 10}" rows="10"
                      selection="#{participantController.selectedFeatures}">
 
             <f:facet name="header">
                 <h:panelGroup>
                     Selected:&#160;
-                    <p:commandButton value="Delete" onclick="confirmation.show()" type="button"/>
+                    <p:commandButton id="deleteFeatureBtn" value="Delete" onclick="confirmation.show()" type="button"/>
 
                     <p:confirmDialog message="Are you sure you want to delete the suckers?"
                                      modal="true"
@@ -41,10 +41,7 @@
             </f:facet>
 
             <p:column selectionMode="multiple"/>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="AC"/>
-                </f:facet>
+            <p:column headerText="AC">
                 <h:outputText value="#{feature.ac}" styleClass="#{changesController.isDeletedAc(feature.ac)? 'intact-deleted' : ''}"/>
             </p:column>
             <p:column>
@@ -52,10 +49,7 @@
                     <ui:param name="ao" value="#{feature}"/>
                 </ui:include>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Shortlabel"/>
-                </f:facet>
+            <p:column headerText="Shortlabel">
                 <h:panelGroup rendered="#{not changesController.isDeletedAc(feature.ac)}">
                     <p:commandLink onclick="load_feature.show()" action="#{curateController.edit(feature)}"
                                    style="#{feature.ac == null? 'color:blue' :''}"
@@ -66,22 +60,13 @@
                 </h:panelGroup>
 
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Type"/>
-                </f:facet>
+            <p:column headerText="Type">
                 <h:outputText value="#{feature.cvFeatureType.shortLabel}"/>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Detection Method"/>
-                </f:facet>
+            <p:column headerText="Detection Method">
                 <h:outputText value="#{feature.cvFeatureIdentification == null ? '-' : feature.cvFeatureIdentification.shortLabel}"/>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Linked feature"/>
-                </f:facet>
+            <p:column headerText="Linked feature">
                 <h:outputText value="-" rendered="#{feature.boundDomain == null}"/>
 
                 <h:panelGroup rendered="#{feature.boundDomain != null and feature.boundDomain.ac != null and not changesController.isDeletedAc(feature.ac)}">
@@ -116,10 +101,7 @@
 
 
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Range(s)"/>
-                </f:facet>
+            <p:column headerText="Range(s)">
                 <ui:repeat value="#{feature.ranges}" var="range" varStatus="status">
                     <h:outputText value="#{range.toString()}"/>
                     <p:outputPanel rendered="#{status.index lt (status.end - 1)}">
@@ -127,16 +109,13 @@
                     </p:outputPanel>
                 </ui:repeat>
             </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Actions"/>
-                </f:facet>
-                <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
+            <p:column headerText="Actions">
+                <p:commandLink id="markDeletedBtn" process="markDeletedBtn" immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
                                actionListener="#{participantController.markFeatureToDelete(feature)}"
-                               update="featuresTable,growl,changesPanel,messagesComponent,unsavedChangesInfo" rendered="#{not changesController.isDeletedAc(feature.ac)}"/>
-                <p:commandLink immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
+                               update=":editorForm:changesPanel,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo" rendered="#{not changesController.isDeletedAc(feature.ac)}"/>
+                <p:commandLink id="revertBtn" process="revertBtn" immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
                                actionListener="#{changesController.revert(feature)}"
-                               update="featuresTable,growl,changesPanel,messagesComponent,unsavedChangesInfo" rendered="#{changesController.isDeletedAc(feature.ac)}"/>
+                               update=":editorForm:changesPanel,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo" rendered="#{changesController.isDeletedAc(feature.ac)}"/>
             </p:column>
         </p:dataTable>
 

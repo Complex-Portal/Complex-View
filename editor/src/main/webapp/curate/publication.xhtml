@@ -100,9 +100,6 @@
     </ui:define>
 
     <ui:define name="curateContent">
-        <p:hotkey bind="alt+s" actionListener="#{publicationController.doSave}"
-                  update="publicationDetails,northUnit,messagesComponent,changesPanel,unsavedChangesInfo"/>
-
         <h:panelGroup rendered="#{publicationController.publication == null}">
             <ia:panelMessage level="warn">
                 No publication loaded!
@@ -160,7 +157,7 @@
                             <ia:panelMessage level="error">
                                 This publication does not contain some essential data (e.g. title).
                                 <p:commandButton value="Try to fix" actionListener="#{publicationController.doFormAutocomplete}"
-                                                 update="basic,publicationTabs,changesPanel,messagesComponent,unsavedChangesInfo">
+                                                 ajax="false">
                                     <f:setPropertyActionListener value="#{true}" target="#{publicationController.unsavedChanges}"/>
                                 </p:commandButton>
 
@@ -329,7 +326,6 @@
                 <p:tabView id="publicationTabs" dynamic="true">
 
                     <p:tab title="Experiments (#{fn:length(publicationController.publication.experiments)})">
-                        <!--<ia:experimentsTable value="#{publicationController.publication.experiments}"/>-->
                         <div class="intact-buttonBar">
                              <p:commandButton value="New experiment" action="#{experimentController.newExperiment(publicationController.publication)}" ajax="false"/>
                         </div>
@@ -342,7 +338,6 @@
                     </p:tab>
 
                     <p:tab title="Interactions (#{publicationController.interactionDataModel != null? publicationController.interactionDataModel.rowCount : 0})">
-                        <!--<ia:experimentsTable value="#{publicationController.publication.experiments}"/>-->
                         <div class="intact-buttonBar">
                              <p:commandButton value="New interaction"
                                               action="#{interactionController.newInteraction(publicationController.publication, null)}"

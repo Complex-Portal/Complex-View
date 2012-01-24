@@ -9,13 +9,15 @@
               position="center"
               width="500">
 
-        <ia:panelDialogLayout>
+        <ia:panelDialogLayout id="ipDialogPanel">
             <f:facet name="buttonBar">
                 <p:commandButton id="interactorSearchBtn" value="Search" actionListener="#{participantController.importInteractor}"
-                                 update="messagesComponent,candidatesContent"
+                                 process="searchInteractorTxt"
+                                 update=":editorForm:messagesComponent"
                                  onstart="searching_load.show()"
-                                 oncomplete="searching_load.hide(); importInteractorDialog.hide(); candidatesDialog.show()"
-                                 process="ipDialog" />
+                                 onerror="alert('Error opening candidates dialog')"
+                                 oncomplete="searching_load.hide(); importInteractorDialog.hide()"
+                                 onsuccess="candidatesDialog.show()" />
             </f:facet>
 
             <h:panelGrid columns="2">
@@ -32,18 +34,18 @@
     <ia:loadingDialog widgetVar="searching_load" message="Searching interactors..."/>
     <ia:loadingDialog widgetVar="adding_load" message="Adding participants..." modal="false"/>
 
-    <p:dialog id="candidatesDialog" widgetVar="candidatesDialog" header="Import participants" modal="true"
+    <p:dialog id="candidatesDialog" widgetVar="candidatesDialog" header="Import participants" modal="true" dynamic="true"
               position="center"
               width="800">
         <p:outputPanel id="candidatesContent">
-            <ia:panelDialogLayout>
+            <ia:panelDialogLayout id="candidatesDialogContent">
                 <f:facet name="buttonBar">
                     <h:panelGroup>
-                    <p:commandButton value="Import selected" rendered="#{not empty participantController.interactorCandidates}"
+                    <p:commandButton id="importSelected" value="Import selected" rendered="#{not empty participantController.interactorCandidates}"
                                      actionListener="#{participantController.addInteractorToParticipant}"
                                      onstart="candidatesDialog.hide();adding_load.show()" onerror="adding_load.hide(); candidatesDialog.show();"
                                      oncomplete="adding_load.hide();  "
-                                     update="messagesComponent,centralUnit,topSection,changesPanel" process="candidatesDialog"/>
+                                     update=":editorForm" />
                     <p:commandButton type="button" value="Back" rendered="#{empty participantController.interactorCandidates}"
                                      onclick="candidatesDialog.hide(); importInteractorDialog.show()"/>
                     </h:panelGroup>

@@ -8,7 +8,7 @@
                 xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/components/intact">
 
-    <h:panelGroup id="participantsTable">
+    <h:panelGroup id="participantsTableGroup">
 
         <ui:param name="toDeleteCount" value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Component', interactionController.ac).size()}"/>
 
@@ -18,7 +18,7 @@
                 </ia:panelMessage>
             </h:panelGroup>
 
-        <p:dataTable var="wrapper" value="#{value}"
+        <p:dataTable id="participantsTable" var="wrapper" value="#{value}"
                      rows="15" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="both"
                      rowStyleClass="#{wrapper.participant.ac == null? 'intact-new' : wrapper.deleted? 'intact-deleted' : null}">
 
@@ -56,7 +56,7 @@
             </p:column>
 
             <p:column headerText="Identity">
-                <h:outputText value="#{interactionController.getInteractorIdentity(participant.interactor)}"
+                <h:outputText id="participantId" value="#{interactionController.getInteractorIdentity(participant.interactor)}"
                               style="#{changesController.isDeletedAc(participant.ac)? 'color:red; text-decoration:line-through' : ''}"/>
             </p:column>
 
@@ -73,8 +73,8 @@
                 <h:selectOneMenu id="expRoleTxt" value="#{wrapper.firstExperimentalRole}" onchange="markAsUnsaved()"
                         rendered="#{value.size() lt 5}">
                         <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
-                    <ed:ajax process="@this" event="valueChange"
-                             timeout="0" beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                    <f:ajax process="@this" event="valueChange"
+                            oncomplete="ia_enableSave()"
                             listener="#{interactionController.updateShortLabel()}" update="shortlabelTxt"/>
                 </h:selectOneMenu>
                 <h:outputText value="#{wrapper.participant.cvExperimentalRole != null? wrapper.participant.cvExperimentalRole.shortLabel : ''}"
@@ -140,21 +140,21 @@
 
             <p:column headerText="Options">
                 <div style="float:right">
-                    <p:commandLink process="@this" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
+                    <p:commandLink id="markDeletedBtn" process="markDeletedBtn" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
                                    actionListener="#{interactionController.markParticipantToDelete(participant)}"
-                                   update="participantsTable,unsavedChangesInfo,changesPanel,messagesComponent,unsavedChangesInfo"
+                                   update=":editorForm:unsavedChangesInfo,:editorForm:changesPanel,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo"
                                    rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
                 </div>
                 <div style="float:right">
-                <p:commandLink process="@this" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
+                <p:commandLink id="revertBtn" process="revertBtn" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
                                actionListener="#{changesController.revert(participant)}"
-                               update="participantsTable,unsavedChangesInfo,changesPanel,messagesComponent,unsavedChangesInfo"
+                               update=":editorForm:unsavedChangesInfo,:editorForm:changesPanel,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo"
                                rendered="#{changesController.isDeletedAc(participant.ac)}"/>
                 </div>
                 <div style="float:left">
-                <p:commandLink process="@this" title="Duplicate" styleClass="ui-icon ui-icon-newwin"
+                <p:commandLink id="duplicateBtn" process="duplicateBtn" title="Duplicate" styleClass="ui-icon ui-icon-newwin"
                                actionListener="#{interactionController.cloneParticipant(wrapper)}"
-                               update="participantsTable,unsavedChangesInfo,changesPanel,messagesComponent"
+                               update=":editorForm:unsavedChangesInfo,:editorForm:changesPanel,:editorForm:messagesComponent"
                                rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
                 </div>
             </p:column>

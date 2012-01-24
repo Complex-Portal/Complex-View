@@ -64,21 +64,21 @@
                          <h:outputLabel value="Host organism: " for="hostOrganismTxt"/>
                          <ia:inputBioSource id="hostOrganismTxt" value="#{interactionRemoteController.hostOrganism}"
                                             selectItems="#{bioSourceService.bioSourceSelectItems}"
-                                            update="messagesComponent"
+                                            update=":editorForm:messagesComponent"
                                             disabled="#{interactionRemoteController.experiment != null}"/>
 
                          <h:outputLabel value="Interaction detection method: " for="detMethodTxt"/>
                          <ia:inputCvObject id="detMethodTxt" value="#{interactionRemoteController.cvInteraction}"
                                            selectItems="#{cvObjectService.interactionDetectionMethodSelectItems}"
                                            cvIdentifier="MI:0001"
-                                           update="messagesComponent"
+                                           update=":editorForm:messagesComponent"
                                             disabled="#{interactionRemoteController.experiment != null}"/>
 
                          <h:outputLabel value="Participant detection method: " for="partDetMethodTxt"/>
                          <ia:inputCvObject id="partDetMethodTxt" value="#{interactionRemoteController.cvIdentification}"
                                            selectItems="#{cvObjectService.participantDetectionMethodSelectItems}"
                                            cvIdentifier="MI:0002"
-                                           update="messagesComponent"
+                                           update=":editorForm:messagesComponent"
                                             disabled="#{interactionRemoteController.experiment != null}"/>
 
 

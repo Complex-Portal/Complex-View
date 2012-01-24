@@ -16,10 +16,8 @@
 package uk.ac.ebi.intact.editor.util;
 
 import com.google.common.collect.Maps;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.search.SortField;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
@@ -124,11 +122,17 @@ public class LazyDataModelFactory {
             public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
                 List<T> list = new ArrayList<T>(collection);
 
+                System.out.println("COL: "+collection.size());
+
                 if (first >= list.size()) {
                     return Collections.EMPTY_LIST;
                 }
 
-                list.subList(first, Math.min(first+pageSize, list.size()-1));
+                if (list.size() > pageSize) {
+                    list = list.subList(first, Math.min(first+pageSize, list.size()-1));
+                }
+
+                System.out.println("RET: "+list.size());
 
                 return list;
             }

@@ -11,13 +11,11 @@
 
     <!-- INTERFACE -->
     <composite:interface>
-        <composite:attribute name="beforeTimeoutEvent" default=""/>
         <composite:attribute name="disabled" type="java.lang.Boolean" default="false"/>
         <composite:attribute name="modal" type="java.lang.Boolean" default="true"/>
         <composite:attribute name="oncomplete" default=""/>
         <composite:attribute name="selectItems" required="true"/>
         <composite:attribute name="size" default="30"/>
-        <composite:attribute name="timeout" default="0"/>
         <composite:attribute name="update"/>
         <composite:attribute name="required" default="false"/>
         <composite:attribute name="requiredMessage"/>
@@ -46,8 +44,8 @@
             <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="bioSourceConverter"
                     required="#{cc.attrs.required}" requiredMessage="#{cc.attrs.requiredMessage}" disabled="#{cc.attrs.disabled}">
                 <f:selectItems value="#{cc.attrs.selectItems}"/>
-                <ed:ajax event="valueChange" update="#{cc.attrs.update}" process="@this"
-                             timeout="#{cc.attrs.timeout}" beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
+                <f:ajax event="valueChange" update="#{cc.attrs.update}" process="@this"
+                             oncomplete="#{cc.attrs.oncomplete}"
                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
             </h:selectOneMenu>

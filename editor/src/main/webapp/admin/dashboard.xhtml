@@ -13,11 +13,11 @@
             <h:panelGrid columns="3">
                 <h:outputLabel for="urgentTxt" value="Global urgent notification: "/>
                 <p:inputText id="urgentTxt" value="#{notificationController.globalUrgentNotification}" size="80"/>
-                <p:commandButton value="Submit" process="urgentTxt" update="messagesComponent"/>
+                <p:commandButton value="Submit" process="urgentTxt" update=":editorForm:messagesComponent"/>
 
                 <h:outputLabel for="globalTxt" value="Global notification: "/>
                 <p:inputText id="globalTxt" value="#{notificationController.globalNotification}" size="80"/>
-                <p:commandButton value="Submit" process="globalTxt" update="messagesComponent"/>
+                <p:commandButton value="Submit" process="globalTxt" update=":editorForm:messagesComponent"/>
             </h:panelGrid>
          </p:panel>
 

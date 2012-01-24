@@ -12,16 +12,16 @@
          <h2>Compatibility Tools</h2>
 
         <h:panelGrid columns="2">
-            <p:commandButton value="Publication Sync" actionListener="#{compatibilityController.launchPublicationSync}" update="messagesComponent"/>
+            <p:commandButton value="Publication Sync" actionListener="#{compatibilityController.launchPublicationSync}" update=":editorForm:messagesComponent"/>
             <h:outputText value="Adds missing annotations to the publications, taking the annotations from the experiment annotations"/>
 
-            <p:commandButton value="Experiment Sync" actionListener="#{compatibilityController.launchExperimentSync}" update="messagesComponent"/>
+            <p:commandButton value="Experiment Sync" actionListener="#{compatibilityController.launchExperimentSync}" update=":editorForm:messagesComponent"/>
             <h:outputText value="Copies the annotations from the publication to its experiment, updating the annotation if existed"/>
 
-            <p:commandButton value="CvObject Sync" actionListener="#{cvObjectService.refresh}" update="messagesComponent"/>
+            <p:commandButton value="CvObject Sync" actionListener="#{cvObjectService.refresh}" update=":editorForm:messagesComponent"/>
             <h:outputText value="Updates the drop down lists for CvObjects if changes have been made externally"/>
 
-            <p:commandButton value="BioSource Sync" actionListener="#{bioSourceService.refresh}" update="messagesComponent"/>
+            <p:commandButton value="BioSource Sync" actionListener="#{bioSourceService.refresh}" update=":editorForm:messagesComponent"/>
             <h:outputText value="Updates the drop down lists for organisms if changes have been made externally"/>
         </h:panelGrid>
 

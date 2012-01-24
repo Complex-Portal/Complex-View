@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.primefaces.model.SelectableDataModelWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -34,6 +35,7 @@ import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantImportCo
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantWrapper;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
+import uk.ac.ebi.intact.editor.util.SelectableCollectionDataModel;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.util.XrefUtils;
@@ -42,6 +44,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.model.DataModel;
 import javax.faces.model.SelectItem;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,6 +69,7 @@ public class ParticipantController extends ParameterizableObjectController {
     private String interactor;
     private List<ImportCandidate> interactorCandidates;
 
+    private DataModel<Feature> featuresDataModel;
     private Feature[] selectedFeatures;
     private Feature featureToLink1;
     private Feature featureToLink2;
@@ -130,6 +134,9 @@ public class ParticipantController extends ParameterizableObjectController {
                 addErrorMessage("No participant with this AC", ac);
                 return;
             }
+            
+            featuresDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<Feature>(participant.getFeatures()), participant.getFeatures());
+
             // check if the publication, experiment and interaction are null in their controllers (this happens when the
             // participant page is loaded directly using a URL)
 
@@ -531,5 +538,9 @@ public class ParticipantController extends ParameterizableObjectController {
         final List<ComponentConfidence> confidences = new ArrayList<ComponentConfidence>( participant.getConfidences() );
         Collections.sort( confidences, new IntactObjectComparator() );
         return confidences;
+    }
+
+    public DataModel<Feature> getFeaturesDataModel() {
+        return featuresDataModel;
     }
 }

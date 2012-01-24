@@ -34,7 +34,7 @@
                 <p:inputText id="issueTitle" value="#{errorController.title}" size="50" required="true" requiredMessage="Sentence is required"/>
 
                 <p:commandButton id="issueSubmitBtn" value="Submit Issue" actionListener="#{errorController.submitIssue}"
-                        update="messagesComponent" oncomplete="this.disabled = true"/>
+                        update=":editorForm:messagesComponent" oncomplete="this.disabled = true"/>
 
             </h:panelGroup>
 

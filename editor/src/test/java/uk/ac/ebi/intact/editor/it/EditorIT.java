@@ -26,8 +26,6 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.test.context.ContextConfiguration;
-import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.editor.it.util.ScreenShotOnFailureRule;
 import uk.ac.ebi.intact.model.Experiment;
 import uk.ac.ebi.intact.model.user.User;
@@ -74,6 +72,15 @@ public abstract class EditorIT extends BaseIT {
             }
         });
     }
+    
+    protected void waitUntilElementHasText(final By by, final String text) {
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver webDriver) {
+                final WebElement element = driver.findElement(by);
+                return element != null && element.getText().equals(text);
+            }
+        });
+    }
 
     protected void waitUntilLoadingIsComplete() {
         wait.until(new ExpectedCondition<Boolean>() {
@@ -90,7 +97,9 @@ public abstract class EditorIT extends BaseIT {
     }
 
     protected void loginAs(String user) {
+        driver.findElement(By.id("j_username")).clear();
         driver.findElement(By.id("j_username")).sendKeys(user);
+        driver.findElement(By.id("j_password_clear")).clear();
         driver.findElement(By.id("j_password_clear")).sendKeys(user);
         driver.findElement(By.id("login")).click();
     }
@@ -110,6 +119,14 @@ public abstract class EditorIT extends BaseIT {
 
     protected void goToExperimentPage(String ac) {
         goToPageInContext("/experiment/"+ac);
+    }
+
+    protected void goToInteractionPage(String ac) {
+        goToPageInContext("/interaction/"+ac);
+    }
+
+    protected void goToParticipantPage(String ac) {
+        goToPageInContext("/participant/"+ac);
     }
 
     protected String titleForCurrentPage() {

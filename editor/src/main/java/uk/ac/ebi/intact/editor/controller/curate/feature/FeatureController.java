@@ -227,6 +227,8 @@ public class FeatureController extends AnnotatedObjectController {
 
         refreshRangeWrappers();
 
+        newRangeValue = null;
+
         setUnsavedChanges(true);
     }
 

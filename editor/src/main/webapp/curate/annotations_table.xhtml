@@ -10,7 +10,7 @@
 
 
         <div class="intact-buttonBar">
-                <p:commandButton value="New Annotation" actionListener="#{annotatedObjectController.newAnnotation}"
+                <p:commandButton id="newAnnotBtn" value="New Annotation" actionListener="#{annotatedObjectController.newAnnotation}"
                                  update="#{update}" process="@this"/>
         </div>
 
@@ -28,7 +28,7 @@
 
                         <p:commandLink value="(copy)"
                                        actionListener="#{myNotesController.copyToNotes(curatorContextController.acList(annotatedObjectController.getParentsByAnnotationAc(annotation.ac)), 'Parent Accessions copied')}"
-                                       update="messagesComponent">
+                                       update=":editorForm:messagesComponent">
 
                         </p:commandLink>
                     </h:panelGroup>
@@ -61,7 +61,7 @@
                 <f:facet name="header">
                      <h:outputText value="Actions"/>
                 </f:facet>
-                <p:commandLink styleClass="ui-icon ui-icon-closethick" process="@this"
+                <p:commandLink id="removeAnnotBtn" styleClass="ui-icon ui-icon-closethick" process="removeAnnotBtn"
                                actionListener="#{annotatedObjectController.annotatedObject.removeAnnotation(annotation)}"
                                oncomplete="markAsUnsaved()"
                                update="#{update}"/>

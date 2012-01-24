@@ -83,9 +83,9 @@
                             <p:inputText id="interactorTxt" value="#{participantController.interactor}"
                                     readonly="true"/>
                             <!--<ia:inputInteractor value="#{participant.interactor}" />-->
-                            <p:commandButton value="Import" onclick="importInteractorDialog.show();"/>
-                            <p:commandButton value="New" onclick="newInteractorDialog.show();"/>
-                            <p:commandButton value="View" rendered="#{participant.interactor != null}"
+                            <p:commandButton id="importInteractorBtn" value="Import" onclick="importInteractorDialog.show();"/>
+                            <p:commandButton id="newInteractorBtn" value="New" onclick="newInteractorDialog.show();"/>
+                            <p:commandButton id="viewInteractorBtn" value="View" rendered="#{participant.interactor != null}"
                                              action="#{curateController.edit(participant.interactor)}" ajax="false"/>
 
                             <ui:include src="dialog_import_interactor.xhtml"/>
@@ -97,7 +97,7 @@
                         </td>
                         <td colspan="2">
                             <p:inputText id="authorGivenNameTxt" value="#{participantController.participantWrapper.authorGivenName}" size="10" converter="trimmingConverter">
-                                <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo participantTabs" process="@this"/>
+                                <p:ajax event="valueChange" update=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:participantTabs" process="@this"/>
                              </p:inputText>
                         </td>
                     </tr>
@@ -108,8 +108,7 @@
                         <td colspan="2">
                             <ia:inputBioSource id="expressedInTxt" value="#{participant.expressedIn}"
                                                selectItems="#{bioSourceService.bioSourceSelectItems}"
-                                               beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                               update="changesPanel unsavedChangesInfo"
+                                               update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                                valueChangeAwareObject="#{annotatedObjectController}"/>
                         </td>
                     </tr>
@@ -122,8 +121,7 @@
                                               value="#{participant.cvBiologicalRole}"
                                               selectItems="#{cvObjectService.biologicalRoleSelectItems}"
                                               required="true" requiredMessage="Biological role is required"
-                                              beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                              update="changesPanel unsavedChangesInfo"
+                                              update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                               valueChangeAwareObject="#{annotatedObjectController}"/>
                             <!--<p:inputText id="bioRoleTxt" value="#{participant.cvBiologicalRole.shortLabel}"   />-->
                         </td>
@@ -138,8 +136,7 @@
                                            value="#{participantController.participantWrapper.firstExperimentalRole}"
                                            selectItems="#{cvObjectService.experimentalRoleSelectItems}"
                                            required="true" requiredMessage="Experimental role is required"
-                                           beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                           update="changesPanel unsavedChangesInfo"
+                                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                      </td>
                      <td style="padding-left: 150px;">
@@ -157,8 +154,7 @@
                          <ia:inputCvObject id="deliveryTxt" cvIdentifier="MI:0346"
                                            selectItems="#{cvObjectService.participantExperimentalPreparationsSelectItems}"
                                            value="#{participantController.participantWrapper.firstExperimentalPreparation}"
-                                           beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                           update="changesPanel unsavedChangesInfo"
+                                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                          <h:outputText value="#{fn:length(participant.experimentalPreparations) - 1} more..."
                                        rendered="#{fn:length(participant.experimentalPreparations) > 1}" />
@@ -180,9 +176,11 @@
                                               ajax="false"/>
                      </div>
 
-                    <ui:include src="features_table.xhtml">
-                        <ui:param name="value" value="#{participant.features}"/>
-                    </ui:include>
+                    <p:outputPanel id="featuresPanel" autoUpdate="true">
+                        <ui:include src="features_table.xhtml">
+                            <ui:param name="value" value="#{participantController.featuresDataModel}"/>
+                        </ui:include>
+                    </p:outputPanel>
                 </p:tab>
 
             <ui:decorate template="propertiesTabs.xhtml">
@@ -191,24 +189,28 @@
 
                 <p:tab id="parametersTab" title="Parameters (#{participant.parameters.size()})">
 
+                    <p:outputPanel id="paramsPanel" autoUpdate="true">
+
                    <ia:parametersTable annotatedObjectController="#{annotatedObjectController}"
                        parameterTypeSelectItems="#{cvObjectService.parameterTypeSelectItems}"
                        parameterUnitSelectItems="#{cvObjectService.parameterUnitSelectItems}"
-                       update="parametersTab changesPanel unsavedChangesInfo"
+                       update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                        valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                        valueChangeAwareObject="#{annotatedObjectController}"/>
+
+                    </p:outputPanel>
 
                 </p:tab>
 
                 <p:tab id="confidencesTab" title="Confidences (#{participant.confidences.size()})">
 
-                    <h:panelGroup id="confidencesPanel">
+                    <p:outputPanel id="confidencesPanel" autoUpdate="true">
                        <ia:confidencesTable annotatedObjectController="#{annotatedObjectController}"
                            confidenceTypeSelectItems="#{cvObjectService.confidenceTypeSelectItems}"
-                           update="confidencesPanel confidencesTab changesPanel unsavedChangesInfo"
+                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                            valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                            valueChangeAwareObject="#{annotatedObjectController}"/>
-                    </h:panelGroup>
+                    </p:outputPanel>
 
                 </p:tab>
 

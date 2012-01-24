@@ -29,13 +29,12 @@
             <tr>
                 <td>
         <div class="intact-buttonBar">
-            <p:commandButton value="New Alias"
+            <p:commandButton id="newAliasBtn" value="New Alias" process="newAliasBtn"
                              actionListener="#{cc.attrs.annotatedObjectController.newAlias}"
-                             process="@this"
                              update="#{cc.attrs.update}"/>
         </div>
 
-        <p:dataTable var="alias" value="#{cc.attrs.annotatedObjectController.aliases}">
+        <p:dataTable id="aliasTable" var="alias" value="#{cc.attrs.annotatedObjectController.aliases}">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Type"/>
@@ -43,8 +42,8 @@
                 <h:selectOneMenu value="#{alias.cvAliasType}" rendered="#{cc.attrs.aliasTypeSelectItems != null}"
                                  required="true" requiredMessage="Alias type is required">
                     <f:selectItems value="#{cc.attrs.aliasTypeSelectItems}"/>
-                    <ed:ajax event="valueChange" update="#{cc.attrs.update}" process="@this"
-                             beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
+                    <f:ajax event="valueChange" update="#{cc.attrs.update}"
+                              oncomplete="#{cc.attrs.oncomplete}"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                 </h:selectOneMenu>
@@ -55,15 +54,15 @@
                     <h:outputText value="Name"/>
                 </f:facet>
                      <p:inputText value="#{alias.name}" size="50" rendered="#{alias.name != null}" converter="trimmingConverter">
-                        <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
-                                        beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
+                        <f:ajax event="valueChange" update="#{cc.attrs.update}"
+                                         oncomplete="#{cc.attrs.oncomplete}"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                     </p:inputText>
                 <p:inputText value="#{alias.name}" size="50" rendered="#{alias.name == null}"
                         required="true" requiredMessage="Alias names are required" converter="trimmingConverter">
-                        <ed:ajax event="valueChange" timeout="0" update="#{cc.attrs.update}" process="@this"
-                                        beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
+                        <f:ajax event="valueChange" update="#{cc.attrs.update}"
+                                        oncomplete="#{cc.attrs.oncomplete}"
                                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                 </p:inputText>
@@ -72,7 +71,7 @@
                 <f:facet name="header">
                      <h:outputText value="Actions"/>
                 </f:facet>
-                <p:commandLink styleClass="ui-icon ui-icon-closethick" process="@this"
+                <p:commandLink id="removeAliasBtn" styleClass="ui-icon ui-icon-closethick" process="removeAliasBtn"
                                actionListener="#{cc.attrs.annotatedObjectController.annotatedObject.removeAlias(alias)}"
                                oncomplete="markAsUnsaved()"
                                update="#{cc.attrs.update}"/>

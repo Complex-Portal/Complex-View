@@ -30,8 +30,8 @@
                          readonly="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"
                          styleClass="#{changesController.isDeletedAc(rangeWrapper.range.ac)? 'intact-deleted' : ''}"
                          style="font-family: monospace">
-                <f:ajax event="valueChange" render=":editorForm:rangesTable :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                        process="@this" listener="#{rangeWrapper.onRangeAsStringChanged}" onevent="markAsUnsaved"/>
+                <f:ajax event="valueChange" render=":editorForm:featureTabs:rangesPanel :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                        process="@this" listener="#{rangeWrapper.onRangeAsStringChanged}" onevent="markAsUnsaved()"/>
             </h:inputText>
 
             <h:panelGroup id="validityPanel">
@@ -49,8 +49,8 @@
             <h:selectOneMenu id="fromCvFuzzyType" value="#{rangeWrapper.range.fromCvFuzzyType}" converter="cvObjectConverter"
                              required="true"
                              requiredMessage="Range from CvFuzzyType is required">
-                <f:ajax event="valueChange" render=":editorForm:rangesTable :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                        process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved"/>
+                <f:ajax event="valueChange" render=":editorForm:featureTabs:rangesPanel :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                        process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()"/>
                 <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
             </h:selectOneMenu>
         </p:column>
@@ -61,8 +61,8 @@
             <h:selectOneMenu id="toCvFuzzyType" value="#{rangeWrapper.range.toCvFuzzyType}" converter="cvObjectConverter"
                              required="true"
                              requiredMessage="Range to CvFuzzyType is required">
-                <f:ajax event="valueChange" render=":editorForm:rangesTable :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                        process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved"/>
+                <f:ajax event="valueChange" render=":editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                        process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()"/>
                 <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
             </h:selectOneMenu>
         </p:column>
@@ -71,8 +71,8 @@
                 <h:outputText value="Intramolecular"/>
             </f:facet>
             <h:selectBooleanCheckbox value="#{rangeWrapper.range.linked}">
-                <f:ajax event="valueChange" render=":editorForm:rangesTable :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                        process="@this" onevent="markAsUnsaved"/>
+                <f:ajax event="valueChange" render=":editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                        process="@this" onevent="markAsUnsaved()"/>
              </h:selectBooleanCheckbox>
 
             <!--A link range is different from link feature. We should not associate link range to link feature-->
@@ -85,13 +85,13 @@
             <f:facet name="header">
                 <h:outputText value="Actions"/>
             </f:facet>
-            <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
+            <p:commandLink id="markDeletedBtn" process="markDeletedBtn" immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
                            actionListener="#{featureController.markRangeToDelete(rangeWrapper.range)}"
-                           update="rangesTable,growl,changesPanel,messagesComponent,unsavedChangesInfo" rendered="#{not changesController.isDeletedAc(rangeWrapper.range.ac)}"
+                           update=":editorForm:changesPanel,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo" rendered="#{not changesController.isDeletedAc(rangeWrapper.range.ac)}"
                            />
-            <p:commandLink immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
+            <p:commandLink id="revertBtn" process="revertBtn" immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
                            actionListener="#{changesController.revert(rangeWrapper.range)}"
-                           update="rangesTable,growl,changesPanel,messagesComponent,unsavedChangesInfo" rendered="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"/>
+                           update=":editorForm:changesPanel,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo" rendered="#{changesController.isDeletedAc(rangeWrapper.range.ac)}"/>
         </p:column>
 
         <p:rowExpansion>

@@ -53,10 +53,10 @@
             <p:column rendered="#{not readonly}" headerText="Actions">
                 <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
                                actionListener="#{changesController.markToDeleteInteraction(interaction, interaction.experiments)}"
-                               update="interactionTable,growl,changesPanel,messagesComponent,unsavedChangesInfo" rendered="#{not changesController.isDeletedAc(interaction.ac)}"/>
+                               update=":editorForm" rendered="#{not changesController.isDeletedAc(interaction.ac)}"/>
                 <p:commandLink immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
                                actionListener="#{changesController.revert(interaction)}"
-                               update="interactionTable,growl,changesPanel,messagesComponent,unsavedChangesInfo" rendered="#{changesController.isDeletedAc(interaction.ac)}"/>
+                               update=":editorForm" rendered="#{changesController.isDeletedAc(interaction.ac)}"/>
             </p:column>
         </p:dataTable>
 

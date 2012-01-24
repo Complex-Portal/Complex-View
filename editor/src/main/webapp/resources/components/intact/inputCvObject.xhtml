@@ -45,10 +45,11 @@
 
                 <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="cvObjectConverter"
                                  required="#{cc.attrs.required}" requiredMessage="#{cc.attrs.requiredMessage}"
-                                 immediate="#{cc.attrs.immediate}" onchange="markAsUnsaved()"  disabled="#{cc.attrs.disabled}">
+                                 immediate="#{cc.attrs.immediate}" disabled="#{cc.attrs.disabled}">
                     <f:selectItems value="#{cc.attrs.selectItems}"/>
-                    <ed:ajax event="valueChange" update="#{cc.attrs.update} editBtn" process="@this"
-                             timeout="#{cc.attrs.timeout}" beforeTimeoutEvent="#{cc.attrs.beforeTimeoutEvent}" oncomplete="#{cc.attrs.oncomplete}"
+                    <p:ajax event="valueChange" process="@this"
+                            onerror="alert('ERROR!')"
+                            onsuccess="markAsUnsaved(); #{cc.attrs.oncomplete}"
                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
                 </h:selectOneMenu>

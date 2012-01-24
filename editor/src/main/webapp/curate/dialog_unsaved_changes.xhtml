@@ -15,13 +15,13 @@
                 <p:commandButton value="Edit" action="#{curateController.edit(change.unsavedObject)}" ajax="false"/>
                 <p:commandButton value="Save" actionListener="#{curateController.save(change.unsavedObject)}"
                                  onstart="saveDlg.show()" onsuccess="saveDlg.hide()"
-                                 update="unsavedTable, messagesComponent, unsavedChangesInfo, changesPanel, editorForm"/>
+                                 update=":editorForm"/>
                 <p:commandButton value="Discard" actionListener="#{curateController.discard(change.unsavedObject)}"
-                                 update="unsavedTable, messagesComponent, unsavedChangesInfo, changesPanel, editorForm"
+                                 update=":editorForm"
                                  onclick="revertDlg.show()" oncomplete="revertDlg.hide()" immediate="true"
                                  rendered="#{change.unsavedObject.ac != null}"/>
                 <p:commandButton value="Cancel" action="#{curateController.cancelEdition(change.unsavedObject)}"
-                                 update="unsavedTable, messagesComponent, unsavedChangesInfo, changesPanel, editorForm"
+                                 update=":editorForm"
                                  onclick="revertDlg.show()" oncomplete="revertDlg.hide()" immediate="true" rendered="#{change.unsavedObject.ac == null}"/>
             </p:column>
             <p:column>
@@ -49,11 +49,11 @@
              <div class="dialogButtonBar">
                 <p:commandButton value="Save All" actionListener="#{persistenceController.saveAll}"
                                  onstart="saveAllDlg.show()" onsuccess="saveAllDlg.hide()" oncomplete="unsavedChangesDialog.hide();"
-                                 update="centralUnit,topSection,messagesComponent,editorForm"/>
+                                 update=":editorForm"/>
                  &#160;
                 <p:commandLink value="Revert All" actionListener="#{persistenceController.revertAll}"
                                onclick="revertAllDlg.show()" onsuccess="unsavedChangesDialog.hide()" oncomplete="revertAllDlg.hide();"
-                               update="centralUnit,topSection,messagesComponent,editorForm"/>
+                               update=":editorForm"/>
             </div>
 
     </p:dialog>
