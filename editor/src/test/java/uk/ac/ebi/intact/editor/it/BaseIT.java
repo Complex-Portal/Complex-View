@@ -26,6 +26,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.editor.it.util.ScreenShotOnFailureRule;
@@ -47,6 +48,7 @@ import static uk.ac.ebi.intact.editor.Constants.BASE_URL;
         "classpath*:/META-INF/intact-batch.spring.xml",
         "classpath*:/META-INF/editor-test.spring.xml",
         "classpath*:/META-INF/editor.jpa-test.spring.xml"}, inheritLocations = false)
+@DirtiesContext(classMode=DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class BaseIT extends IntactBasicTestCase {
 
 

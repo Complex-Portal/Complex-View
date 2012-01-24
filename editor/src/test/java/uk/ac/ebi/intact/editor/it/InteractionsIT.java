@@ -12,11 +12,9 @@ import static org.junit.Assert.assertThat;
 public class InteractionsIT extends EditorIT {
 
 	@Test
-    @DirtiesContext
 	public void importProteinFromUniprotSuccessfully() throws Exception {
-        Experiment experiment = getMockBuilder().createExperimentRandom(1);
-        getCorePersister().saveOrUpdate(experiment);
-        
+        Experiment experiment = getDaoFactory().getExperimentDao().getByShortLabel("bigexp-2012-1");
+
         // Given: I want to import a participant from uniprot in the interaction page
         final String interactionAc = experiment.getInteractions().iterator().next().getAc();
         goToInteractionPage(interactionAc);

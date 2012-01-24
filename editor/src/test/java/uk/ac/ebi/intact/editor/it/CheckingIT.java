@@ -51,8 +51,6 @@ public class CheckingIT extends EditorIT {
         // When: I update the annotation text and click on save
         clickOnTheExperimentAnnotationsTab();
 
-        System.out.println(driver.getPageSource());
-
         final String toBeReviewedTextBoxId = "experimentTabs:annotationsTable:0:annotationTxt_input";
         final WebElement toBeReviewedTextBox = waitAndFindElement(By.id(toBeReviewedTextBoxId));
         
@@ -62,7 +60,7 @@ public class CheckingIT extends EditorIT {
         toBeReviewedTextBox.clear();
         toBeReviewedTextBox.sendKeys(oldToBeReviewed + ". Yes, it is very wrong!");
 
-        driver.findElement(By.id("unsavedSaveButton")).click();
+        clickOnSave();
         waitUntilLoadingIsComplete();
 
         // Then: the correction comment should be updated
@@ -96,12 +94,16 @@ public class CheckingIT extends EditorIT {
         correctionTextBox.clear();
         correctionTextBox.sendKeys(oldAnnotationText + ". New comment");
 
-        driver.findElement(By.id("unsavedSaveButton")).click();
+        clickOnSave();
         waitUntilLoadingIsComplete();
 
         // Then: the correction comment should be updated
         final WebElement newCorrectionTextBox = driver.findElement(By.id(correctionCommentTextBoxId));
         assertThat(newCorrectionTextBox.getText(), is(equalTo(oldAnnotationText+". New comment")));
+    }
+
+    private void clickOnSave() {
+        driver.findElement(By.id("topSaveButton")).click();
     }
 
 

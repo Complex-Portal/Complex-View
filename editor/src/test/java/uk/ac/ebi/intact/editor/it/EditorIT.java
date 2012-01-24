@@ -72,15 +72,6 @@ public abstract class EditorIT extends BaseIT {
             }
         });
     }
-    
-    protected void waitUntilElementHasText(final By by, final String text) {
-        wait.until(new ExpectedCondition<Boolean>() {
-            public Boolean apply(WebDriver webDriver) {
-                final WebElement element = driver.findElement(by);
-                return element != null && element.getText().equals(text);
-            }
-        });
-    }
 
     protected void waitUntilLoadingIsComplete() {
         wait.until(new ExpectedCondition<Boolean>() {
@@ -118,7 +109,7 @@ public abstract class EditorIT extends BaseIT {
     }
 
     protected void goToExperimentPage(String ac) {
-        goToPageInContext("/experiment/"+ac);
+        goToPageInContext("/experiment/" + ac);
     }
 
     protected void goToInteractionPage(String ac) {
@@ -186,5 +177,9 @@ public abstract class EditorIT extends BaseIT {
                 description.appendText("starts with: ").appendValue(substring);
             }
         };
+    }
+
+    protected String valueForElement(By id) {
+        return driver.findElement(id).getAttribute("value");
     }
 }

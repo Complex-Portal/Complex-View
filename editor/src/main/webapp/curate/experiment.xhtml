@@ -88,7 +88,7 @@
                                 <ia:inputBioSource id="hostOrganismTxt" value="#{experimentController.experiment.bioSource}"
                                     selectItems="#{bioSourceService.bioSourceSelectItems}"
                                     required="true" requiredMessage="Host organism is required"
-                                     beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
+                                     oncomplete="ia_enableSave()"
                                     update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                     valueChangeAwareObject="#{experimentController}"/>
                             </td>

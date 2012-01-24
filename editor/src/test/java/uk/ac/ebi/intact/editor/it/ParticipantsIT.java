@@ -12,10 +12,8 @@ import static org.junit.Assert.assertThat;
 public class ParticipantsIT extends EditorIT {
 
 	@Test
-    @DirtiesContext
 	public void importProteinFromUniprotSuccessfully() throws Exception {
-        Experiment experiment = getMockBuilder().createExperimentRandom(1);
-        getCorePersister().saveOrUpdate(experiment);
+        Experiment experiment = getDaoFactory().getExperimentDao().getByShortLabel("bigexp-2012-1");
         
         // Given: I want to import a participant from uniprot in the participant page
         final String participantAc = experiment.getInteractions().iterator().next().getComponents().iterator().next().getAc();
@@ -24,17 +22,12 @@ public class ParticipantsIT extends EditorIT {
 
         // When: I import P12345 using the Import... dialog
         clickOnInteractorImport();
-        searchParticipantsUsing("P12345");
+        searchParticipantsUsing("P12365");
         importSelectedByDefault();
 
-        // Then: the value of the Interactor should be P12345
-        assertThat(driver.findElement(By.id("interactorTxt")).getText(), is(equalTo("P12345")));
+        // Then: the shortlabel of the interactor should be cata2_maize
+        assertThat(valueForElement(By.id("interactorTxt")), is(equalTo("P12365")));
 	}
-
-    private void importSelectedByDefault() {
-        driver.findElement(By.id("candidatesDialogContent:importSelected")).click();
-        waitUntilElementHasText(By.id("interactorTxt"), "P12345");
-    }
 
     private void searchParticipantsUsing(String query) {
         final By queryElement = By.id("ipDialogPanel:searchInteractorTxt");
@@ -49,9 +42,9 @@ public class ParticipantsIT extends EditorIT {
         waitUntilElementIsVisible(By.id("ipDialogPanel:searchInteractorTxt"));
     }
 
-    private String identityForParticipantInFirstRow() {
-        final By firstIdInRowElement = By.xpath("//span[@id=\"interactionTabs:participantsTable:0:participantId\"]");
-        return driver.findElement(firstIdInRowElement).getText();
+    private void importSelectedByDefault() {
+        driver.findElement(By.id("candidatesDialogContent:importSelected")).click();
+        waitUntilLoadingIsComplete();
     }
 
 
