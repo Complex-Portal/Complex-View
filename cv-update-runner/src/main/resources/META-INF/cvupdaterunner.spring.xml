@@ -39,4 +39,10 @@
         <property name="reportDirectory" value="${update.report}"/>
     </bean>
 
+    <!-- Cv update runner -->
+    <bean id="globalCvUpdateRunner" class="uk.ac.ebi.intact.dbupdate.cv.GlobalCvUpdateRunner">
+
+        <property name="cvUpdateManager" ref="cvUpdateManager"/>
+    </bean>
+
 </beans>
