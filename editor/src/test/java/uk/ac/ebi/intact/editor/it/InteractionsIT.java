@@ -35,14 +35,14 @@ public class InteractionsIT extends EditorIT {
     }
 
     private void searchParticipantsUsing(String query) {
-        driver.findElement(By.id("interactionTabs:ipDialogPanel:searchParticipantTxt_input")).sendKeys(query);
+        driver.findElement(By.id("interactionTabs:ipDialogPanel:searchParticipantTxt")).sendKeys(query);
         driver.findElement(By.id("interactionTabs:ipDialogPanel:participantSearchBtn")).click();
         waitUntilElementIsVisible(By.id("interactionTabs:candidatesDialogContent:importSelected"));
     }
 
     private void showImportParticipantsDialog() {
         driver.findElement(By.id("interactionTabs:importParticipantBtn")).click();
-        waitUntilElementIsVisible(By.id("interactionTabs:ipDialogPanel:searchParticipantTxt_input"));
+        waitUntilElementIsVisible(By.id("interactionTabs:ipDialogPanel:searchParticipantTxt"));
     }
 
     private String identityForParticipantInFirstRow() {

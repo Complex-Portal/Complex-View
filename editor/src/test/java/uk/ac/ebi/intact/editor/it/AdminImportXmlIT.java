@@ -38,7 +38,7 @@ public class AdminImportXmlIT extends EditorIT {
     }
 
     private void typeUrlToImport(URL url) {
-        driver.findElement(By.id("urlTxt_input")).sendKeys(url.toString());
+        driver.findElement(By.id("urlTxt")).sendKeys(url.toString());
     }
 
     private void startImport() {

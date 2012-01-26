@@ -51,7 +51,7 @@ public class CheckingIT extends EditorIT {
         // When: I update the annotation text and click on save
         clickOnTheExperimentAnnotationsTab();
 
-        final String toBeReviewedTextBoxId = "experimentTabs:annotationsTable:0:annotationTxt_input";
+        final String toBeReviewedTextBoxId = "experimentTabs:annotationsTable:0:annotationTxt";
         final WebElement toBeReviewedTextBox = waitAndFindElement(By.id(toBeReviewedTextBoxId));
         
         String oldToBeReviewed = toBeReviewedTextBox.getText();
@@ -87,7 +87,7 @@ public class CheckingIT extends EditorIT {
         // When: I update the annotation text and click on save
         clickOnTheExperimentAnnotationsTab();
 
-        final String correctionCommentTextBoxId = "experimentTabs:annotationsTable:0:annotationTxt_input";
+        final String correctionCommentTextBoxId = "experimentTabs:annotationsTable:0:annotationTxt";
         final WebElement correctionTextBox = waitAndFindElement(By.id(correctionCommentTextBoxId));
 
         correctionTextBox.click();

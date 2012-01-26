@@ -174,7 +174,6 @@
 
                 <projectStage>Production</projectStage>
                 <userContext.scope>singleton</userContext.scope>
-                <intact.init.autoPersist>false</intact.init.autoPersist>
 
                 <daemon>true</daemon>
             </properties>

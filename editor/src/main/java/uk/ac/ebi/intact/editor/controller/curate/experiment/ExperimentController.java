@@ -373,8 +373,10 @@ public class ExperimentController extends AnnotatedObjectController {
         final Collection<Annotation> annotations = IntactCore.ensureInitializedAnnotations(exp);
 
         for (Annotation annot : annotations) {
-            if (CvTopic.TO_BE_REVIEWED.equals(annot.getCvTopic().getShortLabel())) {
-                return annot.getAnnotationText();
+            if (annot != null && annot.getCvTopic() != null) {
+                if (CvTopic.TO_BE_REVIEWED.equals(annot.getCvTopic().getShortLabel())) {
+                    return annot.getAnnotationText();
+                }
             }
         }
 
