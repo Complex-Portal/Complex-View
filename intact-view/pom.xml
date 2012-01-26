@@ -45,6 +45,11 @@
         <!-- Webapp default config -->
         <intact.instance.name>default</intact.instance.name>
 
+        <intact.init.autoPersist>false</intact.init.autoPersist>
+
+        <intact.institution>institutionIntact</intact.institution>
+        <intact.acprefix>EBI</intact.acprefix>
+
         <intact.menu.url>http://www.ebi.ac.uk/~intact/site/menu/menu-latest.xml</intact.menu.url>
         <intact.news.url>http://www.ebi.ac.uk/~intact/site/news/news-latest.xml</intact.news.url>
         <intact.dotm.url>http://www.ebi.ac.uk/~intact/site/dotm/dotm-1.1.xml</intact.dotm.url>
@@ -71,9 +76,7 @@
         <!-- Das -->
         <das.annotationserver.intact.url>${appRoot}/das-intact/das/</das.annotationserver.intact.url>
 
-        <!--<intact.recipients/>-->
-        <!--<intact.proxy.host></intact.proxy.host>-->
-        <!--<intact.proxy.port></intact.proxy.port>-->
+        <projectStage>Development</projectStage>
 
     </properties>
 
@@ -216,8 +219,11 @@
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <db.user>sa</db.user>
                 <db.password></db.password>
-                <db.hbm2ddl>create</db.hbm2ddl>
+                <db.hbm2ddl>update</db.hbm2ddl>
                 <db.alias>test</db.alias>
+
+                <intact.institution>institutionUndefined</intact.institution>
+                <intact.acprefix>TEST</intact.acprefix>
 
                 <intact.maxsize.xml>8</intact.maxsize.xml>
                 <intact.maxsize.xgmml>12</intact.maxsize.xgmml>
@@ -229,6 +235,10 @@
                 <intact.configfile>${project.build.testOutputDirectory}/intact-view-test.cfg</intact.configfile>
 
                 <userContext.scope>singleton</userContext.scope>
+                <projectStage>Production</projectStage>
+                <intact.init.autoPersist>true</intact.init.autoPersist>
+
+                <daemon>true</daemon>
             </properties>
 
             <build>
@@ -273,6 +283,19 @@
                                     <classpathScope>test</classpathScope>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <!-- populate test data -->
+                                <id>create-test-data</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>uk.ac.ebi.intact.view.webapp.DataPopulator</mainClass>
+                                    <classpathScope>test</classpathScope>
+                                    <cleanupDaemonThreads>true</cleanupDaemonThreads>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
 
@@ -289,6 +312,9 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <argLine>-Xmx1024m -XX:MaxPermSize=512m</argLine>
+                        </configuration>
                     </plugin>
 
                     <plugin>
@@ -330,7 +356,7 @@
                                     <goal>run</goal>
                                 </goals>
                                 <configuration>
-                                    <daemon>true</daemon>
+                                    <daemon>${daemon}</daemon>
                                 </configuration>
                             </execution>
                             <execution>
@@ -688,7 +714,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>3.0.RC2</version>
+            <version>3.0.1</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -707,7 +733,7 @@
         <dependency>
             <groupId>com.ocpsoft</groupId>
             <artifactId>prettyfaces-jsf2</artifactId>
-            <version>3.3.0-intact</version>
+            <version>3.3.2</version>
         </dependency>
 
         <!-- Other server stuff -->

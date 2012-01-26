@@ -196,6 +196,11 @@ public class DetailsController extends JpaBaseController {
     public void setInteractionAc( String interactionAc ) {
         if ( log.isDebugEnabled() ) log.debug( "Calling setInteractionAc( '" + interactionAc + "' )..." );
         interaction = getDaoFactory().getInteractionDao().getByAc( interactionAc );
+
+        if (interaction == null) {
+            interaction = getDaoFactory().getInteractionDao().getByXref( interactionAc );
+        }
+
         if ( interaction == null ) addErrorMessage( "No interaction found in the database for ac: " + interactionAc, "" );
     }
 

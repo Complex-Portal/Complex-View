@@ -20,9 +20,9 @@
             <p:ajax event="change" onstart="document.getElementById('mainPanels:exportBtn').disabled=true"
                     update="exportBtn"/>
             <f:selectItem itemLabel="-- Select format to Download --" itemValue="#{null}"/>
-            <f:selectItem itemLabel="MI-TAB" itemValue="mitab"
+            <f:selectItem itemLabel="MI-TAB 2.5" itemValue="mitab"
                     onclick="_gaq.push(['_trackEvent', 'Export', 'MI-TAB', ''])"/>
-            <f:selectItem itemLabel="MI-TAB (Expanded)" itemValue="mitab_intact"/>
+            <f:selectItem itemLabel="MI-TAB 2.5 (Expanded)" itemValue="mitab_intact"/>
             <f:selectItem itemLabel="MI-XML 2.5.3" itemValue="xml_2_53" itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXmlExport}"/>
             <f:selectItem itemLabel="MI-XML 2.5.4" itemValue="xml_2_54" itemDisabled="#{searchBean.results.rowCount ge intactViewConfiguration.maxSizeXmlExport}"/>
             <f:selectItem itemLabel="MI-XML 2.5(HTML view)" itemValue="xml_html"
@@ -104,20 +104,9 @@
              paginator="#{searchBean.results.rowCount gt userQuery.pageSize}"
              rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'}">
 <p:column>
-    <ui:repeat var="xref" value="#{binaryInteraction.interactionAcs}"
-               varStatus="rowStatus">
-        <h:panelGroup rendered="#{xref.database == 'intact'}">
-            <h:panelGroup>
-                <h:outputLink value="#{request.contextPath}/interaction/#{xref.identifier}" onclick="_gaq.push(['_trackEvent', 'Navigation', 'Interaction details','#{detailsBean.interactionAc}'])">
-                    <!--<f:param name="interactionAc" value="#{xref.identifier}"/>-->
-                    <!--<f:setPropertyActionListener value="#{xref.identifier}" target="#{detailsBean.interactionAc}"/>-->
-                    <!--<f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>-->
-                    <h:graphicImage url="/images/magnify.png" alt="details" />
-                </h:outputLink>
-                <br/>
-            </h:panelGroup>
-        </h:panelGroup>
-    </ui:repeat>
+    <h:outputLink value="#{request.contextPath}/interaction/#{searchBean.getMainAccessionXref(binaryInteraction).identifier}" onclick="_gaq.push(['_trackEvent', 'Navigation', 'Interaction details','#{detailsBean.interactionAc}'])">
+        <h:graphicImage url="/images/magnify.png" alt="details" />
+    </h:outputLink>
 </p:column>
 <p:column>
     <f:facet name="header">
@@ -275,18 +264,23 @@
 <p:column rendered="#{columnContext.isColumnVisible('interaction.ac')}">
     <f:facet name="header"><h:outputText value="#{messages['interaction.ac']}"/></f:facet>
 
+    <h:outputLink value="#{request.contextPath}/interaction/#{searchBean.getMainAccessionXref(binaryInteraction).identifier}" onclick="_gaq.push(['_trackEvent', 'Navigation', 'Interaction details','#{detailsBean.interactionAc}'])">
+        <h:outputText value="#{searchBean.getMainAccessionXref(binaryInteraction).identifier}" />
+    </h:outputLink>
+    <br/>
+
     <ui:repeat var="xref" value="#{binaryInteraction.interactionAcs}"
                varStatus="rowStatus">
-        <h:panelGroup rendered="#{xref.database == 'intact'}">
-            <h:panelGroup>
-                <h:commandLink action="details" value="#{xref.identifier}">
-                    <f:setPropertyActionListener value="#{xref.identifier}" target="#{detailsBean.interactionAc}"/>
-                    <f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>
-                </h:commandLink>
-                <br/>
-            </h:panelGroup>
-        </h:panelGroup>
-        <h:panelGroup rendered="#{xref.database != 'intact' and xref.database != 'irefindex'}">
+        <!--<h:panelGroup rendered="#{xref.database == 'intact'}">-->
+            <!--<h:panelGroup>-->
+                <!--<h:commandLink action="details" value="#{xref.identifier}">-->
+                    <!--<f:setPropertyActionListener value="#{xref.identifier}" target="#{detailsBean.interactionAc}"/>-->
+                    <!--<f:setPropertyActionListener value="5" target="#{contextController.activeTabIndex}"/>-->
+                <!--</h:commandLink>-->
+                <!--<br/>-->
+            <!--</h:panelGroup>-->
+        <!--</h:panelGroup>-->
+        <h:panelGroup rendered="#{xref.database != 'irefindex' and xref.database != searchBean.getMainAccessionXref(binaryInteraction).database}">
             <h:outputText value="#{iav:xrefToString(xref, true, true, false)}" style="white-space: pre;"/>
             <br/>
         </h:panelGroup>

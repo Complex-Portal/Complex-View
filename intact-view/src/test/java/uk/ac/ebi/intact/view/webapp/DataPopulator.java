@@ -2,11 +2,14 @@ package uk.ac.ebi.intact.view.webapp;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.StreamingUpdateSolrServer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionStatus;
 import psidev.psi.mi.tab.PsimiTabWriter;
 import psidev.psi.mi.tab.converter.xml2tab.TabConversionException;
 import psidev.psi.mi.tab.converter.xml2tab.Xml2Tab;
@@ -17,46 +20,93 @@ import psidev.psi.mi.xml.PsimiXmlReaderException;
 import psidev.psi.mi.xml.converter.ConverterException;
 import psidev.psi.mi.xml.model.EntrySet;
 import uk.ac.ebi.intact.bridges.ontologies.OntologyMapping;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.entry.IntactEntryFactory;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.CoreNames;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrIndexer;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.server.SolrJettyRunner;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
+import uk.ac.ebi.intact.model.IntactEntry;
+import uk.ac.ebi.intact.model.Publication;
 import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
 import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Controller
-@DependsOn("intactInitializer")
-public class DataPopulator implements InitializingBean {
+public class DataPopulator  {
 
     private static final Log log = LogFactory.getLog(DataPopulator.class);
-    
-    @Autowired
+
+    private IntactContext intactContext;
     private PsiExchange psiExchange;
+    
+    private CommonsHttpSolrServer interactionsSolrServer;
+    private StreamingUpdateSolrServer ontologiesSolrServer;
+    private IntactSolrIndexer indexer;
 
-    @Autowired
-    private SolrServerTestController solrServerTestController;
+    public DataPopulator(IntactContext intactContext) throws Exception {
+        this.intactContext = intactContext;
+        this.psiExchange = (PsiExchange) intactContext.getSpringContext().getBean("psiExchange");
+
+        this.interactionsSolrServer = new CommonsHttpSolrServer("http://localhost:33444/solr/"+ CoreNames.CORE_PUB);
+        this.ontologiesSolrServer = new StreamingUpdateSolrServer("http://localhost:33444/solr/"+CoreNames.CORE_ONTOLOGY_PUB, 4, 4);
+
+        indexer = new IntactSolrIndexer( interactionsSolrServer, ontologiesSolrServer );
+    }
+
+    public static void main(String[] args) throws Exception {
+        SolrJettyRunner solrJettyRunner = new SolrJettyRunner(new File("target/solr"));
+        solrJettyRunner.setPort(33444);
+        solrJettyRunner.start();
+
+        IntactContext.initContext(new String[]{"classpath*:/META-INF/intact-view-test.spring.xml",
+                "classpath*:/META-INF/intact-view.jpa-test.spring.xml"});
 
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
+        DataPopulator dataPopulator = new DataPopulator(IntactContext.getCurrentInstance());
+        dataPopulator.populateTestData();
+
+
+        IntactContext.getCurrentInstance().getDaoFactory().getEntityManager().close();
+
+        IntactContext.getCurrentInstance().destroy();
+
+        solrJettyRunner.stop();
+    }
+
+    public void populateTestData() throws Exception {
         if (log.isInfoEnabled()) log.info("POPULATING DATA SERVERS (H2/SOLR)...");
-
         indexCvObo();
+
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         importXmlData();
 
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+
+        final TransactionStatus transactionStatus2 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
+        indexInteractions();
+
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus2);
+
     }
+
+
 
     private void indexCvObo() {
         if (log.isInfoEnabled()) log.info("Indexing CV ontology...");
 
-        solrServerTestController.getIndexer().indexOntologies(new OntologyMapping[]{
+        indexer.indexOntologies(new OntologyMapping[]{
                 new OntologyMapping("psi-mi", DataPopulator.class.getResource("/META-INF/data/psi-mi25.obo"))});
     }
 
@@ -69,15 +119,8 @@ public class DataPopulator implements InitializingBean {
         storeEntrySet(reader.read(DatabasePopulator.class.getResourceAsStream("/META-INF/data/11554746.xml")));
     }
 
-    public void storeEntrySet(EntrySet entrySet) throws TabConversionException, IOException, ConverterException {
+    public void storeEntrySet(EntrySet entrySet) {
         psiExchange.importIntoIntact(entrySet);
-
-        Xml2Tab xml2tab = new IntactXml2Tab();
-        xml2tab.setExpansionStrategy(new SpokeWithoutBaitExpansion());
-
-        Collection<BinaryInteraction> binaryInteractions = xml2tab.convert(entrySet);
-
-        storeBinaryInteractions(binaryInteractions);
     }
 
     private void storeBinaryInteractions(Collection<BinaryInteraction> binaryInteractions) throws IOException, ConverterException {
@@ -86,7 +129,22 @@ public class DataPopulator implements InitializingBean {
         PsimiTabWriter psimitabWriter = new IntactPsimiTabWriter();
         psimitabWriter.write(binaryInteractions, sw);
 
-        solrServerTestController.getIndexer().indexMitab(new ByteArrayInputStream(sw.toString().getBytes()), true);
+        indexer.indexMitab(new ByteArrayInputStream(sw.toString().getBytes()), true);
+    }
+
+    private void indexInteractions() throws ConverterException, IOException, TabConversionException {
+        final List<Publication> publications = intactContext.getDaoFactory().getPublicationDao().getAll();
+
+        for (Publication pub : publications) {
+            final EntrySet entrySet = psiExchange.exportToEntrySet(IntactEntryFactory.createIntactEntry(intactContext).addPublication(pub));
+
+          Xml2Tab xml2tab = new IntactXml2Tab();
+        xml2tab.setExpansionStrategy(new SpokeWithoutBaitExpansion());
+
+        Collection<BinaryInteraction> binaryInteractions = xml2tab.convert(entrySet);
+
+        storeBinaryInteractions(binaryInteractions);
+        }
     }
 
 }

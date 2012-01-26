@@ -42,7 +42,6 @@ public class SetupSolrServer {
         System.out.println("Home: "+solrHomeBuilder.getSolrHomeDir());
         System.out.println("SOLR War: "+solrHomeBuilder.getSolrWar());
 
-
         System.out.println("////////////////////////////");
 
     }

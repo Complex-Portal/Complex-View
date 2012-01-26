@@ -24,6 +24,12 @@
         <function-signature>java.lang.String getIntactIdentifierFromCrossReferences(java.util.Collection)</function-signature>
     </function>
 
+    <function>
+        <function-name>getMainIdentifierFromCrossReferences</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
+        <function-signature>java.lang.String getMainIdentifierFromCrossReferences(java.util.Collection)</function-signature>
+    </function>
+
      <function>
         <function-name>getUniprotIdentifierFromCrossReferences</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>

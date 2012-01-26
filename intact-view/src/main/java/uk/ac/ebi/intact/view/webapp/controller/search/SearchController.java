@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.model.CvInteractorType;
 import uk.ac.ebi.intact.view.webapp.controller.ContextController;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
@@ -85,6 +86,7 @@ public class SearchController extends JpaBaseController {
     private String userSortColumn = DEFAULT_SORT_COLUMN;
     //as the Sort constructor is Sort(String field, boolean reverse)
     private boolean ascending = DEFAULT_SORT_ORDER;
+    private String getAccession;
 
     public SearchController() {
     }
@@ -340,7 +342,29 @@ public class SearchController extends JpaBaseController {
     }
 
     public String getIntactAc(BinaryInteraction binaryInteraction) {
-        return MitabFunctions.getIntactIdentifierFromCrossReferences(binaryInteraction.getInteractionAcs());
+        return getIntactAcXref(binaryInteraction).getIdentifier();
+    }
+
+    public CrossReference getMainAccessionXref(BinaryInteraction<?> binaryInteraction) {
+
+        for (CrossReference xref : binaryInteraction.getInteractionAcs()) {
+            if (xref.getIdentifier().startsWith(getIntactContext().getConfig().getAcPrefix())) {
+                return xref;
+            }
+        }
+
+        return getIntactAcXref(binaryInteraction);
+    }
+
+    public CrossReference getIntactAcXref(BinaryInteraction<?> binaryInteraction) {
+
+        for (CrossReference xref : binaryInteraction.getInteractionAcs()) {
+            if ("intact".equals(xref.getDatabase())) {
+                return xref;
+            }
+        }
+
+        return null;
     }
 
 
@@ -466,5 +490,6 @@ public class SearchController extends JpaBaseController {
     private UserQuery getUserQuery() {
         return (UserQuery) getBean("userQuery");
     }
+
 
 }

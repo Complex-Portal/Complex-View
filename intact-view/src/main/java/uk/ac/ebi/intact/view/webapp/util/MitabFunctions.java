@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import psidev.psi.mi.tab.model.CrossReference;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.model.Annotation;
 import uk.ac.ebi.intact.psimitab.model.ExtendedInteractor;
@@ -192,6 +193,17 @@ public final class MitabFunctions {
 
     public static String getIntactIdentifierFromCrossReferences(Collection xrefs) {
         return getIdentifierFromCrossReferences(xrefs, "intact");
+    }
+
+    public static String getMainIdentifierFromCrossReferences(Collection xrefs) {
+        String prefix = IntactContext.getCurrentInstance().getConfig().getAcPrefix();
+
+        for (CrossReference xref : (Collection<CrossReference>) xrefs) {
+            if (xref.getIdentifier().startsWith(prefix)) {
+                return xref.getIdentifier();
+            }
+        }
+        return null;
     }
 
      public static String getUniprotIdentifierFromCrossReferences(Collection xrefs) {

@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 public class InteractionsIT extends IntactViewIT {
 
-    private final String[] MITAB_BASED_FORMATS = new String[]{"MI-TAB", "MI-TAB (Expanded)"};
+    private final String[] MITAB_BASED_FORMATS = new String[]{"MI-TAB 2.5", "MI-TAB 2.5 (Expanded)"};
     private final String[] MI_XML_BASED_FORMATS = new String[]{"MI-XML 2.5.3", "MI-XML 2.5.4", "MI-XML 2.5(HTML view)", "BioPAX (Level 3)", "BioPAX (Level 2)",
             "RDF/XML", "RDF/XML (Abbrev)", "RDF (N3)", "RDF (N-Triples)", "RDF (Turtle)"};
     private final String XGMML = "XGMML (Cytoscape)";

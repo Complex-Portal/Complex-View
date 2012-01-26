@@ -27,7 +27,7 @@
                 <iax:goUniprot query="#{xref.identifier}" onlyLogo="#{not cc.attrs.displayAsText}"/>
                 <br/>
 
-                <iax:goMoleculeView query="#{iamf:getIntactIdentifierFromCrossReferences(cc.attrs.interactor.identifiers)}" onlyLogo="#{not cc.attrs.displayAsText}"
+                <iax:goMoleculeView query="#{iamf:getMainIdentifierFromCrossReferences(cc.attrs.interactor.identifiers)}" onlyLogo="#{not cc.attrs.displayAsText}"
                         useUrl="true"/>
 
             </h:panelGroup>
