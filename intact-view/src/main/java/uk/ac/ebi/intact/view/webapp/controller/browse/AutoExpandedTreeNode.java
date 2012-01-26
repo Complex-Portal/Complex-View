@@ -17,8 +17,7 @@ package uk.ac.ebi.intact.view.webapp.controller.browse;
 
 import org.primefaces.model.TreeNode;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -26,6 +25,8 @@ import java.util.List;
  */
 public class AutoExpandedTreeNode extends OntologyTermNode {
 
+    private List<TreeNode> childrenNode = null;
+    
     public AutoExpandedTreeNode(OntologyTermWrapper data) {
         this(data, null);
     }
@@ -36,6 +37,10 @@ public class AutoExpandedTreeNode extends OntologyTermNode {
 
     @Override
     public List<TreeNode> getChildren() {
+        if (childrenNode != null){
+            return new ArrayList<TreeNode>(childrenNode);
+        }
+                
         OntologyTermWrapper otw = getOntologyTermWrapper();
         final List<OntologyTermWrapper> children = getChildrenWithMoreThanOneMember(otw);
 
@@ -47,15 +52,16 @@ public class AutoExpandedTreeNode extends OntologyTermNode {
     }
 
     private List<TreeNode> createTreeNodes(List<OntologyTermWrapper> otwChildren) {
-         List<TreeNode> treeNodes = new ArrayList<TreeNode>();
+         childrenNode = new ArrayList<TreeNode>();
 
         for (OntologyTermWrapper otwChild : otwChildren) {
-            treeNodes.add(new AutoExpandedTreeNode(otwChild, this));
+            childrenNode.add(new AutoExpandedTreeNode(otwChild, this));
         }
 
-        setChildren(treeNodes);
+        List<TreeNode> childrenList = new ArrayList<TreeNode>(childrenNode);
+        setChildren(childrenList);
 
-        return treeNodes;
+        return childrenList;
     }
 
     private List<OntologyTermWrapper> getChildrenWithMoreThanOneMember(OntologyTermWrapper ontologyTermWrapper) {
