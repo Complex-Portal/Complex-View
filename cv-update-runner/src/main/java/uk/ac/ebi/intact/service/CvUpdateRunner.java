@@ -12,7 +12,7 @@ public class CvUpdateRunner
     public static void main( String[] args )
     {
         IntactContext.initContext(new String[]{"/META-INF/jpa-cv-update.spring.xml", "/META-INF/cvupdaterunner.spring.xml",
-                "/META-INF/cvupdate.spring.xml"});
+                "/META-INF/beanscv.spring.xml"});
 
         GlobalCvUpdateRunner cm = (GlobalCvUpdateRunner)
                 IntactContext.getCurrentInstance().getSpringContext().getBean("globalCvUpdateRunner");
