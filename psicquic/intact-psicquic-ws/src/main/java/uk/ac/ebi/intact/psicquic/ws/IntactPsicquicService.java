@@ -87,6 +87,8 @@ public class IntactPsicquicService implements PsicquicService {
             try {
                 solrServer = new CommonsHttpSolrServer(config.getSolrServerUrl(), createHttpClient());
 
+                solrServer.setMaxTotalConnections(128);
+                solrServer.setDefaultMaxConnectionsPerHost(32);
                 solrServer.setConnectionTimeout(100 * 1000);
                 solrServer.setSoTimeout(100 * 1000);
                 solrServer.setAllowCompression(true);
@@ -390,12 +392,10 @@ public class IntactPsicquicService implements PsicquicService {
          String proxyHost = config.getProxyHost();
          String proxyPort = config.getProxyPort();
 
-         System.out.println("CREATING HTTP CLIENT "+proxyHost+":"+proxyPort);
-
-//        if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
-//                isValueSet(proxyPort) && proxyPort.trim().length() > 0) {
-//            httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
-//        }
+        if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
+                isValueSet(proxyPort) && proxyPort.trim().length() > 0) {
+            httpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+        }
 
         return httpClient;
     }

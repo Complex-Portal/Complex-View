@@ -98,7 +98,6 @@ public class PsicquicStreamingOutput implements StreamingOutput {
 
             try {
                 response = psicquicService.getByQuery(query, reqInfo);
-
                 out.write(response.getResultSet().getMitab());
             } catch (Exception e) {
                 throw new WebApplicationException(e);
