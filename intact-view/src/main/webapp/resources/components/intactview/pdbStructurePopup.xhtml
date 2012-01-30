@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:composite="http://java.sun.com/jsf/composite"
+                xsi:schemaLocation="http://intact.ebi.ac.uk/miscel /WEB-INF/intact-miscel.tld">
+
+    <!-- INTERFACE -->
+    <composite:interface>
+        <composite:attribute name="pdbId" required="true"/>
+        <composite:attribute name="image" required="true"/>
+        <composite:attribute name="style"/>
+        <composite:attribute name="rendered" type="java.util.Boolean" default="true"/>
+    </composite:interface>
+
+    <!-- IMPLEMENTATION -->
+    <composite:implementation>
+    
+   	<h:outputScript library="javascript/biojs" name="Biojs.js"/>
+	<h:outputScript library="javascript/biojs" name="Biojs.Protein3D.js"/>
+	<h:outputScript library="javascript/biojs" name="Biojs.Protein3DWS.js"/>
+	<h:outputScript library="javascript/jmol" name="Jmol.js"/>	
+    
+    <script type="text/javascript">
+	    //<![CDATA[
+	    
+	    var myProtein3D = undefined;
+	    
+	    var requestPdbStructure = function (pdbId) {
+	    	// instance biojs component only once time
+	    	if (myProtein3D == undefined) {
+	    		myProtein3D = new Biojs.Protein3DWS({ 
+					target: 'biojscomponent1',
+					proxyUrl: '#{facesContext.externalContext.requestContextPath}/proxy',
+					jmolFolder: '#{facesContext.externalContext.requestContextPath}/resources/javascript/jmol',
+					loadingStatusImage: '#{facesContext.externalContext.requestContextPath}/resources/javascript/biojs/images/ajax-loader-1.gif'
+   				});	
+	    	}
+	    	// Is pdbId already loaded?
+	    	myProtein3D.requestPdb(pdbId);
+	    }
+		//]]>
+	</script>
+    
+	<h:panelGroup rendered="#{cc.attrs.rendered}" >
+	
+		<p:commandLink id="pdbstructureLink" type="button" onclick='pdbStructureDlg.show(); requestPdbStructure("#{cc.attrs.pdbId}");' >
+        	<h:graphicImage value="#{cc.attrs.image}" alt="Show Pdb Structure" title="Show Pdb Structure" rendered="#{cc.attrs.rendered}" width="24" height="24"/>
+        </p:commandLink>
+        
+		<p:dialog header="Structure: #{cc.attrs.pdbId}"
+                      widgetVar="pdbStructureDlg" height="410" width="620" fixedCenter="true"
+                      constrainToViewport="true" modal="false">
+                      
+			<div id="biojscomponent1" style="width:100%; height:100%; border:1px solid #d3d3d3; margin:0px; padding: 0px">
+		        Pdb Structure should show here in a few moments... <h:graphicImage alt="loading..." url="/images/wait_black_indicator.gif" style="vertical-align: baseline;"/>
+		    </div>
+		    
+	    </p:dialog>
+    
+	</h:panelGroup>
+
+</composite:implementation>
+
+</ui:composition>
