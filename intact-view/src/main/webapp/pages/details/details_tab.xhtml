@@ -156,12 +156,68 @@
                 </iv:panelLabelAndMessage>
 
                 <table border="0">
-                    <h:panelGroup rendered="#{not empty interaction.xrefs}">
+                	
+                	<h:panelGroup rendered="#{not empty interaction.xrefs}">
                         <tr>
                             <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
-                            <td><iv:xrefTable xrefs="#{interaction.xrefs}"/></td>
+                           	<td> 
+	 
+	                            <p:dataTable var="xref" value="#{interaction.xrefs}" paginator="false" dynamic="false">
+
+							        <p:column>
+							            <f:facet name="header">
+							                <h:outputText value="Database"/>
+							            </f:facet>
+							            <h:outputLink value="#{request.contextPath}/cv/#{xref.cvDatabase.ac}">
+							            <h:outputText value="#{xref.cvDatabase.shortLabel}" />
+							            </h:outputLink>
+							        </p:column>
+							
+							        <p:column >
+							            <f:facet name="header">
+							                <h:outputText value="Identifier"/>
+							            </f:facet>
+							
+										<!-- Cheking for pdb: MI:0472 -> PDBe , MI:0806 -> PDBj , MI:0460 -> rcsb pdb -->
+						                <ui:param name="isPdbId" value="#{xref.cvDatabase.identifier == 'MI:0472' or xref.cvDatabase.identifier == 'MI:0806' or xref.cvDatabase.identifier == 'MI:0460'}" />
+							
+							            <ui:param name="isPsimiTaxid" value="#{xref.cvDatabase.shortLabel == 'newt' and xref.primaryId lt 0}" />
+							            <h:outputText value="#{xref.primaryId}" rendered="#{isPsimiTaxid}" />
+
+						                <h:outputLink text="#{xref.primaryId}" value="#{iaf:calculateDbXrefUrl(xref.cvDatabase, xref.primaryId)}" target="_blank" rendered="#{not isPsimiTaxid and not isPdbId}">
+						                    <h:graphicImage value="/images/external_link.gif" alt="Go to the external link" title="Go to the external link" />
+						                </h:outputLink>
+						                
+						                <h:outputLink text="#{xref.primaryId}" value="http://www.ebi.ac.uk/pdbe-srv/view/entry/#{xref.primaryId}/summary" target="_blank" rendered="#{isPdbId}">
+						                    <h:graphicImage value="/images/external_link.gif" alt="Go to the Pdb Summary" title="Go to the Pdb Summary" />
+						                </h:outputLink>
+						                
+						                <h:outputText value="#{xref.primaryId}" />
+
+										<iv:pdbStructurePopup pdbId="#{xref.primaryId}" image="/images/proteinIcon.gif" rendered="#{isPdbId}"/>
+										
+							        </p:column>
+							
+							        <p:column >
+							            <f:facet name="header">
+							                <h:outputText value="Secondary identifier"/>
+							            </f:facet>
+							            <h:outputText value="#{(xref.secondaryId == null ? '-' : xref.secondaryId )}"/>
+							        </p:column>
+							
+							        <p:column >
+							            <f:facet name="header">
+							                <h:outputText value="Qualifier"/>
+							            </f:facet>
+							            <h:outputLink value="#{request.contextPath}/cv/#{xref.cvXrefQualifier.ac}">
+							                <h:outputText value="#{xref.cvXrefQualifier.shortLabel}"/>
+							            </h:outputLink>
+							        </p:column>
+							    </p:dataTable>
+							</td>
                         </tr>
                     </h:panelGroup>
+            
 
                     <h:panelGroup rendered="#{not empty interaction.annotations}">
                         <tr>
