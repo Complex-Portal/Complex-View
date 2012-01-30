@@ -50,7 +50,7 @@ public class Proxy extends HttpServlet {
 
         String line = "";
         while ((line = bufferedReader.readLine()) != null) {
-            outputWriter.append(line);
+            outputWriter.append(line + '\n');
         }
         bufferedReader.close();
     }
