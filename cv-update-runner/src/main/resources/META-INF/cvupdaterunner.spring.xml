@@ -37,6 +37,11 @@
         <property name="cvRemapper" ref="obsoleteRemapper"/>
         <property name="errorFactory" ref="errorFactory"/>
         <property name="reportDirectory" value="${update.report}"/>
+        <property name="rootTermsToExclude">
+            <set>
+                <value>MI:0000</value>
+            </set>
+        </property>
     </bean>
 
     <!-- Cv update runner -->
