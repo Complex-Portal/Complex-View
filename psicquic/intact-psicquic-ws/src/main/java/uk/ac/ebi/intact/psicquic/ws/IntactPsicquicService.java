@@ -64,7 +64,7 @@ public class IntactPsicquicService implements PsicquicService {
 
     private static final String NEW_LINE = System.getProperty("line.separator");
 
-    private static final int BLOCKSIZE_MAX = 200;
+    public static final int BLOCKSIZE_MAX = 200;
     private static final String RETURN_TYPE_DEFAULT = RETURN_TYPE_MITAB25;
 
     public static final List<String> SUPPORTED_SOAP_RETURN_TYPES = Arrays.asList(RETURN_TYPE_XML25,
@@ -329,52 +329,6 @@ public class IntactPsicquicService implements PsicquicService {
             Collection binaryInteractions = searchResult.getBinaryInteractionList();
 
             psidev.psi.mi.xml.model.EntrySet mEntrySet = tab2Xml.convert(binaryInteractions);
-
-            EntrySetConverter converter = new EntrySetConverter();
-            converter.setDAOFactory(new InMemoryDAOFactory());
-
-            return converter.toJaxb(mEntrySet);
-
-        } catch (Exception e) {
-            throw new PsicquicServiceException("Problem converting results to PSI-MI XML: "+e, e);
-        }
-    }
-
-    protected String createMitabResults(org.apache.solr.client.solrj.response.QueryResponse searchResult) {
-        SolrDocumentConverter converter = new SolrDocumentConverter( new IntactDocumentDefinition() );
-
-        StringBuilder sb = new StringBuilder((int)searchResult.getResults().getNumFound() * 512);
-        final ListIterator<SolrDocument> docIterator = searchResult.getResults().listIterator();
-        while ( docIterator.hasNext() ) {
-            SolrDocument solrDocument = docIterator.next();
-            final String mitabLine = converter.toMitabLine( solrDocument );
-
-            sb.append(mitabLine);
-            sb.append(NEW_LINE);
-        }
-        return sb.toString();
-    }
-
-    private EntrySet createEntrySet(org.apache.solr.client.solrj.response.QueryResponse searchResult) throws PsicquicServiceException {
-        if (searchResult.getResults().getNumFound() == 0) {
-            return new EntrySet();
-        }
-
-        Tab2Xml tab2Xml = new IntactTab2Xml();
-
-        // first collect all MITAB interactions
-        SolrDocumentConverter solrConverter = new SolrDocumentConverter( new IntactDocumentDefinition() );
-        final ListIterator<SolrDocument> docIterator = searchResult.getResults().listIterator();
-        Collection<BinaryInteraction> interactions = new ArrayList<BinaryInteraction>( );
-        while ( docIterator.hasNext() ) {
-            SolrDocument solrDocument = docIterator.next();
-            final BinaryInteraction bi = solrConverter.toBinaryInteraction( solrDocument );
-            interactions.add( bi );
-        }
-
-        // then convert them into PSI-MI XML
-        try {
-            psidev.psi.mi.xml.model.EntrySet mEntrySet = tab2Xml.convert(interactions);
 
             EntrySetConverter converter = new EntrySetConverter();
             converter.setDAOFactory(new InMemoryDAOFactory());

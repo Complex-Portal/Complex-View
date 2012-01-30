@@ -50,14 +50,10 @@ public class IntactPsicquicRestServiceTest {
         solrJettyRunner.setPort( 19876 );
         solrJettyRunner.start();
 
-        // index data to be hosted by PSICQUIC
-        InputStream mitabStream = IntactPsicquicServiceTest.class.getResourceAsStream("/META-INF/imatinib.mitab.txt");
-
-        Assert.assertNotNull("Input stream for test file is null", mitabStream);
-
         IntactSolrIndexer indexer = new IntactSolrIndexer(solrJettyRunner.getSolrUrl( CoreNames.CORE_PUB ),
                                                           solrJettyRunner.getSolrUrl( CoreNames.CORE_ONTOLOGY_PUB ));
-        final int lineCount = indexer.indexMitab( mitabStream, true );
+        indexer.indexMitab( IntactPsicquicServiceTest.class.getResourceAsStream("/META-INF/imatinib.mitab.txt"), true );
+        indexer.indexMitab( IntactPsicquicServiceTest.class.getResourceAsStream("/META-INF/400.mitab.txt"), true );
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {"/META-INF/beans.spring.test.xml"});
         PsicquicConfig config = (PsicquicConfig)context.getBean("testPsicquicConfig");
@@ -98,6 +94,18 @@ public class IntactPsicquicRestServiceTest {
         pso.write(baos);
 
         Assert.assertEquals(3, baos.toString().split("\n").length);
+    }
+
+    @Test
+    public void testGetByQuery_maxResults_above200() throws Exception {
+        ResponseImpl response = (ResponseImpl) service.getByQuery("*", "tab25", "0", "305", "n");
+
+        PsicquicStreamingOutput pso = (PsicquicStreamingOutput) response.getEntity();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        pso.write(baos);
+
+        Assert.assertEquals(305, baos.toString().split("\n").length);
     }
 
     @Test

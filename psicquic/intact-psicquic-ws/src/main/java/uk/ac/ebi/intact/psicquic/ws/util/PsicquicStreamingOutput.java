@@ -19,6 +19,7 @@ import org.hupo.psi.mi.psicquic.PsicquicService;
 import org.hupo.psi.mi.psicquic.QueryResponse;
 import org.hupo.psi.mi.psicquic.RequestInfo;
 import org.hupo.psi.mi.psicquic.ResultInfo;
+import uk.ac.ebi.intact.psicquic.ws.IntactPsicquicService;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
@@ -89,12 +90,17 @@ public class PsicquicStreamingOutput implements StreamingOutput {
 
         PrintWriter out = new PrintWriter(os);
 
-        int max = firstResult+maxResults;
-
-        reqInfo.setBlockSize(maxResults);
+        int totalResults = -1;
+        int blockSize = Math.min(IntactPsicquicService.BLOCKSIZE_MAX, maxResults);
 
         do {
             reqInfo.setFirstResult(firstResult);
+
+            if (totalResults > 0 && maxResults < firstResult+blockSize) {
+                blockSize = maxResults - firstResult;
+            }
+
+            reqInfo.setBlockSize(blockSize);
 
             try {
                 response = psicquicService.getByQuery(query, reqInfo);
@@ -105,9 +111,11 @@ public class PsicquicStreamingOutput implements StreamingOutput {
 
             out.flush();
 
+            totalResults = response.getResultInfo().getTotalResults();
+
             firstResult = firstResult + response.getResultInfo().getBlockSize();
 
-        } while (firstResult < max && firstResult < response.getResultInfo().getTotalResults());
+        } while (firstResult < totalResults && firstResult < maxResults);
 
         out.close();
     }
