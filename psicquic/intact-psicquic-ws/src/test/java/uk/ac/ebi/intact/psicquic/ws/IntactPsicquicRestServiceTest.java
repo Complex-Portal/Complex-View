@@ -109,6 +109,18 @@ public class IntactPsicquicRestServiceTest {
     }
 
     @Test
+    public void testGetByQuery_maxResults_above400() throws Exception {
+        ResponseImpl response = (ResponseImpl) service.getByQuery("*", "tab25", "0", "405", "n");
+
+        PsicquicStreamingOutput pso = (PsicquicStreamingOutput) response.getEntity();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        pso.write(baos);
+
+        Assert.assertEquals(405, baos.toString().split("\n").length);
+    }
+
+    @Test
     public void testGetByQuery_maxResults_nolimit() throws Exception {
         ResponseImpl response = (ResponseImpl) service.getByQuery("imatinib", "tab25", "0", String.valueOf(Integer.MAX_VALUE), "n");
 
