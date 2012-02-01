@@ -3,7 +3,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.maven</groupId>
         <artifactId>intact-hibernate-master</artifactId>
-        <version>41</version>
+        <version>42</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
