@@ -32,9 +32,9 @@ public class InteractionsIT extends IntactViewIT {
         goToInteractionsTab();
         Select exportFormatSelect = new Select(driver.findElement(By.id("mainPanels:exportFormatSelect")));
 
-        // Then: I will obtain 14 results, so the MITAB based formats should be enabled and the MIXML based formats should be disabled
+        // Then: I will obtain 101 results, so the MITAB based formats should be enabled and the MIXML based formats should be disabled
         // and the XGMML format should be disabled
-        assertThat(numberOfResultsDisplayed(), is(equalTo(14)));
+        assertThat(numberOfResultsDisplayed(), is(equalTo(101)));
 
         for (String mitabBasedFormat : MITAB_BASED_FORMATS) {
             assertThat(mitabBasedFormat, isEnabled(exportFormatSelect));

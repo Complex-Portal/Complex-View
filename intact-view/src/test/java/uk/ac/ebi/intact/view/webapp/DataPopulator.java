@@ -108,6 +108,8 @@ public class DataPopulator  {
 
         indexer.indexOntologies(new OntologyMapping[]{
                 new OntologyMapping("psi-mi", DataPopulator.class.getResource("/META-INF/data/psi-mi25.obo"))});
+        indexer.indexOntologies(new OntologyMapping[] {
+                new OntologyMapping("go", DataPopulator.class.getResource("/META-INF/data/goslim_generic.obo"))});
     }
 
     private void importXmlData() throws TabConversionException, IOException, ConverterException, PsimiXmlReaderException {
@@ -117,6 +119,7 @@ public class DataPopulator  {
 
         storeEntrySet(reader.read(DatabasePopulator.class.getResourceAsStream("/META-INF/data/10514511.xml")));
         storeEntrySet(reader.read(DatabasePopulator.class.getResourceAsStream("/META-INF/data/11554746.xml")));
+        storeEntrySet(reader.read(DatabasePopulator.class.getResourceAsStream("/META-INF/data/17461779.xml")));
     }
 
     public void storeEntrySet(EntrySet entrySet) {

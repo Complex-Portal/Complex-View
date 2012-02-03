@@ -17,7 +17,7 @@
 
 	<url-mapping id="browse">
 		<pattern value="/browse" />
-		<view-id>/browse/browse.xhtml</view-id>
+		<view-id>/pages/browse/browse.xhtml</view-id>
 	</url-mapping>
 
     <url-mapping id="interactions">

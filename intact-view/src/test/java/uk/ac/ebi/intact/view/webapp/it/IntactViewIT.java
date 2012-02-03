@@ -99,7 +99,7 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
     }
 
     protected void goToInteractionsTab() {
-        driver.findElement(By.linkText("Interactions (14)")).click();
+        driver.findElement(By.linkText("Interactions (101)")).click();
         waitUntilLoadingIsComplete();
     }
 
@@ -118,11 +118,23 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
         driver.get(BASE_URL);
     }
 
+    protected void goToTheQueryPage(String query) {
+        driver.get(BASE_URL+"/query/"+query);
+    }
+
     protected void goToInteractionDetailsPage(String interactionAc) {
         driver.get(BASE_URL+"/interaction/"+interactionAc);
     }
 
     protected int rowCountForDataTableWithId(String id) {
         return driver.findElements(By.xpath("//div[@id=\""+id+"\"]/table/tbody/tr")).size();
+    }
+
+    protected String searchQuery() {
+        return valueForElement(By.id("queryTxt"));
+    }
+
+    protected String valueForElement(By id) {
+        return driver.findElement(id).getAttribute("value");
     }
 }

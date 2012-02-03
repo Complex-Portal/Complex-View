@@ -26,8 +26,10 @@ import org.primefaces.model.SortOrder;
 import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.core.context.DataContext;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.InteractorIdCount;
+import uk.ac.ebi.intact.model.CvXrefQualifier;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.model.InteractorXref;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
@@ -105,7 +107,7 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorWra
 
             idCounts = new ArrayList<InteractorWrapper>();
 
-            allIdCounts = new ArrayList(idCountMultimap.values());
+            allIdCounts = new ArrayList<InteractorIdCount>(idCountMultimap.values());
 
             cache.put(cacheKey, allIdCounts);
         }
@@ -154,13 +156,23 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorWra
                 .getEntityManager().createQuery("select i from InteractorImpl i where i.ac = :ac");
         query.setParameter("ac", idCount.getAc());
 
-        Interactor interactor = (Interactor) query.getSingleResult();
-        Collection<InteractorXref> xrefs = interactor.getXrefs();
+        Interactor interactor;
 
-        for (InteractorXref xref : xrefs) {
-            String ac = xref.getAc();
+        List<Interactor> results = query.getResultList();
+
+        if (results.isEmpty()) {
+            Query xrefQuery = dataContext.getDaoFactory()
+                    .getEntityManager().createQuery("select i from InteractorImpl i inner join i.xrefs as xref " +
+                            "where xref.primaryId = :ac and xref.cvXrefQualifier.identifier = :qualifier");
+            xrefQuery.setParameter("ac", idCount.getAc());
+            xrefQuery.setParameter("qualifier", CvXrefQualifier.IDENTITY_MI_REF);
+
+            results = xrefQuery.getResultList();
         }
 
+        interactor = results.iterator().next();
+
+        IntactCore.ensureInitializedXrefs(interactor);
 
         InteractorWrapper wrapper = new InteractorWrapper(interactor, idCount.getCount());
 

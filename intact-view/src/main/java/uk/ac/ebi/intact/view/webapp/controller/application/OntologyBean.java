@@ -54,12 +54,7 @@ public class OntologyBean extends BaseController {
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
     public OntologyBean() {
-
-        System.out.println( " +++ Creating OntologyBean" );
 
         String tempDir = System.getProperty("java.io.tmpdir");
         File dir = new File(tempDir, "intact-view-"+System.currentTimeMillis());

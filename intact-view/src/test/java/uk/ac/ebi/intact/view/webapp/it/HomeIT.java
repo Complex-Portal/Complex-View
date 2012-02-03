@@ -19,7 +19,7 @@ public class HomeIT extends IntactViewIT {
         goToTheStartPage();
 
         // Then: I expect the Interactions tab to be active and display the total number of interactions in the database
-        WebElement interactionsTabLink = driver.findElement(By.linkText("Interactions (14)"));
+        WebElement interactionsTabLink = driver.findElement(By.linkText("Interactions (101)"));
         assertThat(interactionsTabLink, is(notNullValue()));
 
 	}

@@ -25,7 +25,7 @@
 
         <h2>GO Ontology Browser</h2>
 
-        <p:tree var="otw" value="#{goBrowser.ontologyTreeNode}"
+        <p:tree id="goTree" var="otw" value="#{goBrowser.ontologyTreeNode}"
                 dynamic="true" cache="true"
                 selectionMode="single" selection="#{goBrowser.selectedNode}"
                 style="width:50%;">

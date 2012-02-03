@@ -21,10 +21,10 @@
     <h:graphicImage alt="browseImg" url="/images/browse.png"/>
     <h:outputText value=" Browse by "/>
     <h:panelGroup>
-        <p:commandLink value="taxonomy" action="/pages/browse/taxonomybrowser?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>,&#160;
-        <p:commandLink value="gene ontology" action="/pages/browse/gobrowser?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>,&#160;
-        <p:commandLink value="ChEBI ontology" action="/pages/browse/chebibrowser?faces-redirect=true&amp;includeViewParams=true"
-                rendered="#{facetController.interactorTypeCount.smallMoleculeCount > 0}"/>
+        <p:commandLink id="taxonomyBrowseBtn" value="taxonomy" action="/pages/browse/taxonomybrowser?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>,&#160;
+        <p:commandLink id="goBrowseBtn" value="gene ontology" action="/pages/browse/gobrowser?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>,&#160;
+        <p:commandLink id="chebiBrowseBtn" value="ChEBI ontology" action="/pages/browse/chebibrowser?faces-redirect=true&amp;includeViewParams=true"
+                rendered="#{facetController.interactorTypeCount.smallMoleculeCount > 0}" ajax="false"/>
     </h:panelGroup>
 </h:panelGroup>
 
