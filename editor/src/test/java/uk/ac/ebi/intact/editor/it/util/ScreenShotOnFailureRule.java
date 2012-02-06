@@ -15,18 +15,16 @@
  */
 package uk.ac.ebi.intact.editor.it.util;
 
-import com.google.common.io.Files;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
-import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Driver;
 
 public class ScreenShotOnFailureRule implements TestRule {
    
@@ -49,6 +47,8 @@ public class ScreenShotOnFailureRule implements TestRule {
                 } catch (Throwable t) {
                     takeScreenshot(description.getClassName() + "#"
                             + description.getMethodName());
+
+                    System.out.println(driver.getPageSource());
                     throw t;
                 }
             }

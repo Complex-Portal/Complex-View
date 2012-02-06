@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.editor.it.experiment;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.primefaces.model.LazyDataModel;
 import uk.ac.ebi.intact.core.util.DebugUtil;
@@ -41,7 +40,6 @@ import static org.junit.Assert.assertThat;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@Ignore
 public class ExperimentWrapperIT extends BaseIT{
     
     private ExperimentWrapper experimentWrapper;
