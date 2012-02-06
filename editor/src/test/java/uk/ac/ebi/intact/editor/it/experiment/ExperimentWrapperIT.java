@@ -16,32 +16,32 @@
 package uk.ac.ebi.intact.editor.it.experiment;
 
 import org.apache.commons.lang.StringUtils;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matcher;
-import org.hamcrest.core.IsEqual;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.primefaces.model.LazyDataModel;
-import org.springframework.test.context.ContextConfiguration;
-import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
-import uk.ac.ebi.intact.core.unit.IntactMockBuilder;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentWrapper;
 import uk.ac.ebi.intact.editor.it.BaseIT;
-import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.AnnotatedObject;
+import uk.ac.ebi.intact.model.Component;
+import uk.ac.ebi.intact.model.Experiment;
+import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.util.XrefUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Ignore
 public class ExperimentWrapperIT extends BaseIT{
     
     private ExperimentWrapper experimentWrapper;
