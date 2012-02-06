@@ -6,5 +6,5 @@ package uk.ac.ebi.intact.editor;
  */
 public interface Constants {
     
-    String BASE_URL = "http://localhost:33442/editor";
+    String BASE_URL = "http://localhost:33441/editor";
 }
