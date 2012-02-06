@@ -48,7 +48,13 @@ public class ScreenShotOnFailureRule implements TestRule {
                     takeScreenshot(description.getClassName() + "#"
                             + description.getMethodName());
 
+                    System.out.println("--------- Page Source ----------------");
                     System.out.println(driver.getPageSource());
+                    System.out.println("--------------------------------------");
+
+                    driver.get("http://localhost:33442/");
+                    System.out.println(driver.getPageSource());
+
                     throw t;
                 }
             }
