@@ -2,7 +2,6 @@ package uk.ac.ebi.intact.editor.it;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.springframework.test.annotation.DirtiesContext;
 import uk.ac.ebi.intact.model.Experiment;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -38,6 +37,7 @@ public class ParticipantsIT extends EditorIT {
     }
 
     private void clickOnInteractorImport() {
+        waitUntilElementIsVisible(By.id("importInteractorBtn"));
         driver.findElement(By.id("importInteractorBtn")).click();
         waitUntilElementIsVisible(By.id("ipDialogPanel:searchInteractorTxt"));
     }

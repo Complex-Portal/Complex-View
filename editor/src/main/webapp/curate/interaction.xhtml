@@ -143,7 +143,15 @@
 
             <br/>
 
-            <p:tabView id="interactionTabs" onTabChange="handleChange(index)" >
+            <script type="text/javascript">
+                   function handleChange(index){
+                       if(index == 7){
+                           jQuery('#interactionTabs').trigger('featuresSelected');
+                       }
+                   }
+            </script>
+
+            <p:tabView id="interactionTabs" onTabChange="handleChange(index)">
                 <p:tab id="participantsTab" title="Participants (#{interactionController.participants.size()})">
 
                      <p:panel style="padding:0">
@@ -177,7 +185,7 @@
                                          rendered="#{annotation.cvTopic != null and annotation.cvTopic.identifier == 'MI:0599'}"/>
                        </ui:define>
                    </ui:decorate>
-                    
+
 
                 <p:tab id="parametersTab" title="Parameters (#{interaction.parameters.size()})">
 

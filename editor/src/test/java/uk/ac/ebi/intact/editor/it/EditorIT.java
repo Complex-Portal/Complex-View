@@ -28,6 +28,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import uk.ac.ebi.intact.editor.it.util.ScreenShotOnFailureRule;
 import uk.ac.ebi.intact.model.Experiment;
+import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.user.User;
 
 import java.io.File;
@@ -62,7 +63,7 @@ public abstract class EditorIT extends BaseIT {
 
     @After
     public void tearDown() throws Exception {
-        driver.quit();
+        //driver.quit();
     }
 
     protected void waitUntilElementIsVisible(final By by) {
@@ -90,9 +91,19 @@ public abstract class EditorIT extends BaseIT {
     protected void loginAs(String user) {
         driver.findElement(By.id("j_username")).clear();
         driver.findElement(By.id("j_username")).sendKeys(user);
+        sleep(500);
         driver.findElement(By.id("j_password_clear")).clear();
         driver.findElement(By.id("j_password_clear")).sendKeys(user);
+        sleep(500);
         driver.findElement(By.id("login")).click();
+    }
+
+    private void sleep(int i) {
+        try {
+            Thread.sleep(i);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     protected User getUserByLogin(String login){
@@ -114,6 +125,12 @@ public abstract class EditorIT extends BaseIT {
 
     protected void goToInteractionPage(String ac) {
         goToPageInContext("/interaction/"+ac);
+    }
+    
+    protected void goToInteractionPageShortLabel(String shortLabel) {
+        final Interaction interaction = getDaoFactory().getInteractionDao().getByShortLabel("prp17-sap61");
+        final String interactionAc = interaction.getAc();
+        goToPageInContext("/interaction/"+interactionAc);
     }
 
     protected void goToParticipantPage(String ac) {

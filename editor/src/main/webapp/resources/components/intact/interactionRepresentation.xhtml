@@ -41,12 +41,6 @@
         <script type="text/javascript">
            var width = document.getElementById("featureColumn").clientWidth;
 
-           function handleChange(index){
-               if(index == 7){
-                   jQuery('#interactionTabs').trigger('featuresSelected');
-               }
-           }
-
            jQuery(function(){
                var intRes = null;
                $('#interactionTabs').bind('featuresSelected', function(){

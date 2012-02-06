@@ -30,16 +30,14 @@ public final class ComponentUtils {
 
     private ComponentUtils() {}
 
-    public static void writeEventListenerScript(FacesContext context, UIComponent component, String event, String javascript) throws IOException {
-        writeEventListenerScript(context, component, new String[] {event}, javascript);
-    }
-
     public static void writeEventListenerScript(FacesContext context, UIComponent component, String[] events, String javascript) throws IOException {
         ResponseWriter writer = context.getResponseWriter();
         writer.startElement("script", component);
         writer.writeAttribute("type", "text/javascript", null);
 
-        String callbackFunction = "curationChanged_"+System.currentTimeMillis();
+        String callbackFunction = "curationChanged_"+functionNamePrefix(component.getClientId());
+
+        writer.write("$(document).ready(function() {");
 
         writer.write("function "+callbackFunction+"(e) { ");
         writer.write(javascript+";");
@@ -50,6 +48,12 @@ public final class ComponentUtils {
             writer.write("$('#"+jQueryFriendlyId+"').bind('"+event+"', "+callbackFunction+"); ");
         }
 
+        writer.write("});");
+
         writer.endElement("script");
     }
+
+    public static String functionNamePrefix(String clientId) {
+            return clientId.replaceAll("\\:", "_");
+        }
 }

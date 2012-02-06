@@ -2,7 +2,6 @@ package uk.ac.ebi.intact.editor.it;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.springframework.test.annotation.DirtiesContext;
 import uk.ac.ebi.intact.model.Experiment;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -28,6 +27,50 @@ public class InteractionsIT extends EditorIT {
         // Then: the first participant in the table should be the new P12345
         assertThat(identityForParticipantInFirstRow(), is(equalTo("P12345")));
 	}
+    
+    @Test
+    public void updateFigLegendShouldUpdateAnnotations() throws Exception {
+        goToInteractionPageShortLabel("prp17-sap61");
+        loginAs("curator");
+
+        clickOnAnnotationsTab();
+        typeFigureLegend(" - lala");
+
+        assertThat(firstRowAnnotationText(), is(equalTo("Fig 3 - lala")));
+    }
+
+    @Test
+    public void updateAnnotationShouldUpdateFigLegend() throws Exception {
+        goToInteractionPageShortLabel("prp17-sap61");
+        loginAs("curator");
+
+        clickOnAnnotationsTab();
+        typeFirstRowAnnotationText(" - lolo");
+
+        assertThat(figureLegendText(), is(equalTo("Fig 3 - lolo")));
+    }
+
+
+    private void clickOnAnnotationsTab() {
+        driver.findElement(By.linkText("Annotations (2)")).click();
+        waitUntilLoadingIsComplete();
+    }
+
+    private void typeFigureLegend(String s) {
+        driver.findElement(By.id("figLegendTxt")).sendKeys(s);
+    }
+
+    private String firstRowAnnotationText() {
+        return valueForElement(By.id("interactionTabs:annotationsTable:0:annotationTxt"));
+    }
+
+    private void typeFirstRowAnnotationText(String s) {
+        driver.findElement(By.id("interactionTabs:annotationsTable:0:annotationTxt")).sendKeys(s);
+    }
+
+    private String figureLegendText() {
+        return valueForElement(By.id("figLegendTxt"));
+    }
 
     private void importSelectedByDefault() {
         driver.findElement(By.id("interactionTabs:candidatesDialogContent:importSelected")).click();
@@ -41,6 +84,7 @@ public class InteractionsIT extends EditorIT {
     }
 
     private void showImportParticipantsDialog() {
+        waitUntilElementIsVisible(By.id("interactionTabs:importParticipantBtn"));
         driver.findElement(By.id("interactionTabs:importParticipantBtn")).click();
         waitUntilElementIsVisible(By.id("interactionTabs:ipDialogPanel:searchParticipantTxt"));
     }

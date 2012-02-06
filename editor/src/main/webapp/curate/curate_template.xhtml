@@ -112,7 +112,7 @@
         <p:submenu label="Debug" rendered="#{facesContext.application.projectStage == 'Development' and annotatedObjectController.annotatedObject != null}">
             <p:menuitem value="Changes" action="/curate/debug/changes" ajax="false"/>
             <p:menuitem value="Refresh" update="contentSection" immediate="true"/>
-            <p:menuitem value="Revert" actionListener="#{annotatedObjectController.doRevertChanges}" update="centralUnit,topSection" immediate="true"/>
+            <p:menuitem value="Revert" actionListener="#{annotatedObjectController.doRevertChanges}" update="editorForm" immediate="true"/>
         </p:submenu>
     </p:menubar>
 </ui:define>
@@ -189,7 +189,6 @@
 
                     <div class="intact-notSavedPanel">
                         Changes not yet saved &#160;
-                        <!--<ed:delayedEvent forId="unsavedSaveButton" timeout="2000"/>-->
 
                         <p:commandButton type="button" id="unsavedSaveButton"
                                          styleClass="important-button"
@@ -219,7 +218,7 @@
         </div>
 
         <p:remoteCommand name="save" actionListener="#{annotatedObjectController.doSave}"
-                         update="centralUnit,topSection,messagesComponent"
+                         update=":editorForm"
                          onstart="saveDialog.show(); var input = document.getElementById('topSaveButton'); input.disabled = true; input.value = 'Saving...'"
                          onerror="alert('Error: '+error+' '+status)"
                          oncomplete="saveDialog.hide(); var input = document.getElementById('topSaveButton'); input.disabled = false; input.value = 'Save'"/>

@@ -30,7 +30,9 @@ public class SyncValue extends UIComponentBase {
     public static final String COMPONENT_FAMILY = "uk.ac.ebi.intact.editor.component.SyncValue";
     public static final String RENDERER_TYPE = "uk.ac.ebi.intact.editor.component.SyncValueRenderer";
 
-    private String with;
+    protected enum PropertyKeys {
+        with
+    }
 
     @Override
     public String getFamily() {
@@ -43,10 +45,12 @@ public class SyncValue extends UIComponentBase {
     }
 
     public String getWith() {
-        return with;
+        return (String) getStateHelper().eval(PropertyKeys.with);
     }
 
     public void setWith(String with) {
-        this.with = with;
+        getStateHelper().put(PropertyKeys.with, with );
     }
+
+
 }
