@@ -1102,6 +1102,17 @@
                 <modelled>false</modelled>
                 <intraMolecular>false</intraMolecular>
                 <negative>false</negative>
+                <confidenceList>
+                    <confidence>
+                        <unit>
+                            <names>
+                                <shortLabel>intact-miscore</shortLabel>
+                                <fullName>IntAct method based scoring system</fullName>
+                            </names>
+                        </unit>
+                        <value>0.5143322</value>
+                    </confidence>
+                </confidenceList>
                 <attributeList>
                     <attribute nameAc="MI:0599" name="figure legend">fig1a</attribute>
                 </attributeList>
@@ -1346,6 +1357,17 @@
                 <modelled>false</modelled>
                 <intraMolecular>false</intraMolecular>
                 <negative>false</negative>
+                <confidenceList>
+                    <confidence>
+                        <unit>
+                            <names>
+                                <shortLabel>intact-miscore</shortLabel>
+                                <fullName>IntAct method based scoring system</fullName>
+                            </names>
+                        </unit>
+                        <value>0.23456</value>
+                    </confidence>
+                </confidenceList>
                 <attributeList>
                     <attribute nameAc="MI:0599" name="figure legend">fig1A</attribute>
                 </attributeList>
@@ -1542,6 +1564,17 @@
                 <modelled>false</modelled>
                 <intraMolecular>false</intraMolecular>
                 <negative>false</negative>
+                <confidenceList>
+                    <confidence>
+                        <unit>
+                            <names>
+                                <shortLabel>intact-miscore</shortLabel>
+                                <fullName>IntAct method based scoring system</fullName>
+                            </names>
+                        </unit>
+                        <value>0.9876</value>
+                    </confidence>
+                </confidenceList>
                 <attributeList>
                     <attribute nameAc="MI:0599" name="figure legend">fig1A</attribute>
                 </attributeList>
@@ -1738,6 +1771,17 @@
                 <modelled>false</modelled>
                 <intraMolecular>false</intraMolecular>
                 <negative>false</negative>
+                <confidenceList>
+                    <confidence>
+                        <unit>
+                            <names>
+                                <shortLabel>intact-miscore</shortLabel>
+                                <fullName>IntAct method based scoring system</fullName>
+                            </names>
+                        </unit>
+                        <value>0.48221</value>
+                    </confidence>
+                </confidenceList>
             </interaction>
             <interaction id="788912">
                 <names>
@@ -1931,6 +1975,17 @@
                 <modelled>false</modelled>
                 <intraMolecular>false</intraMolecular>
                 <negative>false</negative>
+                <confidenceList>
+                    <confidence>
+                        <unit>
+                            <names>
+                                <shortLabel>intact-miscore</shortLabel>
+                                <fullName>IntAct method based scoring system</fullName>
+                            </names>
+                        </unit>
+                        <value>0.12644</value>
+                    </confidence>
+                </confidenceList>
                 <attributeList>
                     <attribute nameAc="MI:0599" name="figure legend">fig1A</attribute>
                 </attributeList>
@@ -2128,6 +2183,17 @@
                 <modelled>false</modelled>
                 <intraMolecular>false</intraMolecular>
                 <negative>false</negative>
+                <confidenceList>
+                    <confidence>
+                        <unit>
+                            <names>
+                                <shortLabel>intact-miscore</shortLabel>
+                                <fullName>IntAct method based scoring system</fullName>
+                            </names>
+                        </unit>
+                        <value>0.6743344</value>
+                    </confidence>
+                </confidenceList>
                 <attributeList>
                     <attribute nameAc="MI:0599" name="figure legend">fig1B</attribute>
                 </attributeList>
@@ -2403,6 +2469,17 @@
                 <modelled>false</modelled>
                 <intraMolecular>false</intraMolecular>
                 <negative>false</negative>
+                <confidenceList>
+                    <confidence>
+                        <unit>
+                            <names>
+                                <shortLabel>intact-miscore</shortLabel>
+                                <fullName>IntAct method based scoring system</fullName>
+                            </names>
+                        </unit>
+                        <value>0.507545</value>
+                    </confidence>
+                </confidenceList>
                 <attributeList>
                     <attribute nameAc="MI:0599" name="figure legend">fig2</attribute>
                 </attributeList>
@@ -2677,6 +2754,17 @@
                 <modelled>false</modelled>
                 <intraMolecular>false</intraMolecular>
                 <negative>false</negative>
+                <confidenceList>
+                    <confidence>
+                        <unit>
+                            <names>
+                                <shortLabel>intact-miscore</shortLabel>
+                                <fullName>IntAct method based scoring system</fullName>
+                            </names>
+                        </unit>
+                        <value>0.236543</value>
+                    </confidence>
+                </confidenceList>
                 <attributeList>
                     <attribute nameAc="MI:0599" name="figure legend">fig2</attribute>
                 </attributeList>
@@ -2921,6 +3009,17 @@
                 <modelled>false</modelled>
                 <intraMolecular>false</intraMolecular>
                 <negative>false</negative>
+                <confidenceList>
+                    <confidence>
+                        <unit>
+                            <names>
+                                <shortLabel>intact-miscore</shortLabel>
+                                <fullName>IntAct method based scoring system</fullName>
+                            </names>
+                        </unit>
+                        <value>0.525777</value>
+                    </confidence>
+                </confidenceList>
                 <attributeList>
                     <attribute nameAc="MI:0599" name="figure legend">fig6a</attribute>
                 </attributeList>
@@ -3116,6 +3215,17 @@
                 <modelled>false</modelled>
                 <intraMolecular>false</intraMolecular>
                 <negative>false</negative>
+                <confidenceList>
+                    <confidence>
+                        <unit>
+                            <names>
+                                <shortLabel>intact-miscore</shortLabel>
+                                <fullName>IntAct method based scoring system</fullName>
+                            </names>
+                        </unit>
+                        <value>1.0</value>
+                    </confidence>
+                </confidenceList>
                 <attributeList>
                     <attribute nameAc="MI:0599" name="figure legend">fig6b</attribute>
                 </attributeList>

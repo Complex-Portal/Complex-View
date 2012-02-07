@@ -141,12 +141,12 @@ public class DataPopulator  {
         for (Publication pub : publications) {
             final EntrySet entrySet = psiExchange.exportToEntrySet(IntactEntryFactory.createIntactEntry(intactContext).addPublication(pub));
 
-          Xml2Tab xml2tab = new IntactXml2Tab();
-        xml2tab.setExpansionStrategy(new SpokeWithoutBaitExpansion());
+            Xml2Tab xml2tab = new IntactXml2Tab();
+            xml2tab.setExpansionStrategy(new SpokeWithoutBaitExpansion());
 
-        Collection<BinaryInteraction> binaryInteractions = xml2tab.convert(entrySet);
+            Collection<BinaryInteraction> binaryInteractions = xml2tab.convert(entrySet);
 
-        storeBinaryInteractions(binaryInteractions);
+            storeBinaryInteractions(binaryInteractions);
         }
     }
 
