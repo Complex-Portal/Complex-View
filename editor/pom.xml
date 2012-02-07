@@ -283,7 +283,6 @@
                         </executions>
 
                         <dependencies>
-                        <dependencies>
                             <dependency>
                                 <groupId>org.apache.myfaces.core</groupId>
                                 <artifactId>myfaces-impl</artifactId>
