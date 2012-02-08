@@ -423,7 +423,7 @@
          <repository>
                <id>intact.nexus</id>
                <name>IntAct Nexus</name>
-               <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
+               <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/intact.repos</url>
          </repository>
     </repositories>
 
@@ -733,7 +733,7 @@
         <dependency>
             <groupId>com.ocpsoft</groupId>
             <artifactId>prettyfaces-jsf2</artifactId>
-            <version>3.3.2</version>
+            <version>3.3.3-SNAPSHOT</version>
         </dependency>
 
         <!-- Other server stuff -->

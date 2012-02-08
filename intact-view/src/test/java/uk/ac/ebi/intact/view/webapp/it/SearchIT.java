@@ -5,6 +5,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class SearchIT extends IntactViewIT {
 
@@ -35,10 +36,16 @@ public class SearchIT extends IntactViewIT {
     @Test
     public void afterSearchQueryFieldsShowsQuery() throws Exception {
         goToTheStartPage();
+        search("Traf5");
+        assertThat(searchQuery(), is(equalTo("Traf5")));
+        assertTrue(driver.getCurrentUrl().contains("intact/query/Traf5"));
+    }
 
-        search("brca2");
-
-        assertThat(searchQuery(), is(equalTo("brca2")));
+    @Test
+    public void searchUsingAScoreRange() throws Exception {
+        goToTheStartPage();
+        search("intact-miscore:[0.5 TO 1]");
+        assertThat(numberOfResultsDisplayed(), is(equalTo(6)));
     }
 
 }

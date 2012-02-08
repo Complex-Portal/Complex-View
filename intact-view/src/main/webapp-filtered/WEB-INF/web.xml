@@ -174,15 +174,15 @@
     </context-param>
 
     <!-- Orchestra Filter -->
-    <filter>
-        <filter-name>orchestraFilter</filter-name>
-        <filter-class>org.apache.myfaces.orchestra.conversation.jsf.filter.OrchestraServletFilter</filter-class>
-    </filter>
+    <!--<filter>-->
+        <!--<filter-name>orchestraFilter</filter-name>-->
+        <!--<filter-class>org.apache.myfaces.orchestra.conversation.jsf.filter.OrchestraServletFilter</filter-class>-->
+    <!--</filter>-->
 
-    <filter-mapping>
-        <filter-name>orchestraFilter</filter-name>
-        <servlet-name>faces</servlet-name>
-    </filter-mapping>
+    <!--<filter-mapping>-->
+        <!--<filter-name>orchestraFilter</filter-name>-->
+        <!--<servlet-name>faces</servlet-name>-->
+    <!--</filter-mapping>-->
 
     <!-- PretyFaces -->
     <filter>
