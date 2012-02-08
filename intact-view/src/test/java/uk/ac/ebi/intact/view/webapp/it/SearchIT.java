@@ -32,4 +32,13 @@ public class SearchIT extends IntactViewIT {
         assertThat(numberOfResultsDisplayed(), is(equalTo(0)));
     }
 
+    @Test
+    public void afterSearchQueryFieldsShowsQuery() throws Exception {
+        goToTheStartPage();
+
+        search("brca2");
+
+        assertThat(searchQuery(), is(equalTo("brca2")));
+    }
+
 }

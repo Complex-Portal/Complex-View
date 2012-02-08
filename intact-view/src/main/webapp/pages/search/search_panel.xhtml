@@ -30,7 +30,7 @@
             &#160;
             <p:commandButton id="quickSearchBtn" ajax="false"
                              onclick="queryTxt = document.getElementById('queryTxt'); _gaq.push(['_trackEvent', 'SearchPanel', 'Search', queryTxt.value])"
-                             value="Search"
+                             value="Search" process="queryTxt"
                              disabled="#{userQuery.showNewFieldPanel}"
                              action="#{searchBean.doBinarySearchAction}">
                 <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>

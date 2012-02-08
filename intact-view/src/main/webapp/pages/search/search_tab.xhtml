@@ -89,9 +89,9 @@
                                               action="#{searchBean.doNewBinarySearch}"/>
                         </f:facet>
 
-                        <h:inputText id="searchInTabTxt" size="40" value="#{userQuery.searchQuery}"
+                        <h:inputText id="searchInTabTxt" size="40"
                                       onfocus="this.select()"
-                                      onkeypress="return submitEnter('mainSearchSubform:searchBtn',event)"/>
+                                      onkeyup="$('#queryTxt').val(this.value);"/>
                     </iv:panelLabelAndMessage>
 
                     <p:panel>

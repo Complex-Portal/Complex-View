@@ -31,7 +31,7 @@
         <spring.version>3.0.2.RELEASE</spring.version>
         
         <debug>false</debug>
-        <project.stage>Development</project.stage>
+        <projectStage>Development</projectStage>
 
         <jetty.port>9095</jetty.port>
         <jetty.contextPath>/intact</jetty.contextPath>
