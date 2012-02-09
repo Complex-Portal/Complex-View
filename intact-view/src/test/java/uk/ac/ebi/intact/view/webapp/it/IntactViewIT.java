@@ -107,7 +107,6 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
         driver.findElement(By.id("queryTxt")).clear();
         driver.findElement(By.id("queryTxt")).sendKeys(query);
         driver.findElement(By.id("quickSearchBtn")).click();
-        waitUntilLoadingIsComplete();
     }
 
     protected int numberOfResultsDisplayed() {
