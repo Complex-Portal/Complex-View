@@ -63,7 +63,9 @@ public abstract class EditorIT extends BaseIT {
 
     @After
     public void tearDown() throws Exception {
-        driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 
     protected void waitUntilElementIsVisible(final By by) {
