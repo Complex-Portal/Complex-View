@@ -75,6 +75,8 @@
                 </h:selectOneMenu>
                 &#160;
 
+
+
                 <h:panelGroup id="newQueryPanel">
                     <h:inputText id="newQuerytxt" value="#{userQuery.newQueryToken.query}" columns="50" rendered="#{not userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}"/>
 
@@ -98,7 +100,7 @@
                                     selectionMode="single" selection="#{userQuery.selectedSearchTerm}"
                                     dynamic="true" cache="true"
                                     style="width:50%;">
-                                <p:ajax event="select" listener="#{userQuery.doSelectCvTerm}" oncomplete="browseCvDialog.hide()" update="newQueryPanel" />
+                                <p:ajax event="select" listener="#{userQuery.doSelectCvTerm}" oncomplete="browseCvDialog.hide()" update="@form" />
 
                                 <p:treeNode id="ontologyTreeNode">
                                     <h:outputText id="termTxt" value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
