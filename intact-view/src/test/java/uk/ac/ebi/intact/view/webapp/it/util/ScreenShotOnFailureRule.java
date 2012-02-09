@@ -47,9 +47,9 @@ public class ScreenShotOnFailureRule implements TestRule {
                     takeScreenshot(description.getClassName() + "#"
                             + description.getMethodName());
 
-                    System.out.println("--------- Page Source ----------------");
-                    System.out.println(driver.getPageSource());
-                    System.out.println("--------------------------------------");
+//                    System.out.println("--------- Page Source ----------------");
+//                    System.out.println(driver.getPageSource());
+//                    System.out.println("--------------------------------------");
 
                     throw t;
                 }
