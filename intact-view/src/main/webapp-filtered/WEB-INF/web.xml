@@ -89,15 +89,6 @@
     </context-param>
 
     <context-param>
-        <description>Used for encrypting view state. Only relevant for client side
-            state saving. See MyFaces wiki/web site documentation for instructions
-            on how to configure an application for diffenent encryption strengths.
-        </description>
-        <param-name>org.apache.myfaces.SECRET</param-name>
-        <param-value>NzY1NDMyMTA=</param-value>
-    </context-param>
-
-    <context-param>
         <description>
             Validate managed beans, navigation rules and ensure that forms are not nested.
         </description>
@@ -172,6 +163,72 @@
             /WEB-INF/site-functions.taglib.xml;
         </param-value>
     </context-param>
+
+    <!-- Indicate the encryption algorithm used for encrypt the view state. -->
+    <context-param>
+        <param-name>org.apache.myfaces.ALGORITHM</param-name>
+        <!-- See http://java.sun.com/j2se/1.4.2/docs/guide/security/jce/JCERefGuide.html for details -->
+        <param-value>AES</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.apache.myfaces.USE_ENCRYPTION</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!-- Defines the default mode and padding used for the encryption algorithm -->
+    <context-param>
+        <param-name>org.apache.myfaces.ALGORITHM.PARAMETERS</param-name>
+        <param-value>CBC/PKCS5Padding</param-value>
+    </context-param>
+
+    <!-- Defines the initialization vector (Base64 encoded) used for the
+         encryption algorithm. Note its usage depends on the algorithm config used,
+         that means it must be defined if CBC mode is used and could not if ECB mode is used -->
+    <context-param>
+        <param-name>org.apache.myfaces.ALGORITHM.IV</param-name>
+        <param-value>NzY1NDMyMTA3NjU0MzIxMA==</param-value>
+    </context-param>
+
+    <!-- Indicate the algorithm used to calculate the Message Authentication Code that is added to the view state. -->
+    <context-param>
+        <param-name>org.apache.myfaces.MAC_ALGORITHM</param-name>
+        <param-value>HmacSHA1</param-value>
+    </context-param>
+
+    <context-param>
+        <description>Defines the secret (Base64 encoded) used to initialize the secret key
+            for encryption algorithm. See MyFaces wiki/web site documentation
+            for instructions on how to configure an application for
+            different encryption strengths.
+        </description>
+        <param-name>org.apache.myfaces.SECRET</param-name>
+        <param-value>OTM2NzM2MDY4YWx3OTNoag==</param-value>
+    </context-param>
+
+    <context-param>
+        <description>Define the initialization code that are used to initialize the secret key used
+            on the Message Authentication Code algorithm
+        </description>
+        <param-name>org.apache.myfaces.MAC_SECRET</param-name>
+        <param-value>YWJjZDEyMzQ=</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.apache.myfaces.SECRET.CACHE</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.apache.myfaces.MAC_SECRET.CACHE</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.apache.myfaces.CHECK_ID_PRODUCTION_MODE</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
 
     <!-- Orchestra Filter -->
     <!--<filter>-->
