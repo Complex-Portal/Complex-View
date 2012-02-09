@@ -79,6 +79,7 @@ public class AdvancedSearchIT extends IntactViewIT {
     }
 
     private void clickOnBrowseIcon() {
+        waitUntilElementIsVisible(By.id("browseOntologyImg"));
         driver.findElement(By.id("browseOntologyImg")).click();
     }
 }
