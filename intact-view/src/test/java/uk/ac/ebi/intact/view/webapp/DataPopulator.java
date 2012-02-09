@@ -73,7 +73,7 @@ public class DataPopulator  {
 
 
         DataPopulator dataPopulator = new DataPopulator(IntactContext.getCurrentInstance());
-//        dataPopulator.populateTestData();
+        dataPopulator.populateTestData();
 
 
         IntactContext.getCurrentInstance().getDaoFactory().getEntityManager().close();
