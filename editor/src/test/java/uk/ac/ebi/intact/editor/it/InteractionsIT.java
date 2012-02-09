@@ -36,7 +36,7 @@ public class InteractionsIT extends EditorIT {
         clickOnAnnotationsTab();
         typeFigureLegend(" - lala");
 
-        assertThat(firstRowAnnotationText(), is(equalTo("Fig 3 - lala")));
+        assertThat(secondRowAnnotationText(), is(equalTo("Fig 3 - lala")));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class InteractionsIT extends EditorIT {
         loginAs("curator");
 
         clickOnAnnotationsTab();
-        typeFirstRowAnnotationText(" - lolo");
+        typeSecondRowAnnotationText(" - lolo");
 
         assertThat(figureLegendText(), is(equalTo("Fig 3 - lolo")));
     }
@@ -60,12 +60,13 @@ public class InteractionsIT extends EditorIT {
         driver.findElement(By.id("figLegendTxt")).sendKeys(s);
     }
 
-    private String firstRowAnnotationText() {
-        return valueForElement(By.id("interactionTabs:annotationsTable:0:annotationTxt"));
+
+    private String secondRowAnnotationText() {
+        return valueForElement(By.id("interactionTabs:annotationsTable:1:annotationTxt"));
     }
 
-    private void typeFirstRowAnnotationText(String s) {
-        driver.findElement(By.id("interactionTabs:annotationsTable:0:annotationTxt")).sendKeys(s);
+    private void typeSecondRowAnnotationText(String s) {
+        driver.findElement(By.id("interactionTabs:annotationsTable:1:annotationTxt")).sendKeys(s);
     }
 
     private String figureLegendText() {
