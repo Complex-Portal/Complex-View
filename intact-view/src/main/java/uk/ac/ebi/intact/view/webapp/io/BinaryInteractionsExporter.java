@@ -230,7 +230,7 @@ public class BinaryInteractionsExporter {
         Collection<String> interactions = result.getLineList();
         
         ColumnBasedDocumentDefinition mitabDefinition = MitabDocumentDefinitionFactory.mitab25Intact();
-        DocumentDefinition definition = new XGMMLDocumentDefinition("IntAct Export", "Results for query: "+solrQuery.getQuery(), "IntAct");
+        DocumentDefinition definition = new XGMMLDocumentDefinition("IntAct Export "+System.currentTimeMillis(), "Results for query: "+solrQuery.getQuery(), "IntAct");
         
         DocumentConverter converter = new DocumentConverter( mitabDefinition, definition );
         
