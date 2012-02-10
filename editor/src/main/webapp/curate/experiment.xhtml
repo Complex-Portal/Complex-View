@@ -130,7 +130,7 @@
 
                 <p:tab title="Interactions (#{experimentController.interactionDataModel.rowCount})">
                     <div class="intact-buttonBar">
-                        <p:commandButton value="New interaction" actionListener="#{annotatedObjectController.doSaveIfNecessary}" process="editorForm"
+                        <p:commandButton id="newInteractionBtn" value="New interaction" actionListener="#{annotatedObjectController.doSaveIfNecessary}" process="editorForm"
                                              action="#{interactionController.newInteraction(experimentController.experiment.publication, experimentController.experiment)}" ajax="false" />
 
                         |&#160;

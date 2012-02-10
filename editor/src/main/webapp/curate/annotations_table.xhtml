@@ -11,7 +11,7 @@
 
         <div class="intact-buttonBar">
                 <p:commandButton id="newAnnotBtn" value="New Annotation" actionListener="#{annotatedObjectController.newAnnotation}"
-                                 update="annotationsTable #{update}" process="@this"/>
+                                 update="annotationsTable #{update}"/>
         </div>
 
         <p:dataTable id="annotationsTable" var="annotation" value="#{annotatedObjectController.annotations}">

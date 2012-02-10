@@ -2,11 +2,14 @@ package uk.ac.ebi.intact.editor.it;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import uk.ac.ebi.intact.model.Experiment;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class InteractionsIT extends AbstractAnnotatedObjectIT {
 
@@ -120,6 +123,66 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
 
         assertThat(confidenceValueInRow(0), is(equalTo("")));
         assertThat(confidenceTypeSelectedInRow(0), is(equalTo("-- Select type --")));
+    }
+
+    @Test
+    public void createInteractionFromExperimentPageAndSave() throws Exception {
+        goToExperimentPageByLabel("mutable-2012-1");
+        loginAs("curator");
+
+        clickOnNewInteraction("experimentTabs");
+        typeShortLabel("lala-"+System.currentTimeMillis());
+        selectInteractionType("colocalization");
+        createAnnotation("comment", "comment "+System.currentTimeMillis());
+        
+        save();
+
+        assertTrue(infoMessageSummaryExists("Saved"));
+    }
+
+    @Test
+    public void createInteractionFromPublicationPageAndSave() throws Exception {
+        goToPublicationWithId("1234567");
+        loginAs("curator");
+
+        clickOnInteractionsTab();
+        clickOnNewInteraction("publicationTabs");
+        selectExperiment("mutable-2012-1");
+        typeShortLabel("lala-" + System.currentTimeMillis());
+        selectInteractionType("colocalization");
+        createAnnotation("comment", "comment "+System.currentTimeMillis());
+
+        save();
+
+        assertTrue(infoMessageSummaryExists("Saved"));
+    }
+
+    private void clickOnInteractionsTab() {
+        WebElement element = driver.findElement(By.id("publicationTabs"));
+        element.findElement(By.partialLinkText("Interactions (")).click();
+        waitUntilLoadingIsComplete();
+    }
+
+    private void selectExperiment(String experimentLabel) {
+        Experiment exp = getDaoFactory().getExperimentDao().getByShortLabel(experimentLabel);
+
+        Select select = new Select(driver.findElement(By.id("experimentLists")));
+        select.selectByValue(exp.getAc());
+
+        waitUntilLoadingIsComplete();
+    }
+
+    private void selectInteractionType(String interactionType) {
+        Select select = new Select(driver.findElement(By.id("interactionTypeTxt:selectObject")));
+        select.selectByVisibleText(interactionType);
+    }
+
+    private void typeShortLabel(String label) {
+        driver.findElement(By.id("shortlabelTxt")).sendKeys(label);
+    }
+
+    private void clickOnNewInteraction(String tabsId) {
+        driver.findElement(By.id(tabsId+":newInteractionBtn")).click();
     }
 
     protected void clickOnParametersTab() {

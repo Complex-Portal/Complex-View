@@ -100,7 +100,7 @@
                         onclick="cloningDialog.show()" oncomplete="cloningDialog.hide()"
                         rendered="#{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject) != 'Publication'}"/>
             <ui:insert name="toolsContextual"/>
-            <p:menuitem value="Delete #{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject)}" action="#{annotatedObjectController.doDelete}" ajax="false"
+            <p:menuitem id="deleteMenu" value="Delete #{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject)}" action="#{annotatedObjectController.doDelete}" ajax="false"
                         immediate="true"
                         onclick="if (confirm('Are you sure you sure you want to delete this sucker?')) { deletingDialog.show() } else { return false }" oncomplete="deletingDialog.hide()" />
         </p:submenu>

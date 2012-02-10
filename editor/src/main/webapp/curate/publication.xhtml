@@ -339,7 +339,7 @@
 
                     <p:tab title="Interactions (#{publicationController.interactionDataModel != null? publicationController.interactionDataModel.rowCount : 0})">
                         <div class="intact-buttonBar">
-                             <p:commandButton value="New interaction"
+                             <p:commandButton id="newInteractionBtn" value="New interaction"
                                               action="#{interactionController.newInteraction(publicationController.publication, null)}"
                                               disabled="#{empty publicationController.publication.experiments}"
                                               ajax="false"/>

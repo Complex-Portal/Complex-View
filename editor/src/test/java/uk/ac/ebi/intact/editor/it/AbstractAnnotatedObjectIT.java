@@ -18,6 +18,11 @@ public abstract class AbstractAnnotatedObjectIT extends EditorIT {
        return driver.findElement(By.id(getTabsComponentId()));
     }
 
+    protected void save() {
+        driver.findElement(By.id("topSaveButton")).click();
+        waitUntilLoadingIsComplete();
+    }
+
     protected void clickOnAnnotationsTab() {
         findTabsElement().findElement(By.partialLinkText("Annotations (")).click();
         waitUntilLoadingIsComplete();
@@ -93,6 +98,26 @@ public abstract class AbstractAnnotatedObjectIT extends EditorIT {
 
         Select exportFormatSelect = new Select(element);
         return exportFormatSelect.getFirstSelectedOption().getText();
+    }
+
+    protected void createAnnotation(String topic, String text) {
+        clickOnAnnotationsTab();
+        clickOnNewAnnotation();
+        selectAnnotationTopicInRow(0, topic);
+        typeAnnotationTextInRow(0, text);
+    }
+
+    private void typeAnnotationTextInRow(int rowIndex, String text) {
+        driver.findElement(By.id(getTabsComponentId()+":annotationsTable:"+rowIndex+":annotationTxt")).sendKeys(text);
+    }
+
+    private void selectAnnotationTopicInRow(int rowIndex, String interactionType) {
+        final By id = By.id(getTabsComponentId() + ":annotationsTable:" + rowIndex + ":annotationTopicSel");
+
+        waitUntilElementIsVisible(id);
+
+        Select select = new Select(driver.findElement(id));
+        select.selectByVisibleText(interactionType);
     }
 
 

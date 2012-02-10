@@ -19,6 +19,7 @@ import uk.ac.ebi.intact.dataexchange.cvutils.OboUtils;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.user.User;
+import uk.ac.ebi.intact.model.util.PublicationUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,6 +82,7 @@ public class DataPopulator {
         createBioSourceHuman(mockBuilder);
         createPublication(createPublication_Ren2011_simplified(mockBuilder));
         createPublicationWithManyInteractions(mockBuilder, 55);
+        createPublication(createPublicationMutable(mockBuilder));
 
         User curator = mockBuilder.createCurator("curator", "CuratorName", "CuratorLast", "curator@example.com");
         curator.setPassword("103b9534772356f52e338307c9cf42294a3f28f7");
@@ -91,6 +93,18 @@ public class DataPopulator {
         corePersister.saveOrUpdate(reviewer);
 
 //        importXmlDataAs(curator);
+    }
+
+    private Publication createPublicationMutable(IntactMockBuilder mockBuilder) {
+        final Publication publication = mockBuilder.createPublication("1234567");
+        publication.getExperiments().clear();
+
+        final Experiment experimentEmpty = mockBuilder.createExperimentEmpty("mutable-2012-1");
+
+        experimentEmpty.setPublication(publication);
+        publication.addExperiment(experimentEmpty);
+
+        return publication;
     }
 
     private void createPublicationWithManyInteractions(IntactMockBuilder mockBuilder, int numberOfInteractions) {

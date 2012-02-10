@@ -64,7 +64,7 @@ public abstract class EditorIT extends BaseIT {
     @After
     public void tearDown() throws Exception {
         if (driver != null) {
-            driver.quit();
+//            driver.quit();
         }
     }
 
@@ -114,6 +114,10 @@ public abstract class EditorIT extends BaseIT {
     
     protected void goToPageInContext(String path) {
         driver.get(BASE_URL+path);
+    }
+
+    protected void goToPublicationWithId(String id) {
+        goToPageInContext("/publication/"+id);
     }
 
     protected void goToExperimentPageByLabel(String expLabel) {
