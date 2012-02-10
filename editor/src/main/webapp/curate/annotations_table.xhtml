@@ -11,7 +11,7 @@
 
         <div class="intact-buttonBar">
                 <p:commandButton id="newAnnotBtn" value="New Annotation" actionListener="#{annotatedObjectController.newAnnotation}"
-                                 update="#{update}" process="@this"/>
+                                 update="annotationsTable #{update}" process="@this"/>
         </div>
 
         <p:dataTable id="annotationsTable" var="annotation" value="#{annotatedObjectController.annotations}">
@@ -39,7 +39,7 @@
                 <f:facet name="header">
                     <h:outputText value="Topic"/>
                 </f:facet>
-                <h:selectOneMenu value="#{annotation.cvTopic}"
+                <h:selectOneMenu id="annotationTopicSel" value="#{annotation.cvTopic}"
                                  required="true" requiredMessage="Topic is required">
                     <f:selectItems value="#{topicSelectItems}"/>
                     <ed:curation/>
@@ -63,7 +63,7 @@
                 <p:commandLink id="removeAnnotBtn" styleClass="ui-icon ui-icon-closethick" process="removeAnnotBtn"
                                actionListener="#{annotatedObjectController.annotatedObject.removeAnnotation(annotation)}"
                                oncomplete="markAsUnsaved()"
-                               update="#{update}"/>
+                               update="annotationsTable #{update}"/>
             </p:column>
         </p:dataTable>
 

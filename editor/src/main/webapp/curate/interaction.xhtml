@@ -174,8 +174,6 @@
                     </p:outputPanel>
                 </p:tab>
 
-
-
                    <ui:decorate template="propertiesTabs.xhtml">
                        <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.interactionTopicSelectItems}"/>
                        <ui:param name="updateOnChange" value=":editorForm:basic"/>
@@ -190,13 +188,14 @@
                 <p:tab id="parametersTab" title="Parameters (#{interaction.parameters.size()})">
 
                     <p:outputPanel id="parametersPanel" autoUpdate="true">
-                       <ia:parametersTable annotatedObjectController="#{annotatedObjectController}"
-                           parameterTypeSelectItems="#{cvObjectService.parameterTypeSelectItems}"
-                           parameterUnitSelectItems="#{cvObjectService.parameterUnitSelectItems}"
-                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                           oncomplete="ia_enableSave()"
-                           valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                           valueChangeAwareObject="#{annotatedObjectController}"/>
+
+                            <ui:decorate template="parameters_table.xhtml">
+                                <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
+                                <ui:param name="parameterTypeSelectItems" value="#{cvObjectService.parameterTypeSelectItems}"/>
+                                <ui:param name="parameterUnitSelectItems" value="#{cvObjectService.parameterUnitSelectItems}"/>
+                                <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent #{updateOnChange}"/>
+                            </ui:decorate>
+
                     </p:outputPanel>
 
                 </p:tab>
@@ -204,12 +203,11 @@
                 <p:tab id="confidencesTab" title="Confidences (#{interaction.confidences.size()})">
 
                     <p:outputPanel id="confidencesPanel" autoUpdate="true">
-                       <ia:confidencesTable annotatedObjectController="#{annotatedObjectController}"
-                           confidenceTypeSelectItems="#{cvObjectService.confidenceTypeSelectItems}"
-                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                           oncomplete="ia_enableSave()"
-                           valueChangeRender=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                           valueChangeAwareObject="#{annotatedObjectController}"/>
+                        <ui:decorate template="confidences_table.xhtml">
+                            <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
+                            <ui:param name="confidenceTypeSelectItems" value="#{cvObjectService.confidenceTypeSelectItems}"/>
+                            <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent #{updateOnChange}"/>
+                        </ui:decorate>
                     </p:outputPanel>
 
                 </p:tab>

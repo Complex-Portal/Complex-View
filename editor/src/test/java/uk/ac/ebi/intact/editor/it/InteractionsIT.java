@@ -8,7 +8,12 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class InteractionsIT extends EditorIT {
+public class InteractionsIT extends AbstractAnnotatedObjectIT {
+
+    @Override
+    protected String getTabsComponentId() {
+        return "interactionTabs";
+    }
 
 	@Test
 	public void importProteinFromUniprotSuccessfully() throws Exception {
@@ -47,26 +52,134 @@ public class InteractionsIT extends EditorIT {
         clickOnAnnotationsTab();
         typeSecondRowAnnotationText(" - lolo");
 
+        assertThat(annotationTopicSelectedInRow(1), is(equalTo("figure legend")));
         assertThat(figureLegendText(), is(equalTo("Fig 3 - lolo")));
     }
 
+    @Test
+    public void newXrefShouldDisplayNewEmptyFieldOnTop() throws Exception {
+        goToInteractionPageShortLabel("prp17-sap61");
+        loginAs("curator");
 
-    private void clickOnAnnotationsTab() {
-        driver.findElement(By.linkText("Annotations (2)")).click();
+        clickOnXrefsTab();
+        clickOnNewXref();
+
+        assertThat(identifierInXrefsRow(0), is(equalTo("")));
+        assertThat(secondaryIdentifierInXrefsRow(0), is(equalTo("")));
+        assertThat(databaseSelectedInRow(0), is(equalTo("-- Select database --")));
+        assertThat(qualifierSelectedInRow(0), is(equalTo("-- Select qualifier --")));
+    }
+
+    @Test
+    public void newAnnotationShouldDisplayNewEmptyFieldOnTop() throws Exception {
+        goToInteractionPageShortLabel("prp17-sap61");
+        loginAs("curator");
+
+        clickOnAnnotationsTab();
+        clickOnNewAnnotation();
+
+        assertThat(firstRowAnnotationText(), is(equalTo("")));
+        assertThat(annotationTopicSelectedInRow(0), is(equalTo("-- Select topic --")));
+    }
+
+    @Test
+    public void newAliasShouldDisplayNewEmptyFieldOnTop() throws Exception {
+        goToInteractionPageShortLabel("prp17-sap61");
+        loginAs("curator");
+
+        clickOnAliasesTab();
+        clickOnNewAlias();
+
+        assertThat(aliasNameInRow(0), is(equalTo("")));
+        assertThat(aliasTypeSelectedInRow(0), is(equalTo("-- Select type --")));
+    }
+
+    @Test
+    public void newParameterShouldDisplayNewEmptyFieldOnTop() throws Exception {
+        goToInteractionPageShortLabel("prp17-sap61");
+        loginAs("curator");
+
+        clickOnParametersTab();
+        clickOnNewParameter();
+
+        assertThat(paramValueInRow(0), is(equalTo("")));
+        assertThat(paramBaseInRow(0), is(equalTo("10")));
+        assertThat(paramExponentInRow(0), is(equalTo("0")));
+        assertThat(paramUncertaintyNameInRow(0), is(equalTo("")));
+        assertThat(paramTypeSelectedInRow(0), is(equalTo("-- Select type --")));
+        assertThat(paramUnitSelectedInRow(0), is(equalTo("-- Select unit --")));
+    }
+
+    @Test
+    public void newConfidenceShouldDisplayNewEmptyFieldOnTop() throws Exception {
+        goToInteractionPageShortLabel("prp17-sap61");
+        loginAs("curator");
+
+        clickOnConfidencesTab();
+        clickOnNewConfidence();
+
+        assertThat(confidenceValueInRow(0), is(equalTo("")));
+        assertThat(confidenceTypeSelectedInRow(0), is(equalTo("-- Select type --")));
+    }
+
+    protected void clickOnParametersTab() {
+        findTabsElement().findElement(By.partialLinkText("Parameters (")).click();
         waitUntilLoadingIsComplete();
+    }
+
+    protected void clickOnConfidencesTab() {
+        findTabsElement().findElement(By.partialLinkText("Confidences (")).click();
+        waitUntilLoadingIsComplete();
+    }
+
+    protected void clickOnNewParameter() {
+        driver.findElement(By.id(getTabsComponentId()+":newParamBtn")).click();
+        waitUntilLoadingIsComplete();
+    }
+
+    protected String paramValueInRow(int rowIndex) {
+        return valueForElement(By.id(getTabsComponentId()+":parametersTable:"+rowIndex+":paramFactorTxt"));
+    }
+
+    protected String paramBaseInRow(int rowIndex) {
+        return valueForElement(By.id(getTabsComponentId()+":parametersTable:"+rowIndex+":paramBaseTxt"));
+    }
+
+    protected String paramExponentInRow(int rowIndex) {
+        return valueForElement(By.id(getTabsComponentId()+":parametersTable:"+rowIndex+":paramExponentTxt"));
+    }
+
+    protected String paramUncertaintyNameInRow(int rowIndex) {
+        return valueForElement(By.id(getTabsComponentId()+":parametersTable:"+rowIndex+":paramUncertaintyTxt"));
+    }
+
+    protected String paramTypeSelectedInRow(int rowIndex) {
+        return valueForSelect(By.id(getTabsComponentId() + ":parametersTable:" + rowIndex + ":paramTypeSel"));
+    }
+
+    protected String paramUnitSelectedInRow(int rowIndex) {
+        return valueForSelect(By.id(getTabsComponentId() + ":parametersTable:" + rowIndex + ":paramUnitSel"));
+    }
+
+    protected void clickOnNewConfidence() {
+        driver.findElement(By.id(getTabsComponentId()+":newConfidenceBtn")).click();
+        waitUntilLoadingIsComplete();
+    }
+
+    protected String confidenceValueInRow(int rowIndex) {
+        return valueForElement(By.id(getTabsComponentId()+":confidencesTable:"+rowIndex+":confidenceValueTxt"));
+    }
+
+    protected String confidenceTypeSelectedInRow(int rowIndex) {
+        return valueForSelect(By.id(getTabsComponentId() + ":confidencesTable:" + rowIndex + ":confidenceTypeSel"));
     }
 
     private void typeFigureLegend(String s) {
         driver.findElement(By.id("figLegendTxt")).sendKeys(s);
     }
 
-
-    private String secondRowAnnotationText() {
-        return valueForElement(By.id("interactionTabs:annotationsTable:1:annotationTxt"));
-    }
-
-    private void typeSecondRowAnnotationText(String s) {
-        driver.findElement(By.id("interactionTabs:annotationsTable:1:annotationTxt")).sendKeys(s);
+    protected void typeSecondRowAnnotationText(String s) {
+        driver.findElement(By.id(getTabsComponentId()+":annotationsTable:1:annotationTxt")).sendKeys(s);
     }
 
     private String figureLegendText() {

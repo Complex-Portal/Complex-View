@@ -14,9 +14,9 @@
             <tr>
                 <td>
                      <div class="intact-buttonBar">
-                            <p:commandButton value="New Xref" actionListener="#{annotatedObjectController.newXref}"
+                            <p:commandButton id="newXrefBtn" value="New Xref" actionListener="#{annotatedObjectController.newXref}"
                                              process="@this"
-                                             update="#{update}"/>
+                                             update="xrefsTable #{update}"/>
                     </div>
 
                     <p:dataTable id="xrefsTable" var="xref" value="#{annotatedObjectController.xrefs}"
@@ -116,7 +116,7 @@
                             <p:commandLink id="removeXrefBtn" styleClass="ui-icon ui-icon-closethick" process="removeXrefBtn"
                                actionListener="#{annotatedObjectController.annotatedObject.removeXref(xref)}"
                                oncomplete="markAsUnsaved()"
-                               update="#{update}"/>
+                               update="xrefsTable #{update}"/>
                         </p:column>
                     </p:dataTable>
 
