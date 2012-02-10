@@ -19,10 +19,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
-import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -92,6 +89,15 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
             }
         });
     }
+    
+    protected void waitUntilElementHasValue(final By by, final String value) {
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver webDriver) {
+                final WebElement element = driver.findElement(by);
+                return element != null && (element.getAttribute("value")).equals(value);
+            }
+        });
+    }
 
     protected void takeScreenshot(String filename) throws IOException {
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
@@ -135,5 +141,13 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
 
     protected String valueForElement(By id) {
         return driver.findElement(id).getAttribute("value");
+    }
+
+    protected void sleep(int i) {
+        try {
+            Thread.sleep(i);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

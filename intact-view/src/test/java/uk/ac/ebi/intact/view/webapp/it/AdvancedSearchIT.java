@@ -71,14 +71,11 @@ public class AdvancedSearchIT extends IntactViewIT {
         waitUntilElementIsVisible(By.id("ontologyTree:0_1:termTxt"));
         driver.findElement(By.id("ontologyTree:0_1:termTxt")).click();
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        waitUntilElementHasValue(By.id("newQuerytxt"), "MI:0428");
     }
 
     private void clickOnBrowseIcon() {
+        waitUntilElementIsVisible(By.id("browseOntologyImg"));
         driver.findElement(By.id("browseOntologyImg")).click();
     }
 }

@@ -86,7 +86,7 @@
         <ui:include src="pages/search/search_panel.xhtml"/>
 
 
-        <p:tabView id="mainPanels" activeIndex="#{contextController.activeTabIndex}"
+        <p:tabView id="mainPanels" activeIndex="#{contextController.activeTabIndex}" dynamic="true"
                    widgetVar="mainTabsWidget" onTabChange="_gaq.push(['_trackEvent', 'Navigation', 'Tab change', index])">
             <p:ajax event="tabChange" listener="#{searchBean.onTabChanged}"/>
 
