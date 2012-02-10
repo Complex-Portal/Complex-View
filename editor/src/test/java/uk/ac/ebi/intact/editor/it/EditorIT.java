@@ -64,7 +64,7 @@ public abstract class EditorIT extends BaseIT {
     @After
     public void tearDown() throws Exception {
         if (driver != null) {
-//            driver.quit();
+            driver.quit();
         }
     }
 

@@ -125,8 +125,8 @@
                             <h:selectOneMenu id="experimentLists"
                                              value="#{interactionController.experiment}"
                                              required="true" requiredMessage="You must set an experiment">
-                                <p:ajax event="valueChange" update=":editorForm"
-                                                process="@this" listener="#{interactionController.experimentChanged}" async="true"/>
+                                <p:ajax event="valueChange" update=":editorForm" rendered="#{interactionController.experiment != null}"
+                                               listener="#{interactionController.experimentChanged}" async="true"/>
                                  <f:selectItems value="#{interactionController.experimentSelectItems}"/>
                             </h:selectOneMenu>
                             <!--<p:pickList id="experimentLists"-->
