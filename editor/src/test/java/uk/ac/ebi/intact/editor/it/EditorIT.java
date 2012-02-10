@@ -100,7 +100,7 @@ public abstract class EditorIT extends BaseIT {
         driver.findElement(By.id("login")).click();
     }
 
-    private void sleep(int i) {
+    protected void sleep(int i) {
         try {
             Thread.sleep(i);
         } catch (InterruptedException e) {
