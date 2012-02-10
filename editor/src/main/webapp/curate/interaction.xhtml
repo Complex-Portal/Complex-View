@@ -188,14 +188,12 @@
                 <p:tab id="parametersTab" title="Parameters (#{interaction.parameters.size()})">
 
                     <p:outputPanel id="parametersPanel" autoUpdate="true">
-
                             <ui:decorate template="parameters_table.xhtml">
                                 <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
                                 <ui:param name="parameterTypeSelectItems" value="#{cvObjectService.parameterTypeSelectItems}"/>
                                 <ui:param name="parameterUnitSelectItems" value="#{cvObjectService.parameterUnitSelectItems}"/>
-                                <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent #{updateOnChange}"/>
+                                <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
                             </ui:decorate>
-
                     </p:outputPanel>
 
                 </p:tab>
@@ -206,7 +204,7 @@
                         <ui:decorate template="confidences_table.xhtml">
                             <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
                             <ui:param name="confidenceTypeSelectItems" value="#{cvObjectService.confidenceTypeSelectItems}"/>
-                            <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent #{updateOnChange}"/>
+                            <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
                         </ui:decorate>
                     </p:outputPanel>
 
