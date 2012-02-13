@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate;
 
+import org.primefaces.context.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +134,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                         SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
                         addInfoMessage("Publication already released", "This publication was released on " + sdf.format(event.getWhen()));
                     }
+
             }
         }
     }

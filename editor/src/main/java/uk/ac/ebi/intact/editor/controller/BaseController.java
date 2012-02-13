@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.editor.controller;
 
 
+import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import uk.ac.ebi.intact.editor.config.EditorConfig;

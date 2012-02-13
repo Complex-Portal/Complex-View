@@ -205,4 +205,22 @@ public abstract class EditorIT extends BaseIT {
     protected String valueForElement(By id) {
         return driver.findElement(id).getAttribute("value");
     }
+
+    protected void waitUntilElementHasText(final By by, final String text) {
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver webDriver) {
+                final WebElement element = driver.findElement(by);
+                return element != null && element.getText().equals(text);
+            }
+        });
+    }
+
+    protected void waitUntilElementHasValue(final By by, final String value) {
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver webDriver) {
+                final WebElement element = driver.findElement(by);
+                return element != null && (element.getAttribute("value")).equals(value);
+            }
+        });
+    }
 }

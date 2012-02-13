@@ -48,7 +48,7 @@
                                          actionListener="#{participantImportController.importSelected}"
                                          onstart="candidatesDialog.hide();adding_load.show()" onerror="adding_load.hide(); candidatesDialog.show();"
                                          oncomplete="adding_load.hide(); " process=":editorForm:interactionTabs:candidatesDialog"
-                                         update=":editorForm"/>
+                                         update=":editorForm:interactionTabs:participantsPanel"/>
                         <p:commandButton type="button" value="Back" rendered="#{empty participantImportController.importCandidates}"
                                          onclick="candidatesDialog.hide(); importParticipantDialog.show()"/>
                     </h:panelGroup>
@@ -119,13 +119,13 @@
                 <p:panel header="Global attributes" rendered="#{not empty participantImportController.importCandidates}">
                     <h:panelGrid columns="4">
                         <h:outputLabel value="Experimental role: " for="expRoleDialogTxt"/>
-                        <ia:inputCvObject id="expRoleDialogTxt" cvIdentifier="MI:0495" required="true"
+                        <ia:inputCvObject id="expRoleDialogTxt" cvIdentifier="MI:0495"
                                           modal="false"
                                           value="#{participantImportController.cvExperimentalRole}"
                                           selectItems="#{cvObjectService.experimentalRoleSelectItems}" />
 
                         <h:outputLabel value="Biological role: " for="bioRoleDialogTxt"/>
-                        <ia:inputCvObject id="bioRoleDialogTxt" cvIdentifier="MI:0500" required="true"
+                        <ia:inputCvObject id="bioRoleDialogTxt" cvIdentifier="MI:0500"
                                           modal="false"
                                           value="#{participantImportController.cvBiologicalRole}"
                                           selectItems="#{cvObjectService.biologicalRoleSelectItems}" />

@@ -28,14 +28,19 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
         loginAs("curator");
 
         // When: I import P12345 using the Import... dialog
-        showImportParticipantsDialog();
-        searchParticipantsUsing("P12345");
-        importSelectedByDefault();
+        importParticipant("P12345");
 
         // Then: the first participant in the table should be the new P12345
         assertThat(identityForParticipantInFirstRow(), is(equalTo("P12345")));
 	}
-    
+
+    private void importParticipant(String participantId) {
+        showImportParticipantsDialog();
+        searchParticipantsUsing(participantId);
+        importSelectedByDefault();
+        waitUntilElementHasText(By.id("interactionTabs:participantsTable:0:participantId"), participantId);
+    }
+
     @Test
     public void updateFigLegendShouldUpdateAnnotations() throws Exception {
         goToInteractionPageShortLabel("prp17-sap61");
@@ -131,10 +136,28 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
         loginAs("curator");
 
         clickOnNewInteraction("experimentTabs");
-        typeShortLabel("lala-"+System.currentTimeMillis());
+        typeShortLabel("lala-la"+System.currentTimeMillis());
         selectInteractionType("colocalization");
         createAnnotation("comment", "comment "+System.currentTimeMillis());
         
+        save();
+
+        assertTrue(infoMessageSummaryExists("Saved"));
+    }
+
+    @Test
+    public void createInteractionFromExperimentPageImportParticipantAndSave() throws Exception {
+        goToExperimentPageByLabel("mutable-2012-1");
+        loginAs("curator");
+
+        clickOnNewInteraction("experimentTabs");
+        typeShortLabel("lala-la"+System.currentTimeMillis());
+        selectInteractionType("colocalization");
+
+        clickOnParticipantsTab();
+
+        importParticipant("P12345");
+
         save();
 
         assertTrue(infoMessageSummaryExists("Saved"));
@@ -148,7 +171,7 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
         clickOnInteractionsTab();
         clickOnNewInteraction("publicationTabs");
         selectExperiment("mutable-2012-1");
-        typeShortLabel("lala-" + System.currentTimeMillis());
+        typeShortLabel("lala-la" + System.currentTimeMillis());
         selectInteractionType("colocalization");
         createAnnotation("comment", "comment "+System.currentTimeMillis());
 
@@ -160,6 +183,12 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
     private void clickOnInteractionsTab() {
         WebElement element = driver.findElement(By.id("publicationTabs"));
         element.findElement(By.partialLinkText("Interactions (")).click();
+        waitUntilLoadingIsComplete();
+    }
+
+    private void clickOnParticipantsTab() {
+        WebElement element = driver.findElement(By.id("interactionTabs"));
+        element.findElement(By.partialLinkText("Participants (")).click();
         waitUntilLoadingIsComplete();
     }
 
@@ -251,7 +280,6 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
 
     private void importSelectedByDefault() {
         driver.findElement(By.id("interactionTabs:candidatesDialogContent:importSelected")).click();
-        waitUntilElementIsVisible(By.linkText("Participants (3)"));
     }
 
     private void searchParticipantsUsing(String query) {
