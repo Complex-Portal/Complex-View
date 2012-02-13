@@ -90,6 +90,11 @@ public class ExperimentDetailedViewController extends JpaAwareController {
             if (iterator.hasNext()) sb.append(", ");
         }
 
+        if (feature.getCvFeatureType() != null) {
+            sb.append(" ");
+            sb.append(feature.getCvFeatureType().getShortLabel());
+        }
+
         return sb.toString();
     }
 

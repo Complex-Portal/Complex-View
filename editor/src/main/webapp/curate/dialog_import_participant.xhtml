@@ -48,7 +48,7 @@
                                          actionListener="#{participantImportController.importSelected}"
                                          onstart="candidatesDialog.hide();adding_load.show()" onerror="adding_load.hide(); candidatesDialog.show();"
                                          oncomplete="adding_load.hide(); " process=":editorForm:interactionTabs:candidatesDialog"
-                                         update=":editorForm:interactionTabs:participantsPanel"/>
+                                         update=":editorForm:interactionTabs:participantsPanel :editorForm:messagesComponent :editorForm:changesPanel"/>
                         <p:commandButton type="button" value="Back" rendered="#{empty participantImportController.importCandidates}"
                                          onclick="candidatesDialog.hide(); importParticipantDialog.show()"/>
                     </h:panelGroup>

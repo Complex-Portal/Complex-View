@@ -124,7 +124,7 @@ public class ExperimentOverviewIT extends EditorIT {
 
         // When I look at the participant Q09685 in interaction with label dre4-luc7
         // Then the features should be "region[?-?]"
-        assertThat(featuresForParticipant("Q09685"), is(equalTo("region[?-?]")));
+        assertThat(featuresForParticipant("Q09685"), is(equalTo("region[?-?] experimental feature")));
     }
 
     @Test
@@ -134,7 +134,7 @@ public class ExperimentOverviewIT extends EditorIT {
 
         // When I look at the participant O13615 in interaction with label dre4-luc7
         // Then the features should be "mut[5-6], region[1-4]"
-        assertThat(featuresForParticipant("O59734"), is(equalTo("mut[5..5-6..6], region[1..1-4..4]")));
+        assertThat(featuresForParticipant("O59734"), is(equalTo("mut[5..5-6..6] mutation increasing, region[1..1-4..4] experimental feature")));
     }
 
     @Test
