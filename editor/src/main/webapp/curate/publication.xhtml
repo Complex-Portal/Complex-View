@@ -141,7 +141,7 @@
                             <ia:panelMessage level="warn">
                                 <b>To be reviewed: </b> #{publicationController.toBeReviewed}
                                 &#160;&#160;&#160;
-                                <p:commandButton value="Clear" rendered="#{userSessionController.isItMe(publicationController.publication.currentReviewer)}" actionListener="#{publicationController.clearToBeReviewed}" update="centralUnit"/>
+                                <p:commandButton value="Clear" rendered="#{userSessionController.isItMe(publicationController.publication.currentReviewer)}" actionListener="#{publicationController.clearToBeReviewed}" update=":editorForm:centralUnit"/>
                             </ia:panelMessage>
                         </h:panelGroup>
 
