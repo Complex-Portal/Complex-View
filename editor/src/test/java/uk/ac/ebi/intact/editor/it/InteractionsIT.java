@@ -169,7 +169,6 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
         loginAs("curator");
 
         clickOnNewInteraction("experimentTabs");
-//        typeShortLabel("lala-la"+System.currentTimeMillis());
         selectInteractionType("colocalization");
 
         clickOnParticipantsTab();
@@ -196,6 +195,26 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
         save();
 
         assertTrue(infoMessageSummaryExists("Saved"));
+    }
+
+    @Test
+    public void markingParticipantAsDeleted() throws Exception {
+        goToInteractionPageShortLabel("prp17-sap61");
+        loginAs("curator");
+
+        markSecondParticipantAsDeleted();
+
+        assertTrue(secondParticipantMarkedToBeDeleted());
+    }
+
+    private void markSecondParticipantAsDeleted() {
+        driver.findElement(By.id("interactionTabs:participantsTable:1:markDeletedBtn")).click();
+        waitUntilLoadingIsComplete();
+    }
+
+    private boolean secondParticipantMarkedToBeDeleted() {
+        final WebElement element = driver.findElement(By.id("interactionTabs:participantsTable:1:participantId"));
+        return "intact-deleted".equals(element.getAttribute("class"));
     }
 
     private void clickOnInteractionsTab() {

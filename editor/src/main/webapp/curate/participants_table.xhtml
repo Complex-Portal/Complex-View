@@ -28,10 +28,10 @@
             <p:column headerText="Name" sortBy="#{interactor.shortLabel}">
                 <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
                                value="#{interactor.shortLabel}" rendered="#{interactor != null and not changesController.isDeletedAc(participant.ac)}"
-                               style="#{participant.ac == null? 'color:blue' :''}"
+                               styleClass="#{participant.ac == null? 'intact-new' :''}"
                                ajax="false"/>
                 <h:panelGroup rendered="#{changesController.isDeletedAc(participant.ac)}">
-                    <h:outputText value="#{interactor.shortLabel}" style="color:red; text-decoration:line-through"/>
+                    <h:outputText value="#{interactor.shortLabel}" styleClass="intact-deleted"/>
                 </h:panelGroup>
 
                 <h:panelGroup rendered="#{interactor == null}">
@@ -57,7 +57,7 @@
 
             <p:column headerText="Identity">
                 <h:outputText id="participantId" value="#{interactionController.getInteractorIdentity(participant.interactor)}"
-                              style="#{changesController.isDeletedAc(participant.ac)? 'color:red; text-decoration:line-through' : ''}"/>
+                              styleClass="#{changesController.isDeletedAc(participant.ac)? 'intact-deleted' : ''}"/>
             </p:column>
 
             <p:column headerText="Expressed in">
@@ -142,7 +142,7 @@
                 <div style="float:right">
                     <p:commandLink id="markDeletedBtn" process="markDeletedBtn" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
                                    actionListener="#{interactionController.markParticipantToDelete(participant)}"
-                                   update=":editorForm:unsavedChangesInfo,:editorForm:changesPanel,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo"
+                                   update=":editorForm:unsavedChangesInfo :editorForm:changesPanel :editorForm:messagesComponent :editorForm:interactionTabs:participantsTable"
                                    rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
                 </div>
                 <div style="float:right">
