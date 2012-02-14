@@ -270,14 +270,6 @@ public class InteractionController extends ParameterizableObjectController {
         }
     }
 
-    public void validateAnnotatedObject(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        if (!participantWrappers.isEmpty()) {
-            updateShortLabel();
-        }
-
-        super.validateAnnotatedObject(context, component, value);
-    }
-
     @Override
     public void doPreSave() {
         // create master proteins from the unsaved manager

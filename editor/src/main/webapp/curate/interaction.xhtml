@@ -77,7 +77,8 @@
                         </td>
                         <td>
                             <p:inputText id="shortlabelTxt" value="#{interaction.shortLabel}" size="30"
-                                         validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter">
+                                         validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
+                                    required="true" requiredMessage="Shortlabel is required">
                                 <ed:curation/>
                             </p:inputText>
                         </td>
