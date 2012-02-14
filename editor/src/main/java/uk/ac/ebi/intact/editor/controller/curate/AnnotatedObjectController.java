@@ -38,6 +38,7 @@ import uk.ac.ebi.intact.model.util.PublicationUtils;
 import uk.ac.ebi.intact.util.go.GoServerProxy;
 import uk.ac.ebi.intact.util.go.GoTerm;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -365,7 +366,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void validateAnnotatedObject(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-
+         if (getAnnotatedObject().getShortLabel() == null || getAnnotatedObject().getShortLabel().isEmpty()) {
+             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Short label is mandatory", "No short label was specified");
+             throw new ValidatorException(message);
+         }
     }
 
     public void doRevertChanges( ActionEvent evt ) {

@@ -88,6 +88,8 @@ public class InteractorController extends AnnotatedObjectController {
             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Organism is mandatory", "No biosource was defined");
             throw new ValidatorException(message);
         }
+
+        super.validateAnnotatedObject(context, component, value);
     }
 
     @Override

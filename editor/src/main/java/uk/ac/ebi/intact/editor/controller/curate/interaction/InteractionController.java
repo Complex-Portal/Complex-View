@@ -39,14 +39,18 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
+import uk.ac.ebi.intact.model.util.CvObjectUtils;
 import uk.ac.ebi.intact.model.util.IllegalLabelFormatException;
 import uk.ac.ebi.intact.model.util.InteractionShortLabelGenerator;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
+import javax.faces.validator.ValidatorException;
 import java.util.*;
 
 /**
@@ -266,6 +270,14 @@ public class InteractionController extends ParameterizableObjectController {
         }
     }
 
+    public void validateAnnotatedObject(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        if (!participantWrappers.isEmpty()) {
+            updateShortLabel();
+        }
+
+        super.validateAnnotatedObject(context, component, value);
+    }
+
     @Override
     public void doPreSave() {
         // create master proteins from the unsaved manager
@@ -464,7 +476,7 @@ public class InteractionController extends ParameterizableObjectController {
         interaction.addComponent(component);
         participantWrappers.addFirst(new ParticipantWrapper( component, getChangesController() ));
 
-        if (participantWrappers.size() > 1) {
+        if (participantWrappers.size() > 0) {
             try {
                 updateShortLabel();
             } catch (Exception e) {

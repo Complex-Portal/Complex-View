@@ -34,6 +34,8 @@ public class SelectableCollectionDataModel<T> implements SelectableDataModel<T> 
 
     @Override
     public T getRowData(String rowKey) {
+        if (rowKey == null) return null;
+
         return list.get(Integer.parseInt(rowKey));
     }
     

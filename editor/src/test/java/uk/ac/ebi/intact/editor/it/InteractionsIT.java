@@ -164,6 +164,24 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
     }
 
     @Test
+    public void createInteractionFromExperimentPageNoShortLabelImportParticipantAndSave() throws Exception {
+        goToExperimentPageByLabel("mutable-2012-1");
+        loginAs("curator");
+
+        clickOnNewInteraction("experimentTabs");
+//        typeShortLabel("lala-la"+System.currentTimeMillis());
+        selectInteractionType("colocalization");
+
+        clickOnParticipantsTab();
+
+        importParticipant("P12345");
+
+        save();
+
+        assertTrue(infoMessageSummaryExists("Saved"));
+    }
+
+    @Test
     public void createInteractionFromPublicationPageAndSave() throws Exception {
         goToPublicationWithId("1234567");
         loginAs("curator");
