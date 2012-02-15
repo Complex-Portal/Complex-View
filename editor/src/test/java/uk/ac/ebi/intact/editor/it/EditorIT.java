@@ -158,8 +158,17 @@ public abstract class EditorIT extends BaseIT {
 
     protected boolean infoMessageSummaryExists(String summary) {
         final By byInfoMessage = By.xpath("//span[@class='ui-messages-info-summary']");
-        waitUntilElementIsVisible(byInfoMessage); 
-        
+        return messageSummaryExists(summary, byInfoMessage);
+    }
+
+    protected boolean errorMessageSummaryExists(String summary) {
+        final By byInfoMessage = By.xpath("//span[@class='ui-messages-error-summary']");
+        return messageSummaryExists(summary, byInfoMessage);
+    }
+
+    private boolean messageSummaryExists(String summary, By byInfoMessage) {
+        waitUntilElementIsVisible(byInfoMessage);
+
         for (WebElement element : driver.findElements(byInfoMessage)) {
             if (summary.equals(element.getText())) {
                 return true;

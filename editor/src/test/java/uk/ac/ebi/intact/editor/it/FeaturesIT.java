@@ -42,21 +42,35 @@ public class FeaturesIT extends AbstractAnnotatedObjectIT {
 
         assertTrue(infoMessageSummaryExists("Saved"));
         assertTrue(acFieldNotEmpty());
-        
 	}
+
+    @Test
+    public void invalidRangeShouldWarnUser() throws Exception {
+        Experiment experiment = getDaoFactory().getExperimentDao().getByShortLabel("bigexp-2012-1");
+        Component component = experiment.getInteractions().iterator().next().getComponents().iterator().next();
+
+        goToParticipantPage(component.getAc());
+        loginAs("curator");
+
+        clickOnNewFeature();
+        createNewRange("5000-5005");
+
+        assertTrue(errorMessageSummaryExists("Range is not valid"));
+    }
 
     private boolean acFieldNotEmpty() {
         return !valueForElement(By.id("acTxt")).isEmpty();
     }
 
     private boolean theValueForTheRangeInTheFirstRowIs(String range) {
-        return range.equals(valueForElement(By.id("featureTabs:rangesTable:0:rangeTxt")));
+        final By id = By.id("featureTabs:rangesTable:0:rangeTxt");
+        waitUntilElementIsVisible(id);
+        return range.equals(valueForElement(id));
     }
 
     private void createNewRange(String newRange) {
         driver.findElement(By.id("featureTabs:newRangeTxt")).sendKeys(newRange);
         driver.findElement(By.id("featureTabs:newRangeBtn")).click();
-        waitUntilElementIsVisible(By.id("featureTabs:rangesTable:0:rangeTxt"));
     }
 
     private void selectType(String featureType) {

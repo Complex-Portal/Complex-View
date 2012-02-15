@@ -124,7 +124,10 @@
                         <p:tooltip value="Type a range (e.g. '23-25') and then click the 'New Range' button" for="newRangeTxt" />
 
                         <p:commandButton id="newRangeBtn" value="New range" actionListener="#{featureController.newRange}"
-                                process="newRangeTxt" onsuccess="markAsUnsaved()"/>
+                                process="newRangeTxt"
+                                update=":editorForm:messagesComponent">
+                            <ed:curation/>
+                        </p:commandButton>
                      </div>
 
 
