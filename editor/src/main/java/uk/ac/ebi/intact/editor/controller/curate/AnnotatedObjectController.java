@@ -366,10 +366,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void validateAnnotatedObject(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-         if (getAnnotatedObject().getShortLabel() == null || getAnnotatedObject().getShortLabel().isEmpty()) {
-             FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Short label is mandatory", "No short label was specified");
-             throw new ValidatorException(message);
-         }
+
     }
 
     public void doRevertChanges( ActionEvent evt ) {
