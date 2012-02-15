@@ -170,10 +170,8 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
 
         clickOnNewInteraction("experimentTabs");
         selectInteractionType("colocalization");
-        createAnnotation("comment", "comment "+System.currentTimeMillis());
-        clickOnParticipantsTab();
 
-        importParticipant("P12345");
+        importParticipant("P33224");
 
         save();
 
