@@ -243,10 +243,6 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
         select.selectByVisibleText(interactionType);
     }
 
-    private void typeShortLabel(String label) {
-        driver.findElement(By.id("shortlabelTxt")).sendKeys(label);
-    }
-
     private void clickOnNewInteraction(String tabsId) {
         driver.findElement(By.id(tabsId+":newInteractionBtn")).click();
     }

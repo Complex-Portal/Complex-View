@@ -120,5 +120,9 @@ public abstract class AbstractAnnotatedObjectIT extends EditorIT {
         select.selectByVisibleText(interactionType);
     }
 
+    protected void typeShortLabel(String label) {
+        driver.findElement(By.id("shortlabelTxt")).sendKeys(label);
+    }
+
 
 }
