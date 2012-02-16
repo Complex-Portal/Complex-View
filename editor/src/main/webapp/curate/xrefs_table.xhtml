@@ -116,7 +116,7 @@
                             <p:commandLink id="removeXrefBtn" styleClass="ui-icon ui-icon-closethick" process="removeXrefBtn"
                                actionListener="#{annotatedObjectController.annotatedObject.removeXref(xref)}"
                                oncomplete="markAsUnsaved()"
-                               update="xrefsTable #{update}"/>
+                               update="xrefsTable,#{update}"/>
                         </p:column>
                     </p:dataTable>
 

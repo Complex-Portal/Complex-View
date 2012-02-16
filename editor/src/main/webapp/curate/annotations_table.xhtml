@@ -64,7 +64,7 @@
                 <p:commandLink id="removeAnnotBtn" styleClass="ui-icon ui-icon-closethick" process="removeAnnotBtn"
                                actionListener="#{annotatedObjectController.annotatedObject.removeAnnotation(annotation)}"
                                oncomplete="markAsUnsaved()"
-                               update="annotationsTable #{update}"/>
+                               update="annotationsTable,#{update}"/>
             </p:column>
         </p:dataTable>
 
