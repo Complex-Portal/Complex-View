@@ -316,13 +316,13 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
     private void searchParticipantsUsing(String query) {
         driver.findElement(By.id("interactionTabs:ipDialogPanel:searchParticipantTxt")).sendKeys(query);
         driver.findElement(By.id("interactionTabs:ipDialogPanel:participantSearchBtn")).click();
-        waitUntilElementIsVisible(By.id("interactionTabs:candidatesDialogContent:importSelected"));
+        waitUntilElementIsPresent(By.id("interactionTabs:candidatesDialogContent:importSelected"));
     }
 
     private void showImportParticipantsDialog() {
-        waitUntilElementIsVisible(By.id("interactionTabs:importParticipantBtn"));
+        waitUntilElementIsPresent(By.id("interactionTabs:importParticipantBtn"));
         driver.findElement(By.id("interactionTabs:importParticipantBtn")).click();
-        waitUntilElementIsVisible(By.id("interactionTabs:ipDialogPanel:searchParticipantTxt"));
+        waitUntilElementIsPresent(By.id("interactionTabs:ipDialogPanel:searchParticipantTxt"));
     }
 
     private String identityForParticipantInFirstRow() {

@@ -81,7 +81,7 @@
             <p:submenu label="New" icon="/resources/images/new.png">
                 <p:menuitem value="Publication" onclick="newPublicationDlg.show();"/>
                 <p:menuitem value="Interactor..." onclick="newInteractorDialog.show(); "/>
-                <p:menuitem value="CV Object..." onclick="newCvObjectDialog.show(); "/>
+                <p:menuitem id="newCvObjectMenu" value="CV Object..." onclick="newCvObjectDialog.show(); "/>
                 <p:menuitem value="Organism" action="#{bioSourceController.newOrganism}" ajax="false"/>
                 <!--<p:menuitem value="New" onclick="newPublicationDlg.show();"/>-->
             </p:submenu>
@@ -232,7 +232,7 @@
               modal="true" position="center" resizable="false">
         <ia:panelDialogLayout>
             <f:facet name="buttonBar">
-                <p:commandButton value="Create" action="#{cvObjectController.newCvObject}" ajax="false"/>
+                <p:commandButton id="createCv" value="Create" action="#{cvObjectController.newCvObject}" ajax="false"/>
             </f:facet>
 
             <h:outputLabel for="cvType" value="Type: "/>

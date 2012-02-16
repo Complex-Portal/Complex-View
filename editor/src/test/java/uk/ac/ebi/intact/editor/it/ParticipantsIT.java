@@ -33,13 +33,13 @@ public class ParticipantsIT extends EditorIT {
         driver.findElement(queryElement).clear();
         driver.findElement(queryElement).sendKeys(query);
         driver.findElement(By.id("ipDialogPanel:interactorSearchBtn")).click();
-        waitUntilElementIsVisible(By.id("candidatesDialogContent:importSelected"));
+        waitUntilElementIsPresent(By.id("candidatesDialogContent:importSelected"));
     }
 
     private void clickOnInteractorImport() {
-        waitUntilElementIsVisible(By.id("importInteractorBtn"));
+        waitUntilElementIsPresent(By.id("importInteractorBtn"));
         driver.findElement(By.id("importInteractorBtn")).click();
-        waitUntilElementIsVisible(By.id("ipDialogPanel:searchInteractorTxt"));
+        waitUntilElementIsPresent(By.id("ipDialogPanel:searchInteractorTxt"));
     }
 
     private void importSelectedByDefault() {

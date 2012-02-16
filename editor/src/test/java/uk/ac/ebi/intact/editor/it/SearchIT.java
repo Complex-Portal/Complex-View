@@ -3,9 +3,7 @@ package uk.ac.ebi.intact.editor.it;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import uk.ac.ebi.intact.model.Experiment;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -44,12 +42,12 @@ public class SearchIT extends EditorIT {
         driver.findElement(queryElement).clear();
         driver.findElement(queryElement).sendKeys(query);
         driver.findElement(By.id("ipDialogPanel:interactorSearchBtn")).click();
-        waitUntilElementIsVisible(By.id("candidatesDialogContent:importSelected"));
+        waitUntilElementIsPresent(By.id("candidatesDialogContent:importSelected"));
     }
 
     private void clickOnInteractorImport() {
         driver.findElement(By.id("importInteractorBtn")).click();
-        waitUntilElementIsVisible(By.id("ipDialogPanel:searchInteractorTxt"));
+        waitUntilElementIsPresent(By.id("ipDialogPanel:searchInteractorTxt"));
     }
 
     private void importSelectedByDefault() {

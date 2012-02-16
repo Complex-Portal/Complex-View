@@ -1,12 +1,9 @@
 package uk.ac.ebi.intact.editor.it;
 
-import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
-import uk.ac.ebi.intact.model.Experiment;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -114,7 +111,7 @@ public abstract class AbstractAnnotatedObjectIT extends EditorIT {
     private void selectAnnotationTopicInRow(int rowIndex, String interactionType) {
         final By id = By.id(getTabsComponentId() + ":annotationsTable:" + rowIndex + ":annotationTopicSel");
 
-        waitUntilElementIsVisible(id);
+        waitUntilElementIsPresent(id);
 
         Select select = new Select(driver.findElement(id));
         select.selectByVisibleText(interactionType);

@@ -68,10 +68,19 @@ public abstract class EditorIT extends BaseIT {
         }
     }
 
-    protected void waitUntilElementIsVisible(final By by) {
+    protected void waitUntilElementIsPresent(final By by) {
         wait.until(new ExpectedCondition<Boolean>() {
             public Boolean apply(WebDriver webDriver) {
                 return driver.findElement(by) != null;
+            }
+        });
+    }
+
+    protected void waitUntilElementIsDisplayed(final By by) {
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver webDriver) {
+                final WebElement element = driver.findElement(by);
+                return element != null && element.isDisplayed();
             }
         });
     }
@@ -118,6 +127,14 @@ public abstract class EditorIT extends BaseIT {
 
     protected void goToPublicationWithId(String id) {
         goToPageInContext("/publication/"+id);
+    }
+
+    protected void goToCvPage(String id){
+        goToPageInContext("/cv/"+id);
+    }
+
+    protected void goToCuratePage() {
+        goToPageInContext("/curate/curate.jsf");
     }
 
     protected void goToExperimentPageByLabel(String expLabel) {
@@ -167,7 +184,7 @@ public abstract class EditorIT extends BaseIT {
     }
 
     private boolean messageSummaryExists(String summary, By byInfoMessage) {
-        waitUntilElementIsVisible(byInfoMessage);
+        waitUntilElementIsPresent(byInfoMessage);
 
         for (WebElement element : driver.findElements(byInfoMessage)) {
             if (summary.equals(element.getText())) {

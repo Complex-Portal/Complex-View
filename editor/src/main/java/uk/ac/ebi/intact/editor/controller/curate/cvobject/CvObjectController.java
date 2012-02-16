@@ -1,7 +1,9 @@
 package uk.ac.ebi.intact.editor.controller.curate.cvobject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -15,7 +17,6 @@ import uk.ac.ebi.intact.model.CvTopic;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
-import javax.faces.model.SelectItem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,11 +36,12 @@ public class CvObjectController extends AnnotatedObjectController {
     private String ac;
     private CvDagObject cvObject;
     private String cvClassName;
-    private List<SelectItem> cvObjectSelectItems;
 
     private String newCvObjectType;
 
     private boolean isTopic;
+
+    private DualListModel<CvObject> parents;
 
     @Override
     public AnnotatedObject getAnnotatedObject() {
@@ -55,7 +57,7 @@ public class CvObjectController extends AnnotatedObjectController {
         }
     }
 
-        @Override
+    @Override
     public String clone() {
         return clone(cvObject, new CvObjectIntactCloner());
     }
@@ -80,10 +82,11 @@ public class CvObjectController extends AnnotatedObjectController {
 
     private void prepareView() {
         if (cvObject != null) {
-            cvObjectSelectItems = new ArrayList<SelectItem>(256);
 
-            final Collection<CvObject> cvObjectsByClass = cvObjectService.getCvObjectsByClass(cvObject.getClass());
-            cvObjectSelectItems = cvObjectService.createSelectItems(cvObjectsByClass, "-- Select parent --");
+            List<CvObject> cvObjectsByClass = new ArrayList<CvObject>(cvObjectService.getCvObjectsByClass(cvObject.getClass()));
+            List<CvObject> existingParents = new ArrayList<CvObject>(cvObject.getParents());
+
+            parents = new DualListModel<CvObject>(cvObjectsByClass, existingParents);
 
             if (cvObject instanceof CvTopic) {
                 isTopic = true;
@@ -122,15 +125,30 @@ public class CvObjectController extends AnnotatedObjectController {
     @Override
     public boolean doSaveDetails() {
         cvObjectService.refresh(null);
+        
+        Collection<CvObject> parentsToRemove = CollectionUtils.subtract(cvObject.getParents(), parents.getTarget());
+        Collection<CvObject> parentsToAdd = CollectionUtils.subtract(parents.getTarget(), cvObject.getParents());
 
-        for (CvDagObject parent : cvObject.getParents()) {
+        for (CvObject parent : parentsToAdd) {
             CvDagObject refreshedParent = (CvDagObject) getDaoFactory().getCvObjectDao().getByAc(parent.getAc());
             refreshedParent.addChild(cvObject);
             getDaoFactory().getCvObjectDao().update(refreshedParent);
             getDaoFactory().getCvObjectDao().update(cvObject);
         }
 
+        for (CvObject parent : parentsToRemove) {
+            CvDagObject refreshedParent = (CvDagObject) getDaoFactory().getCvObjectDao().getByAc(parent.getAc());
+            refreshedParent.removeChild(cvObject);
+            getDaoFactory().getCvObjectDao().update(refreshedParent);
+            getDaoFactory().getCvObjectDao().update(cvObject);
+        }
+
         return super.doSaveDetails();
+    }
+
+    @Override
+    public void postRevert(){
+        prepareView();
     }
 
     public String[] getUsedIn() {
@@ -139,10 +157,10 @@ public class CvObjectController extends AnnotatedObjectController {
         if (usedInArr == null) {
             return new String[0];
         }
-        
+
         String[] rawClasses = usedInArr.split(",");
         String[] classes = new String[rawClasses.length];
-        
+
         for (int i=0; i<rawClasses.length; i++) {
             classes[i] = rawClasses[i].trim();
         }
@@ -203,12 +221,12 @@ public class CvObjectController extends AnnotatedObjectController {
         }
     }
 
-    public List<SelectItem> getCvObjectSelectItems() {
-        return cvObjectSelectItems;
+    public DualListModel<CvObject> getParents() {
+        return parents;
     }
 
-    public void setCvObjectSelectItems(List<SelectItem> cvObjectSelectItems) {
-        this.cvObjectSelectItems = cvObjectSelectItems;
+    public void setParents(DualListModel<CvObject> parents) {
+        this.parents = parents;
     }
 
     public String getNewCvObjectType() {

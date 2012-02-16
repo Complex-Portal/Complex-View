@@ -1,15 +1,11 @@
 package uk.ac.ebi.intact.editor.it;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import uk.ac.ebi.intact.model.Component;
 import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.Interaction;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -64,7 +60,7 @@ public class FeaturesIT extends AbstractAnnotatedObjectIT {
 
     private boolean theValueForTheRangeInTheFirstRowIs(String range) {
         final By id = By.id("featureTabs:rangesTable:0:rangeTxt");
-        waitUntilElementIsVisible(id);
+        waitUntilElementIsPresent(id);
         return range.equals(valueForElement(id));
     }
 

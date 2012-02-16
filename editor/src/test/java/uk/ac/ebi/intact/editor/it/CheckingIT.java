@@ -129,7 +129,7 @@ public class CheckingIT extends EditorIT {
     }
 
     private WebElement waitAndFindElement(By by) {
-        waitUntilElementIsVisible(by);
+        waitUntilElementIsPresent(by);
         return driver.findElement(by);
     }
 }

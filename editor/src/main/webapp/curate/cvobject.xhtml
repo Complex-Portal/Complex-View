@@ -75,7 +75,43 @@
                                          onchange="markAsUnsaved()" converter="trimmingConverter"/>
                         </td>
                     </tr>
-                     <tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Parent term(s): " for="parentsPick"/>
+                        </td>
+                        <td>
+                            <p:pickList id="parentsPick" value="#{cvObjectController.parents}"
+                                        var="p"
+                                        itemLabel="#{p.shortLabel}"
+                                        itemValue="#{p}" onTransfer="markAsUnsaved()" converter="cvObjectConverter"/>
+                        </td>
+                    </tr>
+                    <!--<tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Parent term(s): " for="parentsMenu"/>
+                        </td>
+                        <td colspan="3">
+                            <h:panelGroup id="parentsMenu">
+                                <ui:param name="parentsHeight"
+                                          value="#{18 * fn:length(cvObjectController.parentsSelectItems)}"/>
+                                <h:selectManyMenu value="#{cvObjectController.parentsToRemove}"
+                                                  rendered="#{not empty cvObjectController.parentsSelectItems}"
+                                                  style="height:#{parentsHeight != 0? parentsHeight : 18}px">
+                                    <f:selectItems value="#{cvObjectController.parentsSelectItems}"/>
+                                </h:selectManyMenu>
+
+                                <p:commandButton value="Remove" actionListener="#{cvObjectController.removeParents}"
+                                                 update=":editorForm:parentsMenu,:editorForm:cvobjectTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
+                                                 rendered="#{not empty cvObjectController.parentsSelectItems}"/>
+                                <h:selectOneMenu value="#{cvObjectController.parentToAdd}">
+                                    <f:selectItems value="#{cvObjectController.cvObjectSelectItems}"/>
+                                </h:selectOneMenu>
+                                <p:commandButton value="Add" actionListener="#{cvObjectController.addParent}"
+                                                 update=":editorForm:parentsMenu,:editorForm:cvobjectTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
+                            </h:panelGroup>
+                        </td>
+                    </tr>-->
+                     <!--<tr>
                         <td class="firstCell">
                             <h:outputLabel value="Parent term: " for="parentTxt"/>
                         </td>
@@ -85,7 +121,7 @@
                                 <f:selectItems value="#{cvObjectController.cvObjectSelectItems}"/>
                             </h:selectOneMenu>
                         </td>
-                    </tr>
+                    </tr> -->
                     <h:panelGroup rendered="#{cvObjectController.topic}">
                         <tr>
                             <td class="firstCell">
