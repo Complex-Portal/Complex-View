@@ -137,7 +137,9 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
 
         clickOnNewInteraction("experimentTabs");
         typeShortLabel("lala-la"+System.currentTimeMillis());
+        waitUntilLoadingIsComplete();
         selectInteractionType("colocalization");
+        waitUntilLoadingIsComplete();
         createAnnotation("comment", "comment "+System.currentTimeMillis());
         
         save();
@@ -152,7 +154,9 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
 
         clickOnNewInteraction("experimentTabs");
         typeShortLabel("lala-la"+System.currentTimeMillis());
+        waitUntilLoadingIsComplete();
         selectInteractionType("colocalization");
+        waitUntilLoadingIsComplete();
 
         clickOnParticipantsTab();
 
@@ -186,9 +190,13 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
         clickOnInteractionsTab();
         clickOnNewInteraction("publicationTabs");
         selectExperiment("mutable-2012-1");
+        waitUntilLoadingIsComplete();
         typeShortLabel("lala-la" + System.currentTimeMillis());
+        waitUntilLoadingIsComplete();
         selectInteractionType("colocalization");
+        waitUntilLoadingIsComplete();
         createAnnotation("comment", "comment "+System.currentTimeMillis());
+        waitUntilLoadingIsComplete();
 
         save();
 
