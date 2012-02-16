@@ -622,6 +622,13 @@ public class InteractionController extends ParameterizableObjectController {
         if (experiment == null) {
             experiment = getDaoFactory().getExperimentDao().getByShortLabel(acOrLabel);
         }
+
+        // WARNING : load the annotations when reloading an experiment because it is used to calculate the CRC64 of the interaction.
+        // if the annotations are not loaded and we do have lazy annotations, this will cause a StackOverFlow exception when computing the CRC64
+        // of the interaction. This is due to a bad practice in the Interaction in intact-core. The computeCrc64 method is a postUpdate but is calling the dao if
+        // annotations are lazy which is messing with hibernate checks
+        experiment.getAnnotations().size();
+
         return experiment;
     }
 
