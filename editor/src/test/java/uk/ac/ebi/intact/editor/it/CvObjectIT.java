@@ -2,6 +2,7 @@ package uk.ac.ebi.intact.editor.it;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
 import uk.ac.ebi.intact.model.CvObject;
 
 import static junit.framework.Assert.assertTrue;
@@ -38,14 +39,14 @@ public class CvObjectIT extends AbstractAnnotatedObjectIT{
         save();
 
         assertTrue(infoMessageSummaryExists("Saved"));
-    }
+    } */
 
     private void createCvFromTopMenu(String cvClass) {
         driver.findElement(By.cssSelector("span.ui-menuitem-text")).click();
         driver.findElement(By.cssSelector("#newCvObjectItem > span.ui-menuitem-text")).click();
         new Select(driver.findElement(By.id("j_id120_j_id_64:cvType"))).selectByVisibleText(cvClass);
         driver.findElement(By.id("j_id120_j_id_64:createCv")).click();
-    }*/
+    }
 
     private void removeSixthParentFromPickList() {
         driver.findElement(By.xpath("//table[@id='parentsPick']/tbody/tr/td[3]/ul/li[6]")).click();

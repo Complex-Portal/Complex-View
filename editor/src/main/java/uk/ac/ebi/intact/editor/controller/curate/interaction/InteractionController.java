@@ -39,18 +39,14 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
-import uk.ac.ebi.intact.model.util.CvObjectUtils;
 import uk.ac.ebi.intact.model.util.IllegalLabelFormatException;
 import uk.ac.ebi.intact.model.util.InteractionShortLabelGenerator;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
-import javax.faces.validator.ValidatorException;
 import java.util.*;
 
 /**
@@ -359,8 +355,9 @@ public class InteractionController extends ParameterizableObjectController {
         }
 
         if (experiment != null) {
-            experiment = reload(experiment);
+            experiment = reload(interaction.getExperiments().iterator().next());
 
+            interaction.getExperiments().clear();
             interaction.addExperiment(experiment);
 
             getDaoFactory().getExperimentDao().update(experiment);
