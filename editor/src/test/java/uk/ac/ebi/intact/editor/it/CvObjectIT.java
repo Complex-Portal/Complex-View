@@ -42,7 +42,7 @@ public class CvObjectIT extends AbstractAnnotatedObjectIT{
 
     private void createCvFromTopMenu(String cvClass) {
         driver.findElement(By.cssSelector("span.ui-menuitem-text")).click();
-        driver.findElement(By.cssSelector("#newCvObjectMenu > span.ui-menuitem-text")).click();
+        driver.findElement(By.cssSelector("#newCvObjectItem > span.ui-menuitem-text")).click();
         new Select(driver.findElement(By.id("j_id120_j_id_64:cvType"))).selectByVisibleText(cvClass);
         driver.findElement(By.id("j_id120_j_id_64:createCv")).click();
     }*/
