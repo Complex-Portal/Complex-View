@@ -84,7 +84,7 @@
                                      converter="trimmingConverter"/>
 
                     <p:commandButton value="Reject" actionListener="#{experimentController.rejectExperiment}"
-                                     process="reasonRejTxt" update="editorForm" oncomplete="rejectExperimentDialog.hide()"/>
+                                     process="reasonRejTxt" update=":editorForm" oncomplete="rejectExperimentDialog.hide()"/>
             </h:panelGrid>
         </p:dialog>
 
@@ -99,7 +99,7 @@
                     <p:commandButton value="Add comment" actionListener="#{experimentController.addCorrectionComment}"
                                      process="corrComTxt"
                                      action="#{experimentController.doSave}"
-                                     ajax="false"/>
+                                     ajax="false" update=":editorForm" />
             </h:panelGrid>
         </p:dialog>
 

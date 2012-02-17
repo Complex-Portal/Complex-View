@@ -15,7 +15,6 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.experiment;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -24,11 +23,9 @@ import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.model.util.FeatureUtils;
-import uk.ac.ebi.intact.model.util.XrefUtils;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -52,7 +49,13 @@ public class ExperimentDetailedViewController extends JpaAwareController {
 
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            if (ac != null) {
+            if (experimentController.getExperiment() != null) {
+                Experiment experiment = experimentController.getExperiment();
+
+                this.experimentWrapper = new ExperimentWrapper(experiment, getDaoFactory().getEntityManager());
+                ac = experiment.getAc();
+            }
+            else if (ac != null) {
                 Experiment experiment = getDaoFactory().getExperimentDao().getByAc(ac);
 
                 if (experiment != null) {

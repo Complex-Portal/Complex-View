@@ -15,10 +15,9 @@
     <ui:define name="metadata">
         <f:metadata>
             <f:viewParam name="ac" value="#{experimentDetailedViewController.ac}"/>
-            <f:event type="preRenderView" listener="#{experimentDetailedViewController.loadData}"/>
-            <f:event type="preRenderView"
-                     listener="#{curateController.setCurrentAnnotatedObjectController(experimentController)}"/>
         </f:metadata>
+        <f:event type="preRenderView" listener="#{experimentDetailedViewController.loadData}"/>
+        <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(experimentController)}"/>
     </ui:define>
 
     <ui:define name="experimentContent">
