@@ -355,10 +355,11 @@ public class InteractionController extends ParameterizableObjectController {
         }
 
         if (experiment != null) {
-            experiment = reload(interaction.getExperiments().iterator().next());
+            experiment = interaction.getExperiments().isEmpty() ? reload(experiment) : reload(interaction.getExperiments().iterator().next());
 
-            interaction.getExperiments().clear();
-            interaction.addExperiment(experiment);
+            if (interaction.getExperiments().isEmpty()){
+                interaction.addExperiment(experiment);
+            }
 
             getDaoFactory().getExperimentDao().update(experiment);
 

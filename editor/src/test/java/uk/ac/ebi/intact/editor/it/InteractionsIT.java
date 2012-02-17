@@ -141,7 +141,8 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
         selectInteractionType("colocalization");
         waitUntilLoadingIsComplete();
         createAnnotation("comment", "comment "+System.currentTimeMillis());
-        
+        waitUntilLoadingIsComplete();
+
         save();
 
         assertTrue(infoMessageSummaryExists("Saved"));

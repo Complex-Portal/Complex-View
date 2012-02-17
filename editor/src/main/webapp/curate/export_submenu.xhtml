@@ -8,13 +8,13 @@
                 xmlns:ia="http://java.sun.com/jsf/composite/intact-components"
                 xmlns:ed="http://ebi.ac.uk/intact/editor/ui">
 
-            <p:menuitem value="PSI-MI XML 2.5.4" url="/service/export/mi/#{slug}?ac=#{annotatedObjectController.ac}&amp;format=xml254"
+            <p:menuitem value="PSI-MI XML 2.5.4" url="/service/export/mi/#{slug}?ac=#{ac}&amp;format=xml254"
                         target="_blank"/>
-            <p:menuitem value="Standard MITAB 2.5" url="/service/export/mi/#{slug}?ac=#{annotatedObjectController.ac}&amp;format=tab25"
+            <p:menuitem value="Standard MITAB 2.5" url="/service/export/mi/#{slug}?ac=#{ac}&amp;format=tab25"
                         target="_blank"/>
-            <p:menuitem value="IntAct MITAB 2.5" url="/service/export/mi/#{slug}?ac=#{annotatedObjectController.ac}&amp;format=tab25-intact"
+            <p:menuitem value="IntAct MITAB 2.5" url="/service/export/mi/#{slug}?ac=#{ac}&amp;format=tab25-intact"
                         target="_blank"/>
-            <p:menuitem value="HTML" url="/service/export/mi/#{slug}?ac=#{annotatedObjectController.ac}&amp;format=html"
+            <p:menuitem value="HTML" url="/service/export/mi/#{slug}?ac=#{ac}&amp;format=html"
                         target="_blank"/>
 
 </ui:composition>

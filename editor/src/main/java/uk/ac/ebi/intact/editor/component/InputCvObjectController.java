@@ -21,7 +21,7 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
@@ -56,6 +56,7 @@ public class InputCvObjectController extends BaseController{
     public InputCvObjectController() {
     }
 
+    @Transactional
     public void load( ComponentSystemEvent evt) {
         log.trace( "Loading CvObject with id '"+id+"'" );
 
@@ -63,7 +64,7 @@ public class InputCvObjectController extends BaseController{
             throw new NullPointerException("id is null");
         }
 
-        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        //final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         DaoFactory daoFactory = IntactContext.getCurrentInstance().getDaoFactory();
         CvObjectDao cvDAO = daoFactory.getCvObjectDao();
@@ -75,7 +76,7 @@ public class InputCvObjectController extends BaseController{
 
         root = buildTreeNode(rootCv, null);
 
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+        //IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
         log.trace( "\tLoading completed. Root: "+root+ "(children="+root.getChildCount()+")" );
 
@@ -92,10 +93,11 @@ public class InputCvObjectController extends BaseController{
     }
 
     @SuppressWarnings({"JpaQlInspection"})
+    @Transactional
     public String getDescription(CvObject cvObject) {
         if (cvObject == null) return null;
         
-        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        //final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
         Query query = IntactContext.getCurrentInstance().getDaoFactory().getEntityManager()
                 .createQuery("select a.annotationText from CvObject cv join cv.annotations as a where cv.ac = :cvAc and " +
                         "a.cvTopic.shortLabel = :cvTopicLabel");
@@ -110,7 +112,7 @@ public class InputCvObjectController extends BaseController{
             annot = results.iterator().next();
         }
 
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+        //IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
 
         return annot;
     }

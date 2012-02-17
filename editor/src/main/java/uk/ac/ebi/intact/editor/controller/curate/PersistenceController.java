@@ -22,10 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.IllegalTransactionStateException;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.CoreDeleter;
 import uk.ac.ebi.intact.core.persister.IntactObjectDeleteException;
 import uk.ac.ebi.intact.core.util.DebugUtil;
@@ -82,12 +80,12 @@ public class PersistenceController extends JpaAwareController {
         }
     }
 
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(propagation = Propagation.SUPPORTS)
     public IntactObject doRevert(IntactObject intactObject) {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Reverting: " + DebugUtil.intactObjectToString(intactObject, false));
 
-            final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction(getClass().getSimpleName());
+            //final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction(getClass().getSimpleName());
 
             if (getDaoFactory().getEntityManager().contains(intactObject)) {
                 getDaoFactory().getEntityManager().detach(intactObject);
@@ -95,13 +93,13 @@ public class PersistenceController extends JpaAwareController {
 
             intactObject = getDaoFactory().getEntityManager().find(intactObject.getClass(), intactObject.getAc());
 
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+            //IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
         }
 
         return intactObject;
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
+    @Transactional(value = "transactionManager", propagation = Propagation.SUPPORTS)
     public boolean doDelete(IntactObject intactObject) {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Deleting: " + DebugUtil.intactObjectToString(intactObject, false));

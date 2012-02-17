@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
@@ -148,7 +149,7 @@ public class CvObjectService extends JpaAwareController {
          createCvTopicIfNecessary(CvTopic.TO_BE_REVIEWED);
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(propagation = Propagation.NEVER)
     public synchronized void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading Controlled Vocabularies" );
 

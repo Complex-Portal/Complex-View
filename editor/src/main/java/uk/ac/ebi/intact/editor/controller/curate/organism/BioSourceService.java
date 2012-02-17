@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.DataContext;
 import uk.ac.ebi.intact.core.context.IntactContext;
@@ -55,7 +56,7 @@ public class BioSourceService extends JpaAwareController {
         refresh( null );
     }
 
-    @Transactional(value = "transactionManager", readOnly = true)
+    @Transactional(propagation = Propagation.NEVER)
     public void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading BioSources" );
 

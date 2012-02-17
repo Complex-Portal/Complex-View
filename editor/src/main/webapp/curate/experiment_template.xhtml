@@ -52,6 +52,7 @@
         <p:submenu label="Export">
             <ui:include src="export_submenu.xhtml">
                 <ui:param name="slug" value="experiment"/>
+                <ui:param name="ac" value="#{experimentController.ac}"/>
             </ui:include>
         </p:submenu>
 

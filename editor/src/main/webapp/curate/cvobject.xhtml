@@ -157,7 +157,8 @@
 
                <ui:decorate template="propertiesTabs.xhtml">
                      <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.cvObjectTopicSelectItems}"/>
-                </ui:decorate>
+                     <ui:param name="updateOnChange" value=":editorForm:basic"/>
+               </ui:decorate>
 
                 <p:tab id="advancedTab" title="Advanced">
                     <h:panelGrid columns="2">

@@ -76,6 +76,7 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
         } catch (Throwable e) {
             throw new IOException(e);
         } finally {
+            IntactContext.getCurrentInstance().getDaoFactory().getEntityManager().clear();
             IntactContext.getCurrentInstance().getDataContext().rollbackTransaction(transactionStatus);
         }
 

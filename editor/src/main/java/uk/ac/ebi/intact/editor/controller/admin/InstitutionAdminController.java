@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.editor.controller.admin;
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.model.DualListModel;
+import org.primefaces.model.SelectableDataModelWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -26,12 +27,14 @@ import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
 import uk.ac.ebi.intact.core.persistence.util.InstitutionMerger;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.institution.InstitutionService;
+import uk.ac.ebi.intact.editor.util.SelectableCollectionDataModel;
 import uk.ac.ebi.intact.model.Institution;
 import uk.ac.ebi.intact.model.OwnedAnnotatedObject;
 import uk.ac.ebi.intact.model.user.User;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.model.DataModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +57,7 @@ public class InstitutionAdminController extends JpaAwareController {
     private Institution mergeDestinationInstitution;
 
     private DualListModel<User> usersDualListModel;
+    private DataModel<Institution> institutionsDataModel;
 
     public InstitutionAdminController() {
 
@@ -65,6 +69,8 @@ public class InstitutionAdminController extends JpaAwareController {
 
         List<User> usersAvailable = getDaoFactory().getUserDao().getAll();
         List<User> usersSelected = new ArrayList<User>();
+
+        institutionsDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<Institution>(institutions), institutions);
 
         usersDualListModel = new DualListModel<User>(usersAvailable, usersSelected);
 
@@ -150,5 +156,9 @@ public class InstitutionAdminController extends JpaAwareController {
 
     public void setUsersDualListModel(DualListModel<User> usersDualListModel) {
         this.usersDualListModel = usersDualListModel;
+    }
+
+    public DataModel<Institution> getInstitutionsDataModel() {
+        return institutionsDataModel;
     }
 }

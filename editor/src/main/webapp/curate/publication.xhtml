@@ -93,6 +93,7 @@
         <p:submenu label="Export">
             <ui:include src="export_submenu.xhtml">
                 <ui:param name="slug" value="publication"/>
+                <ui:param name="ac" value="#{publicationController.ac}"/>
             </ui:include>
         </p:submenu>
         <p:menuitem value="Claim ownership" actionListener="#{publicationController.claimOwnership}" ajax="false"/>

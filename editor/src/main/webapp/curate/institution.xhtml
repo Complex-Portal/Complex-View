@@ -82,6 +82,7 @@
 
                 <ui:decorate template="/curate/propertiesTabs.xhtml">
                     <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.experimentTopicSelectItems}"/>
+                    <ui:param name="updateOnChange" value=":editorForm:basic"/>
                 </ui:decorate>
 
             </p:tabView>
