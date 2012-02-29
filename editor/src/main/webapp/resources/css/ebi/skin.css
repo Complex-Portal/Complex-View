@@ -316,7 +316,7 @@
 }
 
 .ui-icon-triangle-1-s {
-    background-position: -64px -16px;
+    float: right
 }
 
 .ui-icon-triangle-1-sw {
@@ -1057,9 +1057,9 @@
     display: block;
 }
 
-.ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle {
+/*.ui-resizable-disabled .ui-resizable-handle, .ui-resizable-autohide .ui-resizable-handle {
     display: none;
-}
+}*/
 
 .ui-resizable-n {
     cursor: n-resize;
@@ -1149,9 +1149,9 @@
 }
 
 .ui-accordion .ui-accordion-header a {
-    display: block;
-    font-size: 1em;
-    padding: .5em .5em .5em .7em;
+    cursor: pointer;
+    margin-top: 1px;
+    position: relative;
 }
 
 /* IE7-/Win - Fix extra vertical space in lists */
@@ -1172,13 +1172,12 @@
 
 .ui-accordion .ui-accordion-content {
     padding: 1em 2.2em;
-    border-top: 0;
+    border-top: 0 none;
     margin-top: -2px;
     position: relative;
     top: 1px;
     margin-bottom: 2px;
     overflow: auto;
-    display: none;
     zoom: 1;
 }
 
@@ -1532,15 +1531,14 @@ button.ui-button::-moz-focus-inner {
 
 /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
 .ui-tabs .ui-tabs-panel {
-    display: block;
     border-width: 0;
     padding: 1em 1.4em;
-    background: none;
+    background: none repeat scroll 0 0 transparent;
 }
 
-.ui-tabs .ui-tabs-hide {
+/*.ui-tabs .ui-tabs-hide {
     display: none !important;
-}
+}*/
 
 /* Datepicker
 ----------------------------------*/
