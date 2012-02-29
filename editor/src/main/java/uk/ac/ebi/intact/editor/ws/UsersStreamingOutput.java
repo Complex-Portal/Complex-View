@@ -1,6 +1,5 @@
 package uk.ac.ebi.intact.editor.ws;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.core.persistence.svc.UserService;
 import uk.ac.ebi.intact.model.user.User;
 
@@ -19,13 +18,13 @@ import java.util.Collection;
  */
 public class UsersStreamingOutput implements StreamingOutput {
 
-    @Autowired
     private UserService userService;
 
     private Collection<User> users;
 
-    public UsersStreamingOutput( Collection<User> users ) {
+    public UsersStreamingOutput( Collection<User> users, UserService userService ) {
         this.users = users;
+        this.userService = userService;
     }
 
     @Override

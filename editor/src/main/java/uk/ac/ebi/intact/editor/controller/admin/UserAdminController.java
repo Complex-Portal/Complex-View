@@ -1,11 +1,9 @@
 package uk.ac.ebi.intact.editor.controller.admin;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DualListModel;
-import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SelectableDataModelWrapper;
 import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -15,8 +13,7 @@ import uk.ac.ebi.intact.core.persistence.dao.user.UserDao;
 import uk.ac.ebi.intact.core.persistence.svc.UserService;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.misc.AbstractUserController;
-import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
-import uk.ac.ebi.intact.model.user.Preference;
+import uk.ac.ebi.intact.editor.util.SelectableCollectionDataModel;
 import uk.ac.ebi.intact.model.user.Role;
 import uk.ac.ebi.intact.model.user.User;
 
@@ -24,12 +21,14 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.model.DataModel;
 import javax.faces.model.SelectItem;
-import javax.lang.model.SourceVersion;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Controller used when administrating users.
@@ -49,7 +48,7 @@ public class UserAdminController extends AbstractUserController {
     private String loginParam;
     private DualListModel<String> roles;
 
-    private LazyDataModel<User> allUsers;
+    private DataModel<User> allUsers;
 
     private User[] selectedUsers;
 
@@ -119,8 +118,9 @@ public class UserAdminController extends AbstractUserController {
 
     public void loadData() {
         log.debug( "AbstractUserController.loadData" );
-        allUsers = LazyDataModelFactory.createLazyDataModel( super.getCoreEntityManager(),
-                "select u from User u", "u", "login", true );
+        
+        Collection<User> users = getDaoFactory().getUserDao().getAll();
+        allUsers = new SelectableDataModelWrapper(new SelectableCollectionDataModel<User>(users), users);
     }
 
 
@@ -215,7 +215,7 @@ public class UserAdminController extends AbstractUserController {
         return roles;
     }
 
-    public LazyDataModel<User> getAllUsers() {
+    public DataModel<User> getAllUsers() {
         if (allUsers == null) {
             loadData();
         }

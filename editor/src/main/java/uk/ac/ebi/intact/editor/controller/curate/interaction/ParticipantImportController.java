@@ -21,6 +21,9 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
@@ -92,12 +95,19 @@ public class ParticipantImportController extends BaseController {
 
         // set the biosource service of protein service
         this.proteinService.setBiosourceService(bioSourceService);
+        initializeDefaultRoles();
+    }
+
+    @Transactional(propagation = Propagation.NEVER)
+    public synchronized void initializeDefaultRoles(){
+        if ( log.isDebugEnabled() ) log.debug( "Loading participant roles" );
+
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction(getClass().getSimpleName());
+
         cvExperimentalRole = interactionController.getDaoFactory().getCvObjectDao(CvExperimentalRole.class).getByIdentifier(CvExperimentalRole.UNSPECIFIED_PSI_REF);
         cvBiologicalRole = interactionController.getDaoFactory().getCvObjectDao(CvBiologicalRole.class).getByIdentifier(CvBiologicalRole.UNSPECIFIED_PSI_REF);
-    }
-        @PostConstruct
-    public void initializeDefaultRoles(){
 
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction( transactionStatus );
     }
 
     public void importParticipants( ActionEvent evt ) {

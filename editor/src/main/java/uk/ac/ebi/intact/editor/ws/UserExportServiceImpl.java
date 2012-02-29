@@ -2,6 +2,7 @@ package uk.ac.ebi.intact.editor.ws;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.core.persistence.svc.UserService;
 import uk.ac.ebi.intact.model.user.User;
 
 import javax.ws.rs.core.Response;
@@ -20,13 +21,16 @@ public class UserExportServiceImpl implements UserExportService {
     @Autowired
     private DaoFactory daoFactory;
 
+    @Autowired
+    private UserService userService;
+
     @Override
     public Object exportAll() {
         Response response = null;
         try {
 
             final List<User> all = daoFactory.getUserDao().getAll();
-            UsersStreamingOutput output = new UsersStreamingOutput( all );
+            UsersStreamingOutput output = new UsersStreamingOutput( all, userService );
             response = Response.status(200).type("application/xml").entity(output).build();
         } catch (Throwable e) {
             throw new RuntimeException("Problem exporting all users to XML", e);
@@ -50,7 +54,7 @@ public class UserExportServiceImpl implements UserExportService {
                 users.add( user );
             }
 
-            UsersStreamingOutput output = new UsersStreamingOutput( users );
+            UsersStreamingOutput output = new UsersStreamingOutput( users, userService );
             response = Response.status(200).type("application/xml").entity(output).build();
         } catch (Throwable e) {
             throw new RuntimeException("Problem exporting all users to XML", e);

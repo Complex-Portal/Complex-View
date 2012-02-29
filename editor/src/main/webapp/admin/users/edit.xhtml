@@ -19,20 +19,20 @@
 
         <h:outputScript name="javascript/security/sha1.js" target="head"/>
 
-        <p:tabView>
+        <p:tabView id="usersTab">
 
-        <p:tab title="Defails">
+        <p:tab id="detailsTab" title="Defails">
 
         <!-- Field in which the hashed password gets stored -->
         <h:inputHidden id="editUser_passwordHash" value="#{userAdminController.user.password}" />
 
-        <h:panelGrid columns="2">
+        <h:panelGrid id="userDetailsGrid" columns="2">
             <h:outputLabel value="Login:" for="loginTxt"/>
             <p:inputText id="loginTxt" value="#{userAdminController.user.login}" required="true" requiredMessage="You must enter a login" converter="trimmingConverter"/>
 
             <h:outputLabel value="Password:" for="editUser_password"/>
             <h:inputSecret id="editUser_password"
-                           onkeyup="document.getElementById('editUser_passwordHash').value = hex_sha1(document.getElementById('editUser_password').value)"/>
+                           onkeyup="document.getElementById('usersTab:editUser_passwordHash').value = hex_sha1(document.getElementById('usersTab:editUser_password').value)"/>
 
             <h:outputLabel value="Disabled:" for="disabledChk"/>
             <h:selectBooleanCheckbox id="disabledChk" value="#{userAdminController.user.disabled}"/>
@@ -83,7 +83,7 @@
 
             </p:tab>
 
-            <p:tab title="Preferences">
+            <p:tab id="userPreferencesTab" title="Preferences">
 
                 <p:dataTable var="pref" value="#{userAdminController.user.preferences}">
                     <p:column headerText="Key">
