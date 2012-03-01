@@ -4,9 +4,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
 public abstract class AbstractAnnotatedObjectIT extends EditorIT {
 
 	protected abstract String getTabsComponentId();
@@ -99,6 +96,7 @@ public abstract class AbstractAnnotatedObjectIT extends EditorIT {
 
     protected void createAnnotation(String topic, String text) {
         clickOnAnnotationsTab();
+        waitUntilLoadingIsComplete();
         clickOnNewAnnotation();
         selectAnnotationTopicInRow(0, topic);
         typeAnnotationTextInRow(0, text);
