@@ -36,7 +36,7 @@
                 <br/>
                 <p:commandButton value="Save Notes" actionListener="#{myNotesController.saveNotes}"
                                  process="notesArea"
-                                 update="notesPanel,messagesComponent"/>
+                                 update=":editorForm:notesPanel,:editorForm:messagesComponent"/>
 
             </h:panelGroup>
 
@@ -45,7 +45,7 @@
                 <p>
                     <p:commandButton value="Edit Notes" actionListener="#{myNotesController.setEditMode(true)}"
                                      process="@this"
-                                     update="notesPanel"/>
+                                     update=":editorForm:notesPanel"/>
                 </p>
 
                    <h:outputFormat value="#{myNotesController.formattedNotes}" escape="false"/>

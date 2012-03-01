@@ -97,7 +97,7 @@
                         </td>
                         <td colspan="2">
                             <p:inputText id="authorGivenNameTxt" value="#{participantController.participantWrapper.authorGivenName}" size="10" converter="trimmingConverter">
-                                <p:ajax event="valueChange" update=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:participantTabs" process="@this"/>
+                                <p:ajax event="valueChange" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:participantTabs,:editorForm:messagesComponent" process="@this"/>
                              </p:inputText>
                         </td>
                     </tr>
@@ -108,7 +108,7 @@
                         <td colspan="2">
                             <ia:inputBioSource id="expressedInTxt" value="#{participant.expressedIn}"
                                                selectItems="#{bioSourceService.bioSourceSelectItems}"
-                                               update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                               update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
                                                valueChangeAwareObject="#{annotatedObjectController}"/>
                         </td>
                     </tr>
@@ -121,7 +121,7 @@
                                               value="#{participant.cvBiologicalRole}"
                                               selectItems="#{cvObjectService.biologicalRoleSelectItems}"
                                               required="true" requiredMessage="Biological role is required"
-                                              update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                              update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
                                               valueChangeAwareObject="#{annotatedObjectController}"/>
                             <!--<p:inputText id="bioRoleTxt" value="#{participant.cvBiologicalRole.shortLabel}"   />-->
                         </td>
@@ -136,7 +136,7 @@
                                            value="#{participantController.participantWrapper.firstExperimentalRole}"
                                            selectItems="#{cvObjectService.experimentalRoleSelectItems}"
                                            required="true" requiredMessage="Experimental role is required"
-                                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                           update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                      </td>
                      <td style="padding-left: 150px;">
@@ -154,7 +154,7 @@
                          <ia:inputCvObject id="deliveryTxt" cvIdentifier="MI:0346"
                                            selectItems="#{cvObjectService.participantExperimentalPreparationsSelectItems}"
                                            value="#{participantController.participantWrapper.firstExperimentalPreparation}"
-                                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                           update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                          <h:outputText value="#{fn:length(participant.experimentalPreparations) - 1} more..."
                                        rendered="#{fn:length(participant.experimentalPreparations) > 1}" />

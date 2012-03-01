@@ -15,7 +15,7 @@
          <p:calendar label="To: " value="#{assignmentReportController.toDate}" pattern="dd/MM/yyyy"/>
 
         <p:commandButton value="Count assignments" actionListener="#{assignmentReportController.calculate}"
-                         update="assignmentPanel"/>
+                         update=":editorForm:assignmentPanel"/>
 
         <br/> <br/>
 

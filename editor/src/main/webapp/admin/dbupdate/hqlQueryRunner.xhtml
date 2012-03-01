@@ -21,10 +21,10 @@
                 <br/>
                 <p:commandButton value="Get Results" actionListener="#{hqlRunnerController.runQuery}"
                                  process="queryArea"
-                                 update="queryPanel, messagesComponent"/>
+                                 update=":editorForm:queryPanel, :editorForm:messagesComponent"/>
                 <p:commandButton value="Execute" actionListener="#{hqlRunnerController.executeQuery}"
                                  process="queryArea"
-                                 update="queryPanel, messagesComponent"/>
+                                 update=":editorForm:queryPanel, :editorForm:messagesComponent"/>
 
 
             <ui:include src="/shared/intactObjects_table.xhtml">

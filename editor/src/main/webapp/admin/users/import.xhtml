@@ -58,7 +58,7 @@
                     <p:fileUpload value="#{userAdminController.uploadedFile}" mode="simple"/>
                     <br/><br/>
                     <p:commandButton value="Upload" ajax="false" actionListener="#{userAdminController.upload}"
-                                     update="userSelection"/>
+                                     update=":userImport:userSelection"/>
                 </h:form>
             </h:panelGroup>
 
@@ -79,7 +79,7 @@
 
                     <p:commandButton value="Import selected users" ajax="false"
                                      actionListener="#{userAdminController.importSelectedUsers}"
-                                     update="userSelection"/>
+                                     update=":userImport:userSelection"/>
 
                     <br/><br/>
 

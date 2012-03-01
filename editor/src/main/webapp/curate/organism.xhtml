@@ -53,7 +53,7 @@
                         </p:inputText>
 
                         <p:commandButton id="autoFillBtn" value="Auto-fill" actionListener="#{bioSourceController.autoFill}"
-                                         update="basic,organismTabs" ajax="true" process="taxIdTxt">
+                                         update=":editorForm:basic,:editorForm:organismTabs" ajax="true" process="taxIdTxt">
                         </p:commandButton>
 
                     </h:panelGroup>

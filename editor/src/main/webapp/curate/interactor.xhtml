@@ -86,7 +86,7 @@
                     <ia:inputBioSource id="organismTxt" value="#{interactor.bioSource}"
                                        valueChangeAwareObject="#{interactorController}"
                                        beforeTimeoutEvent="ia_disableSave()" oncomplete="ia_enableSave()"
-                                       update="changesPanel unsavedChangesInfo"
+                                       update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
                                        selectItems="#{bioSourceService.bioSourceSelectItems}">
                         <ed:curation/>
                     </ia:inputBioSource>

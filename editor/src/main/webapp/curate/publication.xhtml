@@ -199,7 +199,7 @@
                                     <p:commandButton id="autocompleteBtn" value="Auto-complete"
                                                      actionListener="#{publicationController.doFormAutocomplete}" async="true"
                                                      process="idTxt"
-                                                     update="basic,publicationTabs,changesPanel,messagesComponent,unsavedChangesInfo">
+                                                     update=":editorForm:basic,:editorForm:publicationTabs,:editorForm:changesPanel,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo">
                                         <f:setPropertyActionListener value="#{true}" target="#{publicationController.unsavedChanges}"/>
                                         <!--<p:confirmDialog yesLabel="Auto-complete" noLabel="Not now" width="300px"-->
                                         <!--draggable="false"-->
@@ -270,13 +270,13 @@
                                         </h:selectManyMenu>
 
                                         <p:commandButton value="Remove" actionListener="#{publicationController.removeDatasets}"
-                                                         update="datasetsMenu,publicationTabs,changesPanel,unsavedChangesInfo"
+                                                         update=":editorForm:datasetsMenu,:editorForm:publicationTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
                                                          rendered="#{not empty publicationController.datasetsSelectItems}"/>
                                         <h:selectOneMenu value="#{publicationController.datasetToAdd}">
                                             <f:selectItems value="#{datasetPopulator.allDatasetSelectItems}"/>
                                         </h:selectOneMenu>
                                         <p:commandButton value="Add" actionListener="#{publicationController.addDataset}"
-                                                         update="datasetsMenu,publicationTabs,changesPanel,unsavedChangesInfo"/>
+                                                         update=":editorForm:datasetsMenu,:editorForm:publicationTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                                     </h:panelGroup>
                                 </td>
                             </tr>
@@ -287,7 +287,7 @@
                                 <td colspan="3">
                                     <h:panelGroup id="curationDepthMenu">
                                         <h:selectOneMenu value="#{publicationController.curationDepth}" valueChangeListener="#{publicationController.curationDepthChanged}">
-                                            <p:ajax event="valueChange" update="changesPanel unsavedChangesInfo publicationTabs"
+                                            <p:ajax event="valueChange" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:publicationTabs,:editorForm:messagesComponent"
                                                 process="@this" async="true"/>
 
                                             <f:selectItem itemLabel="-- Not specified --"/>
@@ -310,7 +310,7 @@
 
                                         <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{publicationController.setUnsavedChanges(true)}"
                                                          onclick="document.getElementById('onHoldTxt').value = ''"
-                                                         update="infoPanels,publicationTabs,changesPanel,unsavedChangesInfo"/>
+                                                         update=":editorForm:infoPanels,:editorForm:publicationTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                                     </h:panelGroup>
                                 </td>
                             </tr>
@@ -320,7 +320,7 @@
 
                 </p:panel>
 
-                <p:remoteCommand name="refreshTabs" update="publicationTabs,messagesComponent"/>
+                <p:remoteCommand name="refreshTabs" update=":editorForm:publicationTabs,:editorForm:messagesComponent"/>
 
         <br/>
 

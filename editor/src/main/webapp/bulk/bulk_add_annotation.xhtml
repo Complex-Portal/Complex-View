@@ -57,7 +57,7 @@
                 <h:selectOneMenu id="aoType" value="#{bulkAnnotationController.aoClassName}"
                                  required="true" requiredMessage="Object type is required">
                     <p:ajax event="valueChange" listener="#{bulkAnnotationController.aoClassNameChanged}"
-                            update="annotType,messagesComponent" process="@this"/>
+                            update=":editorForm:annotType,:editorForm:messagesComponent" process="@this"/>
 
                     <f:selectItem itemLabel="-- Select object type --" itemValue="#{null}"/>
                     <f:selectItem itemLabel="Publication" itemValue="uk.ac.ebi.intact.model.Publication"/>
@@ -94,7 +94,7 @@
             </h:panelGrid>
 
             <p:commandButton value="Execute bulk update" actionListener="#{bulkAnnotationController.addBulkAnnotation}"
-                             update="executionInfo,messagesComponent"/>
+                             update=":editorForm:executionInfo,:editorForm:messagesComponent"/>
 
         </p:panel>
 

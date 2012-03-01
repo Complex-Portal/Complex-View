@@ -103,7 +103,7 @@
                                               selectItems="#{cvObjectService.interactionTypeSelectItems}"
                                               required="true" requiredMessage="Interaction type is required"
                                               oncomplete="ia_enableSave()"
-                                              update="changesPanel unsavedChangesInfo"
+                                              update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
                                               valueChangeAwareObject="#{interactionController}"/>
                         </td>
                     </tr>

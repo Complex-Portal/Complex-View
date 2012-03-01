@@ -41,7 +41,7 @@
                                              modal="true"
                                              header="Institution deletion" severity="alert" widgetVar="confirmation">
 
-                                <p:commandButton value="Yes Sure" update="messageComponent"
+                                <p:commandButton value="Yes Sure" update=":editorForm:messageComponent"
                                                  oncomplete="confirmation.hide()"
                                                  actionListener="#{institutionAdminController.deleteSelected}"
                                                  ajax="false"/>
