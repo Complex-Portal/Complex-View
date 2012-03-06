@@ -62,7 +62,7 @@ public class BioSourceService extends JpaAwareController {
 
         final DataContext dataContext = IntactContext.getCurrentInstance().getDataContext();
 
-        final TransactionStatus transactionStatus = dataContext.beginTransaction(getClass().getSimpleName());
+        final TransactionStatus transactionStatus = dataContext.beginTransaction();
 
         allBioSources = bioSourceDao.getAllSorted(0,Integer.MAX_VALUE, "shortLabel", true);
 
