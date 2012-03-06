@@ -110,7 +110,7 @@ public class ParticipantController extends ParameterizableObjectController {
     public synchronized void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading participant roles" );
 
-        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction(getClass().getSimpleName());
+        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         unspecifiedExperimentalRole = getDaoFactory().getCvObjectDao(CvExperimentalRole.class).getByIdentifier(CvExperimentalRole.UNSPECIFIED_PSI_REF);
         unspecifiedBiologicalRole = getDaoFactory().getCvObjectDao(CvBiologicalRole.class).getByIdentifier(CvBiologicalRole.UNSPECIFIED_PSI_REF);
