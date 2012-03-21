@@ -723,7 +723,7 @@
         <dependency>
             <groupId>com.ocpsoft</groupId>
             <artifactId>prettyfaces-jsf2</artifactId>
-            <version>3.3.3-SNAPSHOT</version>
+            <version>3.3.3</version>
         </dependency>
 
         <!-- Other server stuff -->
