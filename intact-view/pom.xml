@@ -26,7 +26,7 @@
     </scm>
 
     <properties>
-        <core.version>2.5.1-SNAPSHOT</core.version>
+        <core.version>2.6.0-SNAPSHOT</core.version>
         <dataexchange.version>2.1.4-SNAPSHOT</dataexchange.version>
         <spring.version>3.0.2.RELEASE</spring.version>
         
@@ -75,8 +75,6 @@
 
         <!-- Das -->
         <das.annotationserver.intact.url>${appRoot}/das-intact/das/</das.annotationserver.intact.url>
-
-        <projectStage>Development</projectStage>
 
     </properties>
 
@@ -418,14 +416,6 @@
             </dependencies>
         </profile>
     </profiles>
-
-    <repositories>
-         <repository>
-               <id>intact.nexus</id>
-               <name>IntAct Nexus</name>
-               <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/intact.repos</url>
-         </repository>
-    </repositories>
 
     <!-- Project dependencies -->
     <dependencies>
@@ -821,5 +811,22 @@
 
 
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>intact.nexus</id>
+            <name>IntAct Nexus</name>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>intact.nexus</id>
+            <name>IntAct Nexus</name>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
+        </pluginRepository>
+
+    </pluginRepositories>
 
 </project>
