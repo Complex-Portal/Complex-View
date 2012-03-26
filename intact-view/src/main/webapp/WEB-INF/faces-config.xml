@@ -26,6 +26,7 @@
     </lifecycle>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>main</from-outcome>
 			<to-view-id>/main.xhtml</to-view-id>
@@ -33,6 +34,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>news.archive</from-outcome>
 			<to-view-id>/pages/news/news_archive.xhtml</to-view-id>
@@ -40,6 +42,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>search</from-outcome>
 			<to-view-id>/pages/search/search.xhtml</to-view-id>
@@ -47,6 +50,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>interactions</from-outcome>
 			<to-view-id>/pages/interactions/interactions.xhtml</to-view-id>
@@ -54,6 +58,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>browse</from-outcome>
 			<to-view-id>/pages/browse/browse.xhtml</to-view-id>
@@ -61,6 +66,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>browse.gobrowser</from-outcome>
 			<to-view-id>/pages/browse/gobrowser.xhtml</to-view-id>
@@ -68,6 +74,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>browse.chebibrowser</from-outcome>
 			<to-view-id>/pages/browse/chebibrowser.xhtml</to-view-id>
@@ -75,6 +82,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>browse.taxonomybrowser</from-outcome>
 			<to-view-id>/pages/browse/taxonomybrowser.xhtml</to-view-id>
@@ -82,6 +90,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>list</from-outcome>
 			<to-view-id>/pages/list/list_tab.xhtml</to-view-id>
@@ -89,6 +98,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>list.proteins</from-outcome>
 			<to-view-id>/pages/list/protein_list.xhtml</to-view-id>
@@ -96,6 +106,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>list.compounds</from-outcome>
 			<to-view-id>/pages/list/compound_list.xhtml</to-view-id>
@@ -103,6 +114,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>list.nucleicacids</from-outcome>
 			<to-view-id>/pages/list/nucleicacid_list.xhtml</to-view-id>
@@ -120,6 +132,7 @@
 	-->
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>molecule</from-outcome>
 			<to-view-id>/pages/molecule/molecule.xhtml</to-view-id>
@@ -127,6 +140,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>details</from-outcome>
 			<to-view-id>/pages/details/details.xhtml</to-view-id>
@@ -134,6 +148,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>details.cv</from-outcome>
 			<to-view-id>/pages/details/cv.xhtml</to-view-id>
@@ -141,6 +156,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>dialog:cv.view</from-outcome>
 			<to-view-id>/pages/details/cv.xhtml</to-view-id>
@@ -148,6 +164,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>dialog:biosource.view</from-outcome>
 			<to-view-id>/pages/details/biosource.xhtml</to-view-id>
@@ -155,6 +172,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>dialog:participant.view</from-outcome>
 			<to-view-id>/pages/details/participant.xhtml</to-view-id>
@@ -162,6 +180,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>browse.complex</from-outcome>
 			<to-view-id>/pages/details/complex/complex.xhtml</to-view-id>
@@ -169,6 +188,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>graph</from-outcome>
 			<to-view-id>/pages/graph/graph.xhtml</to-view-id>
@@ -177,6 +197,7 @@
 
 	<!-- help dialogs -->
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>dialog:help.miql</from-outcome>
 			<to-view-id>/pages/search/help_miql.xhtml</to-view-id>
@@ -200,6 +221,7 @@
 
 	<!--dataset of the month-->
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>dotm_archive</from-outcome>
 			<to-view-id>/pages/dotm/dotm_archive.xhtml</to-view-id>
@@ -208,6 +230,7 @@
 
 	<!-- Documentation pages -->
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>documentation.data_submission</from-outcome>
 			<to-view-id>/pages/documentation/data_submission.xhtml</to-view-id>
@@ -215,6 +238,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>documentation.tools</from-outcome>
 			<to-view-id>/pages/documentation/tools.xhtml</to-view-id>
@@ -222,6 +246,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>documentation.downloads</from-outcome>
 			<to-view-id>/pages/documentation/downloads.xhtml</to-view-id>
@@ -229,6 +254,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>documentation.contactus</from-outcome>
 			<to-view-id>/pages/documentation/contact_content.xhtml</to-view-id>
@@ -236,6 +262,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>documentation.data_curation</from-outcome>
 			<to-view-id>/pages/documentation/data_curation.xhtml</to-view-id>
@@ -243,6 +270,7 @@
 	</navigation-rule>
 
     <navigation-rule>
+        <from-view-id>*</from-view-id>
         <navigation-case>
             <from-outcome>documentation.dataset</from-outcome>
             <to-view-id>/pages/documentation/dataset.xhtml</to-view-id>
@@ -250,6 +278,7 @@
     </navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>documentation.publications</from-outcome>
 			<to-view-id>/pages/documentation/publications.xhtml</to-view-id>
@@ -257,6 +286,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>documentation.faq</from-outcome>
 			<to-view-id>/pages/faq/faq.xhtml</to-view-id>
@@ -264,6 +294,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>documentation.printerfriendly</from-outcome>
 			<to-view-id>/pages/documentation/all_printer_friendly.xhtml</to-view-id>
@@ -273,6 +304,7 @@
 	<!-- Contextual help -->
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>dialog:faq.expansion</from-outcome>
 			<to-view-id>/pages/documentation/contextual/complex_expansion.xhtml</to-view-id>
@@ -280,6 +312,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>dialog:faq.whatis.search</from-outcome>
 			<to-view-id>/pages/documentation/contextual/whatis_search.xhtml</to-view-id>
@@ -287,6 +320,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>dialog:faq.whatis.interactions</from-outcome>
 			<to-view-id>
@@ -295,6 +329,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>dialog:faq.whatis.browser</from-outcome>
 			<to-view-id>/pages/documentation/contextual/whatis_browser.xhtml</to-view-id>
@@ -302,6 +337,7 @@
 	</navigation-rule>
 
 	<navigation-rule>
+        <from-view-id>*</from-view-id>
 		<navigation-case>
 			<from-outcome>dialog:faq.whatis.lists</from-outcome>
 			<to-view-id>/pages/documentation/contextual/whatis_lists.xhtml</to-view-id>
@@ -315,6 +351,7 @@
 		</navigation-case>
 	</navigation-rule>-->
     <navigation-rule>
+        <from-view-id>*</from-view-id>
         <navigation-case>
           <from-outcome>dialog:faq.psicquic</from-outcome>
           <to-view-id>/pages/documentation/contextual/psicquic.xhtml</to-view-id>
@@ -322,6 +359,7 @@
     </navigation-rule>
 
     <navigation-rule>
+        <from-view-id>*</from-view-id>
         <navigation-case>
           <from-outcome>dialog:faq.psicquic.imex</from-outcome>
           <to-view-id>/pages/documentation/contextual/psicquic_imex.xhtml</to-view-id>
