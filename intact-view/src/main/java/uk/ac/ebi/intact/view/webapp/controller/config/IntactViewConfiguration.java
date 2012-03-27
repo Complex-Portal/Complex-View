@@ -118,6 +118,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private CommonsHttpSolrServer ontologySolrServer;
     private HttpClient httpClientWithProxy;
     private HttpClient httpClientWithoutProxy;
+    private HttpClient psicquicHttpClient;
 
     public IntactViewConfiguration() {
     }
@@ -489,6 +490,19 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         }
 
         return httpClientWithoutProxy;
+    }
+
+    public HttpClient getPsicquicHttpClient() {
+        if (psicquicHttpClient == null) {
+            psicquicHttpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
+        }
+
+        psicquicHttpClient.getParams().setParameter("http.socket.timeout", 5000);
+        psicquicHttpClient.getParams().setParameter("http.connection.timeout", 5000);
+        psicquicHttpClient.getParams().setParameter("http.connection-manager.timeout", new Long(5000));
+        psicquicHttpClient.getParams().setParameter("http.protocol.head-body-timeout", 5000);
+
+        return psicquicHttpClient;
     }
 
     public void setSolrOntologiesUrl(String solrOntologiesUrl) {

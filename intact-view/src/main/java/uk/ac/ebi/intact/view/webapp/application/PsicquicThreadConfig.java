@@ -1,12 +1,12 @@
 package uk.ac.ebi.intact.view.webapp.application;
 
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Controller;
 
 import javax.faces.bean.ApplicationScoped;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class contains some configuration to use multithreading when querying for PSICQUIC services
@@ -17,10 +17,10 @@ import java.util.concurrent.TimeUnit;
  */
 @Controller
 @ApplicationScoped
-public class PsicquicThreadConfig implements InitializingBean{
+public class PsicquicThreadConfig implements InitializingBean, DisposableBean{
 
     private ExecutorService executorService;
-    private int maxNumberThreads = 500;
+    private int maxNumberThreads = 250;
 
     public PsicquicThreadConfig(){
     }
@@ -42,17 +42,16 @@ public class PsicquicThreadConfig implements InitializingBean{
     }
 
     public void shutDownThreadContext(){
-        executorService.shutdown();
-
-        try {
-            executorService.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        executorService.shutdownNow();
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         executorService = Executors.newFixedThreadPool(maxNumberThreads);
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        shutDownThreadContext();
     }
 }

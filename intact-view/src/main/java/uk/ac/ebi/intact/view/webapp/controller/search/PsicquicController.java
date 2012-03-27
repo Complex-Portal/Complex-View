@@ -70,7 +70,6 @@ public class PsicquicController extends BaseController {
     private int nonRespondingDatabases = -1;
     private int nonRespondingImexDatabases = -1;
     private int threadTimeOut = 5;
-    private int connectionTimeOut = 10000;
 
     public PsicquicController() {
     }
@@ -238,7 +237,7 @@ public class PsicquicController extends BaseController {
 
             url = service.getRestUrl()+"query/"+ encoded +"?format=count";
 
-            HttpClient httpClient = intactViewConfiguration.getHttpClientBasedOnUrl(url);
+            HttpClient httpClient = intactViewConfiguration.getPsicquicHttpClient();
 
             method = createHttpMethodWithoutRetry(url);
 
@@ -286,7 +285,7 @@ public class PsicquicController extends BaseController {
 
             url = service.getRestUrl()+"query/"+ encoded +"?format=count";
 
-            HttpClient httpClient = intactViewConfiguration.getHttpClientBasedOnUrl(url);
+            HttpClient httpClient = intactViewConfiguration.getPsicquicHttpClient();
 
             method = createHttpMethodWithoutRetry(url);
 
@@ -322,7 +321,6 @@ public class PsicquicController extends BaseController {
         HttpMethod method = new GetMethod(url);
         HttpMethodRetryHandler handler = new DefaultHttpMethodRetryHandler(0, false);
         HttpMethodParams params = new HttpMethodParams();
-        params.setSoTimeout(connectionTimeOut);
         params.setParameter(HttpMethodParams.RETRY_HANDLER, handler);
         method.setParams(params);
 
@@ -381,14 +379,6 @@ public class PsicquicController extends BaseController {
 
     public void setThreadTimeOut(int threadTimeOut) {
         this.threadTimeOut = threadTimeOut;
-    }
-
-    public int getConnectionTimeOut() {
-        return connectionTimeOut;
-    }
-
-    public void setConnectionTimeOut(int connectionTimeOut) {
-        this.connectionTimeOut = connectionTimeOut;
     }
 
     private class PsicquicCountResults {
