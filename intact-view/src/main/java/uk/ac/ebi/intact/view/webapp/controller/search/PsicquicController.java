@@ -40,6 +40,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -228,7 +231,7 @@ public class PsicquicController extends BaseController {
 
     private void collectCountFromPsicquicService(ServiceType service, String query, PsicquicCountResults results) {
 
-        String url = null;
+        /*String url = null;
         HttpMethod method = null;
         try {
 
@@ -236,6 +239,7 @@ public class PsicquicController extends BaseController {
             encoded = encoded.replaceAll("\\+", "%20");
 
             url = service.getRestUrl()+"query/"+ encoded +"?format=count";
+
 
             HttpClient httpClient = intactViewConfiguration.getPsicquicHttpClient();
 
@@ -267,6 +271,40 @@ public class PsicquicController extends BaseController {
             }
 
             results.setServiceResponding(false);
+        }*/
+
+        HttpURLConnection connection = null;
+        String countUrl = null;
+        try {
+            String encoded = URLEncoder.encode(query, "UTF-8");
+            encoded = encoded.replaceAll("\\+", "%20");
+
+            String separator = (service.getRestUrl().endsWith( "/" ) ? "" : "/" );
+            countUrl = service.getRestUrl() + separator + "query/" + encoded + "?format=count";
+
+            URL url = new URL(countUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+
+            connection.connect();
+
+            results.setServiceResponding(true);
+            String strCount = IOUtils.toString(connection.getInputStream());
+            results.setPsicquicCount(Integer.parseInt(strCount));
+
+        } catch (SocketTimeoutException se) {
+            log.error("Problem connecting to PSICQUIC service '"+service.getName()+"': "+countUrl, se);
+
+            results.setServiceResponding(false);
+        } catch (IOException e) {
+            log.error("Problem connecting to PSICQUIC service '"+service.getName()+"': "+countUrl, e);
+
+            results.setServiceResponding(false);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
     }
 
@@ -274,9 +312,7 @@ public class PsicquicController extends BaseController {
         final String imexQuery = createImexQuery(query);
         results.setImex(true);
 
-        int imexCount = 0;
-
-        String url = null;
+        /*String url = null;
         HttpMethod method = null;
         try {
 
@@ -314,6 +350,40 @@ public class PsicquicController extends BaseController {
             }
 
             results.setImexResponding(false);
+        }*/
+
+        HttpURLConnection connection = null;
+        String countUrl = null;
+        try {
+            String encoded = URLEncoder.encode(imexQuery, "UTF-8");
+            encoded = encoded.replaceAll("\\+", "%20");
+
+            String separator = (service.getRestUrl().endsWith( "/" ) ? "" : "/" );
+            countUrl = service.getRestUrl() + separator + "query/" + encoded + "?format=count";
+
+            URL url = new URL(countUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(10000);
+
+            connection.connect();
+
+            results.setImexResponding(true);
+            String strCount = IOUtils.toString(connection.getInputStream());
+            results.setImexCount(Integer.parseInt(strCount));
+
+        } catch (SocketTimeoutException se) {
+            log.error("Problem connecting to IMEx service '"+service.getName()+"': "+countUrl, se);
+
+            results.setImexResponding(false);
+        } catch (IOException e) {
+            log.error("Problem connecting to IMEx service '"+service.getName()+"': "+countUrl, e);
+
+            results.setImexResponding(false);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
     }
 
