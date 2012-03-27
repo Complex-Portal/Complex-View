@@ -69,12 +69,14 @@
         </ot:separateConversationContext>
 
         interaction evidences from <strong>#{psicquicController.otherDatabasesWithResults}</strong> other databases.
+        <h:outputText value="( #{psicquicController.nonRespondingDatabases} database(s) non responding)" rendered="#{psicquicController.nonRespondingDatabases gt 0}"/>
+
         <p:commandLink type="button" onclick="psicquicDialog.show()">
             <h:graphicImage alt="helpIcon" url="/images/help.png"/>
         </p:commandLink>
     </h:panelGroup>
 
-    <h:panelGroup rendered="#{psicquicController.countInOtherDatabases gt 0 and psicquicController.countInOtherImexDatabases gt 0}">
+    <h:panelGroup rendered="#{psicquicController.countInOtherImexDatabases gt 0}">
         <br/>
         <h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
         <ot:separateConversationContext>
@@ -86,6 +88,7 @@
         </ot:separateConversationContext>
 
         interaction evidences from <strong>#{psicquicController.otherImexDatabasesWithResults}</strong> other IMEx databases.
+        <h:outputText value="( #{psicquicController.nonRespondingImexDatabases} IMEx database(s) non responding)" rendered="#{psicquicController.nonRespondingImexDatabases gt 0}"/>
         <p:commandLink type="button" onclick="psicquicImexDialog.show()">
             <h:graphicImage alt="helpIcon" url="/images/help.png"/>
         </p:commandLink>

@@ -36,12 +36,14 @@ import uk.ac.ebi.intact.view.webapp.application.PsicquicThreadConfig;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
+import javax.faces.context.FacesContext;
+import javax.faces.event.ComponentSystemEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -60,121 +62,175 @@ public class PsicquicController extends BaseController {
     // psicquic
     private List<ServiceType> services;
     private List<ServiceType> imexServices;
+    private List<Future> runningTasks;
     private int countInOtherDatabases = -1;
     private int countInOtherImexDatabases = -1;
     private int otherDatabasesWithResults;
     private int otherImexDatabasesWithResults;
-    private int nonResponfingDatabases = -1;
+    private int nonRespondingDatabases = -1;
     private int nonRespondingImexDatabases = -1;
+    private int threadTimeOut = 5;
+    private int connectionTimeOut = 10000;
 
     public PsicquicController() {
     }
 
-    private synchronized void addCountInOtherDatabases(int number){
-        this.countInOtherDatabases += number;
+    private boolean isImexService(ServiceType service){
+        return service.getTags().contains("MI:0959");
     }
 
-    private synchronized void addCountInOtherImexDatabases(int number){
-        this.countInOtherImexDatabases += number;
-    }
+    public void countResultsInOtherDatabases(ComponentSystemEvent event) {
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            try {
+                final String psicquicRegistryUrl = intactViewConfiguration.getPsicquicRegistryUrl();
 
-    private synchronized void incrementsOtherDatabasesWithResults(){
-        this.otherDatabasesWithResults ++;
-    }
+                if (psicquicRegistryUrl == null || psicquicRegistryUrl.length() == 0) {
+                    return;
+                }
 
-    private synchronized void incrementsImexDatabasesWithResults(){
-        this.otherImexDatabasesWithResults ++;
-    }
+                boolean areImexServicesInitialized = true;
 
-    public void countResultsInOtherDatabases() throws PsicquicRegistryClientException {
-        final String psicquicRegistryUrl = intactViewConfiguration.getPsicquicRegistryUrl();
+                if (services == null) {
+                    PsicquicRegistryClient registryClient = new DefaultPsicquicRegistryClient(psicquicRegistryUrl);
+                    services = registryClient.listActiveServices();
+                }
 
-        if (psicquicRegistryUrl == null || psicquicRegistryUrl.length() == 0) {
-            return;
+                resetPsicquicCounts();
+
+                if (imexServices == null){
+                    imexServices = new ArrayList<ServiceType>(services.size());
+
+                    areImexServicesInitialized = false;
+                }
+
+                String query = getUserQuery().getSearchQuery();
+
+                if (query == null || query.length() == 0) {
+                    query = "*";
+                }
+
+                final String psicquicQuery = query;
+
+                PsicquicThreadConfig threadConfig = (PsicquicThreadConfig) getBean("psicquicThreadConfig");
+
+                ExecutorService executorService = threadConfig.getExecutorService();
+
+                if (runningTasks == null){
+                    runningTasks = new ArrayList<Future>();
+                }
+                else {
+                    runningTasks.clear();
+                }
+
+                for (final ServiceType service : services) {
+                    if (!areImexServicesInitialized){
+
+                        if (isImexService(service)){
+                            imexServices.add(service);
+                        }
+                    }
+
+                    if (intactViewConfiguration.getWebappName().contains(service.getName())) {
+                        continue;
+                    }
+
+                    Callable<PsicquicCountResults> runnable = new Callable<PsicquicCountResults>() {
+                        public PsicquicCountResults call() {
+
+                            return processPsicquicQueries(service, psicquicQuery);
+                        }
+                    };
+
+                    Future<PsicquicCountResults> f = executorService.submit(runnable);
+                    runningTasks.add(f);
+                }
+
+                checkAndResumePsicquicTasks();
+
+            } catch (PsicquicRegistryClientException e) {
+                addErrorMessage("Problem counting results in other databases", "Registry not available");
+                e.printStackTrace();
+            }
         }
+    }
 
-        boolean areImexServicesInitialized = true;
-
-        if (services == null) {
-            PsicquicRegistryClient registryClient = new DefaultPsicquicRegistryClient(psicquicRegistryUrl);
-            services = registryClient.listActiveServices();
-        }
-
+    private void resetPsicquicCounts() {
         countInOtherDatabases = 0;
         otherDatabasesWithResults = 0;
         countInOtherDatabases = 0;
         otherImexDatabasesWithResults = 0;
         countInOtherImexDatabases = 0;
-
-        if (imexServices == null){
-            imexServices = new ArrayList<ServiceType>(services.size());
-
-            areImexServicesInitialized = false;
-        }
-
-        String query = getUserQuery().getSearchQuery();
-
-        if (query == null || query.length() == 0) {
-            query = "*";
-        }
-
-        final String psicquicQuery = query;
-
-        PsicquicThreadConfig threadConfig = (PsicquicThreadConfig) getBean("psicquicThreadConfig");
-
-        final ExecutorService executorService = threadConfig.getExecutorService();
-
-        for (final ServiceType service : services) {
-            if (!areImexServicesInitialized){
-
-                if (service.getTags().contains("MI:0959")){
-                    imexServices.add(service);
-                }
-            }
-
-            if (intactViewConfiguration.getWebappName().contains(service.getName())) {
-                continue;
-            }
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    try {
-
-                        int psicquicCount = countInPsicquicService(service, psicquicQuery);
-
-                        int imexCount = 0;
-
-
-                        if (imexServices.contains(service)) {
-                            final String imexQuery = createImexQuery(psicquicQuery);
-                            imexCount = countInPsicquicService(service, imexQuery);
-                        }
-
-                        addCountInOtherDatabases(psicquicCount);
-                        addCountInOtherImexDatabases(imexCount);
-
-                        if (psicquicCount > 0) {
-                            incrementsOtherDatabasesWithResults();
-                        }
-
-                        if (imexCount > 0) {
-                            incrementsImexDatabasesWithResults();
-                        }
-
-                    } catch (Throwable e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-
-            executorService.submit(runnable);
-        }
+        nonRespondingDatabases = 0;
+        nonRespondingImexDatabases = 0;
     }
 
-    private int countInPsicquicService(ServiceType service, String query) {
-        int psicquicCount = 0;
+    private void checkAndResumePsicquicTasks() {
+
+        for (Future<PsicquicCountResults> f : runningTasks){
+            try {
+                PsicquicCountResults results = f.get(threadTimeOut, TimeUnit.SECONDS);
+
+                if (results.isImex()){
+                    if (results.isImexResponding() && results.getImexCount() > 0){
+                        countInOtherImexDatabases += results.getImexCount();
+                        otherImexDatabasesWithResults ++;
+                    }
+                    else if (!results.isImexResponding()) {
+                        nonRespondingImexDatabases ++;
+                    }
+                }
+
+                if (results.isServiceResponding() && results.getPsicquicCount() > 0){
+                    countInOtherDatabases += results.getPsicquicCount();
+                    otherDatabasesWithResults ++;
+                }
+                else if (!results.isServiceResponding()){
+                    nonRespondingDatabases ++;
+                }
+            } catch (InterruptedException e) {
+                log.error("The psicquic task was interrupted, we cancel the task.", e);
+                f.cancel(true);
+                this.nonRespondingDatabases ++;
+                this.nonRespondingImexDatabases ++;
+                if (!f.isCancelled()){
+                    f.cancel(true);
+                }
+            } catch (ExecutionException e) {
+                log.error("The psicquic task could not be executed, we cancel the task.", e);
+                if (!f.isCancelled()){
+                    f.cancel(true);
+                }
+            } catch (TimeoutException e) {
+                log.error("Service task stopped because of time out " + threadTimeOut + "seconds.", e);
+                this.nonRespondingDatabases ++;
+                this.nonRespondingImexDatabases ++;
+
+                if (!f.isCancelled()){
+                   f.cancel(true);
+                }
+            }
+        }
+
+        runningTasks.clear();
+    }
+
+    private PsicquicCountResults processPsicquicQueries(ServiceType service, String query){
+        PsicquicCountResults results = new PsicquicCountResults();
+
+        if (isImexService(service)){
+            results.setImex(true);
+            collectCountFromImexService(service, query, results);
+        }
+
+        collectCountFromPsicquicService(service, query, results);
+
+        return results;
+    }
+
+    private void collectCountFromPsicquicService(ServiceType service, String query, PsicquicCountResults results) {
 
         String url = null;
-
+        HttpMethod method = null;
         try {
 
             String encoded = URLEncoder.encode(query, "UTF-8");
@@ -184,34 +240,92 @@ public class PsicquicController extends BaseController {
 
             HttpClient httpClient = intactViewConfiguration.getHttpClientBasedOnUrl(url);
 
-            HttpMethod method = createHttpMethodWithoutRetry(url);
+            method = createHttpMethodWithoutRetry(url);
 
             final int returnCode = httpClient.executeMethod(method);
 
             if (returnCode != 200) {
-                log.error("HTTP Error "+returnCode+" connecting to PSICQUIC service '"+service.getName()+"': "+url+" / proxy "+intactViewConfiguration.getProxyHost()+":"+intactViewConfiguration.getProxyPort());
+                log.error("HTTP Error " + returnCode + " connecting to PSICQUIC service '" + service.getName() + "': " + url + " / proxy " + intactViewConfiguration.getProxyHost() + ":" + intactViewConfiguration.getProxyPort());
                 method.releaseConnection();
+
+                results.setServiceResponding(false);
+
             } else {
+                results.setServiceResponding(true);
+
                 final InputStream input = method.getResponseBodyAsStream();
                 String strCount = IOUtils.toString(input);
                 input.close();
-                psicquicCount = Integer.parseInt(strCount);
+                results.setPsicquicCount(Integer.parseInt(strCount));
 
                 method.releaseConnection();
             }
         } catch (IOException e) {
             log.error("Problem connecting to PSICQUIC service '"+service.getName()+"': "+url+" / proxy "+intactViewConfiguration.getProxyHost()+":"+intactViewConfiguration.getProxyPort(), e);
-        }
 
-        return psicquicCount;
+            if (method != null){
+                method.releaseConnection();
+            }
+
+            results.setServiceResponding(false);
+        }
+    }
+
+    private void collectCountFromImexService(ServiceType service, String query, PsicquicCountResults results) {
+        final String imexQuery = createImexQuery(query);
+        results.setImex(true);
+
+        int imexCount = 0;
+
+        String url = null;
+        HttpMethod method = null;
+        try {
+
+            String encoded = URLEncoder.encode(imexQuery, "UTF-8");
+            encoded = encoded.replaceAll("\\+", "%20");
+
+            url = service.getRestUrl()+"query/"+ encoded +"?format=count";
+
+            HttpClient httpClient = intactViewConfiguration.getHttpClientBasedOnUrl(url);
+
+            method = createHttpMethodWithoutRetry(url);
+
+            final int returnCode = httpClient.executeMethod(method);
+
+            if (returnCode != 200) {
+                log.error("HTTP Error " + returnCode + " connecting to IMEx service '" + service.getName() + "': " + url + " / proxy " + intactViewConfiguration.getProxyHost() + ":" + intactViewConfiguration.getProxyPort());
+                method.releaseConnection();
+
+                results.setImexResponding(false);
+            } else {
+                results.setImexResponding(true);
+
+                final InputStream input = method.getResponseBodyAsStream();
+                String strCount = IOUtils.toString(input);
+                input.close();
+                results.setImexCount(Integer.parseInt(strCount));
+
+                method.releaseConnection();
+            }
+        } catch (IOException e) {
+            log.error("Problem connecting to PSICQUIC service '"+service.getName()+"': "+url+" / proxy "+intactViewConfiguration.getProxyHost()+":"+intactViewConfiguration.getProxyPort(), e);
+
+            if (method != null){
+                method.releaseConnection();
+            }
+
+            results.setImexResponding(false);
+        }
     }
 
     private HttpMethod createHttpMethodWithoutRetry(String url) {
         HttpMethod method = new GetMethod(url);
         HttpMethodRetryHandler handler = new DefaultHttpMethodRetryHandler(0, false);
         HttpMethodParams params = new HttpMethodParams();
+        params.setSoTimeout(connectionTimeOut);
         params.setParameter(HttpMethodParams.RETRY_HANDLER, handler);
         method.setParams(params);
+
         return method;
     }
 
@@ -252,4 +366,82 @@ public class PsicquicController extends BaseController {
     public List<ServiceType> getImexServices() {
         return imexServices;
     }
+
+    public int getNonRespondingDatabases() {
+        return nonRespondingDatabases;
+    }
+
+    public int getNonRespondingImexDatabases() {
+        return nonRespondingImexDatabases;
+    }
+
+    public int getThreadTimeOut() {
+        return threadTimeOut;
+    }
+
+    public void setThreadTimeOut(int threadTimeOut) {
+        this.threadTimeOut = threadTimeOut;
+    }
+
+    public int getConnectionTimeOut() {
+        return connectionTimeOut;
+    }
+
+    public void setConnectionTimeOut(int connectionTimeOut) {
+        this.connectionTimeOut = connectionTimeOut;
+    }
+
+    private class PsicquicCountResults {
+
+        private int psicquicCount;
+        private int imexCount;
+        private boolean isServiceResponding;
+        private boolean isImexResponding;
+        private boolean isImex;
+
+        public PsicquicCountResults(){
+
+        }
+
+        public boolean isImex() {
+            return isImex;
+        }
+
+        public void setImex(boolean imex) {
+            isImex = imex;
+        }
+
+        public int getPsicquicCount() {
+            return psicquicCount;
+        }
+
+        public void setPsicquicCount(int psicquicCount) {
+            this.psicquicCount = psicquicCount;
+        }
+
+        public int getImexCount() {
+            return imexCount;
+        }
+
+        public void setImexCount(int imexCount) {
+            this.imexCount = imexCount;
+        }
+
+        public boolean isServiceResponding() {
+            return isServiceResponding;
+        }
+
+        public void setServiceResponding(boolean serviceResponding) {
+            isServiceResponding = serviceResponding;
+        }
+
+        public boolean isImexResponding() {
+            return isImexResponding;
+        }
+
+        public void setImexResponding(boolean imexResponding) {
+            isImexResponding = imexResponding;
+        }
+    }
+
 }

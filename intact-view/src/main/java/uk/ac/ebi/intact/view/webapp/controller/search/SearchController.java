@@ -192,13 +192,13 @@ public class SearchController extends JpaBaseController {
             }
         }
 
-        PsicquicController psicquicController = (PsicquicController) getBean("psicquicController");
+        /*PsicquicController psicquicController = (PsicquicController) getBean("psicquicController");
         try {
             psicquicController.countResultsInOtherDatabases();
         } catch (PsicquicRegistryClientException e) {
             addErrorMessage("Problem counting results in other databases", "Registry not available");
             e.printStackTrace();
-        }
+        }*/
 
         contextController.clearLoadedTabs();
     }
