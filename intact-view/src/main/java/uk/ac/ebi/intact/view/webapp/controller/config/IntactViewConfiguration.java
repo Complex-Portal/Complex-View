@@ -497,10 +497,18 @@ public class IntactViewConfiguration extends BaseController implements Initializ
             psicquicHttpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
         }
 
-        psicquicHttpClient.getParams().setParameter("http.socket.timeout", 10000);
-        psicquicHttpClient.getParams().setParameter("http.connection.timeout", 10000);
-        psicquicHttpClient.getParams().setParameter("http.connection-manager.timeout", new Long(10000));
-        psicquicHttpClient.getParams().setParameter("http.protocol.head-body-timeout", 10000);
+        if (isValueSet(proxyHost) && isValueSet(proxyPort)) {
+            psicquicHttpClient.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+
+            log.info("Setting PSICQUIC httpClient using proxy: " + proxyHost + ":" + proxyPort);
+        } else {
+            log.info("Setting PSICQUIC httpClient using proxy with NO PROXY");
+        }
+
+        psicquicHttpClient.getParams().setParameter("http.socket.timeout", 5000);
+        psicquicHttpClient.getParams().setParameter("http.connection.timeout", 5000);
+        psicquicHttpClient.getParams().setParameter("http.connection-manager.timeout", new Long(5000));
+        psicquicHttpClient.getParams().setParameter("http.protocol.head-body-timeout", 5000);
 
         return psicquicHttpClient;
     }

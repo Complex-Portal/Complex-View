@@ -69,7 +69,7 @@ public class PsicquicController extends BaseController {
     private int otherImexDatabasesWithResults;
     private int nonRespondingDatabases = -1;
     private int nonRespondingImexDatabases = -1;
-    private int threadTimeOut = 10;
+    private int threadTimeOut = 5;
 
     public PsicquicController() {
     }
