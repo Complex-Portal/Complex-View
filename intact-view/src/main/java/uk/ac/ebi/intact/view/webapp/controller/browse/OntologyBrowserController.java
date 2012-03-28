@@ -93,8 +93,9 @@ public abstract class OntologyBrowserController extends BaseController {
         SolrQuery queryCopy = query.getCopy();
         queryCopy.setRows(0);
         queryCopy.setFacet(true);
-        queryCopy.setFacetLimit(Integer.MAX_VALUE);
-        queryCopy.setFacetMinCount(1);
+        queryCopy.setFacetMissing(true);
+        //queryCopy.setFacetLimit(Integer.MAX_VALUE);
+        //queryCopy.setFacetMinCount(1);
         queryCopy.setFacetSort(FacetParams.FACET_SORT_COUNT);
         queryCopy.addFacetField(facetField);
 

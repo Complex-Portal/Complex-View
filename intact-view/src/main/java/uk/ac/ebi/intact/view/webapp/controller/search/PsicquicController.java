@@ -40,9 +40,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +69,7 @@ public class PsicquicController extends BaseController {
     private int otherImexDatabasesWithResults;
     private int nonRespondingDatabases = -1;
     private int nonRespondingImexDatabases = -1;
-    private int threadTimeOut = 5;
+    private int threadTimeOut = 10;
 
     public PsicquicController() {
     }
@@ -231,7 +228,7 @@ public class PsicquicController extends BaseController {
 
     private void collectCountFromPsicquicService(ServiceType service, String query, PsicquicCountResults results) {
 
-        /*String url = null;
+        String url = null;
         HttpMethod method = null;
         try {
 
@@ -271,9 +268,9 @@ public class PsicquicController extends BaseController {
             }
 
             results.setServiceResponding(false);
-        }*/
+        }
 
-        HttpURLConnection connection = null;
+        /*HttpURLConnection connection = null;
         String countUrl = null;
         try {
             String encoded = URLEncoder.encode(query, "UTF-8");
@@ -305,14 +302,14 @@ public class PsicquicController extends BaseController {
             if (connection != null) {
                 connection.disconnect();
             }
-        }
+        }*/
     }
 
     private void collectCountFromImexService(ServiceType service, String query, PsicquicCountResults results) {
         final String imexQuery = createImexQuery(query);
         results.setImex(true);
 
-        /*String url = null;
+        String url = null;
         HttpMethod method = null;
         try {
 
@@ -350,9 +347,9 @@ public class PsicquicController extends BaseController {
             }
 
             results.setImexResponding(false);
-        }*/
+        }
 
-        HttpURLConnection connection = null;
+        /*HttpURLConnection connection = null;
         String countUrl = null;
         try {
             String encoded = URLEncoder.encode(imexQuery, "UTF-8");
@@ -384,7 +381,7 @@ public class PsicquicController extends BaseController {
             if (connection != null) {
                 connection.disconnect();
             }
-        }
+        }*/
     }
 
     private HttpMethod createHttpMethodWithoutRetry(String url) {
