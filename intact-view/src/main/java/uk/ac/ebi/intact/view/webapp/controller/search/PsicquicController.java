@@ -36,6 +36,7 @@ import uk.ac.ebi.intact.view.webapp.application.PsicquicThreadConfig;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
+import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import java.io.IOException;
@@ -71,7 +72,14 @@ public class PsicquicController extends BaseController {
     private int nonRespondingImexDatabases = -1;
     private int threadTimeOut = 5;
 
+    private HttpClient psicquicHttpClient;
+
     public PsicquicController() {
+    }
+
+    @PostConstruct
+    public void initializePsicquicClient(){
+        psicquicHttpClient = intactViewConfiguration.getPsicquicHttpClient();
     }
 
     private boolean isImexService(ServiceType service){
@@ -238,7 +246,7 @@ public class PsicquicController extends BaseController {
             url = service.getRestUrl()+"query/"+ encoded +"?format=count";
 
 
-            HttpClient httpClient = intactViewConfiguration.getPsicquicHttpClient();
+            HttpClient httpClient = psicquicHttpClient;
 
             method = createHttpMethodWithoutRetry(url);
 
@@ -318,7 +326,7 @@ public class PsicquicController extends BaseController {
 
             url = service.getRestUrl()+"query/"+ encoded +"?format=count";
 
-            HttpClient httpClient = intactViewConfiguration.getPsicquicHttpClient();
+            HttpClient httpClient = psicquicHttpClient;
 
             method = createHttpMethodWithoutRetry(url);
 
