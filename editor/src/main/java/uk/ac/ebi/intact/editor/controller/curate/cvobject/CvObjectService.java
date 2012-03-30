@@ -131,12 +131,14 @@ public class CvObjectService extends JpaAwareController {
     private List<CvConfidenceType> confidenceTypes;
     private List<SelectItem> confidenceTypeSelectItems;
 
+    private CvExperimentalRole defaultExperimentalRole;
+    private CvBiologicalRole defaultBiologicalRole;
+
     private Multimap<String, CvTopic> cvObjectsByUsedInClass;
     private Multimap<Class, CvObject> cvObjectsByClass;
 
     public CvObjectService() {
     }
-
 
     @PostConstruct
     public void loadData() {
@@ -279,11 +281,11 @@ public class CvObjectService extends JpaAwareController {
 
         experimentalRoles = getSortedList( CvExperimentalRole.class, cvObjectsByClass);
         // must have one experimental role
-        experimentalRoleSelectItems = createSelectItems( experimentalRoles, null );
+        experimentalRoleSelectItems = createExperimentalRoleSelectItems( experimentalRoles, null );
 
         biologicalRoles = getSortedList( CvBiologicalRole.class, cvObjectsByClass);
         // must have one biological role
-        biologicalRoleSelectItems = createSelectItems( biologicalRoles, null );
+        biologicalRoleSelectItems = createBiologicalRoleSelectItems( biologicalRoles, null );
 
         featureDetectionMethods = getSortedList( CvFeatureIdentification.class, cvObjectsByClass);
         featureDetectionMethodSelectItems = createSelectItems( featureDetectionMethods, "-- Select method --" );
@@ -354,6 +356,42 @@ public class CvObjectService extends JpaAwareController {
 
         for ( CvObject cvObject : cvObjects ) {
             selectItems.add( createSelectItem( cvObject ) );
+        }
+
+        return selectItems;
+    }
+
+    public List<SelectItem> createExperimentalRoleSelectItems( Collection<? extends CvObject> cvObjects, String noSelectionText ) {
+        List<SelectItem> selectItems = new CopyOnWriteArrayList<SelectItem>();
+
+        if ( noSelectionText != null ) {
+            selectItems.add( new SelectItem( null, noSelectionText, noSelectionText, false, false, true ) );
+        }
+
+        for ( CvObject cvObject : cvObjects ) {
+            selectItems.add( createSelectItem( cvObject ) );
+
+            if (cvObject.getIdentifier() != null && cvObject.getIdentifier().equals(CvExperimentalRole.UNSPECIFIED_PSI_REF)){
+                defaultExperimentalRole = (CvExperimentalRole) cvObject;
+            }
+        }
+
+        return selectItems;
+    }
+
+    public List<SelectItem> createBiologicalRoleSelectItems( Collection<? extends CvObject> cvObjects, String noSelectionText ) {
+        List<SelectItem> selectItems = new CopyOnWriteArrayList<SelectItem>();
+
+        if ( noSelectionText != null ) {
+            selectItems.add( new SelectItem( null, noSelectionText, noSelectionText, false, false, true ) );
+        }
+
+        for ( CvObject cvObject : cvObjects ) {
+            selectItems.add( createSelectItem( cvObject ) );
+
+            if (cvObject.getIdentifier() != null && cvObject.getIdentifier().equals(CvBiologicalRole.UNSPECIFIED_PSI_REF)){
+                defaultBiologicalRole = (CvBiologicalRole) cvObject;
+            }
         }
 
         return selectItems;
@@ -574,6 +612,14 @@ public class CvObjectService extends JpaAwareController {
 
     public List<SelectItem> getNoClassSelectItems() {
         return noClassSelectItems;
+    }
+
+    public CvExperimentalRole getDefaultExperimentalRole() {
+        return defaultExperimentalRole;
+    }
+
+    public CvBiologicalRole getDefaultBiologicalRole() {
+        return defaultBiologicalRole;
     }
 
     private class CvObjectComparator implements Comparator<CvObject> {

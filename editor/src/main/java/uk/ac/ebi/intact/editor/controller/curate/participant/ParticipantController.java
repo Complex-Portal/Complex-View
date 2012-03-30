@@ -23,13 +23,12 @@ import org.primefaces.model.SelectableDataModelWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantIntactCloner;
+import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
@@ -42,7 +41,6 @@ import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.util.XrefUtils;
 
-import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
@@ -80,9 +78,6 @@ public class ParticipantController extends ParameterizableObjectController {
     private List<SelectItem> featureToLink1RangeSelectItems;
     private List<SelectItem> featureToLink2RangeSelectItems;
 
-    private CvExperimentalRole unspecifiedExperimentalRole;
-    private CvBiologicalRole unspecifiedBiologicalRole;
-
     /**
      * The AC of the participant to be loaded.
      */
@@ -98,19 +93,6 @@ public class ParticipantController extends ParameterizableObjectController {
     private InteractionController interactionController;
 
     public ParticipantController() {
-    }
-
-    @PostConstruct
-    public void initializeDefaultRoles(){
-        refresh(null);
-    }
-
-    @Transactional
-    public synchronized void refresh( ActionEvent evt ) {
-        if ( log.isDebugEnabled() ) log.debug( "Loading participant roles" );
-
-        unspecifiedExperimentalRole = getDaoFactory().getCvObjectDao(CvExperimentalRole.class).getByIdentifier(CvExperimentalRole.UNSPECIFIED_PSI_REF);
-        unspecifiedBiologicalRole = getDaoFactory().getCvObjectDao(CvBiologicalRole.class).getByIdentifier(CvBiologicalRole.UNSPECIFIED_PSI_REF);
     }
 
     @Override
@@ -181,13 +163,11 @@ public class ParticipantController extends ParameterizableObjectController {
             }
         }
 
-        refresh(null);
         generalLoadChecks();
     }
 
     @Override
     public boolean doSaveDetails(){
-       refresh(null);
 
         return super.doSaveDetails();
     }
@@ -290,7 +270,12 @@ public class ParticipantController extends ParameterizableObjectController {
     public String newParticipant(Interaction interaction) {
         this.interactor = null;
 
-        Component participant = new Component("N/A", interaction, new InteractorImpl(), unspecifiedExperimentalRole, unspecifiedBiologicalRole);
+        CvObjectService cvObjectService = (CvObjectService) getSpringContext().getBean("cvObjectService");
+
+        CvExperimentalRole defaultExperimentalRole = cvObjectService.getDefaultExperimentalRole();
+        CvBiologicalRole defaultBiologicalRole = cvObjectService.getDefaultBiologicalRole();
+
+        Component participant = new Component("N/A", interaction, new InteractorImpl(), defaultExperimentalRole, defaultBiologicalRole);
         participant.setInteractor(null);
         participant.setStoichiometry(getEditorConfig().getDefaultStoichiometry());
 

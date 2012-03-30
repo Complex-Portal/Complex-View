@@ -137,11 +137,12 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager")
     public boolean doSaveDetails() {
         if (experiment.getAc() == null) {
             experiment.setShortLabel(createExperimentShortLabel());
         }
+
+        getCorePersister().saveOrUpdate(experiment);
 
         return true;
     }
@@ -169,7 +170,6 @@ public class ExperimentController extends AnnotatedObjectController {
         return clone(experiment, new ExperimentIntactCloner(false));
     }
 
-    @Transactional
     public String cloneWithInteractions() {
         if (!getDaoFactory().getEntityManager().contains(experiment) && !IntactCore.isInitialized(experiment.getInteractions())){
              getDaoFactory().getEntityManager().merge(experiment);

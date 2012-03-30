@@ -21,10 +21,8 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
-import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriter;
@@ -32,6 +30,7 @@ import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriterImpl;
 import uk.ac.ebi.intact.dbupdate.prot.report.UpdateReportHandler;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.BaseController;
+import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.XrefUtils;
 import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
@@ -93,24 +92,16 @@ public class ParticipantImportController extends BaseController {
 
         // set the biosource service of protein service
         this.proteinService.setBiosourceService(bioSourceService);
-        initializeDefaultRoles();
-    }
-
-    @Transactional
-    public synchronized void initializeDefaultRoles(){
-        if ( log.isDebugEnabled() ) log.debug( "Loading participant roles" );
-
-        cvExperimentalRole = interactionController.getDaoFactory().getCvObjectDao(CvExperimentalRole.class).getByIdentifier(CvExperimentalRole.UNSPECIFIED_PSI_REF);
-        cvBiologicalRole = interactionController.getDaoFactory().getCvObjectDao(CvBiologicalRole.class).getByIdentifier(CvBiologicalRole.UNSPECIFIED_PSI_REF);
     }
 
     public void importParticipants( ActionEvent evt ) {
         importCandidates = new ArrayList<ImportCandidate>();
         queriesNoResults = new ArrayList<String>();
 
-        final DaoFactory daoFactory = IntactContext.getCurrentInstance().getDaoFactory();
-        cvExperimentalRole = daoFactory.getCvObjectDao(CvExperimentalRole.class).getByPsiMiRef(CvExperimentalRole.UNSPECIFIED_PSI_REF);
-        cvBiologicalRole = daoFactory.getCvObjectDao(CvBiologicalRole.class).getByPsiMiRef(CvBiologicalRole.UNSPECIFIED_PSI_REF);
+        CvObjectService cvObjectService = (CvObjectService) getSpringContext().getBean("cvObjectService");
+
+        cvExperimentalRole = cvObjectService.getDefaultExperimentalRole();
+        cvBiologicalRole = cvObjectService.getDefaultBiologicalRole();
 
         if (participantsToImport == null) {
             addErrorMessage("No participants to import", "Please add at least one identifier in the box");
@@ -304,6 +295,18 @@ public class ParticipantImportController extends BaseController {
 //            interactor = toProtein(candidate);
 //        }
 
+        if (cvExperimentalRole == null || cvBiologicalRole == null){
+            CvObjectService cvObjectService = (CvObjectService) getSpringContext().getBean("cvObjectService");
+            
+            if (cvExperimentalRole == null){
+                cvExperimentalRole = cvObjectService.getDefaultExperimentalRole();
+            }
+
+            if (cvBiologicalRole == null){
+                cvBiologicalRole = cvObjectService.getDefaultBiologicalRole();
+            }
+        }
+        
         Component component = new Component(IntactContext.getCurrentInstance().getInstitution(),
                 interaction, interactor, cvExperimentalRole, cvBiologicalRole );
         component.setExpressedIn(expressedIn);
