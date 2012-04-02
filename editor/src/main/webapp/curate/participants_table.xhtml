@@ -12,11 +12,11 @@
 
         <ui:param name="toDeleteCount" value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.model.Component', interactionController.ac).size()}"/>
 
-            <h:panelGroup rendered="#{toDeleteCount gt 0}">
-                <ia:panelMessage level="info">
-                    <h:outputText value="#{toDeleteCount} participants will be deleted on save."/>
-                </ia:panelMessage>
-            </h:panelGroup>
+        <h:panelGroup rendered="#{toDeleteCount gt 0}">
+            <ia:panelMessage level="info">
+                <h:outputText value="#{toDeleteCount} participants will be deleted on save."/>
+            </ia:panelMessage>
+        </h:panelGroup>
 
         <p:dataTable id="participantsTable" var="wrapper" value="#{value}"
                      rows="15" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="both"
@@ -24,6 +24,9 @@
 
             <ui:param name="participant" value="#{wrapper.participant}" />
             <ui:param name="interactor" value="#{participant.interactor}" />
+            <p:column style="width:16px">
+                <p:rowToggler/>
+            </p:column>
 
             <p:column headerText="Name" sortBy="#{interactor.shortLabel}">
                 <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
@@ -61,81 +64,76 @@
             </p:column>
 
             <p:column headerText="Expressed in">
-                <h:selectOneMenu id="expressedInTxt" value="#{wrapper.participant.expressedIn}" onchange="markAsUnsaved()"
-                                 rendered="#{value.size() lt 5}">
+                <h:selectOneMenu id="expressedInBiosource" value="#{wrapper.expressedIn}" rendered="#{value.size() lt 5}">
                     <f:selectItems value="#{bioSourceService.bioSourceSelectItems}" />
+                    <p:ajax event="valueChange" listener="#{wrapper.onExpressedInChanged()}" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
-                <h:outputText value="#{wrapper.participant.expressedIn != null? wrapper.participant.expressedIn.shortLabel : ''}"
-                        rendered="#{value.size() ge 5}"/>
             </p:column>
 
             <p:column headerText="Experimental role">
-                <h:selectOneMenu id="expRoleTxt" value="#{wrapper.firstExperimentalRole}" onchange="markAsUnsaved()"
-                        rendered="#{value.size() lt 5}">
-                        <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
-                    <f:ajax process="@this" event="valueChange"
-                            oncomplete="ia_enableSave()"
-                            listener="#{interactionController.updateShortLabel()}" update="shortlabelTxt"/>
+
+                <h:selectOneMenu id="expRoleCv" value="#{wrapper.experimentalRole}" rendered="#{value.size() lt 5}">
+                    <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
+                    <p:ajax process="@this" event="valueChange"
+                            oncomplete="markAsUnsaved()"
+                            listener="#{wrapper.onExperimentalRoleChanged()}" update=":editorForm:shortlabelTxt,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
-                <h:outputText value="#{wrapper.participant.cvExperimentalRole != null? wrapper.participant.cvExperimentalRole.shortLabel : ''}"
-                        rendered="#{value.size() ge 5}"/>
             </p:column>
 
-             <p:column headerText="Biological role">
-                <h:selectOneMenu id="bioRoleTxt" value="#{wrapper.participant.cvBiologicalRole}"
-                                 rendered="#{value.size() lt 5}"
-                                 onchange="markAsUnsaved()">
-                        <f:selectItems value="#{cvObjectService.biologicalRoleSelectItems}" />
+            <p:column headerText="Biological role">
+
+                <h:selectOneMenu id="bioRoleCv" value="#{wrapper.biologicalRole}"
+                                 rendered="#{value.size() lt 5}">
+                    <f:selectItems value="#{cvObjectService.biologicalRoleSelectItems}" />
+                    <p:ajax event="valueChange" listener="#{wrapper.onBiologicalRoleChanged()}" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
-                 <h:outputText value="#{wrapper.participant.cvBiologicalRole != null? wrapper.participant.cvBiologicalRole.shortLabel : ''}"
-                         rendered="#{value.size() ge 5}"/>
             </p:column>
 
             <p:column headerText="Features">
                 <f:facet name="footer">
-                     <p:commandButton value="Link" actionListener="#{interactionController.linkSelectedFeatures}" ajax="false"/>
+                    <p:commandButton value="Link" actionListener="#{interactionController.linkSelectedFeatures}" ajax="false"/>
                 </f:facet>
 
-               <h:dataTable  var="featureWrapper" value="#{wrapper.features}"
+                <h:dataTable  var="featureWrapper" value="#{wrapper.features}"
                               paginator="false" styleClass="inner-table">
                     <h:column style="width: 14px">
-                         <h:selectBooleanCheckbox value="#{featureWrapper.selected}"/>
-                     </h:column>
-                     <h:column>
-                         <div id="feature_#{featureWrapper.feature.ac}"
-                                     onmouseover="this.style.fontWeight = '#{featureWrapper.feature.boundDomain != null? 'bold' : 'inherit'}'; document.getElementById('feature_#{featureWrapper.feature.boundDomain.ac}').style.fontWeight = '#{featureWrapper.feature.boundDomain != null? 'bold' : 'inherit'}'"
-                                     onmouseout="this.style.fontWeight = 'inherit'; document.getElementById('feature_#{featureWrapper.feature.boundDomain.ac}').style.fontWeight = 'inherit'">
+                        <h:selectBooleanCheckbox value="#{featureWrapper.selected}"/>
+                    </h:column>
+                    <h:column>
+                        <div id="feature_#{featureWrapper.feature.ac}"
+                             onmouseover="this.style.fontWeight = '#{featureWrapper.feature.boundDomain != null? 'bold' : 'inherit'}'; document.getElementById('feature_#{featureWrapper.feature.boundDomain.ac}').style.fontWeight = '#{featureWrapper.feature.boundDomain != null? 'bold' : 'inherit'}'"
+                             onmouseout="this.style.fontWeight = 'inherit'; document.getElementById('feature_#{featureWrapper.feature.boundDomain.ac}').style.fontWeight = 'inherit'">
                             <h:outputText value="#{featureWrapper.feature.shortLabel} #{featureWrapper.feature.ranges}"/>
 
 
-                         <h:panelGroup rendered="#{featureWrapper.feature.boundDomain != null}">
-                             <p:commandLink type="button" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.show()"
-                                            styleClass="ui-icon ui-icon-link" style="display:inline-block"
-                                            title="Linked to #{featureWrapper.feature.boundDomain.shortLabel}">
-                             </p:commandLink>
+                            <h:panelGroup rendered="#{featureWrapper.feature.boundDomain != null}">
+                                <p:commandLink type="button" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.show()"
+                                               styleClass="ui-icon ui-icon-link" style="display:inline-block"
+                                               title="Linked to #{featureWrapper.feature.boundDomain.shortLabel}">
+                                </p:commandLink>
 
 
 
 
-                         </h:panelGroup>
-                         </div>
+                            </h:panelGroup>
+                        </div>
 
-                         <p:confirmDialog widgetVar="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}"
-                                          rendered="#{featureWrapper.feature.boundDomain != null}"
-                                              message="Do you want to unlink this feature?" modal="true">
-                                   <p:commandButton value="Yes Sure"
-                                           actionListener="#{interactionController.unlinkFeature(featureWrapper.feature)}"
-                                           ajax="false"/>
-                                   <p:commandButton value="Not Yet" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()" />
-                             </p:confirmDialog>
+                        <p:confirmDialog widgetVar="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}"
+                                         rendered="#{featureWrapper.feature.boundDomain != null}"
+                                         message="Do you want to unlink this feature?" modal="true">
+                            <p:commandButton value="Yes Sure"
+                                             actionListener="#{interactionController.unlinkFeature(featureWrapper.feature)}"
+                                             ajax="false"/>
+                            <p:commandButton value="Not Yet" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()" />
+                        </p:confirmDialog>
 
-                     </h:column>
+                    </h:column>
                 </h:dataTable>
 
             </p:column>
 
-             <p:column headerText="Stoich.">
-                <p:spinner id="stoichiometryTxt" value="#{participant.stoichiometry}" min="0" stepFactor="1" size="3" maxlength="2" onchange="markAsUnsaved()"/>
+            <p:column headerText="Stoich.">
+                <p:spinner id="stoichiometryValue" value="#{participant.stoichiometry}" min="0" stepFactor="1" size="3" maxlength="2" onchange="markAsUnsaved()"/>
             </p:column>
 
             <p:column headerText="Options">
@@ -146,26 +144,26 @@
                                    rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
                 </div>
                 <div style="float:right">
-                <p:commandLink id="revertBtn" process="revertBtn" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
-                               actionListener="#{changesController.revert(participant)}"
-                               update=":editorForm:unsavedChangesInfo,:editorForm:changesPanel,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo"
-                               rendered="#{changesController.isDeletedAc(participant.ac)}"/>
+                    <p:commandLink id="revertBtn" process="revertBtn" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
+                                   actionListener="#{changesController.revert(participant)}"
+                                   update=":editorForm:unsavedChangesInfo,:editorForm:changesPanel,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo"
+                                   rendered="#{changesController.isDeletedAc(participant.ac)}"/>
                 </div>
                 <div style="float:left">
-                <p:commandLink id="duplicateBtn" process="duplicateBtn" title="Duplicate" styleClass="ui-icon ui-icon-newwin"
-                               actionListener="#{interactionController.cloneParticipant(wrapper)}"
-                               update=":editorForm:unsavedChangesInfo,:editorForm:changesPanel,:editorForm:messagesComponent"
-                               rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
+                    <p:commandLink id="duplicateBtn" process="duplicateBtn" title="Duplicate" styleClass="ui-icon ui-icon-newwin"
+                                   actionListener="#{interactionController.cloneParticipant(wrapper)}"
+                                   update=":editorForm:unsavedChangesInfo,:editorForm:changesPanel,:editorForm:messagesComponent"
+                                   rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
                 </div>
             </p:column>
 
             <!--<p:rowExpansion>-->
             <!--<h:panelGroup>-->
 
-                <!---->
+            <!---->
             <!--</h:panelGroup>-->
 
-        <!--</p:rowExpansion>-->
+            <!--</p:rowExpansion>-->
 
         </p:dataTable>
 
@@ -176,4 +174,4 @@
 
     </h:panelGroup>
 
-    </ui:composition>
+</ui:composition>

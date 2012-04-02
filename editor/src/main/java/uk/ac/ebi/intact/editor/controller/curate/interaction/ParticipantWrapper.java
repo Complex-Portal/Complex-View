@@ -6,6 +6,7 @@ import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
 import uk.ac.ebi.intact.model.*;
 
+import javax.faces.event.AjaxBehaviorEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,9 +25,14 @@ public class ParticipantWrapper {
     private ChangesController changesController;
     private List<FeatureWrapper> features;
 
+    private CvBiologicalRole biologicalRole;
+    private CvExperimentalRole experimentalRole;
+    private BioSource expressedIn;
+    private InteractionController interactionController;
+
     private boolean deleted;
 
-    public ParticipantWrapper( Component participant, ChangesController changesController ) {
+    public ParticipantWrapper( Component participant, ChangesController changesController, InteractionController interactionController ) {
         this.participant = participant;
         this.annotatedObjectHelper = newAnnotatedObjectHelper(participant);
         this.changesController = changesController;
@@ -37,6 +43,10 @@ public class ParticipantWrapper {
             features.add(new FeatureWrapper(feature));
         }
 
+        this.interactionController = interactionController;
+        this.expressedIn = participant.getExpressedIn();
+        this.biologicalRole = participant.getCvBiologicalRole();
+        this.experimentalRole = getFirstExperimentalRole();
     }
 
     public Component getParticipant() {
@@ -44,7 +54,9 @@ public class ParticipantWrapper {
     }
 
     public void setParticipant( Component participant ) {
-        this.participant = participant;
+        if (participant != null){
+            this.participant = participant;
+        }
     }
 
     public String getAuthorGivenName() {
@@ -126,4 +138,63 @@ public class ParticipantWrapper {
         return helper;
     }
 
+    public void onExperimentalRoleChanged(AjaxBehaviorEvent evt) {
+
+        if (experimentalRole != null){
+            participant.getExperimentalRoles().clear();
+            participant.addExperimentalRole(experimentalRole);
+
+            interactionController.updateShortLabel();
+        }
+    }
+
+    public void onBiologicalRoleChanged(AjaxBehaviorEvent evt) {
+
+        if (biologicalRole != null){
+            participant.setCvBiologicalRole(biologicalRole);
+        }
+    }
+
+    public void onExpressedInChanged(AjaxBehaviorEvent evt) {
+
+        participant.setExpressedIn(expressedIn);
+    }
+
+    public CvBiologicalRole getBiologicalRole() {
+
+        // hack because of bug primefaces selectOneMenu in tabView which submits null when changing tab.
+        if (biologicalRole == null){
+            biologicalRole = participant.getCvBiologicalRole();
+        }
+        return biologicalRole;
+    }
+
+    public void setBiologicalRole(CvBiologicalRole biologicalRole) {
+        this.biologicalRole = biologicalRole;
+    }
+
+    public CvExperimentalRole getExperimentalRole() {
+        // hack because of bug primefaces selectOneMenu in tabView which submits null when changing tab.
+        if (experimentalRole == null){
+            experimentalRole = getFirstExperimentalRole();
+        }
+
+        return experimentalRole;
+    }
+
+    public void setExperimentalRole(CvExperimentalRole experimentalRole) {
+        this.experimentalRole = experimentalRole;
+    }
+
+    public BioSource getExpressedIn() {
+        // hack because of bug primefaces selectOneMenu in tabView which submits null when changing tab.
+        if (expressedIn == null && participant.getExpressedIn() != null){
+             expressedIn = participant.getExpressedIn();
+        }
+        return expressedIn;
+    }
+
+    public void setExpressedIn(BioSource expressedIn) {
+        this.expressedIn = expressedIn;
+    }
 }

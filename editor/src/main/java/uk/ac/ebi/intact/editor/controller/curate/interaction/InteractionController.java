@@ -458,13 +458,13 @@ public class InteractionController extends ParameterizableObjectController {
         final Collection<Component> components = interaction.getComponents();
 
         for ( Component component : components ) {
-            participantWrappers.add( new ParticipantWrapper( component, getChangesController() ) );
+            participantWrappers.add( new ParticipantWrapper( component, getChangesController(), this ) );
         }
     }
 
     public void addParticipant(Component component) {
         interaction.addComponent(component);
-        participantWrappers.addFirst(new ParticipantWrapper( component, getChangesController() ));
+        participantWrappers.addFirst(new ParticipantWrapper( component, getChangesController(), this ));
 
         if (participantWrappers.size() > 0) {
             try {

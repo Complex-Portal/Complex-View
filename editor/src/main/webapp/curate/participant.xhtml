@@ -133,15 +133,15 @@
                      <td >
                          <!-- TODO handle the multiple experimental role -->
                          <ia:inputCvObject id="expRoleTxt" cvIdentifier="MI:0495"
-                                           value="#{participantController.participantWrapper.firstExperimentalRole}"
+                                           value="#{participantController.firstExperimentalRole}"
                                            selectItems="#{cvObjectService.experimentalRoleSelectItems}"
                                            required="true" requiredMessage="Experimental role is required"
                                            update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                      </td>
                      <td style="padding-left: 150px;">
-                         <h:outputLabel value="Stoichiometry: " for="stoichiometryTxt"/>
-                         <p:spinner id="stoichiometryTxt" value="#{participant.stoichiometry}"
+                         <h:outputLabel value="Stoichiometry: " for="stoichiometryParticipant"/>
+                         <p:spinner id="stoichiometryParticipant" value="#{participant.stoichiometry}"
                                     min="0" stepFactor="1" maxlength="3" size="3" onchange="markAsUnsaved()"/>
                      </td>
                  </tr>

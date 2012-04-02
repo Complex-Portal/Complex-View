@@ -402,7 +402,7 @@ public class ParticipantController extends ParameterizableObjectController {
     }
 
     public ParticipantWrapper getParticipantWrapper() {
-        return new ParticipantWrapper( participant, getChangesController() );
+        return new ParticipantWrapper( participant, getChangesController(), interactionController );
     }
 
     public void setParticipant( Component participant ) {
@@ -544,5 +544,19 @@ public class ParticipantController extends ParameterizableObjectController {
 
     public DataModel<Feature> getFeaturesDataModel() {
         return featuresDataModel;
+    }
+
+    public CvExperimentalRole getFirstExperimentalRole() {
+        if( ! participant.getExperimentalRoles().isEmpty() ) {
+            return participant.getExperimentalRoles().iterator().next();
+        }
+        return null;
+    }
+
+    public void setFirstExperimentalRole(CvExperimentalRole role) {
+        if( ! participant.getExperimentalRoles().contains(role) && role != null) {
+            participant.getExperimentalRoles().clear();
+            participant.getExperimentalRoles().add( role );
+        }
     }
 }

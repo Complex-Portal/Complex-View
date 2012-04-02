@@ -152,7 +152,7 @@
                    }
             </script>
 
-            <p:tabView id="interactionTabs" onTabChange="handleChange(index)"  dynamic="true">
+            <p:tabView id="interactionTabs" onTabChange="handleChange(index)" dynamic="true">
                 <p:tab id="participantsTab" title="Participants (#{interactionController.participants.size()})">
 
                      <p:panel style="padding:0">
@@ -177,10 +177,10 @@
 
                    <ui:decorate template="propertiesTabs.xhtml">
                        <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.interactionTopicSelectItems}"/>
-                       <ui:param name="updateOnChange" value=":editorForm:basic"/>
+                       <ui:param name="updateOnChange" value=":editorForm:interactionTabs"/>
 
                        <ui:define name="annotationSyncValues">
-                           <ed:syncValue with="editorForm:figLegendTxt"
+                           <ed:syncValue with=":editorForm:figLegendTxt"
                                          rendered="#{annotation.cvTopic != null and annotation.cvTopic.identifier == 'MI:0599'}"/>
                        </ui:define>
                    </ui:decorate>
