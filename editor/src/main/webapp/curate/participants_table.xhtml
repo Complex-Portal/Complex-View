@@ -66,7 +66,7 @@
             <p:column headerText="Expressed in">
                 <h:selectOneMenu id="expressedInBiosource" value="#{wrapper.expressedIn}" rendered="#{value.size() lt 5}">
                     <f:selectItems value="#{bioSourceService.bioSourceSelectItems}" />
-                    <p:ajax event="valueChange" listener="#{wrapper.onExpressedInChanged()}" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
+                    <p:ajax event="change" listener="#{wrapper.onExpressedInChanged()}" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
             </p:column>
 
@@ -74,7 +74,7 @@
 
                 <h:selectOneMenu id="expRoleCv" value="#{wrapper.experimentalRole}" rendered="#{value.size() lt 5}">
                     <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
-                    <p:ajax process="@this" event="valueChange"
+                    <p:ajax process="@this" event="change"
                             oncomplete="markAsUnsaved()"
                             listener="#{wrapper.onExperimentalRoleChanged()}" update=":editorForm:shortlabelTxt,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
@@ -85,7 +85,7 @@
                 <h:selectOneMenu id="bioRoleCv" value="#{wrapper.biologicalRole}"
                                  rendered="#{value.size() lt 5}">
                     <f:selectItems value="#{cvObjectService.biologicalRoleSelectItems}" />
-                    <p:ajax event="valueChange" listener="#{wrapper.onBiologicalRoleChanged()}" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
+                    <p:ajax event="change" listener="#{wrapper.onBiologicalRoleChanged()}" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
             </p:column>
 

@@ -6,7 +6,6 @@ import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
 import uk.ac.ebi.intact.model.*;
 
-import javax.faces.event.AjaxBehaviorEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -138,7 +137,7 @@ public class ParticipantWrapper {
         return helper;
     }
 
-    public void onExperimentalRoleChanged(AjaxBehaviorEvent evt) {
+    public void onExperimentalRoleChanged() {
 
         if (experimentalRole != null){
             participant.getExperimentalRoles().clear();
@@ -148,14 +147,14 @@ public class ParticipantWrapper {
         }
     }
 
-    public void onBiologicalRoleChanged(AjaxBehaviorEvent evt) {
+    public void onBiologicalRoleChanged() {
 
         if (biologicalRole != null){
             participant.setCvBiologicalRole(biologicalRole);
         }
     }
 
-    public void onExpressedInChanged(AjaxBehaviorEvent evt) {
+    public void onExpressedInChanged() {
 
         participant.setExpressedIn(expressedIn);
     }
