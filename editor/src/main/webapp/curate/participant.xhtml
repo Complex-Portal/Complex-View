@@ -168,6 +168,7 @@
             <br/>
 
             <p:tabView id="participantTabs" dynamic="true">
+                <p:ajax event="tabChange" listener="#{participantController.onTabChanged}" />
 
                 <p:tab title="Features (#{participant.bindingDomains.size()})">
 
@@ -191,10 +192,12 @@
                 <p:tab id="parametersTab" title="Parameters (#{participant.parameters.size()})">
 
                     <p:outputPanel id="paramsPanel" autoUpdate="true">
+
                         <ui:decorate template="parameters_table.xhtml">
-                            <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
+                            <ui:param name="annotatedObjectController" value="#{participantController}"/>
                             <ui:param name="parameterTypeSelectItems" value="#{cvObjectService.parameterTypeSelectItems}"/>
                             <ui:param name="parameterUnitSelectItems" value="#{cvObjectService.parameterUnitSelectItems}"/>
+                            <ui:param name="disableParameterSelectItems" value="#{participantController.isParameterDisabled()}"/>
                             <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
                         </ui:decorate>
                     </p:outputPanel>
@@ -205,8 +208,9 @@
 
                     <p:outputPanel id="confidencesPanel" autoUpdate="true">
                         <ui:decorate template="confidences_table.xhtml">
-                            <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
+                            <ui:param name="annotatedObjectController" value="#{participantController}"/>
                             <ui:param name="confidenceTypeSelectItems" value="#{cvObjectService.confidenceTypeSelectItems}"/>
+                            <ui:param name="disableConfidenceSelectItems" value="#{participantController.isConfidenceDisabled()}"/>
                             <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
                         </ui:decorate>
                     </p:outputPanel>

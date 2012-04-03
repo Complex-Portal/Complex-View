@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.curate.feature;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.primefaces.event.TabChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -79,6 +80,8 @@ public class FeatureController extends AnnotatedObjectController {
     private ParticipantController participantController;
 
     private String newRangeValue;
+
+    private boolean isRangeDisabled;
 
     public FeatureController() {
     }
@@ -403,6 +406,33 @@ public class FeatureController extends AnnotatedObjectController {
             for (Experiment exp : experiments){
                 addParentAcsTo(parentAcs, exp);
             }
+        }
+    }
+
+    public boolean isRangeDisabled() {
+        return isRangeDisabled;
+    }
+
+    public void setRangeDisabled(boolean rangeDisabled) {
+        isRangeDisabled = rangeDisabled;
+    }
+
+    public void onTabChanged(TabChangeEvent e) {
+
+        // the xref tab is active
+        super.onTabChanged(e);
+
+        // all the tabs selectOneMenu are disabled, we can process the tabs specific to interaction
+        if (isAliasDisabled() && isXrefDisabled() && isAnnotationTopicDisabled()){
+            if (e.getTab().getId().equals("rangesTab")){
+                isRangeDisabled = false;
+            }
+            else {
+                isRangeDisabled = true;
+            }
+        }
+        else {
+            isRangeDisabled = true;
         }
     }
 }

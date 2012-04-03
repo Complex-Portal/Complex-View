@@ -29,7 +29,6 @@
                             <h:selectOneMenu id="databaseSel" value="#{xref.cvDatabase}" required="true"
                                              requiredMessage="Database for xref is required" disabled="#{annotatedObjectController.isXrefDisabled()}">
                                 <f:selectItems value="#{databaseSelectItems}"/>
-                                <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                             </h:selectOneMenu>
 
                             <script type="text/javascript">
@@ -98,7 +97,6 @@
                             </f:facet>
                             <h:selectOneMenu id="qualifierSel" value="#{xref.cvXrefQualifier}" disabled="#{annotatedObjectController.isXrefDisabled()}">
                                 <f:selectItems value="#{qualifierSelectItems}"/>
-                                <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                             </h:selectOneMenu>
                         </p:column>
                         <p:column>

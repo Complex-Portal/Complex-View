@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.SelectableDataModelWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -91,6 +92,9 @@ public class ParticipantController extends ParameterizableObjectController {
 
     @Autowired
     private InteractionController interactionController;
+
+    private boolean isParameterDisabled;
+    private boolean isConfidenceDisabled;
 
     public ParticipantController() {
     }
@@ -557,6 +561,48 @@ public class ParticipantController extends ParameterizableObjectController {
         if( ! participant.getExperimentalRoles().contains(role) && role != null) {
             participant.getExperimentalRoles().clear();
             participant.getExperimentalRoles().add( role );
+        }
+    }
+
+    public boolean isParameterDisabled() {
+        return isParameterDisabled;
+    }
+
+    public void setParameterDisabled(boolean parameterDisabled) {
+        isParameterDisabled = parameterDisabled;
+    }
+
+    public boolean isConfidenceDisabled() {
+        return isConfidenceDisabled;
+    }
+
+    public void setConfidenceDisabled(boolean confidenceDisabled) {
+        isConfidenceDisabled = confidenceDisabled;
+    }
+
+    public void onTabChanged(TabChangeEvent e) {
+
+        // the xref tab is active
+        super.onTabChanged(e);
+
+        // all the tabs selectOneMenu are disabled, we can process the tabs specific to interaction
+        if (isAliasDisabled() && isXrefDisabled() && isAnnotationTopicDisabled()){
+            if (e.getTab().getId().equals("parametersTab")){
+                isParameterDisabled = false;
+                isConfidenceDisabled = true;
+            }
+            else if (e.getTab().getId().equals("confidencesTab")){
+                isParameterDisabled = true;
+                isConfidenceDisabled = false;
+            }
+            else {
+                isParameterDisabled = true;
+                isConfidenceDisabled = true;
+            }
+        }
+        else {
+            isParameterDisabled = true;
+            isConfidenceDisabled = true;
         }
     }
 }

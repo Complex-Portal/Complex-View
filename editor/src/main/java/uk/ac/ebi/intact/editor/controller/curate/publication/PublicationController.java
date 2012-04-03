@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
 import org.joda.time.DateTime;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -88,6 +89,8 @@ public class PublicationController extends AnnotatedObjectController {
     private String reasonForOnHoldFromDialog;
 
     private boolean isCitexploreActive;
+
+    private boolean isLifeCycleDisabled;
 
     private LazyDataModel<Interaction> interactionDataModel;
 
@@ -1237,5 +1240,31 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setReasonForOnHoldFromDialog(String reasonForOnHoldFromDialog) {
         this.reasonForOnHoldFromDialog = reasonForOnHoldFromDialog;
+    }
+
+    public boolean isLifeCycleDisabled() {
+        return isLifeCycleDisabled;
+    }
+
+    public void setLifeCycleDisabled(boolean lifeCycleDisabled) {
+        isLifeCycleDisabled = lifeCycleDisabled;
+    }
+
+    @Override
+    public void onTabChanged(TabChangeEvent e) {
+
+        super.onTabChanged(e);
+
+        if (isAnnotationTopicDisabled() && isAliasDisabled() && isXrefDisabled()){
+            if (e.getTab().getId().equals("lifeCycleTab")){
+                isLifeCycleDisabled = false;
+            }
+            else {
+                isLifeCycleDisabled = true;
+            }
+        }
+        else {
+            isLifeCycleDisabled = true;
+        }
     }
 }

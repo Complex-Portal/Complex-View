@@ -48,7 +48,7 @@
             </f:facet>
             <h:selectOneMenu id="fromCvFuzzyType" value="#{rangeWrapper.range.fromCvFuzzyType}" converter="cvObjectConverter"
                              required="true"
-                             requiredMessage="Range from CvFuzzyType is required">
+                             requiredMessage="Range from CvFuzzyType is required" disabled="#{featureController.isRangeDisabled()}">
                 <f:ajax event="valueChange" render=":editorForm:featureTabs:rangesPanel :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
                         process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()"/>
                 <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
@@ -60,7 +60,7 @@
             </f:facet>
             <h:selectOneMenu id="toCvFuzzyType" value="#{rangeWrapper.range.toCvFuzzyType}" converter="cvObjectConverter"
                              required="true"
-                             requiredMessage="Range to CvFuzzyType is required">
+                             requiredMessage="Range to CvFuzzyType is required" disabled="#{featureController.isRangeDisabled()}">
                 <f:ajax event="valueChange" render=":editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
                         process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()"/>
                 <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
@@ -70,7 +70,7 @@
             <f:facet name="header">
                 <h:outputText value="Intramolecular"/>
             </f:facet>
-            <h:selectBooleanCheckbox value="#{rangeWrapper.range.linked}">
+            <h:selectBooleanCheckbox value="#{rangeWrapper.range.linked}" disabled="#{featureController.isRangeDisabled()}">
                 <f:ajax event="valueChange" render=":editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
                         process="@this" onevent="markAsUnsaved()"/>
              </h:selectBooleanCheckbox>

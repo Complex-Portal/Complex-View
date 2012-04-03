@@ -114,8 +114,9 @@
             <br/>
 
              <p:tabView id="featureTabs" dynamic="true">
+                 <p:ajax event="tabChange" listener="#{featureController.onTabChanged}" />
 
-                <p:tab title="Ranges (#{feature.ranges.size()})">
+                <p:tab id="rangesTab" title="Ranges (#{feature.ranges.size()})">
 
                     <p:outputPanel id="rangesPanel" autoUpdate="true">
 

@@ -192,9 +192,10 @@
 
                     <p:outputPanel id="parametersPanel" autoUpdate="true">
                             <ui:decorate template="parameters_table.xhtml">
-                                <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
+                                <ui:param name="annotatedObjectController" value="#{interactionController}"/>
                                 <ui:param name="parameterTypeSelectItems" value="#{cvObjectService.parameterTypeSelectItems}"/>
                                 <ui:param name="parameterUnitSelectItems" value="#{cvObjectService.parameterUnitSelectItems}"/>
+                                <ui:param name="disableParameterSelectItems" value="#{interactionController.isParameterDisabled()}"/>
                                 <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
                             </ui:decorate>
                     </p:outputPanel>
@@ -205,9 +206,10 @@
 
                     <p:outputPanel id="confidencesPanel" autoUpdate="true">
                         <ui:decorate template="confidences_table.xhtml">
-                            <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
+                            <ui:param name="annotatedObjectController" value="#{interactionController}"/>
                             <ui:param name="confidenceTypeSelectItems" value="#{cvObjectService.confidenceTypeSelectItems}"/>
                             <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
+                            <ui:param name="disableConfidenceSelectItems" value="#{interactionController.isConfidenceDisabled()}"/>
                         </ui:decorate>
                     </p:outputPanel>
 
@@ -226,8 +228,7 @@
 
                         <h:outputLabel for="institutionSel" value="Institution: "/>
                         <h:selectOneMenu id="institutionSel" value="#{interactionController.interaction.owner}"
-                                         valueChangeListener="#{interactionController.unsavedValueChange}"
-                                disabled="#{(not userSessionController.hasRole('ADMIN') and not userSessionController.hasRole('REVIEWER')) or interactionController.isAdvancedDisabled()}}">
+                                         disabled="#{(not userSessionController.hasRole('ADMIN') and not userSessionController.hasRole('REVIEWER')) or interactionController.isAdvancedDisabled()}}">
                             <f:selectItems value="#{institutionService.institutionSelectItems}"/>
                             <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                         </h:selectOneMenu>

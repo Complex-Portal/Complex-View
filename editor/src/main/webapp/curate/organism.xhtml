@@ -97,7 +97,7 @@
             <br/>
 
             <p:tabView id="organismTabs" dynamic="true">
-
+                <p:ajax event="tabChange" listener="#{bioSourceController.onTabChanged}" />
                 <ui:decorate template="propertiesTabs.xhtml">
                     <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.bioSourceTopicSelectItems}"/>
                     <ui:param name="updateOnChange" value=":editorForm:basic"/>

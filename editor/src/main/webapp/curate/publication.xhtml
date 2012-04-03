@@ -374,7 +374,7 @@
 
                         </ui:decorate>
 
-                    <p:tab title="Lifecycle">
+                    <p:tab id="lifeCycleTab" title="Lifecycle">
 
                         <h:panelGrid columns="2">
                             <h:outputLabel for="statusTxt" value="Status: "/>
@@ -389,9 +389,11 @@
                                     rendered="#{!userSessionController.hasRole('ADMIN') and publicationController.publication.currentReviewer != null}"/>
 
                             <h:selectOneMenu value="#{publicationController.publication.currentReviewer}" hideNoSelectionOption="true"
-                                    rendered="#{userSessionController.hasRole('ADMIN') and publicationController.publication.currentReviewer != null}"
-                                    onchange="markAsUnsaved()">
+                                    rendered="#{(userSessionController.hasRole('ADMIN') and publicationController.publication.currentReviewer != null) or publicationController.isLifeCycleDisabled()}"
+                                    >
                                 <f:selectItems value="#{userAdminController.reviewerSelectItems}"/>
+                                <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
+
                             </h:selectOneMenu>
                         </h:panelGrid>
 

@@ -128,6 +128,8 @@
 
             <p:tabView id="experimentTabs" dynamic="true">
 
+                <p:ajax event="tabChange" listener="#{experimentController.onTabChanged}" />
+
                 <p:tab title="Interactions (#{experimentController.interactionDataModel.rowCount})">
                     <div class="intact-buttonBar">
                         <p:commandButton id="newInteractionBtn" value="New interaction" actionListener="#{annotatedObjectController.doSaveIfNecessary}" process="editorForm"

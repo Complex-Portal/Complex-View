@@ -79,6 +79,7 @@
             <br/>
 
             <p:tabView id="institutionTabs" dynamic="true">
+                <p:ajax event="tabChange" listener="#{institutionController.onTabChanged}" />
 
                 <ui:decorate template="/curate/propertiesTabs.xhtml">
                     <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.experimentTopicSelectItems}"/>

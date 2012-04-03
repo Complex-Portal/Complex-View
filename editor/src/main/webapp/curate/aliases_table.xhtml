@@ -21,7 +21,6 @@
                 </f:facet>
                 <h:selectOneMenu id="aliasTypeSel" value="#{alias.cvAliasType}" required="true" requiredMessage="Alias type is required" disabled="#{annotatedObjectController.isAliasDisabled()}">
                     <f:selectItems value="#{cvObjectService.aliasTypeSelectItems}"/>
-                    <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
             </p:column>
            <p:column>
