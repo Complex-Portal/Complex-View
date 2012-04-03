@@ -75,6 +75,7 @@ public class InteractorController extends AnnotatedObjectController {
             }
 
             reset();
+            refreshTabsAndFocusXref();
         }
 
         generalLoadChecks();

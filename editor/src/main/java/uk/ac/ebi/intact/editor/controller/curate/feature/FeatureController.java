@@ -145,6 +145,8 @@ public class FeatureController extends AnnotatedObjectController {
             if ( experimentController.getExperiment() == null ) {
                 experimentController.setExperiment( participant.getInteraction().getExperiments().iterator().next() );
             }
+
+            refreshTabsAndFocusXref();
         }
 
         refreshRangeWrappers();

@@ -165,6 +165,8 @@ public class ParticipantController extends ParameterizableObjectController {
             if (participant.getInteractor() != null) {
                 interactor = participant.getInteractor().getShortLabel();
             }
+
+            refreshTabsAndFocusXref();
         }
 
         generalLoadChecks();

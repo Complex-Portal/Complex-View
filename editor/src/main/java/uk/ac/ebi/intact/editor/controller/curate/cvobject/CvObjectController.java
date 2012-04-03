@@ -76,6 +76,7 @@ public class CvObjectController extends AnnotatedObjectController {
             }
 
             prepareView();
+            refreshTabsAndFocusXref();
         }
         generalLoadChecks();
     }

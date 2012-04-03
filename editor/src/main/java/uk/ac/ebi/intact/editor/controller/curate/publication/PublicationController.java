@@ -119,6 +119,8 @@ public class PublicationController extends AnnotatedObjectController {
             datasetsSelectItems = new ArrayList<SelectItem>();
 
             loadByAc();
+
+            refreshTabsAndFocusXref();
         }
 
         generalLoadChecks();

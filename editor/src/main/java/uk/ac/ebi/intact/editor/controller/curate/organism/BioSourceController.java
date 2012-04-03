@@ -55,6 +55,8 @@ public class BioSourceController extends AnnotatedObjectController {
                 super.addErrorMessage("Organism does not exist", ac);
                 return;
             }
+
+            refreshTabsAndFocusXref();
         }
 
         generalLoadChecks();

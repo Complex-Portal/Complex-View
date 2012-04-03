@@ -180,7 +180,7 @@ public class InteractionController extends ParameterizableObjectController {
                 refreshParticipants();
             }
 
-            refreshTabs();
+            refreshTabsAndFocusXref();
         }
 
         generalLoadChecks();

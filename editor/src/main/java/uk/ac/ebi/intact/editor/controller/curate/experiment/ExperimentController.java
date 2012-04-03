@@ -116,6 +116,8 @@ public class ExperimentController extends AnnotatedObjectController {
             if (correctedComment == null) {
                 correctedComment = getCorrectionComment();
             }
+
+            refreshTabsAndFocusXref();
         }
 
         generalLoadChecks();

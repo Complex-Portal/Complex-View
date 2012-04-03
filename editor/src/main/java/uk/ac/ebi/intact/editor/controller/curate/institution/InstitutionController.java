@@ -50,6 +50,8 @@ public class InstitutionController extends AnnotatedObjectController {
                 super.addErrorMessage("Institution does not exist", ac);
                 return;
             }
+
+            refreshTabsAndFocusXref();
         }
 
         generalLoadChecks();
