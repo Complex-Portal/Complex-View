@@ -106,6 +106,8 @@ public class CurateController extends JpaAwareController {
         final CurateObjectMetadata metadata = getMetadata(intactObject);
         setCurrentAnnotatedObjectController(metadata.getAnnotatedObjectController());
 
+        getCurrentAnnotatedObjectController().refreshTabsAndFocusXref();
+
         return "/curate/"+metadata.getSlug();
     }
 
