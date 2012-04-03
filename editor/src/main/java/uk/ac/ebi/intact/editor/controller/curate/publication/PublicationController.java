@@ -679,11 +679,19 @@ public class PublicationController extends AnnotatedObjectController {
         return publication;
     }
 
+    @Override
+    protected void refreshTabs(){
+        super.refreshTabs();
+        this.isLifeCycleDisabled = true;
+    }
+
     public void setPublication( Publication publication ) {
         this.publication = publication;
 
         if (publication != null) {
             this.ac = publication.getAc();
+
+            refreshTabs();
         }
     }
 

@@ -39,6 +39,7 @@ public class BioSourceController extends AnnotatedObjectController {
 
         if (bioSource != null){
             this.ac = annotatedObject.getAc();
+            refreshTabsAndFocusXref();
         }
     }
 
@@ -134,6 +135,8 @@ public class BioSourceController extends AnnotatedObjectController {
     public void setBioSource(BioSource bioSource) {
         this.bioSource = bioSource;
         this.ac = bioSource.getAc();
+
+        refreshTabsAndFocusXref();
     }
 
     public void setTaxId(String taxId) {

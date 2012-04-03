@@ -76,6 +76,18 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public abstract AnnotatedObject getAnnotatedObject();
     public abstract void setAnnotatedObject(AnnotatedObject annotatedObject);
 
+    protected void refreshTabsAndFocusXref(){
+        isXrefDisabled = false;
+        isAliasDisabled = true;
+        isAnnotationTopicDisabled = true;
+    }
+
+    protected void refreshTabs(){
+        isXrefDisabled = true;
+        isAliasDisabled = true;
+        isAnnotationTopicDisabled = true;
+    }
+
     public String goToParent() {
         PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
 

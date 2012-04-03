@@ -3,17 +3,12 @@ package uk.ac.ebi.intact.editor.controller.curate.institution;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyTerm;
-import uk.ac.ebi.intact.bridges.taxonomy.UniprotTaxonomyService;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.editor.controller.admin.InstitutionAdminController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Institution;
-import uk.ac.ebi.intact.model.CvXrefQualifier;
 
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 
 /**
@@ -39,6 +34,8 @@ public class InstitutionController extends AnnotatedObjectController {
 
         if (institution != null){
             this.ac = annotatedObject.getAc();
+
+            refreshTabsAndFocusXref();
         }
     }
 

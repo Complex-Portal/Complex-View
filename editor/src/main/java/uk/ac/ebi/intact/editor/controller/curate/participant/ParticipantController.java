@@ -409,11 +409,20 @@ public class ParticipantController extends ParameterizableObjectController {
         return new ParticipantWrapper( participant, getChangesController(), interactionController );
     }
 
+    @Override
+    protected void refreshTabs(){
+        super.refreshTabsAndFocusXref();
+        this.isConfidenceDisabled = true;
+        this.isParameterDisabled = true;
+    }
+
     public void setParticipant( Component participant ) {
         this.participant = participant;
 
         if (participant != null){
             this.ac = participant.getAc();
+
+            refreshTabs();
         }
     }
 

@@ -129,6 +129,15 @@ public class InteractionController extends ParameterizableObjectController {
         return value;
     }
 
+    protected void refreshTabs(){
+        super.refreshTabs();
+
+        isParticipantDisabled = false;
+        isParameterDisabled = true;
+        isConfidenceDisabled = true;
+        isAdvancedDisabled = true;
+    }
+
     @Transactional(readOnly = true)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
@@ -164,6 +173,8 @@ public class InteractionController extends ParameterizableObjectController {
                 }
                 refreshParticipants();
             }
+
+            refreshTabs();
         }
 
         generalLoadChecks();
@@ -873,6 +884,7 @@ public class InteractionController extends ParameterizableObjectController {
                 experimentController.setExperiment(interaction.getExperiments().iterator().next());
                 this.experiment = experimentController.getExperiment();
             }
+            refreshTabs();
         }
     }
 

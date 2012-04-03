@@ -536,6 +536,7 @@ public class ExperimentController extends AnnotatedObjectController {
             if (experiment.getPublication() != null) {
                 publicationController.setPublication(experiment.getPublication());
             }
+            refreshTabs();
         }
     }
 

@@ -285,11 +285,20 @@ public class FeatureController extends AnnotatedObjectController {
         return feature;
     }
 
+    @Override
+    protected void refreshTabs(){
+        super.refreshTabs();
+
+        this.isRangeDisabled = false;
+    }
+
     public void setFeature( Feature feature ) {
         this.feature = feature;
 
         if (feature != null){
             this.ac = feature.getAc();
+
+            refreshTabs();
         }
     }
 

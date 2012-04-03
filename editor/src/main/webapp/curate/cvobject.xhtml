@@ -154,6 +154,7 @@
             <br/>
 
             <p:tabView id="cvobjectTabs" dynamic="true">
+                <p:ajax event="tabChange" listener="#{cvObjectController.onTabChanged}" />
 
                <ui:decorate template="propertiesTabs.xhtml">
                      <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.cvObjectTopicSelectItems}"/>
