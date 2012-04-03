@@ -20,10 +20,10 @@
                 <f:facet name="header">
                     <h:outputText value="Type"/>
                 </f:facet>
-                <h:selectOneMenu id="paramTypeSel" value="#{parameter.cvParameterType}" rendered="#{parameterTypeSelectItems != null}"
-                                 required="true" requiredMessage="Parameter type is required">
+                <h:selectOneMenu id="paramTypeSel" value="#{parameter.cvParameterType}" rendered="#{parameterTypeSelectItems != null} "
+                                 required="true" requiredMessage="Parameter type is required" disabled="#{interactionController.isParameterDisabled()}">
                     <f:selectItems value="#{parameterTypeSelectItems}"/>
-                    <ed:curation/>
+                    <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
                 <h:outputText value="#{parameter.cvParameterType.shortLabel}" rendered="#{parameterTypeSelectItems == null}"/>
             </p:column>
@@ -40,7 +40,7 @@
                 <f:facet name="header">
                     <h:outputText value="Unit"/>
                 </f:facet>
-                <h:selectOneMenu id="paramUnitSel" value="#{parameter.cvParameterUnit}" rendered="#{parameterUnitSelectItems != null}">
+                <h:selectOneMenu id="paramUnitSel" value="#{parameter.cvParameterUnit}" rendered="#{parameterUnitSelectItems != null}" disabled="#{interactionController.isParameterDisabled()}">
                     <f:selectItems value="#{parameterUnitSelectItems}"/>
                     <ed:curation/>
                 </h:selectOneMenu>

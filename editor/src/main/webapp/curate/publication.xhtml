@@ -325,6 +325,7 @@
         <br/>
 
                 <p:tabView id="publicationTabs" dynamic="true">
+                    <p:ajax event="tabChange" listener="#{publicationController.onTabChanged}" />
 
                     <p:tab title="Experiments (#{fn:length(publicationController.publication.experiments)})">
                         <div class="intact-buttonBar">

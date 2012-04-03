@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -84,6 +85,11 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Autowired
     private UserSessionController userSessionController;
+
+    private boolean isParticipantDisabled;
+    private boolean isParameterDisabled;
+    private boolean isConfidenceDisabled;
+    private boolean isAdvancedDisabled;
 
     public InteractionController() {
         experimentsToUpdate = new ArrayList<Experiment>();
@@ -943,5 +949,77 @@ public class InteractionController extends ParameterizableObjectController {
         final List<Confidence> confidences = new ArrayList<Confidence>( interaction.getConfidences() );
         Collections.sort( confidences, new IntactObjectComparator() );
         return confidences;
+    }
+
+    public boolean isParticipantDisabled() {
+        return isParticipantDisabled;
+    }
+
+    public void setParticipantDisabled(boolean participantDisabled) {
+        isParticipantDisabled = participantDisabled;
+    }
+
+    public boolean isParameterDisabled() {
+        return isParameterDisabled;
+    }
+
+    public void setParameterDisabled(boolean parameterDisabled) {
+        isParameterDisabled = parameterDisabled;
+    }
+
+    public boolean isConfidenceDisabled() {
+        return isConfidenceDisabled;
+    }
+
+    public void setConfidenceDisabled(boolean confidenceDisabled) {
+        isConfidenceDisabled = confidenceDisabled;
+    }
+
+    public boolean isAdvancedDisabled() {
+        return isAdvancedDisabled;
+    }
+
+    public void setAdvancedDisabled(boolean advancedDisabled) {
+        isAdvancedDisabled = advancedDisabled;
+    }
+
+    public void onTabChanged(TabChangeEvent e) {
+
+        // the xref tab is active
+        super.onTabChanged(e);
+
+        // all the tabs selectOneMenu are disabled, we can process the tabs specific to interaction
+        if (isAliasDisabled() && isXrefDisabled() && isAnnotationTopicDisabled()){
+            if (e.getTab().getId().equals("participantsTab")){
+                isParticipantDisabled = false;
+                isParameterDisabled = true;
+                isConfidenceDisabled = true;
+                isAdvancedDisabled = true;
+            }
+            else if (e.getTab().getId().equals("parametersTab")){
+                isParticipantDisabled = true;
+                isParameterDisabled = false;
+                isConfidenceDisabled = true;
+                isAdvancedDisabled = true;
+            }
+            else if (e.getTab().getId().equals("confidencesTab")){
+                isParticipantDisabled = true;
+                isParameterDisabled = true;
+                isConfidenceDisabled = false;
+                isAdvancedDisabled = true;
+            }
+            else {
+                isParticipantDisabled = true;
+                isParameterDisabled = true;
+                isConfidenceDisabled = true;
+                isAdvancedDisabled = false;
+            }
+        }
+        else {
+            isParticipantDisabled = true;
+            isParameterDisabled = true;
+            isConfidenceDisabled = true;
+            isAdvancedDisabled = true;
+        }
     }
 }

@@ -41,9 +41,9 @@
                     <h:outputText value="Topic"/>
                 </f:facet>
                 <h:selectOneMenu id="annotationTopicSel" value="#{annotation.cvTopic}"
-                                 required="true" requiredMessage="Topic is required">
+                                 required="true" requiredMessage="Topic is required" disabled="#{annotatedObjectController.isAnnotationTopicDisabled()}">
                     <f:selectItems value="#{topicSelectItems}"/>
-                    <ed:curation/>
+                    <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
             </p:column>
             <p:column>

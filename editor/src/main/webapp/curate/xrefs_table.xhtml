@@ -27,9 +27,9 @@
                                 <h:outputText value="Database"/>
                             </f:facet>
                             <h:selectOneMenu id="databaseSel" value="#{xref.cvDatabase}" required="true"
-                                             requiredMessage="Database for xref is required">
+                                             requiredMessage="Database for xref is required" disabled="#{annotatedObjectController.isXrefDisabled()}">
                                 <f:selectItems value="#{databaseSelectItems}"/>
-                                <ed:curation/>
+                                <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                             </h:selectOneMenu>
 
                             <script type="text/javascript">
@@ -96,9 +96,9 @@
                             <f:facet name="header">
                                 <h:outputText value="Qualifier"/>
                             </f:facet>
-                            <h:selectOneMenu id="qualifierSel" value="#{xref.cvXrefQualifier}">
+                            <h:selectOneMenu id="qualifierSel" value="#{xref.cvXrefQualifier}" disabled="#{annotatedObjectController.isXrefDisabled()}">
                                 <f:selectItems value="#{qualifierSelectItems}"/>
-                                <ed:curation/>
+                                <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                             </h:selectOneMenu>
                         </p:column>
                         <p:column>

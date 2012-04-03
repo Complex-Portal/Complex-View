@@ -152,7 +152,9 @@
                    }
             </script>
 
-            <p:tabView id="interactionTabs" onTabChange="handleChange(index)" dynamic="true">
+            <p:tabView id="interactionTabs" dynamic="true">
+                <p:ajax event="tabChange" listener="#{interactionController.onTabChanged}" />
+
                 <p:tab id="participantsTab" title="Participants (#{interactionController.participants.size()})">
 
                      <p:panel style="padding:0">
@@ -225,9 +227,9 @@
                         <h:outputLabel for="institutionSel" value="Institution: "/>
                         <h:selectOneMenu id="institutionSel" value="#{interactionController.interaction.owner}"
                                          valueChangeListener="#{interactionController.unsavedValueChange}"
-                                disabled="#{not userSessionController.hasRole('ADMIN') and not userSessionController.hasRole('REVIEWER')}}">
+                                disabled="#{(not userSessionController.hasRole('ADMIN') and not userSessionController.hasRole('REVIEWER')) or interactionController.isAdvancedDisabled()}}">
                             <f:selectItems value="#{institutionService.institutionSelectItems}"/>
-                            <ed:curation/>
+                            <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                         </h:selectOneMenu>
                     </h:panelGrid>
                 </p:tab>

@@ -64,29 +64,35 @@
             </p:column>
 
             <p:column headerText="Expressed in">
-                <h:selectOneMenu id="expressedInBiosource" value="#{wrapper.expressedIn}" rendered="#{value.size() lt 5}">
+                <h:selectOneMenu id="expressedInBiosource" value="#{wrapper.expressedIn}" rendered="#{value.size() lt 5}" disabled="#{interactionController.isParticipantDisabled()}">
                     <f:selectItems value="#{bioSourceService.bioSourceSelectItems}" />
                     <p:ajax event="change" listener="#{wrapper.onExpressedInChanged()}" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
+                <h:outputText value="#{wrapper.participant.expressedIn != null? wrapper.participant.expressedIn.shortLabel : ''}"
+                              rendered="#{value.size() ge 5}"/>
             </p:column>
 
             <p:column headerText="Experimental role">
 
-                <h:selectOneMenu id="expRoleCv" value="#{wrapper.experimentalRole}" rendered="#{value.size() lt 5}">
+                <h:selectOneMenu id="expRoleCv" value="#{wrapper.experimentalRole}" rendered="#{value.size() lt 5}" disabled="#{interactionController.isParticipantDisabled()}">
                     <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
                     <p:ajax process="@this" event="change"
                             oncomplete="markAsUnsaved()"
                             listener="#{wrapper.onExperimentalRoleChanged()}" update=":editorForm:shortlabelTxt,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
+                <h:outputText value="#{wrapper.participant.cvExperimentalRole != null? wrapper.participant.cvExperimentalRole.shortLabel : ''}"
+                              rendered="#{value.size() ge 5}"/>
             </p:column>
 
             <p:column headerText="Biological role">
 
                 <h:selectOneMenu id="bioRoleCv" value="#{wrapper.biologicalRole}"
-                                 rendered="#{value.size() lt 5}">
+                                 rendered="#{value.size() lt 5}" disabled="#{interactionController.isParticipantDisabled()}">
                     <f:selectItems value="#{cvObjectService.biologicalRoleSelectItems}" />
                     <p:ajax event="change" listener="#{wrapper.onBiologicalRoleChanged()}" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
+                <h:outputText value="#{wrapper.participant.cvBiologicalRole != null? wrapper.participant.cvBiologicalRole.shortLabel : ''}"
+                              rendered="#{value.size() ge 5}"/>
             </p:column>
 
             <p:column headerText="Features">

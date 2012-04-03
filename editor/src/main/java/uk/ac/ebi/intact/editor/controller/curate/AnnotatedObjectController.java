@@ -15,7 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.event.TabChangeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,6 @@ import uk.ac.ebi.intact.model.util.PublicationUtils;
 import uk.ac.ebi.intact.util.go.GoServerProxy;
 import uk.ac.ebi.intact.util.go.GoTerm;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -66,6 +65,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     @Autowired
     private ChangesController changesController;
+
+    private boolean isAnnotationTopicDisabled;
+    private boolean isXrefDisabled;
+    private boolean isAliasDisabled;
 
     public AnnotatedObjectController() {
     }
@@ -934,5 +937,58 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }
 
         addPublicationAcToParentAcs(parentAcs, exp);
+    }
+
+    public boolean isAnnotationTopicDisabled() {
+        return isAnnotationTopicDisabled;
+    }
+
+    public void setAnnotationTopicDisabled(boolean annotationTopicDisabled) {
+        isAnnotationTopicDisabled = annotationTopicDisabled;
+    }
+
+    public boolean isXrefDisabled() {
+        return isXrefDisabled;
+    }
+
+    public void setXrefDisabled(boolean xrefDisabled) {
+        isXrefDisabled = xrefDisabled;
+    }
+
+    public boolean isAliasDisabled() {
+        return isAliasDisabled;
+    }
+
+    public void setAliasDisabled(boolean aliasDisabled) {
+        isAliasDisabled = aliasDisabled;
+    }
+
+    /**
+     * Bug jsf : selectOneMenu in a tab returns null if not active tab so we disable the selectOneMenu when it is disabled
+     * @param e
+     */
+    public void onTabChanged(TabChangeEvent e) {
+
+        // the xref tab is active
+        if (e.getTab().getId().equals("xrefsTab")){
+            isXrefDisabled = false;
+            isAliasDisabled = true;
+            isAnnotationTopicDisabled = true;
+        }
+        else if (e.getTab().getId().equals("annotationsTab")){
+            isXrefDisabled = true;
+            isAliasDisabled = true;
+            isAnnotationTopicDisabled = false;
+        }
+        else if (e.getTab().getId().equals("aliasesTab")){
+            isXrefDisabled = true;
+            isAliasDisabled = false;
+            isAnnotationTopicDisabled = true;
+        }
+        else {
+            isXrefDisabled = true;
+            isAliasDisabled = true;
+            isAnnotationTopicDisabled = true;
+        }
     }
 }

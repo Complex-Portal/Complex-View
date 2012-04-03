@@ -21,9 +21,9 @@
                     <h:outputText value="Type"/>
                 </f:facet>
                 <h:selectOneMenu id="confidenceTypeSel" value="#{confidence.cvConfidenceType}" rendered="#{confidenceTypeSelectItems != null}"
-                                 required="true" requiredMessage="Parameter type is required">
+                                 required="true" requiredMessage="Parameter type is required" disabled="#{interactionController.isConfidenceDisabled()}">
                     <f:selectItems value="#{confidenceTypeSelectItems}"/>
-                    <ed:curation/>
+                    <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
                 <h:outputText value="#{confidence.cvConfidenceType.shortLabel}" rendered="#{confidenceTypeSelectItems == null}"/>
             </p:column>
