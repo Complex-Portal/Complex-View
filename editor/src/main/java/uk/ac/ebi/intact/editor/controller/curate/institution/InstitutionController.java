@@ -34,8 +34,6 @@ public class InstitutionController extends AnnotatedObjectController {
 
         if (institution != null){
             this.ac = annotatedObject.getAc();
-
-            refreshTabsAndFocusXref();
         }
     }
 

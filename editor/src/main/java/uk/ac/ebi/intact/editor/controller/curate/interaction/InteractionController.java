@@ -129,7 +129,13 @@ public class InteractionController extends ParameterizableObjectController {
         return value;
     }
 
-    protected void refreshTabs(){
+    @Override
+    public void refreshTabsAndFocusXref(){
+        refreshTabs();
+    }
+
+    @Override
+    public void refreshTabs(){
         super.refreshTabs();
 
         isParticipantDisabled = false;
@@ -456,6 +462,8 @@ public class InteractionController extends ParameterizableObjectController {
     @Override
     public void modifyClone(AnnotatedObject clone) {
         Interaction clonedInteraction = (Interaction) clone;
+
+        refreshTabs();
 
         try {
             updateShortLabel(clonedInteraction);
@@ -884,7 +892,6 @@ public class InteractionController extends ParameterizableObjectController {
                 experimentController.setExperiment(interaction.getExperiments().iterator().next());
                 this.experiment = experimentController.getExperiment();
             }
-            refreshTabs();
         }
     }
 

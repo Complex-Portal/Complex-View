@@ -76,13 +76,13 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public abstract AnnotatedObject getAnnotatedObject();
     public abstract void setAnnotatedObject(AnnotatedObject annotatedObject);
 
-    protected void refreshTabsAndFocusXref(){
+    public void refreshTabsAndFocusXref(){
         isXrefDisabled = false;
         isAliasDisabled = true;
         isAnnotationTopicDisabled = true;
     }
 
-    protected void refreshTabs(){
+    public void refreshTabs(){
         isXrefDisabled = true;
         isAliasDisabled = true;
         isAnnotationTopicDisabled = true;
@@ -467,7 +467,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void modifyClone(AnnotatedObject clone) {
-        // nothing by default
+        refreshTabsAndFocusXref();
     }
 
     protected IntactCloner newClonerInstance() {

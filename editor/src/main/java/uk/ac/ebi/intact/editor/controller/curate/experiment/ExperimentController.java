@@ -158,6 +158,7 @@ public class ExperimentController extends AnnotatedObjectController {
 
         setExperiment((Experiment) clone);
         refreshInteractions();
+        refreshTabs();
 
         experiment.setPublication(publicationController.getPublication());
 
@@ -536,7 +537,6 @@ public class ExperimentController extends AnnotatedObjectController {
             if (experiment.getPublication() != null) {
                 publicationController.setPublication(experiment.getPublication());
             }
-            refreshTabs();
         }
     }
 

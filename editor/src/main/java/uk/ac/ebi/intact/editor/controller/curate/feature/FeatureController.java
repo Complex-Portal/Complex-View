@@ -286,7 +286,12 @@ public class FeatureController extends AnnotatedObjectController {
     }
 
     @Override
-    protected void refreshTabs(){
+    public void refreshTabsAndFocusXref(){
+        refreshTabs();
+    }
+
+    @Override
+    public void refreshTabs(){
         super.refreshTabs();
 
         this.isRangeDisabled = false;
@@ -297,8 +302,6 @@ public class FeatureController extends AnnotatedObjectController {
 
         if (feature != null){
             this.ac = feature.getAc();
-
-            refreshTabs();
         }
     }
 
@@ -424,6 +427,11 @@ public class FeatureController extends AnnotatedObjectController {
 
     public void setRangeDisabled(boolean rangeDisabled) {
         isRangeDisabled = rangeDisabled;
+    }
+
+    @Override
+    public void modifyClone(AnnotatedObject clone) {
+        refreshTabs();
     }
 
     public void onTabChanged(TabChangeEvent e) {

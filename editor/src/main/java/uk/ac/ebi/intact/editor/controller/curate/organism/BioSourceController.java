@@ -39,7 +39,6 @@ public class BioSourceController extends AnnotatedObjectController {
 
         if (bioSource != null){
             this.ac = annotatedObject.getAc();
-            refreshTabsAndFocusXref();
         }
     }
 

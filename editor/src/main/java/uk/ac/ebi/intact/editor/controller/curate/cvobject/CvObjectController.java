@@ -54,7 +54,6 @@ public class CvObjectController extends AnnotatedObjectController {
 
         if (cvObject != null){
             this.ac = annotatedObject.getAc();
-            refreshTabsAndFocusXref();
         }
     }
 
@@ -189,8 +188,6 @@ public class CvObjectController extends AnnotatedObjectController {
     public void setCvObject(CvObject cvObject) {
         this.cvObject = (CvDagObject) cvObject;
         this.ac = cvObject.getAc();
-
-        refreshTabsAndFocusXref();
     }
 
     public String getCvClassName() {

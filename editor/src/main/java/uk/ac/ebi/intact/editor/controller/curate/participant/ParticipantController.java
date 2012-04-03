@@ -410,7 +410,12 @@ public class ParticipantController extends ParameterizableObjectController {
     }
 
     @Override
-    protected void refreshTabs(){
+    public void refreshTabsAndFocusXref(){
+        refreshTabs();
+    }
+
+    @Override
+    public void refreshTabs(){
         super.refreshTabsAndFocusXref();
         this.isConfidenceDisabled = true;
         this.isParameterDisabled = true;
@@ -421,8 +426,6 @@ public class ParticipantController extends ParameterizableObjectController {
 
         if (participant != null){
             this.ac = participant.getAc();
-
-            refreshTabs();
         }
     }
 
@@ -587,6 +590,11 @@ public class ParticipantController extends ParameterizableObjectController {
 
     public void setConfidenceDisabled(boolean confidenceDisabled) {
         isConfidenceDisabled = confidenceDisabled;
+    }
+
+    @Override
+    public void modifyClone(AnnotatedObject clone) {
+        refreshTabs();
     }
 
     public void onTabChanged(TabChangeEvent e) {

@@ -207,8 +207,6 @@ public class InteractorController extends AnnotatedObjectController {
 
         if (interactor != null){
             this.ac = interactor.getAc();
-
-            refreshTabsAndFocusXref();
         }
     }
 

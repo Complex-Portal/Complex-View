@@ -680,7 +680,12 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     @Override
-    protected void refreshTabs(){
+    public void refreshTabsAndFocusXref(){
+        refreshTabs();
+    }
+
+    @Override
+    public void refreshTabs(){
         super.refreshTabs();
         this.isLifeCycleDisabled = true;
     }
@@ -690,8 +695,6 @@ public class PublicationController extends AnnotatedObjectController {
 
         if (publication != null) {
             this.ac = publication.getAc();
-
-            refreshTabs();
         }
     }
 
@@ -1256,6 +1259,11 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setLifeCycleDisabled(boolean lifeCycleDisabled) {
         isLifeCycleDisabled = lifeCycleDisabled;
+    }
+
+    @Override
+    public void modifyClone(AnnotatedObject clone) {
+        refreshTabs();
     }
 
     @Override
