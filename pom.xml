@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
@@ -35,7 +36,9 @@
         <module>statistics</module>
         <module>imex</module>
         <module>exporter</module>
-    </modules>
+    <module>dataset-update-runner</module>
+    <module>imex-assigner-runner</module>
+  </modules>
 
     <scm>
         <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk</connection>
