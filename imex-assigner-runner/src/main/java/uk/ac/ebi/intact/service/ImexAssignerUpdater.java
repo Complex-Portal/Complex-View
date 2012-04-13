@@ -11,6 +11,16 @@ public class ImexAssignerUpdater
 {
     public static void main( String[] args )
     {
+        String localTrustStore = System.getProperty( "javax.net.ssl.trustStore" );
+        String localTrustStorePwd = System.getProperty( "javax.net.ssl.keyStorePassword" );
+        if(localTrustStore==null) {
+            System.out.println( "It appears you haven't setup a local trust store (other than the one embedded in the JDK)." +
+                    "\nShould you want to specify one, use: -Djavax.net.ssl.trustStore=<path.to.keystore> " +
+                    "\nAnd if it is password protected, use: -Djavax.net.ssl.keyStorePassword=<password>" );
+        } else {
+            System.out.println( "Using local trust store: " + localTrustStore + (localTrustStorePwd == null ? " (no password set)" : " (with password set)" ) );
+        }
+
         IntactContext.initContext(new String[]{"/META-INF/jpa-imex-assigner.spring.xml", "/META-INF/imex-assigner.spring.xml"});
 
         GlobalImexPublicationUpdater ia = (GlobalImexPublicationUpdater)
