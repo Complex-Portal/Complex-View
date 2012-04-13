@@ -34,7 +34,7 @@
     </bean>
 
     <!-- imex central -->
-    <bean id="imexCentral" class="uk.ac.ebi.intact.bridges.imexcentral.DefaultImexCentralClient">
+    <bean id="imexCentral" class="uk.ac.ebi.intact.bridges.imexcentral.DefaultImexCentralClient" lazy-init="true">
         <constructor-arg index="0" value="${ic.username}"/>
         <constructor-arg index="1" value="${ic.password}"/>
         <constructor-arg index="2" value="${ic.endpoint}"/>
