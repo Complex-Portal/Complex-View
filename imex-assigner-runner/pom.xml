@@ -61,9 +61,9 @@
                             <arguments>
                                 <argument>-Xmx2024m</argument>
                                 <argument>-classpath</argument>
+                                <classpath/>
                                 <argument>-Djavax.net.ssl.trustStore=${keystore.path}</argument>
                                 <argument>-Djavax.net.ssl.keyStorePassword=${keystore.password}</argument>
-                                <classpath/>
                                 <argument>uk.ac.ebi.intact.service.ImexAssignerUpdater</argument>
                             </arguments>
                         </configuration>
