@@ -11,7 +11,7 @@ public class ImexAssignerUpdater
 {
     public static void main( String[] args )
     {
-        IntactContext.initContext(new String[]{"/META-INF/jpa-imex-assigner.spring.xml", "/META-INF/imex-assigner.spring.xml", "/META-INF/beansimex.spring.xml"});
+        IntactContext.initContext(new String[]{"/META-INF/jpa-imex-assigner.spring.xml", "/META-INF/imex-assigner.spring.xml"});
 
         GlobalImexPublicationUpdater ia = (GlobalImexPublicationUpdater)
                 IntactContext.getCurrentInstance().getSpringContext().getBean("globalImexPublicationUpdater");
