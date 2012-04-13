@@ -16,4 +16,4 @@ MAVEN_PROFILE=$5
 
 echo "use profile ${MAVEN_PROFILE}"
 
-mvn -U clean install -Pexec,${MAVEN_PROFILE} -Dupdate.log.directory=$1 -Dic.username=$2 -Dic.password=$3 -Dic.endpoint=$4 -Djavax.net.ssl.trustStore=$6 -Djavax.net.ssl.keyStorePassword=$7 -Dmaven.repo.local=repository -Dmaven.test.skip -Ddb=oracle
+mvn -U clean install -Pexec,${MAVEN_PROFILE} -Dupdate.log.directory=$1 -Dic.username=$2 -Dic.password=$3 -Dic.endpoint=$4 -Dkeystore.path=$6 -Dkeystore.password=$7 -Dmaven.repo.local=repository -Dmaven.test.skip -Ddb=oracle
