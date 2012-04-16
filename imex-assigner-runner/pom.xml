@@ -72,6 +72,39 @@
             </build>
         </profile>
 
+        <profile>
+            <id>assign-selection</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-Xmx2024m</argument>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>-Djavax.net.ssl.trustStore=${keystore.path}</argument>
+                                <argument>-Djavax.net.ssl.keyStorePassword=${keystore.password}</argument>
+                                <argument>uk.ac.ebi.intact.service.ImexPublicationSelectionAssigner</argument>
+                                <argument>${inputFile}</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
 
     <dependencies>
