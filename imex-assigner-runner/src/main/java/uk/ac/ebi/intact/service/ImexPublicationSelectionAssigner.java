@@ -63,6 +63,7 @@ public class ImexPublicationSelectionAssigner {
 
             ImexCentralManager ia = (ImexCentralManager)
                     IntactContext.getCurrentInstance().getSpringContext().getBean("imexCentralManager");
+            ia.registerListenersIfNotDoneYet();
 
             System.out.println("folder where are the log files = " + ia.getImexUpdateConfig().getUpdateLogsDirectory().getAbsolutePath());
 
