@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.publication;
 
+import edu.ucla.mbi.imex.central.ws.v20.IcentralFault;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,11 +31,15 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.cdb.webservice.Author;
 import uk.ac.ebi.cdb.webservice.Citation;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
+import uk.ac.ebi.intact.bridges.imexcentral.DefaultImexCentralClient;
+import uk.ac.ebi.intact.bridges.imexcentral.ImexCentralException;
 import uk.ac.ebi.intact.core.config.SequenceCreationException;
 import uk.ac.ebi.intact.core.config.SequenceManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
 import uk.ac.ebi.intact.core.persister.IntactCore;
+import uk.ac.ebi.intact.dataexchange.imex.idassigner.ImexCentralManager;
+import uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.PublicationImexUpdaterException;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
@@ -99,6 +104,11 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Autowired
     private LifecycleManager lifecycleManager;
+
+    @Autowired
+    private ImexCentralManager imexCentralManager;
+    
+    private String curationDepth;
 
     public PublicationController() {
     }
@@ -176,6 +186,9 @@ public class PublicationController extends AnnotatedObjectController {
                 datasetsSelectItems.add( datasetSelectItem );
             }
         }
+
+        // load curationDepth
+        this.curationDepth = getCurationDepthAnnotation();
     }
 
     public boolean isCitexploreOnline() {
@@ -837,10 +850,11 @@ public class PublicationController extends AnnotatedObjectController {
         setExperimentAnnotation(CvTopic.ON_HOLD, (String) evt.getNewValue());
     }
 
-    public void curationDepthChanged(ValueChangeEvent evt) {
+    public void curationDepthChanged() {
         setUnsavedChanges(true);
 
-        setExperimentAnnotation(CURATION_DEPTH, (String) evt.getNewValue());
+        setCurationDepthAnnot(curationDepth);
+        setExperimentAnnotation(CURATION_DEPTH, curationDepth);
     }
 
     public void contactEmailChanged(ValueChangeEvent evt) {
@@ -872,6 +886,10 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public String getCurationDepth() {
+        return this.curationDepth;
+    }
+
+    public String getCurationDepthAnnotation() {
         return findAnnotationText(CURATION_DEPTH);
     }
 
@@ -884,6 +902,10 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setCurationDepth(String curationDepth) {
+        this.curationDepth = curationDepth;
+    }
+
+    public void setCurationDepthAnnot(String curationDepth) {
         setAnnotation(CURATION_DEPTH, curationDepth);
     }
 
@@ -988,6 +1010,75 @@ public class PublicationController extends AnnotatedObjectController {
 
         if (!PublicationUtils.isOnHold(publication)) {
             lifecycleManager.getAcceptedStatus().readyForRelease(publication, "Accepted and not on-hold");
+        }
+    }
+
+    public void assignNewImex(ActionEvent evt) {
+        // save publication changes first
+        getCorePersister().saveOrUpdate(publication);
+
+        registerEditorListenerIfNotDoneYet();
+
+        try {
+            imexCentralManager.assignImexAndUpdatePublication(publication.getAc());
+            
+            addInfoMessage("Successfully assigned new IMEx identifier to the publication " + publication.getShortLabel(), "");
+        }  catch (PublicationImexUpdaterException e) {
+            addErrorMessage("Impossible to assign new IMEx id", e.getMessage());
+        } catch (ImexCentralException e) {
+            IcentralFault f = (IcentralFault) e.getCause();
+
+            processImexCentralException(publication.getShortLabel(), e, f);
+        }
+
+        loadByAc();
+    }
+
+    private void processImexCentralException(String publication, ImexCentralException e, IcentralFault f) {
+        if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.USER_NOT_AUTHORIZED ) {
+            addErrorMessage("User not authorized", e.getMessage());
+        }
+        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.OPERATION_NOT_VALID ) {
+            addErrorMessage("Operation not valid", e.getMessage());
+        }
+        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.IDENTIFIER_MISSING ) {
+            addErrorMessage("Publication identifier is missing", e.getMessage());
+        }
+        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.IDENTIFIER_UNKNOWN ) {
+            addErrorMessage("Publication identifier is unknown (must be valid pubmed)", e.getMessage());
+        }
+        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.NO_RECORD ) {
+            addErrorMessage("No IMEx record could be found for " + publication, e.getMessage());
+        }
+        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.NO_RECORD_CREATED ) {
+            addErrorMessage("The publication could not be registered in IMEx central. Must be a valid pubmed Id", e.getMessage());
+        }
+        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.STATUS_UNKNOWN ) {
+            addErrorMessage("The status of the publication is unknown is IMEx central", e.getMessage());
+        }
+        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.NO_IMEX_ID ) {
+            addErrorMessage("No IMEx identifier could be found for this publication", e.getMessage());
+        }
+        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.UNKNOWN_USER ) {
+            addErrorMessage("Unknown user in IMEx central", e.getMessage());
+        }
+        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.UNKNOWN_GROUP ) {
+            addErrorMessage("Unknown group in IMEx central", e.getMessage());
+        }
+        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.OPERATION_NOT_SUPPORTED ) {
+            addErrorMessage("Operation not supported in IMEx central", e.getMessage());
+        }
+        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.INTERNAL_SERVER_ERROR ) {
+            addErrorMessage("Internal server error (IMEx central not responding)", e.getMessage());
+        }
+        else {
+            addErrorMessage("Fatal error (IMEx central not responding)", e.getMessage());
+        }
+    }
+    
+    private void registerEditorListenerIfNotDoneYet(){
+        if (imexCentralManager.getListenerList().getListenerCount() == 0){
+            imexCentralManager.addListener(new EditorImexCentralListener());
         }
     }
 
@@ -1261,6 +1352,15 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setLifeCycleDisabled(boolean lifeCycleDisabled) {
         isLifeCycleDisabled = lifeCycleDisabled;
+    }
+
+    public boolean isAssignedIMEx(){
+        return getImexId() != null;
+    }
+
+    public boolean isAssignableIMEx(){
+        return publication.getAc() != null && getImexId() == null && curationDepth != null
+                && "imex curation".equalsIgnoreCase(curationDepth);
     }
 
     @Override

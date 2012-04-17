@@ -213,8 +213,21 @@
                                                  size="10" readonly="true" styleClass="intact-disabled"/>
                                 </td>
                                 <td style="text-align:right;">
-                                    <h:outputLabel value="IMEx Id: " for="imexIdTxt" styleClass="intact-disabled"/>
-                                    <p:inputText id="imexIdTxt" value="#{publicationController.imexId}" size="10" readonly="true" styleClass="intact-disabled"/>
+                                    <h:panelGroup rendered="#{publicationController.isAssignedIMEx()}">
+                                        <h:outputLabel value="IMEx Id: " for="imexIdTxt" styleClass="intact-disabled"/>
+                                        <p:inputText id="imexIdTxt" value="#{publicationController.imexId}" size="10" readonly="true" styleClass="intact-disabled"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{publicationController.isAssignableIMEx()}">
+                                        <p:commandButton value="Assign new IMEx ID" type="button"
+                                                         onclick="assignNewImexId()"/>
+                                    </h:panelGroup>
+
+                                    <p:remoteCommand name="assignNewImexId" actionListener="#{publicationController.assignNewImex}"
+                                                     update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:publicationTabs,:editorForm:messagesComponent,:editorForm:basic"
+                                                     onstart="assignImexDialog.show();"
+                                                     onerror="alert('Error: '+error+' '+status)"
+                                                     oncomplete="assignImexDialog.hide();"/>
+                                    <ia:loadingDialog widgetVar="assignImexDialog" message="Assigning IMEx identifier for #{curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject)}..."/>
                                 </td>
                             </tr>
                             <tr>
@@ -286,13 +299,12 @@
                                 </td>
                                 <td colspan="3">
                                     <h:panelGroup id="curationDepthMenu">
-                                        <h:selectOneMenu value="#{publicationController.curationDepth}" valueChangeListener="#{publicationController.curationDepthChanged}">
-                                            <p:ajax event="valueChange" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:publicationTabs,:editorForm:messagesComponent"
-                                                process="@this" async="true"/>
-
+                                        <h:selectOneMenu value="#{publicationController.curationDepth}">
                                             <f:selectItem itemLabel="-- Not specified --"/>
                                             <f:selectItem itemLabel="IMEx" itemValue="imex curation"/>
                                             <f:selectItem itemLabel="MIMIx" itemValue="mimix curation"/>
+                                            <p:ajax event="change" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:publicationTabs,:editorForm:messagesComponent,:editorForm:basic"
+                                                    process="@this" listener="#{publicationController.curationDepthChanged()}"/>
                                         </h:selectOneMenu>
                                     </h:panelGroup>
                                 </td>

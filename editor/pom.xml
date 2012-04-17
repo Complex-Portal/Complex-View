@@ -42,6 +42,12 @@
         <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
         <db.hbm2ddl>none</db.hbm2ddl>
 
+        <!-- default IMEx central client-->
+        <ic.username></ic.username>
+        <ic.password></ic.password>
+        <ic.endpoint></ic.endpoint>
+        <update.log.directory>target/imex-report</update.log.directory>
+
         <!-- other property defaults -->
         <webapp.logo.url>http://www.ebi.ac.uk/~intact/images/intact_logo.png</webapp.logo.url>
         <intact.instance.name>Not Set</intact.instance.name>
@@ -152,6 +158,10 @@
                 <db.user>sa</db.user>
                 <db.password></db.password>
                 <db.hbm2ddl>update</db.hbm2ddl>
+                <ic.username></ic.username>
+                <ic.password></ic.password>
+                <ic.endpoint></ic.endpoint>
+                <update.log.directory>target/imex-report</update.log.directory>
             </properties>
 
             <dependencies>
@@ -171,6 +181,10 @@
                 <db.user>sa</db.user>
                 <db.password></db.password>
                 <db.hbm2ddl>update</db.hbm2ddl>
+                <ic.username></ic.username>
+                <ic.password></ic.password>
+                <ic.endpoint></ic.endpoint>
+                <update.log.directory>target/imex-report</update.log.directory>
 
                 <projectStage>Production</projectStage>
                 <userContext.scope>singleton</userContext.scope>
@@ -356,11 +370,6 @@
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.intact.bridges</groupId>
-            <artifactId>intact-imexcentral</artifactId>
-            <version>${bridges.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.ac.ebi.intact.bridges</groupId>
             <artifactId>intact-citexplore</artifactId>
             <version>${bridges.version}</version>
         </dependency>
@@ -430,6 +439,12 @@
                     <artifactId>cpdetector</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.intact.dataexchange.imex</groupId>
+            <artifactId>imex-id-update</artifactId>
+            <version>2.1.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>
