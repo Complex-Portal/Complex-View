@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/intact-components"
                 xmlns:ed="http://ebi.ac.uk/intact/editor/ui"
-
+                xmlns:ot="http://myfaces.apache.org/orchestra"
                 template="/main_template.xhtml">
 
 <ui:param name="title" value="#{annotatedObjectController.annotatedObject != null? curatorContextController.intactObjectSimpleName(annotatedObjectController.annotatedObject) : ''}: #{annotatedObjectController.annotatedObject != null? annotatedObjectController.annotatedObject.shortLabel : ''} | Curate | Editor"/>
@@ -135,6 +135,138 @@
 
     </script>
 
+    <!-- New publication -->
+    <p:dialog header="New publication" width="425" widgetVar="newPublicationDlg" visible="false" draggable="false"
+              modal="true" position="center">
+
+        <h:panelGrid id="newPublicationContent" columns="1" style="margin-bottom:10px">
+
+            <h:panelGroup rendered="#{not publicationController.citexploreOnline}">
+                <div style="background-color:#F5A9A9; padding: 5px">
+                    Citexplore is down at the moment. <br/>
+                    Auto-complete disabled temporarely.
+                </div>
+                <br/>
+            </h:panelGroup>
+
+            <h:panelGroup>
+                <h:outputLabel for="newPmid" value="PMID:"/>
+
+                <p:inputText id="newPmid" value="#{publicationController.identifierToImport}" converter="trimmingConverter"/>
+                <p:tooltip for="newPmid" value="Type a PMID and click on auto-complete" showDelay="2000"
+                           showEvent="focus" hideEvent="blur"/>
+
+
+
+                <p:commandButton value="Auto-complete" type="submit" process="newPmid"
+                                 action="#{publicationController.newAutocomplete}" disabled="#{not publicationController.citexploreOnline}" update=":editorForm"/>
+
+                <br/>
+
+                <h:outputLabel for="assignToMeChk" value="Assign to me"/>
+                <h:selectBooleanCheckbox id="assignToMeChk" value="#{publicationController.assignToMe}"/>
+
+                <div style="width:100%; text-align:right">
+                    <ot:separateConversationContext>
+                        <p:commandLink value="Create empty (unassigned)" process="@this"
+                                       action="#{publicationController.newEmptyUnassigned}" update=":editorForm"/>
+                    </ot:separateConversationContext>
+                </div>
+            </h:panelGroup>
+        </h:panelGrid>
+
+    </p:dialog>
+
+    <!-- CvObject -->
+    <p:dialog id="newCvDialog" header="New CV Object" width="400" widgetVar="newCvObjectDialog" visible="false" draggable="false"
+              modal="true" position="center" resizable="false">
+        <ia:panelDialogLayout>
+            <f:facet name="buttonBar">
+                <p:commandButton id="createCv" value="Create" action="#{cvObjectController.newCvObject}" ajax="false"/>
+            </f:facet>
+
+            <h:outputLabel for="cvType" value="Type: "/>
+            <h:selectOneMenu id="cvType" value="#{cvObjectController.newCvObjectType}">
+                <f:selectItem itemLabel="-- Select --" noSelectionOption="true"/>
+                <f:selectItem itemLabel="Alias type" itemValue="uk.ac.ebi.intact.model.CvAliasType"/>
+                <f:selectItem itemLabel="Biological role" itemValue="uk.ac.ebi.intact.model.CvBiologicalRole"/>
+                <f:selectItem itemLabel="Cell type" itemValue="uk.ac.ebi.intact.model.CvCellType"/>
+                <f:selectItem itemLabel="Confidence type" itemValue="uk.ac.ebi.intact.model.CvConfidenceType"/>
+                <f:selectItem itemLabel="Database" itemValue="uk.ac.ebi.intact.model.CvDatabase"/>
+                <f:selectItem itemLabel="Experimental role" itemValue="uk.ac.ebi.intact.model.CvExperimentalRole"/>
+                <f:selectItem itemLabel="Experimental preparation" itemValue="uk.ac.ebi.intact.model.CvExperimentalPreparation"/>
+                <f:selectItem itemLabel="Feature type" itemValue="uk.ac.ebi.intact.model.CvFeatureType"/>
+                <f:selectItem itemLabel="Fuzzy type" itemValue="uk.ac.ebi.intact.model.CvFuzzyType"/>
+                <f:selectItem itemLabel="Interaction detection method" itemValue="uk.ac.ebi.intact.model.CvInteraction"/>
+                <f:selectItem itemLabel="Interaction type" itemValue="uk.ac.ebi.intact.model.CvInteractionType"/>
+                <f:selectItem itemLabel="Interactor type" itemValue="uk.ac.ebi.intact.model.CvInteractorType"/>
+                <f:selectItem itemLabel="Participant identification method" itemValue="uk.ac.ebi.intact.model.CvIdentification"/>
+                <f:selectItem itemLabel="Parameter type" itemValue="uk.ac.ebi.intact.model.CvParameterType"/>
+                <f:selectItem itemLabel="Parameter unit" itemValue="uk.ac.ebi.intact.model.CvParameterUnit"/>
+                <f:selectItem itemLabel="Tissue" itemValue="uk.ac.ebi.intact.model.CvTissue"/>
+                <f:selectItem itemLabel="Topic" itemValue="uk.ac.ebi.intact.model.CvTopic"/>
+                <f:selectItem itemLabel="Xref qualifier" itemValue="uk.ac.ebi.intact.model.CvXrefQualifier"/>
+            </h:selectOneMenu>
+
+        </ia:panelDialogLayout>
+    </p:dialog>
+
+    <!-- Interactor -->
+    <p:dialog header="New Interactor" width="400" widgetVar="newInteractorDialog" visible="false" draggable="false"
+              modal="true" position="center" resizable="false">
+        <ia:panelDialogLayout>
+            <f:facet name="buttonBar">
+                <p:commandButton value="Create" action="#{interactorController.newInteractor}" ajax="false"/>
+            </f:facet>
+
+            <h:panelGrid columns="2">
+                <h:outputLabel for="interactorTxt" value="Type: "/>
+                <ia:inputCvObject id="interactorTxt" value="#{interactorController.newInteractorType}"
+                                  selectItems="#{cvObjectService.interactorTypeSelectItems}"
+                                  cvIdentifier="MI:0313"/>
+            </h:panelGrid>
+
+        </ia:panelDialogLayout>
+    </p:dialog>
+
+    <!-- IMEx central dialog if publication already in IMEx central -->
+    <p:dialog header="Decision about publication already in IMEx central" width="600" widgetVar="imexCentralActionDlg" draggable="false"
+              modal="true" position="center">
+        <h:panelGroup style="margin-bottom:10px">
+            <h:outputText value="This publication is already curated by a IMEx partner. What do you want to do?"/>
+
+            <br/>
+            <br/>
+
+            <p:commandButton value="Create the publication anyway" actionListener="#{publicationController.createNewPublication}"
+                             action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"
+                             ajax="false" />
+
+            <p:commandButton value="Do not create the publication" action="/curate/curate?faces-redirect=true"
+                             ajax="false" />
+
+        </h:panelGroup>
+    </p:dialog>
+
+    <!-- IMEx central dialog if publication already in IMEx central -->
+    <p:dialog header="Decision about unassigned publication already in IMEx central" width="600" widgetVar="imexCentralUnassignedActionDlg" draggable="false"
+              modal="true" position="center">
+        <h:panelGroup style="margin-bottom:10px">
+            <h:outputText value="This publication is already curated by a IMEx partner. What do you want to do?"/>
+
+            <br/>
+            <br/>
+
+            <p:commandButton value="Create the publication anyway" actionListener="#{publicationController.createNewEmptyPublication}"
+                             action="/curate/publication?faces-redirect=true&amp;includeViewParams=true"
+                             ajax="false" />
+
+            <p:commandButton value="Do not create the publication" action="/curate/curate?faces-redirect=true"
+                             ajax="false" />
+
+        </h:panelGroup>
+    </p:dialog>
+
     <!--<p:hotkey bind="alt+n" oncomplete="newPublicationDlg.show()"/>-->
     <!--<p:hotkey bind="alt+o" oncomplete="openByAcDlg.show()"/>-->
     <!--<p:hotkey bind="alt+s" oncomplete="save(); return false" onerror="alert('lala')"/>-->
@@ -225,59 +357,6 @@
 
 
     </h:panelGroup>
-
-
-    <!-- CvObject -->
-    <p:dialog id="newCvDialog" header="New CV Object" width="400" widgetVar="newCvObjectDialog" visible="false" draggable="false"
-              modal="true" position="center" resizable="false">
-        <ia:panelDialogLayout>
-            <f:facet name="buttonBar">
-                <p:commandButton id="createCv" value="Create" action="#{cvObjectController.newCvObject}" ajax="false"/>
-            </f:facet>
-
-            <h:outputLabel for="cvType" value="Type: "/>
-            <h:selectOneMenu id="cvType" value="#{cvObjectController.newCvObjectType}">
-                <f:selectItem itemLabel="-- Select --" noSelectionOption="true"/>
-                <f:selectItem itemLabel="Alias type" itemValue="uk.ac.ebi.intact.model.CvAliasType"/>
-                <f:selectItem itemLabel="Biological role" itemValue="uk.ac.ebi.intact.model.CvBiologicalRole"/>
-                <f:selectItem itemLabel="Cell type" itemValue="uk.ac.ebi.intact.model.CvCellType"/>
-                <f:selectItem itemLabel="Confidence type" itemValue="uk.ac.ebi.intact.model.CvConfidenceType"/>
-                <f:selectItem itemLabel="Database" itemValue="uk.ac.ebi.intact.model.CvDatabase"/>
-                <f:selectItem itemLabel="Experimental role" itemValue="uk.ac.ebi.intact.model.CvExperimentalRole"/>
-                <f:selectItem itemLabel="Experimental preparation" itemValue="uk.ac.ebi.intact.model.CvExperimentalPreparation"/>
-                <f:selectItem itemLabel="Feature type" itemValue="uk.ac.ebi.intact.model.CvFeatureType"/>
-                <f:selectItem itemLabel="Fuzzy type" itemValue="uk.ac.ebi.intact.model.CvFuzzyType"/>
-                <f:selectItem itemLabel="Interaction detection method" itemValue="uk.ac.ebi.intact.model.CvInteraction"/>
-                <f:selectItem itemLabel="Interaction type" itemValue="uk.ac.ebi.intact.model.CvInteractionType"/>
-                <f:selectItem itemLabel="Interactor type" itemValue="uk.ac.ebi.intact.model.CvInteractorType"/>
-                <f:selectItem itemLabel="Participant identification method" itemValue="uk.ac.ebi.intact.model.CvIdentification"/>
-                <f:selectItem itemLabel="Parameter type" itemValue="uk.ac.ebi.intact.model.CvParameterType"/>
-                <f:selectItem itemLabel="Parameter unit" itemValue="uk.ac.ebi.intact.model.CvParameterUnit"/>
-                <f:selectItem itemLabel="Tissue" itemValue="uk.ac.ebi.intact.model.CvTissue"/>
-                <f:selectItem itemLabel="Topic" itemValue="uk.ac.ebi.intact.model.CvTopic"/>
-                <f:selectItem itemLabel="Xref qualifier" itemValue="uk.ac.ebi.intact.model.CvXrefQualifier"/>
-            </h:selectOneMenu>
-
-        </ia:panelDialogLayout>
-    </p:dialog>
-
-    <!-- Interactor -->
-    <p:dialog header="New Interactor" width="400" widgetVar="newInteractorDialog" visible="false" draggable="false"
-              modal="true" position="center" resizable="false">
-        <ia:panelDialogLayout>
-            <f:facet name="buttonBar">
-                <p:commandButton value="Create" action="#{interactorController.newInteractor}" ajax="false"/>
-            </f:facet>
-
-            <h:panelGrid columns="2">
-                <h:outputLabel for="interactorTxt" value="Type: "/>
-                <ia:inputCvObject id="interactorTxt" value="#{interactorController.newInteractorType}"
-                                  selectItems="#{cvObjectService.interactorTypeSelectItems}"
-                                  cvIdentifier="MI:0313"/>
-            </h:panelGrid>
-
-        </ia:panelDialogLayout>
-    </p:dialog>
 
 </ui:define>
 

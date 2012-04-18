@@ -119,7 +119,7 @@ public class InteractionRemoteController extends JpaAwareController {
         if (publication == null) {
             // create one
             publicationController.setIdentifier(pubRef);
-            publicationController.newEmpty(false);
+            publicationController.newEmpty();
             publicationController.setUnsavedChanges(true);
 
             publication = publicationController.getPublication();

@@ -3,54 +3,8 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:ot="http://myfaces.apache.org/orchestra"
                 xmlns:ia="http://java.sun.com/jsf/composite/intact-components">
 
-
-    <!-- New publication -->
-    <p:dialog header="New publication" width="425" widgetVar="newPublicationDlg" visible="false" draggable="false"
-              modal="true" position="center">
-
-        <h:panelGrid id="newPublicationContent" columns="1" style="margin-bottom:10px">
-
-                <h:panelGroup rendered="#{not publicationController.citexploreOnline}">
-                    <div style="background-color:#F5A9A9; padding: 5px">
-                        Citexplore is down at the moment. <br/>
-                        Auto-complete disabled temporarely.
-                    </div>
-                    <br/>
-                </h:panelGroup>
-
-            <h:panelGroup>
-                <h:outputLabel for="newPmid" value="PMID:"/>
-
-                <p:inputText id="newPmid" value="#{publicationController.identifierToImport}" converter="trimmingConverter"/>
-                <p:tooltip for="newPmid" value="Type a PMID and click on auto-complete" showDelay="2000"
-                           showEvent="focus" hideEvent="blur"/>
-
-
-
-                <p:commandButton value="Auto-complete" actionListener="#{publicationController.newAutocomplete}" ajax="false"
-                                 process="newPmid"
-                                 action="/curate/publication?faces-redirect=true" disabled="#{not publicationController.citexploreOnline}"/>
-
-                <br/>
-
-                <h:outputLabel for="assignToMeChk" value="Assign to me"/>
-                <h:selectBooleanCheckbox id="assignToMeChk" value="#{publicationController.assignToMe}"/>
-
-                <div style="width:100%; text-align:right">
-                    <ot:separateConversationContext>
-                        <p:commandLink value="Create empty (unassigned)" ajax="false"
-                                       process="newPmid"
-                                       actionListener="#{publicationController.newEmptyUnassigned}"
-                                       action="/curate/publication?faces-redirect=true"/>
-                    </ot:separateConversationContext>
-                </div>
-            </h:panelGroup>
-        </h:panelGrid>
-
-    </p:dialog>
 
     <!-- Open by AC -->
     <p:dialog header="Open by AC" width="400" widgetVar="openByAcDlg" visible="false" draggable="false"
@@ -88,5 +42,4 @@
 
     </p:dialog>
 
-    
 </ui:composition>

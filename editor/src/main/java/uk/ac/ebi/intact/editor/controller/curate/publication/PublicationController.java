@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
 import org.joda.time.DateTime;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +108,7 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Autowired
     private ImexCentralManager imexCentralManager;
-    
+
     private String curationDepth;
 
     public PublicationController() {
@@ -214,12 +215,14 @@ public class PublicationController extends AnnotatedObjectController {
         return true;
     }
 
-    public void newAutocomplete( ActionEvent evt ) {
+    public String newAutocomplete( ) {
         identifier = identifierToImport;
 
         if ( identifier == null ) {
             addErrorMessage( "Cannot auto-complete", "ID is empty" );
-            return;
+            RequestContext requestContext = RequestContext.getCurrentInstance();
+            requestContext.execute("newPublicationDlg.hide()");
+            return null;
         }
 
         // check if already exists
@@ -228,16 +231,63 @@ public class PublicationController extends AnnotatedObjectController {
         if ( existingPublication != null ) {
             setPublication(existingPublication);
             addWarningMessage( "Publication already exists", "Loaded from the database" );
+            RequestContext requestContext = RequestContext.getCurrentInstance();
+            requestContext.execute("newPublicationDlg.hide()");
+            return "/curate/publication?faces-redirect=true&includeViewParams=true";
+        }
+        else {
+            // check if it already exists in IMEx central
+            try {
+                if (imexCentralManager.isPublicationAlreadyRegisteredInImexCentral(identifier)){
+                    RequestContext requestContext = RequestContext.getCurrentInstance();
+                    requestContext.execute("newPublicationDlg.hide()");
+                    requestContext.execute("imexCentralActionDlg.show()");
+                    return null;
+                }
+                else {
+                    createNewPublication(null);
+                    RequestContext requestContext = RequestContext.getCurrentInstance();
+                    requestContext.execute("newPublicationDlg.hide()");
+                    return "/curate/publication?faces-redirect=true";
+                }
+            }
+            // cannot check IMEx central, add warning and create publication
+            catch (ImexCentralException e) {
+                addWarningMessage( "Impossible to check with IMExcentral if "+identifier+" is already curated", e.getMessage() );
+                createNewPublication(null);
+
+                RequestContext requestContext = RequestContext.getCurrentInstance();
+                requestContext.execute("newPublicationDlg.hide()");
+                return "/curate/publication?faces-redirect=true";
+            }
+        }
+    }
+
+    public void createNewPublication(ActionEvent evt) {
+
+        if ( identifier == null ) {
+            addErrorMessage( "Cannot create publication", "ID is empty" );
             return;
         }
 
-        newEmpty(false);
+        newEmpty();
         autocomplete( publication, identifier );
 
         identifier = null;
         identifierToImport = null;
+    }
 
-        getChangesController().markAsUnsaved(publication);
+    public void createNewEmptyPublication(ActionEvent evt) {
+
+        if ( identifier == null ) {
+            addErrorMessage( "Cannot create publication", "ID is empty" );
+            return;
+        }
+
+        newEmpty();
+
+        identifier = null;
+        identifierToImport = null;
     }
 
     public void doFormAutocomplete( ActionEvent evt ) {
@@ -315,39 +365,70 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     @Transactional(value = "transactionManager")
-    public void newEmptyUnassigned( ActionEvent evt ) {
-        newEmpty(true);
+    public String newEmptyUnassigned( ) {
+        SequenceManager sequenceManager = (SequenceManager) getSpringContext().getBean("sequenceManager");
+        try {
+            sequenceManager.createSequenceIfNotExists("unassigned_seq");
+        } catch (SequenceCreationException e) {
+            handleException(e);
+        }
+
+        identifier = PublicationUtils.nextUnassignedId(getIntactContext());
+
+        // check if already exists, so we skip this unassigned
+        Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
+
+        if ( existingPublication != null ) {
+            setPublication(existingPublication);
+            addWarningMessage( "Publication already exists", "Loaded from the database" );
+            RequestContext requestContext = RequestContext.getCurrentInstance();
+            requestContext.execute("newPublicationDlg.hide()");
+            return "/curate/publication?faces-redirect=true&includeViewParams=true";
+        }
+        else {
+
+            // check if it already exists in IMEx central
+            try {
+                if (imexCentralManager.isPublicationAlreadyRegisteredInImexCentral(identifier)){
+                    RequestContext requestContext = RequestContext.getCurrentInstance();
+                    requestContext.execute("newPublicationDlg.hide()");
+                    requestContext.execute("imexCentralUnassignedActionDlg.show()");
+                    return null;
+                }
+                else {
+                    newEmpty();
+
+                    identifier = null;
+                    identifierToImport = null;
+
+                    RequestContext requestContext = RequestContext.getCurrentInstance();
+                    requestContext.execute("newPublicationDlg.hide()");
+                    return "/curate/publication?faces-redirect=true";
+                }
+            }
+            // cannot check IMEx central, add warning and create publication
+            catch (ImexCentralException e) {
+                addWarningMessage( "Impossible to check with IMExcentral if "+identifier+" is already curated", e.getMessage() );
+                newEmpty();
+
+                identifier = null;
+                identifierToImport = null;
+
+                RequestContext requestContext = RequestContext.getCurrentInstance();
+                requestContext.execute("newPublicationDlg.hide()");
+                return "/curate/publication?faces-redirect=true";
+            }
+        }
     }
 
     @Transactional(value = "transactionManager")
-    public void newEmpty( boolean unassigned ) {
-        if (unassigned) {
-            SequenceManager sequenceManager = (SequenceManager) getSpringContext().getBean("sequenceManager");
-            try {
-                sequenceManager.createSequenceIfNotExists("unassigned_seq");
-            } catch (SequenceCreationException e) {
-                handleException(e);
-            }
-
-            identifier = PublicationUtils.nextUnassignedId(getIntactContext());
-
-            // check if already exists, so we skip this unassigned
-            Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
-
-            if ( existingPublication != null ) {
-                setPublication(existingPublication);
-                addWarningMessage( "Publication already exists", "Loaded from the database" );
-                return;
-            }
-        }
+    public void newEmpty() {
 
         Publication publication = new Publication( userSessionController.getUserInstitution(), identifier );
         setPublication(publication);
 
         // add the primary reference xref
         setPrimaryReference( identifier );
-
-        getChangesController().markAsUnsaved(publication);
 
         interactionDataModel = LazyDataModelFactory.createEmptyDataModel();
 
@@ -371,7 +452,6 @@ public class PublicationController extends AnnotatedObjectController {
 
         getChangesController().markAsUnsaved(publication);
     }
-
 
     public void openByPmid( ActionEvent evt ) {
         identifier = identifierToOpen;
@@ -1021,7 +1101,7 @@ public class PublicationController extends AnnotatedObjectController {
 
         try {
             imexCentralManager.assignImexAndUpdatePublication(publication.getAc());
-            
+
             addInfoMessage("Successfully assigned new IMEx identifier to the publication " + publication.getShortLabel(), "");
         }  catch (PublicationImexUpdaterException e) {
             addErrorMessage("Impossible to assign new IMEx id", e.getMessage());
@@ -1032,6 +1112,8 @@ public class PublicationController extends AnnotatedObjectController {
         }
 
         loadByAc();
+
+        getChangesController().removeFromUnsaved(publication, collectParentAcsOfCurrentAnnotatedObject());
     }
 
     private void processImexCentralException(String publication, ImexCentralException e, IcentralFault f) {
@@ -1075,7 +1157,7 @@ public class PublicationController extends AnnotatedObjectController {
             addErrorMessage("Fatal error (IMEx central not responding)", e.getMessage());
         }
     }
-    
+
     private void registerEditorListenerIfNotDoneYet(){
         if (imexCentralManager.getListenerList().getListenerCount() == 0){
             imexCentralManager.addListener(new EditorImexCentralListener());

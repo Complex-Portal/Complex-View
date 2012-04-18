@@ -351,7 +351,6 @@ public class ExperimentController extends AnnotatedObjectController {
         } else if (allActedUpon) {
             RequestContext requestContext = RequestContext.getCurrentInstance();
             requestContext.execute("publicationActionDlg.show()");
-
         }
     }
 
