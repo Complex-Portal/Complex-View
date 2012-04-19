@@ -18,6 +18,7 @@ public class CvObjectIT extends AbstractAnnotatedObjectIT{
         loginAs("curator");
 
         removeSixthParentFromPickList();
+        waitUntilLoadingIsComplete();
 
         waitUntilElementIsDisplayed(By.className("intact-notSavedPanel"));
         assertTrue(driver.findElement(By.className("intact-notSavedPanel")).isDisplayed());

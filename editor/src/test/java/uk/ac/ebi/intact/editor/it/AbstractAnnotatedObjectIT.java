@@ -33,6 +33,7 @@ public abstract class AbstractAnnotatedObjectIT extends EditorIT {
     }
 
     protected void clickOnNewAnnotation() {
+        waitUntilElementIsDisplayed(By.id(getTabsComponentId()+":newAnnotBtn"));
         driver.findElement(By.id(getTabsComponentId()+":newAnnotBtn")).click();
         waitUntilLoadingIsComplete();
     }
@@ -60,6 +61,7 @@ public abstract class AbstractAnnotatedObjectIT extends EditorIT {
     }
 
     protected String annotationTopicSelectedInRow(int rowIndex) {
+        waitUntilElementIsEnabled(By.id(getTabsComponentId()+":annotationsTable:" + rowIndex + ":annotationTopicSel"));
         return valueForSelect(By.id(getTabsComponentId()+":annotationsTable:" + rowIndex + ":annotationTopicSel"));
     }
 

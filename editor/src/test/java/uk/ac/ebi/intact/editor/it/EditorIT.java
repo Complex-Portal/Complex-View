@@ -85,6 +85,15 @@ public abstract class EditorIT extends BaseIT {
         });
     }
 
+    protected void waitUntilElementIsEnabled(final By by) {
+        wait.until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver webDriver) {
+                final WebElement element = driver.findElement(by);
+                return element != null && element.isEnabled();
+            }
+        });
+    }
+
     protected void waitUntilLoadingIsComplete() {
         wait.until(new ExpectedCondition<Boolean>() {
             public Boolean apply(WebDriver webDriver) {
