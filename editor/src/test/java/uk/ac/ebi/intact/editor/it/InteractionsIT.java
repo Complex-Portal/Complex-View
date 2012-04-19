@@ -286,6 +286,7 @@ public class InteractionsIT extends AbstractAnnotatedObjectIT {
     }
 
     protected String paramTypeSelectedInRow(int rowIndex) {
+        waitUntilElementIsEnabled(By.id(getTabsComponentId() + ":parametersTable:" + rowIndex + ":paramTypeSel"));
         return valueForSelect(By.id(getTabsComponentId() + ":parametersTable:" + rowIndex + ":paramTypeSel"));
     }
 
