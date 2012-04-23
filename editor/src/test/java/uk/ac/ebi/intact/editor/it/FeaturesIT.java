@@ -6,8 +6,6 @@ import org.openqa.selenium.support.ui.Select;
 import uk.ac.ebi.intact.model.Component;
 import uk.ac.ebi.intact.model.Experiment;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class FeaturesIT extends AbstractAnnotatedObjectIT {
@@ -29,8 +27,10 @@ public class FeaturesIT extends AbstractAnnotatedObjectIT {
         typeShortLabel("featlala");
         selectType("protein modification");
         selectMethod("autoradiography");
+        waitUntilLoadingIsComplete();
 
         createNewRange("1-5");
+        waitUntilLoadingIsComplete();
         
         assertTrue(theValueForTheRangeInTheFirstRowIs("1-5"));
 
