@@ -90,6 +90,7 @@ public abstract class AbstractAnnotatedObjectIT extends EditorIT {
     }
 
     protected String valueForSelect(By by) {
+        waitUntilElementIsDisplayed(by);
         final WebElement element = driver.findElement(by);
 
         Select exportFormatSelect = new Select(element);
