@@ -24,6 +24,7 @@ public class FeaturesIT extends AbstractAnnotatedObjectIT {
         loginAs("curator");
 
         clickOnNewFeature();
+        waitUntilLoadingIsComplete();
         typeShortLabel("featlala");
         selectType("protein modification");
         selectMethod("autoradiography");

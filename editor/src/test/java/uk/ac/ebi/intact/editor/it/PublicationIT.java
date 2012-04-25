@@ -99,6 +99,21 @@ public class PublicationIT extends AbstractAnnotatedObjectIT  {
         waitUntilLoadingIsComplete();
     }
 
+    @Test
+    public void assignNewImex(){
+        Experiment experiment = getDaoFactory().getExperimentDao().getByShortLabel("bigexp-2012-1");
+
+        // show IMEx button
+        goToPublicationWithId(experiment.getPublication().getPublicationId());
+        loginAs("curator");
+        new Select(driver.findElement(By.id("selectCurationDepth"))).selectByVisibleText("IMEx");
+        driver.findElement(By.cssSelector("option[value=\"imex curation\"]")).click();
+        waitUntilElementIsDisplayed(By.id("unsavedSaveButton"));
+        driver.findElement(By.id("assignImexBtn")).click();
+
+        waitUntilElementHasValue(By.id("imexIdTxt"), "IM-1");
+    }
+
     @Override
     protected String getTabsComponentId() {
         return "publicationTabs";
