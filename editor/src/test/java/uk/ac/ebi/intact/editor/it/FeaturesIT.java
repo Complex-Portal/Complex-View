@@ -60,7 +60,6 @@ public class FeaturesIT extends AbstractAnnotatedObjectIT {
 
     private boolean theValueForTheRangeInTheFirstRowIs(String range) {
         final By id = By.id("featureTabs:rangesTable:0:rangeTxt");
-        waitUntilElementIsPresent(id);
         return range.equals(valueForElement(id));
     }
 
