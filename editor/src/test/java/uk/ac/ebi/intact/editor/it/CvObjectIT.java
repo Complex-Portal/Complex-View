@@ -20,8 +20,8 @@ public class CvObjectIT extends AbstractAnnotatedObjectIT{
         removeSixthParentFromPickList();
         waitUntilLoadingIsComplete();
 
-        //waitUntilElementIsDisplayed(By.className("intact-notSavedPanel"));
-        assertTrue(driver.findElement(By.className("intact-notSavedPanel")).isDisplayed());
+        waitUntilElementIsDisplayed(By.id("unsavedSaveButton"));
+        assertTrue(driver.findElement(By.id("unsavedSaveButton")).isDisplayed());
 	}
 
     /*@Test
