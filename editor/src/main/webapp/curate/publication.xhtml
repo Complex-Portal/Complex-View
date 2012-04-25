@@ -101,6 +101,7 @@
 </ui:define>
 
 <ui:define name="curateContent">
+
 <h:panelGroup rendered="#{publicationController.publication == null}">
     <ia:panelMessage level="warn">
         No publication loaded!
@@ -337,7 +338,7 @@
 <br/>
 
 <p:tabView id="publicationTabs" dynamic="true">
-    <p:ajax event="tabChange" listener="#{publicationController.onTabChanged}" />
+    <p:ajax event="tabChange" listener="#{publicationController.onTabChanged}" update=":editorForm:publicationTabs,:editorForm:messagesComponent" />
 
     <p:tab title="Experiments (#{fn:length(publicationController.publication.experiments)})">
         <div class="intact-buttonBar">

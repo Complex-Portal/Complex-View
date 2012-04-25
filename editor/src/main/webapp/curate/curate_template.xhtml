@@ -118,7 +118,6 @@
 </ui:define>
 
 <ui:define name="content">
-    <h:outputScript library="javascript" name="intact.js"/>
 
     <script type="text/javascript">
         function ia_disableSave() {
@@ -134,6 +133,97 @@
         }
 
     </script>
+
+    <!--<p:hotkey bind="alt+n" oncomplete="newPublicationDlg.show()"/>-->
+    <!--<p:hotkey bind="alt+o" oncomplete="openByAcDlg.show()"/>-->
+    <!--<p:hotkey bind="alt+s" oncomplete="save(); return false" onerror="alert('lala')"/>-->
+
+    <h:panelGroup rendered="#{annotatedObjectController.annotatedObject == null}">
+        <ui:insert name="emptyCurateContent"/>
+    </h:panelGroup>
+
+    <h:panelGroup rendered="#{annotatedObjectController != null}">
+        <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null and changesController.isDeletedAc(annotatedObjectController.annotatedObject.ac)}">
+            <ia:panelMessage level="info">
+                <h:outputText value="This object will be deleted on save."/>
+            </ia:panelMessage>
+        </h:panelGroup>
+
+        <p:remoteCommand id="markAsUnsavedCmd" name="markAsUnsaved" update=":editorForm:messagesComponent,:editorForm:changesPanel,:editorForm:unsavedChangesInfo"
+                         actionListener="#{annotatedObjectController.changed(null)}" process="markAsUnsavedCmd"/>
+
+        <ia:loadingDialog widgetVar="loadDialog"/>
+
+        <div style="width:100%;">
+
+            <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
+                <h:panelGroup id="unsavedChangesInfo" style="float: right; margin-right: 40px">
+                    <ui:insert name="curateTopRight">
+                        <h:panelGroup rendered="#{changesController.unsavedChangesForCurrentUser.size() gt 0}">
+                            <ia:panelMessage level="warn" showIcon="true">
+                                <p:commandLink value="#{changesController.unsavedChangesForCurrentUser.size()} unsaved changes"
+                                               update=":editorForm:unsavedTable"
+                                               onclick="unsavedChangesDialog.show()"/>
+                            </ia:panelMessage>
+                        </h:panelGroup>
+
+
+                        <ui:include src="dialog_unsaved_changes.xhtml"/>
+                    </ui:insert>
+                </h:panelGroup>
+
+                <ui:insert name="breadcrumbs"/>
+
+            </h:panelGroup>
+
+
+
+            <ui:insert name="curateContent"/>
+
+            <p:outputPanel id="changesPanel" style="display: #{annotatedObjectController.unsavedChanges? 'block' : 'none'}">
+
+                <h:panelGroup>
+
+                    <p>&#160;</p>
+
+                    <div class="intact-notSavedPanel">
+                        Changes not yet saved &#160;
+
+                        <p:commandButton type="button" id="unsavedSaveButton"
+                                         styleClass="important-button"
+                                         style="opacity: 1.0; font-weight: bold"
+                                         value="Save" onclick="save(); return false">
+                        </p:commandButton>
+
+
+                        &#160;-&#160;
+                        <p:commandLink id="unsavedRevertLink" value="Revert" style="opacity: 1.0; font-weight: bold"
+                                       rendered="#{annotatedObjectController.annotatedObject.ac != null}"
+                                       process="@this"
+                                       update=":editorForm:centralUnit,:editorForm:topSection,:editorForm:messagesComponent"
+                                       actionListener="#{annotatedObjectController.doRevertChanges}"
+                                       onclick="revertDialog.show()" oncomplete="revertDialog.hide()"/>
+
+                        <p:commandLink id="unsavedCancelLink" value="Cancel" style="opacity: 1.0; font-weight: bold"
+                                       rendered="#{annotatedObjectController.annotatedObject.ac == null}"
+                                       immediate="true"
+                                       action="#{annotatedObjectController.doCancelEdition}"
+                                       update=":editorForm:centralUnit,:editorForm:topSection,:editorForm:messagesComponent"
+                                       onclick="revertDialog.show()" oncomplete="revertDialog.hide();"/>
+                    </div>
+
+                </h:panelGroup>
+            </p:outputPanel>
+        </div>
+
+        <p:remoteCommand name="save" actionListener="#{annotatedObjectController.doSave}"
+                         update=":editorForm"
+                         onstart="saveDialog.show(); var input = document.getElementById('topSaveButton'); input.disabled = true; input.value = 'Saving...'"
+                         onerror="alert('Error: '+error+' '+status)"
+                         oncomplete="saveDialog.hide(); var input = document.getElementById('topSaveButton'); input.disabled = false; input.value = 'Save'"/>
+
+
+    </h:panelGroup>
 
     <!-- New publication -->
     <p:dialog header="New publication" width="425" widgetVar="newPublicationDlg" visible="false" draggable="false"
@@ -267,96 +357,6 @@
         </h:panelGroup>
     </p:dialog>
 
-    <!--<p:hotkey bind="alt+n" oncomplete="newPublicationDlg.show()"/>-->
-    <!--<p:hotkey bind="alt+o" oncomplete="openByAcDlg.show()"/>-->
-    <!--<p:hotkey bind="alt+s" oncomplete="save(); return false" onerror="alert('lala')"/>-->
-
-    <h:panelGroup rendered="#{annotatedObjectController.annotatedObject == null}">
-        <ui:insert name="emptyCurateContent"/>
-    </h:panelGroup>
-
-    <h:panelGroup rendered="#{annotatedObjectController != null}">
-        <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null and changesController.isDeletedAc(annotatedObjectController.annotatedObject.ac)}">
-            <ia:panelMessage level="info">
-                <h:outputText value="This object will be deleted on save."/>
-            </ia:panelMessage>
-        </h:panelGroup>
-
-        <p:remoteCommand id="markAsUnsavedCmd" name="markAsUnsaved" update=":editorForm:messagesComponent,:editorForm:changesPanel,:editorForm:unsavedChangesInfo"
-                         actionListener="#{annotatedObjectController.changed(null)}" process="markAsUnsavedCmd"/>
-
-        <ia:loadingDialog widgetVar="loadDialog"/>
-
-        <div style="width:100%;">
-
-            <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
-                <h:panelGroup id="unsavedChangesInfo" style="float: right; margin-right: 40px">
-                    <ui:insert name="curateTopRight">
-                        <h:panelGroup rendered="#{changesController.unsavedChangesForCurrentUser.size() gt 0}">
-                            <ia:panelMessage level="warn" showIcon="true">
-                                <p:commandLink value="#{changesController.unsavedChangesForCurrentUser.size()} unsaved changes"
-                                               update=":editorForm:unsavedTable"
-                                               onclick="unsavedChangesDialog.show()"/>
-                            </ia:panelMessage>
-                        </h:panelGroup>
-
-
-                        <ui:include src="dialog_unsaved_changes.xhtml"/>
-                    </ui:insert>
-                </h:panelGroup>
-
-                <ui:insert name="breadcrumbs"/>
-
-            </h:panelGroup>
-
-
-
-            <ui:insert name="curateContent"/>
-
-            <p:outputPanel id="changesPanel" style="display: #{annotatedObjectController.unsavedChanges? 'block' : 'none'}">
-
-                <h:panelGroup>
-
-                    <p>&#160;</p>
-
-                    <div class="intact-notSavedPanel">
-                        Changes not yet saved &#160;
-
-                        <p:commandButton type="button" id="unsavedSaveButton"
-                                         styleClass="important-button"
-                                         style="opacity: 1.0; font-weight: bold"
-                                         value="Save" onclick="save(); return false">
-                        </p:commandButton>
-
-
-                        &#160;-&#160;
-                        <p:commandLink id="unsavedRevertLink" value="Revert" style="opacity: 1.0; font-weight: bold"
-                                       rendered="#{annotatedObjectController.annotatedObject.ac != null}"
-                                       process="@this"
-                                       update=":editorForm:centralUnit,:editorForm:topSection,:editorForm:messagesComponent"
-                                       actionListener="#{annotatedObjectController.doRevertChanges}"
-                                       onclick="revertDialog.show()" oncomplete="revertDialog.hide()"/>
-
-                        <p:commandLink id="unsavedCancelLink" value="Cancel" style="opacity: 1.0; font-weight: bold"
-                                       rendered="#{annotatedObjectController.annotatedObject.ac == null}"
-                                       immediate="true"
-                                       action="#{annotatedObjectController.doCancelEdition}"
-                                       update=":editorForm:centralUnit,:editorForm:topSection,:editorForm:messagesComponent"
-                                       onclick="revertDialog.show()" oncomplete="revertDialog.hide();"/>
-                    </div>
-
-                </h:panelGroup>
-            </p:outputPanel>
-        </div>
-
-        <p:remoteCommand name="save" actionListener="#{annotatedObjectController.doSave}"
-                         update=":editorForm"
-                         onstart="saveDialog.show(); var input = document.getElementById('topSaveButton'); input.disabled = true; input.value = 'Saving...'"
-                         onerror="alert('Error: '+error+' '+status)"
-                         oncomplete="saveDialog.hide(); var input = document.getElementById('topSaveButton'); input.disabled = false; input.value = 'Save'"/>
-
-
-    </h:panelGroup>
 
 </ui:define>
 
