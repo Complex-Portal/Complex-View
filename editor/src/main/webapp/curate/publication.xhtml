@@ -218,8 +218,8 @@
                 <h:outputLabel value="IMEx Id: " for="imexIdTxt" styleClass="intact-disabled"/>
                 <p:inputText id="imexIdTxt" value="#{publicationController.imexId}" size="10" readonly="true" styleClass="intact-disabled"/>
             </h:panelGroup>
-            <h:panelGroup rendered="#{publicationController.isAssignableIMEx()}">
-                <p:commandButton value="Assign new IMEx ID" type="button"
+            <h:panelGroup id="assignImexPanel" rendered="#{publicationController.isAssignableIMEx()}">
+                <p:commandButton id="assignImexBtn" value="Assign new IMEx ID" type="button"
                                  onclick="assignNewImexId()"/>
             </h:panelGroup>
 
@@ -300,7 +300,7 @@
         </td>
         <td colspan="3">
             <h:panelGroup id="curationDepthMenu">
-                <h:selectOneMenu value="#{publicationController.curationDepth}">
+                <h:selectOneMenu id="selectCurationDepth" value="#{publicationController.curationDepth}">
                     <f:selectItem itemLabel="-- Not specified --"/>
                     <f:selectItem itemLabel="IMEx" itemValue="imex curation"/>
                     <f:selectItem itemLabel="MIMIx" itemValue="mimix curation"/>
