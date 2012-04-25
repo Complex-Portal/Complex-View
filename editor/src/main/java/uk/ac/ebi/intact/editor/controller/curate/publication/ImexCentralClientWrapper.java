@@ -1,8 +1,11 @@
 package uk.ac.ebi.intact.editor.controller.curate.publication;
 
 import edu.ucla.mbi.imex.central.ws.v20.Publication;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.bridges.imexcentral.*;
 import uk.ac.ebi.intact.bridges.imexcentral.mock.MockImexCentralClient;
+import uk.ac.ebi.intact.editor.ApplicationInitializer;
 
 import java.util.List;
 
@@ -15,10 +18,21 @@ import java.util.List;
  */
 
 public class ImexCentralClientWrapper implements ImexCentralClient{
-    
+
+    private static final Log log = LogFactory.getLog(ApplicationInitializer.class);
     private ImexCentralClient imexCentralClient;
     
     public ImexCentralClientWrapper(String username, String password, String endpoint) throws ImexCentralException {
+        String localTrustStore = System.getProperty( "javax.net.ssl.trustStore" );
+        String localTrustStorePwd = System.getProperty( "javax.net.ssl.keyStorePassword" );
+        if(localTrustStore==null) {
+            log.error( "It appears you haven't setup a local trust store (other than the one embedded in the JDK)." +
+                    "\nShould you want to specify one, use: -Djavax.net.ssl.trustStore=<path.to.keystore> " +
+                    "\nAnd if it is password protected, use: -Djavax.net.ssl.keyStorePassword=<password>" );
+        } else {
+            log.info( "Using local trust store: " + localTrustStore + (localTrustStorePwd == null ? " (no password set)" : " (with password set)" ) );
+        }
+
         if (username != null && password != null && endpoint != null && !username.isEmpty() && !password.isEmpty() && !endpoint.isEmpty()){
             imexCentralClient = new DefaultImexCentralClient(username, password, endpoint);
         }
