@@ -560,6 +560,11 @@ public class ParticipantController extends ParameterizableObjectController {
         return confidences;
     }
 
+    @Override
+    public List<Parameter> getParameters() {
+        return super.getParameters();
+    }
+
     public DataModel<Feature> getFeaturesDataModel() {
         return featuresDataModel;
     }

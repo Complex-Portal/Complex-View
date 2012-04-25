@@ -197,8 +197,8 @@
                             <ui:param name="annotatedObjectController" value="#{participantController}"/>
                             <ui:param name="parameterTypeSelectItems" value="#{cvObjectService.parameterTypeSelectItems}"/>
                             <ui:param name="parameterUnitSelectItems" value="#{cvObjectService.parameterUnitSelectItems}"/>
-                            <ui:param name="disableParameterSelectItems" value="#{participantController.isParameterDisabled()}"/>
                             <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
+                            <ui:param name="disableParameterSelectItems" value="#{participantController.isParameterDisabled()}"/>
                         </ui:decorate>
                     </p:outputPanel>
 
