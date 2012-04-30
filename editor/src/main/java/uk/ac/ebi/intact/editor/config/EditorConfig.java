@@ -56,6 +56,10 @@ public class EditorConfig extends BaseController {
 
     @PersistentProperty(defaultValue = "ebi")
     private String theme;
+    
+    private String imexCentralUsername;
+    private String imexCentralPassword;
+    private String imexCentralEndPoint;
 
     public EditorConfig() {
     }
@@ -154,5 +158,29 @@ public class EditorConfig extends BaseController {
 
     public void setTheme(String theme) {
         this.theme = theme;
+    }
+
+    public String getImexCentralUsername() {
+        return imexCentralUsername;
+    }
+
+    public void setImexCentralUsername(String imexCentralUsername) {
+        this.imexCentralUsername = imexCentralUsername;
+    }
+
+    public String getImexCentralPassword() {
+        return imexCentralPassword;
+    }
+
+    public void setImexCentralPassword(String imexCentralPassword) {
+        this.imexCentralPassword = imexCentralPassword;
+    }
+
+    public String getImexCentralEndPoint() {
+        return imexCentralEndPoint;
+    }
+
+    public void setImexCentralEndPoint(String imexCentralEndPoint) {
+        this.imexCentralEndPoint = imexCentralEndPoint;
     }
 }

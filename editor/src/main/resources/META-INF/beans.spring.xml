@@ -23,6 +23,9 @@
         <property name="googleUsername" value="${google.username}"/>
         <property name="googlePassword" value="${google.password}"/>
         <property name="theme" value="ui-lightness" />
+        <property name="imexCentralUsername" value="${ic.username}" />
+        <property name="imexCentralPassword" value="${ic.password}" />
+        <property name="imexCentralEndPoint" value="${ic.endpoint}" />
     </bean>
 
     <!-- Uniprot -->
@@ -38,11 +41,11 @@
 
     <!-- IMEx assigner -->
     <!-- imex central -->
-    <bean id="imexCentralEditor" class="uk.ac.ebi.intact.editor.controller.curate.publication.ImexCentralClientWrapper" lazy-init="true">
+    <!--<bean id="imexCentralEditor" class="uk.ac.ebi.intact.editor.controller.curate.publication.ImexCentralClientWrapper" lazy-init="true">
         <constructor-arg index="0" value="${ic.username}"/>
         <constructor-arg index="1" value="${ic.password}"/>
         <constructor-arg index="2" value="${ic.endpoint}"/>
-    </bean>
+    </bean>-->
 
     <!-- config -->
     <bean id="imexUpdateConfig" class="uk.ac.ebi.intact.dataexchange.imex.idassigner.ImexAssignerConfig">
@@ -51,22 +54,22 @@
 
     <!-- actions -->
     <bean id="imexCentralRegister" class="uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.impl.ImexCentralPublicationRegisterImpl">
-        <property name="imexCentralClient" ref="imexCentralEditor"/>
+        <!--<property name="imexCentralClient" ref="imexCentralEditor"/>-->
     </bean>
     <bean id="intactImexAssigner" class="uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.impl.IntactImexAssignerImpl">
-        <property name="imexCentralClient" ref="imexCentralEditor"/>
+        <!--<property name="imexCentralClient" ref="imexCentralEditor"/>-->
     </bean>
     <bean id="imexAdminGroupSynchronizer" class="uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.impl.PublicationAdminGroupSynchronizerImpl">
-        <property name="imexCentralClient" ref="imexCentralEditor"/>
+        <!--<property name="imexCentralClient" ref="imexCentralEditor"/>-->
     </bean>
     <bean id="imexAdminUserSynchronizer" class="uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.impl.PublicationAdminUserSynchronizerImpl">
-        <property name="imexCentralClient" ref="imexCentralEditor"/>
+        <!--<property name="imexCentralClient" ref="imexCentralEditor"/>-->
     </bean>
     <bean id="publicationIdentifierSynchronizer" class="uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.impl.PublicationIdentifierSynchronizerImpl">
-        <property name="imexCentralClient" ref="imexCentralEditor"/>
+        <!--<property name="imexCentralClient" ref="imexCentralEditor"/>-->
     </bean>
     <bean id="imexStatusSynchronizer" class="uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.impl.PublicationStatusSynchronizerImpl">
-        <property name="imexCentralClient" ref="imexCentralEditor"/>
+        <!--<property name="imexCentralClient" ref="imexCentralEditor"/>-->
     </bean>
 
     <!-- Imex central manager -->
