@@ -41,7 +41,6 @@ import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.ImexCentralManager;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.PublicationImexUpdaterException;
-import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
@@ -238,11 +237,9 @@ public class PublicationController extends AnnotatedObjectController {
             return "/curate/publication?faces-redirect=true&includeViewParams=true";
         }
         else {
-            EditorConfig editorConfig = (EditorConfig) getSpringContext().getBean("editorConfig");
 
             // check if it already exists in IMEx central
             try {
-                imexCentralManager.resetImexCentralClient(new ImexCentralClientWrapper(editorConfig.getImexCentralUsername(), editorConfig.getImexCentralPassword(), editorConfig.getImexCentralEndPoint()));
 
                 if (imexCentralManager.isPublicationAlreadyRegisteredInImexCentral(identifier)){
                     RequestContext requestContext = RequestContext.getCurrentInstance();
@@ -251,9 +248,10 @@ public class PublicationController extends AnnotatedObjectController {
                     return null;
                 }
                 else {
-                    createNewPublication(null);
                     RequestContext requestContext = RequestContext.getCurrentInstance();
                     requestContext.execute("newPublicationDlg.hide()");
+                    createNewPublication(null);
+
                     return "/curate/publication?faces-redirect=true";
                 }
             }
@@ -392,11 +390,8 @@ public class PublicationController extends AnnotatedObjectController {
             return "/curate/publication?faces-redirect=true&includeViewParams=true";
         }
         else {
-            EditorConfig editorConfig = (EditorConfig) getSpringContext().getBean("editorConfig");
-
             // check if it already exists in IMEx central
             try {
-                imexCentralManager.resetImexCentralClient(new ImexCentralClientWrapper(editorConfig.getImexCentralUsername(), editorConfig.getImexCentralPassword(), editorConfig.getImexCentralEndPoint()));
 
                 if (imexCentralManager.isPublicationAlreadyRegisteredInImexCentral(identifier)){
                     RequestContext requestContext = RequestContext.getCurrentInstance();
@@ -405,26 +400,26 @@ public class PublicationController extends AnnotatedObjectController {
                     return null;
                 }
                 else {
+
+                    RequestContext requestContext = RequestContext.getCurrentInstance();
+                    requestContext.execute("newPublicationDlg.hide()");
                     newEmpty();
 
                     identifier = null;
                     identifierToImport = null;
-
-                    RequestContext requestContext = RequestContext.getCurrentInstance();
-                    requestContext.execute("newPublicationDlg.hide()");
                     return "/curate/publication?faces-redirect=true";
                 }
             }
             // cannot check IMEx central, add warning and create publication
             catch (ImexCentralException e) {
+
+                RequestContext requestContext = RequestContext.getCurrentInstance();
+                requestContext.execute("newPublicationDlg.hide()");
                 addWarningMessage( "Impossible to check with IMExcentral if "+identifier+" is already curated", e.getMessage() );
                 newEmpty();
 
                 identifier = null;
                 identifierToImport = null;
-
-                RequestContext requestContext = RequestContext.getCurrentInstance();
-                requestContext.execute("newPublicationDlg.hide()");
                 return "/curate/publication?faces-redirect=true";
             }
         }
@@ -1106,12 +1101,9 @@ public class PublicationController extends AnnotatedObjectController {
         // save publication changes first
         getCorePersister().saveOrUpdate(publication);
 
-        EditorConfig editorConfig = (EditorConfig) getSpringContext().getBean("editorConfig");
-
         registerEditorListenerIfNotDoneYet();
 
         try {
-            imexCentralManager.resetImexCentralClient(new ImexCentralClientWrapper(editorConfig.getImexCentralUsername(), editorConfig.getImexCentralPassword(), editorConfig.getImexCentralEndPoint()));
 
             if (Pattern.matches(ImexCentralManager.PUBMED_REGEXP.toString(), publication.getPublicationId())){
                 imexCentralManager.assignImexAndUpdatePublication(publication.getAc());
