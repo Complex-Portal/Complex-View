@@ -78,6 +78,8 @@ public class ImexPublicationSelectionAssigner {
                     e.printStackTrace();
                 } catch (ImexCentralException e) {
                     e.printStackTrace();
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         } catch (IOException e) {
