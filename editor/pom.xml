@@ -34,7 +34,6 @@
         <!-- configurable bits -->
         <jetty.port>9192</jetty.port>
         <jetty.contextPath>/${pom.artifactId}</jetty.contextPath>
-        <jetty.port.ssl>8443</jetty.port.ssl>
 
         <!-- database defaults -->
         <db.jndi>jdbc/IntactEditorDS</db.jndi>
@@ -82,16 +81,6 @@
                         <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
                             <port>${jetty.port}</port>
                             <maxIdleTime>600000</maxIdleTime>
-                            <acceptors>2</acceptors>
-                            <confidentialPort>${jetty.port.ssl}</confidentialPort>
-                        </connector>
-                        <connector implementation="org.eclipse.jetty.server.ssl.SslSocketConnector">
-                            <port>${jetty.port.ssl}</port>
-                            <maxIdleTime>600000</maxIdleTime>
-                            <truststore>${imex.trustStore}</truststore>
-                            <keystore>${imex.keyStore}</keystore>
-                            <keyPassword>${imex.keyPassword}</keyPassword>
-                            <password>${imex.keyPassword}</password>
                         </connector>
                     </connectors>
                     <scanIntervalSeconds>0</scanIntervalSeconds>
@@ -172,9 +161,6 @@
                 <ic.username></ic.username>
                 <ic.password></ic.password>
                 <ic.endpoint></ic.endpoint>
-                <imex.trustStore></imex.trustStore>
-                <imex.keyStore></imex.keyStore>
-                <imex.keyPassword></imex.keyPassword>
                 <update.log.directory>target/imex-report</update.log.directory>
             </properties>
 
@@ -198,9 +184,6 @@
                 <ic.username></ic.username>
                 <ic.password></ic.password>
                 <ic.endpoint></ic.endpoint>
-                <imex.trustStore></imex.trustStore>
-                <imex.keyStore></imex.keyStore>
-                <imex.keyPassword></imex.keyPassword>
                 <update.log.directory>target/imex-report</update.log.directory>
 
                 <projectStage>Production</projectStage>
