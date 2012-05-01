@@ -22,6 +22,7 @@
         <phase-listener>uk.ac.ebi.intact.editor.application.HistoryPhaseListener</phase-listener>
         <phase-listener>uk.ac.ebi.intact.editor.application.LastActivityPhaseListener</phase-listener>
         <phase-listener>uk.ac.ebi.intact.editor.application.CacheControlPhaseListener</phase-listener>
+        <phase-listener>uk.ac.ebi.intact.editor.application.MultiPageMessagesSupport</phase-listener>
     </lifecycle>
 
 
