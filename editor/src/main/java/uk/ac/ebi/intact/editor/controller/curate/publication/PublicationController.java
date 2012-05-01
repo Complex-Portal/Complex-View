@@ -248,9 +248,10 @@ public class PublicationController extends AnnotatedObjectController {
                     return null;
                 }
                 else {
+                    createNewPublication(null);
+
                     RequestContext requestContext = RequestContext.getCurrentInstance();
                     requestContext.execute("newPublicationDlg.hide()");
-                    createNewPublication(null);
 
                     return "/curate/publication?faces-redirect=true";
                 }
@@ -400,26 +401,27 @@ public class PublicationController extends AnnotatedObjectController {
                     return null;
                 }
                 else {
-
-                    RequestContext requestContext = RequestContext.getCurrentInstance();
-                    requestContext.execute("newPublicationDlg.hide()");
                     newEmpty();
 
                     identifier = null;
                     identifierToImport = null;
+
+                    RequestContext requestContext = RequestContext.getCurrentInstance();
+                    requestContext.execute("newPublicationDlg.hide()");
+
                     return "/curate/publication?faces-redirect=true";
                 }
             }
             // cannot check IMEx central, add warning and create publication
             catch (ImexCentralException e) {
-
-                RequestContext requestContext = RequestContext.getCurrentInstance();
-                requestContext.execute("newPublicationDlg.hide()");
                 addWarningMessage( "Impossible to check with IMExcentral if "+identifier+" is already curated", e.getMessage() );
                 newEmpty();
 
                 identifier = null;
                 identifierToImport = null;
+                RequestContext requestContext = RequestContext.getCurrentInstance();
+                requestContext.execute("newPublicationDlg.hide()");
+
                 return "/curate/publication?faces-redirect=true";
             }
         }
