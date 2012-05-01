@@ -232,8 +232,6 @@ public class PublicationController extends AnnotatedObjectController {
         if ( existingPublication != null ) {
             setPublication(existingPublication);
             addWarningMessage( "Publication already exists", "Loaded from the database" );
-            RequestContext requestContext = RequestContext.getCurrentInstance();
-            requestContext.execute("newPublicationDlg.hide()");
             return "/curate/publication?faces-redirect=true&includeViewParams=true";
         }
         else {
@@ -250,9 +248,6 @@ public class PublicationController extends AnnotatedObjectController {
                 else {
                     createNewPublication(null);
 
-                    RequestContext requestContext = RequestContext.getCurrentInstance();
-                    requestContext.execute("newPublicationDlg.hide()");
-
                     return "/curate/publication?faces-redirect=true";
                 }
             }
@@ -261,8 +256,12 @@ public class PublicationController extends AnnotatedObjectController {
                 addWarningMessage( "Impossible to check with IMExcentral if "+identifier+" is already curated", e.getMessage() );
                 createNewPublication(null);
 
-                RequestContext requestContext = RequestContext.getCurrentInstance();
-                requestContext.execute("newPublicationDlg.hide()");
+                return "/curate/publication?faces-redirect=true";
+            }
+            catch (Exception e) {
+                addWarningMessage( "Impossible to check with IMExcentral if "+identifier+" is already curated", e.getMessage() );
+                createNewPublication(null);
+
                 return "/curate/publication?faces-redirect=true";
             }
         }
@@ -386,8 +385,6 @@ public class PublicationController extends AnnotatedObjectController {
         if ( existingPublication != null ) {
             setPublication(existingPublication);
             addWarningMessage( "Publication already exists", "Loaded from the database" );
-            RequestContext requestContext = RequestContext.getCurrentInstance();
-            requestContext.execute("newPublicationDlg.hide()");
             return "/curate/publication?faces-redirect=true&includeViewParams=true";
         }
         else {
@@ -406,9 +403,6 @@ public class PublicationController extends AnnotatedObjectController {
                     identifier = null;
                     identifierToImport = null;
 
-                    RequestContext requestContext = RequestContext.getCurrentInstance();
-                    requestContext.execute("newPublicationDlg.hide()");
-
                     return "/curate/publication?faces-redirect=true";
                 }
             }
@@ -419,8 +413,15 @@ public class PublicationController extends AnnotatedObjectController {
 
                 identifier = null;
                 identifierToImport = null;
-                RequestContext requestContext = RequestContext.getCurrentInstance();
-                requestContext.execute("newPublicationDlg.hide()");
+
+                return "/curate/publication?faces-redirect=true";
+            }
+            catch (Exception e) {
+                addWarningMessage( "Impossible to check with IMExcentral if "+identifier+" is already curated", e.getMessage() );
+                newEmpty();
+
+                identifier = null;
+                identifierToImport = null;
 
                 return "/curate/publication?faces-redirect=true";
             }
@@ -1122,6 +1123,9 @@ public class PublicationController extends AnnotatedObjectController {
             IcentralFault f = (IcentralFault) e.getCause();
 
             processImexCentralException(publication.getShortLabel(), e, f);
+        }
+        catch (Exception e) {
+            addErrorMessage("Impossible to assign new IMEx id", e.getMessage());
         }
 
         loadByAc();
