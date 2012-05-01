@@ -15,9 +15,14 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
+import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -25,8 +30,16 @@ import uk.ac.ebi.intact.model.clone.IntactClonerException;
  */
 public class EditorIntactCloner extends IntactCloner {
 
+    private Map<String, String> xrefsMiToExclude;
+    
     public EditorIntactCloner() {
         setExcludeACs(true);
+        xrefsMiToExclude = new HashMap<String, String>();
+        initialiseXrefsToExclude();
+    }
+    
+    private void initialiseXrefsToExclude() {
+        xrefsMiToExclude.put(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF);
     }
 
     @Override
@@ -53,6 +66,22 @@ public class EditorIntactCloner extends IntactCloner {
     public Interactor cloneInteractor(Interactor interactor) throws IntactClonerException {
         return interactor;
     }
+    
+    @Override
+    protected Xref cloneXref(Xref xref) throws IntactClonerException {
+        if (xref == null) return null;
+        
+        // filter xrefs that we don't want to clone
+        if (xref.getCvDatabase() != null && xrefsMiToExclude.containsKey(xref.getCvDatabase().getIdentifier())){
+            String qualifier = xrefsMiToExclude.get(xref.getCvDatabase().getIdentifier());
+            
+            if (xref.getCvXrefQualifier() != null && qualifier.equals(xref.getCvXrefQualifier().getIdentifier())){
+                return null;
+            }
+        }
+
+        return super.cloneXref(xref);
+    }
 
     @Override
     protected AnnotatedObject cloneAnnotatedObjectCommon(AnnotatedObject<?, ?> ao, AnnotatedObject clone) throws IntactClonerException {
@@ -73,6 +102,36 @@ public class EditorIntactCloner extends IntactCloner {
             return clone;
         }
 
+        // clone xrefs
+        Collection<? extends Xref> refs = IntactCore.ensureInitializedXrefs(ao);
+
+        for (Xref xref : refs) {
+            Xref clonedXref = clone(xref);
+
+            if (clonedXref != null){
+                clone.addXref(clone(xref));
+            }
+        }
+        
         return super.cloneAnnotatedObjectCommon(ao, clone);
+    }
+
+    @Override
+    protected IntactObject cloneIntactObjectCommon(IntactObject ao, IntactObject clone) throws IntactClonerException {
+        if (clone == null){
+            return null;
+        }
+
+        return super.cloneIntactObjectCommon(ao, clone);
+    }
+    
+    @Override
+    protected boolean isCollectionClonable(Collection col){
+        
+        if (col != null && !col.isEmpty() && col.iterator().next() instanceof Xref){
+            return false;
+        }
+        
+        return true;
     }
 }
