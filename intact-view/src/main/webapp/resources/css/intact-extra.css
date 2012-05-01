@@ -120,3 +120,19 @@ td.compoundStructure {
     margin-right:5px;
 }
 
+.intact_fixedWidth {
+    width:650px;
+}
+
+
+.dasty_title
+{
+display:block;
+padding: 2px;
+margin-bottom:5px;
+background:url(../../dasty/client/img/ebi_bg.gif);
+background-repeat:repeat-y;
+font-weight:bold;
+font-size:120%;
+color:#006666;
+}

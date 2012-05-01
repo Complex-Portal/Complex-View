@@ -48,7 +48,11 @@ public class StatisticsController extends BaseController {
     private int binaryInteractionCount;
     private int proteinCount;
     private int experimentCount;
+    private int publicationCount;
     private int cvTermsCount;
+    private int interactorCount;
+    private int interactionCount;
+    private int interactorsWithNoInteractions;
 
     public StatisticsController() {
 
@@ -65,7 +69,11 @@ public class StatisticsController extends BaseController {
         // database stats
         proteinCount = daoFactory.getProteinDao().countAll();
         experimentCount = daoFactory.getExperimentDao().countAll();
+        publicationCount = daoFactory.getPublicationDao().countAll();
         cvTermsCount = daoFactory.getCvObjectDao().countAll();
+        interactionCount = daoFactory.getInteractionDao().countAll();
+        interactorCount = daoFactory.getInteractorDao().countAll();
+        interactorsWithNoInteractions = interactorCount - interactionCount;
     }
 
     @Transactional(readOnly = true)
@@ -92,5 +100,21 @@ public class StatisticsController extends BaseController {
 
     public int getExperimentCount() {
         return experimentCount;
+    }
+
+    public int getPublicationCount() {
+        return publicationCount;
+    }
+
+    public int getInteractorCount() {
+        return interactorCount;
+    }
+
+    public int getInteractorsWithNoInteractions() {
+        return interactorsWithNoInteractions;
+    }
+
+    public int getInteractionCount() {
+        return interactionCount;
     }
 }
