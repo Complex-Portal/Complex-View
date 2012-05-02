@@ -90,11 +90,11 @@ public class MultiPageMessagesSupport implements PhaseListener
 
         Map<String, Object> sessionMap = facesContext.getExternalContext().getSessionMap();
         List<FacesMessage> existingMessages = (List<FacesMessage>) sessionMap.get(sessionToken);
-        if (existingMessages != null)
+        if (existingMessages != null && !existingMessages.containsAll(messages))
         {
             existingMessages.addAll(messages);
         }
-        else
+        else if (existingMessages == null)
         {
             sessionMap.put(sessionToken, messages);
         }
@@ -115,7 +115,12 @@ public class MultiPageMessagesSupport implements PhaseListener
         int restoredCount = messages.size();
         for (Object element : messages)
         {
-            facesContext.addMessage(null, (FacesMessage) element);
+            if (facesContext.getMessageList() != null && !facesContext.getMessageList().contains(element)){
+                facesContext.addMessage(null, (FacesMessage) element);
+            }
+            else if (facesContext.getMessageList() == null){
+                facesContext.addMessage(null, (FacesMessage) element);
+            }
         }
         return restoredCount;
     }
