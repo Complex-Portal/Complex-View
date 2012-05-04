@@ -220,7 +220,7 @@
             </h:panelGroup>
             <h:panelGroup id="assignImexPanel" rendered="#{publicationController.isAssignableIMEx()}">
                 <p:commandButton id="assignImexBtn" value="Assign new IMEx ID" type="button"
-                                 onclick="assignNewImexId()"/>
+                                 onclick="if (confirm('Once a new IMEx id has been assigned, it cannot be reverted, are you sure you want to continue?')) { assignNewImexId() } else { return false }"/>
             </h:panelGroup>
 
             <p:remoteCommand name="assignNewImexId" actionListener="#{publicationController.assignNewImex}"
