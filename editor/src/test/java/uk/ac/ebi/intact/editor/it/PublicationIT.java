@@ -99,7 +99,7 @@ public class PublicationIT extends AbstractAnnotatedObjectIT  {
         waitUntilLoadingIsComplete();
     }
 
-    @Test
+    /*@Test
     public void assignNewImex(){
         Experiment experiment = getDaoFactory().getExperimentDao().getByShortLabel("bigexp-2012-1");
 
@@ -112,7 +112,7 @@ public class PublicationIT extends AbstractAnnotatedObjectIT  {
         driver.findElement(By.id("assignImexBtn")).click();
 
         waitUntilElementHasValue(By.id("imexIdTxt"), "IM-1");
-    }
+    }*/
 
     @Override
     protected String getTabsComponentId() {
