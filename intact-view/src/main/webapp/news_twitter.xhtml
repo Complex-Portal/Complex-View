@@ -1,0 +1,25 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site">
+
+        <ui:param name="max" value="#{intactViewConfiguration.maxNewsInBox}"/>
+
+        <script>
+            window.onload = function() {
+          		      jQuery(function($){
+          		        $("#intactTwitter").tweet({
+          		          avatar_size: 24,
+          		          count: 5,
+          		          username: ["intact_project"],
+          		          loading_text: "searching twitter..."
+          		        });
+          		      });
+
+          		    };
+        </script>
+        <div style="width:100%;" id="intactTwitter"></div>
+
+</ui:composition>
