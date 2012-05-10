@@ -59,25 +59,20 @@ public class PublicationIT extends AbstractAnnotatedObjectIT  {
     }
 
     @Test
-    public void select_imex_curation_depth_no_pubmed_id_hide_button(){
+    public void select_imex_curation_depth_unassigned_show_button(){
         // Create a user "mike" with a random publication that he owns
         Publication pubUnassigned = getMockBuilder().createPublication("unassigned604");
         lifecycleManager.getNewStatus().assignToCurator(pubUnassigned, getUserByLogin("curator"));
         lifecycleManager.getAssignedStatus().startCuration(pubUnassigned);
         getCorePersister().saveOrUpdate(pubUnassigned);
 
-        // cannot show IMEx button
-        goToPublicationWithId(pubUnassigned.getPublicationId());
+        // show IMEx button
+        goToPublicationWithId("unassigned604");
         loginAs("curator");
         new Select(driver.findElement(By.id("selectCurationDepth"))).selectByVisibleText("IMEx");
         driver.findElement(By.cssSelector("option[value=\"imex curation\"]")).click();
         waitUntilElementIsDisplayed(By.id("unsavedSaveButton"));
-        try {
-            WebElement webel = driver.findElement(By.id("assignImexBtn"));
-            assertNull(webel);
-        } catch (org.openqa.selenium.NoSuchElementException ex) {
-            /* do nothing, button is not present, assert is passed */
-        }
+        assertTrue(driver.findElement(By.id("assignImexBtn")).isDisplayed());
 
         driver.findElement(By.id("unsavedSaveButton")).click();
 
@@ -87,6 +82,7 @@ public class PublicationIT extends AbstractAnnotatedObjectIT  {
         new Select(driver.findElement(By.id("selectCurationDepth"))).selectByVisibleText("MIMIx");
         driver.findElement(By.cssSelector("option[value=\"mimix curation\"]")).click();
         waitUntilElementIsDisplayed(By.id("unsavedSaveButton"));
+
         try {
             WebElement webel = driver.findElement(By.id("assignImexBtn"));
             assertNull(webel);
@@ -97,6 +93,7 @@ public class PublicationIT extends AbstractAnnotatedObjectIT  {
         driver.findElement(By.id("unsavedSaveButton")).click();
 
         waitUntilLoadingIsComplete();
+
     }
 
     /*@Test
