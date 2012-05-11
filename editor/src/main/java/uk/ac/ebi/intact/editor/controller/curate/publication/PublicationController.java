@@ -184,11 +184,13 @@ public class PublicationController extends AnnotatedObjectController {
         this.datasetToAdd = null;
         datasetsSelectItems = new ArrayList<SelectItem>();
 
+        DatasetPopulator populator = getDatasetPopulator();
+
         for ( Annotation annotation : publication.getAnnotations() ) {
             if ( annotation.getCvTopic() != null && CvTopic.DATASET_MI_REF.equals( annotation.getCvTopic().getIdentifier() ) ) {
                 String datasetText = annotation.getAnnotationText();
 
-                SelectItem datasetSelectItem = getDatasetPopulator().createSelectItem( datasetText );
+                SelectItem datasetSelectItem = populator.createSelectItem( datasetText );
                 datasetsSelectItems.add( datasetSelectItem );
             }
         }
@@ -1473,6 +1475,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void doPostSave() {
         loadFormFields();
         refreshDataModels();
+        getDatasetPopulator().refresh(null);
     }
 
     public boolean isAssignToMe() {
