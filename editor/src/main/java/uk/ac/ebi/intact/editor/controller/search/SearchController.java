@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.editor.application.SearchThreadConfig;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
@@ -19,11 +20,11 @@ import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
 import javax.faces.event.ComponentSystemEvent;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * Search controller.
@@ -43,6 +44,8 @@ public class SearchController extends AnnotatedObjectController {
     private String query;
     private String quickQuery;
 
+    private int threadTimeOut = 5;
+
     private AnnotatedObject annotatedObject;
 
     @Autowired
@@ -61,6 +64,10 @@ public class SearchController extends AnnotatedObjectController {
     private LazyDataModel<Feature> features;
 
     private LazyDataModel<BioSource> organisms;
+
+    private LazyDataModel<Component> participants;
+
+    private List<Future> runningTasks;
 
     //////////////////
     // Constructors
@@ -123,7 +130,16 @@ public class SearchController extends AnnotatedObjectController {
             // Note: the search includes wildcards automatically
             final String finalQuery = q;
 
-            ExecutorService executorService = Executors.newCachedThreadPool();
+            SearchThreadConfig threadConfig = (SearchThreadConfig) getSpringContext().getBean("searchThreadConfig");
+
+            ExecutorService executorService = threadConfig.getExecutorService();
+
+            if (runningTasks == null){
+                runningTasks = new ArrayList<Future>();
+            }
+            else {
+                runningTasks.clear();
+            }
 
             Runnable runnablePub = new Runnable() {
                 @Override
@@ -174,26 +190,55 @@ public class SearchController extends AnnotatedObjectController {
                 }
             };
 
-            executorService.submit(runnablePub);
-            executorService.submit(runnableExp);
-            executorService.submit(runnableInt);
-            executorService.submit(runnableMol);
-            executorService.submit(runnableCvs);
-            executorService.submit(runnableFeatures);
-            executorService.submit(runnableOrganisms);
+            Runnable runnableComponents = new Runnable() {
+                @Override
+                public void run() {
+                    loadParticipants(finalQuery, originalQuery);
+                }
+            };
 
-            executorService.shutdown();
+            runningTasks.add(executorService.submit(runnablePub));
+            runningTasks.add(executorService.submit(runnableExp));
+            runningTasks.add(executorService.submit(runnableInt));
+            runningTasks.add(executorService.submit(runnableMol));
+            runningTasks.add(executorService.submit(runnableCvs));
+            runningTasks.add(executorService.submit(runnableFeatures));
+            runningTasks.add(executorService.submit(runnableOrganisms));
+            runningTasks.add(executorService.submit(runnableComponents));
 
-            try {
-                executorService.awaitTermination(1, TimeUnit.MINUTES);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            checkAndResumeTasks();
         } else {
             resetSearchResults();
         }
 
         return "search.results";
+    }
+
+    private void checkAndResumeTasks() {
+
+        for (Future f : runningTasks){
+            try {
+                f.get(threadTimeOut, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                log.error("The editor search task was interrupted, we cancel the task.", e);
+                if (!f.isCancelled()){
+                    f.cancel(true);
+                }
+            } catch (ExecutionException e) {
+                log.error("The editor search task could not be executed, we cancel the task.", e);
+                if (!f.isCancelled()){
+                    f.cancel(true);
+                }
+            } catch (TimeoutException e) {
+                log.error("Service task stopped because of time out " + threadTimeOut + "seconds.", e);
+
+                if (!f.isCancelled()){
+                    f.cancel(true);
+                }
+            }
+        }
+
+        runningTasks.clear();
     }
 
     private void resetSearchResults() {
@@ -215,7 +260,8 @@ public class SearchController extends AnnotatedObjectController {
                 && (molecules != null && molecules.getRowCount() == 0)
                 && (cvobjects != null && cvobjects.getRowCount() == 0)
                 && (features != null && features.getRowCount() == 0)
-                && (organisms != null && organisms.getRowCount() == 0);
+                && (organisms != null && organisms.getRowCount() == 0)
+                && (participants != null && participants.getRowCount() == 0);
 
     }
 
@@ -229,6 +275,7 @@ public class SearchController extends AnnotatedObjectController {
         if ( cvobjects != null && cvobjects.getRowCount() > 0 ) matches++;
         if ( features != null && features.getRowCount() > 0 ) matches++;
         if ( organisms != null && organisms.getRowCount() > 0 ) matches++;
+        if ( participants != null && participants.getRowCount() > 0 ) matches++;
 
         return matches == 1;
     }
@@ -297,6 +344,14 @@ public class SearchController extends AnnotatedObjectController {
 
     public int countInteractionsByMoleculeAc( Interactor molecule ) {
         return getDaoFactory().getInteractorDao().countInteractionsForInteractorWithAc( molecule.getAc() );
+    }
+
+    public int countFeaturesByParticipantAc( Component comp ) {
+        return getDaoFactory().getFeatureDao().getByComponentAc(comp.getAc()).size();
+    }
+
+    public CvExperimentalRole getExperimentalRoleForParticipantAc( Component comp ) {
+        return getDaoFactory().getComponentDao().getByAc(comp.getAc()).getCvExperimentalRole();
     }
 
     public String getIdentityXref( Interactor molecule ) {
@@ -476,6 +531,33 @@ public class SearchController extends AnnotatedObjectController {
         log.info( "Organisms found: " + organisms.getRowCount() );
     }
 
+    private void loadParticipants( String query, String originalQuery ) {
+        log.info( "Searching for participants matching '" + query + "'..." );
+
+        final HashMap<String, String> params = Maps.newHashMap();
+        params.put( "query", query );
+        params.put( "ac", originalQuery );
+
+        // Load experiment eagerly to avoid LazyInitializationException when redering the view
+        participants = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
+
+                "select distinct p " +
+                        "from Component p left join p.xrefs as x " +
+                        "where    p.ac = :ac " +
+                        "      or lower(p.shortLabel) like :query "+
+                        "      or lower(x.primaryId) like :query ",
+
+                "select count(distinct p) " +
+                        "from Component p left join p.xrefs as x " +
+                        "where p.ac = :ac " +
+                        "      or lower(p.shortLabel) like :query "+
+                        "      or lower(x.primaryId) like :query ",
+
+                params, "p", "updated", false);
+
+        log.info( "Participants found: " + participants.getRowCount() );
+    }
+
     public int countExperimentsForPublication( Publication publication ) {
         return getDaoFactory().getPublicationDao().countExperimentsForPublicationAc( publication.getAc() );
     }
@@ -523,11 +605,23 @@ public class SearchController extends AnnotatedObjectController {
         return organisms;
     }
 
+    public LazyDataModel<Component> getParticipants() {
+        return participants;
+    }
+
     public String getQuickQuery() {
         return quickQuery;
     }
 
     public void setQuickQuery(String quickQuery) {
         this.quickQuery = quickQuery;
+    }
+
+    public int getThreadTimeOut() {
+        return threadTimeOut;
+    }
+
+    public void setThreadTimeOut(int threadTimeOut) {
+        this.threadTimeOut = threadTimeOut;
     }
 }

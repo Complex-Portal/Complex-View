@@ -129,7 +129,7 @@ public class ParticipantController extends ParameterizableObjectController {
                 addErrorMessage("No participant with this AC", ac);
                 return;
             }
-            
+
             featuresDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<Feature>(participant.getFeatures()), participant.getFeatures());
 
             // check if the publication, experiment and interaction are null in their controllers (this happens when the
