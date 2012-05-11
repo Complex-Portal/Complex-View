@@ -273,7 +273,7 @@
         <td class="firstCell">
             <h:outputLabel value="Dataset(s): " for="datasetsMenu"/>
         </td>
-        <td colspan="3">
+        <td colspan="4">
             <h:panelGroup id="datasetsMenu">
                 <ui:param name="datasetHeight"
                           value="#{18 * fn:length(publicationController.datasetsSelectItems)}"/>
@@ -291,6 +291,7 @@
                 </h:selectOneMenu>
                 <p:commandButton value="Add" actionListener="#{publicationController.addDataset}"
                                  update=":editorForm:datasetsMenu,:editorForm:publicationTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
+                <p:commandButton value="Create new dataset" onclick="createNewdatasetDlg.show();"/>
             </h:panelGroup>
         </td>
     </tr>
@@ -455,6 +456,24 @@
                          ajax="false"/>
     </h:panelGrid>
 </p:dialog>
+
+<p:dialog header="Create and add new dataset" width="800" widgetVar="createNewdatasetDlg" draggable="false"
+          modal="true" position="center">
+    <h:panelGrid columns="5" style="margin-bottom:10px">
+        <h:outputLabel for="datasetNameTxt" value="Dataset name"/>
+        <p:inputText id="datasetNameTxt" value="#{publicationController.newDatasetNameToCreate}" rows="1" cols="60" converter="trimmingConverter"/>
+        <h:outputLabel for="datasetDescriptionTxt" value="Dataset description"/>
+        <p:inputText id="datasetDescriptionTxt" value="#{publicationController.newDatasetDescriptionToCreate}" rows="1" cols="60" converter="trimmingConverter"/>
+
+        <p:commandButton id="datasetCreated" value="Create and add to publication"
+                         actionListener="#{publicationController.createAndAddNewDataset}"
+                         onstart="dataset_load.show()" onerror="dataset_load.hide();"
+                         oncomplete="dataset_load.hide();  "
+                         update=":editorForm" />
+    </h:panelGrid>
+</p:dialog>
+
+<ia:loadingDialog widgetVar="dataset_load" message="Creating and adding dataset..." modal="false"/>
 
 </ui:define>
 

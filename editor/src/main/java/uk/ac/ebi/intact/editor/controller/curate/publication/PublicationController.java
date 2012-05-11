@@ -57,6 +57,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.persistence.Query;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
@@ -111,6 +112,9 @@ public class PublicationController extends AnnotatedObjectController {
     private ImexCentralManager imexCentralManager;
 
     private String curationDepth;
+    
+    private String newDatasetDescriptionToCreate;
+    private String newDatasetNameToCreate;
 
     public PublicationController() {
     }
@@ -683,6 +687,56 @@ public class PublicationController extends AnnotatedObjectController {
             // reset the dataset to add as it has already been added
             datasetToAdd = null;
             setUnsavedChanges( true );
+        }
+    }
+
+    public void createAndAddNewDataset( ActionEvent evt ) {
+        if ( newDatasetDescriptionToCreate!= null && newDatasetNameToCreate != null) {
+
+            String newDataset = newDatasetNameToCreate + " - " + newDatasetDescriptionToCreate;
+            DatasetPopulator populator = getDatasetPopulator();
+            
+            String sql = "select distinct a.annotationText from Annotation a where a.cvTopic.identifier = :dataset and a.annotationText like :name";
+            Query query = getDaoFactory().getEntityManager().createQuery(sql);
+            query.setParameter("dataset",CvTopic.DATASET_MI_REF);
+            query.setParameter("name",newDatasetNameToCreate+" -%");
+
+            if (!query.getResultList().isEmpty()){
+                addErrorMessage("A dataset with this name already exists. Cannot create two datasets with same name","dataset name already exists");
+            }
+            else {
+                // add the new dataset to the publication and list of datasets possible to remove from this publication
+                datasetsSelectItems.add( populator.createSelectItem(newDataset) );
+
+                addAnnotation( CvTopic.DATASET_MI_REF, newDataset );
+
+                Collection<Experiment> experiments = publication.getExperiments();
+
+                if (!IntactCore.isInitialized(publication.getExperiments())) {
+                    experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
+                }
+
+                if (!experiments.isEmpty()){
+                    Collection<String> parentAcs = new ArrayList<String>();
+                    if (publication.getAc() != null){
+                        parentAcs.add(publication.getAc());
+                    }
+                    for (Experiment experiment : experiments) {
+                        newAnnotatedObjectHelper(experiment).addAnnotation(CvTopic.DATASET_MI_REF, newDataset);
+
+                        getChangesController().markAsUnsaved(experiment, parentAcs);
+                    }
+                }
+
+                // reset the dataset to add as it has already been added
+                newDatasetDescriptionToCreate = null;
+                newDatasetNameToCreate = null;
+
+                // save publication and refresh datasetPopulator
+                getCorePersister().saveOrUpdate(publication);
+
+                populator.refresh(null);
+            }
         }
     }
 
@@ -1483,5 +1537,21 @@ public class PublicationController extends AnnotatedObjectController {
         else {
             isLifeCycleDisabled = true;
         }
+    }
+
+    public String getNewDatasetDescriptionToCreate() {
+        return newDatasetDescriptionToCreate;
+    }
+
+    public void setNewDatasetDescriptionToCreate(String newDatasetDescriptionToCreate) {
+        this.newDatasetDescriptionToCreate = newDatasetDescriptionToCreate;
+    }
+
+    public String getNewDatasetNameToCreate() {
+        return newDatasetNameToCreate;
+    }
+
+    public void setNewDatasetNameToCreate(String newDatasetNameToCreate) {
+        this.newDatasetNameToCreate = newDatasetNameToCreate;
     }
 }
