@@ -61,6 +61,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -1107,9 +1108,14 @@ public class PublicationController extends AnnotatedObjectController {
 
         try {
 
-            imexCentralManager.assignImexAndUpdatePublication(publication.getAc());
+            if (Pattern.matches(ImexCentralManager.PUBMED_REGEXP.toString(), publication.getPublicationId())){
+                imexCentralManager.assignImexAndUpdatePublication(publication.getAc());
 
-            addInfoMessage("Successfully assigned new IMEx identifier to the publication " + publication.getShortLabel(), "");
+                addInfoMessage("Successfully assigned new IMEx identifier to the publication " + publication.getShortLabel(), "");
+            }
+            else {
+                addErrorMessage("Impossible to assign new IMEx id to unassigned publication. Must be assigned manually in IMEx central.","");
+            }
 
         }  catch (PublicationImexUpdaterException e) {
             addErrorMessage("Impossible to assign new IMEx id", e.getMessage());
@@ -1453,7 +1459,7 @@ public class PublicationController extends AnnotatedObjectController {
 
     public boolean isAssignableIMEx(){
         return getImexId() == null && curationDepth != null
-                && "imex curation".equalsIgnoreCase(curationDepth);
+                && "imex curation".equalsIgnoreCase(curationDepth) && Pattern.matches(ImexCentralManager.PUBMED_REGEXP.toString(), publication.getPublicationId());
     }
 
     @Override
