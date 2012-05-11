@@ -18,6 +18,7 @@ import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.persistence.Query;
 import java.util.ArrayList;
@@ -98,6 +99,11 @@ public class SearchController extends AnnotatedObjectController {
     public String doQuickSearch() {
         this.query = quickQuery;
         return doSearch();
+    }
+
+    public void clearQuickSearch(ActionEvent evt) {
+        this.quickQuery = null;
+        this.query = null;
     }
 
     @Transactional( value = "transactionManager", readOnly = true )

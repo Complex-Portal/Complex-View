@@ -117,7 +117,7 @@
 
                 <h:panelGroup id="topSection">
                     <div class="top-search">
-                        <h:panelGrid columns="3">
+                        <h:panelGrid columns="4">
                             <h:graphicImage url="/resources/images/search.png" alt="Search:"/>
                             <!--<p:watermark for="queryTxt" value="search query"/>-->
                             <p:inputText id="queryTxt" value="#{searchController.quickQuery}"
@@ -126,6 +126,8 @@
                             <p:commandButton id="topSearchBtn" value="Search" action="#{searchController.doQuickSearch}"
                                              ajax="false"
                                              process="queryTxt" global="true"/>
+                            <p:commandButton id="topClearBtn" value="Clear" actionListener="#{searchController.clearQuickSearch}"
+                                             process="queryTxt" update=":editorForm:queryTxt"/>
                         </h:panelGrid>
 
                         <ia:loadingDialog widgetVar="searchDialog" message="Searching..."/>
