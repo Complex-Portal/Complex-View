@@ -67,6 +67,7 @@ public class ExportServlet extends HttpServlet {
         SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
 
         String searchQuery = request.getParameter(PARAM_QUERY);
+        String format = request.getParameter(PARAM_FORMAT);
 
         if( searchQuery != null ) {
             searchQuery = URLDecoder.decode( searchQuery, "UTF-8" );
@@ -78,8 +79,16 @@ public class ExportServlet extends HttpServlet {
         if (searchQuery == null) {
             throw new IntactViewException("No query provided");
         }
-
-        String format = request.getParameter(PARAM_FORMAT);
+        String extension = getExtension(format);
+        
+        String fixedQuery = searchQuery;
+        if (fixedQuery.contains("&")){
+            fixedQuery = searchQuery.substring(0, searchQuery.indexOf("&"));
+        }
+        if (fixedQuery.contains("q=")){
+            fixedQuery = fixedQuery.substring(fixedQuery.indexOf("q=")+2);
+        }
+        String name = fixedQuery.substring(0, Math.min(10, fixedQuery.length())) + "." + extension;
 
         String sortColumn = request.getParameter(PARAM_SORT);
         String sortAsc = request.getParameter(PARAM_SORT_ASC);
@@ -94,8 +103,26 @@ public class ExportServlet extends HttpServlet {
         }
 
         BinaryInteractionsExporter exporter = new BinaryInteractionsExporter(solrServer);
+
+        response.setContentType("application/x-download");
+        response.setHeader("Content-Disposition", "attachment; filename="+name);
+
         String contentType = exporter.searchAndExport(response.getOutputStream(), solrQuery, format);
-        response.setContentType(contentType);
+    }
+
+    public String getExtension( String format ) throws IOException {
+        if ( BinaryInteractionsExporter.MITAB.equals( format ) || BinaryInteractionsExporter.MITAB_INTACT.equals( format ) || BinaryInteractionsExporter.RDF_N3.equals(format) || BinaryInteractionsExporter.RDF_N3_PP.equals(format)
+                || BinaryInteractionsExporter.RDF_TRIPLE.equals(format) || BinaryInteractionsExporter.RDF_TURTLE.equals(format)) {
+            return "txt";
+        } else if ( BinaryInteractionsExporter.XML_2_53.equals( format ) || BinaryInteractionsExporter.XML_2_54.equals( format ) || BinaryInteractionsExporter.BIOPAX_L2.equals(format) || BinaryInteractionsExporter.BIOPAX_L3.equals(format) || BinaryInteractionsExporter.RDF_XML.equals(format)
+                || BinaryInteractionsExporter.RDF_XML_ABBREV.equals(format) || BinaryInteractionsExporter.XGMML.equals(format)) {
+            return "xml";
+        } else if ( BinaryInteractionsExporter.XML_HTML.equals( format ) ) {
+            return "html";
+        } else {
+            throw new IntactViewException( "Format is not correct: " + format + ". Possible values: mitab, mitab_intact." );
+        }
+
     }
 
     private SolrQuery convertToSolrQuery(String searchQuery) {

@@ -32,9 +32,7 @@ import psidev.psi.mi.tab.converter.tab2xml.Tab2Xml;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.xml.PsimiXmlVersion;
 import psidev.psi.mi.xml.PsimiXmlWriter;
-import psidev.psi.mi.xml.PsimiXmlForm;
 import psidev.psi.mi.xml.converter.ConverterException;
-import psidev.psi.mi.xml.converter.ConverterContext;
 import psidev.psi.mi.xml.model.EntrySet;
 import psidev.psi.mi.xml.stylesheets.XslTransformException;
 import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
@@ -48,7 +46,6 @@ import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Exports to MITAB
@@ -62,19 +59,19 @@ public class BinaryInteractionsExporter {
     
     private SolrServer solrServer;
     public static final String XML_2_53 = "xml_2_53";
-    private static final String XML_2_54 = "xml_2_54";
-    private static final String MITAB = "mitab";
-    private static final String MITAB_INTACT = "mitab_intact";
-    private static final String XML_HTML = "xml_html";
-    private static final String BIOPAX_L2 = "biopax_l2";
-    private static final String BIOPAX_L3 = "biopax_l3";
-    private static final String RDF_XML = "rdf_xml";
-    private static final String RDF_XML_ABBREV = "rdf_xml_abbrev";
-    private static final String RDF_N3 = "rdf_n3";
-    private static final String RDF_N3_PP = "rdf_n3_pp";
-    private static final String RDF_TRIPLE = "rdf_triple";
-    private static final String RDF_TURTLE = "rdf_turtle";
-    private static final String XGMML = "xgmml";
+    public static final String XML_2_54 = "xml_2_54";
+    public static final String MITAB = "mitab";
+    public static final String MITAB_INTACT = "mitab_intact";
+    public static final String XML_HTML = "xml_html";
+    public static final String BIOPAX_L2 = "biopax_l2";
+    public static final String BIOPAX_L3 = "biopax_l3";
+    public static final String RDF_XML = "rdf_xml";
+    public static final String RDF_XML_ABBREV = "rdf_xml_abbrev";
+    public static final String RDF_N3 = "rdf_n3";
+    public static final String RDF_N3_PP = "rdf_n3_pp";
+    public static final String RDF_TRIPLE = "rdf_triple";
+    public static final String RDF_TURTLE = "rdf_turtle";
+    public static final String XGMML = "xgmml";
 
     public BinaryInteractionsExporter(SolrServer solrServer) {
         this.solrServer = solrServer;
@@ -125,7 +122,6 @@ public class BinaryInteractionsExporter {
         }
        
     }
-
 
     public void exportToMiTab(OutputStream os, SolrQuery searchQuery) throws IOException {
          PsimiTabWriter writer = new PsimiTabWriter();
@@ -236,6 +232,7 @@ public class BinaryInteractionsExporter {
         
         InputStream is = new ByteArrayInputStream(StringUtils.join(interactions, System.getProperty("line.separator")).getBytes());
         converter.convert( is, os );
+        is.close();
     }
 
     private EntrySet createEntrySet(SolrQuery solrQuery) {
