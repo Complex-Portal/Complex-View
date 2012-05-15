@@ -291,7 +291,7 @@
                 </h:selectOneMenu>
                 <p:commandButton value="Add" actionListener="#{publicationController.addDataset}"
                                  update=":editorForm:datasetsMenu,:editorForm:publicationTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
-                <p:commandButton value="Create new dataset" onclick="createNewdatasetDlg.show();"/>
+                <p:commandButton value="Create new dataset" onclick="createNewdatasetDlg.show();" rendered="#{userSessionController.hasRole('REVIEWER')}"/>
             </h:panelGroup>
         </td>
     </tr>
@@ -461,9 +461,9 @@
           modal="true" position="center">
     <h:panelGrid columns="5" style="margin-bottom:10px">
         <h:outputLabel for="datasetNameTxt" value="Dataset name"/>
-        <p:inputText id="datasetNameTxt" value="#{publicationController.newDatasetNameToCreate}" rows="1" cols="60" converter="trimmingConverter"/>
+        <p:inputText id="datasetNameTxt" value="#{publicationController.newDatasetNameToCreate}" rows="1" cols="60" converter="trimmingConverter" required="true" requiredMessage="A short dataset name is required."/>
         <h:outputLabel for="datasetDescriptionTxt" value="Dataset description"/>
-        <p:inputText id="datasetDescriptionTxt" value="#{publicationController.newDatasetDescriptionToCreate}" rows="1" cols="60" converter="trimmingConverter"/>
+        <p:inputText id="datasetDescriptionTxt" value="#{publicationController.newDatasetDescriptionToCreate}" rows="1" cols="60" converter="trimmingConverter" required="true" requiredMessage="A short sentence describing the dataset is required"/>
 
         <p:commandButton id="datasetCreated" value="Create and add to publication"
                          actionListener="#{publicationController.createAndAddNewDataset}"

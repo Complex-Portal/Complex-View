@@ -69,13 +69,7 @@ public class UserSessionController extends JpaAwareController implements Disposa
         if (role == null) throw new NullPointerException("Role is null");
 
         for (Role userRole : currentUser.getRoles()) {
-            if ("ADMIN".equals(userRole.getName())) {
-                return true;
-            }
-        }
-
-        for (Role userRole : currentUser.getRoles()) {
-            if (role.equals(userRole.getName())) {
+            if ("ADMIN".equals(userRole.getName()) || role.equals(userRole.getName())) {
                 return true;
             }
         }

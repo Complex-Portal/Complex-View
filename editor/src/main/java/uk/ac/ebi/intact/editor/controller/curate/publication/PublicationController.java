@@ -698,10 +698,10 @@ public class PublicationController extends AnnotatedObjectController {
             String newDataset = newDatasetNameToCreate + " - " + newDatasetDescriptionToCreate;
             DatasetPopulator populator = getDatasetPopulator();
             
-            String sql = "select distinct a.annotationText from Annotation a where a.cvTopic.identifier = :dataset and a.annotationText like :name";
+            String sql = "select distinct a.annotationText from Annotation a where a.cvTopic.identifier = :dataset and lower(a.annotationText) like :name";
             Query query = getDaoFactory().getEntityManager().createQuery(sql);
             query.setParameter("dataset",CvTopic.DATASET_MI_REF);
-            query.setParameter("name",newDatasetNameToCreate+" -%");
+            query.setParameter("name",newDatasetNameToCreate.toLowerCase()+" -%");
 
             if (!query.getResultList().isEmpty()){
                 addErrorMessage("A dataset with this name already exists. Cannot create two datasets with same name","dataset name already exists");
