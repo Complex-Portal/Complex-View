@@ -693,6 +693,12 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void createAndAddNewDataset( ActionEvent evt ) {
+        if (newDatasetDescriptionToCreate == null){
+            addErrorMessage("A short sentence describing the dataset is required", "dataset description required");
+        }
+        if (newDatasetNameToCreate == null){
+            addErrorMessage("A short dataset name is required", "dataset name required");
+        }
         if ( newDatasetDescriptionToCreate!= null && newDatasetNameToCreate != null) {
 
             String newDataset = newDatasetNameToCreate + " - " + newDatasetDescriptionToCreate;

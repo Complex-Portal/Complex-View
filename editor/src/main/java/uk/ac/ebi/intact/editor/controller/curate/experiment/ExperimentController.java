@@ -142,9 +142,8 @@ public class ExperimentController extends AnnotatedObjectController {
     public boolean doSaveDetails() {
         if (experiment.getAc() == null) {
             experiment.setShortLabel(createExperimentShortLabel());
+            getCorePersister().saveOrUpdate(experiment);
         }
-
-        getCorePersister().saveOrUpdate(experiment);
 
         return true;
     }

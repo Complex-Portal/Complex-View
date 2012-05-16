@@ -461,9 +461,9 @@
           modal="true" position="center">
     <h:panelGrid columns="5" style="margin-bottom:10px">
         <h:outputLabel for="datasetNameTxt" value="Dataset name"/>
-        <p:inputText id="datasetNameTxt" value="#{publicationController.newDatasetNameToCreate}" rows="1" cols="60" converter="trimmingConverter" required="true" requiredMessage="A short dataset name is required."/>
+        <p:inputText id="datasetNameTxt" value="#{publicationController.newDatasetNameToCreate}" rows="1" cols="60" converter="trimmingConverter"/>
         <h:outputLabel for="datasetDescriptionTxt" value="Dataset description"/>
-        <p:inputText id="datasetDescriptionTxt" value="#{publicationController.newDatasetDescriptionToCreate}" rows="1" cols="60" converter="trimmingConverter" required="true" requiredMessage="A short sentence describing the dataset is required"/>
+        <p:inputText id="datasetDescriptionTxt" value="#{publicationController.newDatasetDescriptionToCreate}" rows="1" cols="60" converter="trimmingConverter" />
 
         <p:commandButton id="datasetCreated" value="Create and add to publication"
                          actionListener="#{publicationController.createAndAddNewDataset}"
