@@ -282,7 +282,7 @@ public class InteractionController extends ParameterizableObjectController {
 
         if (interaction != null) {
             if (!Hibernate.isInitialized(interaction.getComponents())) {
-                interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
+                interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( interaction.getAc() );
             }
             refreshExperimentLists();
             refreshParticipants();
@@ -315,7 +315,7 @@ public class InteractionController extends ParameterizableObjectController {
 
         // Reload experiments
         if (!Hibernate.isInitialized(interaction.getExperiments())){
-            interaction = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao(), ac);
+            interaction = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao(), interaction.getAc());
         }
 
         Collection<Experiment> experiments = new ArrayList<Experiment>( interaction.getExperiments() );
