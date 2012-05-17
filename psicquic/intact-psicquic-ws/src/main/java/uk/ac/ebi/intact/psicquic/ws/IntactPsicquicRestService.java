@@ -126,7 +126,8 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                     int count = entrySet.getEntries().iterator().next().getInteractionList().getInteractions().size();
 
                     return prepareResponse(Response.status(200).type(MediaType.APPLICATION_XML), entrySet, count, isCompressed).build();
-                } else if (format.toLowerCase().startsWith("rdf") || format.toLowerCase().startsWith("biopax")) {
+                } else if ((format.toLowerCase().startsWith("rdf") && format.length() > 5) || format.toLowerCase().startsWith("biopax")
+                        || format.toLowerCase().startsWith("biopax-L3") || format.toLowerCase().startsWith("biopax-L2")) {
                     String rdfFormat = getRdfFormatName(format);
                     String mediaType = (format.contains("xml") || format.toLowerCase().startsWith("biopax"))? MediaType.APPLICATION_XML : MediaType.TEXT_PLAIN;
 
@@ -172,10 +173,7 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                         converter.convert(mitabReader, xgmmlWriter);
 
                         mitabReader.close();
-                        xgmmlWriter.close();
-
-                        mitabReader.close();
-                        xgmmlWriter.close();
+                        mitabOs.close();
 
                         return prepareResponse(Response.status(200).type("application/xgmml"),
                                 xgmmlWriter.toString(), count, isCompressed)
@@ -214,14 +212,14 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                     try {
                         xmlWriter254.marshall((EntrySet)entity, baos);
 
+                        CompressedStreamingOutput streamingOutput = new CompressedStreamingOutput(new ByteArrayInputStream(baos.toByteArray()));
+                        responseBuilder.entity(streamingOutput);
+
                         baos.close();
 
                     } catch (Throwable e) {
                         throw new IOException("Problem marshalling XML", e);
                     }
-
-                    CompressedStreamingOutput streamingOutput = new CompressedStreamingOutput(new ByteArrayInputStream(baos.toByteArray()));
-                    responseBuilder.entity(streamingOutput);
 
                 } else {
                     responseBuilder.entity(entity);

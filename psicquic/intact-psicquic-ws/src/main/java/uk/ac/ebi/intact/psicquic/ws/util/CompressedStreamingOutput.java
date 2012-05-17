@@ -48,6 +48,9 @@ public class CompressedStreamingOutput implements StreamingOutput {
         baos.close();
         gzipOs.close();
 
+        // the input stream is not reset here and can only be used once so we close it here
+        is.close();
+
         output.write(baos.toByteArray());
     }
 }
