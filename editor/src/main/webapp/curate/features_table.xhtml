@@ -46,6 +46,7 @@
             </p:column>
             <p:column>
                 <ui:include src="/curate/common_column_notifications.xhtml">
+                    <ui:param name="annotatedObjectController" value="#{featureController}"/>
                     <ui:param name="ao" value="#{feature}"/>
                 </ui:include>
             </p:column>

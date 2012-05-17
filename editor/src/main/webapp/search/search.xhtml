@@ -138,6 +138,7 @@
                 </p:column>
                 <p:column>
                     <ui:include src="/curate/common_column_notifications.xhtml">
+                        <ui:param name="annotatedObjectController" value="#{interactorController}"/>
                         <ui:param name="ao" value="#{molecule}"/>
                     </ui:include>
                     <h:panelGroup rendered="#{annotatedObjectController.isNoUniprotUpdate(molecule)}">
@@ -174,6 +175,7 @@
                 </p:column>
                 <p:column>
                       <ui:include src="/curate/common_column_notifications.xhtml">
+                          <ui:param name="annotatedObjectController" value="#{cvObjectController}"/>
                           <ui:param name="ao" value="#{cvobject}"/>
                       </ui:include>
                   </p:column>
@@ -205,6 +207,7 @@
                 </p:column>
                   <p:column>
                       <ui:include src="/curate/common_column_notifications.xhtml">
+                          <ui:param name="annotatedObjectController" value="#{featureController}"/>
                           <ui:param name="ao" value="#{feature}"/>
                       </ui:include>
                   </p:column>
@@ -228,6 +231,7 @@
                 </p:column>
                   <p:column>
                       <ui:include src="/curate/common_column_notifications.xhtml">
+                          <ui:param name="annotatedObjectController" value="#{bioSourceController}"/>
                           <ui:param name="ao" value="#{organism}"/>
                       </ui:include>
                   </p:column>
@@ -279,6 +283,7 @@
 
                     <p:column>
                         <ui:include src="/curate/common_column_notifications.xhtml">
+                            <ui:param name="annotatedObjectController" value="#{participantController}"/>
                             <ui:param name="ao" value="#{participant}"/>
                         </ui:include>
                         <h:panelGroup rendered="#{annotatedObjectController.isNoUniprotUpdate(participant.interactor)}">

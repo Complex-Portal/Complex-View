@@ -31,7 +31,9 @@
             <p:panel id="basic" header="Organism Details">
 
                 <p:outputPanel id="infoPanels">
-                    <ui:include src="common_info_panels.xhtml"/>
+                    <ui:include src="common_info_panels.xhtml">
+                        <ui:param name="annotatedObjectController" value="#{bioSourceController}"/>
+                    </ui:include>
                 </p:outputPanel>
 
                 <h:panelGroup rendered="#{bioSourceController.bioSource != null}">

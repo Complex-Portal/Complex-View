@@ -62,7 +62,9 @@
     <p:panel id="basic" header="Interaction Details">
 
         <p:outputPanel id="infoPanels">
-            <ui:include src="common_info_panels.xhtml"/>
+            <ui:include src="common_info_panels.xhtml">
+                <ui:param name="annotatedObjectController" value="#{interactionController}"/>
+            </ui:include>
         </p:outputPanel>
 
         <h:panelGroup rendered="#{interaction != null}">

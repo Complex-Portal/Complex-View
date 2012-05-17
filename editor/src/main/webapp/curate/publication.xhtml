@@ -166,7 +166,9 @@
         </ia:panelMessage>
     </h:panelGroup>
 
-    <ui:include src="common_info_panels.xhtml"/>
+    <ui:include src="common_info_panels.xhtml">
+        <ui:param name="annotatedObjectController" value="#{publicationController}"/>
+    </ui:include>
 </p:outputPanel>
 
 <h:panelGroup rendered="#{publicationController.publication != null}">

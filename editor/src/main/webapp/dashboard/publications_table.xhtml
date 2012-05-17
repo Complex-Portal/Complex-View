@@ -25,6 +25,7 @@
         </p:column>
         <p:column>
             <ui:include src="/curate/common_column_notifications.xhtml">
+                <ui:param name="annotatedObjectController" value="#{publicationController}"/>
                 <ui:param name="ao" value="#{publication}"/>
             </ui:include>
         </p:column>

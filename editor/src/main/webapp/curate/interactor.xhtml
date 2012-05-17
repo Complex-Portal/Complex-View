@@ -50,7 +50,9 @@
             <p:panel id="basic" header="Interactor Details">
 
                 <p:outputPanel id="infoPanels">
-                    <ui:include src="common_info_panels.xhtml"/>
+                    <ui:include src="common_info_panels.xhtml">
+                        <ui:param name="annotatedObjectController" value="#{interactorController}"/>
+                    </ui:include>
 
                     <h:panelGroup rendered="#{interactorController.noUniprotUpdate}">
                         <ia:panelMessage level="warn">

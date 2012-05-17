@@ -26,6 +26,7 @@
             </p:column>
             <p:column>
                 <ui:include src="/curate/common_column_notifications.xhtml">
+                    <ui:param name="annotatedObjectController" value="#{interactionController}"/>
                     <ui:param name="ao" value="#{interaction}"/>
                 </ui:include>
             </p:column>

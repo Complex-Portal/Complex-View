@@ -53,7 +53,9 @@
             <p:panel id="basic" header="Participant Details">
 
                 <p:outputPanel id="infoPanels">
-                    <ui:include src="common_info_panels.xhtml"/>
+                    <ui:include src="common_info_panels.xhtml">
+                        <ui:param name="annotatedObjectController" value="#{participantController}"/>
+                    </ui:include>
 
                     <h:panelGroup rendered="#{participantController.isNoUniprotUpdate(participant.interactor)}">
                         <ia:panelMessage level="warn">
