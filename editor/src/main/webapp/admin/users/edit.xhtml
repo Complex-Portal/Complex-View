@@ -56,7 +56,7 @@
 
             <h:outputLabel value="Role(s):" for="rolesPick"/>
             <p:pickList id="rolesPick" value="#{userAdminController.roles}" var="role"
-                        itemLabel="#{role}" itemValue="#{role}">
+                        itemLabel="#{role}" itemValue="#{role}" required="true" requiredMessage="You must provide at least one role">
             </p:pickList>
 
             <h:outputLabel value="Default curation depth:" for="depthSel"/>
