@@ -333,6 +333,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "from InteractorImpl i left join i.xrefs as x " +
                                                               "where    ( i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
+                                                              "      or lower(i.fullName) like :query " +
                                                               "      or lower(x.primaryId) like :query ) " +
                                                               "      and i.cvInteractorType.identifier <> 'MI:0317'",
 
@@ -340,6 +341,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "from InteractorImpl i left join i.xrefs as x " +
                                                               "where   (i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
+                                                              "      or lower(i.fullName) like :query " +
                                                               "      or lower(x.primaryId) like :query )" +
                                                               "     and i.cvInteractorType.identifier <> 'MI:0317'",
 
@@ -524,12 +526,14 @@ public class SearchController extends AnnotatedObjectController {
                                                                  "from BioSource b " +
                                                                  "where    b.ac = :ac " +
                                                                  "      or lower(b.shortLabel) like :query " +
+                                                                 "      or lower(b.fullName) like :query " +
                                                                  "      or lower(b.taxId) like :query ",
 
                                                                  "select count(distinct b) " +
                                                                  "from BioSource b " +
                                                                  "where    b.ac = :ac " +
                                                                  "      or lower(b.shortLabel) like :query " +
+                                                                 "      or lower(b.fullName) like :query " +
                                                                  "      or lower(b.taxId) like :query ",
 
                                                                  params, "b", "updated", false);

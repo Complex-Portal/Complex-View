@@ -149,8 +149,11 @@
                 <p:column headerText="Type">
                     <h:outputText value="#{molecule.cvInteractorType.shortLabel}"/>
                 </p:column>
-                <p:column headerText="Name" sortBy="#{molecule.shortLabel}">
+                <p:column headerText="Short name" sortBy="#{molecule.shortLabel}">
                     <h:outputText value="#{molecule.shortLabel}"/>
+                </p:column>
+                <p:column headerText="Full name" sortBy="#{molecule.fullName}">
+                    <h:outputText value="#{molecule.fullName}"/>
                 </p:column>
                 <p:column headerText="Identity">
                     <h:outputText value="#{searchController.getIdentityXref( molecule )}"/>
@@ -235,7 +238,10 @@
                           <ui:param name="ao" value="#{organism}"/>
                       </ui:include>
                   </p:column>
-                  <p:column headerText="Name" sortBy="#{organism.fullName}">
+                  <p:column headerText="Short Name" sortBy="#{organism.shortLabel}">
+                      <h:outputText value="#{organism.shortLabel}"/>
+                  </p:column>
+                  <p:column headerText="Full Name" sortBy="#{organism.fullName}">
                     <h:outputText value="#{organism.fullName}"/>
                 </p:column>
                 <p:column headerText="Tax ID" sortBy="#{organism.taxId}">
