@@ -22,6 +22,7 @@ import uk.ac.ebi.intact.model.clone.IntactClonerException;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -31,15 +32,23 @@ import java.util.Map;
 public class EditorIntactCloner extends IntactCloner {
 
     private Map<String, String> xrefsMiToExclude;
+    private Collection<String> annotationsToExclude;
     
     public EditorIntactCloner() {
         setExcludeACs(true);
         xrefsMiToExclude = new HashMap<String, String>();
+        annotationsToExclude = new HashSet<String>();
         initialiseXrefsToExclude();
+        initialiseAnnotationsToExclude();
     }
     
     private void initialiseXrefsToExclude() {
         xrefsMiToExclude.put(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF);
+    }
+
+    private void initialiseAnnotationsToExclude() {
+        annotationsToExclude.add(CvTopic.ACCEPTED);
+        annotationsToExclude.add(CvTopic.TO_BE_REVIEWED);
     }
 
     @Override
@@ -84,6 +93,18 @@ public class EditorIntactCloner extends IntactCloner {
     }
 
     @Override
+    protected Annotation cloneAnnotation(Annotation annot) throws IntactClonerException {
+        if (annot == null) return null;
+
+        // filter annotations that we don't want to clone
+        if (annot.getCvTopic() != null && annotationsToExclude.contains(annot.getCvTopic().getShortLabel())){
+            return null;
+        }
+
+        return super.cloneAnnotation(annot);
+    }
+
+    @Override
     protected AnnotatedObject cloneAnnotatedObjectCommon(AnnotatedObject<?, ?> ao, AnnotatedObject clone) throws IntactClonerException {
 
         if(clone==null){
@@ -112,6 +133,17 @@ public class EditorIntactCloner extends IntactCloner {
                 clone.addXref(clone(xref));
             }
         }
+
+        // clone annotations
+        Collection<Annotation> annots = IntactCore.ensureInitializedAnnotations(ao);
+
+        for (Annotation annotation : annots) {
+            Annotation clonedAnnotation = clone(annotation);
+
+            if (clonedAnnotation != null){
+                clone.addAnnotation(clone(annotation));
+            }
+        }
         
         return super.cloneAnnotatedObjectCommon(ao, clone);
     }
@@ -128,7 +160,7 @@ public class EditorIntactCloner extends IntactCloner {
     @Override
     protected boolean isCollectionClonable(Collection col){
         
-        if (col != null && !col.isEmpty() && col.iterator().next() instanceof Xref){
+        if (col != null && !col.isEmpty() && (col.iterator().next() instanceof Xref || col.iterator().next() instanceof Annotation)){
             return false;
         }
         
