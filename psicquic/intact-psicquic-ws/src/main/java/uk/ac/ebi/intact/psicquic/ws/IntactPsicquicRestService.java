@@ -123,6 +123,7 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                     return prepareResponse(Response.status(200).type(MediaType.APPLICATION_XML), entrySet, count, isCompressed).build();
                 }
 
+                // return empty content because no results found
                 return prepareResponse(Response.status(200).type(MediaType.APPLICATION_XML), "", count, isCompressed).build();
             } else if ((format.toLowerCase().startsWith("rdf") && format.length() > 5) || format.toLowerCase().startsWith("biopax")
                     || format.toLowerCase().startsWith("biopax-L3") || format.toLowerCase().startsWith("biopax-L2")) {
@@ -133,6 +134,7 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                 StringWriter sw = new StringWriter();
                 int count = 0;
 
+                // only convert when having some results
                 if (entrySet != null){
                     PsimiRdfConverter rdfConverter = new PsimiRdfConverter();
                     try {
@@ -146,15 +148,22 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                     }
                 }
 
-                return prepareResponse(Response.status(200).type(mediaType), sw.toString(), count, isCompressed).build();
+                Response resp = prepareResponse(Response.status(200).type(mediaType), sw.toString(), count, isCompressed).build();
+                
+                // close writer
+                sw.close();
+                
+                return resp;
 
             } else {
-                final int count = count(query);
+                int count = 0;
 
                 if (RETURN_TYPE_COUNT.equalsIgnoreCase(format)) {
-                    return count;
+                    return count(query);
                 } else if (RETURN_TYPE_XGMML.equalsIgnoreCase(format)) {
-                    PsicquicStreamingOutput result = new PsicquicStreamingOutput(psicquicService, query, firstResult, MAX_XGMML_INTERACTIONS);
+                    PsicquicStreamingOutput result = new PsicquicStreamingOutput(psicquicService, query, firstResult, Math.min(maxResults, MAX_XGMML_INTERACTIONS));
+
+                    count = result.countResults();
 
                     ByteArrayOutputStream mitabOs = new ByteArrayOutputStream();
                     result.write(mitabOs);
@@ -174,12 +183,19 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                     DocumentConverter converter = new DocumentConverter(mitabDefinition, xgmmlDefinition);
                     converter.convert(mitabReader, xgmmlWriter);
 
-                    mitabReader.close();
+                    // close mitabOs now
                     mitabOs.close();
+                    // close mitab reader now
+                    mitabReader.close();
 
-                    return prepareResponse(Response.status(200).type("application/xgmml"),
+                    Response resp = prepareResponse(Response.status(200).type("application/xgmml"),
                             xgmmlWriter.toString(), count, isCompressed)
                             .build();
+
+                    // close stringWriter now
+                    xgmmlWriter.close();
+
+                    return resp;
                 } else if (RETURN_TYPE_MITAB25.equalsIgnoreCase(format) || format == null) {
                     PsicquicStreamingOutput result = new PsicquicStreamingOutput(psicquicService, query, firstResult, maxResults, isCompressed);
                     return prepareResponse(Response.status(200).type(MediaType.TEXT_PLAIN), result,
