@@ -19,13 +19,11 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.cxf.feature.Features;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.apache.solr.common.SolrDocument;
 import org.hupo.psi.mi.psicquic.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import psidev.psi.mi.tab.converter.tab2xml.Tab2Xml;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.builder.DocumentDefinition;
 import psidev.psi.mi.xml.converter.impl254.EntrySetConverter;
@@ -36,13 +34,11 @@ import psidev.psi.mi.xml254.jaxb.Entry;
 import psidev.psi.mi.xml254.jaxb.EntrySet;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.converter.SolrDocumentConverter;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
 import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
 
-import javax.annotation.PostConstruct;
 import java.net.MalformedURLException;
 import java.util.*;
 
@@ -72,16 +68,16 @@ public class IntactPsicquicService implements PsicquicService {
 
     @Autowired
     private PsicquicConfig config;
-    
+
     private static final String IDENTIFIER_FIELD = "identifier";
     private static final String ALIAS_FIELD = "alias";
     private static final String INTERACTION_ID_FIELD = "interaction_id";
-    
+
     private CommonsHttpSolrServer solrServer;
 
-    public IntactPsicquicService() { 
+    public IntactPsicquicService() {
     }
-    
+
     public CommonsHttpSolrServer getSolrServer() {
         if (solrServer == null) {
             try {
@@ -119,7 +115,7 @@ public class IntactPsicquicService implements PsicquicService {
     public QueryResponse getByInteractorList(List<DbRef> dbRefs, RequestInfo requestInfo, String operand) throws NotSupportedMethodException, NotSupportedTypeException, PsicquicServiceException {
         String query = createQuery( IDENTIFIER_FIELD, dbRefs, operand);
 
-        
+
 
         return getByQuery(query, requestInfo);
     }
@@ -271,10 +267,11 @@ public class IntactPsicquicService implements PsicquicService {
             if (logger.isDebugEnabled()) logger.debug("Creating PSI-MI XML");
 
             EntrySet jEntrySet = createEntrySet(searchResult);
+
             resultSet.setEntrySet(jEntrySet);
 
             // add some annotations
-            if (!jEntrySet.getEntries().isEmpty()) {
+            if (jEntrySet != null && !jEntrySet.getEntries().isEmpty()) {
                 AttributeList attrList = new AttributeList();
 
                 Entry entry = jEntrySet.getEntries().iterator().next();
@@ -328,13 +325,15 @@ public class IntactPsicquicService implements PsicquicService {
         try {
             Collection binaryInteractions = searchResult.getBinaryInteractionList();
 
-            psidev.psi.mi.xml.model.EntrySet mEntrySet = tab2Xml.convert(binaryInteractions);
+            psidev.psi.mi.xml.model.EntrySet mEntrySet;
+            if (!binaryInteractions.isEmpty()){
+                mEntrySet = tab2Xml.convert(binaryInteractions);
+                EntrySetConverter converter = new EntrySetConverter();
+                converter.setDAOFactory(new InMemoryDAOFactory());
 
-            EntrySetConverter converter = new EntrySetConverter();
-            converter.setDAOFactory(new InMemoryDAOFactory());
-
-            return converter.toJaxb(mEntrySet);
-
+                return converter.toJaxb(mEntrySet);
+            }
+            return null;
         } catch (Exception e) {
             throw new PsicquicServiceException("Problem converting results to PSI-MI XML: "+e, e);
         }
