@@ -85,9 +85,10 @@ public class ExportServlet extends HttpServlet {
         if (fixedQuery.contains("&")){
             fixedQuery = searchQuery.substring(0, searchQuery.indexOf("&"));
         }
-        if (fixedQuery.contains("q=")){
-            fixedQuery = fixedQuery.substring(fixedQuery.indexOf("q=")+2);
-        }
+        fixedQuery = fixedQuery.replaceAll("q=", "");
+        fixedQuery = fixedQuery.replaceAll(":","_");
+        fixedQuery = fixedQuery.replaceAll(" ","_");
+
         String name = fixedQuery.substring(0, Math.min(10, fixedQuery.length())) + "." + extension;
 
         String sortColumn = request.getParameter(PARAM_SORT);

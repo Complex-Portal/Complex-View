@@ -127,12 +127,18 @@ public class BinaryInteractionsExporter {
          PsimiTabWriter writer = new PsimiTabWriter();
          Writer out = new OutputStreamWriter(os);
          writeMitab(out, writer, searchQuery);
+
+        // close writer
+        out.close();
     }
 
     private void exportToMiTabIntact(OutputStream os, SolrQuery searchQuery) throws IOException, IntactViewException {
          PsimiTabWriter writer = new IntactPsimiTabWriter();
          Writer out = new OutputStreamWriter(os);
          writeMitab(out, writer, searchQuery);
+
+        // close writer
+        out.close();
     }
 
     private void writeMitab(Writer out, PsimiTabWriter writer, SolrQuery query) throws IOException {
@@ -191,6 +197,9 @@ public class BinaryInteractionsExporter {
 
         try {
             writer.write(entrySet, out);
+
+            // close writer
+            out.close();
         } catch (Exception e) {
             throw new IntactViewException("Problem writing XML (format "+format+") for query: "+solrQuery, e);
         }
@@ -205,6 +214,11 @@ public class BinaryInteractionsExporter {
 
         try {
             XslTransformerUtils.viewPsiMi25( bais, os );
+
+            // close baos and bais
+            baos.close();
+            bais.close();
+
             //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
         }  catch ( XslTransformException e ) {
             throw new IntactViewException("Problem transforming XML to HTML(XslTransformException)", e);
@@ -218,6 +232,9 @@ public class BinaryInteractionsExporter {
 
         PsimiRdfConverter converter = new PsimiRdfConverter();
         converter.convert(entrySet, format, out);
+
+        // close writer
+        out.close();
     }
 
     private void exportToXGMML(OutputStream os, SolrQuery solrQuery) throws IOException {
@@ -232,6 +249,8 @@ public class BinaryInteractionsExporter {
         
         InputStream is = new ByteArrayInputStream(StringUtils.join(interactions, System.getProperty("line.separator")).getBytes());
         converter.convert( is, os );
+
+        // close inputstream
         is.close();
     }
 
