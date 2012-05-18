@@ -221,19 +221,23 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                 CompressedStreamingOutput streamingOutput = new CompressedStreamingOutput((InputStream)entity);
                 responseBuilder.entity(streamingOutput);
             } else if (entity instanceof String) {
-                CompressedStreamingOutput streamingOutput = new CompressedStreamingOutput(new ByteArrayInputStream(((String)entity).getBytes()));
+                ByteArrayInputStream inputStream = new ByteArrayInputStream(((String)entity).getBytes());
+                CompressedStreamingOutput streamingOutput = new CompressedStreamingOutput(inputStream);
                 responseBuilder.entity(streamingOutput);
+                inputStream.close();
             } else if (entity instanceof EntrySet) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
                 PsimiXmlWriter254 xmlWriter254 = new PsimiXmlWriter254();
                 try {
                     xmlWriter254.marshall((EntrySet)entity, baos);
+                    ByteArrayInputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
 
-                    CompressedStreamingOutput streamingOutput = new CompressedStreamingOutput(new ByteArrayInputStream(baos.toByteArray()));
+                    CompressedStreamingOutput streamingOutput = new CompressedStreamingOutput(inputStream);
                     responseBuilder.entity(streamingOutput);
 
                     baos.close();
+                    inputStream.close();
 
                 } catch (Throwable e) {
                     throw new IOException("Problem marshalling XML", e);
