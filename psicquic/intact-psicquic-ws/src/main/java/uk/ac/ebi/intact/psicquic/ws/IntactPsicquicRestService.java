@@ -135,7 +135,7 @@ public class IntactPsicquicRestService implements PsicquicRestService {
                 int count = 0;
 
                 // only convert when having some results
-                if (entrySet != null){
+                if (entrySet != null && !entrySet.getEntries().isEmpty()){
                     PsimiRdfConverter rdfConverter = new PsimiRdfConverter();
                     try {
                         rdfConverter.convert(entrySet, rdfFormat , sw);

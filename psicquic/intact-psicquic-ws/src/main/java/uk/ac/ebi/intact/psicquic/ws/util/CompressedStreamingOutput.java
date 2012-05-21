@@ -45,9 +45,9 @@ public class CompressedStreamingOutput implements StreamingOutput {
 
         IOUtils.copy(is, gzipOs);
 
+        output.write(baos.toByteArray());
+
         baos.close();
         gzipOs.close();
-
-        output.write(baos.toByteArray());
     }
 }

@@ -321,6 +321,10 @@ public class IntactPsicquicService implements PsicquicService {
     }
 
     private EntrySet createEntrySet(SolrSearchResult searchResult) throws PsicquicServiceException {
+        if (searchResult.getBinaryInteractionList().isEmpty()) {
+            return new EntrySet();
+        }
+
         IntactTab2Xml tab2Xml = new IntactTab2Xml();
         try {
             Collection binaryInteractions = searchResult.getBinaryInteractionList();
