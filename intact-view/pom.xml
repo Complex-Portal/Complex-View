@@ -511,18 +511,18 @@
          <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab</artifactId>
-            <version>1.7.10</version>
+            <version>1.7.11-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>calimocho-tab</artifactId>
-            <version>2.1</version>
+            <version>2.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>calimocho-xgmml</artifactId>
-            <version>2.1</version>
+            <version>2.2-SNAPSHOT</version>
         </dependency>
 
         <!-- PSICQUIC -->

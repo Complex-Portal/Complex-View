@@ -125,7 +125,7 @@ public class BinaryInteractionsExporter {
 
     public void exportToMiTab(OutputStream os, SolrQuery searchQuery) throws IOException {
          PsimiTabWriter writer = new PsimiTabWriter();
-         Writer out = new OutputStreamWriter(os);
+         Writer out = new BufferedWriter(new OutputStreamWriter(os));
          writeMitab(out, writer, searchQuery);
 
         // close writer
@@ -134,7 +134,7 @@ public class BinaryInteractionsExporter {
 
     private void exportToMiTabIntact(OutputStream os, SolrQuery searchQuery) throws IOException, IntactViewException {
          PsimiTabWriter writer = new IntactPsimiTabWriter();
-         Writer out = new OutputStreamWriter(os);
+         Writer out = new BufferedWriter(new OutputStreamWriter(os));
          writeMitab(out, writer, searchQuery);
 
         // close writer
@@ -182,7 +182,6 @@ public class BinaryInteractionsExporter {
     }
 
     public void exportToMiXml(OutputStream os, SolrQuery solrQuery, String format) throws IOException {
-        Writer out = new OutputStreamWriter(os, "UTF-8");
 
         final EntrySet entrySet = createEntrySet(solrQuery);
 
@@ -196,6 +195,8 @@ public class BinaryInteractionsExporter {
         }
 
         try {
+            Writer out = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+
             writer.write(entrySet, out);
 
             // close writer
@@ -215,23 +216,25 @@ public class BinaryInteractionsExporter {
         try {
             XslTransformerUtils.viewPsiMi25( bais, os );
 
-            // close baos and bais
-            baos.close();
-            bais.close();
-
             //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
         }  catch ( XslTransformException e ) {
             throw new IntactViewException("Problem transforming XML to HTML(XslTransformException)", e);
         }
+
+        // close baos and bais
+        baos.close();
+        bais.close();
     }
 
     public void exportToRdf(OutputStream os, SolrQuery searchQuery, RdfFormat format) throws IOException {
-        Writer out = new OutputStreamWriter(os, "UTF-8");
+        Writer out = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
 
         EntrySet entrySet = createEntrySet(searchQuery);
 
-        PsimiRdfConverter converter = new PsimiRdfConverter();
-        converter.convert(entrySet, format, out);
+        if (entrySet != null && !entrySet.getEntries().isEmpty()){
+            PsimiRdfConverter converter = new PsimiRdfConverter();
+            converter.convert(entrySet, format, out);
+        }
 
         // close writer
         out.close();

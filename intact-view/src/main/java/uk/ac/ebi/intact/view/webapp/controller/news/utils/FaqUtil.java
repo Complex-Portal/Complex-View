@@ -3,18 +3,15 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.news.utils;
 
-import java.io.InputStream;
-import java.net.URL;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import uk.ac.ebi.intact.view.webapp.controller.news.items.Faq;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import uk.ac.ebi.intact.view.webapp.controller.news.items.Faq;
-import uk.ac.ebi.intact.view.webapp.controller.news.items.News;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  *
@@ -32,7 +29,11 @@ public class FaqUtil {
         Faq objFaq;
         try {
             URL datasetsUrl = new URL(faqXml);
-            objFaq = (Faq) readFaqXml(datasetsUrl.openStream());
+            InputStream datasetStream = datasetsUrl.openStream();
+
+            objFaq = (Faq) readFaqXml(datasetStream);
+
+            datasetStream.close();
         } catch (Throwable e) {
             log.error("Error while loading FAQ from: " + faqXml, e);
             objFaq = new Faq();

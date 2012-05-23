@@ -63,6 +63,7 @@ public class GraphmlServlet extends HttpServlet {
         stream.write( output.getBytes() );
 
         stream.flush();
-        stream.close();
+
+        is.close();
     }
 }

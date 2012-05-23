@@ -15,8 +15,6 @@
  */
 package uk.ac.ebi.intact.view.webapp.servlet;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.springframework.transaction.TransactionStatus;
 import psidev.psi.mi.xml.PsimiXmlVersion;
 import psidev.psi.mi.xml.PsimiXmlWriter;
@@ -32,8 +30,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URLDecoder;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Outputs JSON corresponding to an interaction.
@@ -61,6 +61,8 @@ public class JsonExporter extends HttpServlet {
         } catch (XslTransformException e) {
             throw new ServletException("Problem writing JSON", e);
         }
+
+        xmlStream.close();
     }
 
     private InputStream createXmlStream(String interactionAc) throws ServletException {
@@ -68,15 +70,17 @@ public class JsonExporter extends HttpServlet {
 
         PsimiXmlWriter writer = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
         try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
             writer.write(entrySet, baos);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
+
+            baos.close();
+            return inputStream;
         } catch (Exception e) {
             throw new ServletException("Problem writing XML", e);
         }
-
-        return new ByteArrayInputStream(baos.toByteArray());
     }
 
     private EntrySet createEntrySet(String interactionAc) {

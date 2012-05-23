@@ -4,11 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
 import org.apache.solr.client.solrj.impl.StreamingUpdateSolrServer;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionStatus;
 import psidev.psi.mi.tab.PsimiTabWriter;
 import psidev.psi.mi.tab.converter.xml2tab.TabConversionException;
@@ -26,7 +22,6 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.CoreNames;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrIndexer;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.server.SolrJettyRunner;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
-import uk.ac.ebi.intact.model.IntactEntry;
 import uk.ac.ebi.intact.model.Publication;
 import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
 import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
@@ -132,7 +127,9 @@ public class DataPopulator  {
         PsimiTabWriter psimitabWriter = new IntactPsimiTabWriter();
         psimitabWriter.write(binaryInteractions, sw);
 
-        indexer.indexMitab(new ByteArrayInputStream(sw.toString().getBytes()), true);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(sw.toString().getBytes());
+        indexer.indexMitab(inputStream, true);
+        inputStream.close();
     }
 
     private void indexInteractions() throws ConverterException, IOException, TabConversionException {

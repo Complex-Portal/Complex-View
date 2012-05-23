@@ -90,6 +90,8 @@ public class CytoscapeServlet extends HttpServlet {
                     writer.println( text );
                     writer.flush();
                 }
+
+                reader.close();
                 if ( log.isTraceEnabled() ) log.trace( "Completed JNLP export." );
             }
         } finally {
@@ -97,6 +99,8 @@ public class CytoscapeServlet extends HttpServlet {
                 writer.close();
             }
         }
+
+        is.close();
     }
 
     private static String encodeURL( String url ) throws UnsupportedEncodingException {

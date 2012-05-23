@@ -23,17 +23,20 @@
     <ui:define name="sidebar">
 
         <h:panelGroup style="text-align:center">
-            <h:graphicImage alt="#{intactView['webapp.name']} Logo"
-                            url="#{intactView['webapp.logo.url']}"
-                            rendered="#{intactView['webapp.logo.url'] != ''}"
-                            style="border:0"/>
+            <h:link outcome="main">
+                <h:graphicImage alt="#{intactView['webapp.name']} Logo"
+                                url="#{intactView['webapp.logo.url']}"
+                                rendered="#{intactView['webapp.logo.url'] != ''}"
+                                style="border:0"/>
+            </h:link>
+
         </h:panelGroup>
 
         <ui:include src="/left_main_menu.xhtml"/>
 
         <h:panelGroup>
             <ui:include src="/news_twitter.xhtml"/>
-                   
+
         </h:panelGroup>
 
         <p>

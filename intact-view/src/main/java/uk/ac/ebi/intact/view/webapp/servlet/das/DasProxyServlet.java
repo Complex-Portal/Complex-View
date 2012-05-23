@@ -211,6 +211,9 @@ public class DasProxyServlet extends HttpServlet {
         if (cachingEnabled && cacheWriter != null) {
             cacheWriter.close();
         }
+        if (inputStreamToReturn != null){
+           inputStreamToReturn.close();
+        }
     }
 
     private void writeResponse(HttpServletResponse resp, CacheWriter cacheWriter, InputStream input) throws ServletException {
