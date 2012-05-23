@@ -110,7 +110,7 @@
 
 
 <hr/>
-
+<h:panelGroup rendered="#{searchBean.totalResults > 0}">
     If the table below looks too crowded, you can switch to a&#160;
     <p:commandLink value="Minimal" actionListener="#{columnContext.selectMininumColumns()}"
                    action="interactions" ajax="false" />
@@ -119,7 +119,7 @@
                    action="interactions" ajax="false" />
     table view.
     <br/>  <br/>
-
+</h:panelGroup>
 <!-- RESULTS TABLE -->
 
 <ui:include src="interactionTable.xhtml"/>

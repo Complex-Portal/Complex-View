@@ -29,6 +29,8 @@ import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import javax.persistence.EntityManagerFactory;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -119,14 +121,19 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private HttpClient httpClientWithProxy;
     private HttpClient httpClientWithoutProxy;
     private HttpClient psicquicHttpClient;
+    
+    private List<String> databaseNamesUsingSameSolr;
 
     public IntactViewConfiguration() {
     }
     
     public void afterPropertiesSet() throws Exception {
         storeIfNew();
+        if (databaseNamesUsingSameSolr == null){
+            databaseNamesUsingSameSolr = new ArrayList<String>();
+        }
     }
-
+    
     public void storeIfNew() {
         if (new File(configFile).exists()) {
             try {
@@ -587,5 +594,11 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         this.maxSizeXgmmlExport = maxSizeXgmmlExport;
     }
 
+    public List<String> getDatabaseNamesUsingSameSolr() {
+        return databaseNamesUsingSameSolr;
+    }
 
+    public void setDatabaseNamesUsingSameSolr(List<String> databaseNamesUsingSameSolr) {
+        this.databaseNamesUsingSameSolr = databaseNamesUsingSameSolr;
+    }
 }

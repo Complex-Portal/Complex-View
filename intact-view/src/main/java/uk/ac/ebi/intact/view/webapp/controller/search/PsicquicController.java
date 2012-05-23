@@ -137,7 +137,7 @@ public class PsicquicController extends BaseController {
                         }
                     }
 
-                    if (intactViewConfiguration.getWebappName().contains(service.getName())) {
+                    if (intactViewConfiguration.getWebappName().contains(service.getName()) || intactViewConfiguration.getDatabaseNamesUsingSameSolr().contains(service.getName())) {
                         continue;
                     }
 

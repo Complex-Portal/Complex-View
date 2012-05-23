@@ -56,6 +56,16 @@
         <property name="maxSizeXgmmlExport" value="${intact.maxsize.xgmml}"/>
         <property name="webappVersion" value="${version}"/>
         <property name="webappBuildNumber" value="0"/>
+        <property name="databaseNamesUsingSameSolr">
+            <list>
+                <value>IntAct</value>
+                <value>InnateDB-IMEx</value>
+                <value>Molcon-IMEx</value>
+                <value>I2D-IMEx</value>
+                <value>UniProt</value>
+                <value>MBInfo</value>
+            </list>
+        </property>
     </bean>
 
         <!-- this bean must not be lazily initialized if the exporting is to happen -->

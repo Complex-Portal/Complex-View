@@ -143,15 +143,13 @@ public class BinaryInteractionsExporter {
 
     private void writeMitab(Writer out, PsimiTabWriter writer, SolrQuery query) throws IOException {
         Integer firstResult = 0;
-        Integer maxResults = 50;
+        Integer maxResults = 200;
 
         boolean headerEnabled = true;
 
         Collection interactions;
 
         do {
-            //SolrQuery query = new SolrQuery(searchQuery);
-            //SolrQuery query = convertToSolrQuery( searchQuery );
             query.setStart(firstResult);
             query.setRows(maxResults);
 
@@ -159,8 +157,6 @@ public class BinaryInteractionsExporter {
             SolrSearchResult result = searcher.search(query);
 
             interactions = result.getBinaryInteractionList();
-
-
             writer.setHeaderEnabled(headerEnabled);
             try {
                 writer.write(interactions, out);
@@ -174,7 +170,7 @@ public class BinaryInteractionsExporter {
 
             out.flush();
 
-        } while (!interactions.isEmpty());
+        } while (!interactions.isEmpty() && interactions.size() == maxResults);
     }
 
     public void exportToMiXml( OutputStream os, SolrQuery searchQuery ) throws IOException {
