@@ -26,8 +26,10 @@ import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -304,7 +306,15 @@ public class UserAdminController extends AbstractUserController {
     public void upload() {
         usersToImport = new ArrayList<UserWrapper>();
         try {
-            Collection<User> users = userService.parseUsers( uploadedFile.getInputstream() );
+            InputStream inputStream = uploadedFile.getInputstream();
+            Collection<User> users = Collections.EMPTY_LIST;
+            try{
+                users = userService.parseUsers( inputStream );
+            }
+            finally {
+                inputStream.close();
+            }
+
             if( ! users.isEmpty() ) {
                 for ( User user : users ) {
                     final UserWrapper uw = new UserWrapper( user );

@@ -117,10 +117,18 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
 
             ByteArrayInputStream bais = new ByteArrayInputStream(baos.toString().getBytes());
 
-            XslTransformerUtils.viewPsiMi25(bais, outputStream);
+            try{
+                XslTransformerUtils.viewPsiMi25(bais, outputStream);
+            }
+            finally {
+                bais.close();
+            }
             //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
         }  catch ( Exception e ) {
             throw new IOException("Problem converting to HTML", e);
+        }
+        finally {
+            baos.close();
         }
     }
 
