@@ -50,20 +50,23 @@ public class GraphmlServlet extends HttpServlet {
         final InputStream is = inputUrl.openStream();
 
         ServletOutputStream stream = response.getOutputStream();
-        response.setContentType("text/plain");
+        try{
+            response.setContentType("text/plain");
 
-        final Tab2Cytoscapeweb tab2Cytoscapeweb = new Tab2Cytoscapeweb();
+            final Tab2Cytoscapeweb tab2Cytoscapeweb = new Tab2Cytoscapeweb();
 
-        String output = null;
-        try {
-            output = tab2Cytoscapeweb.convert(is);
-        } catch (ConverterException e) {
-            throw new IllegalStateException( "Could not parse input MITAB.", e );
+            String output = null;
+            try {
+                output = tab2Cytoscapeweb.convert(is);
+            } catch (ConverterException e) {
+                throw new IllegalStateException( "Could not parse input MITAB.", e );
+            }
+            stream.write( output.getBytes() );
+
+            stream.flush();
         }
-        stream.write( output.getBytes() );
-
-        stream.flush();
-
-        is.close();
+        finally {
+            is.close();
+        }
     }
 }

@@ -138,8 +138,12 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         if (new File(configFile).exists()) {
             try {
                 FileInputStream inputStream = new FileInputStream(configFile);
-                loadConfiguration(inputStream);
-                inputStream.close();
+                try{
+                    loadConfiguration(inputStream);
+                }
+                finally {
+                    inputStream.close();
+                }
             } catch (IOException e) {
                 throw new IntactViewException("Problem loading config properties from: "+configFile, e);
             }

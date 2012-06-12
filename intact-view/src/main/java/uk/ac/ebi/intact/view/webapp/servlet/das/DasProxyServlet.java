@@ -146,89 +146,97 @@ public class DasProxyServlet extends HttpServlet {
         int dasCode = 200;
         CacheWriter cacheWriter = null;
 
-        // check if the answer is cached, otherwise execute the URL query to destination server
-        if (cachingEnabled && cachedFile.getFile().exists()) {
-            // file is in cache
-            if (log.isTraceEnabled()) log.trace("File found in cache: "+cachedFile.getFile());
+        try{
+            // check if the answer is cached, otherwise execute the URL query to destination server
+            if (cachingEnabled && cachedFile.getFile().exists()) {
+                // file is in cache
+                if (log.isTraceEnabled()) log.trace("File found in cache: "+cachedFile.getFile());
 
-            inputStreamToReturn = new FileInputStream(cachedFile.getFile());
-        } else {
-            // generate the URL to the DAS Server
-            String urlStr = generateUrl(serverUrl, method, query, regAuthority, regLabel, regType);
-
-            URL url = new URL(urlStr);
-
-            if (log.isDebugEnabled()) log.debug("Connecting to URL: " + url);
-
-            // Create the URL connection, using the http proxy if necessary
-            URLConnection urlConnection;
-
-            if (proxyHost != null) {
-                urlConnection = url.openConnection(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
+                inputStreamToReturn = new FileInputStream(cachedFile.getFile());
             } else {
-                urlConnection = url.openConnection();
-            }
+                // generate the URL to the DAS Server
+                String urlStr = generateUrl(serverUrl, method, query, regAuthority, regLabel, regType);
 
-            urlConnection.setConnectTimeout(timeout * 1000);
-            urlConnection.setReadTimeout(10 * 1000);
+                URL url = new URL(urlStr);
 
-            try {
-                urlConnection.connect();
+                if (log.isDebugEnabled()) log.debug("Connecting to URL: " + url);
 
-                if ("pdb".equals(method)) {
-                    resp.setContentType("text/plain");
+                // Create the URL connection, using the http proxy if necessary
+                URLConnection urlConnection;
+
+                if (proxyHost != null) {
+                    urlConnection = url.openConnection(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)));
                 } else {
-                    resp.setContentType("text/xml");
+                    urlConnection = url.openConnection();
                 }
 
-                // check the das status code
-                String codeValue = urlConnection.getHeaderField("X-Das-Status");
+                urlConnection.setConnectTimeout(timeout * 1000);
+                urlConnection.setReadTimeout(10 * 1000);
 
-                // evaluate the DAS status code
-                if (codeValue != null) {
-                    dasCode = Integer.parseInt(codeValue.split(" ")[0]);
-                } else {
-                    dasCode = 200;
+                try {
+                    urlConnection.connect();
+
+                    if ("pdb".equals(method)) {
+                        resp.setContentType("text/plain");
+                    } else {
+                        resp.setContentType("text/xml");
+                    }
+
+                    // check the das status code
+                    String codeValue = urlConnection.getHeaderField("X-Das-Status");
+
+                    // evaluate the DAS status code
+                    if (codeValue != null) {
+                        dasCode = Integer.parseInt(codeValue.split(" ")[0]);
+                    } else {
+                        dasCode = 200;
+                    }
+
+                    inputStreamToReturn = urlConnection.getInputStream();
+
+                    cacheWriter = new CacheWriter(cachedFile);
+
+                } catch (Exception e) {
+                    dasCode = 401;
+                    log.error("Problem opening connection to: "+urlStr+" - "+e.getMessage());
                 }
+            }
 
-                inputStreamToReturn = urlConnection.getInputStream();
-
-                cacheWriter = new CacheWriter(cachedFile);
-
-            } catch (Exception e) {
-                dasCode = 401;
-                log.error("Problem opening connection to: "+urlStr+" - "+e.getMessage());
+            // return the response if the code is 200, otherwise return an exception snippet
+            if (dasCode == 200) {
+                writeResponse(resp, cacheWriter, inputStreamToReturn);
+            } else {
+                failWithMessage(resp, dasCode + " " + dasStatusCodes.get(dasCode));
             }
         }
-
-        // return the response if the code is 200, otherwise return an exception snippet
-        if (dasCode == 200) {
-            writeResponse(resp, cacheWriter, inputStreamToReturn);
-        } else {
-            failWithMessage(resp, dasCode + " " + dasStatusCodes.get(dasCode));
-        }
-
-        if (cachingEnabled && cacheWriter != null) {
-            cacheWriter.close();
-        }
-        if (inputStreamToReturn != null){
-           inputStreamToReturn.close();
+        finally {
+            if (cachingEnabled && cacheWriter != null) {
+                cacheWriter.close();
+            }
+            if (inputStreamToReturn != null){
+                inputStreamToReturn.close();
+            }
         }
     }
 
     private void writeResponse(HttpServletResponse resp, CacheWriter cacheWriter, InputStream input) throws ServletException {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(input));
-            String line;
-            while ((line = in.readLine()) != null) {
-                final String lineStr = line + System.getProperty("line.separator");
-                resp.getWriter().write(lineStr);
+            try{
+                String line;
+                while ((line = in.readLine()) != null) {
+                    final String lineStr = line + System.getProperty("line.separator");
+                    resp.getWriter().write(lineStr);
 
-                if (cachingEnabled && cacheWriter != null) {
-                    cacheWriter.write(lineStr);
+                    if (cachingEnabled && cacheWriter != null) {
+                        cacheWriter.write(lineStr);
+                    }
                 }
             }
-            in.close();
+            finally {
+                in.close();
+            }
+
         } catch (IOException e) {
             throw new ServletException(e);
         }

@@ -451,7 +451,7 @@
     </error-page>
 
     <resource-env-ref>
-        <resource-env-ref-name>jdbc/IntactPubDS</resource-env-ref-name>
+        <resource-env-ref-name>jdbc/IntactDS</resource-env-ref-name>
         <resource-env-ref-type>
             javax.sql.DataSource
         </resource-env-ref-type>

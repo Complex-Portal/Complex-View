@@ -48,13 +48,16 @@ public class Proxy extends HttpServlet {
         InputStream inputStream = method.getResponseBodyAsStream();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-        String line = "";
-        while ((line = bufferedReader.readLine()) != null) {
-            outputWriter.append(line + '\n');
+        try{
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null) {
+                outputWriter.append(line + '\n');
+            }
+            outputWriter.flush();
         }
-        outputWriter.flush();
-
-        bufferedReader.close();
-        inputStream.close();
+        finally {
+            bufferedReader.close();
+            inputStream.close();
+        }
     }
 }

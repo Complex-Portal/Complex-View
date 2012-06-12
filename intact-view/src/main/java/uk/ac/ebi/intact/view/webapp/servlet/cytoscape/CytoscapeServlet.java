@@ -78,29 +78,32 @@ public class CytoscapeServlet extends HttpServlet {
                 writer = response.getWriter();
                 String text = null;
 
-                if ( log.isTraceEnabled() ) log.trace( "Starting JNLP export ..." );
+                try{
+                    if ( log.isTraceEnabled() ) log.trace( "Starting JNLP export ..." );
 
-                while ( ( text = reader.readLine() ) != null ) {
-                    if ( text.contains( DATA_URL ) ) {
-                        text = text.replace( DATA_URL, exportUrl );
+                    while ( ( text = reader.readLine() ) != null ) {
+                        if ( text.contains( DATA_URL ) ) {
+                            text = text.replace( DATA_URL, exportUrl );
+                        }
+
+                        if ( log.isTraceEnabled() ) log.trace( text );
+
+                        writer.println( text );
+                        writer.flush();
                     }
+                    if ( log.isTraceEnabled() ) log.trace( "Completed JNLP export." );
 
-                    if ( log.isTraceEnabled() ) log.trace( text );
-
-                    writer.println( text );
-                    writer.flush();
                 }
-
-                reader.close();
-                if ( log.isTraceEnabled() ) log.trace( "Completed JNLP export." );
+                finally {
+                    reader.close();
+                }
             }
         } finally {
             if ( writer != null ) {
                 writer.close();
             }
+            is.close();
         }
-
-        is.close();
     }
 
     private static String encodeURL( String url ) throws UnsupportedEncodingException {

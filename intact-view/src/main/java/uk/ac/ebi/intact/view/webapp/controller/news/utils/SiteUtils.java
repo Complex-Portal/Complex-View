@@ -52,8 +52,12 @@ public class SiteUtils {
             urlConnection.connect();
             
             final InputStream is = urlConnection.getInputStream();
-            datasets = ( Datasets ) readDatasetsXml( is );
-            is.close();
+            try{
+                datasets = ( Datasets ) readDatasetsXml( is );
+            }
+            finally {
+                is.close();
+            }
         } catch ( Throwable e ) {
             e.printStackTrace();
         }

@@ -21,7 +21,6 @@ import com.sun.syndication.io.SyndFeedOutput;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
-import uk.ac.ebi.intact.view.webapp.controller.news.items.Datasets;
 import uk.ac.ebi.intact.view.webapp.controller.news.items.News;
 import uk.ac.ebi.intact.view.webapp.controller.news.items.NewsItem;
 import uk.ac.ebi.intact.view.webapp.util.SiteFunctions;
@@ -70,8 +69,12 @@ public class NewsUtil {
             urlConnection.connect();
 
             final InputStream is = urlConnection.getInputStream();
-            objNews = (News) readNewsXml(is);
-            is.close();
+            try{
+                objNews = (News) readNewsXml(is);
+            }
+            finally {
+                is.close();
+            }
         } catch (Throwable e) {
             e.printStackTrace();
         }

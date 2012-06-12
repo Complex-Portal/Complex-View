@@ -61,8 +61,9 @@ public class JsonExporter extends HttpServlet {
         } catch (XslTransformException e) {
             throw new ServletException("Problem writing JSON", e);
         }
-
-        xmlStream.close();
+        finally {
+            xmlStream.close();
+        }
     }
 
     private InputStream createXmlStream(String interactionAc) throws ServletException {

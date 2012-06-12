@@ -262,11 +262,14 @@ public class PsicquicController extends BaseController {
                 results.setServiceResponding(true);
 
                 final InputStream input = method.getResponseBodyAsStream();
-                String strCount = IOUtils.toString(input);
-                input.close();
-                results.setPsicquicCount(Integer.parseInt(strCount));
-
-                method.releaseConnection();
+                try{
+                    String strCount = IOUtils.toString(input);
+                    results.setPsicquicCount(Integer.parseInt(strCount));
+                }
+                finally {
+                    input.close();
+                    method.releaseConnection();
+                }
             }
         } catch (IOException e) {
             log.error("Problem connecting to PSICQUIC service '"+service.getName()+"': "+url+" / proxy "+intactViewConfiguration.getProxyHost()+":"+intactViewConfiguration.getProxyPort(), e);

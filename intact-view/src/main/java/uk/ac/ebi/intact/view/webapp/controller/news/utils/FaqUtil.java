@@ -31,9 +31,13 @@ public class FaqUtil {
             URL datasetsUrl = new URL(faqXml);
             InputStream datasetStream = datasetsUrl.openStream();
 
-            objFaq = (Faq) readFaqXml(datasetStream);
+            try{
+                objFaq = (Faq) readFaqXml(datasetStream);
+            }
+            finally {
+                datasetStream.close();
+            }
 
-            datasetStream.close();
         } catch (Throwable e) {
             log.error("Error while loading FAQ from: " + faqXml, e);
             objFaq = new Faq();

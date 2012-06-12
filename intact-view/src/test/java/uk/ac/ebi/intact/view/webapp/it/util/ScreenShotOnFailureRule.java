@@ -70,8 +70,12 @@ public class ScreenShotOnFailureRule implements TestRule {
         dir.mkdirs();
         File f = new File(dir, name);
         FileOutputStream fs = new FileOutputStream(f);
-        fs.write(data);
-        fs.close();
+        try{
+            fs.write(data);
+        }
+        finally {
+            fs.close();
+        }
     }
 
     protected void takeScreenshot(String baseName) {

@@ -126,19 +126,26 @@ public class BinaryInteractionsExporter {
     public void exportToMiTab(OutputStream os, SolrQuery searchQuery) throws IOException {
          PsimiTabWriter writer = new PsimiTabWriter();
          Writer out = new BufferedWriter(new OutputStreamWriter(os));
-         writeMitab(out, writer, searchQuery);
-
-        // close writer
-        out.close();
+        try{
+            writeMitab(out, writer, searchQuery);
+        }
+        finally {
+            // close writer
+            out.close();
+        }
     }
 
     private void exportToMiTabIntact(OutputStream os, SolrQuery searchQuery) throws IOException, IntactViewException {
          PsimiTabWriter writer = new IntactPsimiTabWriter();
          Writer out = new BufferedWriter(new OutputStreamWriter(os));
-         writeMitab(out, writer, searchQuery);
+        try{
+            writeMitab(out, writer, searchQuery);
+        }
+        finally {
 
-        // close writer
-        out.close();
+            // close writer
+            out.close();
+        }
     }
 
     private void writeMitab(Writer out, PsimiTabWriter writer, SolrQuery query) throws IOException {
@@ -193,10 +200,14 @@ public class BinaryInteractionsExporter {
         try {
             Writer out = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
 
-            writer.write(entrySet, out);
+            try{
+                writer.write(entrySet, out);
+            }
+            finally {
 
-            // close writer
-            out.close();
+                // close writer
+                out.close();
+            }
         } catch (Exception e) {
             throw new IntactViewException("Problem writing XML (format "+format+") for query: "+solrQuery, e);
         }
@@ -216,24 +227,28 @@ public class BinaryInteractionsExporter {
         }  catch ( XslTransformException e ) {
             throw new IntactViewException("Problem transforming XML to HTML(XslTransformException)", e);
         }
-
-        // close baos and bais
-        baos.close();
-        bais.close();
+        finally {
+            // close baos and bais
+            baos.close();
+            bais.close();
+        }
     }
 
     public void exportToRdf(OutputStream os, SolrQuery searchQuery, RdfFormat format) throws IOException {
         Writer out = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
 
-        EntrySet entrySet = createEntrySet(searchQuery);
+        try{
+            EntrySet entrySet = createEntrySet(searchQuery);
 
-        if (entrySet != null && !entrySet.getEntries().isEmpty()){
-            PsimiRdfConverter converter = new PsimiRdfConverter();
-            converter.convert(entrySet, format, out);
+            if (entrySet != null && !entrySet.getEntries().isEmpty()){
+                PsimiRdfConverter converter = new PsimiRdfConverter();
+                converter.convert(entrySet, format, out);
+            }
         }
-
-        // close writer
-        out.close();
+        finally {
+            // close writer
+            out.close();
+        }
     }
 
     private void exportToXGMML(OutputStream os, SolrQuery solrQuery) throws IOException {
@@ -247,10 +262,14 @@ public class BinaryInteractionsExporter {
         DocumentConverter converter = new DocumentConverter( mitabDefinition, definition );
         
         InputStream is = new ByteArrayInputStream(StringUtils.join(interactions, System.getProperty("line.separator")).getBytes());
-        converter.convert( is, os );
 
-        // close inputstream
-        is.close();
+        try{
+            converter.convert( is, os );
+        }
+        finally {
+            // close inputstream
+            is.close();
+        }
     }
 
     private EntrySet createEntrySet(SolrQuery solrQuery) {

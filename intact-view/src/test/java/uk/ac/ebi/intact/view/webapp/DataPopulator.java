@@ -128,8 +128,12 @@ public class DataPopulator  {
         psimitabWriter.write(binaryInteractions, sw);
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(sw.toString().getBytes());
-        indexer.indexMitab(inputStream, true);
-        inputStream.close();
+        try{
+            indexer.indexMitab(inputStream, true);
+        }
+        finally{
+            inputStream.close();
+        }
     }
 
     private void indexInteractions() throws ConverterException, IOException, TabConversionException {
