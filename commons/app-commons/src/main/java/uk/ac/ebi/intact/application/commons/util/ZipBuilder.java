@@ -46,17 +46,21 @@ public class ZipBuilder {
         String inFilename = "infilename";
         FileInputStream in = new FileInputStream( inFilename );
 
-        // Transfer bytes from the input file to the GZIP output stream
-        byte[] buf = new byte[BUFFER_SIZE];
-        int len;
-        while ( ( len = in.read( buf ) ) > 0 ) {
-            out.write( buf, 0, len );
+        try{
+            // Transfer bytes from the input file to the GZIP output stream
+            byte[] buf = new byte[BUFFER_SIZE];
+            int len;
+            while ( ( len = in.read( buf ) ) > 0 ) {
+                out.write( buf, 0, len );
+            }
         }
-        in.close();
+        finally{
+            in.close();
 
-        // Complete the GZIP file
-        out.finish();
-        out.close();
+            // Complete the GZIP file
+            out.finish();
+            out.close();
+        }
     }
 
     /**
@@ -87,37 +91,43 @@ public class ZipBuilder {
         // Create the ZIP file
         ZipOutputStream out = new ZipOutputStream( new FileOutputStream( zipFile ) );
 
-        // Compress the files
-        for ( Iterator iterator = includeFiles.iterator(); iterator.hasNext(); ) {
-            File entryFile = (File) iterator.next();
+        try{
+            // Compress the files
+            for ( Iterator iterator = includeFiles.iterator(); iterator.hasNext(); ) {
+                File entryFile = (File) iterator.next();
 
-            if ( verbose ) {
-                System.out.println( "Adding: " + entryFile.getAbsolutePath() );
+                if ( verbose ) {
+                    System.out.println( "Adding: " + entryFile.getAbsolutePath() );
+                }
+
+                if ( ! entryFile.canRead() ) {
+                    System.err.println( "ZipBuilder: Could not read " + entryFile.getAbsolutePath() );
+                    continue;
+                }
+
+                // Add that file to the ZIP file.
+                FileInputStream in = new FileInputStream( entryFile );
+
+                try{
+                    // Add ZIP entry to output stream.
+                    out.putNextEntry( new ZipEntry( entryFile.getName() ) );
+
+                    // Transfer bytes from the file to the ZIP file
+                    int len;
+                    while ( ( len = in.read( buf ) ) > 0 ) {
+                        out.write( buf, 0, len );
+                    }
+                }
+                finally{
+                    // Complete the entry
+                    out.closeEntry();
+                    in.close();
+                }
             }
-
-            if ( ! entryFile.canRead() ) {
-                System.err.println( "ZipBuilder: Could not read " + entryFile.getAbsolutePath() );
-                continue;
-            }
-
-            // Add that file to the ZIP file.
-            FileInputStream in = new FileInputStream( entryFile );
-
-            // Add ZIP entry to output stream.
-            out.putNextEntry( new ZipEntry( entryFile.getName() ) );
-
-            // Transfer bytes from the file to the ZIP file
-            int len;
-            while ( ( len = in.read( buf ) ) > 0 ) {
-                out.write( buf, 0, len );
-            }
-
-            // Complete the entry
-            out.closeEntry();
-            in.close();
         }
-
-        // Complete the ZIP file
-        out.close();
+        finally{
+            // Complete the ZIP file
+            out.close();
+        }
     }
 }
