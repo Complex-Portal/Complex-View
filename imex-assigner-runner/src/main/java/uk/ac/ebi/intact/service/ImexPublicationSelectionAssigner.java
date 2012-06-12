@@ -1,9 +1,11 @@
 package uk.ac.ebi.intact.service;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import uk.ac.ebi.intact.bridges.imexcentral.ImexCentralException;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.ImexCentralManager;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.PublicationImexUpdaterException;
+import uk.ac.ebi.intact.dataexchange.imex.idassigner.listener.ReportWriterListener;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -80,6 +82,18 @@ public class ImexPublicationSelectionAssigner {
                     e.printStackTrace();
                 } catch (Exception e){
                     e.printStackTrace();
+                }
+            }
+
+            ReportWriterListener[] writers = ia.getListenerList().getListeners(ReportWriterListener.class);
+
+            if (writers != null){
+                for (ReportWriterListener writer : writers){
+                    try {
+                        writer.close();
+                    } catch (IOException e) {
+                        System.out.println("Impossible to close report listener writers, " + ExceptionUtils.getFullStackTrace(e));
+                    }
                 }
             }
         } catch (IOException e) {

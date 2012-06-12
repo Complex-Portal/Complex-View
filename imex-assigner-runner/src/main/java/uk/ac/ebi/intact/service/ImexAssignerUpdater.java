@@ -1,7 +1,11 @@
 package uk.ac.ebi.intact.service;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.GlobalImexPublicationUpdater;
+import uk.ac.ebi.intact.dataexchange.imex.idassigner.listener.ReportWriterListener;
+
+import java.io.IOException;
 
 /**
  * Script to run the global IMEx assigner/updater in IntAct
@@ -34,5 +38,18 @@ public class ImexAssignerUpdater
         ia.assignNewImexIdsToPublications();
 
         System.out.println("Finished the global IMEx assigner and updater.");
+
+        ReportWriterListener [] writers = ia.getImexCentralManager().getListenerList().getListeners(ReportWriterListener.class);
+
+        if (writers != null){
+            for (ReportWriterListener writer : writers){
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    System.out.println("Impossible to close report listener writers, " + ExceptionUtils.getFullStackTrace(e));
+                }
+            }
+        }
+
     }
 }
