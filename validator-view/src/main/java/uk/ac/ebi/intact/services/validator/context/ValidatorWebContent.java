@@ -13,6 +13,7 @@ import uk.ac.ebi.intact.services.validator.DataModel;
 import uk.ac.ebi.intact.services.validator.ValidationScope;
 import uk.ac.ebi.intact.services.validator.ValidatorFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -379,6 +380,13 @@ public class ValidatorWebContent {
                     "The validator will not be able to validate controlled-vocabulary usages.\n" + ExceptionUtils.getFullStackTrace(e);
             context.sendEmail("Cannot read the cv-mapping rules for psi-par", body);
         }
+        finally {
+            try {
+                cvConfig.close();
+            } catch (IOException e) {
+                System.out.println(ExceptionUtils.getFullStackTrace(e));
+            }
+        }
     }
 
     /**
@@ -410,6 +418,12 @@ public class ValidatorWebContent {
             String body = "A problem occurred when reading the psi-mi cv-mapping rules. \n" +
                     "The validator will not be able to validate controlled-vocabulary usages.\n" + ExceptionUtils.getFullStackTrace(e);
             context.sendEmail("Cannot read the cv-mapping rules for psi-mi", body);
+        } finally {
+            try {
+                cvConfig.close();
+            } catch (IOException e) {
+                System.out.println(ExceptionUtils.getFullStackTrace(e));
+            }
         }
     }
 

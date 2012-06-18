@@ -224,8 +224,14 @@ public class PsiReportBuilder {
                 // we transform the xml to html using an utility class that returns
                 // the output stream with the html content
                 final ByteArrayOutputStream os = new ByteArrayOutputStream( 4096 );
-                XslTransformerUtils.viewPsiMi25(is, os);
-                transformedOutput = os.toString();
+                
+                try{
+                    XslTransformerUtils.viewPsiMi25(is, os);
+                    transformedOutput = os.toString();
+                }
+                finally {
+                    os.close();
+                }
             }
             catch ( Exception e ) {
                 log.error( "Failed to produce the HTML view", e );
@@ -264,14 +270,14 @@ public class PsiReportBuilder {
      */
     private void validatePsiMiFile(PsiReport report, File file) {
 
-        // Printwriter to get the stacktrace messages
-        StringWriter sw = new StringWriter(1024);
-
+        // We read the configuration file, included inside the jar
+        InputStream ontologyCfg = null;
+        InputStream cvMappingCfg = null;
+        InputStream ruleCfg = null;
+        
         try {
             // We read the configuration file, included inside the jar
-            InputStream ontologyCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/ontologies.xml" );
-            InputStream cvMappingCfg = null;
-            InputStream ruleCfg = null;
+            ontologyCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/ontologies.xml" );
 
             if ( log.isInfoEnabled() ) {
                 log.info( "Model: " + model );
@@ -313,11 +319,34 @@ public class PsiReportBuilder {
 
         } catch (Throwable t) {
 
-            log.error( "An error occured while configuring the MI validator", t );
+            log.error( "An error occurred while configuring the MI validator", t );
 
             FacesContext context = FacesContext.getCurrentInstance();
             FacesMessage message = new FacesMessage( "An error occured while validating your data: " + t.getMessage() );
             context.addMessage( null, message );
+        }
+        finally {
+            if (ontologyCfg != null){
+                try {
+                    ontologyCfg.close();
+                } catch (IOException e) {
+                    log.error("An error occurred while closing the ontology config file", e);
+                }
+            }
+            if (cvMappingCfg != null){
+                try {
+                    cvMappingCfg.close();
+                } catch (IOException e) {
+                    log.error( "An error occurred while closing the cv mapping config file", e );
+                }
+            }
+            if (ruleCfg != null){
+                try {
+                    ruleCfg.close();
+                } catch (IOException e) {
+                    log.error( "An error occurred while closing the object rule config file", e );
+                }
+            }
         }
     }
 
@@ -456,6 +485,15 @@ public class PsiReportBuilder {
                 report.setSemanticsReport("Document is valid");
             }
 
+            String output = sw.getBuffer().toString();
+
+            // if the output has content, an exception has been thrown, so the validation has failed
+            if (output.length() > 0) {
+                report.setSemanticsStatus(PsiReport.INVALID);
+                report.setSemanticsReport(output);
+                return;
+            }
+            
         } catch (Throwable t) {
 
             StringBuilder sb = new StringBuilder( 512 );
@@ -476,14 +514,12 @@ public class PsiReportBuilder {
 
             return;
         }
-
-        String output = sw.getBuffer().toString();
-
-        // if the output has content, an exception has been thrown, so the validation has failed
-        if (output.length() > 0) {
-            report.setSemanticsStatus(PsiReport.INVALID);
-            report.setSemanticsReport(output);
-            return;
+        finally {
+            try {
+                sw.close();
+            } catch (IOException e) {
+                log.error("An error occured while closing the results", e);
+            }
         }
     }
 
@@ -612,6 +648,13 @@ public class PsiReportBuilder {
             context.addMessage( null, message );
 
             return;
+        }
+        finally {
+            try {
+                sw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         String output = sw.getBuffer().toString();

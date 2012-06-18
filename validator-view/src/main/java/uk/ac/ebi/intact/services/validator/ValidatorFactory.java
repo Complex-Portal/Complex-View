@@ -12,6 +12,7 @@ import uk.ac.ebi.intact.services.validator.context.ValidatorWebContext;
 import uk.ac.ebi.intact.services.validator.context.ValidatorWebContextException;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
@@ -156,19 +157,14 @@ public class ValidatorFactory {
      * @throws ValidatorWebContextException
      */
     private Mi25Validator createPsiParValidator(ValidationScope scope) throws ValidatorWebContextException {
-
+        InputStream ontologyCfg = null;
+        InputStream cvMappingCfg = null;
+        InputStream ruleCfg = null;
         try {
             // We read the configuration file, included inside the jar
-            InputStream ontologyCfg = ValidatorFactory.class.getClassLoader().getResourceAsStream( localPsiParOntology );;
-
-            /*if (!isLocal){
-                ontologyCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( psiParOntology );
-            }
-            else {
-                ontologyCfg = ValidatorFactory.class.getClassLoader().getResourceAsStream( localPsiParOntology );
-            } */
-            InputStream cvMappingCfg = null;
-            InputStream ruleCfg = null;
+            ontologyCfg = ValidatorFactory.class.getClassLoader().getResourceAsStream( localPsiParOntology );
+            cvMappingCfg = null;
+            ruleCfg = null;
 
             switch( scope ) {
                 case SYNTAX:
@@ -198,6 +194,29 @@ public class ValidatorFactory {
 
         } catch (Throwable t) {
             throw new ValidatorWebContextException("An error occured while configuring the PAR validator.", t);
+        }
+        finally {
+            if (ontologyCfg != null){
+                try {
+                    ontologyCfg.close();
+                } catch (IOException e) {
+                    log.error("An error occurred while closing the ontology config file", e);
+                }
+            }
+            if (cvMappingCfg != null){
+                try {
+                    cvMappingCfg.close();
+                } catch (IOException e) {
+                    log.error( "An error occurred while closing the cv mapping config file", e );
+                }
+            }
+            if (ruleCfg != null){
+                try {
+                    ruleCfg.close();
+                } catch (IOException e) {
+                    log.error( "An error occurred while closing the object rule config file", e );
+                }
+            }
         }
     }
 
@@ -346,19 +365,12 @@ public class ValidatorFactory {
      */
     private Mi25Validator createPsiMiValidator(ValidationScope scope) throws ValidatorWebContextException {
 
+        InputStream ontologyCfg = null;
+        InputStream cvMappingCfg = null;
+        InputStream ruleCfg = null;
         try {
-
             // We read the configuration file, included inside the jar
-            InputStream ontologyCfg = ValidatorFactory.class.getClassLoader().getResourceAsStream( localPsiMiOntology );
-
-            /*if (!isLocal){
-                ontologyCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( psiMiOntology );
-            }
-            else {
-                ontologyCfg = ValidatorFactory.class.getClassLoader().getResourceAsStream( localPsiMiOntology );
-            }*/
-            InputStream cvMappingCfg = null;
-            InputStream ruleCfg = null;
+            ontologyCfg = ValidatorFactory.class.getClassLoader().getResourceAsStream( localPsiMiOntology );
 
             switch( scope ) {
                 case SYNTAX:
@@ -434,6 +446,29 @@ public class ValidatorFactory {
         }catch (Throwable t) {
 
             throw new ValidatorWebContextException("An error occured while configuring the MI validator.", t);
+        }
+        finally {
+            if (ontologyCfg != null){
+                try {
+                    ontologyCfg.close();
+                } catch (IOException e) {
+                    log.error("An error occurred while closing the ontology config file", e);
+                }
+            }
+            if (cvMappingCfg != null){
+                try {
+                    cvMappingCfg.close();
+                } catch (IOException e) {
+                    log.error( "An error occurred while closing the cv mapping config file", e );
+                }
+            }
+            if (ruleCfg != null){
+                try {
+                    ruleCfg.close();
+                } catch (IOException e) {
+                    log.error( "An error occurred while closing the object rule config file", e );
+                }
+            }
         }
     }
 

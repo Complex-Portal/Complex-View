@@ -13,6 +13,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -38,7 +39,19 @@ public class TransformationUtil {
     public static OutputStream transformToHtml(InputStream is) throws TransformerException {
         // we use and xslt file to transform to HTML, provided in the jar
         InputStream xslt = TransformationUtil.class.getResourceAsStream( "/validator/xslt/MIF25_view.xsl" );
-        return transform(is, xslt);
+        OutputStream outputStream = null;
+
+        try{
+            outputStream = transform(is, xslt);
+        }
+        finally {
+            try {
+                xslt.close();
+            } catch (IOException e) {
+                log.error("Impossible to close the Xslt inputstream", e);
+            }
+        }
+        return outputStream;
     }
 
     /**
@@ -51,7 +64,20 @@ public class TransformationUtil {
     public static OutputStream transformToExpanded(InputStream is) throws TransformerException {
         // we use and xslt file to transform to the expanded version, provided in the jar
         InputStream xslt = TransformationUtil.class.getResourceAsStream( "/validator/xslt/MIF25_expand.xsl" );
-        return transform(is, xslt);
+
+        OutputStream outputStream = null;
+
+        try{
+            outputStream = transform(is, xslt);
+        }
+        finally {
+            try {
+                xslt.close();
+            } catch (IOException e) {
+                log.error("Impossible to close the Xslt inputstream", e);
+            }
+        }
+        return outputStream;
     }
 
     /**

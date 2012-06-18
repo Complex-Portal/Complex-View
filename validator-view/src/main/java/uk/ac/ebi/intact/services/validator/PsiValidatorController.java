@@ -129,16 +129,16 @@ public class PsiValidatorController extends BaseController {
     public void init() {
         this.mapOfRules = new HashMap<Integer, ObjectRule>();
 
-                ValidatorWebContext context = ValidatorWebContext.getInstance();
+        ValidatorWebContext context = ValidatorWebContext.getInstance();
 
-                ValidatorWebContent content = context.getValidatorWebContent();
+        ValidatorWebContent content = context.getValidatorWebContent();
 
-                Map<ValidationScope, Set<ObjectRule>> rules = content.getPsiMiObjectRules();
+        Map<ValidationScope, Set<ObjectRule>> rules = content.getPsiMiObjectRules();
 
-                itemRules = new HashMap<ValidationScope, List<SelectItem>>();
-                customizedRules = new HashMap<ValidationScope, List<Integer>>();
+        itemRules = new HashMap<ValidationScope, List<SelectItem>>();
+        customizedRules = new HashMap<ValidationScope, List<Integer>>();
 
-                initialiseCustomizedRules(rules);
+        initialiseCustomizedRules(rules);
     }
 
     private void initialiseCustomizedRules(Map<ValidationScope, Set<ObjectRule>> rules){
@@ -453,8 +453,13 @@ public class PsiValidatorController extends BaseController {
         boolean successful;
 
         if (psiFile.getFilename().endsWith(ZIP_EXTENSION)){
+            InputStream inputStream = psiFile.getInputStream();
 
-            successful = unpackArchive(psiFile.getInputStream());
+            try{
+                successful = unpackArchive(inputStream);
+            }   finally {
+                inputStream.close();
+            }
         }
         else{
             // and now we can instantiate the builder to create the validation report,
@@ -462,9 +467,22 @@ public class PsiValidatorController extends BaseController {
             //f = storeAsTemporaryFile( psiFile.getInputStream(), psiFile.getFilename() );
 
             // starts to create the validator report
-            setUpValidatorReport(psiFile.getFilename(), psiFile.getInputStream(), psiFile.getInputStream());
+            InputStream inputStream = psiFile.getInputStream();
+            try{
+                InputStream inputStream2 = psiFile.getInputStream();
 
-            successful = true;
+                try{
+                    setUpValidatorReport(psiFile.getFilename(), inputStream, inputStream2);
+
+                    successful = true;
+                }
+                finally {
+                    inputStream2.close();
+                }
+            }
+             finally {
+                inputStream.close();
+            }
         }
 
         if (!successful){
@@ -686,51 +704,75 @@ public class PsiValidatorController extends BaseController {
         BufferedOutputStream dest = null;
 
         InputStream streamToValidate = null;
+        boolean successful = false;
 
-        boolean successfull = false;
+        try{
+            while ((entry = zis.getNextEntry()) != null)
+            {
+                log.info("Extracting: " +entry.getName());
+                int count;
+                byte data[] = new byte[BUFFER];
 
-        while ((entry = zis.getNextEntry()) != null)
-        {
-            log.info("Extracting: " +entry.getName());
-            int count;
-            byte data[] = new byte[BUFFER];
+                if (!entry.isDirectory()){
+                    if (entry.getName().endsWith(XML_EXTENSION)){
+                        String finalFileName = entry.getName().substring( entry.getName().lastIndexOf( File.separator ) + 1, entry.getName().length() );
 
-            if (!entry.isDirectory()){
-                if (entry.getName().endsWith(XML_EXTENSION)){
-                    String finalFileName = entry.getName().substring( entry.getName().lastIndexOf( File.separator ) + 1, entry.getName().length() );
+                        String name = tempDirectory.getAbsolutePath() + File.separator + finalFileName;
 
-                    String name = tempDirectory.getAbsolutePath() + File.separator + finalFileName;
+                        // write the files to the disk
+                        FileOutputStream fos = new
+                                FileOutputStream(name);
+                        dest = new
+                                BufferedOutputStream(fos, BUFFER);
+                        while ((count = zis.read(data, 0, BUFFER))
+                                != -1) {
+                            dest.write(data, 0, count);
+                        }
+                        dest.flush();
 
-                    // write the files to the disk
-                    FileOutputStream fos = new
-                            FileOutputStream(name);
-                    dest = new
-                            BufferedOutputStream(fos, BUFFER);
-                    while ((count = zis.read(data, 0, BUFFER))
-                            != -1) {
-                        dest.write(data, 0, count);
+                        File createdFile = new File(name);
+
+                        streamToValidate = new FileInputStream(createdFile);
+
+                        // starts to create the validator report
+                        setUpValidatorReport(finalFileName, streamToValidate, new FileInputStream(createdFile));
+
+                        createdFile.delete();
+
+                        successful = true;
+
+                        break;
                     }
-                    dest.flush();
-                    dest.close();
-
-                    File createdFile = new File(name);
-
-                    streamToValidate = new FileInputStream(createdFile);
-
-                    // starts to create the validator report
-                    setUpValidatorReport(finalFileName, streamToValidate, new FileInputStream(createdFile));
-
-                    createdFile.delete();
-
-                    successfull = true;
-
-                    break;
                 }
             }
         }
-        zis.close();
+        finally {
+            try{
+                zis.close();
+            }
+            catch (IOException e){
+                log.error("Impossible to close zipInputStream", e);
+            }
 
-        return successfull;
+            if (dest != null){
+                try{
+                    dest.close();
+                }
+                catch (IOException e){
+                    log.error("Impossible to close destination file", e);
+                }
+            }
+
+            if (streamToValidate != null){
+                try{
+                    streamToValidate.close();
+                }
+                catch (IOException e){
+                    log.error("Impossible to close input stream to validate", e);
+                }
+            }
+        }
+        return successful;
     }
 
     /*/**
