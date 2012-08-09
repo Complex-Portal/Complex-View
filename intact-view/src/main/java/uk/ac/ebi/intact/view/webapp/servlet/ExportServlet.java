@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import org.hupo.psi.calimocho.io.IllegalRowException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.params.UrlSolrParams;
@@ -33,7 +34,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.URLDecoder;
 
 
@@ -88,6 +91,8 @@ public class ExportServlet extends HttpServlet {
         fixedQuery = fixedQuery.replaceAll("q=", "");
         fixedQuery = fixedQuery.replaceAll(":","_");
         fixedQuery = fixedQuery.replaceAll(" ","_");
+        fixedQuery = fixedQuery.replaceAll("\\(","_");
+        fixedQuery = fixedQuery.replaceAll("\\)","_");
 
         String name = fixedQuery.substring(0, Math.min(10, fixedQuery.length())) + "." + extension;
 
@@ -108,7 +113,21 @@ public class ExportServlet extends HttpServlet {
         response.setContentType("application/x-download");
         response.setHeader("Content-Disposition", "attachment; filename="+name);
 
-        String contentType = exporter.searchAndExport(response.getOutputStream(), solrQuery, format);
+        try {
+            String contentType = exporter.searchAndExport(response.getOutputStream(), solrQuery, format);
+        } catch (IllegalRowException e) {
+            log.error("Cannot export in XGMML", e);
+
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream()));
+
+            try{
+                writer.write("Impossible to export the results in XGMML, an internal error occurred.");
+            }
+            finally {
+                writer.close();
+            }
+
+        }
     }
 
     public String getExtension( String format ) throws IOException {

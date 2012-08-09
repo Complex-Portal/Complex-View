@@ -20,11 +20,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
-import org.hupo.psi.calimocho.io.DocumentConverter;
-import org.hupo.psi.calimocho.model.DocumentDefinition;
-import org.hupo.psi.calimocho.tab.model.ColumnBasedDocumentDefinition;
+import org.hupo.psi.calimocho.io.IllegalRowException;
 import org.hupo.psi.calimocho.tab.util.MitabDocumentDefinitionFactory;
-import org.hupo.psi.calimocho.xgmml.XGMMLDocumentDefinition;
+import org.hupo.psi.calimocho.xgmml.XgmmlStreamingGrapBuilder;
 import org.hupo.psi.mi.rdf.PsimiRdfConverter;
 import org.hupo.psi.mi.rdf.RdfFormat;
 import psidev.psi.mi.tab.PsimiTabWriter;
@@ -43,6 +41,8 @@ import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
 import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,7 +56,7 @@ import java.util.Collection;
 public class BinaryInteractionsExporter {
 
     private static final Log log = LogFactory.getLog( BinaryInteractionsExporter.class );
-    
+
     private SolrServer solrServer;
     public static final String XML_2_53 = "xml_2_53";
     public static final String XML_2_54 = "xml_2_54";
@@ -77,7 +77,7 @@ public class BinaryInteractionsExporter {
         this.solrServer = solrServer;
     }
 
-    public String searchAndExport( OutputStream os, SolrQuery searchQuery, String format ) throws IOException {
+    public String searchAndExport( OutputStream os, SolrQuery searchQuery, String format) throws IOException, IllegalRowException {
         if ( MITAB.equals( format ) ) {
             exportToMiTab( os, searchQuery );
             return "text/plain";
@@ -120,12 +120,12 @@ public class BinaryInteractionsExporter {
         } else {
             throw new IntactViewException( "Format is not correct: " + format + ". Possible values: mitab, mitab_intact." );
         }
-       
+
     }
 
     public void exportToMiTab(OutputStream os, SolrQuery searchQuery) throws IOException {
-         PsimiTabWriter writer = new PsimiTabWriter();
-         Writer out = new BufferedWriter(new OutputStreamWriter(os));
+        PsimiTabWriter writer = new PsimiTabWriter();
+        Writer out = new BufferedWriter(new OutputStreamWriter(os));
         try{
             writeMitab(out, writer, searchQuery);
         }
@@ -136,8 +136,8 @@ public class BinaryInteractionsExporter {
     }
 
     private void exportToMiTabIntact(OutputStream os, SolrQuery searchQuery) throws IOException, IntactViewException {
-         PsimiTabWriter writer = new IntactPsimiTabWriter();
-         Writer out = new BufferedWriter(new OutputStreamWriter(os));
+        PsimiTabWriter writer = new IntactPsimiTabWriter();
+        Writer out = new BufferedWriter(new OutputStreamWriter(os));
         try{
             writeMitab(out, writer, searchQuery);
         }
@@ -179,6 +179,60 @@ public class BinaryInteractionsExporter {
 
         } while (!interactions.isEmpty() && interactions.size() == maxResults);
     }
+    private void writeXGMML(OutputStream out, SolrQuery query) throws IOException {
+        Integer firstResult = 0;
+        Integer maxResults = 200;
+
+        Collection interactions;
+        XgmmlStreamingGrapBuilder graphBuilder = null;
+        try {
+            graphBuilder = new XgmmlStreamingGrapBuilder("IntAct Export "+System.currentTimeMillis(), "Results for query: "+query.getQuery(), "IntAct");
+
+            boolean started = false;
+
+            do {
+                query.setStart(firstResult);
+                query.setRows(maxResults);
+
+                IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
+                SolrSearchResult result = searcher.search(query);
+
+                if (!started){
+                    started = true;
+                    graphBuilder.open(out, (int) result.getTotalCount());
+                }
+
+                interactions = result.getLineList();
+
+                InputStream is = new ByteArrayInputStream(StringUtils.join(interactions, System.getProperty("line.separator")).getBytes());
+
+                try {
+                    graphBuilder.writeNodesAndEdgesFromMitab(is, MitabDocumentDefinitionFactory.mitab25Intact());
+                }finally {
+                    is.close();
+                }
+
+                firstResult = firstResult + maxResults;
+
+                out.flush();
+
+            } while (!interactions.isEmpty() && interactions.size() == maxResults);
+        } catch (JAXBException e) {
+            new IntactViewException("Problem exporting interactions", e);
+        } catch (XMLStreamException e) {
+            new IntactViewException("Problem exporting interactions", e);
+        }
+        finally {
+            if (graphBuilder != null){
+                try {
+                    graphBuilder.close();
+                } catch (XMLStreamException e) {
+                    new IntactViewException("Problem exporting interactions", e);
+                }
+            }
+        }
+    }
+
 
     public void exportToMiXml( OutputStream os, SolrQuery searchQuery ) throws IOException {
         exportToMiXml( os, searchQuery, XML_2_54);
@@ -251,25 +305,9 @@ public class BinaryInteractionsExporter {
         }
     }
 
-    private void exportToXGMML(OutputStream os, SolrQuery solrQuery) throws IOException {
-        SolrSearchResult result = findResult(solrQuery);
+    private void exportToXGMML(OutputStream os, SolrQuery solrQuery) throws IOException, IllegalRowException {
 
-        Collection<String> interactions = result.getLineList();
-        
-        ColumnBasedDocumentDefinition mitabDefinition = MitabDocumentDefinitionFactory.mitab25Intact();
-        DocumentDefinition definition = new XGMMLDocumentDefinition("IntAct Export "+System.currentTimeMillis(), "Results for query: "+solrQuery.getQuery(), "IntAct");
-        
-        DocumentConverter converter = new DocumentConverter( mitabDefinition, definition );
-        
-        InputStream is = new ByteArrayInputStream(StringUtils.join(interactions, System.getProperty("line.separator")).getBytes());
-
-        try{
-            converter.convert( is, os );
-        }
-        finally {
-            // close inputstream
-            is.close();
-        }
+        writeXGMML(os, solrQuery);
     }
 
     private EntrySet createEntrySet(SolrQuery solrQuery) {
