@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import psidev.psi.mi.tab.model.BinaryInteraction;
 import psidev.psi.mi.tab.model.builder.DocumentDefinition;
+import psidev.psi.mi.tab.model.builder.MitabDocumentDefinition;
 import psidev.psi.mi.xml.converter.impl254.EntrySetConverter;
 import psidev.psi.mi.xml.dao.inMemory.InMemoryDAOFactory;
 import psidev.psi.mi.xml254.jaxb.Attribute;
@@ -36,7 +37,6 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.SolrSearchResult;
 import uk.ac.ebi.intact.psicquic.ws.config.PsicquicConfig;
 import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.IntactDocumentDefinition;
 import uk.ac.ebi.intact.psimitab.IntactTab2Xml;
 
 import java.net.MalformedURLException;
@@ -306,7 +306,7 @@ public class IntactPsicquicService implements PsicquicService {
         return resultSet;
     }
     protected String createMitabResults(SolrSearchResult searchResult) {
-        DocumentDefinition docDef = new IntactDocumentDefinition();
+        DocumentDefinition docDef = new MitabDocumentDefinition();
 
         Collection<IntactBinaryInteraction> binaryInteractions = searchResult.getBinaryInteractionList();
 
