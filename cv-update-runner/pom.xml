@@ -10,7 +10,7 @@
 
     <groupId>uk.ac.ebi.intact.service</groupId>
     <artifactId>cv-update-runner</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>Service :: CV Update Runner</name>
 
     <scm>
