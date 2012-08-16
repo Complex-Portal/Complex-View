@@ -14,7 +14,7 @@
   <name>Service :: IMEx assigner and updater</name>
 
     <scm>
-        <connection>scm:svn:http://intact.googlecode.com/svn/repo/service/trunk/imex-assigner-runner</connection>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/imex-assigner-runner</connection>
         <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/imex-assigner-runner</developerConnection>
     </scm>
 
