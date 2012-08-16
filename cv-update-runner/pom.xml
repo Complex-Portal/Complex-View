@@ -14,9 +14,8 @@
     <name>Service :: CV Update Runner</name>
 
     <scm>
-        <connection>scm:svn:http://intact.googlecode.com/svn/repo/service/trunk/cv-update-runner</connection>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/cv-update-runner</connection>
         <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/cv-update-runner</developerConnection>
-        <url>http://code.google.com/p/intact/wiki/Editor</url>
     </scm>
 
     <properties>
