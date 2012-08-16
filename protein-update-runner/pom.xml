@@ -13,12 +13,12 @@
     <groupId>uk.ac.ebi.intact.service</groupId>
     <artifactId>protein-update-runner</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <name>Service :: Protein Update Runner</name>
 
     <scm>
-        <connection>scm:svn:http://intact.googlecode.com/svn/repo/service/trunk/protein-update-runner</connection>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/protein-update-runner</connection>
         <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/protein-update-runner</developerConnection>
     </scm>
     <properties>
