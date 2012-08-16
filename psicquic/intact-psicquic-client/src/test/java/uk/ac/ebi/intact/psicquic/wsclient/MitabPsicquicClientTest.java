@@ -15,12 +15,10 @@
  */
 package uk.ac.ebi.intact.psicquic.wsclient;
 
+import org.hupo.psi.mi.psicquic.wsclient.QueryOperand;
 import org.junit.Test;
-import org.junit.Ignore;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 import psidev.psi.mi.search.SearchResult;
-
-import java.util.Arrays;
+import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
 
 /**
  * TODO comment that class header

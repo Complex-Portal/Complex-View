@@ -3,6 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>uk.ac.ebi.intact.service.psicquic</groupId>
+        <artifactId>psicquic-master</artifactId>
+        <version>1.6.0-SNAPSHOT</version>
+    </parent>
+
     <groupId>uk.ac.ebi.intact.service.psicquic</groupId>
     <artifactId>intact-psicquic-client</artifactId>
     <packaging>jar</packaging>
@@ -12,7 +18,7 @@
     <name>IntAct Services :: PSICQUIC WS Client</name>
 
     <properties>
-        <cxf.version>2.2.1</cxf.version>
+        <cxf.version>2.2.3</cxf.version>
         <spring.version>2.5.6</spring.version>
     </properties>
 
@@ -35,25 +41,25 @@
         <dependency>
             <groupId>org.hupo.psi.mi.psicquic</groupId>
             <artifactId>psicquic-client</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.4-SNAPSHOT</version>
         </dependency>
         
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psimitab</artifactId>
-            <version>2.0.3-SNAPSHOT</version>
+            <version>2.1.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
             <artifactId>intact-core</artifactId>
-            <version>1.9.5</version>
+            <version>2.6.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psixml-exchange</artifactId>
-            <version>2.0.3-SNAPSHOT</version>
+            <version>2.1.4-SNAPSHOT</version>
         </dependency>
 
         <!-- Logging -->
@@ -117,6 +123,11 @@
             <artifactId>cxf-common-utilities</artifactId>
             <version>${cxf.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-bundle</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
 
          <dependency>
              <groupId>stax</groupId>
@@ -134,73 +145,20 @@
     </dependencies>
 
     <repositories>
-        <!-- EBI repository -->
         <repository>
-            <id>ebi-repo</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>ebi-repo-snapshots</id>
-            <name>The EBI internal repository</name>
-            <url>http://www.ebi.ac.uk/~maven/m2repo_snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <!-- Apache snapshots -->
-        <repository>
-            <id>apache.snapshots</id>
-            <name>Apache Snapshots Repository</name>
-            <url>http://repository.apache.org/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <!-- for jaxb-impl -->
-        <repository>
-            <id>java.net</id>
-            <url>http://download.java.net/maven/1/</url>
-            <layout>legacy</layout>
+            <id>intact.nexus</id>
+            <name>IntAct Nexus</name>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
         </repository>
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
-   	        <id>maven2-repository.dev.java.net</id>
-            <name>Java.net Repository for Maven</name>
-	        <url>http://download.java.net/maven/2/</url>
+            <id>intact.nexus</id>
+            <name>IntAct Nexus</name>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
         </pluginRepository>
     </pluginRepositories>
-
-    <distributionManagement>
-        <repository>
-            <id>ebi-repo</id>
-            <name>EBI Repository</name>
-            <url>scp://${repo.local.url}</url>
-        </repository>
-
-        <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>ebi-repo-snapshots</id>
-            <name>EBI Snapshots Repository</name>
-            <url>scp://${repo.local.url}</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 
 </project>

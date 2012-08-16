@@ -15,10 +15,9 @@
  */
 package uk.ac.ebi.intact.psicquic.wsclient;
 
+import org.hupo.psi.mi.psicquic.wsclient.XmlPsicquicClient;
+import org.hupo.psi.mi.psicquic.wsclient.XmlSearchResult;
 import org.junit.Test;
-import org.junit.Ignore;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
-import psidev.psi.mi.search.SearchResult;
 import psidev.psi.mi.xml.model.Entry;
 import psidev.psi.mi.xml.model.Interaction;
 
