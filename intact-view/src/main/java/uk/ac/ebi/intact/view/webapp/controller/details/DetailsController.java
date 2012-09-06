@@ -69,6 +69,11 @@ public class DetailsController extends JpaBaseController {
 
     private static final String CONTACT_EMAIL = "MI:0634";
 
+    private static final String _variable_condition = "variable_condition";
+    private static final String _variable_condition_2 = "variable_condition_2";
+    private static final String _variable = "variable";
+    private static final String _variable_2 = "variable_2";
+
     static {
         publicationTopics.add( AUTHOR_LIST );
         publicationTopics.add( JOURNAL );
@@ -218,6 +223,205 @@ public class DetailsController extends JpaBaseController {
         return exp;
     }
 
+    /**
+     * Get number of interactors looking at all the interactions in one experiment
+     * @return
+     */
+    public int getNumberOfInteractorsInExperiment(){
+        int interactorCount = 0;
+        for(Interaction interaction:getExperiment().getInteractions()){
+            interactorCount += interaction.getComponents().size();
+        }
+        return interactorCount;
+    }
+
+    /**
+     * Get a JSON string needed to visualize all the interactions in one experiment.
+     * It also takes into account dynamic interactions looking at the experiment and
+     * interaction annotations.
+     * @return
+     */
+    public String getJsonExperimentInteractions(){
+        final Experiment experiment = getExperiment();
+
+        //Get experiment dynamic variables
+        Collection<Annotation> experimentAnnotations = experiment.getAnnotations();
+        Map variableName2title = new HashMap<String,String>();
+        Map<String,Map<String,List<Integer>>> variableName2conditions = new HashMap<String,Map<String,List<Integer>>>();
+        for(Annotation annotation:experimentAnnotations){
+            if(annotation.getCvTopic() != null){
+                if(annotation.getCvTopic().getShortLabel().equalsIgnoreCase(_variable)
+                        || annotation.getCvTopic().getShortLabel().equalsIgnoreCase(_variable_2)){
+                    variableName2title.put(annotation.getCvTopic().getShortLabel(),annotation.getAnnotationText());
+                    variableName2conditions.put(annotation.getCvTopic().getShortLabel(), new HashMap<String, List<Integer>>());
+                }
+            }
+        }
+
+        //Map conditions to varaibles. In InTAct we just have 2 variables assocaited to 2 conditions
+        Map<String,String> conditionName2variableName = new HashMap<String,String>();
+        conditionName2variableName.put(_variable_condition,_variable);
+        conditionName2variableName.put(_variable_condition_2,_variable_2);
+
+        //Look for interactions
+        Integer baitPreyCount = 0;
+        Map<Integer,String> nonRedundantInteractions = new HashMap<Integer, String>();
+        Collection<Interaction> interactions = experiment.getInteractions();
+        for(Interaction interaction:interactions){
+            List<String> otherInteractors = new ArrayList<String>();
+            String mainInteractor = "";
+            Collection<Component> components = interaction.getComponents();
+            //Find dynamic annotations
+            Map<String,String> conditions = new HashMap<String,String>();
+            for(Annotation annotation:interaction.getAnnotations()){
+                if(annotation.getCvTopic() != null){
+                    if(annotation.getCvTopic().getShortLabel().equalsIgnoreCase(_variable_condition)
+                            || annotation.getCvTopic().getShortLabel().equalsIgnoreCase(_variable_condition_2)){
+                        conditions.put(annotation.getCvTopic().getShortLabel(),annotation.getAnnotationText());
+                    }
+                }
+            }
+
+
+            //Collect main and other interactors
+                for(Component component:components){
+                    Collection<CvExperimentalRole> experimentalRoles = component.getExperimentalRoles();
+                    boolean isBait = false;
+                    boolean isSomethingElse = false;
+                    for (CvExperimentalRole experimentalRole:experimentalRoles){
+                        if(experimentalRole.getShortLabel().equalsIgnoreCase("bait")){
+                            isBait = true;
+                        } else {
+                            isSomethingElse = true;
+                        }
+                    }
+                    Interactor interactor = component.getInteractor();
+                    String interactorAc =interactor.getShortLabel();
+                    if(interactorAc.length() == 0){
+                        interactorAc = interactor.getAc();
+                    }
+                    if(isSomethingElse){
+                        if(mainInteractor.length() ==0){
+                            mainInteractor = interactorAc;
+                        } else {
+                            otherInteractors.add(interactorAc);
+                        }
+                    } else {
+                        if(isBait){
+                            mainInteractor = interactorAc;
+                        } else {
+                            otherInteractors.add(interactorAc);
+                        }
+                    }
+
+                }
+
+
+            //Create nonredundat interactions and a mapping from conditions to non redundant interactions
+            for(String otherInteractor:otherInteractors){
+                String ohterMain = "'"+otherInteractor+"','"+mainInteractor+"'";
+                String mainOther = "'"+mainInteractor+"','"+otherInteractor+"'";
+                if(nonRedundantInteractions.values().contains(mainOther) || nonRedundantInteractions.values().contains(ohterMain)){
+                    for(Integer interactionKey:nonRedundantInteractions.keySet()){
+                        if(nonRedundantInteractions.get(interactionKey).equals(mainOther) ||  nonRedundantInteractions.get(interactionKey).equals(ohterMain)){
+                            for(String conditionKey:conditions.keySet()){
+                                String conditionValue = conditions.get(conditionKey);
+                                String variableKey = conditionName2variableName.get(conditionKey);
+                                Map<String,List<Integer>> conditionToNonRedundantInteractions = variableName2conditions.get(variableKey);
+                                if(conditionToNonRedundantInteractions.get(conditionValue) != null){
+                                    conditionToNonRedundantInteractions.get(conditionValue).add(interactionKey);
+                                } else {
+                                    List<Integer> interactionList = new ArrayList<Integer>();
+                                    interactionList.add(interactionKey);
+                                    conditionToNonRedundantInteractions.put(conditionValue, interactionList);
+                                }
+                            }
+                        }
+
+                    }
+                } else {
+                    nonRedundantInteractions.put(baitPreyCount, mainOther);
+                    for(String conditionKey:conditions.keySet()){
+                        String conditionValue = conditions.get(conditionKey);
+                        String variableKey = conditionName2variableName.get(conditionKey);
+                        Map<String,List<Integer>> conditionToNonRedundantInteractions = variableName2conditions.get(variableKey);
+                        if(conditionToNonRedundantInteractions.get(conditionValue) != null){
+                            conditionToNonRedundantInteractions.get(conditionValue).add(baitPreyCount);
+                        } else {
+                            List<Integer> interactionList = new ArrayList<Integer>();
+                            interactionList.add(baitPreyCount);
+                            conditionToNonRedundantInteractions.put(conditionValue, interactionList);
+                        }
+                    }
+                    baitPreyCount++;
+                }
+            }
+        }
+        //create json INTERACTIONS
+        String json = "";
+        json = "interactions:{";
+        String jsonInteractions = "";
+        for(int i=0; i< nonRedundantInteractions.size(); i++){
+            String nonRedundantInteraction = nonRedundantInteractions.get(i);
+            jsonInteractions += "'"+i+"':["+nonRedundantInteraction + "],";
+        }
+        if(jsonInteractions.length() > 0){
+            jsonInteractions = jsonInteractions.substring(0,jsonInteractions.length()-1);
+        }
+        json += jsonInteractions + "}";
+
+
+        //create json FILTERS
+        json += ",filters:{";
+        String jsonFilter = "";
+        for(String variableName:variableName2conditions.keySet()){
+            String jsonFilterVariables = variableName+": {title: '"+variableName2title.get(variableName)+"',presentation: 'radio', active: true, dataType: 'edges', data: {";
+            String jsonFilterData = "";
+            Map<String,List<Integer>> conditionToNonRedundantInteractions = variableName2conditions.get(variableName);
+            for(String condition:conditionToNonRedundantInteractions.keySet()){
+                List<Integer> listOfnonRedundantInteractions = conditionToNonRedundantInteractions.get(condition);
+                jsonFilterData += "'"+condition+"':[";
+                if(listOfnonRedundantInteractions != null) {
+                    for(Integer intKey:listOfnonRedundantInteractions){
+                        jsonFilterData += "'"+intKey+"',";
+                    }
+                    jsonFilterData = jsonFilterData.substring(0,jsonFilterData.length()-1);
+                }
+                jsonFilterData += "],";
+            }
+            if(jsonFilterData.length() > 0){
+                jsonFilterData = jsonFilterData.substring(0,jsonFilterData.length()-1);
+                jsonFilter += jsonFilterVariables + jsonFilterData;
+                jsonFilter += "}},";
+            }
+        }
+        if(jsonFilter.length() > 0){
+            jsonFilter = jsonFilter.substring(0,jsonFilter.length()-1);
+            json += jsonFilter;
+        }
+        json += "}";
+        return json;
+
+    }
+
+    /**
+     * Get dynamic annotations from the experiment
+     * @return
+     */
+    public Collection<Annotation> getExperimentDynamicAnnotations() {
+        Collection<Annotation> annotations = new ArrayList<Annotation>();
+        for(Annotation annotation:getExperimentAnnotations()){
+            if(annotation.getCvTopic().getShortLabel().equalsIgnoreCase(_variable) || annotation.getCvTopic().getShortLabel().equalsIgnoreCase(_variable_2)){
+                annotations.add(annotation);
+            }
+        }
+        return annotations;
+    }
+
+    /**
+     * Get annotations from the experiment
+     * @return
+     */
     public Collection<Annotation> getExperimentAnnotations() {
         final Experiment experiment = getExperiment();
         Collection<Annotation> selectedAnnotations = new ArrayList<Annotation>( experiment.getAnnotations().size() );
@@ -410,3 +614,5 @@ public class DetailsController extends JpaBaseController {
         return members;
     }
 }
+
+

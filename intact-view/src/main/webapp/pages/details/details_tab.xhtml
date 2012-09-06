@@ -26,44 +26,64 @@
 
 <h:panelGroup>
 
-    <iv:panelLabelAndMessage label="Accession:" labelStyleClass="textLabel">
-        <h:outputText value="#{experiment.ac}"/>
-    </iv:panelLabelAndMessage>
-
-    <iv:panelLabelAndMessage label="Name:" labelStyleClass="textLabel">
-        <h:outputText value="#{experiment.shortLabel}"/>
-    </iv:panelLabelAndMessage>
-
-    <iv:panelLabelAndMessage label="Host organism:" labelStyleClass="textLabel">
-        <iv:biosourcePopup bioSource="#{experiment.bioSource}"/>
-    </iv:panelLabelAndMessage>
-
-    <iv:panelLabelAndMessage label="Interaction Detection Method:" labelStyleClass="textLabel">
-        <h:outputLink value="#{request.contextPath}/cv/#{experiment.cvInteraction.ac}">
-            <h:outputText value="#{experiment.cvInteraction.shortLabel}"/>
-        </h:outputLink>
-    </iv:panelLabelAndMessage>
-
-    <iv:panelLabelAndMessage label="Participant Identification Method:" labelStyleClass="textLabel">
-        <h:outputLink value="#{request.contextPath}/cv/#{experiment.cvIdentification.ac}">
-            <h:outputText value="#{experiment.cvIdentification.shortLabel}"/>
-        </h:outputLink>
-    </iv:panelLabelAndMessage>
-
     <table border="0">
-        <h:panelGroup rendered="#{not empty experiment.xrefs}">
-            <tr>
-                <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
-                <td><iv:xrefTable id="experimentXrefTable" xrefs="#{experiment.xrefs}"/></td>
-            </tr>
-        </h:panelGroup>
-        <h:panelGroup rendered="#{not empty detailsBean.experimentAnnotations}">
-            <tr>
-                <td style="font-weight:bold; vertical-align:top; text-align:right;">Annotations:</td>
-                <td><iv:annotationTable id="experimentAnnotsTable" annotations="#{detailsBean.experimentAnnotations}"/></td>
-            </tr>
-        </h:panelGroup>
+        <tr>
+            <td style="vertical-align:top;">
+                <iv:panelLabelAndMessage label="Accession:" labelStyleClass="textLabel">
+                    <h:outputText value="#{experiment.ac}"/>
+                </iv:panelLabelAndMessage>
+
+                <iv:panelLabelAndMessage label="Name:" labelStyleClass="textLabel">
+                    <h:outputText value="#{experiment.shortLabel}"/>
+                </iv:panelLabelAndMessage>
+
+                <iv:panelLabelAndMessage label="Host organism:" labelStyleClass="textLabel">
+                    <iv:biosourcePopup bioSource="#{experiment.bioSource}"/>
+                </iv:panelLabelAndMessage>
+
+                <iv:panelLabelAndMessage label="Interaction Detection Method:" labelStyleClass="textLabel">
+                    <h:outputLink value="#{request.contextPath}/cv/#{experiment.cvInteraction.ac}">
+                        <h:outputText value="#{experiment.cvInteraction.shortLabel}"/>
+                    </h:outputLink>
+                </iv:panelLabelAndMessage>
+
+                <iv:panelLabelAndMessage label="Participant Identification Method:" labelStyleClass="textLabel">
+                    <h:outputLink value="#{request.contextPath}/cv/#{experiment.cvIdentification.ac}">
+                        <h:outputText value="#{experiment.cvIdentification.shortLabel}"/>
+                    </h:outputLink>
+                </iv:panelLabelAndMessage>
+
+                <table border="0">
+                    <h:panelGroup rendered="#{not empty experiment.xrefs}">
+                        <tr>
+                            <td style="font-weight:bold; vertical-align:top; text-align:right;">Cross References:</td>
+                            <td><iv:xrefTable id="experimentXrefTable" xrefs="#{experiment.xrefs}"/></td>
+                        </tr>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{not empty detailsBean.experimentAnnotations}">
+                        <tr>
+                            <td style="font-weight:bold; vertical-align:top; text-align:right;">Annotations:</td>
+                            <td><iv:annotationTable id="experimentAnnotsTable" annotations="#{detailsBean.experimentAnnotations}"/></td>
+                        </tr>
+                    </h:panelGroup>
+                </table>
+           </td>
+            <!--Display experiment network if less than 251 interactors-->
+
+            <h:panelGroup rendered="#{detailsBean.experimentDynamicAnnotations.size() gt 0}">
+                <h:panelGroup rendered="#{detailsBean.numberOfInteractorsInExperiment lt 251}">
+                   <td style="text-align:right;vertical-align:top;width:590px;height:#{detailsBean.numberOfInteractorsInExperiment gt 80 ? 800 : 300}px;">
+                        <iv:experimentNetwork height="#{detailsBean.numberOfInteractorsInExperiment gt 80 ? 790 : 290}" width="590" url="http://www.ebi.ac.uk/~intact/site/dynamicNetwork/index.php?height=#{detailsBean.numberOfInteractorsInExperiment gt 80 ? 787 : 287}&amp;width=585&amp;biojsvariables=#{detailsBean.jsonExperimentInteractions}" />
+                   </td>
+                </h:panelGroup>
+            </h:panelGroup>
+        </tr>
     </table>
+    <!--<h:outputText value="Dynamic annotations: #{detailsBean.experimentDynamicAnnotations.size()}"/>-->
+    <!--<br/>-->
+    <!--<h:outputText value="Interactors in the experiment: #{detailsBean.numberOfInteractorsInExperiment}"/>-->
+    <!--<br/>-->
+    <!--<h:outputText value="#{detailsBean.jsonExperimentInteractions}"/>-->
 
 </h:panelGroup>
 
@@ -413,6 +433,7 @@
         <h2>Graphical Representation of Experimental Features</h2>
         <iv:interactionRepresentation url="/intact/json?ac=#{interaction.ac}" />
     </h:panelGroup>
+
 </h:panelGroup>
 
 </h:panelGroup>
