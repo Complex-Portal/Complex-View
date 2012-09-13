@@ -122,6 +122,8 @@
                             <value>500000</value>
                         </systemProperty>
                     </systemProperties>
+                    <!-- configure the container                 -->
+                    <jettyConfig>${build.outputDirectory}/META-INF/jetty.xml</jettyConfig>
                 </configuration>
                 <dependencies>
                     <dependency>
