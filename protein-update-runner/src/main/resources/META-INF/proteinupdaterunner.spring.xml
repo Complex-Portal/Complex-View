@@ -15,7 +15,7 @@
            http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="locations" value="/META-INF/intact-proteinupdate.properties"/>
+        <property name="location" value="/META-INF/intact-proteinupdate.properties"/>
     </bean>
 
     <!-- IntAct -->
