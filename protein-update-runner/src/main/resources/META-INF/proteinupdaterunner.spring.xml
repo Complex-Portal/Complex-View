@@ -14,12 +14,12 @@
            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
            http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 
-    <bean id="propertyLocation" class="org.springframework.core.io.FileSystemResource">
+    <!--<bean id="propertyLocation" class="org.springframework.core.io.FileSystemResource">
         <constructor-arg value="/META-INF/intact-proteinupdate.properties"/>
     </bean>
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" ref="propertyLocation"/>
-    </bean>
+    </bean>-->
 
     <!-- IntAct -->
     <bean id="intactConfig" class="uk.ac.ebi.intact.core.config.IntactConfiguration">
