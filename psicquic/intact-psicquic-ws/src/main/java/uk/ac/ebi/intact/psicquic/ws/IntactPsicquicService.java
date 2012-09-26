@@ -166,7 +166,7 @@ public class IntactPsicquicService implements PsicquicService {
             if ("*".equals(query) || query.trim().isEmpty()) {
                 query = config.getQueryFilter();
             } else {
-                query = query + " AND " + config.getQueryFilter();
+                query = "("+query + ") AND " + config.getQueryFilter();
                 query = query.trim();
             }
         }
