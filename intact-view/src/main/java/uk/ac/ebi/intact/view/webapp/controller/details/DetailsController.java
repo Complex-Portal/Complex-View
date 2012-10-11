@@ -359,7 +359,7 @@ public class DetailsController extends JpaBaseController {
         }
         //create json INTERACTIONS
         String json = "";
-        json = "interactions:{";
+        json = "'interactions':{";
         String jsonInteractions = "";
         for(int i=0; i< nonRedundantInteractions.size(); i++){
             String nonRedundantInteraction = nonRedundantInteractions.get(i);
@@ -372,10 +372,10 @@ public class DetailsController extends JpaBaseController {
 
 
         //create json FILTERS
-        json += ",filters:{";
+        json += ",'filters':{";
         String jsonFilter = "";
         for(String variableName:variableName2conditions.keySet()){
-            String jsonFilterVariables = variableName+": {title: '"+variableName2title.get(variableName)+"',presentation: 'radio', active: true, dataType: 'edges', data: {";
+            String jsonFilterVariables = "'"+variableName+"': {'title': '"+variableName2title.get(variableName)+"','presentation': 'radio', 'active': true, 'dataType': 'edges', 'data': {";
             String jsonFilterData = "";
             Map<String,List<Integer>> conditionToNonRedundantInteractions = variableName2conditions.get(variableName);
             for(String condition:conditionToNonRedundantInteractions.keySet()){
