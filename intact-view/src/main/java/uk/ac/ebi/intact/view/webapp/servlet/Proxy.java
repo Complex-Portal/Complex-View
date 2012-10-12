@@ -41,7 +41,7 @@ public class Proxy extends HttpServlet {
     private void externalRequest(String url, Writer outputWriter) throws IOException {
         final IntactViewConfiguration configuration = (IntactViewConfiguration) IntactContext.getCurrentInstance().getSpringContext().getBean("intactViewConfiguration");
 
-        HttpClient client = configuration.getHttpClientBasedOnUrl(url);
+        HttpClient client = configuration.getCommonsHttpClientBasedOnUrl(url);
         GetMethod method = new GetMethod(url);
 
         int statusCode = client.executeMethod(method);

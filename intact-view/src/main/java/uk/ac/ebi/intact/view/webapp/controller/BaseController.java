@@ -23,26 +23,35 @@ public abstract class BaseController implements Serializable, ConversationBindin
 
     protected void addMessage(String message, String detail) {
         FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage facesMessage = new FacesMessage(message, detail);
-        context.addMessage(null, facesMessage);
+        if (context != null){
+            FacesMessage facesMessage = new FacesMessage(message, detail);
+            context.addMessage(null, facesMessage);
+        }
     }
 
     protected void addInfoMessage(String message, String detail) {
         FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, message, detail);
-        context.addMessage(null, facesMessage);
+        if (context != null){
+            FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, message, detail);
+            context.addMessage(null, facesMessage);
+        }
     }
 
     protected void addWarningMessage(String message, String detail) {
         FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_WARN, message, detail);
-        context.addMessage(null, facesMessage);
+        if (context != null){
+            FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_WARN, message, detail);
+            context.addMessage(null, facesMessage);
+        }
+
     }
 
     protected void addErrorMessage(String message, String detail) {
         FacesContext context = FacesContext.getCurrentInstance();
-        FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, message, detail);
-        context.addMessage(null, facesMessage);
+        if (context != null){
+            FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, message, detail);
+            context.addMessage(null, facesMessage);
+        }
     }
 
    

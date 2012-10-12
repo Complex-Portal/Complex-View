@@ -55,4 +55,9 @@
         <property name="dataSource" ref="dataSourceJdni" />
     </bean>
 
+    <!-- shared transactionTemplate for post initialization methods -->
+    <bean id="sharedTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
 </beans>

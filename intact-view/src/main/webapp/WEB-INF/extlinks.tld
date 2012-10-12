@@ -15,6 +15,7 @@
             <name>query</name>
             <required>true</required>
         </attribute>
+        <tag-class/>
     </tag>
     <tag>
         <name>goChebi</name>
@@ -25,6 +26,7 @@
         <attribute>
             <name>onlyLogo</name>
         </attribute>
+        <tag-class/>
     </tag>
     <tag>
         <name>goDrugbank</name>
@@ -35,6 +37,7 @@
         <attribute>
             <name>onlyLogo</name>
         </attribute>
+        <tag-class/>
     </tag>
     <tag>
         <name>goDrugPortProteinView</name>
@@ -45,6 +48,7 @@
         <attribute>
             <name>onlyLogo</name>
         </attribute>
+        <tag-class/>
     </tag>
     <tag>
         <name>goDrugPortChemicalView</name>
@@ -58,6 +62,7 @@
         <attribute>
             <name>renderDrugPort</name>
         </attribute>
+        <tag-class/>
     </tag>
     <tag>
         <name>goIntepro</name>
@@ -68,6 +73,7 @@
         <attribute>
             <name>text</name>
         </attribute>
+        <tag-class/>
     </tag>
     <tag>
         <name>goLigandPlot</name>
@@ -75,6 +81,7 @@
             <name>text</name>
             <required>true</required>
         </attribute>
+        <tag-class/>
     </tag>
     <tag>
         <name>goMoleculeView</name>
@@ -91,6 +98,7 @@
         <attribute>
             <name>useUrl</name>
         </attribute>
+        <tag-class/>
     </tag>
     <tag>
         <name>goReactomeSkyPainter</name>
@@ -104,6 +112,7 @@
             <name>query</name>
             <required>true</required>
         </attribute>
+        <tag-class/>
     </tag>
     <tag>
         <name>goUniprot</name>
@@ -114,6 +123,7 @@
         <attribute>
             <name>onlyLogo</name>
         </attribute>
+        <tag-class/>
     </tag>
     <tag>
         <name>goUniprotTaxonomy</name>
@@ -127,6 +137,7 @@
         <attribute>
             <name>termName</name>
         </attribute>
+        <tag-class/>
     </tag>
     <tag>
         <name>goOls</name>
@@ -141,6 +152,7 @@
             <name>query</name>
             <required>true</required>
         </attribute>
+        <tag-class/>
     </tag>
 
 </taglib>

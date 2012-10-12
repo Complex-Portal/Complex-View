@@ -10,35 +10,20 @@
     <function>
         <function-name>getIdentityXrefs</function-name>
         <function-class>uk.ac.ebi.intact.model.util.XrefUtils</function-class>
-        <function-signature>java.util.Collection&lt;uk.ac.ebi.intact.model.Xref> getIdentityXrefs(uk.ac.ebi.intact.model.AnnotatedObject)</function-signature>
+        <function-signature>java.util.Collection getIdentityXrefs(uk.ac.ebi.intact.model.AnnotatedObject)</function-signature>
     </function>
 
     <function>
-        <function-name>getIdentityXref</function-name>
-        <function-class>uk.ac.ebi.intact.model.util.XrefUtils</function-class>
-        <function-signature>uk.ac.ebi.intact.model.Xref getIdentityXref(uk.ac.ebi.intact.model.AnnotatedObject,java.lang.String)</function-signature>
+        <function-name>extractIdentityXrefs</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
+        <function-signature>java.util.Collection extractIdentityXrefs(java.util.Collection)</function-signature>
     </function>
-
-    <!-- Local webapp functions -->
-    <!--<function>-->
-        <!--<function-name>toXrefCategoryModel</function-name>-->
-        <!--<function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>-->
-        <!--<function-signature>uk.ac.ebi.intact.services.search.component.resultpanel.CategoryModel-->
-            <!--toXrefCategoryModel(java.util.Collection)</function-signature>-->
-    <!--</function>-->
 
     <function>
         <function-name>getIdentifierForDasty</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>
         <function-signature>java.lang.String getIdentifierForDasty(uk.ac.ebi.intact.model.Interactor)</function-signature>
     </function>
-
-    <!--<function>-->
-        <!--<function-name>wrap</function-name>-->
-        <!--<function-class>uk.ac.ebi.intact.view.webapp.util.Functions</function-class>-->
-        <!--<function-signature>uk.ac.ebi.intact.services.search.model.AnnotatedObjectWrapper-->
-            <!--wrap(uk.ac.ebi.intact.model.AnnotatedObject)</function-signature>-->
-    <!--</function>-->
 
     <function>
         <function-name>calculateXrefUrl</function-name>

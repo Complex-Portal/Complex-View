@@ -27,19 +27,28 @@ public class QueryToken {
     private String query;
     private BooleanOperand operand;
     private boolean notQuery;
+    private String booleanString;
 
     public QueryToken(String query) {
         this(query, null);
     }
 
     public QueryToken(String query, String field) {
-        this(query, field, BooleanOperand.AND);
+        this(query, field, BooleanOperand.AND, "AND");
     }
 
     public QueryToken(String query, String field, BooleanOperand operand) {
         this.query = query;
         this.field = field;
         this.operand = operand;
+        this.booleanString = this.operand.toString();
+    }
+
+    public QueryToken(String query, String field, BooleanOperand operand, String operandStr) {
+        this.query = query;
+        this.field = field;
+        this.operand = operand;
+        this.booleanString = operandStr;
     }
 
     public String getField() {
@@ -63,7 +72,14 @@ public class QueryToken {
     }
 
     public void setOperand(BooleanOperand operand) {
-        this.operand = operand;
+        if (operand != null){
+            this.operand = operand;
+            this.booleanString = operand.toString();
+        }
+        else {
+            this.operand = BooleanOperand.AND;
+            this.booleanString = "AND";
+        }
     }
 
     public boolean isNotQuery() {
@@ -75,11 +91,19 @@ public class QueryToken {
     }
 
     public String getOperandStr() {
-        return operand.toString();
+        return booleanString;
     }
 
     public void setOperandStr(String booleanStr) {
-        operand = BooleanOperand.valueOf(booleanStr);
+
+        if (booleanStr != null){
+            this.booleanString = booleanStr;
+            operand = BooleanOperand.valueOf(booleanStr);
+        }
+        else {
+            this.operand = BooleanOperand.AND;
+            this.booleanString = "AND";
+        }
     }
 
     public String toQuerySyntax() {
@@ -87,16 +111,25 @@ public class QueryToken {
     }
 
     public String toQuerySyntax(boolean excludeOperand) {
-        String operandStr;
+        StringBuffer queryString = new StringBuffer();
 
         if (excludeOperand) {
-            operandStr = isNotQuery() ? "NOT " : "";
+            queryString.append(isNotQuery() ? "NOT " : "");
         } else {
-           operandStr = (operand == BooleanOperand.AND) ? (isNotQuery() ? "AND NOT " : "AND ") : (isNotQuery() ? "OR NOT " : "OR ");
+            queryString.append((operand == BooleanOperand.AND) ? (isNotQuery() ? "AND NOT " : "AND ") : (isNotQuery() ? "OR NOT " : "OR "));
         }
 
-        return operandStr
-                +(field != null? field+":" : "")+surroundByQuotesIfNecessary(query);
+        queryString.append((field != null? field+":" : ""));
+
+        // close any opened parenthesis in field name. For instance : interaction_id:"GO
+        if (field.contains("\"")){
+
+            queryString.append(query).append("\"");
+        }
+        else {
+            escapeIfNecessary(query, queryString);
+        }
+        return queryString.toString();
     }
 
     @Override
@@ -104,17 +137,49 @@ public class QueryToken {
         return toQuerySyntax();
     }
 
-    public String surroundByQuotesIfNecessary(String query) {
-        if (query.contains(" ") ||
+    public void escapeIfNecessary(String query, StringBuffer queryString) {
+        if (query.equals(UserQuery.STAR_QUERY)){
+            queryString.append(query);
+            return;
+        }
+
+        // range query, do nothing
+        if (query.startsWith("[") && query.endsWith("]")){
+            queryString.append(query);
+        }
+        else if (query.contains(" ") ||
                 query.contains(":") ||
                 query.contains("(") ||
                 query.contains(")") ||
                 query.contains("-") ||
                 query.contains("+")) {
-            query = "\""+query+"\"";
-        }
 
-        return query;
+            // deal with wild search
+            if (query.contains("*")){
+                queryString.append(query.toLowerCase()
+                        .replaceAll(" ", "\\\\ ")
+                        .replaceAll(":", "\\\\:")
+                        .replaceAll("\\(", "\\\\(")
+                        .replaceAll("\\)", "\\\\)")
+                        .replaceAll("-", "\\\\-")
+                        .replaceAll("\\+", "\\\\+"));
+            }
+            else if (query.contains("(") ||
+                    query.contains(")") ||
+                    query.contains("-") ||
+                    query.contains("+")){
+                queryString.append(query);
+            }
+            else {
+                queryString.append("\""+query+"\"");
+            }
+        }
+        else if (query.contains("*")){
+            queryString.append(query.toLowerCase());
+        }
+        else {
+            queryString.append(query);
+        }
     }
 
     @Override

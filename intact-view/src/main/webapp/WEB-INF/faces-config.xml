@@ -121,15 +121,13 @@
 		</navigation-case>
 	</navigation-rule>
 
-	<!--
-		<navigation-rule> <navigation-case>
-		<from-outcome>list.dna</from-outcome>
-		<to-view-id>/pages/list/dna_list.xhtml</to-view-id> </navigation-case>
-		</navigation-rule> <navigation-rule> <navigation-case>
-		<from-outcome>list.rna</from-outcome>
-		<to-view-id>/pages/list/rna_list.xhtml</to-view-id> </navigation-case>
-		</navigation-rule>
-	-->
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>list.genes</from-outcome>
+            <to-view-id>/pages/list/gene_list.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 
 	<navigation-rule>
         <from-view-id>*</from-view-id>
@@ -166,22 +164,6 @@
 	<navigation-rule>
         <from-view-id>*</from-view-id>
 		<navigation-case>
-			<from-outcome>dialog:biosource.view</from-outcome>
-			<to-view-id>/pages/details/biosource.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-        <from-view-id>*</from-view-id>
-		<navigation-case>
-			<from-outcome>dialog:participant.view</from-outcome>
-			<to-view-id>/pages/details/participant.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-        <from-view-id>*</from-view-id>
-		<navigation-case>
 			<from-outcome>browse.complex</from-outcome>
 			<to-view-id>/pages/details/complex/complex.xhtml</to-view-id>
 		</navigation-case>
@@ -203,21 +185,6 @@
 			<to-view-id>/pages/search/help_miql.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
-	<!--<navigation-rule>
-		<navigation-case>
-			<from-outcome>dialog:configure.columns</from-outcome>
-			<to-view-id>/pages/interactions/configure_columns.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>-->
-
-	<!-- filters -->
-	<!--<navigation-rule>
-		<navigation-case>
-			<from-outcome>dialog:filters</from-outcome>
-			<to-view-id>/pages/inc/filters_dialog.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>-->
 
 	<!--dataset of the month-->
 	<navigation-rule>
@@ -352,12 +319,6 @@
 		</navigation-case>
 	</navigation-rule>
 
-	<!--<navigation-rule>
-		<navigation-case>
-			<from-outcome>dialog:search.browse</from-outcome>
-			<to-view-id>/pages/search/search_browse_dialog.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>-->
     <navigation-rule>
         <from-view-id>*</from-view-id>
         <navigation-case>
@@ -374,11 +335,8 @@
         </navigation-case>
     </navigation-rule>
 
-    <!--<navigation-rule>
-        <navigation-case>
-          <from-outcome>dialog:search.browse</from-outcome>
-          <to-view-id>/pages/search/search_browse_dialog.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>-->
+    <factory>
+        <exception-handler-factory>uk.ac.ebi.intact.view.webapp.error.factory.ViewExpiredExceptionHandlerFactory</exception-handler-factory>
+    </factory>
 
 </faces-config>

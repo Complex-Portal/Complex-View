@@ -6,14 +6,14 @@
 
                 template="/main_content_template.xhtml">
 
-    <f:metadata>
-        <f:event type="preRenderView" listener="#{detailsBean.loadData}"/>
-        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(5)}"/>
-
-        <f:viewParam name="interactionAc" value="#{detailsBean.interactionAc}"/>
-        <f:viewParam name="experimentAc" value="#{detailsBean.experimentAc}"/>
-        <f:viewParam name="binary" value="#{detailsBean.binary}"/>
-
-    </f:metadata>
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(5)}"/>
+            <f:event type="preRenderView" listener="#{detailsBean.loadData}"/>
+            <f:viewParam name="interactionAc" value="#{detailsBean.interactionAc}"/>
+            <f:viewParam name="experimentAc" value="#{detailsBean.experimentAc}"/>
+            <f:viewParam name="binary" value="#{detailsBean.binary}"/>
+        </f:metadata>
+    </ui:define>
 
 </ui:composition>

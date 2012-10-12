@@ -19,7 +19,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
 import uk.ac.ebi.intact.core.persister.IntactCore;
@@ -29,6 +28,8 @@ import uk.ac.ebi.intact.model.util.ProteinUtils;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ import java.util.Map;
  * @version $Id$
  */
 @Controller
-public final class Functions {
+public class Functions {
 
     private static final Log log = LogFactory.getLog( Functions.class );
 
@@ -51,7 +52,7 @@ public final class Functions {
     private static final String OLD_NEWT_URL = "http://www.ebi.ac.uk/newt/display?search=${ac}";
     private static final String NEW_NEWT_URL = "http://www.uniprot.org/taxonomy/${ac}";
 
-    private Functions() {
+    public Functions() {
     }
 
     /**
@@ -65,6 +66,21 @@ public final class Functions {
         if (interactor == null) return null;
 
         return interactor.getAc();
+    }
+
+    public static Collection extractIdentityXrefs(Collection<InteractorXref> allXrefs){
+        Collection<InteractorXref> xrefs = new ArrayList<InteractorXref>(allXrefs.size());
+
+        for (InteractorXref xref : allXrefs) {
+            CvXrefQualifier qualifier = xref.getCvXrefQualifier();
+            String qualifierMi = null;
+            if (qualifier != null && ((qualifierMi = qualifier.getIdentifier()) != null &&
+                    qualifierMi.equals(CvXrefQualifier.IDENTITY_MI_REF))) {
+                xrefs.add(xref);
+            }
+        }
+
+        return xrefs;
     }
 
 
@@ -152,6 +168,17 @@ public final class Functions {
         return cvObject;
     }
 
+    public static Annotation findAnnotationByTopicMiOrLabel(AnnotatedObject<?, ?> annotatedObject, String miOrLabel) {
+        Collection<Annotation> annotations = IntactCore.ensureInitializedAnnotations(annotatedObject);
+        for (Annotation annotation : annotations) {
+            final CvTopic topic = annotation.getCvTopic();
+            if (topic != null && (miOrLabel.equals(topic.getIdentifier()) || miOrLabel.equals(topic.getShortLabel()))) {
+                return annotation;
+            }
+        }
+        return null;
+    }
+
     /**
      * Calculates the XREFs, associated to a database and for the AC/query provided
      * @param db the CvDatabase to get the URL template from
@@ -162,23 +189,7 @@ public final class Functions {
         String xrefUrl = null;
 
         if (db != null) {
-            Annotation annotation = null;
-
-            if (IntactCore.isInitialized(db.getAnnotations())) {
-                annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(db, CvTopic.SEARCH_URL);
-            } else {
-
-                    TransactionStatus transaction = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
-
-                    CvDatabase reloadedDb = IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(CvDatabase.class)
-                            .getByAc(db.getAc());
-                    annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(reloadedDb, CvTopic.SEARCH_URL);
-
-
-                    IntactContext.getCurrentInstance().getDataContext().commitTransaction(transaction);
-
-            }
-
+            Annotation annotation = findAnnotationByTopicMiOrLabel(db, CvTopic.SEARCH_URL);
 
             if (annotation != null) {
                 xrefUrl = annotation.getAnnotationText();
@@ -195,7 +206,7 @@ public final class Functions {
 
 
         if (xrefUrl != null) {
-            replacedUrl = xrefUrl.replaceAll("\\$\\{ac\\}", ac);
+            replacedUrl = xrefUrl.replaceAll("\\$*\\{ac\\}", ac);
         }
 
         return replacedUrl;

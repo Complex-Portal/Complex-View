@@ -19,12 +19,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import uk.ac.ebi.intact.core.IntactException;
+import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
-import javax.annotation.PostConstruct;
+import javax.faces.bean.ApplicationScoped;
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -33,15 +32,17 @@ import java.io.Serializable;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@Controller
+@ApplicationScoped
 public class AppConfigBean implements Serializable, InitializingBean {
 
     private Log log = LogFactory.getLog(AppConfigBean.class);
 
     @Autowired
-    private IntactViewConfiguration intactViewConfiguration;
+    private OntologyBean ontologyBean;
 
     @Autowired
-    private OntologyBean ontologyBean;
+    private IntactViewConfiguration viewConfig;
 
     private String configFileLocation;
 
@@ -53,18 +54,10 @@ public class AppConfigBean implements Serializable, InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
 
-        configFileLocation = intactViewConfiguration.getConfigFile();
+        configFileLocation = viewConfig.getConfigFile();
 
         if ( ! new File(configFileLocation).exists() ) {
             if (log.isInfoEnabled()) log.info("No configuration File found. First time setup");
-        }
-
-        try {
-            log.debug(" +++ Loading ontologies...");
-            ontologyBean.loadOntologies();
-            log.debug( " +++ Completed to load ontologies..." );
-        } catch ( IOException e ) {
-            throw new IntactException("Problem loading ontologies", e);
         }
 
         if (log.isInfoEnabled()) log.info("Initializing xref link context...");

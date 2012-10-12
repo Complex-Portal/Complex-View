@@ -16,8 +16,8 @@
 package uk.ac.ebi.intact.view.webapp.application.converter;
 
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.InteractionOntologyTerm;
 import uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean;
-import uk.ac.ebi.intact.view.webapp.util.OntologyTerm;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -29,17 +29,24 @@ import javax.faces.convert.FacesConverter;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@FacesConverter( value = "ontologyTermConverter", forClass = OntologyTerm.class )
+@FacesConverter( value = "ontologyTermConverter", forClass = InteractionOntologyTerm.class )
 public class OntologyTermConverter implements Converter {
+
+    private OntologyBean ontologyBean;
 
     public Object getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException {
         if (value == null || value.isEmpty()) {
             return null;
         }
+        if (this.ontologyBean == null){
+            this.ontologyBean = (OntologyBean) IntactContext.getCurrentInstance().getSpringContext().getBean("ontologyBean");
+        }
 
-        OntologyBean ontologyBean = (OntologyBean) IntactContext.getCurrentInstance().getSpringContext().getBean("ontologyBean");
-
-        return ontologyBean.findByIdentifier(value);
+        Object object = ontologyBean.findByIdentifier(value);
+        if (object == null){
+            object = ontologyBean.findByName(value);
+        }
+        return object;
     }
 
     public String getAsString(FacesContext context, UIComponent component, Object value) throws ConverterException {
@@ -47,10 +54,16 @@ public class OntologyTermConverter implements Converter {
             return null;
         }
 
-        if (value instanceof OntologyTerm) {
-           return ((OntologyTerm) value).getIdentifier();
+        if (value instanceof InteractionOntologyTerm) {
+            InteractionOntologyTerm term = (InteractionOntologyTerm) value;
+            if (term.getIdentifier() != null ){
+                return term.getIdentifier();
+            }
+            else {
+                return term.getName();
+            }
         } else {
-            throw new IllegalArgumentException("An OntologyTerm class was expected but an illegal class passed to converter: "+value.getClass().getName());
+            throw new ConverterException("An OntologyTerm class was expected but an illegal class passed to converter: "+value.getClass().getName());
         }
     }
 }

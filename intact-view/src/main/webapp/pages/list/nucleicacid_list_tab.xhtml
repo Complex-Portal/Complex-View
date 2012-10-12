@@ -18,7 +18,7 @@
         <h:panelGroup>
             <h:commandLink value="Search Interactions"
                              actionListener="#{searchBean.doSearchInteractionsFromDnaListSelection}"
-                             action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"/>
+                             action="/pages/interactions/interactions.xhtml?faces-redirect=true"/>
         </h:panelGroup>
     </p:panel>
 
@@ -28,8 +28,8 @@
                  rowIndexVar="status"
                  dynamic="true" emptyMessage="No nucleic acids found matching the query."
                  rows="#{userQuery.pageSize}" loadingMessage="Loading nucleic acids..."
-                 paginator="true" paginatorAlwaysVisible="false"
-                 selection="#{nucleicAcidListController.selected}">
+                 paginator="#{searchBean.nucleicAcidResults.rowCount gt userQuery.pageSize}" paginatorPosition="both"
+                 selection="#{nucleicAcidListController.selected}" rendered="#{searchBean.nucleicAcidTotalResults > 0}">
 
             <p:column selectionMode="multiple" />
 
@@ -39,38 +39,36 @@
 
             <p:column>
                 <f:facet name="header"><h:outputText value="#{messages['list.names']}"/></f:facet>
-                <h:outputText value="#{interactorWrapper.interactor.shortLabel}"/>
+                <h:outputText value="#{interactorWrapper.shortLabel}"/>
             </p:column>
 
             <p:column>
                 <f:facet name="header"><h:outputText value="Type"/></f:facet>
-                <h:outputText value="#{interactorWrapper.interactor.cvInteractorType.shortLabel}"/>
+                <h:outputText value="#{interactorWrapper.interactorTypeLabel}"/>
             </p:column>
 
             <p:column>
                 <f:facet name="header"><h:outputText value="Interactions"/></f:facet>
-                <h:commandLink action="#{searchBean.doBinarySearchAction}" value="#{interactorWrapper.count}">
-                    <f:setPropertyActionListener value="(#{userQuery.searchQuery}) AND #{interactorWrapper.interactor.ac}" target="#{userQuery.searchQuery}"/>
-            </h:commandLink>
+                <p:commandLink action="#{searchBean.doBinarySearchWithInteractorFilterAction}" value="#{interactorWrapper.count}" ajax="false">
+                    <f:setPropertyActionListener value="#{interactorWrapper.ac}"
+                                                 target="#{searchBean.selectedInteractor}"/>
+                </p:commandLink>
             </p:column>
 
             <p:column>
                 <f:facet name="header"><h:outputText value="#{messages['list.species']}"/></f:facet>
-                <iax:goOls query="#{interactorWrapper.interactor.bioSource.taxId}"
-                           termName="#{interactorWrapper.interactor.bioSource.shortLabel}"/>
+                <iax:goOls query="#{interactorWrapper.organismTaxId}"
+                           termName="#{interactorWrapper.organismShortLabel}"/>
             </p:column>
 
             <p:column>
                 <f:facet name="header"><h:outputText value="#{messages['list.accessionnumber']}"/></f:facet>
-                <h:outputText value="#{interactorWrapper.interactor.ac}"/>
+                <h:outputText value="#{interactorWrapper.ac}"/>
             </p:column>
 
             <p:column>
                 <f:facet name="header"><h:outputText value="#{messages['list.description']}"/></f:facet>
-                <ui:param name="intactIdentifier"
-                          value="#{interactorWrapper.interactor.ac}"/>
-                <ui:param name="interactor" value="#{interactorWrapper.interactor}"/>
-                <h:outputText value="#{interactorWrapper.interactor.fullName}"/>
+                <h:outputText value="#{interactorWrapper.fullName}"/>
             </p:column>
 
         </p:dataTable>

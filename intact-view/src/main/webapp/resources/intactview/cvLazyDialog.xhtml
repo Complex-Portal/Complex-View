@@ -14,8 +14,8 @@
   <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <p:dialog widgetVar="#{cc.attrs.dialogVar}" draggable="true"
-                  width="730" onCloseUpdate="cvDetailsPanel">
+        <p:dialog id="cvLazyDlgId" widgetVar="#{cc.attrs.dialogVar}" draggable="true"
+                  width="730" onCloseUpdate="cvDetailsPanel" header="CV Term details" height="450">
 
             <h:panelGroup id="cvDetailsPanel">
                 <h:panelGroup>

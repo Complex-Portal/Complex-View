@@ -6,10 +6,12 @@
 
                 template="/main_content_template.xhtml">
 
-     <f:metadata>
-        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(6)}"/>
-         <f:viewParam name="interactorAc" value="#{moleculeViewBean.interactorAc}"/>
-        <f:event type="preRenderView" listener="#{moleculeViewBean.loadInteractor}"/>
-    </f:metadata>
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(6)}"/>
+            <f:viewParam name="interactorAc" value="#{moleculeViewBean.interactorAc}"/>
+            <f:event type="preRenderView" listener="#{moleculeViewBean.loadInteractor}"/>
+        </f:metadata>
+    </ui:define>
 
 </ui:composition>

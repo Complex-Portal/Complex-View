@@ -6,20 +6,23 @@
         xmlns:c="http://java.sun.com/jstl/core"
         >
 
-    <!-- Include this hack to avoid using the "general" conversation -->
-    <ui:include src="/pages/inc/dialogConversationHack.xhtml"/>
-
     <h2>Browsing (Browse Tab)</h2>
     This tab is meant to give you access to more content based on the currently
     selected set of interaction. As you can see, in this tab we have grouped
     features under the interacting molecule types. Please note that some of these
     functionalities will only allow you to include up to 200 molecules , if you exceed
-    this number you will see the warning icon . Now let’s look at the features
+    this number you will see the warning icon (This number has been reduced to 125 molecules for mRNA expression).
+    Now let’s look at the features
     available to you:
 
     <h2>Listing the molecules involved by specific type</h2>
     Clicking on the ‘List All’ present under each molecule type will open
     the corresponding list of molecule in the List Tab.
+
+    <h2>Limiting the scope of the current dataset with the Uniprot Taxonomy ontology</h2>
+    Allows users to browse the Uniprot Taxonomy hierarchy as a tree and select terms
+    in order to narrow down their dataset. Once a term is selected,
+    you are taken back to the interaction tab to review your dataset.
 
     <h2>Limiting the scope of the current dataset with the GO ontology</h2>
     Allows users to browse the GO hierarchy as a tree and select terms
@@ -34,9 +37,9 @@
     <h2>Bulk linking to third party resources by using involved proteins</h2>
 
     <ul>
-        <li><strong>Proteins by InterPro domain</strong>: Opens the InterPro domain search and shows in a
+        <!--<li><strong>Proteins by InterPro domain</strong>: Opens the InterPro domain search and shows in a
             single display the proteins interacting in your interaction set.
-        </li>
+        </li> -->
 
         <li><strong>Proteins by Reactome pathway</strong>: Sends your proteins to the Reactome SkyPainter
             that will show you the pathways in which these molecules are know to play a role.

@@ -8,6 +8,8 @@
 
     <p:tabView id="listPanels" cache="false" dynamic="true"
                activeIndex="#{contextController.interactorActiveTabIndex}">
+        <p:ajax event="tabChange" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
+
         <p:tab title="Proteins (#{searchBean.proteinTotalResults})"  disabled="#{searchBean.proteinTotalResults == 0}">
             <div style="float:right;">
                 <p:commandLink type="button" onclick="whatIsListDialog.show()">
@@ -39,6 +41,17 @@
             </div>
 
             <ui:include src="nucleicacid_list_tab.xhtml"/>
+        </p:tab>
+
+        <p:tab title="Genes (#{searchBean.geneTotalResults})" disabled="#{searchBean.geneTotalResults == 0}">
+            <div style="float:right;">
+                <p:commandLink type="button" onclick="whatIsListDialog.show()">
+                    What is this view
+                    <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+                </p:commandLink>
+            </div>
+
+            <ui:include src="gene_list_tab.xhtml"/>
         </p:tab>
 
     </p:tabView>

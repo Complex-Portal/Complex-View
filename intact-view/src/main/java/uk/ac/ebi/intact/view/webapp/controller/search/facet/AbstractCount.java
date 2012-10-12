@@ -50,10 +50,6 @@ public abstract class AbstractCount {
         }
     }
 
-    public long getSpokeCount() {
-        return getCount("spoke");
-    }
-
     public long getPhysicalCount() {
        return getCount(MISSING_KEY);
     }

@@ -16,8 +16,12 @@
 package uk.ac.ebi.intact.view.webapp.model;
 
 import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.model.InteractorXref;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Wrapper of the interactor, in order to provide convenient methods when used as data results.
@@ -27,20 +31,49 @@ import java.io.Serializable;
  */
 public class InteractorWrapper implements Serializable {
 
-    private Interactor interactor;
+    private String ac;
+    private String shortLabel;
+    private String fullName;
+    private String organismTaxId;
+    private String organismShortLabel;
+    private Collection<InteractorXref> xrefs;
+    private String interactorTypeLabel;
+
     private long count;
 
     public InteractorWrapper(Interactor interactor) {
-        this.interactor = interactor;
+        if (interactor != null){
+            this.ac = interactor.getAc();
+            this.shortLabel = interactor.getShortLabel();
+            this.fullName = interactor.getFullName();
+
+            if (interactor.getBioSource() != null){
+                this.organismShortLabel = interactor.getBioSource().getShortLabel();
+                this.organismTaxId = interactor.getBioSource().getTaxId();
+            }
+            else {
+                this.organismShortLabel = null;
+                this.organismTaxId = null;
+            }
+
+            if (interactor.getCvInteractorType() != null){
+                this.interactorTypeLabel = interactor.getCvInteractorType().getShortLabel();
+            }
+
+            xrefs = new ArrayList<InteractorXref>(interactor.getXrefs());
+        }
+        else {
+            shortLabel = null;
+            fullName = null;
+            organismTaxId = null;
+            organismShortLabel = null;
+            xrefs = Collections.EMPTY_LIST;
+        }
     }
 
     public InteractorWrapper(Interactor interactor, long count) {
-        this.interactor = interactor;
+        this(interactor);
         this.count = count;
-    }
-
-    public Interactor getInteractor() {
-        return interactor;
     }
 
     public long getCount() {
@@ -49,5 +82,33 @@ public class InteractorWrapper implements Serializable {
 
     public void setCount(long count) {
         this.count = count;
+    }
+
+    public String getShortLabel() {
+        return shortLabel;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getOrganismTaxId() {
+        return organismTaxId;
+    }
+
+    public String getOrganismShortLabel() {
+        return organismShortLabel;
+    }
+
+    public String getAc() {
+        return ac;
+    }
+
+    public Collection<InteractorXref> getXrefs() {
+        return xrefs;
+    }
+
+    public String getInteractorTypeLabel() {
+        return interactorTypeLabel;
     }
 }

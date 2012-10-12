@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:iv="http://java.sun.com/jsf/composite/intactview"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:iaf="http://intact.ebi.ac.uk/functions">
+
+
+    <p:panel id="geneSelectionButtons" style="width:100%">
+
+        <strong>
+            <h:outputText value="Selection actions: " style="white-space: nowrap"/>
+        </strong>
+        &#160;&#160;
+
+        <h:panelGroup>
+            <h:commandLink value="Search Interactions"
+                           actionListener="#{searchBean.doSearchInteractionsFromGeneListSelection}"
+                           action="/pages/interactions/interactions.xhtml?faces-redirect=true"/>
+        </h:panelGroup>
+    </p:panel>
+
+    <br/>
+
+    <p:dataTable id="geneListResults" value="#{searchBean.geneResults}" var="interactorWrapper"
+                 rowIndexVar="status"
+                 dynamic="true" emptyMessage="No genes found matching the query."
+                 rows="#{userQuery.pageSize}" loadingMessage="Loading genes..."
+                 paginator="#{searchBean.geneResults.rowCount gt userQuery.pageSize}" paginatorPosition="both"
+                 selection="#{geneListController.selected}" rendered="#{searchBean.geneTotalResults > 0}">
+
+        <p:column selectionMode="multiple" />
+
+        <p:column>
+            <h:outputText value="#{status + 1}"/>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header"><h:outputText value="#{messages['list.names']}"/></f:facet>
+            <h:outputText value="#{interactorWrapper.shortLabel}"/>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header"><h:outputText value="Interactions"/></f:facet>
+            <p:commandLink action="#{searchBean.doBinarySearchWithInteractorFilterAction}" value="#{interactorWrapper.count}" ajax="false">
+                <f:setPropertyActionListener value="#{interactorWrapper.ac}"
+                                             target="#{searchBean.selectedInteractor}"/>
+            </p:commandLink>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header"><h:outputText value="#{messages['list.links']}"/></f:facet>
+
+            <ui:repeat var="xref" value="#{interactorWrapper.xrefs}"
+                       varStatus="rowStatus">
+                <h:panelGroup rendered="#{xref.cvDatabase.shortLabel == 'ensembl'}">
+                    <h:panelGroup rendered="#{xref.cvXrefQualifier.identifier == 'MI:0476'}">
+                        <h:outputText
+                                value="#{xref.primaryId}"/>
+                    </h:panelGroup>
+                </h:panelGroup>
+
+            </ui:repeat>
+
+            <h:panelGroup>
+                <iax:goMoleculeView query="#{interactorWrapper.ac}" onlyLogo="true"/>
+
+                <br/>
+            </h:panelGroup>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header"><h:outputText value="#{messages['list.species']}"/></f:facet>
+            <iax:goOls query="#{interactorWrapper.organismTaxId}"
+                       termName="#{interactorWrapper.organismShortLabel}"/>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header"><h:outputText value="#{messages['list.accessionnumber']}"/></f:facet>
+            <h:outputText value="#{interactorWrapper.ac}"/>
+        </p:column>
+
+        <p:column>
+            <f:facet name="header"><h:outputText value="#{messages['list.description']}"/></f:facet>
+            <h:outputText value="#{interactorWrapper.fullName}"/>
+        </p:column>
+
+    </p:dataTable>
+
+</ui:composition>

@@ -11,38 +11,36 @@
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
     <!-- INTERFACE -->
-  <composite:interface>
-      <composite:attribute name="interactor" type="psidev.psi.mi.tab.model.Interactor" required="true"/>
-      <composite:attribute name="display" type="java.lang.Boolean" default="true"/>
-      <composite:attribute name="displayAsText" type="java.lang.Boolean" default="false"/>
-  </composite:interface>
+    <composite:interface>
+        <composite:attribute name="interactor" type="psidev.psi.mi.tab.model.Interactor" required="true"/>
+        <composite:attribute name="display" type="java.lang.Boolean" default="true"/>
+    </composite:interface>
 
-  <!-- IMPLEMENTATION -->
+    <!-- IMPLEMENTATION -->
     <composite:implementation>
 
         <h:panelGroup rendered="#{cc.attrs.display}">
 
-       <ui:repeat var="xref" value="#{cc.attrs.interactor.identifiers}" varStatus="rowStatus">
-            <h:panelGroup rendered="#{xref.database == 'uniprotkb'}">
-                <iax:goUniprot query="#{xref.identifier}" onlyLogo="#{not cc.attrs.displayAsText}"/>
-                <br/>
-
-                <iax:goMoleculeView query="#{iamf:getMainIdentifierFromCrossReferences(cc.attrs.interactor.identifiers)}" onlyLogo="#{not cc.attrs.displayAsText}"
-                        useUrl="true"/>
-
-            </h:panelGroup>
-            <h:panelGroup rendered="#{xref.database == 'chebi'}">
-                <iax:goChebi query="#{xref.identifier}" onlyLogo="#{not cc.attrs.displayAsText}"/>
-                <br/>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{xref.database == 'drugbank'}">
-                <iax:goDrugbank query="#{xref.identifier}" onlyLogo="#{not cc.attrs.displayAsText}"/>
-                <br/>
-                <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="#{not cc.attrs.displayAsText}" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(cc.attrs.interactor))}"/>
-                <br/>
-            </h:panelGroup>
-        </ui:repeat>
-
+            <ui:repeat var="xref" value="#{cc.attrs.interactor.identifiers}" varStatus="rowStatus">
+                <h:panelGroup rendered="#{xref.database == 'uniprotkb'}">
+                    <iax:goUniprot query="#{xref.identifier}" onlyLogo="false"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{xref.database == 'chebi'}">
+                    <iax:goChebi query="#{xref.identifier}" onlyLogo="false"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{xref.database == 'drugbank'}">
+                    <iax:goDrugbank query="#{xref.identifier}" onlyLogo="false"/>
+                    <br/>
+                    <iax:goDrugPortChemicalView query="#{xref.identifier}" onlyLogo="false" renderDrugPort="#{iamf:isApprovedDrug(iamf:getDrugStatus(cc.attrs.interactor))}"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{xref.database == 'intact'}">
+                    <iax:goMoleculeView query="#{xref.identifier}" onlyLogo="false"
+                                        useUrl="true"/>
+                </h:panelGroup>
+            </ui:repeat>
+            <br/>
+            <iax:goMoleculeView query="#{iamf:getMainIdentifierFromCrossReferences(cc.attrs.interactor.alternativeIdentifiers)}" onlyLogo="false"
+                                useUrl="true"/>
         </h:panelGroup>
 
     </composite:implementation>

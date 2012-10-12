@@ -15,8 +15,6 @@
         <td>
             <h1>#{intactView['webapp.name']} Home</h1>
 
-            <!--<h2>Search #{intactView['webapp.name']}</h2>-->
-
             <p>
                 <!--#{intactView['webapp.name']} provides a freely available, open source database system-->
                 <!--and analysis tools for molecular interaction data. All interactions are derived from-->
@@ -38,35 +36,31 @@
                                 <ul style="margin-top:0px">
                                     <li>
                                         <h:outputText value="Gene name: e.g. "/>
-                                        <p:commandLink value="BRCA2" action="#{searchBean.doBinarySearchAction}" ajax="false">
+                                        <h:commandLink id="geneNameExlink" value="BRCA2" action="#{searchBean.doBinarySearchAction}">
                                             <f:setPropertyActionListener value="BRCA2"
                                                                          target="#{userQuery.searchQuery}"/>
-                                            <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-                                        </p:commandLink>
+                                        </h:commandLink>
                                     </li>
                                     <li>
                                         <h:outputText value="UniProtKB Ac: e.g. "/>
-                                        <p:commandLink value="Q06609" action="#{searchBean.doBinarySearchAction}" ajax="false">
+                                        <h:commandLink id="uniprotAcExlink" value="Q06609" action="#{searchBean.doBinarySearchAction}">
                                             <f:setPropertyActionListener value="Q06609"
                                                                          target="#{userQuery.searchQuery}"/>
-                                            <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-                                        </p:commandLink>
+                                        </h:commandLink>
                                     </li>
                                     <li>
                                         <h:outputText value="UniProtKB Id: e.g. "/>
-                                        <p:commandLink value="dmc1" action="#{searchBean.doBinarySearchAction}" ajax="false">
+                                        <h:commandLink id="uniprotGeneExlink" value="dmc1" action="#{searchBean.doBinarySearchAction}">
                                             <f:setPropertyActionListener value="dmc1"
                                                                          target="#{userQuery.searchQuery}"/>
-                                            <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-                                        </p:commandLink>
+                                        </h:commandLink>
                                     </li>
                                     <li>
                                         <h:outputText value=" Pubmed Id: e.g. "/>
-                                        <p:commandLink value="10831611" action="#{searchBean.doBinarySearchAction}" ajax="false">
+                                        <h:commandLink id="pubmedExlink" value="10831611" action="#{searchBean.doBinarySearchAction}">
                                             <f:setPropertyActionListener value="10831611"
                                                                          target="#{userQuery.searchQuery}"/>
-                                            <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-                                        </p:commandLink>
+                                        </h:commandLink>
                                     </li>
                                 </ul>
                             </iv:panelLabelAndMessage>
@@ -163,7 +157,7 @@
                     </li>
                     <li>
                         <h:outputText value="Go to "/>
-                        <h:commandLink value="Archive" action="dotm_archive"/>.
+                        <h:commandLink value="Archive" action="dotm_archive?faces-redirect=true"/>.
                     </li>
                 </ul>
 
@@ -183,9 +177,6 @@
 
 
         </td>
-        <!--<td class="intact_table">
-            <ui:include src="statistics_box.xhtml"/>
-        </td>-->
     </tr>
 </table>
 

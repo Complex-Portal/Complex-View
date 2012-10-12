@@ -19,10 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.view.webapp.controller.BaseController;
-import uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean;
+import uk.ac.ebi.intact.view.webapp.application.OntologyInteractorTypeConfig;
 import uk.ac.ebi.intact.view.webapp.controller.application.CvObjectService;
 import uk.ac.ebi.intact.view.webapp.controller.application.StatisticsController;
 import uk.ac.ebi.intact.view.webapp.controller.search.FilterPopulatorController;
@@ -54,11 +52,13 @@ public class AdminController {
 
         StatisticsController statisticsController = (StatisticsController) applicationContext.getBean("statisticsController");
         CvObjectService cvObjectService = (CvObjectService) applicationContext.getBean("cvObjectService");
-        FilterPopulatorController filterPopulatorController = (FilterPopulatorController) applicationContext.getBean("filterPopulatorController");
+        FilterPopulatorController filterPopulatorController = (FilterPopulatorController) applicationContext.getBean("filterPopulator");
+        OntologyInteractorTypeConfig interactorTypeConfig = (OntologyInteractorTypeConfig) applicationContext.getBean("ontologyInteractorTypeConfig");
 
-        filterPopulatorController.loadFilters();
-        statisticsController.calculateStats();
+        filterPopulatorController.reload();
+        statisticsController.reload();
         cvObjectService.clear();
+        interactorTypeConfig.refreshTypes();
     }
 
 }

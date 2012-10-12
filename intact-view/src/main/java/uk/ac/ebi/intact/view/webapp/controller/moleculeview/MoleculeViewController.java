@@ -18,14 +18,12 @@ package uk.ac.ebi.intact.view.webapp.controller.moleculeview;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.view.webapp.controller.ContextController;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
-import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
-import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 
 import javax.faces.context.FacesContext;
 
@@ -51,28 +49,21 @@ public class MoleculeViewController extends JpaBaseController{
 
     }
 
+    @Transactional(readOnly = true)
     public void loadInteractor() {
         FacesContext context = FacesContext.getCurrentInstance();
 
-        if ( interactorAc != null ) {
-            log.debug( "Parameter " + INTERACTOR_AC_PARAM + " was specified" );
-            setInteractorAc( interactorAc );
+        if (!context.isPostback()) {
+            if ( interactorAc != null ) {
+                log.debug( "Parameter " + INTERACTOR_AC_PARAM + " was specified" );
+                setInteractorAc( interactorAc );
 
-            interactor = getDaoFactory().getInteractorDao().getByAc(interactorAc);
+                interactor = getDaoFactory().getInteractorDao().getByAc(interactorAc);
 
-            UserQuery userQuery = (UserQuery) getBean("userQuery");
-            SearchController searchController = (SearchController) getBean("searchBean");
-
-            // Update interaction search
-            userQuery.reset();
-            userQuery.setSearchQuery( "id:" + interactorAc );
-            SolrQuery solrQuery = userQuery.createSolrQuery();
-            searchController.doBinarySearch( solrQuery );
-
-            ContextController contextController = (ContextController) getBean("contextController");
-            contextController.setActiveTabIndex(6);
+                ContextController contextController = (ContextController) getBean("contextController");
+                contextController.setActiveTabIndex(6);
+            }
         }
-
     }
 
     public String open(String interactorAc) {

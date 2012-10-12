@@ -15,11 +15,14 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
+import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.LazyLoadedOntologyTerm;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
-import uk.ac.ebi.intact.view.webapp.util.RootTerm;
 
 /**
  * Controller for GoBrowsing
@@ -28,19 +31,22 @@ import uk.ac.ebi.intact.view.webapp.util.RootTerm;
  * @version $Id$
  */
 @Controller("detectionMethodBrowser")
-@Scope("request")
+@Scope("conversation.access")
+@ConversationName("general")
 public class DetectionMethodBrowserController extends OntologyBrowserController {
 
-    public static final String FIELD_NAME = "detmethod_expanded_id";
+    public static final String FIELD_NAME = FieldNames.DETMETHOD;
 
     @Override
     protected OntologyTerm createRootTerm(OntologySearcher ontologySearcher) {
-        final RootTerm rootTerm = new RootTerm( ontologySearcher, "Interaction Detection Method" );
-        rootTerm.addChild("MI:0045", "experimental interaction detection");
-        rootTerm.addChild("MI:0063", "interaction prediction");
-        rootTerm.addChild("MI:0362", "inference");
-        rootTerm.addChild("MI:0686", "unspecified method");
-        return rootTerm;
+
+        try {
+            return new LazyLoadedOntologyTerm( ontologySearcher, "MI:0001", "Interaction Detection Method");
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+            addErrorMessage("Could not load the tree", "");
+        }
+        return null;
     }
 
     @Override

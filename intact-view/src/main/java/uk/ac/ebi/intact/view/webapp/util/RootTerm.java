@@ -33,6 +33,7 @@ public class RootTerm implements OntologyTerm {
     private OntologySearcher ontologySearcher;
     private String name;
     private List<OntologyTerm> children;
+    private String identifier="";
 
     public RootTerm(OntologySearcher ontologySearcher, String name) {
         this(ontologySearcher, name, new LinkedList<OntologyTerm>());
@@ -53,7 +54,11 @@ public class RootTerm implements OntologyTerm {
     }
 
     public String getId() {
-        return "";
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     public String getName() {

@@ -9,9 +9,6 @@
 
     <f:metadata>
         <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(3)}"/>
-        <f:viewParam name="query" value="#{userQuery.urlFriendlyQuery}"/>
-        <f:viewParam name="ontologyQuery" value="#{userQuery.ontologySearchQuery}"/>
-        <f:event type="preRenderView" listener="#{searchBean.searchOnLoad}"/>
     </f:metadata>
 
      <ui:define name="browseTabContent">
@@ -30,7 +27,7 @@
                 selectionMode="single" selection="#{chebiBrowser.selectedNode}"
                 style="width:50%;">
 
-            <p:ajax event="select" listener="#{chebiBrowser.onNodeSelect}" />
+            <p:ajax event="select" listener="#{chebiBrowser.onNodeSelect}" process="@this" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
 
             <p:treeNode>
                 <h:outputText value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>

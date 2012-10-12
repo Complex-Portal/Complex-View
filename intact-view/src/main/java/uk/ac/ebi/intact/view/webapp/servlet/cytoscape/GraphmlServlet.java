@@ -3,8 +3,8 @@ package uk.ac.ebi.intact.view.webapp.servlet.cytoscape;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
+import psidev.psi.mi.tab.PsimiTabException;
 import psidev.psi.mi.tab.converter.tab2graphml.Tab2Cytoscapeweb;
-import psidev.psi.mi.xml.converter.ConverterException;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -58,7 +58,7 @@ public class GraphmlServlet extends HttpServlet {
             String output = null;
             try {
                 output = tab2Cytoscapeweb.convert(is);
-            } catch (ConverterException e) {
+            } catch (PsimiTabException e) {
                 throw new IllegalStateException( "Could not parse input MITAB.", e );
             }
             stream.write( output.getBytes() );

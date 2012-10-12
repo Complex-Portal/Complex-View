@@ -23,7 +23,7 @@
 
         <h:panelGroup valign="middle">
             <h:graphicImage alt="back" url="/images/back_arrow.gif"/>
-            <h:commandLink action="details">
+            <h:commandLink action="details?faces-redirect=true">
                 <h:outputText value="Back to Interaction Details" />
             </h:commandLink>
         </h:panelGroup>
@@ -89,7 +89,7 @@
 
                     <tr>
                         <td align="right">
-                                <h:commandLink action="details">
+                                <h:commandLink action="details?faces-redirect=true">
                                     <h:outputText value="#{si.shortLabel}" shortDesc="#{si.fullName}" />
                                     <f:setPropertyActionListener value="#{si.ac}" target="#{detailsBean.interactionAc}"/>
                                 </h:commandLink>
@@ -133,7 +133,7 @@
                                                      value="#{si.others}"
                                                      maxShown="3">
 
-                                <h:commandLink action="molecule">
+                                <h:commandLink action="molecule?faces-redirect=true">
                                     <f:setPropertyActionListener value="#{item.ac}" target="#{moleculeViewBean.interactorAc}"/>
                                     <h:outputText value="#{item.shortLabel}" />
                                 </h:commandLink>

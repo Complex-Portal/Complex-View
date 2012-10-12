@@ -2,8 +2,7 @@ package uk.ac.ebi.intact.view.webapp;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.apache.solr.client.solrj.impl.StreamingUpdateSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.transaction.TransactionStatus;
 import psidev.psi.mi.tab.PsimiTabWriter;
@@ -11,6 +10,7 @@ import psidev.psi.mi.tab.converter.xml2tab.TabConversionException;
 import psidev.psi.mi.tab.converter.xml2tab.Xml2Tab;
 import psidev.psi.mi.tab.expansion.SpokeWithoutBaitExpansion;
 import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.tab.model.builder.PsimiTabVersion;
 import psidev.psi.mi.xml.PsimiXmlReader;
 import psidev.psi.mi.xml.PsimiXmlReaderException;
 import psidev.psi.mi.xml.converter.ConverterException;
@@ -20,11 +20,9 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.entry.IntactEntryFactory;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.CoreNames;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrIndexer;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.server.SolrJettyRunner;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.server.IntactSolrJettyRunner;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
 import uk.ac.ebi.intact.model.Publication;
-import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
-import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -44,22 +42,22 @@ public class DataPopulator  {
     private IntactContext intactContext;
     private PsiExchange psiExchange;
     
-    private CommonsHttpSolrServer interactionsSolrServer;
-    private StreamingUpdateSolrServer ontologiesSolrServer;
+    private HttpSolrServer interactionsSolrServer;
+    private HttpSolrServer ontologiesSolrServer;
     private IntactSolrIndexer indexer;
 
     public DataPopulator(IntactContext intactContext) throws Exception {
         this.intactContext = intactContext;
         this.psiExchange = (PsiExchange) intactContext.getSpringContext().getBean("psiExchange");
 
-        this.interactionsSolrServer = new CommonsHttpSolrServer("http://localhost:33444/solr/"+ CoreNames.CORE_PUB);
-        this.ontologiesSolrServer = new StreamingUpdateSolrServer("http://localhost:33444/solr/"+CoreNames.CORE_ONTOLOGY_PUB, 4, 4);
+        this.interactionsSolrServer = new HttpSolrServer("http://localhost:33444/solr/"+ CoreNames.CORE_PUB);
+        this.ontologiesSolrServer = new HttpSolrServer("http://localhost:33444/solr/"+CoreNames.CORE_ONTOLOGY_PUB);
 
         indexer = new IntactSolrIndexer( interactionsSolrServer, ontologiesSolrServer );
     }
 
     public static void main(String[] args) throws Exception {
-        SolrJettyRunner solrJettyRunner = new SolrJettyRunner(new File("target/solr"));
+        IntactSolrJettyRunner solrJettyRunner = new IntactSolrJettyRunner(new File("target/solr"));
         solrJettyRunner.setPort(33444);
         solrJettyRunner.start();
 
@@ -124,7 +122,7 @@ public class DataPopulator  {
     private void storeBinaryInteractions(Collection<BinaryInteraction> binaryInteractions) throws IOException, ConverterException {
         StringWriter sw = new StringWriter();
 
-        PsimiTabWriter psimitabWriter = new IntactPsimiTabWriter();
+        PsimiTabWriter psimitabWriter = new PsimiTabWriter(PsimiTabVersion.v2_7);
         psimitabWriter.write(binaryInteractions, sw);
 
         ByteArrayInputStream inputStream = new ByteArrayInputStream(sw.toString().getBytes());
@@ -142,7 +140,7 @@ public class DataPopulator  {
         for (Publication pub : publications) {
             final EntrySet entrySet = psiExchange.exportToEntrySet(IntactEntryFactory.createIntactEntry(intactContext).addPublication(pub));
 
-            Xml2Tab xml2tab = new IntactXml2Tab();
+            Xml2Tab xml2tab = new Xml2Tab();
             xml2tab.setExpansionStrategy(new SpokeWithoutBaitExpansion());
 
             Collection<BinaryInteraction> binaryInteractions = xml2tab.convert(entrySet);

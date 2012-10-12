@@ -5,56 +5,42 @@
                 xmlns:p="http://primefaces.org/ui"
 
                 xmlns:iv="http://java.sun.com/jsf/composite/intactview"
-                
+
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
     <!-- INTERFACE -->
-  <composite:interface>
-      <composite:attribute name="cv" type="uk.ac.ebi.intact.model.CvObject" required="true"/>
-      <composite:attribute name="width" type="java.lang.Integer" default="690"/>
-  </composite:interface>
+    <composite:interface>
+        <composite:attribute name="cv" type="uk.ac.ebi.intact.model.CvObject" required="true"/>
+        <composite:attribute name="width" type="java.lang.Integer" default="690"/>
+    </composite:interface>
 
-  <!-- IMPLEMENTATION -->
+    <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-            <p:panel style="width:#{cc.attrs.width}px;">
-                <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
-                    <h:outputText value="#{cc.attrs.cv.ac}"/>
-                </iv:panelLabelAndMessage>
+        <p:panel style="width:#{cc.attrs.width}px;">
+            <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                <h:outputText value="#{cc.attrs.cv.ac}"/>
+            </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
-                    <h:outputText value="#{cc.attrs.cv.shortLabel}"/>
-                </iv:panelLabelAndMessage>
+            <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                <h:outputText value="#{cc.attrs.cv.shortLabel}"/>
+            </iv:panelLabelAndMessage>
 
-                <iv:panelLabelAndMessage label="Description:" labelStyle="font-weight:bold;"
-                                         visible="#{cc.attrs.cv.shortLabel != cc.attrs.cv.fullName}">
-                    <h:outputText value="#{(cc.attrs.cv.fullName == null ? '-' : cc.attrs.cv.fullName )}"/>
-                </iv:panelLabelAndMessage>
+            <iv:panelLabelAndMessage label="Description:" labelStyle="font-weight:bold;"
+                                     visible="#{cc.attrs.cv.shortLabel != cc.attrs.cv.fullName}">
+                <h:outputText value="#{(cc.attrs.cv.fullName == null ? '-' : cc.attrs.cv.fullName )}"/>
+            </iv:panelLabelAndMessage>
 
-            </p:panel>
+            <iv:panelLabelAndMessage label="Cross References:" labelStyle="font-weight:bold;"
+                                     visible="true">
+                <iv:xrefTable xrefs="#{cc.attrs.cv.xrefs}" />
+            </iv:panelLabelAndMessage>
+            <iv:panelLabelAndMessage label="Annotations:" labelStyle="font-weight:bold;"
+                                     visible="true">
+                <iv:annotationTable annotations="#{cc.attrs.cv.annotations}" />
+            </iv:panelLabelAndMessage>
 
-            <table width="690" cellPadding="3" cellSpacing="0">
-                <h:panelGroup rendered="#{not empty cc.attrs.cv.xrefs}">
-                    <tr>
-                        <td valign="top">
-                            <h:outputText value="Cross References:" inlineStyle="font-weight:bold;"/>
-                        </td>
-                        <td>
-                            <iv:xrefTable xrefs="#{cc.attrs.cv.xrefs}" />
-                        </td>
-                    </tr>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{not empty cc.attrs.cv.annotations}">
-                    <tr>
-                        <td valign="top">
-                            <h:outputText value="Annotations:" inlineStyle="font-weight:bold;"/>
-                        </td>
-                        <td>
-                            <iv:annotationTable annotations="#{cc.attrs.cv.annotations}" />
-                        </td>
-                    </tr>
-                </h:panelGroup>
-            </table>
+        </p:panel>
 
     </composite:implementation>
 

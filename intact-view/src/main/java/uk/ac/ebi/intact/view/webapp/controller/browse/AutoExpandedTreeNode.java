@@ -15,8 +15,11 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
+import org.apache.solr.client.solrj.SolrServerException;
 import org.primefaces.model.TreeNode;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import java.util.*;
 
 /**
@@ -45,7 +48,17 @@ public class AutoExpandedTreeNode extends OntologyTermNode {
         final List<OntologyTermWrapper> children = getChildrenWithMoreThanOneMember(otw);
 
         if (children.isEmpty()) {
-            return createTreeNodes(otw.getChildren());
+            try {
+                return createTreeNodes(otw.getChildren());
+            } catch (SolrServerException e) {
+                FacesContext context = FacesContext.getCurrentInstance();
+                if (context != null){
+                    FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Problem getting term children interaction count", e.getMessage());
+                    context.addMessage(null, facesMessage);
+                }
+
+                return Collections.EMPTY_LIST;
+            }
         }
 
         return createTreeNodes(children);
@@ -65,7 +78,18 @@ public class AutoExpandedTreeNode extends OntologyTermNode {
     }
 
     private List<OntologyTermWrapper> getChildrenWithMoreThanOneMember(OntologyTermWrapper ontologyTermWrapper) {
-        final List<OntologyTermWrapper> children = ontologyTermWrapper.getChildren();
+        List<OntologyTermWrapper> children;
+        try {
+            children = ontologyTermWrapper.getChildren();
+        } catch (SolrServerException e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            if (context != null){
+                FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Problem getting term children interaction count", e.getMessage());
+                context.addMessage(null, facesMessage);
+            }
+
+            children = Collections.EMPTY_LIST;
+        }
 
         if (children.size() == 1) {
             OntologyTermWrapper child = children.iterator().next();

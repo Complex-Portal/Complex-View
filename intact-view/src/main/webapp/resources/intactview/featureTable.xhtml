@@ -1,0 +1,98 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+
+                xmlns:iv="http://java.sun.com/jsf/composite/intactview"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
+
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+    <composite:interface>
+        <composite:attribute name="features" type="java.util.Collection" required="true"/>
+    </composite:interface>
+
+    <!-- IMPLEMENTATION -->
+    <composite:implementation>
+        <ul>
+            <ui:repeat var="feature" value="#{cc.attrs.features}" varStatus="rowStatus">
+
+                    <li><h:outputText value=" #{feature.shortLabel}" />
+                <br/>
+                <br/>
+                <iv:panelLabelAndMessage label="Feature type: " labelStyleClass="textLabel">
+                    <h:outputText value=" #{feature.cvFeatureType.shortLabel}" />
+                </iv:panelLabelAndMessage>
+                <br/>
+                <iv:panelLabelAndMessage label="Detection Method: " labelStyleClass="textLabel">
+                    <h:panelGroup rendered="#{feature.cvFeatureIdentification != null}">
+                        <h:outputLink value="#{request.contextPath}/cv/#{feature.cvFeatureIdentification.ac}">
+                            <h:outputText value=" #{feature.cvFeatureIdentification.shortLabel}" />
+                        </h:outputLink>
+                    </h:panelGroup>
+                    <h:outputText value=" Not Specified" rendered="#{feature.cvFeatureIdentification == null}"/>
+                </iv:panelLabelAndMessage>
+                <br/>
+                <iv:panelLabelAndMessage label="Feature range positions: " labelStyleClass="textLabel">
+                    <br/>
+                    <ul>
+                        <ui:repeat value="#{feature.ranges}" var="range">
+                            <li>
+                                <h:outputText value="#{range}" />
+                            </li>
+                        </ui:repeat>
+                    </ul>
+                </iv:panelLabelAndMessage>
+                <br/>
+                <iv:panelLabelAndMessage label="Feature annotations: " labelStyleClass="textLabel" visible="#{not empty feature.annotations}">
+                    <iv:annotationTable annotations="#{feature.annotations}"/>
+                    <br/>
+                </iv:panelLabelAndMessage>
+                <iv:panelLabelAndMessage label="Feature cross references: " labelStyleClass="textLabel" visible="#{not empty feature.xrefs}">
+                    <iv:xrefTable xrefs="#{feature.xrefs}"/>
+                    <br/>
+                </iv:panelLabelAndMessage></li>
+            </ui:repeat>
+        </ul>
+
+        <br/>
+        <div class="legend" style="margin-top: 5px;" align="left">
+            <b>Feature Range Legend (x is a position in the interactor sequence):</b>
+            <br/>
+            <br/>
+            <h:outputLink value="#{requestConfigBean.absoluteContextPath}/pages/details/cv.xhtml?identifier=MI:1040&amp;className=uk.ac.ebi.intact.model.CvFuzzyType">
+                <strong><h:outputText value="n: n-terminal range"/></strong>
+            </h:outputLink>
+            <br/>
+            <h:outputLink value="#{requestConfigBean.absoluteContextPath}/pages/details/cv.xhtml?identifier=MI:1039&amp;className=uk.ac.ebi.intact.model.CvFuzzyType">
+                <strong><h:outputText value="c: c-terminal range"/></strong>
+            </h:outputLink>
+            <br/>
+            <h:outputLink value="#{requestConfigBean.absoluteContextPath}/pages/details/cv.xhtml?identifier=MI:0339&amp;className=uk.ac.ebi.intact.model.CvFuzzyType">
+                <strong><h:outputText value="?: undetermined position"/></strong>
+            </h:outputLink>
+            <br/>
+            <h:outputLink value="#{requestConfigBean.absoluteContextPath}/pages/details/cv.xhtml?identifier=MI:0338&amp;className=uk.ac.ebi.intact.model.CvFuzzyType">
+                <strong><h:outputText value="x..x: range from x to x"/></strong>
+            </h:outputLink>
+            <br/>
+            <h:outputLink value="#{requestConfigBean.absoluteContextPath}/pages/details/cv.xhtml?identifier=MI:0336&amp;className=uk.ac.ebi.intact.model.CvFuzzyType">
+                <strong><h:outputText value="&gt;x: greater than x"/></strong>
+            </h:outputLink>
+            <br/>
+            <h:outputLink value="#{requestConfigBean.absoluteContextPath}/pages/details/cv.xhtml?identifier=MI:0337&amp;className=uk.ac.ebi.intact.model.CvFuzzyType">
+                <strong><h:outputText value="&lt;x: less than x"/></strong>
+            </h:outputLink>
+            <br/>
+            <h:outputLink value="#{requestConfigBean.absoluteContextPath}/pages/details/cv.xhtml?identifier=MI:0335&amp;className=uk.ac.ebi.intact.model.CvFuzzyType">
+                <strong><h:outputText value="x: certain position"/></strong>
+            </h:outputLink>
+        </div>
+
+    </composite:implementation>
+
+</ui:composition>

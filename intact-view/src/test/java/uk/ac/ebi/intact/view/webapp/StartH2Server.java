@@ -16,9 +16,6 @@
 package uk.ac.ebi.intact.view.webapp;
 
 import org.h2.tools.Server;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.server.SolrJettyRunner;
-
-import java.io.File;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)

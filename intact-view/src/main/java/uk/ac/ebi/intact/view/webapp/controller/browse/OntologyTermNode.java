@@ -15,9 +15,12 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
+import org.apache.solr.client.solrj.SolrServerException;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import java.util.*;
 
 /**
@@ -46,8 +49,16 @@ public class OntologyTermNode extends DefaultTreeNode {
         childrenNode = new LinkedHashSet<TreeNode>();
 
         OntologyTermWrapper otw = getOntologyTermWrapper();
-        final List<OntologyTermWrapper> ontologyTermWrappers = otw.getChildren();
+        List<OntologyTermWrapper> ontologyTermWrappers;
+        try {
+            ontologyTermWrappers = otw.getChildren();
+        } catch (SolrServerException e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Problem getting term children interaction count", e.getMessage());
+            context.addMessage(null, facesMessage);
 
+            ontologyTermWrappers = Collections.EMPTY_LIST;
+        }
 
         for (OntologyTermWrapper otwChild : ontologyTermWrappers) {
             childrenNode.add(new OntologyTermNode(otwChild, this));
@@ -62,7 +73,15 @@ public class OntologyTermNode extends DefaultTreeNode {
     @Override
     public boolean isLeaf() {
         OntologyTermWrapper otw = (OntologyTermWrapper) getData();
-        return otw.isLeaf();
+        try {
+            return otw.isLeaf();
+        } catch (SolrServerException e) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Problem getting term children interaction count", e.getMessage());
+            context.addMessage(null, facesMessage);
+        }
+
+        return true;
     }
 
     protected OntologyTermWrapper getOntologyTermWrapper() {

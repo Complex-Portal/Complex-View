@@ -16,8 +16,7 @@
 package uk.ac.ebi.intact.view.webapp;
 
 import org.apache.commons.io.FileUtils;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.server.SolrHomeBuilder;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.server.SolrJettyRunner;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.server.IntactSolrHomeBuilder;
 
 import java.io.File;
 
@@ -31,7 +30,7 @@ public class SetupSolrServer {
         System.out.println("////////////////////////////");
         System.out.println("Setting up SOLR server...");
 
-        SolrHomeBuilder solrHomeBuilder = new SolrHomeBuilder();
+        IntactSolrHomeBuilder solrHomeBuilder = new IntactSolrHomeBuilder();
 
         File solrWorkingDir = new File("target/solr");
 

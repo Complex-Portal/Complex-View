@@ -6,10 +6,6 @@
 
                 template="main_template.xhtml">
 
-    <f:metadata>
-        <f:event type="preRenderView" listener="#{contextController.clearLoadedTabs()}"/>
-    </f:metadata>
-
     <ui:define name="aboutTabContent">
         <ui:include src="/pages/documentation/about/intact_home.xhtml"/>
     </ui:define>
@@ -30,16 +26,16 @@
         <ui:include src="/pages/list/list_tab.xhtml"/>
     </ui:define>
 
-    <ui:define name="moleculeTabContent">
-        <ui:include src="/pages/molecule/molecule_tab.xhtml"/>
-    </ui:define>
-
     <ui:define name="detailsTabContent">
         <ui:include src="/pages/details/details_tab.xhtml"/>
     </ui:define>
 
+    <ui:define name="moleculeTabContent">
+        <ui:include src="/pages/molecule/molecule_tab.xhtml"/>
+    </ui:define>
+
     <ui:define name="graphTabContent">
         <ui:include src="/pages/graph/graph_tab.xhtml"/>
-    </ui:define>
+    </ui:define>-->
 
 </ui:composition>

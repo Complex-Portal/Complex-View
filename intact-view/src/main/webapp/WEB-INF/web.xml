@@ -19,8 +19,10 @@
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         metadata-complete="true" version="2.5">
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+    http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         metadata-complete="true" version="3.0">
 
     <!-- DGI -->
     <context-param>
@@ -37,7 +39,21 @@
         <param-value>http://www.ebi.ac.uk/~intact/site/dotm/dotm-1.1.xml</param-value>
     </context-param>
 
+    <!-- to avoid viewExpiredException-->
+    <context-param>
+        <param-name>com.sun.faces.enableRestoreView11Compatibility</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
     <!-- MyFaces -->
+
+    <context-param>
+        <description>
+            This affects the value of the Expires response header that will be sent for a resource.
+        </description>
+        <param-name>com.sun.faces.defaultResourceMaxAge</param-name>
+        <param-value>1209600000</param-value>
+    </context-param>
 
     <context-param>
         <description>State saving method: "client" or "server" (= default)
@@ -117,19 +133,6 @@
     <context-param>
         <param-name>org.apache.myfaces.EXPRESSION_FACTORY</param-name>
         <param-value>com.sun.el.ExpressionFactoryImpl</param-value>
-    </context-param>
-
-
-    <!-- Facelets -->
-
-    <!--<context-param>-->
-        <!--<param-name>org.apache.myfaces.trinidad.ALTERNATE_VIEW_HANDLER</param-name>-->
-        <!--<param-value>com.sun.facelets.FaceletViewHandler</param-value>-->
-    <!--</context-param>-->
-
-    <context-param>
-        <param-name>facelets.DEVELOPMENT</param-name>
-        <param-value>false</param-value>
     </context-param>
 
     <!-- Spring resources -->
@@ -229,16 +232,129 @@
         <param-value>false</param-value>
     </context-param>
 
+    <!-- orchestra param -->
+    <context-param>
+        <description>
+            Controls whether two threads are prevented from accessing the same ConversationContext concurrently, or not.
+            This is generally a bad idea as it can lead to ugly race conditions, so it is TRUE by default.
+
+            It is possible for multiple requests associated with the same http session to be received concurrently. By
+            default, a servlet engine simply processes all requests concurrently in different threads. However that can
+            cause all sorts of unexpected problems with objects in scopes that are visible to both threads
+            (session-scoped and conversation-scoped objects).
+
+            When enabled, this option will block the thread for any request which will access the same Orchestra
+            ConversationContext as a thread that is already running, and release it only when the earlier request has
+            completed. This protects all orchestra conversation-scoped objects from concurrent access, but does not
+            protect any session-scoped objects.
+
+            When using Orchestra, it is recommended that session-scoped objects are avoided conversation-scoped beans
+            used instead. If there is no session-scoped data in use by an application then it is safe to allow
+            concurrent requests to the same http session. If you do wish to protect normal session-scoped objects as
+            well, then the standard solution is to write a filter that uses standard java synchronisation on a
+            session-scoped object, taking the lock on request entry and releasing it on request exit.
+
+            Note that the expression "serialize requests" as used here means requests are processed serially, ie one
+            after the other rather than concurrently. This has nothing to do with java.io.Serializable.
+        </description>
+        <param-name>org.apache.myfaces.orchestra.CoreConfig:SERIALIZE_REQUESTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <!-- Primefaces params -->
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>none</param-value>
+    </context-param>
+
+    <!-- for performance improvements-->
+    <context-param>
+        <param-name>
+            org.ajax4jsf.xmlparser.ORDER
+        </param-name>
+        <param-value>
+            NONE,NEKO,TIDY
+        </param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.ajax4jsf.xmlparser.NEKO</param-name>
+        <param-value>.*\..*</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>
+            org.ajax4jsf.COMPRESS_SCRIPT
+        </param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <!--  Facelets tuning -->
+    <context-param>
+        <param-name>
+            facelets.RECREATE_VALUE_EXPRESSION_ON_BUILD_BEFORE_RESTORE
+        </param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>
+            facelets.BUILD_BEFORE_RESTORE
+        </param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>facelets.DEVELOPMENT</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>facelets.REFRESH_PERIOD</param-name>
+        <param-value>-1</param-value>
+    </context-param>
+
+    <!--  JSF RI Performance tuning -->
+    <context-param>
+        <param-name>com.sun.faces.responseBufferSize</param-name>
+        <param-value>500000</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>com.sun.faces.verifyObjects</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <!-- Allows the JavaScript to be cached -->
+    <context-param>
+        <param-name>
+            com.sun.faces.externalizeJavaScript
+        </param-name>
+        <param-value>true</param-value>
+    </context-param>
 
     <!-- Orchestra Filter -->
     <filter>
         <filter-name>orchestraFilter</filter-name>
-        <filter-class>org.apache.myfaces.orchestra.conversation.jsf.filter.OrchestraServletFilter</filter-class>
+        <filter-class>org.apache.myfaces.orchestra.filter.OrchestraServletFilter</filter-class>
     </filter>
 
     <filter-mapping>
         <filter-name>orchestraFilter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
+    </filter-mapping>
+
+    <!-- compress pages -->
+    <filter>
+        <filter-name>GzipFilter</filter-name>
+        <filter-class>org.mortbay.servlet.GzipFilter</filter-class>
+        <init-param>
+            <param-name>mimeTypes</param-name>
+            <param-value>text/html,text/plain,text/xml,application/xhtml+xml,text/css,application/javascript,image/svg+xml</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>GzipFilter</filter-name>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 
     <!-- PretyFaces -->
@@ -291,10 +407,9 @@
         </listener-class>
     </listener>
 
-    <!-- MyFaces-->
-    <!--<listener>-->
-        <!--<listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>-->
-   <!--</listener>-->
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
 
     <!-- Faces Servlet -->
     <servlet>
@@ -306,11 +421,6 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-
-    <!--<servlet-mapping>-->
-        <!--<servlet-name>resources</servlet-name>-->
-        <!--<url-pattern>/adf/*</url-pattern>-->
-    <!--</servlet-mapping>-->
 
     <!-- News feed -->
     <servlet>
@@ -431,7 +541,7 @@
     </welcome-file-list>
 
     <session-config>
-        <session-timeout>30</session-timeout>
+        <session-timeout>60</session-timeout>
     </session-config>
 
     <!-- Handling of the HTTP error 404(Not found) and 500(internal server error)-->

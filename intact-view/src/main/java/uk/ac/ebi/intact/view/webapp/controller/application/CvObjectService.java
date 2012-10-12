@@ -16,9 +16,11 @@
 package uk.ac.ebi.intact.view.webapp.controller.application;
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.model.CvObject;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
@@ -51,6 +53,7 @@ public class CvObjectService {
         cvObjectsByIdentifier.clear();
     }
 
+    @Transactional(readOnly = true)
     public CvObject loadByAc(String ac) {
         CvObject cvObject;
 
@@ -58,12 +61,15 @@ public class CvObjectService {
             cvObject = cvObjectsByAc.get(ac);
         } else {
             cvObject = daoFactory.getCvObjectDao().getByAc(ac);
+            Hibernate.initialize(cvObject.getXrefs());
+            Hibernate.initialize(cvObject.getAnnotations());
             cvObjectsByAc.put(ac, cvObject);
         }
 
         return cvObject;
     }
 
+    @Transactional(readOnly = true)
     public CvObject loadByIdentifier(String className, String identifier) {
         CvObject cvObject;
 
@@ -80,6 +86,8 @@ public class CvObjectService {
             cvObject = cvObjectsByIdentifier.get(key);
         } else {
             cvObject = daoFactory.getCvObjectDao(cvClass).getByPsiMiRef(identifier);
+            Hibernate.initialize(cvObject.getXrefs());
+            Hibernate.initialize(cvObject.getAnnotations());
             cvObjectsByIdentifier.put(key, cvObject);
         }
 

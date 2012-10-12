@@ -26,17 +26,15 @@ import org.primefaces.model.SortOrder;
 import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.core.context.DataContext;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.persister.IntactCore;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactFacetField;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.InteractorIdCount;
-import uk.ac.ebi.intact.model.CvXrefQualifier;
-import uk.ac.ebi.intact.model.Interactor;
-import uk.ac.ebi.intact.model.InteractorXref;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
+import uk.ac.ebi.intact.model.InteractorImpl;
 
-import javax.faces.model.DataModelEvent;
-import javax.faces.model.DataModelListener;
-import javax.persistence.Query;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import java.util.*;
 
 /**
@@ -49,75 +47,114 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorWra
 
     private static final Log log = LogFactory.getLog(InteractorSearchResultDataModel.class);
 
-    private static String DEFAULT_SORT_COLUMN = "relevancescore";
-
     private SolrQuery solrQuery;
-    private SolrServer solrServer;
 
     private String[] interactorTypeMis;
 
     private List<InteractorWrapper> idCounts;
-    private int totalCount;
+    private int totalCount=0;
 
-    private int rowIndex = -1;
     private int firstResult = 0;
 
-    private String sortColumn = DEFAULT_SORT_COLUMN;
-    private SolrQuery.ORDER sortOrder = SolrQuery.ORDER.asc;
+    private IntactSolrSearcher solrSearcher;
 
-    private Map<String,List<InteractorIdCount>> cache = new LRUMap(5);
-    private Map<String,InteractorWrapper> interactorCache = new LRUMap(200);
+    private LRUMap interactorCache;
+
+    private Map<String, Integer> mapOfResultsPerInteractorType;
+    private List<IntactFacetField> termsToQuery;
 
     public InteractorSearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery, String interactorTypeMi)  {
         this(solrServer, solrQuery, new String[] {interactorTypeMi});
     }
 
     public InteractorSearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery, String[] interactorTypeMis)  {
-        if (solrQuery == null) {
-            throw new IllegalArgumentException("Trying to create data model with a null SolrQuery");
-        }
 
-        this.solrServer = solrServer;
-        this.solrQuery = solrQuery.getCopy();
+        this.solrSearcher = new IntactSolrSearcher(solrServer);
+        this.solrQuery = solrQuery;
         this.interactorTypeMis = interactorTypeMis;
+
+        idCounts = new ArrayList<InteractorWrapper>();
+        this.interactorCache = new LRUMap(30);
+        termsToQuery = new ArrayList<IntactFacetField>(interactorTypeMis.length);
+
+        countTotalResults();
     }
 
+    private void countTotalResults(){
+        if (solrQuery == null) {
+            // add a error message
+            FacesContext context = FacesContext.getCurrentInstance();
+            if (context != null){
+                FacesMessage facesMessage = new FacesMessage( FacesMessage.SEVERITY_ERROR, "Query is empty", "Cannot fetch any results because query is empty. Please enter a query." );
+                context.addMessage( null, facesMessage );
+            }
+        }
+        else {
+
+            this.mapOfResultsPerInteractorType = this.solrSearcher.countAllInteractors(solrQuery, this.interactorTypeMis);
+            for (Integer number : mapOfResultsPerInteractorType.values()){
+                this.totalCount+=number;
+            }
+        }
+    }
 
     @Override
     public List<InteractorWrapper> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
         if (pageSize == 0) pageSize = 20;
 
         if (solrQuery == null) {
-            throw new IllegalStateException("Trying to fetch results for a null SolrQuery");
+            // add a error message
+            FacesContext context = FacesContext.getCurrentInstance();
+            if (context != null){
+                FacesMessage facesMessage = new FacesMessage( FacesMessage.SEVERITY_ERROR, "Query is empty", "Cannot fetch any results because query is empty. Please enter a query." );
+                context.addMessage( null, facesMessage );
+            }
         }
 
-        String cacheKey = solrQuery+"_"+ Arrays.toString(interactorTypeMis);
-
-        List<InteractorIdCount> allIdCounts;
-
-        if (cache.containsKey(cacheKey)) {
-            if (log.isDebugEnabled()) log.debug("Fetching interactors for query (cache hit): "+solrQuery);
-
-            allIdCounts = cache.get(cacheKey);
-        } else {
-            if (log.isDebugEnabled()) log.debug("Fetching interactors for query: "+solrQuery);
-
-            IntactSolrSearcher searcher = new IntactSolrSearcher(solrServer);
-            final Multimap<String,InteractorIdCount> idCountMultimap = searcher.searchInteractors(solrQuery, interactorTypeMis);
-
-            idCounts = new ArrayList<InteractorWrapper>();
-
-            allIdCounts = new ArrayList<InteractorIdCount>(idCountMultimap.values());
-
-            cache.put(cacheKey, allIdCounts);
-        }
-
-        totalCount = allIdCounts.size();
-
+        if (log.isDebugEnabled()) log.debug("Fetching interactors for query: "+solrQuery);
         idCounts.clear();
+        termsToQuery.clear();
+        firstResult = first;
 
-        for (InteractorIdCount iic : allIdCounts.subList(first, Math.min(totalCount, first + pageSize))) {
-            idCounts.add(wrap(iic));
+        String key = first+"_"+pageSize;
+        if (this.interactorCache.containsKey(key)){
+            this.idCounts.addAll((List) this.interactorCache.get(key));
+        }
+        else {
+            int numberProcessed = 0;
+            int numberElements = 0;
+
+            for (String type : this.interactorTypeMis){
+
+                String typeField = FieldNames.INTACT_BY_INTERACTOR_TYPE_PREFIX+type.replaceAll(":","").toLowerCase();
+                if (this.mapOfResultsPerInteractorType.containsKey(typeField)){
+                    int results = this.mapOfResultsPerInteractorType.get(typeField);
+                    // we can skip these results because are not in the page
+                    if (numberProcessed+results<first){
+                        numberProcessed+=results;
+                    }
+                    // these results can be processed for this page
+                    else if (results > 0) {
+                        int firstElement=Math.max(first-numberProcessed, 0);
+                        int maxElements=results-firstElement;
+
+                        if (pageSize-numberElements <= maxElements){
+                            maxElements=pageSize-numberElements;
+                            this.termsToQuery.add(new IntactFacetField(type, firstElement, maxElements));
+                            break;
+                        }
+                        else {
+                            this.termsToQuery.add(new IntactFacetField(type, firstElement, maxElements));
+                            numberProcessed+=maxElements;
+                            numberElements+=maxElements;
+                        }
+                    }
+                }
+            }
+
+            final Multimap<String,InteractorIdCount> idCountMultimap = solrSearcher.searchInteractors(solrQuery.getCopy(), this.termsToQuery.toArray(new IntactFacetField[]{}));
+
+            wrap(idCountMultimap.values(), first, pageSize);
         }
 
         return idCounts;
@@ -140,47 +177,50 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorWra
         }
 
         InteractorWrapper idCount = idCounts.get(getRowIndex());
-        
+
         return idCount;
     }
 
-    private InteractorWrapper wrap(InteractorIdCount idCount) {
-        if (interactorCache.containsKey(idCount.getAc())) {
-            return interactorCache.get(idCount.getAc());
+    private void wrap(Collection<InteractorIdCount> idCount, int first, int pageSize) {
+
+        int end = first+pageSize;
+        String key = first+"_"+end;
+        if (this.interactorCache.containsKey(key)){
+            this.idCounts.addAll((List) this.interactorCache.get(key));
         }
+        else {
+            IntactContext context=IntactContext.getCurrentInstance();
+            DataContext dataContext = context.getDataContext();
+            DaoFactory factory = context.getDaoFactory();
 
-        DataContext dataContext = IntactContext.getCurrentInstance().getDataContext();
-        TransactionStatus transactionStatus = dataContext.beginTransaction();
+            Map<String, Long> idCountMap = new HashMap<String, Long>(idCount.size());
+            int numberProcessedElements = 0;
+            for (InteractorIdCount count : idCount){
+                idCountMap.put(count.getAc(), count.getCount());
+                numberProcessedElements++;
+                if (numberProcessedElements==pageSize){
+                    break;
+                }
+            }
 
-        Query query = dataContext.getDaoFactory()
-                .getEntityManager().createQuery("select i from InteractorImpl i where i.ac = :ac");
-        query.setParameter("ac", idCount.getAc());
+            // collect all results first and store in cache
+            List<String> totalAcs = new ArrayList<String>(idCountMap.keySet());
+            if (!totalAcs.isEmpty()){
+                TransactionStatus transactionStatus = dataContext.beginTransaction();
 
-        Interactor interactor;
+                List<InteractorImpl> interactors = factory.getInteractorDao().getByAc(idCountMap.keySet());
 
-        List<Interactor> results = query.getResultList();
+                for (InteractorImpl interactor : interactors){
+                    InteractorWrapper wrapper = new InteractorWrapper(interactor, idCountMap.get(interactor.getAc()));
 
-        if (results.isEmpty()) {
-            Query xrefQuery = dataContext.getDaoFactory()
-                    .getEntityManager().createQuery("select i from InteractorImpl i inner join i.xrefs as xref " +
-                            "where xref.primaryId = :ac and xref.cvXrefQualifier.identifier = :qualifier");
-            xrefQuery.setParameter("ac", idCount.getAc());
-            xrefQuery.setParameter("qualifier", CvXrefQualifier.IDENTITY_MI_REF);
+                    this.idCounts.add(wrapper);
+                }
 
-            results = xrefQuery.getResultList();
+                dataContext.commitTransaction(transactionStatus);
+            }
+
+            this.interactorCache.put(key, new ArrayList<InteractorWrapper>(this.idCounts));
         }
-
-        interactor = results.iterator().next();
-
-        IntactCore.ensureInitializedXrefs(interactor);
-
-        InteractorWrapper wrapper = new InteractorWrapper(interactor, idCount.getCount());
-
-        dataContext.commitTransaction(transactionStatus);
-
-        interactorCache.put(idCount.getAc(), wrapper);
-
-        return wrapper;
     }
 
     public Object getWrappedData() {
@@ -190,7 +230,7 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorWra
     @Override
     public InteractorWrapper getRowData(String rowKey) {
         for (InteractorWrapper iic : idCounts) {
-            if (iic.getInteractor().getAc().equals(rowKey)) {
+            if (iic.getAc() != null && iic.getAc().equals(rowKey)) {
                 return iic;
             }
         }
@@ -199,8 +239,8 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorWra
 
     @Override
     public Object getRowKey(InteractorWrapper object) {
-        if (object.getInteractor() != null) {
-            return object.getInteractor().getAc();
+        if (object.getAc() != null) {
+            return object.getAc();
         }
 
         return null;
@@ -214,20 +254,8 @@ public class InteractorSearchResultDataModel extends LazyDataModel<InteractorWra
         return solrQuery;
     }
 
-    public String getSortColumn() {
-        return sortColumn;
-    }
-
-    public void setSortColumn(String sortColumn) {
-        this.sortColumn = sortColumn;
-    }
-
     public int getFirstResult() {
         return firstResult;
-    }
-
-    public boolean isAscending() {
-        return (sortOrder == SolrQuery.ORDER.asc);
     }
 
 }

@@ -29,20 +29,20 @@
 
             <table width="#{cc.attrs.width}">
                 <tr style="vertical-align:top">
-                    <td>
+                    <td style="border-style:none">
                         <h:outputText value="#{cc.attrs.label}" style="#{cc.attrs.labelStyle}"
                                       class="#{cc.attrs.labelStyleClass}"/>
                     </td>
-                    <td width="100%">
+                    <td width="100%" style="border-style:none">
                         <composite:insertChildren/>
                     </td>
-                    <td>
+                    <td style="border-style:none">
                         <composite:renderFacet name="end"/>
                     </td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td colspan="2">
+                    <td colspan="2" style="border-style:none">
                         <composite:renderFacet name="help"/>
                     </td>
                 </tr>

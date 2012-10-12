@@ -19,6 +19,7 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
 import uk.ac.ebi.intact.view.webapp.util.RootTerm;
 
@@ -30,10 +31,10 @@ import uk.ac.ebi.intact.view.webapp.util.RootTerm;
  */
 @Controller("goBrowser")
 @Scope("conversation.access")
-@ConversationName("browse")
+@ConversationName("general")
 public class GoBrowserController extends OntologyBrowserController {
 
-    public static final String FIELD_NAME = "go_expanded_id";
+    public static final String FIELD_NAME = FieldNames.INTERACTOR_XREF;
 
     @Override
     protected OntologyTerm createRootTerm(OntologySearcher ontologySearcher) {

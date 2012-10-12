@@ -19,25 +19,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
-import org.apache.solr.client.solrj.response.FacetField;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.params.FacetParams;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
-import uk.ac.ebi.intact.view.webapp.controller.ContextController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -51,18 +45,17 @@ public abstract class OntologyBrowserController extends BaseController {
 
     private static final Log log = LogFactory.getLog( OntologyBrowserController.class );
 
-    @Autowired
     private UserQuery userQuery;
 
     @Autowired
     private IntactViewConfiguration intactViewConfiguration;
 
-    @Autowired
-    private BrowserCache browserCache;
-
     private TreeNode ontologyTreeNode;
 
     private TreeNode selectedNode;
+    private SearchController searchController;
+
+    protected boolean useName = false;
 
     public OntologyBrowserController() {
     }
@@ -79,66 +72,59 @@ public abstract class OntologyBrowserController extends BaseController {
     }
 
     protected TreeNode createOntologyTreeModel(OntologyTerm rootTerm) {
+        userQuery = (UserQuery) getBean("userQuery");
+
         final SolrQuery query = userQuery.createSolrQuery();
         final String facetField = getFieldName();
 
-//        if (browserCache.containsKey(facetField, query)) {
-//            return browserCache.get(facetField, query);
-//        }
-
         SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
 
-        // we copy the query, because we don't want to modify the current query instance.
-        // otherwise the cache would not have the same key.
-        SolrQuery queryCopy = query.getCopy();
-        queryCopy.setRows(0);
-        queryCopy.setFacet(true);
-        queryCopy.setFacetMissing(true);
-        //queryCopy.setFacetLimit(Integer.MAX_VALUE);
-        //queryCopy.setFacetMinCount(1);
-        queryCopy.setFacetSort(FacetParams.FACET_SORT_COUNT);
-        queryCopy.addFacetField(facetField);
-
-        final QueryResponse queryResponse;
-
+        OntologyTermWrapper otwRoot = null;
         try {
-             if (log.isDebugEnabled()) log.debug("Loading ontology counts: "+queryCopy);
-
-             queryResponse = solrServer.query(queryCopy);
-         } catch (Throwable e) {
-             addErrorMessage("Problem counting ontology terms: ", e.getMessage());
-             e.printStackTrace();
-             return null;
-         }
-
-        final FacetField field = queryResponse.getFacetField(facetField);
-
-        Map<String,Long> termsCountMap = new HashMap<String,Long>(1024);
-
-        if (field != null && field.getValues() != null) {
-            for (FacetField.Count c : field.getValues()) {
-                termsCountMap.put(c.getName(), c.getCount());
-            }
+            otwRoot = new OntologyTermWrapper(rootTerm, solrServer, query, facetField, false, this.useName);
+        } catch (SolrServerException e) {
+            addErrorMessage("Problem counting ontology terms: ", e.getMessage());
+            e.printStackTrace();
+            return null;
         }
 
-        OntologyTermWrapper otwRoot = new OntologyTermWrapper(rootTerm, termsCountMap, false);
-
         TreeNode treeNode = createRootTreeNode(otwRoot);
-
-        //browserCache.put(facetField, query, treeModel);
 
         return treeNode;
     }
 
+    protected void resetTreeNode(){
+        OntologyTermWrapper otwRoot = (OntologyTermWrapper) ontologyTreeNode.getData();
+        ontologyTreeNode = createRootTreeNode(otwRoot);
+    }
+
     public void onNodeSelect(NodeSelectEvent evt) {
-        SearchController searchController = (SearchController) getBean("searchBean");
+        searchController = (SearchController) getBean("searchBean");
 
         final OntologyTermWrapper otw = (OntologyTermWrapper) evt.getTreeNode().getData();
 
-        userQuery.doAddParamToQuery("AND", getFieldName(), otw.getTerm().getId());
+        userQuery = (UserQuery) getBean("userQuery");
+
+        if (otw.isUseName()){
+            userQuery.doAddParamToQuery("AND", getFieldName(), otw.getTerm().getName());
+        }
+        else {
+            userQuery.doAddParamToQuery("AND", getFieldName(), otw.getTerm().getId());
+        }
+        // reset tree node
+        resetTreeNode();
 
         FacesContext.getCurrentInstance().getApplication().getNavigationHandler()
                 .handleNavigation(FacesContext.getCurrentInstance(), null, searchController.doBinarySearchAction());
+    }
+
+    public void doSelectCvTerm(NodeSelectEvent evt) {
+        userQuery = (UserQuery) getBean("userQuery");
+
+        // update user query with selected term
+        userQuery.doSelectCvTerm(evt);
+        // reset tree node
+        resetTreeNode();
     }
 
     protected TreeNode createRootTreeNode(OntologyTermWrapper otwRoot) {

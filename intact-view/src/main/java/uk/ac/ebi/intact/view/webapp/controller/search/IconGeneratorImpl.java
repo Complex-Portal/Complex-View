@@ -20,7 +20,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.context.DataContext;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.view.webapp.application.SpringInitializedService;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.ColourPalette;
 
@@ -37,7 +41,7 @@ import java.util.Map;
  * @version $Id$
  */
 @Controller
-public class IconGeneratorImpl extends JpaBaseController implements IconGenerator, InitializingBean {
+public class IconGeneratorImpl extends SpringInitializedService implements IconGenerator {
 
     private static final Log log = LogFactory.getLog( IconGeneratorImpl.class );
 
@@ -57,13 +61,50 @@ public class IconGeneratorImpl extends JpaBaseController implements IconGenerato
         bioRoleColourMap = new HashMap<String,ColouredCv>(24);
     }
 
+    @Override
+    public void initialize() {
+        if (typeColourMap.isEmpty() || expRoleColourMap.isEmpty() || bioRoleColourMap.isEmpty()){
+            if (log.isInfoEnabled()) log.info("Preparing simple icons for CVs");
 
-    public void afterPropertiesSet() throws Exception {
-        prepareColours();
+            final List<Object[]> proteinTypeLabels = listProteinTypeLabels();
+            //Collections.sort(proteinTypeLabels);
+
+            for (Object[] protType : proteinTypeLabels) {
+                String colour = colourPalette.getNextGrey();
+
+                String label = protType[1].toString();
+                String description = protType[0].toString();
+
+                typeColourMap.put(label, new ColouredCv(label, colour, description));
+            }
+
+            final List<Object[]> expRoleLabels = listExpRoleLabels();
+            //Collections.sort(expRoleLabels);
+
+            for (Object[] expRole : expRoleLabels) {
+                String colour = colourPalette.getNextRed();
+
+                String label = expRole[1].toString();
+                String description = expRole[0].toString();
+
+                expRoleColourMap.put(label, new ColouredCv(label, colour, description));
+            }
+
+            final List<Object[]> bioRoleLabels = listBioRoleLabels();
+            //Collections.sort(expRoleLabels);
+
+            for (Object[] bioRole : bioRoleLabels) {
+                String colour = colourPalette.getNextGreen();
+
+                String label = bioRole[1].toString();
+                String description = bioRole[0].toString();
+
+                bioRoleColourMap.put(label, new ColouredCv(label, colour, description));
+            }
+        }
     }
 
-    @Transactional(readOnly = true)
-    public void prepareColours() {
+    public synchronized void reload() {
         if (log.isInfoEnabled()) log.info("Preparing simple icons for CVs");
 
         final List<Object[]> proteinTypeLabels = listProteinTypeLabels();

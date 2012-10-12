@@ -42,6 +42,11 @@ public class CytoscapeServlet extends HttpServlet {
 
     public static final String PARAM_QUERY = "query";
     public static final String PARAM_FORMAT = "format";
+    public static final String PARAM_FILTER_NEGATIVE = "negative";
+    public static final String PARAM_FILTER_SPOKE = "spoke";
+    public static final String PARAM_ONTOLOGY_QUERY = "ontology";
+    public static final String PARAM_SORT = "sort";
+    public static final String PARAM_SORT_ASC = "asc";
 
     @Override
     public void init( ServletConfig config ) throws ServletException {
@@ -51,7 +56,14 @@ public class CytoscapeServlet extends HttpServlet {
     @Override
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {
 
-        String searchQuery = request.getParameter( PARAM_QUERY );
+        String searchQuery = request.getParameter(PARAM_QUERY);
+        String format = request.getParameter(PARAM_FORMAT);
+        String negative = request.getParameter(PARAM_FILTER_NEGATIVE);
+        String spoke = request.getParameter(PARAM_FILTER_SPOKE);
+        String ontology = request.getParameter(PARAM_ONTOLOGY_QUERY);
+        String sort = request.getParameter(PARAM_SORT);
+        String asc = request.getParameter(PARAM_SORT_ASC);
+
         if (searchQuery == null) {
             throw new ServletException("Parameter '"+ PARAM_QUERY +"' was expected");
         }
@@ -60,10 +72,8 @@ public class CytoscapeServlet extends HttpServlet {
         searchQuery = encodeURL( searchQuery );
         if ( log.isTraceEnabled() ) log.trace( "Encoded query: " + searchQuery );
 
-        final String format = request.getParameter( PARAM_FORMAT );
-
         final String serverContext = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-        final String exportUrl = serverContext + "/export?query=" + searchQuery + "&format=" + format;
+        final String exportUrl = serverContext + "/export?query=" + searchQuery + "&format=" + format+"&negative="+negative+"&spoke="+spoke+"&ontology="+ontology+"&sort="+sort+"&asc="+asc;;
         response.setContentType( "application/x-java-jnlp-file" );
 
         // Read the template cytoscape.jnlp from from WEB-INF directory.

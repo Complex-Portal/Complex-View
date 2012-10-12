@@ -53,10 +53,19 @@ td.compoundStructure {
     border-left: 1px solid #CDCDCD !important;
     border-right: 1px solid #CDCDCD !important;
     border-bottom: 0 !important;
+}
 
+.negativeInteractionRow {
+    background: #ffdfe5;
 }
 
 /** Overriden **/
+
+/** fix to have dialogs that appear wherever we are on the page and not at the top**/
+.ui-dialog {
+    position:fixed !important;
+}
+
 #mainPanels {
     background: white !important;
 }
@@ -106,6 +115,14 @@ td.compoundStructure {
 
 .ia-feature {
     background: #ed8585 !important;
+    color:white;
+    padding-right:2px;
+    padding-left:2px;
+    margin-right:5px;
+}
+
+.ia-confidence {
+    background: #5e5e5e !important;
     color:white;
     padding-right:2px;
     padding-left:2px;

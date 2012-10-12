@@ -24,19 +24,21 @@
     <h:outputScript library="javascript" name="cytoscape_web/json2.min.js"/>
     <h:outputScript library="javascript" name="cytoscape_web/AC_OETags.min.js"/>
     <h:outputScript library="javascript" name="cytoscape_web/cytoscapeweb.min.js"/>
+
+    <h:outputScript library="javascript" name="cytoscape_web/cytoscapeweb.min.js"/>
     <h:panelGroup>
         <div id="rightPanel" style="float:right; width:24%;">
 
             <p:panel header="Open in Cytoscape">
 
                 <h:panelGrid style="text-align:center;width:100%">
-                    <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
+                    <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.searchQuery)}&amp;format=xml_2_53&amp;negative=#{userQuery.includeNegative}&amp;spoke=#{userQuery.filterSpoke}&amp;ontology=#{userQuery.ontologyQuery}&amp;asc=#{searchBean.ascending}&amp;sort=#{searchBean.userSortColumn}">
                         <h:graphicImage alt="cytoscape-icon" url="/images/logos/cytoscape-icon.PNG" shortDesc="Click to start Cytoscape"/>
                     </h:outputLink>
                 </h:panelGrid>
                 <div style="font-size:8.5pt;width:98%;">
                     <h:outputText value="Click "/>
-                    <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.solrQueryString)}&amp;format=xml_2_53">
+                    <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.searchQuery)}&amp;format=xml_2_53&amp;negative=#{userQuery.includeNegative}&amp;spoke=#{userQuery.filterSpoke}&amp;ontology=#{userQuery.ontologyQuery}&amp;asc=#{searchBean.ascending}&amp;sort=#{searchBean.userSortColumn}">
                         &#160;here&#160;
                     </h:outputLink>
                     <h:outputText value=" or on the icon above to start Cytoscape." />
@@ -95,16 +97,21 @@
             </div>
         </div>
 
-        <div id="cytoscapeweb" style="width:75%; height:900px; border:1px solid #d3d3d3;">
-            Interaction Graph should show here in a few moments... <h:graphicImage alt="loading..." url="/images/wait_black_indicator.gif" style="vertical-align: baseline;"/>
+        <div id="cytoscapeweb" style="width:75%; height:900px; border:1px solid #d3d3d3; overflow:auto">
+            Interaction Graph should show here in a few moments
+            <br/>It can take a few minutes if you try to upload a lot of interactions... <h:graphicImage alt="loading..." url="/images/wait_black_indicator.gif" style="vertical-align: baseline;"/>
         </div>
 
 
     </h:panelGroup>
     <script type="text/javascript">
         //<![CDATA[
-        var query =  '#{(userQuery.solrQueryString)}';
-        var mitabUrl = 'export?format=mitab&query=' + encodeURIComponent(query);
+        var query =  '#{(userQuery.searchQuery)}';
+        var filterSpoke =  '#{(userQuery.filterSpoke)}';
+        var ontologyQuery =  '#{(userQuery.ontologyQuery)}';
+        var sort =  '#{(searchBean.userSortColumn)}';
+        var asc =  '#{(searchBean.ascending)}';
+        var mitabUrl = 'export?format=mitab_25&query=' + encodeURIComponent(query)+'&negative=false&spoke='+filterSpoke+'&ontology='+ontologyQuery+'&asc='+asc+'&sort='+sort;
         var xmlUrl = '#{facesContext.externalContext.requestContextPath}/graphmlDownload?mitabUrl=' + encodeURIComponent(mitabUrl);
 
         // wait for the data to be loaded prior, handy for larger network.
@@ -159,21 +166,6 @@
 
                 // TODO in the node right click, link out to the service database using that molecule id
                 // TODO edge > right click, link out to the service database using that interaction AC.
-
-//            vis.addContextMenuItem("Link out to source web site", "nodes",
-//                                  function (evt) {
-//                                      // Get the right-clicked node:
-//                                      var target = evt.target;
-//
-//                                      var identifier = target.data[ 'identifier' ];
-//
-//                                      // get url template
-//                                      var url='http://www.google.com/q=${ac}}';
-//
-//                                      // open URL for that molecule
-//                                      window.open(url.replace('${ac}}',identifier),'_blank',null);
-//                                  }
-//                    );
 
                 vis.addContextMenuItem("Expand network around this molecule", "nodes",
                         function (evt) {

@@ -30,7 +30,6 @@ public class XrefLinkGenerator
     public static String generateUrl(XrefLinkContext linkContext, CrossReference xref) {
         if (linkContext == null) return null;
         if (xref == null) return null;
-
         return generateUrl(linkContext, xref.getDatabase(), xref.getIdentifier());
     }
 

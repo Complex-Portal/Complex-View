@@ -26,7 +26,7 @@
             <h:panelGroup rendered="#{xref.cvDatabase.shortLabel == 'uniprotkb'}">
                 <iax:goUniprot query="#{xref.primaryId}" onlyLogo="true"/>
                 <br/>
-                <h:commandLink action="molecule">
+                <h:commandLink action="/pages/molecule/molecule.xhtml?faces-redirect=true">
                     <f:setPropertyActionListener value="#{cc.attrs.interactor.ac}" target="#{moleculeViewBean.interactorAc}"/>
                     <h:graphicImage alt="dastyLogo" url="/images/logos/dasty2_logo_50.png" style="border-width:0"/>
                 </h:commandLink>

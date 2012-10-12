@@ -29,7 +29,7 @@ public class ExpansionCount extends AbstractCount {
     }
 
     public long getSpokeCount() {
-        return getCount("spoke");
+        return getCount("psi-mi:MI:1060");
     }
     
     public long getPhysicalCount() {

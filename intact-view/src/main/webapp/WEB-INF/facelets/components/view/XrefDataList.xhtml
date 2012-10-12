@@ -32,13 +32,25 @@
                 </nobr>
             </h:panelGroup>
 
-            <h:panelGroup rendered="#{itemPerLine}">
+            <h:panelGroup rendered="#{itemPerLine and xrefUrl != null}">
                     <span style="display:block">
                         <nobr>
                             <h:outputLink title="#{xref.text}"
                                        target="_blank"
                                        value="#{iav:xrefUrl(appConfigBean.linkContext, xref)}"
-                                       disabled="#{xrefUrl == null or xrefUrl == '#' or itemDisabled}">#{xrefUrl == null? iav:xrefToString(xref, !onlyText, !onlyText, onlyText) : text}</h:outputLink>
+                                       disabled="#{xrefUrl == '#' or itemDisabled}">#{text}</h:outputLink>
+                        </nobr>
+                    </span>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{itemPerLine and xrefUrl == null}">
+                    <span style="display:block">
+                        <nobr>
+                            <strong>
+                                <h:outputText value="#{xref.database} : " rendered="#{!onlyText and xref.database != null}"/>
+                            </strong>
+                            <h:outputText value="#{xref.identifier}" rendered="#{!onlyText}"/>
+                            <h:outputText value="#{xref.text}" rendered="#{onlyText and xref.text != null}"/>
                         </nobr>
                     </span>
             </h:panelGroup>

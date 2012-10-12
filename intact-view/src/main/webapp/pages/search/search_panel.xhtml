@@ -29,23 +29,33 @@
                          disabled="#{userQuery.showNewFieldPanel}"/>
             &#160;
             <p:commandButton id="quickSearchBtn" ajax="false"
-                             onclick="queryTxt = document.getElementById('queryTxt'); _gaq.push(['_trackEvent', 'SearchPanel', 'Search', queryTxt.value])"
-                             value="Search" process="queryTxt"
+                             onclick="queryTxt = document.getElementById(':intactForm:queryTxt'); _gaq.push(['_trackEvent', 'SearchPanel', 'Search', queryTxt.value])"
+                             value="Search"
                              disabled="#{userQuery.showNewFieldPanel}"
-                             action="#{searchBean.doBinarySearchAction}">
-                <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
+                             action="#{searchBean.doBinarySearchAction}"
+                             onstart="statusDialog.show()"
+                             oncomplete="statusDialog.hide()">
             </p:commandButton>
             &#160;
-            <p:commandButton type="button" id="clearSearchBtn" value="Clear"
-                             onclick="queryTxt = document.getElementById('queryTxt'); queryTxt.value = ''; queryTxt.focus(); _gaq.push(['_trackEvent', 'SearchPanel', 'Clear', ''])"
-                             disabled="#{userQuery.showNewFieldPanel}"/>
+            <p:commandButton id="clearSearchBtn" value="Clear"
+                             actionListener="#{userQuery.doClearSearchField}"
+                             onclick="_gaq.push(['_trackEvent', 'SearchPanel', 'Clear', ''])"
+                             disabled="#{userQuery.showNewFieldPanel}"
+                             onstart="statusDialog.show()"
+                             oncomplete="statusDialog.hide()"
+                             update=":intactForm:searchPanel"
+                             process="@this"
+                             partialSubmit="true"/>
             &#160;
             <p:commandLink id="addFieldBtn" value="Show Advanced Fields »"
-                           onclick="_gaq.push(['_trackEvent', 'SearchPanel', 'Show advanced', '#{userQuery.searchQuery}'])"
-                           style="font-weight:bold" process="searchPanel"
+                           style="font-weight:bold"
                            actionListener="#{userQuery.doShowAddFieldPanel}"
                            disabled="#{userQuery.showNewFieldPanel}"
-                           update="searchPanelDetails,searchPanel" />
+                           update=":intactForm:searchPanelDetails,:intactForm:searchPanel"
+                           onstart="statusDialog.show()"
+                           oncomplete="statusDialog.hide()"
+                           partialSubmit="true"
+                           process="@this"/>
 
         </h:panelGroup>
 
@@ -61,7 +71,7 @@
                                  disabled="#{userQuery.wildcardQuery}">
                     <f:selectItem itemValue="AND" itemLabel="AND"/>
                     <f:selectItem itemValue="OR" itemLabel="OR" itemDisabled="#{empty userQuery.searchQuery or
-                                                                                    userQuery.searchQuery eq '*:*'}"/>
+                                                                                    userQuery.searchQuery eq '*'}"/>
                 </h:selectOneMenu>
                 &#160;
                 <h:outputText value="NOT"/>
@@ -70,7 +80,8 @@
                 &#160;
                 <h:outputText value="Field: "/>
                 <h:selectOneMenu id="newQueryField" title="Field: " value="#{userQuery.newQueryToken.field}">
-                    <p:ajax event="change" update="newQueryPanel" process="newQueryField"/>
+                    <p:ajax event="change" update=":intactForm:newQueryPanel" process="@this" onstart="statusDialog.show()"
+                            oncomplete="statusDialog.hide()"/>
                     <f:selectItems value="#{userQuery.searchFieldSelectItems}"/>
                 </h:selectOneMenu>
                 &#160;
@@ -100,7 +111,8 @@
                                     selectionMode="single" selection="#{userQuery.selectedSearchTerm}"
                                     dynamic="true" cache="true"
                                     style="width:50%;">
-                                <p:ajax event="select" listener="#{userQuery.doSelectCvTerm}" oncomplete="browseCvDialog.hide()" update="@form" />
+                                <p:ajax event="select" listener="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.doSelectCvTerm}"
+                                        oncomplete="browseCvDialog.hide(); statusDialog.hide()" update=":intactForm:newQueryPanel" onstart="statusDialog.show()" process="@this"/>
 
                                 <p:treeNode id="ontologyTreeNode">
                                     <h:outputText id="termTxt" value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
@@ -119,15 +131,20 @@
 
                 &#160;
 
-                <h:commandButton id="addAndSearchBtn" value="Add &amp; Search"
+                <p:commandButton id="addAndSearchBtn" value="Add &amp; Search"
                                  actionListener="#{userQuery.doAddFieldToQuery}"
-                                 action="#{searchBean.doNewBinarySearch}">
-                    <f:setPropertyActionListener value="2" target="#{contextController.activeTabIndex}"/>
-                </h:commandButton>
+                                 action="#{searchBean.doBinarySearchAction}"
+                                 onstart="statusDialog.show()"
+                                 oncomplete="statusDialog.hide()"
+                                 ajax="false"/>
                 &#160;
-                <p:commandButton id="cancelFieldBtn" value="Cancel" process="cancelFieldBtn"
+                <p:commandButton id="cancelFieldBtn" value="Cancel"
+                                 process="@this"
                                  actionListener="#{userQuery.doCancelAddField}"
-                                 update="searchPanel,searchPanelDetails"/>
+                                 update=":intactForm:searchPanel,:intactForm:searchPanelDetails"
+                                 onstart="statusDialog.show()"
+                                 oncomplete="statusDialog.hide()"
+                                 partialSubmit="true"/>
 
             </h:panelGroup>
         </p:panel>

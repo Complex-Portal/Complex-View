@@ -15,26 +15,22 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.application;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.InteractionOntologyLuceneSearcher;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.InteractionOntologyTerm;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.InteractionOntologyTermResults;
 import uk.ac.ebi.intact.view.webapp.controller.BaseController;
-import uk.ac.ebi.intact.view.webapp.controller.SearchWebappException;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
-import uk.ac.ebi.intact.view.webapp.util.OntologiesIndexSearcher;
-import uk.ac.ebi.intact.view.webapp.util.OntologiesIndexWriter;
-import uk.ac.ebi.intact.view.webapp.util.OntologyTerm;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 /**
  * Backing bean for Ontology Search and Autocomplete feature
@@ -43,50 +39,28 @@ import java.util.List;
  * @version $Id$
  * @since 2.0.1-SNAPSHOT
  */
-public class OntologyBean extends BaseController {
+public class OntologyBean extends BaseController implements InitializingBean {
 
     private static final Log log = LogFactory.getLog( OntologyBean.class );
 
-    private Directory ontologyIndexDirectory;
+    private File ontologyIndexDirectory;
 
-    private OntologiesIndexSearcher ontologiesIndexSearcher;
+    private InteractionOntologyLuceneSearcher ontologiesIndexSearcher;
+
+    private int maxOntologySuggestion;
 
     @Autowired
-    private IntactViewConfiguration intactViewConfiguration;
+    private IntactViewConfiguration viewConfiguration;
 
     public OntologyBean() {
-
-        String tempDir = System.getProperty("java.io.tmpdir");
-        File dir = new File(tempDir, "intact-view-"+System.currentTimeMillis());
-
-        try {
-            FileUtils.forceDeleteOnExit(dir);
-            this.ontologyIndexDirectory = FSDirectory.getDirectory(dir, true);
-        } catch (IOException e) {
-            throw new SearchWebappException("Problem creating ontology lucene directory", e);
-        }
-        this.ontologiesIndexSearcher = new OntologiesIndexSearcher(ontologyIndexDirectory, false);
     }
 
-    public void loadOntologies() throws IOException {
-        if (intactViewConfiguration.getInteractionSolrServer() == null) {
-           if (log.isErrorEnabled()) log.error("Cannot load ontologies as the Solr server is not configured");
-            return;
-        }
-        if (log.isInfoEnabled()) log.info("Loading and indexing ontologies");
-
-        OntologiesIndexWriter ontologiesIndexWriter = new OntologiesIndexWriter();
-        ontologiesIndexWriter.createIndex(intactViewConfiguration.getInteractionSolrServer(), ontologyIndexDirectory);
-
-        if (log.isInfoEnabled()) {
-            int count = countDocsInIndex(ontologyIndexDirectory);
-            log.info("Ontologies index created, containing "+count+" documents");
+    public InteractionOntologyTerm findByIdentifier(String id) {
+        if (ontologiesIndexSearcher == null){
+           return new InteractionOntologyTerm("", id);
         }
 
-    }
-
-    public OntologyTerm findByIdentifier(String id) {
-        final OntologyTerm term;
+        final InteractionOntologyTerm term;
         try {
             term = ontologiesIndexSearcher.findById(id);
         } catch (Exception e) {
@@ -94,32 +68,35 @@ public class OntologyBean extends BaseController {
         }
         return term;
     }
-
-    private int countDocsInIndex(Directory ontologyIndexDirectory) {
-        int count = -1;
-
-        try {
-            IndexSearcher searcher = new IndexSearcher(ontologyIndexDirectory, true);
-            count = searcher.getIndexReader().maxDoc();
-            searcher.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public InteractionOntologyTerm findByName(String id) {
+        if (ontologiesIndexSearcher == null){
+            return new InteractionOntologyTerm(id, "");
         }
 
-        return count;
+        final InteractionOntologyTerm term;
+        try {
+            term = ontologiesIndexSearcher.findByName(id);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Problem loading term: "+id, e);
+        }
+        return term;
     }
 
-    public List<OntologyTerm> search(String strQuery) throws IOException, ParseException {
+
+    public List<InteractionOntologyTerm> search(String strQuery) throws IOException, ParseException {
         return ontologiesIndexSearcher.search(strQuery);
     }
 
-    public List<OntologyTerm> search(Query query, Sort sort) throws IOException {
+    public List<InteractionOntologyTerm> search(Query query, Sort sort) throws IOException {
         return ontologiesIndexSearcher.search(query, sort);
     }
 
     //for Autocomplete box
 
-    public List<OntologyTerm> fillAutocomplete( String query ) {
+    public List<InteractionOntologyTerm> fillAutocomplete( String query ) {
+        if (ontologiesIndexSearcher == null){
+           return Collections.EMPTY_LIST;
+        }
         String formattedQuery = prepareOntologyQueryForLucene( query, true );
 
         if ( log.isDebugEnabled() ) {
@@ -128,20 +105,21 @@ public class OntologyBean extends BaseController {
         }
 
         try {
-            List<OntologyTerm> result = search( formattedQuery );
-            List<OntologyTerm> otherResult;
+            List<InteractionOntologyTerm> result = search( formattedQuery );
+            List<InteractionOntologyTerm> otherResult;
 
-            if (result.size() > intactViewConfiguration.getMaxOntologySuggestions()) {
-                final int furtherTermCount = result.size() - intactViewConfiguration.getMaxOntologySuggestions();
-                otherResult = result.subList(intactViewConfiguration.getMaxOntologySuggestions()-1,result.size()  );
-                result = result.subList(0, intactViewConfiguration.getMaxOntologySuggestions()-1);
+            if (result.size() > maxOntologySuggestion) {
+                final int furtherTermCount = result.size() - maxOntologySuggestion;
+                otherResult = result.subList(maxOntologySuggestion-1,result.size()  );
+                result = result.subList(0, maxOntologySuggestion-1);
 
-                int otherCount =0;
-                for ( OntologyTerm ontologyTerm : otherResult ) {
-                    otherCount = otherCount + ontologyTerm.getCount();
+                long otherCount =0;
+                for ( InteractionOntologyTerm ontologyTerm : otherResult ) {
+                    otherCount = otherCount + ontologyTerm.getResults().getCount();
                 }
-                //result.add(new OntologyTerm("*", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na"));
-                result.add(new OntologyTerm("", "There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "na", otherCount, "na" ));
+                InteractionOntologyTerm term = new InteractionOntologyTerm("There are "+ furtherTermCount +" more term"+ (furtherTermCount > 1 ? "s" : "") +"...", "");
+                term.setResults(new InteractionOntologyTermResults("na", "na", otherCount));
+                result.add(term);
             }
 
             return result;
@@ -181,4 +159,18 @@ public class OntologyBean extends BaseController {
         return strFieldValue;
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+
+        if (viewConfiguration.getOntologyLuceneDirectory() == null) {
+            if (log.isErrorEnabled()) log.error("Cannot load ontologies as the ontology lucene directory is not configured");
+            return;
+        }
+        if (log.isInfoEnabled()) log.info("Loading and indexing ontologies");
+
+        this.ontologyIndexDirectory = new File(viewConfiguration.getOntologyLuceneDirectory());
+        this.ontologiesIndexSearcher = new InteractionOntologyLuceneSearcher(this.ontologyIndexDirectory);
+
+        this.maxOntologySuggestion = viewConfiguration.getMaxOntologySuggestions();
+    }
 }

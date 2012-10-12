@@ -19,7 +19,7 @@
                  </p>
                  <p>The services currently active are:
                     <ul>
-                        <ui:repeat var="service" value="#{psicquicController.imexServices}">
+                        <ui:repeat var="service" value="#{searchBean.psicquicSearchManager.imexServices}">
                             <li><h:outputLink target="_blank" value="#{service.organizationUrl}">#{service.name}</h:outputLink></li>
                         </ui:repeat>
                     </ul>

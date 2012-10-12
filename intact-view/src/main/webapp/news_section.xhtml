@@ -67,7 +67,7 @@
             <h:outputText value="No news found" rendered="#{empty newsBean.news}"/>
 
             <h:outputText value="More news in the " rendered="#{not empty newsBean.news}"/>
-            <h:commandLink value="Archive" action="news.archive"/>
+            <h:commandLink value="Archive" action="news.archive?faces-redirect=true"/>
 
         </div>
         </div>

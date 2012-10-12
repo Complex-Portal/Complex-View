@@ -60,4 +60,9 @@
         <property name="driverClassName" value="org.h2.Driver"/>
     </bean>
 
+    <!-- shared transactionTemplate for post initialization methods -->
+    <bean id="sharedTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
 </beans>

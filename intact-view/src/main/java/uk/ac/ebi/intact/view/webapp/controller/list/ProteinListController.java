@@ -21,16 +21,13 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.context.RequestContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.model.CvDatabase;
+import uk.ac.ebi.intact.model.CvXrefQualifier;
 import uk.ac.ebi.intact.model.InteractorXref;
-import uk.ac.ebi.intact.model.util.ProteinUtils;
 import uk.ac.ebi.intact.view.webapp.model.InteractorWrapper;
 
 import javax.faces.event.ActionEvent;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Controller for ProteinList View
@@ -61,17 +58,34 @@ public class ProteinListController extends InteractorListController {
         for (InteractorWrapper interactorWrapper : interactorWrappers) {
 
             if (interactorWrapper != null) {
-                Interactor interactor = interactorWrapper.getInteractor();
+                Collection<InteractorXref> interactorXrefs = interactorWrapper.getXrefs();
 
-                final InteractorXref xref = ProteinUtils.getUniprotXref(interactor);
+                InteractorXref interactorXref = getUniprotXrefFrom(interactorXrefs);
 
-                if (xref != null) {
-                    uniprotIds.add(xref.getPrimaryId());
+                if (interactorXref != null) {
+                    uniprotIds.add(interactorXref.getPrimaryId());
                 }
             }
         }
 
         return uniprotIds.toArray( new String[uniprotIds.size()] );
+    }
+
+    private InteractorXref getUniprotXrefFrom(Collection<InteractorXref> interactorXrefs) {
+        for (InteractorXref xref : interactorXrefs) {
+            CvXrefQualifier qualifier = xref.getCvXrefQualifier();
+            if (qualifier != null) {
+                String qualifierIdentity = qualifier.getIdentifier();
+                if (qualifierIdentity != null && CvXrefQualifier.IDENTITY_MI_REF.equals(qualifierIdentity)) {
+                    CvDatabase database = xref.getCvDatabase();
+                    String databaseIdentity = database.getIdentifier();
+                    if (databaseIdentity != null && CvDatabase.UNIPROT_MI_REF.equals(databaseIdentity)) {
+                        return xref;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public void openInReactome(ActionEvent evt) {
@@ -90,7 +104,7 @@ public class ProteinListController extends InteractorListController {
     }
 
     public void openInInterpro(ActionEvent evt) {
-        String url = "http://www.ebi.ac.uk/interpro/ISpy?ac="+StringUtils.join(getSelectedUniprotIds(), ",");
+        String url = "http://www.ebi.ac.uk/interpro/IProtein?ac="+StringUtils.join(getSelectedUniprotIds(), ",");
         executeUrlRedirection(url);
     }
 

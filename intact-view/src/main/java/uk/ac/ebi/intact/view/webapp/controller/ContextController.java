@@ -35,11 +35,11 @@ public class ContextController extends BaseController {
     private Map<Integer,Boolean> loadedTabStatus;
 
     public ContextController() {
-        clearLoadedTabs();
+        loadedTabStatus = new HashMap<Integer, Boolean>();
     }
 
     public void clearLoadedTabs() {
-        loadedTabStatus = new HashMap<Integer, Boolean>();
+        loadedTabStatus.clear();
     }
 
     public int getActiveTabIndex() {

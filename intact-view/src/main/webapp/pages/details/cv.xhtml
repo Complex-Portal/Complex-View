@@ -16,6 +16,8 @@
     <f:metadata>
         <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(5)}"/>
         <f:viewParam name="ac" value="#{cvObjectController.ac}"/>
+        <f:viewParam name="identifier" value="#{cvObjectController.identifier}"/>
+        <f:viewParam name="className" value="#{cvObjectController.className}"/>
         <f:event type="preRenderView" listener="#{cvObjectController.load}"/>
     </f:metadata>
 

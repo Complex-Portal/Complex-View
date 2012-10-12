@@ -16,13 +16,10 @@
     <context:property-placeholder location="classpath:/META-INF/intactview.properties"/>
     <context:property-placeholder location="classpath:/uk/ac/ebi/intact/binarysearch/BuildInfo.properties"/>
 
-    <bean id="appConfigBean" class="uk.ac.ebi.intact.view.webapp.controller.application.AppConfigBean" lazy-init="true"/>
     <bean id="ontologyBean" class="uk.ac.ebi.intact.view.webapp.controller.application.OntologyBean" lazy-init="true"/>
 
-    <!--<bean id="sqlStatistics" class="uk.ac.ebi.intact.services.search.stats.StatusController"request"/>-->
-
     <bean id="intactViewConfiguration"
-          class="uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration" lazy-init="true">
+          class="uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration">
         <property name="webappName" value="${webapp.name}"/>
         <property name="webappLogoUrl" value="${webapp.logo.url}"/>
         <property name="appRoot" value="${intact.view.approot}"/>
@@ -66,6 +63,7 @@
                 <value>MBInfo</value>
             </list>
         </property>
+        <property name="ontologyLuceneDirectory" value="${ontologies.lucene.directory}"/>
     </bean>
 
         <!-- this bean must not be lazily initialized if the exporting is to happen -->

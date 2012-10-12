@@ -19,6 +19,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.LazyLoadedOntologyTerm;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
 
@@ -32,7 +33,7 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
 @Scope("request")
 public class BiologicalRoleBrowserController extends OntologyBrowserController {
 
-    public static final String FIELD_NAME = "biologicalRole_id";
+    public static final String FIELD_NAME = FieldNames.BIOLOGICAL_ROLE;
 
     @Override
     protected OntologyTerm createRootTerm(OntologySearcher ontologySearcher) {

@@ -4,173 +4,222 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                
+
                 xmlns:iv="http://java.sun.com/jsf/composite/intactview">
 
 
-<h1>Help: Searches in #{intactView['webapp.name']}</h1>
+    <h1>Help: Searches in #{intactView['webapp.name']}</h1>
 
-<h:panelGroup>
-    <h:outputText value="To do a search you can use the Molecular Interaction Query Language (MIQL), which is based on "/>
+    <h:panelGroup>
+        <h:outputText value="To do a search you can use the Molecular Interaction Query Language (MIQL), which is based on "/>
 
-    <h:outputLink value="http://lucene.apache.org/java/2_3_2/queryparsersyntax.html#Terms"
-               target="_blank">Lucene's syntax.</h:outputLink>
-</h:panelGroup>
+        <h:outputLink value="http://lucene.apache.org/core/3_6_0/queryparsersyntax.html#Terms"
+                      target="_blank">Lucene's syntax.</h:outputLink>
+    </h:panelGroup>
 
-<ul>
-    <li>Use OR or space ' ' to search for ANY of the terms in a field</li>
-    <li>Use AND if you want to search for those interactions where ALL of your terms are found</li>
-    <li>Use quotes (") if you look for a specific phrase (group of terms that must be searched together) or terms
-        containing special characters that may otherwise be interpreted by our query engine (eg. ':' in a GO term)
-    </li>
-    <li>Use parenthesis for complex queries (e.g. '(XXX OR YYY) AND ZZZ')</li>
-    <li>Wildcards (*,?) can be used between letters in a term or at the end of terms to do fuzzy queries,
-        <br/>but never at the beginning of a term
-    </li>
-    <li>Optionally, you can prepend a symbol in from of your term.
-        <ul>
-            <li>+ (plus): include this term. Equivalent to AND. e.g. +P12345</li>
-            <li>- (minus): do not include this term. Equivalent to NOT. e.g. -P12345</li>
-            <li>Nothing in front of the term. Equivalent to OR. e.g. P12345</li>
-        </ul>
-    </li>
-</ul>
+    <ul>
+        <li>Use OR or space ' ' to search for ANY of the terms in a field</li>
+        <li>Use AND if you want to search for those interactions where ALL of your terms are found</li>
+        <li>Use quotes (") if you look for a specific phrase (group of terms that must be searched together) or terms
+            containing special characters that may otherwise be interpreted by our query engine (eg. ':' in a GO term)
+        </li>
+        <li>Use parenthesis for complex queries (e.g. '(XXX OR YYY) AND ZZZ')</li>
+        <li>Wildcards (*,?) can be used between letters in a term or at the end of terms to do fuzzy queries,
+            <br/>but never at the beginning of a term
+        </li>
+        <li>Optionally, you can prepend a symbol in from of your term.
+            <ul>
+                <li>+ (plus): include this term. Equivalent to AND. e.g. +P12345</li>
+                <li>- (minus): do not include this term. Equivalent to NOT. e.g. -P12345</li>
+                <li>Nothing in front of the term. Equivalent to OR. e.g. P12345</li>
+            </ul>
+        </li>
+    </ul>
 
-<hr/>
+    <h2>MIQL fields</h2>
 
-<h:panelGrid columns="3" headerClass="contenttable">
+    <h:outputText value="You can find more information about the Molecular Interactions Query Language (MIQL) defined for PSICQUIC "/>
+    <h:outputLink value="http://code.google.com/p/psicquic/wiki/MiqlDefinition" target="_blank">Here</h:outputLink>
 
-    <h:outputText value="Field Name" style="font-weight: bold"/>
-    <h:outputText value="Searches on" style="font-weight: bold"/>
-    <h:outputText value="Example" style="font-weight: bold"/>
+    <hr/>
 
-    <h:outputText value="idA"/>
-    <h:outputText value="IdentifierA"/>
-    <iv:queryLink value="idA:P74565"/>
+    <h:panelGrid columns="3" headerClass="contenttable">
 
-    <h:outputText value="id"/>
-    <h:outputText value="Identifiers (A or B)"/>
-    <iv:queryLink value="id:P74565"/>
+        <h:outputText value="Field Name" style="font-weight: bold"/>
+        <h:outputText value="Searches on" style="font-weight: bold"/>
+        <h:outputText value="Example" style="font-weight: bold"/>
 
-    <h:outputText value="alias"/>
-    <h:outputText value="Aliases (A or B)"/>
-    <iv:queryLink value="alias:(KHDRBS1 OR HCK)"/>
+        <h:outputText value="idA"/>
+        <h:outputText value="Identifier A"/>
+        <iv:queryLink value="idA:P74565"/>
 
-    <h:outputText value="identifiers"/>
-    <h:outputText value="Identifiers and Aliases undistinctively"/>
-    <iv:queryLink value="identifier:P74565"/>
+        <h:outputText value="idB"/>
+        <h:outputText value="Identifier B"/>
+        <iv:queryLink value="idB:P74565"/>
 
-    <h:outputText value="pubauth"/>
-    <h:outputText value="Publication 1st author(s)"/>
-    <iv:queryLink value="pubauth:scott"/>
+        <h:outputText value="id"/>
+        <h:outputText value="Identifiers (A or B)"/>
+        <iv:queryLink value="id:P74565"/>
 
-    <h:outputText value="pubid"/>
-    <h:outputText value="Publication Identifier(s) OR"/>
-    <iv:queryLink value="pubid:(10837477 OR 12029088)"/>
+        <h:outputText value="alias"/>
+        <h:outputText value="Aliases (A or B)"/>
+        <iv:queryLink value="alias:(KHDRBS1 OR HCK)"/>
 
-    <h:outputText value="taxidA"/>
-    <h:outputText value="Tax ID interactor A:  be it the tax ID or the species name"/>
-    <iv:queryLink value="taxidA:mouse"/>
+        <h:outputText value="identifiers"/>
+        <h:outputText value="Identifiers and Aliases undistinctively"/>
+        <iv:queryLink value="identifier:P74565"/>
 
-    <h:outputText value="taxidB"/>
-    <h:outputText value="Tax ID interactor B: be it the tax ID or species name"/>
-    <iv:queryLink value="taxidB:9606"/>
+        <h:outputText value="pubauth"/>
+        <h:outputText value="Publication 1st author(s)"/>
+        <iv:queryLink value="pubauth:scott"/>
 
-    <h:outputText value="species"/>
-    <h:outputText value="Species. Tax ID A or Tax ID B"/>
-    <iv:queryLink value="species:human"/>
+        <h:outputText value="pubid"/>
+        <h:outputText value="Publication Identifier(s)"/>
+        <iv:queryLink value="pubid:(10837477 OR 12029088)"/>
 
-    <h:outputText value="type"/>
-    <h:outputText value="Interaction type(s)"/>
-    <iv:queryLink value="type:&quot;physical interaction&quot;" escape="false"/>
+        <h:outputText value="taxidA"/>
+        <h:outputText value="Tax ID interactor A:  be it the tax ID or the species name"/>
+        <iv:queryLink value="taxidA:mouse"/>
 
-    <h:outputText value="detmethod"/>
-    <h:outputText value="Interaction Detection method(s)"/>
-    <iv:queryLink value="detmethod:&quot;two hybrid*&quot;" escape="false"/>
+        <h:outputText value="taxidB"/>
+        <h:outputText value="Tax ID interactor B: be it the tax ID or species name"/>
+        <iv:queryLink value="taxidB:9606"/>
 
-    <!--
-    <h:outputText value="source"/>
-    <h:outputText value="Source database(s)"/>
-    <h:outputText value="source:intact"/>
-    -->
+        <h:outputText value="species"/>
+        <h:outputText value="Species. Tax ID A or Tax ID B"/>
+        <iv:queryLink value="species:human"/>
 
-    <h:outputText value="interaction_id"/>
-    <h:outputText value="Interaction identifier(s)"/>
-    <iv:queryLink value="interaction_id:EBI-761050"/>
+        <h:outputText value="type"/>
+        <h:outputText value="Interaction type(s)"/>
+        <iv:queryLink value="type:&quot;physical interaction&quot;" escape="false"/>
 
-    <!--
-    <h:outputText value="confidence"/>
-    <h:outputText value="Confidence score (not available yet)"/>
-    <h:outputText value="confidence:"/>
-     -->
-   <!-- <h:outputText value="annotationA"/>
-    <h:outputText value="Annotations Interactor A"/>
-    <iv:queryLink value="annotationA:approved"/>
+        <h:outputText value="detmethod"/>
+        <h:outputText value="Interaction Detection method(s)"/>
+        <iv:queryLink value="detmethod:&quot;two hybrid*&quot;" escape="false"/>
 
-    <h:outputText value="annotationB"/>
-    <h:outputText value="Annotations Interactor B"/>
-    <iv:queryLink value="annotationB:experimental"/>-->
+        <h:outputText value="interaction_id"/>
+        <h:outputText value="Interaction identifier(s)"/>
+        <iv:queryLink value="interaction_id:EBI-761050"/>
 
-    <h:outputText value="annotation"/>
-    <h:outputText value="Annotations Interactor A or B"/>
-    <iv:queryLink value="annotation:experimental"/>
+        <h:outputText value="pbioroleA"/>
+        <h:outputText value="Biological role(s) interactor A"/>
+        <iv:queryLink value="pbioroleA:enzyme"/>
 
-   <!-- <h:outputText value="propertiesA"/>
-    <h:outputText value="Properties of Interactor A"/>
-    <iv:queryLink value="properties:&quot;GO:0005794&quot;"/>
+        <h:outputText value="pbioroleB"/>
+        <h:outputText value="Biological role(s) interactor B"/>
+        <iv:queryLink value="pbioroleB:enzyme"/>
 
-    <h:outputText value="propertiesB"/>
-    <h:outputText value="Properties of Interactor B"/>
-    <iv:queryLink value="properties:&quot;IPR011527&quot;"/>
--->
-    <h:outputText value="properties"/>
-    <h:outputText value="Properties of Interactor A or B"/>
-    <iv:queryLink value="properties:&quot;1GQ5&quot;"/>
+        <h:outputText value="pbiorole"/>
+        <h:outputText value="Biological role(s) interactor (A or B)"/>
+        <iv:queryLink value="pbiorole:enzyme"/>
 
-    <h:outputText value="expansion"/>
-    <h:outputText value="Expansion method(s)"/>
-    <iv:queryLink value="expansion:spoke"/>
+        <h:outputText value="ptypeA"/>
+        <h:outputText value="Interactor type A"/>
+        <iv:queryLink value="ptypeA:protein"/>
 
-    <h:outputText value="dataset"/>
-    <h:outputText value="Dataset name(s)"/>
-    <iv:queryLink value="dataset:Apoptosis"/>
+        <h:outputText value="ptypeB"/>
+        <h:outputText value="Interactor type B"/>
+        <iv:queryLink value="ptypeB:protein"/>
 
-    <h:outputText value="experimentalRole"/>
-    <h:outputText value="Experimental role(s) interactor A or interactor B"/>
-    <iv:queryLink value="experimentalRole:prey"/>
+        <h:outputText value="ptype"/>
+        <h:outputText value="Interactor type (A or B)"/>
+        <iv:queryLink value="ptype:protein"/>
 
-    <h:outputText value="biologicalRole"/>
-    <h:outputText value="Biological role(s) interactor A or interactor B"/>
-    <iv:queryLink value="biologicalRole:enzyme"/>
+        <h:outputText value="pxrefA"/>
+        <h:outputText value="Interactor xref A"/>
+        <iv:queryLink value="pxrefA:&quot;GO:0005794&quot;"/>
 
-    <h:outputText value="hostOrganism"/>
-    <h:outputText value="Host organism in which the interaction was detected"/>
-    <iv:queryLink value="hostOrganism:human"/>
+        <h:outputText value="pxrefB"/>
+        <h:outputText value="Interactor xref B"/>
+        <iv:queryLink value="pxrefB:&quot;GO:0005794&quot;"/>
 
-    <!--<h:outputText value="parameterA"/>-->
-    <!--<h:outputText value="Parameter(s) interactor A"/>-->
-    <!--<iv:queryLink value="parameterA:xxxxx"/>-->
+        <h:outputText value="pxref"/>
+        <h:outputText value="Interactor xref (A or B)"/>
+        <iv:queryLink value="pxref:&quot;GO:0005794&quot;"/>
 
-    <!--<h:outputText value="parameterB"/>-->
-    <!--<h:outputText value="Parameter(s) interactor B"/>-->
-    <!--<iv:queryLink value="parameterB:xxxxx"/>-->
+        <h:outputText value="xref"/>
+        <h:outputText value="Interaction xref(s)"/>
+        <iv:queryLink value="xref:&quot;GO:0005634&quot;"/>
 
-    <!--<h:outputText value="parameterInteraction"/>-->
-    <!--<h:outputText value="Parameter(s) interaction"/>-->
-    <!--<iv:queryLink value="parameterInteraction:xxxxx"/>-->
+        <h:outputText value="annot"/>
+        <h:outputText value="Annotations/Tags Interaction"/>
+        <iv:queryLink value="annotation:&quot;imex curation&quot;"/>
 
-    <h:outputText value="intact-miscore"/>
-    <h:outputText value="IntAct MI Score"/>
-    <iv:queryLink value="intact-miscore:[0.5 TO 1.0]"/>
+        <h:outputText value="udate"/>
+        <h:outputText value="Last update of the interaction"/>
+        <iv:queryLink value="udate:[20110607 TO 20120906]"/>
 
-</h:panelGrid>
+        <h:outputText value="negative"/>
+        <h:outputText value="Boolean value which is true if an interaction is negative"/>
+        <iv:queryLink value="negative:true"/>
 
-<hr/>
+        <h:outputText value="complex"/>
+        <h:outputText value="Complex Expansion method(s)"/>
+        <iv:queryLink value="expansion:spoke"/>
 
-<p>(*) Implicit fields are used when no field is specified (simple search). For instance, if you put
-    <i>'P12345'</i> in the simple query box,
-    this will mean the same as <i>  identifier:P12345 OR pubid:P12345 OR pubauth:P12345 OR species:P12345
-    OR type_exact:P12345 OR type:P12345 OR detmethod_exact:P12345 OR detmethod:P12345 OR interaction_id:P12345
-    OR properties:P12345 OR hostOrganism:P12345 OR expansion:P12345 OR dataset:P12345</i></p>
+        <h:outputText value="ftypeA"/>
+        <h:outputText value="Feature type(s) A"/>
+        <iv:queryLink value="ftypeA:&quot;binding site&quot;"/>
+
+        <h:outputText value="ftypeB"/>
+        <h:outputText value="Feature type(s) B"/>
+        <iv:queryLink value="ftypeB:&quot;binding site&quot;"/>
+
+        <h:outputText value="ftype"/>
+        <h:outputText value="Feature type(s) (A or B)"/>
+        <iv:queryLink value="ftype:&quot;binding site&quot;"/>
+
+        <h:outputText value="pmethodA"/>
+        <h:outputText value="Participant identification method(s) A"/>
+        <iv:queryLink value="pmethodA:&quot;western blot&quot;"/>
+
+        <h:outputText value="pmethodB"/>
+        <h:outputText value="Participant identification method(s)) B"/>
+        <iv:queryLink value="pmethodB:&quot;western blot&quot;"/>
+
+        <h:outputText value="pmethod"/>
+        <h:outputText value="Participant identification method(s) (A or B)"/>
+        <iv:queryLink value="pmethod:&quot;western blot&quot;"/>
+
+        <h:outputText value="stc"/>
+        <h:outputText value="Boolean value to know if Interactor A or B has stoichiometry information."/>
+        <iv:queryLink value="stc:true"/>
+
+        <h:outputText value="param"/>
+        <h:outputText value="Boolean value to know if the Interaction has some parameters."/>
+        <iv:queryLink value="param:true"/>
+
+    </h:panelGrid>
+
+    <hr/>
+
+    <h2>Intact fields</h2>
+
+    <h:outputText value="These field names are specific to IntAct and are not in MIQL definition for PSICQUIC."/>
+
+    <hr/>
+
+    <h:panelGrid columns="3" headerClass="contenttable">
+
+        <h:outputText value="geneName"/>
+        <h:outputText value="Gene name for Interactor A or B"/>
+        <iv:queryLink value="geneName:brca2"/>
+
+        <h:outputText value="source"/>
+        <h:outputText value="Source database(s)"/>
+        <iv:queryLink value="source:mbinfo"/>
+
+        <h:outputText value="intact-miscore"/>
+        <h:outputText value="IntAct MI Score (between 0 and 1), based on number of publications, detection methods and interaction types."/>
+        <iv:queryLink value="intact-miscore:[0.5 TO 1.0]"/>
+
+    </h:panelGrid>
+
+    <hr/>
+
+    <p>(*) Implicit fields are used when no field is specified (simple search). For instance, if you put
+        <i>'P12345'</i> in the simple query box,
+        this will mean the same as <i>  identifier:P12345 OR pubid:P12345 OR pubauth:P12345 OR species:P12345
+            OR type:P12345 OR detmethod:P12345 OR interaction_id:P12345</i></p>
 
 </ui:composition>

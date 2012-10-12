@@ -15,11 +15,13 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.browse;
 
+import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.LazyLoadedOntologyTerm;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
-import uk.ac.ebi.intact.view.webapp.util.RootTerm;
 
 /**
  * Controller for GoBrowsing
@@ -31,15 +33,18 @@ import uk.ac.ebi.intact.view.webapp.util.RootTerm;
 @Scope("request")
 public class InteractionTypeBrowserController extends OntologyBrowserController {
 
-    public static final String FIELD_NAME = "type_expanded_id";
+    public static final String FIELD_NAME = FieldNames.TYPE;
 
     @Override
     protected OntologyTerm createRootTerm(OntologySearcher ontologySearcher) {
-        final RootTerm rootTerm = new RootTerm( ontologySearcher, "Interaction Type" );
-        rootTerm.addChild("MI:0208", "genetic interaction");
-        rootTerm.addChild("MI:0403", "colocalization");
-        rootTerm.addChild("MI:0914", "association");
-        return rootTerm;
+
+        try {
+            return new LazyLoadedOntologyTerm( ontologySearcher, "MI:0190", "Interaction Type");
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+            addErrorMessage("Could not load the tree", "");
+        }
+        return null;
     }
 
     @Override

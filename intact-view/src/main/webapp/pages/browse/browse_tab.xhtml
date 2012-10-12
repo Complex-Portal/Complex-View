@@ -9,7 +9,7 @@
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
 
                 xmlns:iv="http://java.sun.com/jsf/composite/intactview">
-    
+
     <ui:param name="displayWarning" value="#{browseBean.maxSize lt searchBean.interactorTotalResults}"/>
 
     <div style="float:right">
@@ -19,18 +19,26 @@
         </p:commandLink>
     </div>
 
+    <h2>Browse All (#{searchBean.interactorTotalResults})</h2>
+
+    <h:panelGroup style="text-align:left; vertical-align:top">
+
+        <p:commandLink style="text-align: center" value="By UniProt Taxonomy" action="/pages/browse/taxonomybrowser?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
+
+    </h:panelGroup>
+
     <h2>Proteins (#{searchBean.proteinTotalResults})</h2>
 
     <p:panel header="Numerous interactors available"
-                 rendered="#{displayWarning}" style="float:right; width: 300px">
-            <h:outputText value="Please be aware that due to the number of interaction currently available in
+             rendered="#{displayWarning}" style="float:right; width: 300px">
+        <h:outputText value="Please be aware that due to the number of interaction currently available in
                                       your dataset, only the first #{browseBean.maxSize} interactor identifiers will be passed on to
-                                      third party resources. In order to make this clear, we will display the icon"/>
-            &#160;
-            <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"/>
-            &#160;
-            <h:outputText value="whenever this restriction applies."/>
-        </p:panel>
+                                      third party resources (only the first #{browseBean.maxSizeRNAExpression} for mRNA expression ). In order to make this clear, we will display the icon"/>
+        &#160;
+        <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"/>
+        &#160;
+        <h:outputText value="whenever this restriction applies."/>
+    </p:panel>
 
     <h:panelGroup style="text-align:left; vertical-align:top">
 
@@ -50,29 +58,20 @@
 
                 </td>
                 <td>
-                    <p:commandLink value="By UniProt Taxonomy" action="/pages/browse/taxonomybrowser?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
-                </td>
-            </tr>
-
-            <tr>
-                <td style="text-align: center" width="15">
-
-                </td>
-                <td>
                     <p:commandLink value="By Gene Ontology (GO)" action="/pages/browse/gobrowser?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
                 </td>
             </tr>
 
-            <tr>
+            <!-- DISABLED because not working anymore <tr>
                 <td style="text-align: center" width="15">
                     <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
                                     rendered="#{displayWarning}" title="Numerous interactors available"/>
                 </td>
                 <td>
                     <h:outputLink target="_blank"
-                                  value="http://www.ebi.ac.uk/interpro/ISpy?ac=#{browseBean.interproIdentifierList}&amp;mode=protein&amp;sort=ac">By Interpro Domain</h:outputLink>
+                                  value="http://www.ebi.ac.uk/interpro/IProtein?ac=#{browseBean.interproIdentifierList}&amp;sort=ac">By Interpro Domain</h:outputLink>
                 </td>
-            </tr>
+            </tr>-->
 
             <tr>
                 <td style="text-align: center" width="15">
@@ -106,7 +105,7 @@
                 </td>
                 <td>
                     <h:outputLink target="_blank"
-                            value="http://www.ebi.ac.uk/gxa/qrs?gprop_0=&amp;gval_0=#{browseBean.MRNAExpressionIdentifierList}&amp;fexp_0=UP_DOWN&amp;fact_0=&amp;specie_0=&amp;fval_0=&amp;view=h">By mRNA expression</h:outputLink>
+                                  value="http://www.ebi.ac.uk/gxa/qrs?gprop_0=&amp;gval_0=#{browseBean.MRNAExpressionIdentifierList}&amp;fexp_0=UP_DOWN&amp;fact_0=&amp;specie_0=&amp;fval_0=&amp;view=h">By mRNA expression</h:outputLink>
                 </td>
             </tr>
 
@@ -116,46 +115,69 @@
 
     <h2>Chemicals (#{searchBean.smallMoleculeTotalResults})</h2>
 
-    <table border="0" cellSpacing="5" cellPadding="0" style="text-align:left" width="300">
+    <h:panelGroup style="text-align:left; vertical-align:top">
 
-        <tr>
-            <td style="text-align: center" width="15">
+        <table border="0" cellSpacing="5" cellPadding="0" style="text-align:left" width="300">
 
-            </td>
-            <td>
-                <h:commandLink value="List All" action="/pages/list/compound_list?faces-redirect=true&amp;includeViewParams=true"
-                               disabled="#{searchBean.smallMoleculeTotalResults == 0}"/>
-            </td>
-        </tr>
+            <tr>
+                <td style="text-align: center" width="15">
 
-        <tr>
-            <td style="text-align: center" width="15">
+                </td>
+                <td>
+                    <h:commandLink value="List All" action="/pages/list/compound_list?faces-redirect=true&amp;includeViewParams=true"
+                                   disabled="#{searchBean.smallMoleculeTotalResults == 0}"/>
+                </td>
+            </tr>
 
-            </td>
-            <td>
-                <h:commandLink value="By ChEBI Ontology (CHEBI)" action="/pages/browse/chebibrowser?faces-redirect=true&amp;includeViewParams=true"
-                               disabled="#{searchBean.smallMoleculeTotalResults == 0}"/>
-            </td>
-        </tr>
+            <tr>
+                <td style="text-align: center" width="15">
 
-    </table>
+                </td>
+                <td>
+                    <h:commandLink value="By ChEBI Ontology (CHEBI)" action="/pages/browse/chebibrowser?faces-redirect=true&amp;includeViewParams=true"
+                                   disabled="#{searchBean.smallMoleculeTotalResults == 0}"/>
+                </td>
+            </tr>
 
-    <br/><br/><br/>
+        </table>
+
+    </h:panelGroup>
 
     <h2>Nucleic Acids (#{searchBean.nucleicAcidTotalResults})</h2>
 
-    <table border="0" cellSpacing="5" cellPadding="0" style="text-align:left" width="300">
+    <h:panelGroup style="text-align:left; vertical-align:top">
+        <table border="0" cellSpacing="5" cellPadding="0" style="text-align:left" width="300">
 
-        <tr>
-            <td style="text-align: center" width="15">
+            <tr>
+                <td style="text-align: center" width="15">
 
-            </td>
-            <td>
-                <h:commandLink value="List All" action="/pages/list/nucleicacid?faces-redirect=true&amp;includeViewParams=true"
-                               disabled="#{searchBean.nucleicAcidTotalResults == 0}"/>
-            </td>
-        </tr>
+                </td>
+                <td>
+                    <h:commandLink value="List All" action="/pages/list/nucleicacid_list?faces-redirect=true&amp;includeViewParams=true"
+                                   disabled="#{searchBean.nucleicAcidTotalResults == 0}"/>
+                </td>
+            </tr>
 
-    </table>
+        </table>
+
+    </h:panelGroup>
+
+    <h2>Genes (#{searchBean.geneTotalResults})</h2>
+
+    <h:panelGroup style="text-align:left; vertical-align:top">
+        <table border="0" cellSpacing="5" cellPadding="0" style="text-align:left" width="300">
+
+            <tr>
+                <td style="text-align: center" width="15">
+
+                </td>
+                <td>
+                    <h:commandLink value="List All" action="/pages/list/gene_list?faces-redirect=true&amp;includeViewParams=true"
+                                   disabled="#{searchBean.geneTotalResults == 0}"/>
+                </td>
+            </tr>
+
+        </table>
+    </h:panelGroup>
 
 </ui:composition>

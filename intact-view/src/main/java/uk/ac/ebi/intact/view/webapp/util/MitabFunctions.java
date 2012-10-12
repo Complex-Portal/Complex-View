@@ -18,16 +18,14 @@ package uk.ac.ebi.intact.view.webapp.util;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import psidev.psi.mi.tab.model.CrossReference;
+import psidev.psi.mi.tab.model.*;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.psimitab.IntactBinaryInteraction;
-import uk.ac.ebi.intact.psimitab.model.Annotation;
-import uk.ac.ebi.intact.psimitab.model.ExtendedInteractor;
-import uk.ac.ebi.intact.psimitab.util.IntactPsimitabUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -57,32 +55,34 @@ public final class MitabFunctions {
     private MitabFunctions() {
     }
 
-    public static boolean isProtein( ExtendedInteractor interactor ) {
+    public static boolean isProtein( Interactor interactor ) {
 
-        if ( interactor.getInteractorType() != null ) {
-            return ( PROTEIN_MI_REF.equals( interactor.getInteractorType().getIdentifier() ) );
+        if ( interactor.getInteractorTypes() != null && !interactor.getInteractorTypes().isEmpty()) {
+            return ( PROTEIN_MI_REF.equals( interactor.getInteractorTypes().iterator().next().getIdentifier() ) );
         }
 
         return false;
     }
 
-    public static boolean isSmallMolecule( ExtendedInteractor interactor ) {
+    public static boolean isSmallMolecule( Interactor interactor ) {
 
-        if ( interactor.getInteractorType() != null ) {
-            return ( SMALLMOLECULE_MI_REF.equals( interactor.getInteractorType().getIdentifier() ) );
+        if ( interactor.getInteractorTypes() != null && !interactor.getInteractorTypes().isEmpty() ) {
+            return ( SMALLMOLECULE_MI_REF.equals( interactor.getInteractorTypes().iterator().next().getIdentifier() ) );
         }
 
         return false;
     }
 
-   
 
-    public static String[] getInitialForMoleculeType( ExtendedInteractor interactor ) {
+
+    public static String[] getInitialForMoleculeType( Interactor interactor ) {
 
         String[] typeAndDesc = new String[2];
-        if ( interactor.getInteractorType() != null ) {
-            typeAndDesc[0] = getFirstLetterofEachToken( interactor.getInteractorType().getText() );
-            typeAndDesc[1] = typeAndDesc[0] + " = " + interactor.getInteractorType().getText();
+        if (  interactor.getInteractorTypes() != null && !interactor.getInteractorTypes().isEmpty() ) {
+            String text = interactor.getInteractorTypes().iterator().next().getText();
+
+            typeAndDesc[0] = getFirstLetterofEachToken( text );
+            typeAndDesc[1] = typeAndDesc[0] + " = " + text;
         } else {
             typeAndDesc[0] = "-";
             typeAndDesc[1] = "-";
@@ -150,7 +150,7 @@ public final class MitabFunctions {
         } else {
             Set<String> rolesSymbol = new HashSet<String>();
             Set<String> rolesDesc = new HashSet<String>();
-           
+
             for ( CrossReference crossReference : crossReferences ) {
                 if ( crossReference.getText() != null && !"unspecified role".equals( crossReference.getText() ) ) {
                     String symbol = getFirstLetterofEachToken( crossReference.getText());
@@ -206,7 +206,7 @@ public final class MitabFunctions {
         return null;
     }
 
-     public static String getUniprotIdentifierFromCrossReferences(Collection xrefs) {
+    public static String getUniprotIdentifierFromCrossReferences(Collection xrefs) {
         return getIdentifierFromCrossReferences(xrefs, "uniprotkb");
     }
 
@@ -223,12 +223,101 @@ public final class MitabFunctions {
         return null;
     }
 
+    public static String getInteractorDisplayName( Interactor interactor ) {
+        if (interactor == null){
+            return "N/A";
+        }
 
-    public static String getInteractorDisplayName( ExtendedInteractor interactor ) {
-        IntactBinaryInteraction ibi = new IntactBinaryInteraction(interactor, interactor);
-        return IntactPsimitabUtils.getInteractorAName(ibi);
+        if (interactor.getAliases() != null && !interactor.getAliases().isEmpty()){
+            String displayShort = null;
+            String displayLong = null;
+
+            for (Alias alias : interactor.getAliases()){
+                if (alias.getAliasType() != null && alias.getAliasType().equals("display_short")){
+                    displayShort = alias.getName();
+                    break;
+                }
+                else if (alias.getAliasType() != null && alias.getAliasType().equals("display_long")){
+                    displayLong = alias.getName();
+                }
+            }
+
+            if (displayShort != null){
+                return displayShort;
+            }
+            else if (displayLong != null){
+                return displayLong;
+            }
+        }
+        else if (interactor.getIdentifiers() != null && !interactor.getIdentifiers().isEmpty()){
+            return interactor.getIdentifiers().iterator().next().getIdentifier();
+        }
+        else if (interactor.getAlternativeIdentifiers() != null && !interactor.getAlternativeIdentifiers().isEmpty()){
+            return interactor.getAlternativeIdentifiers().iterator().next().getIdentifier();
+        }
+        return "N/A";
     }
 
+    public static boolean hasOrganism(Interactor interactor){
+        if (interactor == null){
+            return false;
+        }
+
+        return interactor.getOrganism() != null;
+    }
+
+    public static String getExpansionName(psidev.psi.mi.tab.model.BinaryInteraction binary){
+        if (binary == null){
+            return "N/A";
+        }
+
+        if (!binary.getComplexExpansion().isEmpty()){
+            CrossReference ref = (CrossReference) binary.getComplexExpansion().iterator().next();
+            return ref.getText() != null ? ref.getText() : ref.getIdentifier();
+        }
+
+        return "N/A";
+    }
+
+    public static String formatDate(Date date){
+        if (date == null){
+            return "N/A";
+        }
+
+        DateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+
+        return format.format(date);
+    }
+
+    public static String getParameter(Parameter param){
+        if (param == null){
+            return "N/A";
+        }
+
+        StringBuffer buffer = new StringBuffer();
+
+        if (param.getFactor() != null){
+            buffer.append(Double.toString(param.getFactor()));
+            if (param.getBase() != null && param.getBase() > 0){
+                buffer.append("x").append(Integer.toString(param.getBase()));
+            }
+        }
+        else if (param.getBase() != null && param.getBase() > 0){
+            buffer.append(Integer.toString(param.getBase()));
+        }
+
+        if (param.getExponent() != null && param.getExponent() > 0){
+            buffer.append("^").append(param.getExponent());
+        }
+        if (param.getUncertainty() != null && param.getUncertainty() > 0){
+            buffer.append(" ~").append(param.getUncertainty());
+        }
+
+        if (buffer.length() > 0){
+            return buffer.toString();
+        }
+        return "N/A";
+    }
 
     public static boolean isApprovedDrug( String drugType ) {
         if ( drugType != null ) {
@@ -240,10 +329,10 @@ public final class MitabFunctions {
     }
 
 
-    public static String getDrugStatus( ExtendedInteractor interactor ) {
+    public static String getDrugStatus( Interactor interactor ) {
         if ( interactor.getAnnotations() != null ) {
             for ( Annotation annotation : interactor.getAnnotations() ) {
-                if ("drug type".equals(annotation.getType()) && annotation.getText() != null) {
+                if ("drug type".equals(annotation.getTopic()) && annotation.getText() != null) {
                     return annotation.getText();
                 }
             }
@@ -282,12 +371,40 @@ public final class MitabFunctions {
 
         for ( CrossReference xref : ( Collection<CrossReference> ) xrefs ) {
             if ( (databaseFilter != null && !databaseFilter.equals( xref.getDatabase() ))
-                 &&
-                 (textFilter != null && !textFilter.equals( xref.getText() ) ) ) {
+                    &&
+                    (textFilter != null && !textFilter.equals( xref.getText() ) ) ) {
                 filteredList.add( xref );
             }
         }
         return filteredList;
+    }
+
+    public static Collection getExclusionFilteredAliases( Collection aliases ) {
+
+        List<Alias> filteredList = new ArrayList<Alias>();
+
+        for ( Alias alias : ( Collection<Alias> ) aliases ) {
+            if ( alias.getAliasType() == null ||
+                    (alias.getAliasType() != null && !alias.getAliasType().equals("display_short") && !alias.getAliasType().equals("display_long")) ) {
+                filteredList.add( alias );
+            }
+        }
+        return filteredList;
+    }
+
+    public static CrossReference getUniqueOrganismXref(Collection identifiers) {
+        CrossReference currentCrossReference = null;
+        for (CrossReference identifier : ( Collection<CrossReference> ) identifiers){
+
+            if (currentCrossReference == null){
+                currentCrossReference = identifier;
+            }
+            if (identifier.getText() != null && currentCrossReference.getText().length() < identifier.getText().length()){
+                currentCrossReference = identifier;
+            }
+        }
+
+        return currentCrossReference;
     }
 
     public static boolean getSelectedFromMap( Map columnMap, String columnName ) {
@@ -295,8 +412,8 @@ public final class MitabFunctions {
         if ( columnMap.containsKey( columnName ) ) {
             return ( Boolean ) columnMap.get( columnName );
         }
-         return false;
-     }
+        return false;
+    }
 
     public static String encodeURL( String toEncode ) throws UnsupportedEncodingException {
         String s = "";

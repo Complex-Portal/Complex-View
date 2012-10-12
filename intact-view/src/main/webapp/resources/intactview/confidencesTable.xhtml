@@ -1,0 +1,44 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+
+                xmlns:iv="http://java.sun.com/jsf/composite/intactview"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
+
+                xmlns:iaf="http://intact.ebi.ac.uk/functions"
+
+                xmlns:composite="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+    <composite:interface>
+        <composite:attribute name="confidences" type="java.util.Collection" required="true"/>
+    </composite:interface>
+
+    <!-- IMPLEMENTATION -->
+    <composite:implementation>
+
+        <p:dataTable id="#{cc.id}" var="confidence" value="#{cc.attrs.confidences}" paginator="false" dynamic="false">
+
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Type"/>
+                </f:facet>
+                <h:outputLink value="#{request.contextPath}/cv/#{confidence.cvConfidenceType.ac}">
+                    <h:outputText value="#{confidence.cvConfidenceType.shortLabel}" />
+                </h:outputLink>
+            </p:column>
+
+            <p:column >
+                <f:facet name="header">
+                    <h:outputText value="Value"/>
+                </f:facet>
+
+                <h:outputText value="#{confidence.value}"/>
+            </p:column>
+        </p:dataTable>
+
+    </composite:implementation>
+
+</ui:composition>

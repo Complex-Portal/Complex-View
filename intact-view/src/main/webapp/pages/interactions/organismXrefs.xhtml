@@ -5,31 +5,27 @@
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 
-                xmlns:iax="http://intact.ebi.ac.uk/extlinks">
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions">
 
-        <ui:repeat var="xref" value="#{xrefs}" varStatus="rowStatus">
-
-            <h:panelGroup rendered="#{xref.identifier == -1}">
-                  <h:outputText value="in vitro"/>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{xref.identifier == -2}">
-                  <h:outputText value="chemical synthesis"/>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{xref.identifier == -3}">
-                  <h:outputText value="unknown"/>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{xref.identifier == -4}">
-                  <h:outputText value="in vivo"/>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{xref.identifier == -5}">
-                  <h:outputText value="in silico"/>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{xref.identifier gt 0}">
-                   <iax:goUniprotTaxonomy query="#{xref.identifier}" termName="#{xref.text}"/>
-            </h:panelGroup>
-
-            <h:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(xrefs)}"/>
-        </ui:repeat>
+    <h:panelGroup rendered="#{xref.identifier == -1}">
+        <h:outputText value="in vitro"/>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{xref.identifier == -2}">
+        <h:outputText value="chemical synthesis"/>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{xref.identifier == -3}">
+        <h:outputText value="unknown"/>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{xref.identifier == -4}">
+        <h:outputText value="in vivo"/>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{xref.identifier == -5}">
+        <h:outputText value="in silico"/>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{xref.identifier gt 0}">
+        <iax:goUniprotTaxonomy query="#{xref.identifier}" termName="#{xref.text}"/>
+    </h:panelGroup>
 
 
 </ui:composition>

@@ -90,7 +90,7 @@ public class CollapsibleIteratorRenderer extends Renderer {
             }
 
             if (iterator.hasNext()) {
-                writer.write("; ");
+                writer.write("<br/>");
             }
 
             context.getELContext().getELResolver().setValue(context.getELContext(), null, "item", null);
@@ -105,23 +105,30 @@ public class CollapsibleIteratorRenderer extends Renderer {
 
         if (items.size() - collapsibleIterator.getMaxShown() > 0) {
             writer.startElement("a", component);
-            writer.writeAttribute("href", "#", null);
 
             String spanId1 = divId+"_s1";
             String spanId2 = divId+"_s2";
 
             writer.startElement("span", component);
+
             writer.writeAttribute("id", spanId1, null);
             writer.writeAttribute("style", collapsibleIterator.isDisclosed()? "display: inline" : "display:none", null);
             writer.writeAttribute("onclick", "document.getElementById('" + divId + "').style.display='none'; document.getElementById('"+spanId1+"').style.display='none'; document.getElementById('"+spanId2+"').style.display='inline';", null);
+            writer.write("<br/>");
+            writer.startElement("strong", component);
             writer.write("[-]");
+            writer.endElement("strong");
             writer.endElement("span");
 
             writer.startElement("span", component);
             writer.writeAttribute("id", spanId2, null);
             writer.writeAttribute("style", collapsibleIterator.isDisclosed()? "display: none" : "display:inline", null);
             writer.writeAttribute("onclick", "document.getElementById('" + divId + "').style.display='inline'; document.getElementById('"+spanId1+"').style.display='inline'; document.getElementById('"+spanId2+"').style.display='none';", null);
+            writer.write("<br/>");
+            writer.startElement("strong", component);
             writer.write("[+" + (items.size() - collapsibleIterator.getMaxShown()) + "]");
+            writer.endElement("strong");
+
             writer.endElement("span");
 
             writer.endElement("a");

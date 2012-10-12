@@ -19,54 +19,53 @@
         </p:dialog>
 
         <p:dialog header="What is this view?" widgetVar="whatIsInteractionsDialog"
-                  width="700" height="500" modal="true">
+                  width="700" height="500" modal="true" draggable="true" closable="true">
             <div style="width:670px; overflow:auto;">
                 <ui:include src="/pages/documentation/contextual/whatis_interactions.xhtml"/>
             </div>
         </p:dialog>
 
         <p:dialog header="What is this view?" widgetVar="whatIsBrowseDialog"
-                  width="700" height="500">
+                  width="700" height="500" draggable="true" closable="true">
             <div style="width:670px; overflow:auto;">
                 <ui:include src="/pages/documentation/contextual/whatis_browser.xhtml"/>
             </div>
         </p:dialog>
 
         <p:dialog header="What is this view?" widgetVar="whatIsSearchDialog"
-                  width="700" height="500">
+                  width="700" height="500" draggable="true" closable="true">
             <div style="width:670px; overflow:auto;">
                 <ui:include src="/pages/documentation/contextual/whatis_search.xhtml"/>
             </div>
         </p:dialog>
 
         <p:dialog header="Complex Expansion" widgetVar="complexExpansionDialog"
-                  width="700" height="500" modal="true">
+                  width="700" height="500" draggable="true" closable="true">
             <div style="width:670px; overflow:auto;">
                 <ui:include src="/pages/documentation/contextual/complex_expansion.xhtml"/>
             </div>
         </p:dialog>
 
         <p:dialog header="PSICQUIC" widgetVar="psicquicDialog"
-                  width="700" height="500" modal="true">
+                  width="700" height="500" modal="true" draggable="true" closable="true">
             <div style="width:670px; overflow:auto;">
                 <ui:include src="/pages/documentation/contextual/psicquic.xhtml"/>
             </div>
         </p:dialog>
 
         <p:dialog header="IMEx" widgetVar="psicquicImexDialog"
-                  width="700" height="500" modal="true">
+                  width="700" height="500" modal="true" draggable="true" closable="true">
             <div style="width:670px; overflow:auto;">
                 <ui:include src="/pages/documentation/contextual/psicquic_imex.xhtml"/>
             </div>
         </p:dialog>
 
         <p:dialog header="What is this view?" widgetVar="whatIsFeaturesDialog"
-                  width="700" height="500">
+                  width="700" height="500" draggable="true" closable="true">
             <div style="width:670px; overflow:auto;">
                 <ui:include src="/pages/documentation/contextual/whatis_features.xhtml"/>
             </div>
         </p:dialog>
-
         <p:dialog header="What is this view?" widgetVar="whatIsDynamicNetworkDialog"
                   width="450" height="170">
             <div style="width:430px; overflow:auto;">
@@ -94,8 +93,8 @@
 
 
         <p:tabView id="mainPanels" activeIndex="#{contextController.activeTabIndex}" dynamic="true"
-                   widgetVar="mainTabsWidget" onTabChange="_gaq.push(['_trackEvent', 'Navigation', 'Tab change', index])">
-            <p:ajax event="tabChange" listener="#{searchBean.onTabChanged}"/>
+                   widgetVar="mainTabsWidget">
+        <p:ajax event="tabChange" listener="#{searchBean.onTabChanged}" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
 
             <p:tab id="homeTab" title="Home">
                         <p:messages/>
@@ -134,16 +133,18 @@
                 </h:panelGroup>
             </p:tab>
 
-            <p:tab id="graphTab" title="Graph"
-                               shortDesc="#{searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
-                               disabled="#{searchBean.totalResults == 0 or searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount}">
+            <p:tab id="graphTab" title="Graph"  shortDesc="#{searchBean.totalResults == statisticsController.binaryInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
+                   disabled="#{searchBean.totalResults == 0 or searchBean.totalResults == statisticsController.binaryInteractionCount}"
+                               >
                         <p:messages/>
-                <h:panelGroup rendered="#{searchBean.totalResults != 0 and searchBean.totalResults le intactViewConfiguration.graphMaxInteractionCount }">
+                <h:panelGroup rendered="#{searchBean.totalResults != 0}">
                         <ui:insert name="graphTabContent"/>
                 </h:panelGroup>
             </p:tab>
 
         </p:tabView>
+        <!--shortDesc="#{searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
+        disabled="#{searchBean.totalResults == 0 or searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount}"-->
 
     </ui:define>
 

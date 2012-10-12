@@ -9,13 +9,13 @@
     <function>
         <function-name>isProtein</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
-        <function-signature>boolean isProtein(uk.ac.ebi.intact.psimitab.model.ExtendedInteractor)</function-signature>
+        <function-signature>boolean isProtein(psidev.psi.mi.tab.model.Interactor)</function-signature>
     </function>
 
     <function>
         <function-name>isSmallMolecule</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
-        <function-signature>boolean isSmallMolecule(uk.ac.ebi.intact.psimitab.model.ExtendedInteractor)</function-signature>
+        <function-signature>boolean isSmallMolecule(psidev.psi.mi.tab.model.Interactor)</function-signature>
     </function>
 
     <function>
@@ -51,7 +51,7 @@
     <function>
         <function-name>getInteractorDisplayName</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
-        <function-signature>java.lang.String getInteractorDisplayName(uk.ac.ebi.intact.psimitab.model.ExtendedInteractor)</function-signature>
+        <function-signature>java.lang.String getInteractorDisplayName(psidev.psi.mi.tab.model.Interactor)</function-signature>
     </function>
 
     <function>
@@ -61,9 +61,27 @@
     </function>
 
     <function>
+        <function-name>getExpansionName</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
+        <function-signature>java.lang.String getExpansionName(psidev.psi.mi.tab.model.BinaryInteraction)</function-signature>
+    </function>
+
+    <function>
+        <function-name>getParameter</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
+        <function-signature>java.lang.String getParameter(psidev.psi.mi.tab.model.Parameter)</function-signature>
+    </function>
+
+    <function>
+        <function-name>formatDate</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
+        <function-signature>java.lang.String formatDate(java.util.Date)</function-signature>
+    </function>
+
+    <function>
         <function-name>getDrugStatus</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
-        <function-signature>java.lang.String getDrugStatus(uk.ac.ebi.intact.psimitab.model.ExtendedInteractor)</function-signature>
+        <function-signature>java.lang.String getDrugStatus(psidev.psi.mi.tab.model.Interactor)</function-signature>
     </function>
 
      <function>
@@ -79,10 +97,34 @@
     </function>
 
     <function>
+        <function-name>getExclusionFilteredAliases</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
+        <function-signature>java.util.Collection getExclusionFilteredAliases(java.util.Collection)</function-signature>
+    </function>
+
+    <function>
+        <function-name>getExclusionFilteredAliases</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
+        <function-signature>java.util.Collection getExclusionFilteredAliases(java.util.Collection)</function-signature>
+    </function>
+
+    <function>
+        <function-name>getUniqueOrganismXref</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
+        <function-signature>psidev.psi.mi.tab.model.CrossReference getUniqueOrganismXref(java.util.Collection)</function-signature>
+    </function>
+
+    <function>
+        <function-name>hasOrganism</function-name>
+        <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
+        <function-signature>boolean hasOrganism(psidev.psi.mi.tab.model.Interactor)</function-signature>
+    </function>
+
+    <function>
         <function-name>getInitialForMoleculeType</function-name>
         <function-class>uk.ac.ebi.intact.view.webapp.util.MitabFunctions</function-class>
         <function-signature>java.lang.String[]
-            getInitialForMoleculeType(uk.ac.ebi.intact.psimitab.model.ExtendedInteractor)
+            getInitialForMoleculeType(psidev.psi.mi.tab.model.Interactor)
         </function-signature>
     </function>
 

@@ -7,13 +7,12 @@
 
                 template="/main_content_template.xhtml">
 
-    <f:metadata>
-        <!--<f:event type="preRenderView" listener="#{contextController.clearLoadedTabs()}"/>-->
-        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(2)}"/>
-        <f:viewParam name="query" value="#{userQuery.urlFriendlyQuery}"/>
-        <f:viewParam name="ontologyQuery" value="#{userQuery.ontologySearchQuery}"/>
-        <f:event type="preRenderView" listener="#{searchBean.searchOnLoad}"/>
-        <f:event type="preRenderView" listener="#{psicquicController.countResultsInOtherDatabases}"/>
-    </f:metadata>
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(2)}"/>
+            <f:event type="preRenderView" listener="#{searchBean.searchOnLoad}"/>
+            <f:viewParam name="query" value="#{userQuery.urlFriendlyQuery}"/>
+        </f:metadata>
+    </ui:define>
 
 </ui:composition>

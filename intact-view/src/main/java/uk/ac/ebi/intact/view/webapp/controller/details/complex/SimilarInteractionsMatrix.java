@@ -15,7 +15,9 @@
  */
 package uk.ac.ebi.intact.view.webapp.controller.details.complex;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * Centralization of all data nessary to build the similar interaction matrix.
@@ -33,8 +35,8 @@ public class SimilarInteractionsMatrix {
     private List<SimpleInteractor> members;
 
     public SimilarInteractionsMatrix( SimpleInteractor investigatedInteraction,
-                                      List<SimilarInteraction> similarInteractions,
-                                      List<SimpleInteractor> members ) {
+                                      TreeSet<SimilarInteraction> similarInteractions,
+                                      TreeSet<SimpleInteractor> members ) {
         
         if ( investigatedInteraction == null ) {
             throw new IllegalArgumentException( "You must give a non null investigatedInteraction" );
@@ -49,8 +51,8 @@ public class SimilarInteractionsMatrix {
         }
 
         this.investigatedInteraction = investigatedInteraction;
-        this.similarInteractions = similarInteractions;
-        this.members = members;
+        this.similarInteractions = new ArrayList<SimilarInteraction>(similarInteractions);
+        this.members = new ArrayList<SimpleInteractor>(members);
     }
 
     public SimpleInteractor getInvestigatedInteraction() {

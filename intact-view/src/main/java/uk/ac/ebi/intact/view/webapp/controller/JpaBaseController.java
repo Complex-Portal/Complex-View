@@ -15,12 +15,17 @@ public abstract class JpaBaseController extends BaseController {
 
     private static final Log log = LogFactory.getLog( JpaBaseController.class );
 
+    IntactContext intactContext;
+
     protected DaoFactory getDaoFactory() {
         return getIntactContext().getDataContext().getDaoFactory();
     }
 
     protected IntactContext getIntactContext() {
-        return IntactContext.getCurrentInstance();
+        if (intactContext == null){
+           intactContext = IntactContext.getCurrentInstance();
+        }
+        return intactContext;
     }
 
     

@@ -19,22 +19,31 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.FacetField;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.params.FacetParams;
+import org.hupo.psi.mi.psicquic.model.PsicquicSolrServer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearchResult;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
+import uk.ac.ebi.intact.model.CvDatabase;
+import uk.ac.ebi.intact.view.webapp.IntactViewException;
+import uk.ac.ebi.intact.view.webapp.application.PsicquicThreadConfig;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
 import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ComponentSystemEvent;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * Controller for the browse tab.
@@ -56,9 +65,9 @@ public class BrowseController extends JpaBaseController {
     public static final String EXPRESSION_SEPERATOR = "+";
 
     private int maxSize = 200;
+    private int maxSizeRNAExpression = 125;
 
-    private List<String> uniprotAcs;
-    private List<String> geneNames;
+    private Set<String> uniprotAcs;
 
     //browsing
     private String interproIdentifierList;
@@ -66,76 +75,205 @@ public class BrowseController extends JpaBaseController {
     private String mRNAExpressionIdentifierList;
     private String[] reactomeIdentifierList;
 
+    private UserQuery userQuery;
+    private IntactViewConfiguration intactViewConfiguration;
+    private IntactSolrSearcher solrSearcher;
+
+    private String currentQuery;
+    private SearchController searchController;
+    private ExecutorService executorService;
+
+    @Autowired
+    private PsicquicThreadConfig psicquicThreadConfig;
+
     public BrowseController() {
     }
 
+    @PostConstruct
+    public void initialSearch() {
+        this.currentQuery = null;
 
-    public String createListofIdentifiersAndBrowse() {
-        createListOfIdentifiers();
-        return "/pages/browse/browse?faces-redirect=true&includeViewParams=true";
+        if (executorService == null){
+
+            executorService = psicquicThreadConfig.getExecutorService();
+        }
     }
 
-    public void createListOfIdentifiers() {
-        buildListOfIdentifiers();
-        SearchController searchController = (SearchController) getBean("searchBean");
-        searchController.doInteractorsSearch();
+    public void searchOnLoad(ComponentSystemEvent evt) {
+        if (userQuery == null){
+            userQuery = (UserQuery) getBean("userQuery");
+        }
+        if (searchController == null){
+            searchController = (SearchController) getBean("searchBean");
+        }
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+
+            buildListOfIdentifiers();
+        }
     }
 
     private void buildListOfIdentifiers() {
-        uniprotAcs = new ArrayList<String>(maxSize);
-        geneNames = new ArrayList<String>(maxSize);
 
-        final String uniprotFieldName = "uniprotkb_id";
-        final String geneNameFieldName = "geneName";
+        if (!hasLoadedUniprotAcs(searchController.getCurrentQuery())){
 
-        UserQuery userQuery = (UserQuery) getBean("userQuery");
+            Callable<Set<String>> uniprotAcsRunnable = createBrowserInteractorListRunnable(searchController.getCurrentQuery() != null ? searchController.getCurrentQuery() : UserQuery.STAR_QUERY, getSolrSearcher(), userQuery.isFilterSpoke(), userQuery.isIncludeNegative());
+            Future<Set<String>> uniprotAcsFuture = executorService.submit(uniprotAcsRunnable);
 
-        SolrQuery query = userQuery.createSolrQuery();
-        query.setRows(0);
-        query.setFacet(true);
-        query.setFacetLimit(maxSize);
-        query.setFacetMinCount(1);
-        query.setFacetSort( FacetParams.FACET_SORT_COUNT);
-        query.addFacetField(uniprotFieldName);
-        query.addFacetField(geneNameFieldName);
+            if (!searchController.hasLoadedInteractorResults()){
+                searchController.doInteractorsSearch();
+            }
+            checkAndResumeBrowserInteractorListTasks(uniprotAcsFuture, searchController.getCurrentQuery());
+        }
+    }
 
-        IntactViewConfiguration intactViewConfig = (IntactViewConfiguration) getBean("intactViewConfiguration");
-        final SolrServer solrServer = intactViewConfig.getInteractionSolrServer();
-        QueryResponse queryResponse;
+    public Callable<Set<String>> createBrowserInteractorListRunnable(final String userQuery, final IntactSolrSearcher solrSearcher, final boolean filterSpoke, final boolean filterNegative) {
+        return new Callable<Set<String>>() {
+            public Set<String> call() {
+
+                return collectUniprotAcs(userQuery, solrSearcher, filterSpoke, filterNegative);
+            }
+        };
+    }
+
+    public void checkAndResumeBrowserInteractorListTasks(Future<Set<String>> uniprotAcsFuture, String query) {
 
         try {
-            if (log.isDebugEnabled()) log.debug("Loading browsing id space using query: "+query);
+            Set<String> uniprotAcs = uniprotAcsFuture.get();
+            initializeAllLists(uniprotAcs);
+            this.currentQuery = query;
 
-            queryResponse = solrServer.query(query);
-        } catch ( SolrServerException e) {
-            addErrorMessage("Problem loading uniprot ACs", e.getMessage());
-            e.printStackTrace();
-            return;
+        } catch (InterruptedException e) {
+            log.error("The intact browser search was interrupted, we cancel the task.", e);
+            if (!uniprotAcsFuture.isCancelled()){
+                uniprotAcsFuture.cancel(true);
+            }
+        } catch (ExecutionException e) {
+            log.error("The intact browser search could not be executed, we cancel the task.", e);
+            if (!uniprotAcsFuture.isCancelled()){
+                uniprotAcsFuture.cancel(true);
+            }
+        }
+    }
+
+    public IntactSolrSearcher getSolrSearcher() {
+        if (solrSearcher == null){
+            if (intactViewConfiguration == null){
+                intactViewConfiguration = (IntactViewConfiguration) getBean("intactViewConfiguration");
+                final SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
+                solrSearcher = new IntactSolrSearcher(solrServer);
+            }
+        }
+        return  solrSearcher;
+    }
+
+    public void initializeAllLists(Set<String> uniprotAcs) {
+        if (uniprotAcs != null){
+            this.uniprotAcs = uniprotAcs;
+
+            initializeAllListsFromUniprotAcs();
+        }
+    }
+
+    public Set<String> collectUniprotAcs(final String userQuery, final IntactSolrSearcher solrSearcher, final boolean filterSpoke, final boolean filterNegative) {
+        int numberUniprotProcessed = 0;
+        int first = 0;
+        Set<String> uniprotAcs = new HashSet<String>();
+        final String uniprotFieldNameA = FieldNames.ID_A_FACET;
+        final String uniprotFieldNameB = FieldNames.ID_B_FACET;
+
+        boolean hasMoreAcs = true;
+        while (hasMoreAcs && numberUniprotProcessed < maxSize){
+            try {
+                String [] facetFields = buildFacetFields(uniprotFieldNameA, uniprotFieldNameB, numberUniprotProcessed);
+                String query = userQuery != null ? userQuery : UserQuery.STAR_QUERY;
+
+                String [] queryFilters = null;
+                if (filterNegative && filterSpoke){
+                    queryFilters = new String[]{FieldNames.ID_FACET+":uniprotkb\\:*", FieldNames.NEGATIVE+":false", FieldNames.COMPLEX_EXPANSION+":\"-\""};
+                }
+                else if (filterNegative){
+                    queryFilters = new String[]{FieldNames.ID_FACET+":uniprotkb\\:*", FieldNames.NEGATIVE+":false"};
+                }
+                else if (filterSpoke){
+                    queryFilters = new String[]{FieldNames.ID_FACET+":uniprotkb\\:*", FieldNames.COMPLEX_EXPANSION+":\"-\""};
+                }
+                else{
+                    queryFilters = new String[]{FieldNames.ID_FACET+":uniprotkb\\:*"};
+                }
+
+                IntactSolrSearchResult result = solrSearcher.searchWithFacets(query, 0, 0, PsicquicSolrServer.RETURN_TYPE_COUNT, queryFilters, facetFields, first, maxSize);
+
+                List<FacetField> facetFieldList = result.getFacetFieldList();
+                if (facetFieldList == null || facetFieldList.isEmpty()){
+                    hasMoreAcs = false;
+                }
+
+                for (FacetField facet : facetFieldList){
+                    if (facet.getValueCount() > 0){
+                        // collect uniprot ids
+                        for (FacetField.Count count : facet.getValues()){
+                            if (numberUniprotProcessed < maxSize){
+                                String uniprotkbPrefix= CvDatabase.UNIPROT+":";
+                                // only process uniprot ids
+                                if (count.getName().startsWith(uniprotkbPrefix)){
+                                    if (uniprotAcs.add(count.getName().substring(uniprotkbPrefix.length()))){
+                                        numberUniprotProcessed++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        hasMoreAcs = false;
+                    }
+                }
+
+                first+=maxSize;
+
+            } catch (Exception e) {
+                log.error("Problem loading uniprot ACs",e);
+
+                initializeAllLists(new HashSet<String>());
+                throw new IntactViewException("Problem loading uniprot ACs", e);
+            }
         }
 
-        final FacetField uniprotField = queryResponse.getFacetField(uniprotFieldName);
+        return uniprotAcs;
+    }
 
-        if (uniprotField != null && uniprotField.getValues() != null) {
-             for (FacetField.Count c : uniprotField.getValues()) {
-                 uniprotAcs.add(c.getName());
-             }
-        }
-
-        final FacetField geneNameField = queryResponse.getFacetField(geneNameFieldName);
-
-        if (geneNameField != null && geneNameField.getValues() != null) {
-             for (FacetField.Count c : geneNameField.getValues()) {
-                 geneNames.add(c.getName());
-             }
-        }
-
+    private void initializeAllListsFromUniprotAcs() {
         if (log.isDebugEnabled()) log.debug("Browse uniprot ACs: "+uniprotAcs);
-        if (log.isDebugEnabled()) log.debug("Browse gene names: "+geneNames);
+
+        Set<String> uniprotAcsFormRNAExpression = createSubsetUniprotAcsForRNAExpression();
 
         this.interproIdentifierList = appendIdentifiers( uniprotAcs, INTERPRO_SEPERATOR);
         this.chromosomalLocationIdentifierList = appendIdentifiers( uniprotAcs, CHROMOSOME_SEPERATOR);
-        this.mRNAExpressionIdentifierList = appendIdentifiers( uniprotAcs, EXPRESSION_SEPERATOR);
+        this.mRNAExpressionIdentifierList = appendIdentifiers( uniprotAcsFormRNAExpression, EXPRESSION_SEPERATOR);
         this.reactomeIdentifierList =  uniprotAcs.toArray( new String[uniprotAcs.size()] );
+    }
+
+    private Set<String> createSubsetUniprotAcsForRNAExpression() {
+        Set<String> uniprotAcsFormRNAExpression = new HashSet<String>(maxSizeRNAExpression);
+        int numberProcessed = 0;
+        Iterator<String> uniprotAcsIterator = uniprotAcs.iterator();
+        while (numberProcessed < maxSizeRNAExpression && uniprotAcsIterator.hasNext()){
+            uniprotAcsFormRNAExpression.add(uniprotAcsIterator.next());
+            numberProcessed++;
+        }
+        return uniprotAcsFormRNAExpression;
+    }
+
+    private String[] buildFacetFields(String uniprotFieldNameA, String uniprotFieldNameB, int numberUniprotProcessed) {
+        String[] facetFields;
+
+        // collect uniprot ids
+        if (numberUniprotProcessed < 200){
+            facetFields = new String[]{uniprotFieldNameA, uniprotFieldNameB};
+        }
+        else {
+            facetFields = new String[]{};
+        }
+        return facetFields;
     }
 
     private String appendIdentifiers( Collection<String> uniqueIdentifiers, String separator ) {
@@ -146,12 +284,8 @@ public class BrowseController extends JpaBaseController {
         return "";
     }
 
-    public List<String> getUniprotAcs() {
+    public Set<String> getUniprotAcs() {
         return uniprotAcs;
-    }
-
-    public List<String> getGeneNames() {
-        return geneNames;
     }
 
     public String getInterproIdentifierList() {
@@ -188,5 +322,17 @@ public class BrowseController extends JpaBaseController {
 
     public int getMaxSize() {
         return maxSize;
+    }
+
+    public int getMaxSizeRNAExpression() {
+        return maxSizeRNAExpression;
+    }
+
+    public boolean hasLoadedUniprotAcs(String userQuery) {
+
+        if ((this.currentQuery == null && userQuery != null) || (userQuery != null && !userQuery.equals(this.currentQuery))){
+            return false;
+        }
+        return true;
     }
 }

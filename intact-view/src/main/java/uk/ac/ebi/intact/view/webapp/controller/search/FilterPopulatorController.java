@@ -19,10 +19,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.context.DataContext;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.model.CvTopic;
+import uk.ac.ebi.intact.view.webapp.application.SpringInitializedService;
 
 import javax.annotation.PostConstruct;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.model.SelectItem;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
@@ -37,20 +42,19 @@ import java.util.List;
  * @version $Id$
  */
 @Controller("filterPopulator")
-public class FilterPopulatorController {
+@ApplicationScoped
+public class FilterPopulatorController extends SpringInitializedService{
 
     private static final Log log = LogFactory.getLog( FilterPopulatorController.class );
 
-    public static final String NOT_SPECIFIED_VALUE = "Not specified";
-    public static final String EXPANSION_SPOKE_VALUE = "Spoke";
+    public static final String NOT_SPECIFIED_VALUE = "-";
+    public static final String EXPANSION_SPOKE_VALUE = "MI:1060";
 
-    private List<String> datasets;
-    private List<String> sources;
-
-    private List<String> expansions;
+    private List<SelectItem> stoichiometrySelectItems;
+    private List<SelectItem> negativeSelectItems;
+    private List<SelectItem> parametersSelectItems;
     private List<SelectItem> datasetSelectItems;
     private List<SelectItem> sourceSelectItems;
-
     private List<SelectItem> expansionSelectItems;
 
     @Autowired
@@ -60,42 +64,62 @@ public class FilterPopulatorController {
 
     }
 
-    @PostConstruct
-    public void loadFilters() {
+    @Override
+    public synchronized void initialize(){
+        if (datasetSelectItems == null
+                || stoichiometrySelectItems == null || negativeSelectItems == null
+                || sourceSelectItems == null || expansionSelectItems == null){
+
+            if (log.isInfoEnabled()) log.info("Preloading filters");
+
+            if (log.isDebugEnabled()) log.debug("\tPreloading datasets");
+
+            datasetSelectItems = listDatasets();
+
+            if (log.isDebugEnabled()) log.debug("\tPreloading sources");
+
+            sourceSelectItems = listSources();
+
+            if (log.isDebugEnabled()) log.debug("\tPreloading expansions");
+
+            expansionSelectItems = listExpansionSelectItems();
+            if (log.isDebugEnabled()) log.debug("\tPreloading negative values");
+            negativeSelectItems = listNegativeSelectItems();
+            if (log.isDebugEnabled()) log.debug("\tPreloading parameter values");
+            parametersSelectItems = listParametersSelectItems();
+            if (log.isDebugEnabled()) log.debug("\tPreloading stoichiometry values");
+            stoichiometrySelectItems = listStoichiometrySelectItems();
+        }
+    }
+
+    public synchronized void reload(){
         if (log.isInfoEnabled()) log.info("Preloading filters");
 
         if (log.isDebugEnabled()) log.debug("\tPreloading datasets");
 
         datasetSelectItems = listDatasets();
-        datasets = getValues(datasetSelectItems);
 
         if (log.isDebugEnabled()) log.debug("\tPreloading sources");
 
         sourceSelectItems = listSources();
-        sources = getValues(sourceSelectItems);
 
-         if (log.isDebugEnabled()) log.debug("\tPreloading expansions");
+        if (log.isDebugEnabled()) log.debug("\tPreloading expansions");
 
         expansionSelectItems = listExpansionSelectItems();
-        expansions = getValues(expansionSelectItems);
+        if (log.isDebugEnabled()) log.debug("\tPreloading negative values");
+        negativeSelectItems = listNegativeSelectItems();
+        if (log.isDebugEnabled()) log.debug("\tPreloading parameter values");
+        parametersSelectItems = listParametersSelectItems();
+        if (log.isDebugEnabled()) log.debug("\tPreloading stoichiometry values");
+        stoichiometrySelectItems = listStoichiometrySelectItems();
     }
 
-    private List<String> getValues(Collection<SelectItem> selectItems) {
-        List<String> values = new ArrayList<String>();
+    private List<SelectItem> listDatasets() {
 
-        for (SelectItem selectItem : selectItems) {
-            values.add((String)selectItem.getValue());
-        }
-
-        return values;
-    }
-
-    @Transactional(readOnly = true)
-    public List<SelectItem> listDatasets() {
         Query query = entityManagerFactory.createEntityManager()
                 .createQuery("select distinct a.annotationText " +
-                             "from Annotation a " +
-                             "where a.cvTopic.identifier = :datasetMi");
+                        "from Annotation a " +
+                        "where a.cvTopic.identifier = :datasetMi");
 
         query.setParameter("datasetMi", CvTopic.DATASET_MI_REF);
 
@@ -122,8 +146,8 @@ public class FilterPopulatorController {
         return datasets;
     }
 
-    @Transactional
-    public List<SelectItem> listSources() {
+    private List<SelectItem> listSources() {
+
         Query query = entityManagerFactory.createEntityManager().createQuery("select distinct i.owner.shortLabel from InteractionImpl i");
         List<String> sourceResults = query.getResultList();
 
@@ -143,6 +167,28 @@ public class FilterPopulatorController {
         return expansions;
     }
 
+    private List<SelectItem> listNegativeSelectItems() {
+        List<SelectItem> negativeItems = new ArrayList<SelectItem>(2);
+        negativeItems.add(new SelectItem("true", "Only negative interactions"));
+        negativeItems.add(new SelectItem("(false OR true)", "Includes negative interactions"));
+        negativeItems.add(new SelectItem("false", "Only positive interactions (default)"));
+        return negativeItems;
+    }
+
+    private List<SelectItem> listParametersSelectItems() {
+        List<SelectItem> parameters = new ArrayList<SelectItem>(2);
+        parameters.add(new SelectItem("true", "Only interactions having parameters available"));
+        parameters.add(new SelectItem("false", "Excludes interactions having parameters available"));
+        return parameters;
+    }
+
+    private List<SelectItem> listStoichiometrySelectItems() {
+        List<SelectItem> stoichiometry = new ArrayList<SelectItem>(2);
+        stoichiometry.add(new SelectItem("true", "Only interactions having stoichiometry information"));
+        stoichiometry.add(new SelectItem("false", "Excludes interactions having stoichiometry information"));
+        return stoichiometry;
+    }
+
     public List<SelectItem> getDatasetSelectItems() {
         return datasetSelectItems;
     }
@@ -151,28 +197,16 @@ public class FilterPopulatorController {
         return sourceSelectItems;
     }
 
-    public List<String> getDatasets() {
-        return new ArrayList<String>(datasets);
+    public List<SelectItem> getStoichiometrySelectItems() {
+        return stoichiometrySelectItems;
     }
 
-    public void setDatasets(List<String> datasets) {
-        this.datasets = datasets;
+    public List<SelectItem> getParametersSelectItems() {
+        return parametersSelectItems;
     }
 
-    public List<String> getSources() {
-        return new ArrayList<String>(sources);
-    }
-
-    public void setSources(List<String> sources) {
-        this.sources = sources;
-    }
-
-    public List<String> getExpansions() {
-        return new ArrayList<String>(expansions);
-    }
-
-    public void setExpansions(List<String> expansions) {
-        this.expansions = expansions;
+    public List<SelectItem> getNegativeSelectItems() {
+        return negativeSelectItems;
     }
 
     public List<SelectItem> getExpansionSelectItems() {

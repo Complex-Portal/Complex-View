@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.view.webapp.filter;
 
+import javax.faces.application.ResourceHandler;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +46,11 @@ public class SessionExpiredFilter implements Filter {
             // is session expire control required for this request?
 
             if (isSessionControlRequiredForThisResource(httpServletRequest)) {
+                if (!httpServletRequest.getRequestURI().startsWith(httpServletRequest.getContextPath() + ResourceHandler.RESOURCE_IDENTIFIER)) { // Skip JSF resources (CSS/JS/Images/etc)
+                    httpServletResponse.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+                    httpServletResponse.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+                    httpServletResponse.setDateHeader("Expires", 0); // Proxies.
+                }
 
                 // is session invalid?
 
