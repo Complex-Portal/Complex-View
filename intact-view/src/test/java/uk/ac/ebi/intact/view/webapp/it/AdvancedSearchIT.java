@@ -44,11 +44,11 @@ public class AdvancedSearchIT extends IntactViewIT {
 
 
     private void typeAdvancedQuery(String search) {
-        driver.findElement(By.id(":intactForm:newQuerytxt")).sendKeys(search);
+        driver.findElement(By.id("newQuerytxt")).sendKeys(search);
     }
 
     private void selectAdvancedFieldByLabel(String fieldValue) {
-        changeSelectToLabel(By.id(":intactForm:newQueryField"), fieldValue);
+        changeSelectToLabel(By.id("newQueryField"), fieldValue);
         waitUntilLoadingIsComplete();
     }
 
@@ -63,7 +63,7 @@ public class AdvancedSearchIT extends IntactViewIT {
     }
 
     private void clickOnAddAndSearch() {
-        driver.findElement(By.id(":intactForm:addAndSearchBtn")).click();
+        driver.findElement(By.id("addAndSearchBtn")).click();
     }
 
     private void selectImagingTechniqueInDialog()  {
@@ -71,7 +71,7 @@ public class AdvancedSearchIT extends IntactViewIT {
         waitUntilElementIsVisible(By.id("ontologyTree:0_1:termTxt"));
         driver.findElement(By.id("ontologyTree:0_1:termTxt")).click();
 
-        waitUntilElementHasValue(By.id(":intactForm:newQuerytxt"), "MI:0428");
+        waitUntilElementHasValue(By.id("newQuerytxt"), "MI:0428");
     }
 
     private void clickOnBrowseIcon() {
