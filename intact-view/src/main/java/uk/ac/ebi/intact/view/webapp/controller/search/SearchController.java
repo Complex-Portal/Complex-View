@@ -5,6 +5,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.hupo.psi.mi.psicquic.model.PsicquicSolrException;
 import org.primefaces.event.TabChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -326,9 +328,23 @@ public class SearchController extends JpaBaseController {
 
     private LazySearchResultDataModel createInteractionDataModel(SolrQuery query, SolrServer solrServer, int pageSize) {
 
-        final LazySearchResultDataModel resultDataModel = new LazySearchResultDataModel(solrServer, query);
-        resultDataModel.setPageSize(pageSize);
-        return resultDataModel;
+        try {
+            final LazySearchResultDataModel resultDataModel = new LazySearchResultDataModel(solrServer, query);
+            resultDataModel.setPageSize(pageSize);
+
+            return resultDataModel;
+
+        } catch (PsicquicSolrException e) {
+            addErrorMessage("Temporarily impossible to retrieve results", query.getQuery());
+
+            log.fatal("Impossible to retrieve results for query " + query.getQuery(), e);
+            return null;
+        } catch (SolrServerException e) {
+            addErrorMessage("Temporarily impossible to retrieve results", query.getQuery());
+
+            log.fatal("Impossible to retrieve results for query " + query.getQuery(), e);
+            return null;
+        }
     }
 
     public void doInteractorsSearch() {

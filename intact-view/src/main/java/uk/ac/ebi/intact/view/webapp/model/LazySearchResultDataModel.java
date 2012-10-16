@@ -59,7 +59,7 @@ public class LazySearchResultDataModel extends LazyDataModel<BinaryInteraction> 
     private List<BinaryInteraction> binaryInteractions;
     private int numberOfBinaryInteractionsToShow;
 
-    public LazySearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery) {
+    public LazySearchResultDataModel(SolrServer solrServer, SolrQuery solrQuery) throws SolrServerException, PsicquicSolrException {
         this.solrSearcher = new IntactSolrSearcher(solrServer);
         this.solrQuery = solrQuery != null ? solrQuery.getCopy() : null;
 
@@ -170,7 +170,7 @@ public class LazySearchResultDataModel extends LazyDataModel<BinaryInteraction> 
         }
     }
 
-    private void prepareNegativeSolrQuery() {
+    private void prepareNegativeSolrQuery() throws SolrServerException, PsicquicSolrException {
         SolrQuery copyQuery = solrQuery.getCopy();
         copyQuery.setStart(0)
                 .setRows(0);
@@ -178,28 +178,8 @@ public class LazySearchResultDataModel extends LazyDataModel<BinaryInteraction> 
         // add negative filter
         copyQuery.addFilterQuery(FieldNames.NEGATIVE+":true");
 
-        try {
-            IntactSolrSearchResult negativeResults = solrSearcher.search(copyQuery);
-            this.numberOfBinaryInteractionsToShow = Long.valueOf(negativeResults.getNumberResults()).intValue();
-
-        } catch (PsicquicSolrException e) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            if (context != null){
-                FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Temporarily impossible to count negative interactions", copyQuery.getQuery());
-                context.addMessage(null, facesMessage);
-            }
-
-            log.fatal("Impossible to retrieve results for query " + copyQuery.getQuery(), e);
-            this.numberOfBinaryInteractionsToShow = 0;
-        } catch (SolrServerException e) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            if (context != null){
-                FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Temporarily impossible to count negative interactions", copyQuery.getQuery());
-                context.addMessage(null, facesMessage);
-            }
-            log.fatal("Impossible to retrieve results for query " + copyQuery.getQuery(), e);
-            this.numberOfBinaryInteractionsToShow = 0;
-        }
+        IntactSolrSearchResult negativeResults = solrSearcher.search(copyQuery);
+        this.numberOfBinaryInteractionsToShow = Long.valueOf(negativeResults.getNumberResults()).intValue();
     }
 
     public int getRowCount() {

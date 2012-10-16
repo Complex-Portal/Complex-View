@@ -330,7 +330,7 @@ public class BrowseController extends JpaBaseController {
 
     public boolean hasLoadedUniprotAcs(String userQuery) {
 
-        if ((this.currentQuery == null && userQuery != null) || (userQuery != null && !userQuery.equals(this.currentQuery))){
+        if ((this.currentQuery == null && userQuery == null) || (this.currentQuery != null && userQuery == null) || (this.currentQuery == null && userQuery != null) || (userQuery != null && !userQuery.equals(this.currentQuery))){
             return false;
         }
         return true;
