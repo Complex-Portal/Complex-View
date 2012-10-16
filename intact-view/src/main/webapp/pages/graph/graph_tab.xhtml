@@ -32,13 +32,13 @@
             <p:panel header="Open in Cytoscape">
 
                 <h:panelGrid style="text-align:center;width:100%">
-                    <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.searchQuery)}&amp;format=xml_2_53&amp;negative=#{userQuery.includeNegative}&amp;spoke=#{userQuery.filterSpoke}&amp;ontology=#{userQuery.ontologyQuery}&amp;asc=#{searchBean.ascending}&amp;sort=#{searchBean.userSortColumn}">
+                    <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.searchQuery)}&amp;format=xgmml&amp;negative=#{userQuery.includeNegative}&amp;spoke=#{userQuery.filterSpoke}&amp;ontology=#{userQuery.ontologyQuery}&amp;asc=#{searchBean.ascending}&amp;sort=#{searchBean.userSortColumn}">
                         <h:graphicImage alt="cytoscape-icon" url="/images/logos/cytoscape-icon.PNG" shortDesc="Click to start Cytoscape"/>
                     </h:outputLink>
                 </h:panelGrid>
                 <div style="font-size:8.5pt;width:98%;">
                     <h:outputText value="Click "/>
-                    <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.searchQuery)}&amp;format=xml_2_53&amp;negative=#{userQuery.includeNegative}&amp;spoke=#{userQuery.filterSpoke}&amp;ontology=#{userQuery.ontologyQuery}&amp;asc=#{searchBean.ascending}&amp;sort=#{searchBean.userSortColumn}">
+                    <h:outputLink value="/intact/exportCytoscape?query=#{iamf:encodeURL(userQuery.searchQuery)}&amp;format=xgmml&amp;negative=#{userQuery.includeNegative}&amp;spoke=#{userQuery.filterSpoke}&amp;ontology=#{userQuery.ontologyQuery}&amp;asc=#{searchBean.ascending}&amp;sort=#{searchBean.userSortColumn}">
                         &#160;here&#160;
                     </h:outputLink>
                     <h:outputText value=" or on the icon above to start Cytoscape." />

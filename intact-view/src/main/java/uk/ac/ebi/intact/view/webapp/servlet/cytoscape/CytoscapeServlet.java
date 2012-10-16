@@ -73,7 +73,7 @@ public class CytoscapeServlet extends HttpServlet {
         if ( log.isTraceEnabled() ) log.trace( "Encoded query: " + searchQuery );
 
         final String serverContext = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-        final String exportUrl = serverContext + "/export?query=" + searchQuery + "&format=" + format+"&negative="+negative+"&spoke="+spoke+"&ontology="+ontology+"&sort="+sort+"&asc="+asc;;
+        final String exportUrl = serverContext + "/export?query=" + searchQuery + "&amp;format=" + format+"&amp;negative="+negative+"&amp;spoke="+spoke+"&amp;ontology="+ontology+"&amp;sort="+sort+"&amp;asc="+asc;;
         response.setContentType( "application/x-java-jnlp-file" );
 
         // Read the template cytoscape.jnlp from from WEB-INF directory.
