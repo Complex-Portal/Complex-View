@@ -110,7 +110,7 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
     }
 
     protected void search(String query) {
-        waitUntilLoadingIsComplete();
+        waitUntilElementIsVisible(By.id("queryTxt"));
         driver.findElement(By.id("queryTxt")).clear();
         driver.findElement(By.id("queryTxt")).sendKeys(query);
         driver.findElement(By.id("quickSearchBtn")).click();
