@@ -19,7 +19,7 @@
     <url>http://www.ebi.ac.uk/~intact/devsite/service</url>
 
     <properties>
-        <currentVersion>${version}</currentVersion>
+        <currentVersion>1.6.0-SNAPSHOT</currentVersion>
         <jetty.port>9090</jetty.port>
         <jetty.context>${pom.artifactId}</jetty.context>
         <tempH2>${project.build.directory}/db/intact-${artifactId}-${jetty.port}-h2</tempH2>
@@ -27,7 +27,7 @@
         <user>${env.USERNAME}</user>
         <appRoot>/intact</appRoot>
 
-        <core.version>2.4.0-SNAPSHOT</core.version>
+        <core.version>2.4.2-SNAPSHOT</core.version>
     </properties>
 
     <modules>
