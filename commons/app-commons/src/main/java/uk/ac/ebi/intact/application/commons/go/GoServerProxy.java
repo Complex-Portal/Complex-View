@@ -4,7 +4,7 @@ All rights reserved. Please see the file LICENSE
 in the root directory of this distribution.
 */
 package uk.ac.ebi.intact.application.commons.go;
-import org.apache.xerces.parsers.SAXParser;
+import com.sun.org.apache.xerces.internal.parsers.SAXParser;
 import org.xml.sax.*;
 
 import java.io.*;
@@ -13,7 +13,7 @@ import java.net.URLConnection;
 
 import java.io.IOException;
 
-import uk.ac.ebi.intact.business.IntactException;
+import uk.ac.ebi.intact.core.IntactException;
 import uk.ac.ebi.intact.util.SearchReplace;
 
 /**
