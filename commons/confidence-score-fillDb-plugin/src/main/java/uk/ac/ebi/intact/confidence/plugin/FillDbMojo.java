@@ -21,23 +21,22 @@ import org.apache.log4j.*;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.springframework.transaction.TransactionStatus;
 import uk.ac.ebi.intact.bridges.blast.BlastConfig;
 import uk.ac.ebi.intact.bridges.blast.model.UniprotAc;
-import uk.ac.ebi.intact.business.IntactTransactionException;
+import uk.ac.ebi.intact.confidence.filter.FilterException;
 import uk.ac.ebi.intact.confidence.intact.IntactConfidenceCalculator;
-import uk.ac.ebi.intact.confidence.intact.TrainModel;
 import uk.ac.ebi.intact.confidence.intact.IntactScoreCalculator;
 import uk.ac.ebi.intact.confidence.maxent.OpenNLPMaxEntClassifier;
-import uk.ac.ebi.intact.confidence.utils.ParserUtils;
 import uk.ac.ebi.intact.confidence.util.AttributeGetterException;
-import uk.ac.ebi.intact.confidence.filter.FilterException;
-import uk.ac.ebi.intact.context.IntactContext;
-import uk.ac.ebi.intact.core.persister.PersisterHelper;
+import uk.ac.ebi.intact.confidence.utils.ParserUtils;
+import uk.ac.ebi.intact.core.IntactTransactionException;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.model.Confidence;
 import uk.ac.ebi.intact.model.CvConfidenceType;
 import uk.ac.ebi.intact.model.InteractionImpl;
 import uk.ac.ebi.intact.model.util.CvObjectUtils;
-import uk.ac.ebi.intact.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.plugin.IntactAbstractMojo;
 
 import java.io.File;
@@ -197,7 +196,7 @@ public class FillDbMojo extends IntactAbstractMojo {
         File gisModelFile = new File(gisModelPath);
         File pgConfigFile = new File(hibernateCfgFile);
         File goaFile = new File(goaFilePath);
-        IntactContext.initStandaloneContext( pgConfigFile );
+        IntactContext.initStandaloneContext(pgConfigFile);
         try {
             fillDb( workDir, config, new File(hcSetPath), gisModelFile, goaFile );
         } catch ( IOException e ) {
@@ -214,6 +213,8 @@ public class FillDbMojo extends IntactAbstractMojo {
 
     private void fillDb( File workDir, BlastConfig config, File hcSet, File gisModelFile, File goaFile ) throws IOException, IntactTransactionException, AttributeGetterException, FilterException {
 
+        TransactionStatus status = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
         log.info("goaFile: "+ goaFile.getPath());
         OpenNLPMaxEntClassifier classifier = new OpenNLPMaxEntClassifier( gisModelFile );
 
@@ -228,7 +229,7 @@ public class FillDbMojo extends IntactAbstractMojo {
 
         if (cvConfidence == null){
             cvConfidence = CvObjectUtils.createCvObject( IntactContext.getCurrentInstance().getInstitution(), CvConfidenceType.class, null, "intact confidence" );
-            PersisterHelper.saveOrUpdate( cvConfidence );
+            IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(CvConfidenceType.class).saveOrUpdate(cvConfidence);
         }
 
         InteractionDao interactionDao = IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getInteractionDao();
@@ -264,7 +265,7 @@ public class FillDbMojo extends IntactAbstractMojo {
 
             firstResult = firstResult + maxResults;
 
-            IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction(status);
         }
         if ( log.isInfoEnabled() ) {
             log.info( "Processed " + totalNr + " IntAct interactions." );
@@ -272,6 +273,8 @@ public class FillDbMojo extends IntactAbstractMojo {
     }
 
     private void saveInteractionsToDb( List<InteractionImpl> interactions ) throws IntactTransactionException {
+        TransactionStatus status = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+
         CvConfidenceType cvConfidenceType = ( CvConfidenceType ) IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getCvObjectDao().getByShortLabel( "intact confidence" );
 
         for ( Iterator<InteractionImpl> iter = interactions.iterator(); iter.hasNext(); ) {
@@ -285,7 +288,7 @@ public class FillDbMojo extends IntactAbstractMojo {
                 IntactContext.getCurrentInstance().getDataContext().getDaoFactory().getConfidenceDao().persist( confidence );
             }
         }
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction();
+        IntactContext.getCurrentInstance().getDataContext().commitTransaction(status);
     }
 
 }
