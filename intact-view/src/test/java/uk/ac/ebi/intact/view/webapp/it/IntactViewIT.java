@@ -63,7 +63,9 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
 
     @After
 	public void tearDown() throws Exception {
-		driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
 	}
 
     protected void waitUntilElementIsVisible(final By by) {

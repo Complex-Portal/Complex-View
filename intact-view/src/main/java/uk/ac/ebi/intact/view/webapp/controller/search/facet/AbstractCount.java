@@ -40,12 +40,14 @@ public abstract class AbstractCount {
         this();
 
         if (facetField != null) {
-            for (FacetField.Count c : facetField.getValues()) {
-                String key = c.getName();
-                if (key == null) {
-                    key = MISSING_KEY;
+            if (facetField.getValues() != null){
+                for (FacetField.Count c : facetField.getValues()) {
+                    String key = c.getName();
+                    if (key == null) {
+                        key = MISSING_KEY;
+                    }
+                    counts.put(key, c.getCount());
                 }
-                counts.put(key, c.getCount());
             }
         }
     }
