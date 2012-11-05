@@ -12,7 +12,7 @@
     <groupId>uk.ac.ebi.intact.service.statistics</groupId>
     <artifactId>statistics-master</artifactId>
     <packaging>pom</packaging>
-    <version>1.6.0</version>
+    <version>1.6.1-SNAPSHOT</version>
 
     <name>IntAct Services :: Statistics</name>
 

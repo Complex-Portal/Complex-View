@@ -14,14 +14,14 @@
     <parent>
         <groupId>uk.ac.ebi.intact.service.statistics</groupId>
         <artifactId>statistics-master</artifactId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>statistic-view</artifactId>
     <packaging>war</packaging>
-    <version>1.6.0</version>
+    <version>1.6.1-SNAPSHOT</version>
 
     <name>IntAct Services :: Statistics :: Statistic View Webapp</name>
     <description>Statistic View Application</description>
