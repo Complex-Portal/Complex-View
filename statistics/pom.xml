@@ -12,12 +12,27 @@
     <groupId>uk.ac.ebi.intact.service.statistics</groupId>
     <artifactId>statistics-master</artifactId>
     <packaging>pom</packaging>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>1.6.0</version>
 
     <name>IntAct Services :: Statistics</name>
+
+    <scm>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/statistics</connection>
+        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/statistics</developerConnection>
+        <url>https://intact.googlecode.com/svn/repo/service/trunk/statistics</url>
+    </scm>
 
     <modules>
         <module>statistic-view</module>
     </modules>
-
+    <distributionManagement>
+        <repository>
+            <id>ebi-repo</id>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo</url>
+        </repository>
+        <snapshotRepository>
+            <id>ebi-repo-snapshots</id>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
