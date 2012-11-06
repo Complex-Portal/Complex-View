@@ -14,14 +14,14 @@
     <parent>
         <groupId>uk.ac.ebi.intact.service.statistics</groupId>
         <artifactId>statistics-master</artifactId>
-        <version>1.6.1-SNAPSHOT</version>
+        <version>1.6.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>statistic-view</artifactId>
     <packaging>war</packaging>
-    <version>1.6.1-SNAPSHOT</version>
+    <version>1.6.1</version>
 
     <name>IntAct Services :: Statistics :: Statistic View Webapp</name>
     <description>Statistic View Application</description>
@@ -81,8 +81,13 @@
     <dependencies>
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
-            <artifactId>intact-core</artifactId>
-            <version>2.5.0</version>
+            <artifactId>intact-core-readonly</artifactId>
+            <version>2.6.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.ac.ebi.intact.core</groupId>
+            <artifactId>intact-annotations</artifactId>
+            <version>2.6.1</version>
         </dependency>
 
         <dependency>
@@ -140,7 +145,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>3.0.2.RELEASE</version>
+            <version>3.1.2.RELEASE</version>
         </dependency>
 
 
