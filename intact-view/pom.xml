@@ -15,7 +15,7 @@
     <groupId>uk.ac.ebi.intact.service.sandbox</groupId>
     <artifactId>intact-view</artifactId>
     <packaging>war</packaging>
-    <version>4.0.1-SNAPSHOT</version>
+    <version>4.0.1</version>
 
     <name>IntAct Services :: View</name>
 
@@ -68,6 +68,8 @@
         <!-- Other intact apps -->
         <intact.hierarchview.url>http://www.ebi.ac.uk/intact/hierarchView-beta</intact.hierarchview.url>
         <intactview.graph.maxInteractionCount>500</intactview.graph.maxInteractionCount>
+
+        <intact.ontologies.lucene.directory></intact.ontologies.lucene.directory>
 
         <!-- ChEBI -->
         <chebi.url>http://www.ebi.ac.uk/chebi</chebi.url>
@@ -237,7 +239,7 @@
                 <!-- SOLR -->
                 <intact.solr.interactions.url>http://localhost:33444/solr/core_pub</intact.solr.interactions.url>
                 <intact.solr.ontologies.url>http://localhost:33444/solr/core_ontology_pub</intact.solr.ontologies.url>
-                <intact.ontologies.lucene.directory>${project.build.testOutputDirectory}/ontology-dir</intact.ontologies.lucene.directory>
+                <intact.ontologies.lucene.directory></intact.ontologies.lucene.directory>
 
                 <intact.configfile>${project.build.testOutputDirectory}/intact-view-test.cfg</intact.configfile>
 
@@ -437,14 +439,20 @@
         <!-- Intact -->
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
-            <artifactId>intact-core</artifactId>
-            <version>${core.version}</version>
+            <artifactId>intact-core-readonly</artifactId>
+            <version>2.6.1.1</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.intact.commons</groupId>
             <artifactId>intact-commons</artifactId>
             <version>2.1.8</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>uk.ac.ebi.intact.core</groupId>
+                    <artifactId>intact-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -455,6 +463,10 @@
                 <exclusion>
                     <groupId>lucene</groupId>
                     <artifactId>lucene</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>uk.ac.ebi.intact.core</groupId>
+                    <artifactId>intact-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -478,6 +490,10 @@
                     <groupId>com.sun.xml.ws</groupId>
                     <artifactId>jaxws-rt</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>uk.ac.ebi.intact.core</groupId>
+                    <artifactId>intact-core</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -498,6 +514,10 @@
                 <exclusion>
                     <groupId>org.mortbay.jetty:jetty</groupId>
                     <artifactId>jetty</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>uk.ac.ebi.intact.core</groupId>
+                    <artifactId>intact-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -590,7 +610,7 @@
         <dependency>
             <groupId>org.hupo.psi.mi.psicquic</groupId>
             <artifactId>psicquic-registry-client</artifactId>
-            <version>1.0</version>
+            <version>1.1.0</version>
         </dependency>
 
         <!-- other -->
