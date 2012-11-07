@@ -173,4 +173,26 @@ public class OntologyBean extends BaseController implements InitializingBean {
 
         this.maxOntologySuggestion = viewConfiguration.getMaxOntologySuggestions();
     }
+
+    public void reloadOntologyIndex() throws IOException{
+        if (viewConfiguration.getOntologyLuceneDirectory() == null) {
+            if (log.isErrorEnabled()) log.error("Cannot load ontologies as the ontology lucene directory is not configured");
+            return;
+        }
+        if (log.isInfoEnabled()) log.info("Loading and indexing ontologies");
+
+        try {
+            File ontologyDir = new File(viewConfiguration.getOntologyLuceneDirectory());
+
+            InteractionOntologyLuceneSearcher searcher = new InteractionOntologyLuceneSearcher(ontologyDir);
+            this.ontologyIndexDirectory = ontologyDir;
+
+            this.ontologiesIndexSearcher = searcher;
+
+            this.maxOntologySuggestion = viewConfiguration.getMaxOntologySuggestions();
+
+        } catch (IOException e) {
+            throw new IOException("Impossible to reload lucen index for ontologies", e);
+        }
+    }
 }
