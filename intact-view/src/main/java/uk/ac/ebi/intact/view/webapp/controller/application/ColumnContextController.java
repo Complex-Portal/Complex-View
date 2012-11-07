@@ -167,7 +167,7 @@ public class ColumnContextController {
             simpleColumns = new String[] {
                     MOLECULE_A_NAME, MOLECULE_A_LINKS, MOLECULE_B_NAME, MOLECULE_B_LINKS,
                     MOLECULE_A_SPECIES, MOLECULE_B_SPECIES,INTERACTION_TYPE, CONFIDENCE_VALUE, PUBMED_IDENTIFIER,
-                    INTERACTION_DETECTION_METHOD, INTERACTION_AC, EXPANSION_METHOD, NEGATIVE
+                    INTERACTION_DETECTION_METHOD, INTERACTION_AC, EXPANSION_METHOD
             };
         }
         return simpleColumns;
@@ -177,7 +177,7 @@ public class ColumnContextController {
         if (basicColumns == null){
             basicColumns =new String[] {
                     MOLECULE_A_NAME, MOLECULE_A_LINKS, MOLECULE_B_NAME, MOLECULE_B_LINKS,
-                    INTERACTION_DETECTION_METHOD, INTERACTION_AC, NEGATIVE
+                    INTERACTION_DETECTION_METHOD, INTERACTION_AC
             };
         }
         return basicColumns;
@@ -216,7 +216,7 @@ public class ColumnContextController {
 
     private String[] getMinimumColumns() {
         if (minimumColumns == null){
-           minimumColumns = new String[] { MOLECULE_A_NAME, MOLECULE_B_NAME, INTERACTION_AC, NEGATIVE};
+           minimumColumns = new String[] { MOLECULE_A_NAME, MOLECULE_B_NAME, INTERACTION_AC};
         }
         return minimumColumns;
     }
