@@ -36,7 +36,7 @@
 
     <ul>
         <h:panelGroup rendered="#{facetController.expansionCount.spokeCount > 0}"
-                inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
+                      inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
             <li>
                 <strong><h:outputText value="#{facetController.expansionCount.spokeCount}">
                     <f:convertNumber pattern="#,###"/>
@@ -50,6 +50,20 @@
                     <f:attribute name="#{userQuery.filterSpokeParameterName}" value="true" />
                 </h:commandLink>
                 &#160;them out.
+            </li>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{userQuery.filterSpoke}"
+                      inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
+            <li>
+                Binary interactions originating
+                from&#160;
+                <p:commandLink onclick="complexExpansionDialog.show()">spoke expanded co-complexes
+                    <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+                </p:commandLink> are filtered out from your results and you may want to&#160;
+                <h:commandLink value="include" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
+                    <f:attribute name="#{userQuery.filterSpokeParameterName}" value="false" />
+                </h:commandLink>
+                &#160;them again.
             </li>
         </h:panelGroup>
         <h:panelGroup rendered="#{facetController.negativeCount.negativeCount == 0 and searchBean.numberOfBinaryInteractionsToShow > 0}"
@@ -74,7 +88,11 @@
                 <strong><h:outputText value="#{facetController.negativeCount.negativeCount}">
                     <f:convertNumber pattern="#,###"/>
                 </h:outputText>
-                </strong> negative interactions have been included in your results.
+                </strong> negative interactions have been included in your results. You may want to&#160;
+                <h:commandLink value="filter" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
+                    <f:attribute name="#{userQuery.includeNegativeParameterName}" value="false" />
+                </h:commandLink>
+                &#160;them out.
                 <br/>They will appear in a <strong>pink row</strong> and will be excluded from MITAB 2.5, RDF,
                 Biopax, XGMML export as well as from the graph view.
 
