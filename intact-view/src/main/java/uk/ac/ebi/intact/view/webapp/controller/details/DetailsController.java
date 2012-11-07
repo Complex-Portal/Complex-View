@@ -143,7 +143,15 @@ public class DetailsController extends JpaBaseController {
                 if (interactions.size() > 0) {
                     Interaction binaryInteraction = interactions.get(0);
                     setInteraction(binaryInteraction);
+                    if( interaction != null && !interaction.getExperiments().isEmpty() ) {
+
+                        experiment = interaction.getExperiments().iterator().next();
+                    }
+                    else {
+                        experiment = null;
+                    }
                     loadParticipants();
+                    loadNumberOfInteractorsInExperiment();
                     loadJsonExperimentInteractions();
 
                     // Update interaction search
@@ -258,13 +266,19 @@ public class DetailsController extends JpaBaseController {
     public void loadInteraction( ) {
         if ( log.isDebugEnabled() ) log.debug( "Calling setInteractionAc( '" + interactionAc + "' )..." );
         interaction = getDaoFactory().getInteractionDao().getByAc( interactionAc );
-        experiment = getExperiment();
-
         if (interaction == null) {
             interaction = getDaoFactory().getInteractionDao().getByXref( interactionAc );
         }
-
         if ( interaction == null ) addErrorMessage( "No interaction found in the database for ac: " + interactionAc, "" );
+
+        if( interaction != null && !interaction.getExperiments().isEmpty() ) {
+
+            experiment = interaction.getExperiments().iterator().next();
+        }
+        else {
+            experiment = null;
+        }
+
         loadParticipants();
         loadNumberOfInteractorsInExperiment();
         loadJsonExperimentInteractions();
@@ -286,6 +300,10 @@ public class DetailsController extends JpaBaseController {
         if( interaction != null && !interaction.getExperiments().isEmpty() ) {
 
             exp = interaction.getExperiments().iterator().next();
+            experiment = exp;
+        }
+        else {
+            experiment = null;
         }
         return exp;
     }
