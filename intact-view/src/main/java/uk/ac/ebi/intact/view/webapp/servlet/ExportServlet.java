@@ -153,6 +153,7 @@ public class ExportServlet extends HttpServlet {
         }
         // add default parameters if nor already there
         solrQuery.setParam("defType", "edismax");
+        solrQuery.setParam("mm", "1");
         if (!ontologyQuery){
             solrQuery.setParam("qf", SolrFieldName.identifier.toString()+" "+SolrFieldName.pubid.toString()+" "+SolrFieldName.pubauth.toString()+" "+SolrFieldName.species.toString()+" "+SolrFieldName.detmethod.toString()+" "+SolrFieldName.type.toString()+" "+SolrFieldName.interaction_id.toString());
         }
