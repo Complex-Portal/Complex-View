@@ -147,8 +147,16 @@ public class SearchController extends JpaBaseController {
 
     public String doBinarySearchAction() {
         UserQuery userQuery = getUserQuery();
-        if (this.currentQuery == null || !hasLoadedSearchControllerResults){
-            userQuery.clearInteractionFilters();
+        // reset filters only when we don't have a ontology search
+        if ((this.currentQuery == null || !hasLoadedSearchControllerResults)){
+
+            if (userQuery.isOntologyQuery()){
+                userQuery.setFilterSpoke(false);
+                userQuery.setIncludeNegative(false);
+            }
+            else {
+                userQuery.clearInteractionFilters();
+            }
         }
 
         SolrQuery solrQuery = userQuery.createSolrQuery();
