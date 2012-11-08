@@ -32,6 +32,8 @@ import uk.ac.ebi.intact.view.webapp.controller.search.UserQuery;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.ComponentSystemEvent;
 
 
 /**
@@ -57,6 +59,8 @@ public abstract class OntologyBrowserController extends BaseController {
 
     protected boolean useName = false;
 
+    protected String currentQuery=null;
+
     public OntologyBrowserController() {
     }
 
@@ -69,6 +73,16 @@ public abstract class OntologyBrowserController extends BaseController {
         final SolrServer ontologySolrServer = intactViewConfiguration.getOntologySolrServer();
         OntologySearcher ontologySearcher = new OntologySearcher(ontologySolrServer);
         ontologyTreeNode = createOntologyTreeModel(createRootTerm(ontologySearcher));
+    }
+
+    public void searchOnLoad(ComponentSystemEvent evt) {
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+
+            UserQuery userQuery = (UserQuery) getBean("userQuery");
+            if (this.currentQuery == null || !userQuery.getSearchQuery().equals(this.currentQuery)){
+                resetTreeNode();
+            }
+        }
     }
 
     protected TreeNode createOntologyTreeModel(OntologyTerm rootTerm) {
@@ -90,12 +104,15 @@ public abstract class OntologyBrowserController extends BaseController {
 
         TreeNode treeNode = createRootTreeNode(otwRoot);
 
+        this.currentQuery = userQuery.getSearchQuery();
+
         return treeNode;
     }
 
     protected void resetTreeNode(){
-        OntologyTermWrapper otwRoot = (OntologyTermWrapper) ontologyTreeNode.getData();
-        ontologyTreeNode = createRootTreeNode(otwRoot);
+        final SolrServer ontologySolrServer = intactViewConfiguration.getOntologySolrServer();
+        OntologySearcher ontologySearcher = new OntologySearcher(ontologySolrServer);
+        ontologyTreeNode = createOntologyTreeModel(createRootTerm(ontologySearcher));
     }
 
     public void onNodeSelect(NodeSelectEvent evt) {
@@ -141,5 +158,9 @@ public abstract class OntologyBrowserController extends BaseController {
 
     public void setSelectedNode(TreeNode selectedNode) {
         this.selectedNode = selectedNode;
+    }
+
+    public void initializeTreeNode(ActionEvent evt) {
+        resetTreeNode();
     }
 }

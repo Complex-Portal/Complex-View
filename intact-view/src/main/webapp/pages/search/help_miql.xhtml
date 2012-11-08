@@ -18,6 +18,32 @@
     </h:panelGroup>
 
     <ul>
+        <li>Search based on exact word matches.
+            <ul>
+                <li><i>BRCA2</i> will not match <i>BRCA2B</i></li>
+                <li><i>Association</i> will retrieve both <i>physical association</i> and <i>association</i></li>
+                <li>To retrieve all isoforms of <i>P12345</i>, use <i>P12345*</i></li>
+            </ul>
+        </li>
+        <li>Search will recognize ontologies and synonyms.
+            <ul>
+                <li><i>Eukaryota</i> will retrieve all children of <i>Eukaryota</i> using the Uniprot taxonomy</li>
+                <li><i>affinity techniques</i> will match <i>affinity technology</i> because it is affinity techniques is a synonym of affinity technology in the PSI-MI ontology</li>
+            </ul>
+        </li>
+        <li>Default fields are used when no field is specified (simple search) :
+            <ul>
+                <li>Interactor id, alias</li>
+                <li>Interactor species</li>
+                <li>Interaction id</li>
+                <li>Publication id, first author</li>
+                <li>Interaction type</li>
+                <li>Interaction detection method</li>
+            </ul>.
+            <br/>For instance, if you put
+            <i>'P12345'</i> in the simple query box,
+            this will mean the same as <i>  identifier:P12345 OR pubid:P12345 OR pubauth:P12345 OR species:P12345
+                OR type:P12345 OR detmethod:P12345 OR interaction_id:P12345</i></li>
         <li>Use OR or space ' ' to search for ANY of the terms in a field</li>
         <li>Use AND if you want to search for those interactions where ALL of your terms are found</li>
         <li>Use quotes (") if you look for a specific phrase (group of terms that must be searched together) or terms
@@ -193,7 +219,7 @@
 
     <hr/>
 
-    <h2>Intact fields</h2>
+    <h2>IntAct fields</h2>
 
     <h:outputText value="These field names are specific to IntAct and are not in MIQL definition for PSICQUIC."/>
 
@@ -216,10 +242,5 @@
     </h:panelGrid>
 
     <hr/>
-
-    <p>(*) Implicit fields are used when no field is specified (simple search). For instance, if you put
-        <i>'P12345'</i> in the simple query box,
-        this will mean the same as <i>  identifier:P12345 OR pubid:P12345 OR pubauth:P12345 OR species:P12345
-            OR type:P12345 OR detmethod:P12345 OR interaction_id:P12345</i></p>
 
 </ui:composition>

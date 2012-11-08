@@ -103,26 +103,24 @@
                                         var="term" itemLabel="#{term.name}" itemValue="#{term}"
                                         typeAhead="true" completeMethod="#{ontologyBean.fillAutocomplete}"
                                         autoHighlight="true" forceSelection="true"
-                                        maxResults="20" size="30"/>
+                                        maxResults="20" size="30" scrollHeight="30" dropdown="true"/>
 
                         <f:facet name="help">
                             <h:panelGroup>
                                 <ul><li>
                                     <h:panelGroup>
                                         <h:outputText value="Term name: "/>
-                                        <h:commandLink value="mammalia"
-                                                        actionListener="#{userQuery.doAddParamOntologyTermToQuery}"
-                                                        action="#{searchBean.doBinarySearchAction}">
-                                            <f:param name="term" value="mammalia"/>
+                                        <h:commandLink value="mammalia" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
+                                            <f:attribute name="#{userQuery.queryParameterName}" value="species:mammalia" />
+                                            <f:attribute name="#{userQuery.ontologyQueryParameterName}" value="true" />
                                         </h:commandLink>
                                     </h:panelGroup>
                                     </li><li>
                                     <h:panelGroup>
                                         <h:outputText value="Term name: "/>
-                                        <h:commandLink value="two hybrid"
-                                                        actionListener="#{userQuery.doAddParamOntologyTermToQuery}"
-                                                        action="#{searchBean.doBinarySearchAction}">
-                                            <f:param name="term" value="two hybrid"/>
+                                        <h:commandLink value="two hybrid" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
+                                            <f:attribute name="#{userQuery.queryParameterName}" value="detmethod:two\ hybrid" />
+                                            <f:attribute name="#{userQuery.ontologyQueryParameterName}" value="true" />
                                         </h:commandLink>
                                     </h:panelGroup>
                                     </li>

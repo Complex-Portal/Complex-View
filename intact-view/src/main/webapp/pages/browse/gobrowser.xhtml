@@ -9,6 +9,7 @@
 
     <f:metadata>
         <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(3)}"/>
+        <f:event type="preRenderView" listener="#{goBrowser.searchOnLoad}"/>
     </f:metadata>
 
     <ui:define name="browseTabContent">

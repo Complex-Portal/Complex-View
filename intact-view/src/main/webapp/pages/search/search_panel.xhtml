@@ -7,13 +7,6 @@
 
     <p:panel style="width:100%">
 
-        <div style="float:right">
-            <p:commandLink onclick="miqlHelpDialog.show()">
-                MIQL syntax reference
-                <h:graphicImage alt="helpIcon" url="/images/help.png" inlineStyle="vertical-align: baseline"/>
-            </p:commandLink>
-        </div>
-
         <p:dialog header="MIQL Syntax Reference" widgetVar="miqlHelpDialog" fixedCenter="true"
                   width="600" height="600">
             <div style="width:590px; height:590px; overflow:auto;">
@@ -55,8 +48,21 @@
                            onstart="statusDialog.show()"
                            oncomplete="statusDialog.hide()"
                            partialSubmit="true"
-                           process="@this"/>
-
+                           process=":intactForm:queryTxt @this"/>
+            &#160;
+            <p:commandLink onclick="miqlHelpDialog.show()">
+                MIQL syntax reference
+                <h:graphicImage alt="helpIcon" url="/images/help.png" inlineStyle="vertical-align: baseline"/>
+            </p:commandLink>
+        </h:panelGroup>
+        <br/>
+        <h:panelGroup id="searchTips" style="vertical-align:top; font-size: x-small">
+            <ul>
+                <li><h:outputText value="Free text search will look by default for interactor identifier, species, interaction id, detection method, interaction type, publicatiion identifier or author"/></li>
+                <li><h:outputText value="For a more specific search, use MIQL syntax or advanced search"/></li>
+                <li><h:outputText value="Search based on exact word matches eg. BRCA2 will not match BRCA2B"/></li>
+                <li><h:outputText value="Search for isoforms of 'P12345' by using 'P12345*'"/></li>
+            </ul>
         </h:panelGroup>
 
     </p:panel>
@@ -97,7 +103,7 @@
                     </h:selectOneMenu>
 
                     <h:panelGroup rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}">
-                        <p:commandLink id="browseOntology" onclick="browseCvDialog.show()">
+                        <p:commandLink id="browseOntology" actionListener="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.initializeTreeNode}" oncomplete="browseCvDialog.show()" ajax="true" update="ontologyDialog">
                             <h:graphicImage id="browseOntologyImg" alt="Browse" url="/images/magnify.png" height="16px" width="16px"/>
                         </p:commandLink>
 
