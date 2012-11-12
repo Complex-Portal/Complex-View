@@ -480,8 +480,6 @@ public class MiExportServiceImpl implements MiExportService {
             return Collections.EMPTY_LIST;
         }
 
-        PublicationConverter publicationConverter = new PublicationConverter();
-        ExperimentConverter experimentConverter = new ExperimentConverter();
         ExpansionStrategy expansionStrategy = new SpokeWithoutBaitExpansion(true, true);
         Intact2BinaryInteractionConverter intactInteractionConverter = new Intact2BinaryInteractionConverter(expansionStrategy);
 
