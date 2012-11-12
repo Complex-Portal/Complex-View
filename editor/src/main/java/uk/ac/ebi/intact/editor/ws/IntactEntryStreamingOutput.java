@@ -16,20 +16,17 @@
 package uk.ac.ebi.intact.editor.ws;
 
 import org.springframework.transaction.TransactionStatus;
+import psidev.psi.mi.tab.PsimiTabException;
 import psidev.psi.mi.tab.PsimiTabWriter;
 import psidev.psi.mi.tab.converter.tab2graphml.Tab2Cytoscapeweb;
-import psidev.psi.mi.tab.expansion.SpokeWithoutBaitExpansion;
 import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.tab.model.builder.PsimiTabVersion;
+import psidev.psi.mi.xml.PsimiXmlForm;
 import psidev.psi.mi.xml.PsimiXmlVersion;
 import psidev.psi.mi.xml.PsimiXmlWriter;
-import psidev.psi.mi.xml.converter.ConverterException;
 import psidev.psi.mi.xml.model.EntrySet;
 import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
 import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
-import uk.ac.ebi.intact.model.IntactEntry;
-import uk.ac.ebi.intact.psimitab.IntactPsimiTabWriter;
-import uk.ac.ebi.intact.psimitab.IntactXml2Tab;
 
 import javax.persistence.FlushModeType;
 import javax.ws.rs.WebApplicationException;
@@ -52,7 +49,7 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
         this.format = format;
     }
 
-    public abstract IntactEntry createIntactEntry();
+    public abstract Object createIntactEntry();
 
     @Override
     public void write(OutputStream outputStream) throws IOException, WebApplicationException {
@@ -64,8 +61,10 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
                 writeXml(outputStream);
             } else if (MiExportService.FORMAT_MITAB25.equals(format)) {
                 writeTab25(outputStream);
-            } else if (MiExportService.FORMAT_MITAB25_INTACT.equals(format)) {
-                writeTab25Intact(outputStream);
+            } else if (MiExportService.FORMAT_MITAB26.equals(format)) {
+                writeTab26(outputStream);
+            }else if (MiExportService.FORMAT_MITAB27.equals(format)) {
+                writeTab27(outputStream);
             } else if (MiExportService.FORMAT_HTML.equals(format)) {
                 writeHtml(outputStream);
             } else if (MiExportService.FORMAT_JSON.equals(format)) {
@@ -83,69 +82,96 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
     }
 
     public void writeXml(OutputStream outputStream) throws IOException, WebApplicationException {
-         EntrySet entrySet = createEntrySet(createIntactEntry());
+        Object obj = createIntactEntry();
+        if (obj instanceof EntrySet){
+            EntrySet entrySet = (EntrySet) createIntactEntry();
 
-           PsimiXmlWriter writer = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254);
+            PsimiXmlWriter writer = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254, PsimiXmlForm.FORM_COMPACT);
 
-           try {
-               writer.write(entrySet, outputStream);
-           } catch (Exception e) {
-               throw new IOException("Export failed, problem exporting to PSI-MI XML: ", e);
-           }
+            try {
+                writer.write(entrySet, outputStream);
+            } catch (Exception e) {
+                throw new IOException("Export failed, problem exporting to PSI-MI XML: ", e);
+            }
+        }
+        else {
+            throw new IOException("Export failed, problem exporting to PSI-MI XML. It was expecting an EntrySet when creating Intact entry.");
+        }
     }
 
     public void writeTab25(OutputStream outputStream) throws IOException, WebApplicationException {
-         exportToMitab(new PsimiTabWriter(false), outputStream);
+        exportToMitab(new PsimiTabWriter(PsimiTabVersion.v2_5), outputStream);
     }
-
-    public void writeTab25Intact(OutputStream outputStream) throws IOException, WebApplicationException {
-        IntactPsimiTabWriter psimitabWriter = new IntactPsimiTabWriter();
-        psimitabWriter.setHeaderEnabled(false);
-
-        exportToMitab(psimitabWriter, outputStream);
+    public void writeTab26(OutputStream outputStream) throws IOException, WebApplicationException {
+        exportToMitab(new PsimiTabWriter(PsimiTabVersion.v2_6), outputStream);
+    }
+    public void writeTab27(OutputStream outputStream) throws IOException, WebApplicationException {
+        exportToMitab(new PsimiTabWriter(PsimiTabVersion.v2_7), outputStream);
     }
 
     public void writeHtml(OutputStream outputStream) throws IOException, WebApplicationException {
-        EntrySet entrySet = createEntrySet(createIntactEntry());
+        Object obj = createIntactEntry();
+        if (obj instanceof EntrySet){
+            EntrySet entrySet = (EntrySet) createIntactEntry();
 
-        PsimiXmlWriter writer = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254);
+            PsimiXmlWriter writer = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254, PsimiXmlForm.FORM_COMPACT);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        try {
-            writer.write(entrySet, baos);
+            try {
+                writer.write(entrySet, baos);
 
-            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toString().getBytes());
+                ByteArrayInputStream bais = new ByteArrayInputStream(baos.toString().getBytes());
 
-            try{
-                XslTransformerUtils.viewPsiMi25(bais, outputStream);
+                try{
+                    XslTransformerUtils.viewPsiMi25(bais, outputStream);
+                }
+                finally {
+                    bais.close();
+                }
+                //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
+            }  catch ( Exception e ) {
+                throw new IOException("Problem converting to HTML", e);
             }
             finally {
-                bais.close();
+                baos.close();
             }
-            //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
-        }  catch ( Exception e ) {
-            throw new IOException("Problem converting to HTML", e);
         }
-        finally {
-            baos.close();
+        else {
+            throw new IOException("Export failed, problem exporting to PSI-MI HTML. It was expecting an EntrySet when creating Intact entry.");
         }
     }
 
     public void writeJson(OutputStream outputStream) throws IOException {
-        EntrySet entrySet = createEntrySet(createIntactEntry());
-        PsimiXmlWriter writer = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254);
+        Object obj = createIntactEntry();
+        if (obj instanceof EntrySet){
+            EntrySet entrySet = (EntrySet) createIntactEntry();
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PsimiXmlWriter writer = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254, PsimiXmlForm.FORM_COMPACT);
 
-        try {
-            writer.write(entrySet, baos);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toString().getBytes());
+            try {
+                writer.write(entrySet, baos);
 
-            XslTransformerUtils.jsonPsiMi(bais, outputStream);
-        } catch (Exception e) {
-            throw new IOException("Problem converting to JSON", e);
+                ByteArrayInputStream bais = new ByteArrayInputStream(baos.toString().getBytes());
+
+                try{
+                    XslTransformerUtils.jsonPsiMi(bais, outputStream);
+                }
+                finally {
+                    bais.close();
+                }
+                //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
+            }  catch ( Exception e ) {
+                throw new IOException("Problem converting to JSON", e);
+            }
+            finally {
+                baos.close();
+            }
+        }
+        else {
+            throw new IOException("Export failed, problem exporting to JSON. It was expecting an EntrySet when creating Intact entry.");
         }
     }
 
@@ -159,50 +185,36 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
         String output = null;
         try {
             output = tab2Cytoscapeweb.convert(bais);
-        } catch (ConverterException e) {
+        } catch (PsimiTabException e) {
             throw new IllegalStateException( "Could not parse input MITAB.", e );
+        }finally {
+            bais.close();
+            miStream.close();
         }
 
         outputStream.write(output.getBytes());
         outputStream.flush();
         outputStream.close();
+
     }
 
-    private EntrySet createEntrySet(IntactEntry intactEntry) {
-//        final TransactionStatus transactionStatus = getIntactContext().getDataContext().beginTransaction();
-//        getIntactContext().getDataContext().getDaoFactory().getEntityManager().setFlushMode(FlushModeType.COMMIT);
+    public void exportToMitab(PsimiTabWriter psimitabWriter, OutputStream outputStream) throws IOException {
+        Object obj = createIntactEntry();
+        if (obj instanceof Collection){
+            Collection<BinaryInteraction> binaryInteractions = (Collection<BinaryInteraction>) createIntactEntry();
 
-        // This is the main method to export data. An EntrySet is the equivalent to the IntactEntry object
-        // but is a member of the PSI-MI model (IntactEntry is for the Intact model)
-        PsiExchange psiExchange = (PsiExchange) IntactContext.getCurrentInstance().getSpringContext().getBean("psiExchange");
-        EntrySet entrySet = psiExchange.exportToEntrySet(intactEntry);
+            try {
+                psimitabWriter.write(binaryInteractions, outputStream);
 
-        // we rollback as we don't need to commit any change
-//        getIntactContext().getDataContext().rollbackTransaction(transactionStatus);
-
-        return entrySet;
+                //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
+            }  catch ( Exception e ) {
+                throw new IOException("Problem converting to MITAB 2.5", e);
+            }
+        }
+        else {
+            throw new IOException("Export failed, problem exporting to MITAB 2.5. It was expecting a Collection of BinaryInteractions when creating Intact entry.");
+        }
     }
-
-       public void exportToMitab(PsimiTabWriter psimitabWriter, OutputStream outputStream) throws IOException {
-           EntrySet entrySet = createEntrySet(createIntactEntry());
-
-           // Setup a interaction expansion strategy that is going to transform n-ary interactions into binaries using
-           // the spoke expansion algorithm
-           IntactXml2Tab xml2tab = new IntactXml2Tab();
-           xml2tab.setExpansionStrategy( new SpokeWithoutBaitExpansion() );
-
-           try {
-               Collection<BinaryInteraction> binaryInteractions = xml2tab.convert(entrySet);
-
-               psimitabWriter.setHeaderEnabled(false);
-
-               psimitabWriter.write(binaryInteractions, outputStream);
-
-           } catch (Exception e) {
-               throw new IOException("Problem exporting to MITAB: ",e);
-           }
-
-       }
 
     public IntactContext getIntactContext() {
         return IntactContext.getCurrentInstance();

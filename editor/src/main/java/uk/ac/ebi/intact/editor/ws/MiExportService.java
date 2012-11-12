@@ -29,7 +29,8 @@ public interface MiExportService {
 
     String FORMAT_XML254 = "xml254";
     String FORMAT_MITAB25 = "tab25";
-    String FORMAT_MITAB25_INTACT = "tab25-intact";
+    String FORMAT_MITAB26 = "tab26";
+    String FORMAT_MITAB27 = "tab27";
     String FORMAT_HTML = "html";
     String FORMAT_JSON = "json";
     String FORMAT_GRAPHML = "graphml";

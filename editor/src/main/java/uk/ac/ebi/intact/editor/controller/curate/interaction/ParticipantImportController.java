@@ -541,6 +541,11 @@ public class ParticipantImportController extends BaseController {
         }
 
         @Override
+        public ReportWriter getFeatureChangedWriter() throws IOException {
+            return reportWriter;
+        }
+
+        @Override
         public ReportWriter getInvalidRangeWriter() throws IOException {
             return reportWriter;
         }
