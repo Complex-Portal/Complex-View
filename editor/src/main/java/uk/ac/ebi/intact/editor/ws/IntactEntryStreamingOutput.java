@@ -31,10 +31,7 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import javax.persistence.FlushModeType;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Collection;
 
 /**
@@ -203,13 +200,17 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
         if (obj instanceof Collection){
             Collection<BinaryInteraction> binaryInteractions = (Collection<BinaryInteraction>) createIntactEntry();
 
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
             try {
-                psimitabWriter.writeMitabHeader(outputStream);
-                psimitabWriter.write(binaryInteractions, outputStream);
+                psimitabWriter.writeMitabHeader(writer);
+                psimitabWriter.write(binaryInteractions, writer);
 
                 //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
             }  catch ( Exception e ) {
                 throw new IOException("Problem converting to MITAB 2.5", e);
+            }
+            finally {
+                writer.close();
             }
         }
         else {
