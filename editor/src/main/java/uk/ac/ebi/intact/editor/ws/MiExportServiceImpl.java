@@ -53,7 +53,8 @@ public class MiExportServiceImpl implements MiExportService {
     public Object exportPublication(final String ac, final String format) {
         Response response = null;
         try {
-            String responseType = calculateResponseType(format);
+            String responseType = "application/x-download";
+            String extension = calculateFileExtension(format);
             StreamingOutput output = null;
 
             if (format.equals("xml254") || format.equals("html") || format.equals("json")){
@@ -73,7 +74,7 @@ public class MiExportServiceImpl implements MiExportService {
                 };
             }
 
-            response = Response.status(200).type(responseType).entity(output).build();
+            response = Response.status(200).type(responseType).header("Content-Disposition", "attachment; filename="+ac+"."+extension).entity(output).build();
         } catch (Throwable e) {
             throw new RuntimeException("Problem exporting publication: "+ac, e);
         }
@@ -85,7 +86,8 @@ public class MiExportServiceImpl implements MiExportService {
     public Object exportExperiment(final String ac, final String format) {
         Response response = null;
         try {
-            String responseType = calculateResponseType(format);
+            String responseType = "application/x-download";
+            String extension = calculateFileExtension(format);
             StreamingOutput output = null;
 
             if (format.equals("xml254") || format.equals("html") || format.equals("json")){
@@ -105,7 +107,7 @@ public class MiExportServiceImpl implements MiExportService {
                 };
             }
 
-            response = Response.status(200).type(responseType).entity(output).build();
+            response = Response.status(200).type(responseType).header("Content-Disposition", "attachment; filename="+ac+"."+extension).entity(output).build();
         } catch (Throwable e) {
             throw new RuntimeException("Problem exporting experiment: "+ac, e);
         }
@@ -117,7 +119,8 @@ public class MiExportServiceImpl implements MiExportService {
     public Object exportInteraction(final String ac, final String format) {
         Response response = null;
         try {
-            String responseType = calculateResponseType(format);
+            String responseType = "application/x-download";
+            String extension = calculateFileExtension(format);
             StreamingOutput output = null;
 
             if (format.equals("xml254") || format.equals("html") || format.equals("json")){
@@ -137,7 +140,7 @@ public class MiExportServiceImpl implements MiExportService {
                 };
             }
 
-            response = Response.status(200).type(responseType).entity(output).build();
+            response = Response.status(200).type(responseType).header("Content-Disposition", "attachment; filename="+ac+"."+extension).entity(output).build();
         } catch (Throwable e) {
             throw new RuntimeException("Problem exporting interaction: "+ac, e);
         }
@@ -163,6 +166,26 @@ public class MiExportServiceImpl implements MiExportService {
         }
         return responseType;
     }
+
+    private String calculateFileExtension(String format) {
+        String responseType;
+
+        if (format.contains("xml")) {
+            responseType = "xml";
+        } else if (format.contains("tab")) {
+            responseType = "txt";
+        } else if (format.contains("html")) {
+            responseType = "html";
+        } else if (format.contains("json")) {
+            responseType = "txt";
+        } else if (format.contains("graphml")) {
+            responseType = "xml";
+        } else {
+            throw new IllegalArgumentException("Unexpected format: "+format);
+        }
+        return responseType;
+    }
+
 
     private EntrySet createEntrySetFromPublication(String pubAc){
         // we export compact xml only and excludes hidden annotations

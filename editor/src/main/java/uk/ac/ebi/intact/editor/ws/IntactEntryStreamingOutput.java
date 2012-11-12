@@ -204,6 +204,7 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
             Collection<BinaryInteraction> binaryInteractions = (Collection<BinaryInteraction>) createIntactEntry();
 
             try {
+                psimitabWriter.writeMitabHeader(outputStream);
                 psimitabWriter.write(binaryInteractions, outputStream);
 
                 //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
