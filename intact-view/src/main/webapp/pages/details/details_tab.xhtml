@@ -18,8 +18,13 @@
 
 <h:panelGroup id="experimentPanel" rendered="#{detailsBean.experiment != null}">
 
+<ui:param name="experiment" value="#{detailsBean.experiment}"/>
+<ui:param name="interactionCount" value="#{detailsBean.numberInteractions}"/>
 <ui:param name="publication" value="#{experiment.publication}"/>
 <ui:param name="pmid" value="#{publication.publicationId}"/>
+<ui:param name="interaction" value="#{detailsBean.interaction}"/>
+<ui:param name="participantCount" value="#{detailsBean.numberParticipants}"/>
+<ui:param name="text" value="s (#{participantCount})"/>
 
 <h2>Publication</h2>
 
@@ -69,9 +74,6 @@
         </td>
     </tr>
 </table>
-
-<ui:param name="experiment" value="#{detailsBean.experiment}"/>
-<ui:param name="interactionCount" value="#{detailsBean.numberInteractions}"/>
 
 <h2>Experiment (#{interactionCount} interaction#{interactionCount > 1 ? 's' : ''})</h2>
 
@@ -123,9 +125,6 @@
 
 </h:panelGroup>
 
-
-<ui:param name="interaction" value="#{detailsBean.interaction}"/>
-
 <h:panelGroup id="interactionPanel" rendered="#{interaction != null}">
     <h2>Interaction</h2>
 
@@ -169,7 +168,7 @@
 
                 <p:panel id="interactionLinks" header="Links">
 
-                    <h:commandLink value="Find similar interactions" action="browse.complex?faces-redirect=true"
+                    <h:commandLink value="Find similar interactions" action="browse.complex"
                                    onclick="document.getElementById('mainPanels:progress_image').style.display = 'block'; document.getElementById('mainPanels:progress_text').style.display = 'block'; _gaq.push(['_trackEvent', 'Details', 'Find similar interactions', '#{interaction.ac}'])"/>
 
                     <br/>
@@ -187,10 +186,6 @@
     </table>
 
 </h:panelGroup>
-
-
-<ui:param name="participantCount" value="#{detailsBean.numberParticipants}"/>
-<ui:param name="text" value="s (#{participantCount})"/>
 
 <h:panelGroup rendered="#{interaction != null}">
 
