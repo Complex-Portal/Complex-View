@@ -219,6 +219,10 @@ public class LazySearchResultDataModel extends LazyDataModel<BinaryInteraction> 
     private boolean matchesQuery(Interactor interactor) {
         String queries[] = solrQuery.getQuery().split(" ");
 
+        if (interactor == null){
+            return false;
+        }
+
         for (String query : queries) {
             if ("NOT".equalsIgnoreCase(query) ||
                 "AND".equalsIgnoreCase(query) ||
