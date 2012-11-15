@@ -278,8 +278,8 @@ public class LazySearchResultDataModel extends LazyDataModel<BinaryInteraction> 
 
             String previousInteractorAName = previousInteraction.getInteractorA() != null ? MitabFunctions.getIntactIdentifierFromCrossReferences(previousInteraction.getInteractorA().getAlternativeIdentifiers()) : null;
             String previousInteractorBName = previousInteraction.getInteractorB() != null ? MitabFunctions.getIntactIdentifierFromCrossReferences(previousInteraction.getInteractorB().getAlternativeIdentifiers()) : null;
-            String currentInteractorAName = previousInteraction.getInteractorB() != null ? MitabFunctions.getIntactIdentifierFromCrossReferences(currentInteraction.getInteractorA().getAlternativeIdentifiers()) : null;
-            String currentInteractorBName = previousInteraction.getInteractorB() != null ? MitabFunctions.getIntactIdentifierFromCrossReferences(currentInteraction.getInteractorB().getAlternativeIdentifiers()) : null;
+            String currentInteractorAName = currentInteraction.getInteractorB() != null ? MitabFunctions.getIntactIdentifierFromCrossReferences(currentInteraction.getInteractorA().getAlternativeIdentifiers()) : null;
+            String currentInteractorBName = currentInteraction.getInteractorB() != null ? MitabFunctions.getIntactIdentifierFromCrossReferences(currentInteraction.getInteractorB().getAlternativeIdentifiers()) : null;
 
 
             return areEquals(previousInteractorAName, currentInteractorAName) &&
