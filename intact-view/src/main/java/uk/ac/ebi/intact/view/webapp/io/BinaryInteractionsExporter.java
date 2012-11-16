@@ -128,7 +128,7 @@ public class BinaryInteractionsExporter {
         }
         else if (MITAB_26.equals(format)){
             version = PsimiTabVersion.v2_6;
-            psicquicFormat = PsicquicSolrServer.RETURN_TYPE_MITAB25;
+            psicquicFormat = PsicquicSolrServer.RETURN_TYPE_MITAB26;
         }
 
         PsimiTabWriter writer = new PsimiTabWriter(version);
