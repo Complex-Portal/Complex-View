@@ -123,7 +123,7 @@ public class BinaryInteractionsExporter {
         PsimiTabVersion version = PsimiTabVersion.v2_7;
         String psicquicFormat = PsicquicSolrServer.RETURN_TYPE_MITAB27;
         if (MITAB_25.equals(format)){
-           version = PsimiTabVersion.v2_5;
+            version = PsimiTabVersion.v2_5;
             psicquicFormat = PsicquicSolrServer.RETURN_TYPE_MITAB25;
         }
         else if (MITAB_26.equals(format)){
@@ -159,10 +159,14 @@ public class BinaryInteractionsExporter {
             IntactSolrSearchResult result = null;
             try {
                 result = solrSearcher.search(queryCopy, psicquicFormat);
-
                 InputStream mitabStream = result.getMitab();
                 if (mitabStream != null){
-                    IOUtils.copy(mitabStream, out);
+                    try{
+                        IOUtils.copy(mitabStream, out);
+                    }
+                    finally {
+                        mitabStream.close();
+                    }
                 }
 
                 firstResult = firstResult + maxResults;
@@ -210,7 +214,9 @@ public class BinaryInteractionsExporter {
                     try {
                         graphBuilder.writeNodesAndEdgesFromMitab(is, MitabDocumentDefinitionFactory.mitab27());
                     }finally {
-                        is.close();
+                        if (is != null){
+                            is.close();
+                        }
                     }
 
                     firstResult = firstResult + maxResults;
@@ -276,12 +282,12 @@ public class BinaryInteractionsExporter {
 
     public void exportToMiXmlTransformed(OutputStream os, SolrQuery searchQuery) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        exportToMiXml(baos, searchQuery);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toString().getBytes());
-
+        ByteArrayInputStream bais = null;
         try {
+            exportToMiXml(baos, searchQuery);
+
+            bais = new ByteArrayInputStream(baos.toString().getBytes());
+
             XslTransformerUtils.viewPsiMi25( bais, os );
 
             //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
@@ -291,7 +297,9 @@ public class BinaryInteractionsExporter {
         finally {
             // close baos and bais
             baos.close();
-            bais.close();
+            if (bais != null){
+                bais.close();
+            }
         }
     }
 
