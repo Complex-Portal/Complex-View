@@ -22,7 +22,7 @@ function makeDasRegistryRequest() {
  * Make a sequence request
  */
 function makePDBRequest(PDBid){
-	makeRequest(proxy_url+"?t=10&s=http://www.rcsb.org/pdb/files&m=pdb&q="+PDBid+".pdb", 'PDBFile'); // sequence_url is Global!
+	makeRequest(proxy_url+"?t=10&s=http://www.ebi.ac.uk/pdbe-srv/view/files&m=pdb&q="+PDBid+".pdb", 'PDBFile'); // sequence_url is Global!
 }
 
 /**

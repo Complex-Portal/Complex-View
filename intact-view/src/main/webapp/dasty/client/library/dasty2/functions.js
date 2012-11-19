@@ -8,39 +8,39 @@ function printOnTest(arg)
 	{
 		var opa = document.getElementById("display_test");
 		var content_opa = opa.innerHTML;
-		opa.innerHTML = (content_opa + " <br>------------<br>Test:" + arg);	
+		opa.innerHTML = (content_opa + " <br>------------<br>Test:" + arg);
 	}
 
-//------------------------------------------------------------------------------------------	    
+//------------------------------------------------------------------------------------------
 // FUNCTIONS TO HIGHLIGHT SEQUENCE AND STRUCTURE
-//------------------------------------------------------------------------------------------		
+//------------------------------------------------------------------------------------------
 
 	/**
-	* stores start position of a new highlight request 
+	* stores start position of a new highlight request
 	*/
 	function addPos(x){
 		//document.getElementById("output").innerHTML = x;
 		selStart = x;
 	}
-	
+
 	/**
-	* highlight the structure as per highlighted sequence 
+	* highlight the structure as per highlighted sequence
 	*/
 	function highlightStru(x){
 		var segUniprot;
 		if (x>selStart){
 			segUniprot=new segment(sequence_info.sequence_id,selStart,x);
-		}else { 
+		}else {
 			segUniprot=new segment(sequence_info.sequence_id,x,selStart);
 		}
 		var segPDB=extrapolateSegment(segUniprot);
 		if (segPDB!=null)
 	    	selectPDBResidues(segPDB.start,segPDB.end);
 	}
-	
-	  
+
+
 function highlightSequence(fstart, fend, aa_num_per_line, color)
-	{ 
+	{
 		fstart-=1;fend-=1;
 	   	for(var i=0;i<sequence_info["sequence_length"];i++){
 			var spanBase = document.getElementById("aa_"+(i+1));
@@ -50,70 +50,17 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 //	   			 spanBase.style.border-bottom="1px";
 	   		}else{
 	   			 spanBase.setAttribute("class","");
-	   			 
+
 	   			 spanBase.style.color="black";
 //	   			 spanBase.style.border-bottom="1px";
 	   		}
-	   	}	
-/*	
-	var start = fstart - 1;
-	var end = fend;
-	var span_start = "<span class=\"highlightSequence\" style=\"color:" + color + "; border-bottom: 1px dotted " + color + "; \">";
-	//var span_start = "<span style=\" color:" + color + "; font-weight:bold;\">"; // "<span style=\" color:#3399FF;\">";
-	//var span_start = "<span style=\"border:solid " + color + "; font-weight:bold;\">"; //opacity:0.2;background-color: border:#009933;
-	var span_end = "</span>";
-	var aa_num = aa_num_per_line; // 60
-	//alert(sequence);
-	//TEST
-	var text = '';
-	var new_sequence = '';
-	
-	//var regex = /\W+/g;
-	//var regex = /\n+/g;
-	text = sequence; // sequence is Global
-	//text = text.replace(regex,""); //commented, must discuss if essential. It interferes with highlight idea
-	//alert(text);
-	var count = 0;
-	var count2 = 0;
-	var control = 0;
-	while (count < text.length)
-		{
-			count2 = count + aa_num;
-			control = 0;
-			if(count <= start && start < count2)
-			   {
-				 if(count <= end && end < count2)
-				   {
-					 new_sequence = new_sequence + text.substring(count, start) + span_start + text.substring(start, end) + span_end + text.substring(end, count2) + "<br>";
-				   }
-				 else
-				   {
-				     new_sequence = new_sequence + text.substring(count, start) + span_start + text.substring(start, count2) + "<br>";
-				   }
-			   }
-			else
-			   {
-			   	 if(count <= end && end < count2)
-				   {
-			         new_sequence = new_sequence + text.substring(count, end) + span_end + text.substring(end, count2) + "<br>";
-				   }
-				 else
-				   {
-				     new_sequence = new_sequence + text.substring(count, count2) + "<br>";
-				   }
-			   }
-			count = count2;
-		}
-	*/
-//	var opa = document.getElementById("display_seque_protein");
-//	var content_opa = opa.innerHTML;
-//	opa.innerHTML = seq;//(new_sequence);		
+	   	}
 	}
 	//
 
-//------------------------------------------------------------------------------------------	
+//------------------------------------------------------------------------------------------
 // FUNCTION TO SHOW AND HIDE CONTENT
-//------------------------------------------------------------------------------------------	
+//------------------------------------------------------------------------------------------
 	function changeDisplayState(child, img_span, img_num)
 	{
 				//d=document.getElementById(father);
@@ -127,9 +74,9 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 					else
 						{
 							var img_display = document.getElementById(img_span);
-							img_display.innerHTML = "<img src=\"img/minus0" + img_num + ".gif\" border=\"0\" align=\"absbottom\">&nbsp;";	
+							img_display.innerHTML = "<img src=\"img/minus0" + img_num + ".gif\" border=\"0\" align=\"absbottom\">&nbsp;";
 						}
-					
+
 				} else {
 					e.style.display = 'none';
 					if( img_span == null || img_span == "")
@@ -139,21 +86,21 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 					else
 						{
 							var img_display = document.getElementById(img_span);
-							img_display.innerHTML = "<img src=\"img/plus0" + img_num + ".gif\" border=\"0\" align=\"absbottom\">&nbsp;";	
+							img_display.innerHTML = "<img src=\"img/plus0" + img_num + ".gif\" border=\"0\" align=\"absbottom\">&nbsp;";
 						}
 				}
 	}
-	
 
-//------------------------------------------------------------------------------------------	
+
+//------------------------------------------------------------------------------------------
 // CHECK AND PUT THE RIGHT +/- ICONS IN THE MAIN HTML PAGE
-//------------------------------------------------------------------------------------------	
+//------------------------------------------------------------------------------------------
 	function checkSectionIcons()
 		{
 
 					var plus_icon = "<img src=\"img/minus02.gif\" border=\"0\" align=\"absbottom\">&nbsp;";
 					var plus_icon_white = "<img src=\"img/minus01.gif\" border=\"0\" align=\"absbottom\">&nbsp;";
-					
+
 					var display_query_box = document.getElementById("display_query_box_div");
 					var menu_query_box_img = document.getElementById("menu_query_box_img");
 					if (display_query_box.style.display == 'block')
@@ -173,15 +120,15 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 					if (display_server_checking.style.display == 'block')
 						{
 							menu_server_checking_img.innerHTML = plus_icon;
-						}	
-						
+						}
+
 					var display_query = document.getElementById("display_query_div");
 					var menu_query_img = document.getElementById("menu_query_img");
 					if (display_query.style.display == 'block')
 						{
 							menu_query_img.innerHTML = plus_icon;
 						}
-						
+
 					var display_seque = document.getElementById("display_seque_div");
 					var menu_seque_img = document.getElementById("menu_seque_img");
 					if (display_seque.style.display == 'block')
@@ -201,40 +148,40 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 					if (display_maniputation_options.style.display == 'block')
 						{
 							menu_maniputation_options_img.innerHTML = plus_icon;
-						}	
-						
-						
+						}
+
+
 					var display_maniputation_options3 = document.getElementById("display_maniputation_options3_div");
 					var menu_maniputation_options3_img = document.getElementById("menu_maniputation_options3_img");
 					if (display_maniputation_options3.style.display == 'block')
 						{
 							menu_maniputation_options3_img.innerHTML = plus_icon;
 							//menu_maniputation_options2_img.innerHTML = plus_icon_white;
-						}	
-						
+						}
+
 					var display_maniputation_options3_type = document.getElementById("display_maniputation_options3_type_div");
 					var menu_maniputation_options3_type_img = document.getElementById("menu_maniputation_options3_type_img");
 					if (display_maniputation_options3_type.style.display == 'block')
 						{
 							menu_maniputation_options3_type_img.innerHTML = plus_icon;
 							//menu_maniputation_options2_img.innerHTML = plus_icon_white;
-						}	
-						
+						}
+
 					var display_maniputation_options3_category = document.getElementById("display_maniputation_options3_category_div");
 					var menu_maniputation_options3_category_img = document.getElementById("menu_maniputation_options3_category_img");
 					if (display_maniputation_options3_category.style.display == 'block')
 						{
 							menu_maniputation_options3_category_img.innerHTML = plus_icon;
 							//menu_maniputation_options2_img.innerHTML = plus_icon_white;
-						}	
-						
+						}
+
 					var display_maniputation_options3_server = document.getElementById("display_maniputation_options3_server_div");
 					var menu_maniputation_options3_server_img = document.getElementById("menu_maniputation_options3_server_img");
 					if (display_maniputation_options3_server.style.display == 'block')
 						{
 							menu_maniputation_options3_server_img.innerHTML = plus_icon;
 							//menu_maniputation_options2_img.innerHTML = plus_icon_white;
-						}	
+						}
 
 					var display_graphic = document.getElementById("display_graphic_div");
 					var menu_graphic_img = document.getElementById("menu_graphic_img");
@@ -242,34 +189,34 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 						{
 							menu_graphic_img.innerHTML = plus_icon;
 						}
-		
+
 					var display_nonpositional = document.getElementById("display_nonpositional_div");
 					var menu_nonpositional_img = document.getElementById("menu_nonpositional_img");
 					if (display_nonpositional.style.display == 'block')
 						{
 							menu_nonpositional_img.innerHTML = plus_icon;
 						}
-		
+
 					var display_test = document.getElementById("display_test_div");
 					var menu_test_img = document.getElementById("menu_test_img");
 					if (display_test.style.display == 'block')
 						{
 							menu_test_img.innerHTML = plus_icon;
-						}		
+						}
 		} // function checkIcons()
-		
-		
-	
-//------------------------------------------------------------------------------------------	
+
+
+
+//------------------------------------------------------------------------------------------
 // CHECK AND PUT THE RIGHT +/- ICONS IN THE MANIPULATION OPTIONS
-//------------------------------------------------------------------------------------------	
+//------------------------------------------------------------------------------------------
 	function checkMoColumnIcons()
 		{
 
 					var plus_icon = "<img src=\"img/tick01.gif\" border=\"0\" align=\"absbottom\">&nbsp;";
 					var minus_icon = "<img src=\"img/notick01.gif\" border=\"0\" align=\"absbottom\">&nbsp;";
 
-					
+
 					var mo_img_category_column = document.getElementById("menu_mo_img_category_column");
 					if (show_col_category == 1)
 						{
@@ -288,7 +235,7 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 						{
 							mo_img_method_column.innerHTML = minus_icon;
 						}
-						
+
 					var mo_img_type_column = document.getElementById("menu_mo_img_type_column");
 					if (show_col_type == 1)
 						{
@@ -308,7 +255,7 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 						{
 							mo_img_server_column.innerHTML = minus_icon;
 						}
-					
+
 					var mo_img_id_column = document.getElementById("menu_mo_img_id_column");
 					if (show_col_id == 1)
 						{
@@ -318,21 +265,21 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 						{
 							mo_img_id_column.innerHTML = minus_icon;
 						}
-						
+
 					if (show_popup == 2)
 						{
 							var menu_mo_img_popups = document.getElementById("menu_mo_img_popups");
 							menu_mo_img_popups.innerHTML = plus_icon;
-						}	
-						
+						}
+
 					//if(show_popup == 0)
 						//{
-							//var mo_img_popup_no = document.getElementById("menu_mo_img_popup_no");	
+							//var mo_img_popup_no = document.getElementById("menu_mo_img_popup_no");
 							//mo_img_popup_no.innerHTML = radio_icon;
 						//}
 					//else if(show_popup == 1)
 						//{
-							//var mo_img_popup_mouseover = document.getElementById("menu_mo_img_popup_mouseover");	
+							//var mo_img_popup_mouseover = document.getElementById("menu_mo_img_popup_mouseover");
 							//mo_img_popup_mouseover.innerHTML = radio_icon;
 						//}
 					//else
@@ -340,13 +287,13 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 							//var mo_img_popup_mouseclick = document.getElementById("menu_mo_img_popup_mouseclick");
 							//mo_img_popup_mouseclick.innerHTML = radio_icon;
 						//}
-	
-		} // function checkIcons()
-	
 
-//------------------------------------------------------------------------------------------		  
+		} // function checkIcons()
+
+
+//------------------------------------------------------------------------------------------
 // FUNCTION TO FIND DOTS
-//------------------------------------------------------------------------------------------	
+//------------------------------------------------------------------------------------------
 	function isDot(s)
 	{
 		var dot;
@@ -354,21 +301,21 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 		var u = String(s);
 		loop:
 		for (i = 0; i < u.length; i++)
-		{   
+		{
 			if (u[i] == ".") {
 			  dot = "true";
 			  break loop;
-			} else { 
+			} else {
 			  dot = "false";
 			}
 		}
 		if (dot == "false") { return false; } else { return true; }
-	}	
-	//	
-	
-//------------------------------------------------------------------------------------------		  
+	}
+	//
+
+//------------------------------------------------------------------------------------------
 // IS NUMERIC
-//------------------------------------------------------------------------------------------		
+//------------------------------------------------------------------------------------------
 function isNumeric(x)
 	{
 		var RegExp = /^(-)?(\d*)(\.?)(\d*)$/; // Note: this WILL allow a number that ends in a decimal: -452.
@@ -377,10 +324,10 @@ function isNumeric(x)
 		var result = x.match(RegExp);
 		if (result==null) result=false;
 		return result;
-	} 
-	
-	
-//------------------------------------------------------------------------------------------		  
+	}
+
+
+//------------------------------------------------------------------------------------------
 // Getting window size and scroll bars position
 //------------------------------------------------------------------------------------------
 // by http://www.softcomplex.com/docs/get_window_size_and_scrollbar_position.html
@@ -418,13 +365,13 @@ function f_filterResults(n_win, n_docel, n_body) {
 	if (n_docel && (!n_result || (n_result > n_docel)))
 		n_result = n_docel;
 	return n_body && (!n_result || (n_result > n_body)) ? n_body : n_result;
-}	
+}
 
-//------------------------------------------------------------------------------------------	
+//------------------------------------------------------------------------------------------
 // PRELOAD IMAGES
-//------------------------------------------------------------------------------------------	
+//------------------------------------------------------------------------------------------
 // http://elouai.com/javascript-preload-images.php
-//------------------------------------------------------------------------------------------	
+//------------------------------------------------------------------------------------------
 
 function MM_preloadImages() { //v3.0
   var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
@@ -432,14 +379,14 @@ function MM_preloadImages() { //v3.0
     if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
 }
 
-//------------------------------------------------------------------------------------------	
+//------------------------------------------------------------------------------------------
 // STRUCTURE RELATED FUNCTIONS
-//------------------------------------------------------------------------------------------	
-// adapted from <a href='http://cargo.bioinfo.cnio.es'>Cargo</a> and JMol by Fernando <a href="mailto:fernando@softlech.com">Fernando@softlech.com</a>	
-//------------------------------------------------------------------------------------------	
+//------------------------------------------------------------------------------------------
+// adapted from <a href='http://cargo.bioinfo.cnio.es'>Cargo</a> and JMol by Fernando <a href="mailto:fernando@softlech.com">Fernando@softlech.com</a>
+//------------------------------------------------------------------------------------------
 
 /**
-*  Initialize the Jmol Applet and load (so far hardcoded) a .pdb file 
+*  Initialize the Jmol Applet and load (so far hardcoded) a .pdb file
 */
 function iniStructPanel(){
 	if (alignments==null)
@@ -452,7 +399,7 @@ function iniStructPanel(){
 		{
 			document.getElementById("display_protstru_div").innerHTML="<div id='applet3d' style='width:100%; height:100%'></div><table width='100%'><tr><td><div id='Applet_Size'></div></td><td rowspan='3' align='right' valign='top'><div id='dropdown'></div></td></tr><tr><td><div id='StruPane_Title'>Structure [Id here]</div></td></tr><tr><td><div id='structureInfo'><p id='structureInfoP'>Additional info here</p></div></td></tr><tr><td colspan='2'><span style='border-top: 1px dotted #999999; display:block; text-align:right;'><a style='text-decoration:none;color:#999999;' href='javascript:changeStructure();'>view/restore image</a></span></td></tr></table>"
 		}
-	
+
 	var divDd=document.getElementById("dropdown");
 	if (divDd!=null){
 		var select=document.createElement("select");
@@ -469,21 +416,21 @@ function iniStructPanel(){
 				var chain=trim(idPDB.substring(punt+1));
 				if (chain=="A"){
 					var option2=document.createElement("option");
-					option2.innerHTML=idPDB.substring(0,punt+1); 
+					option2.innerHTML=idPDB.substring(0,punt+1);
 					select.appendChild(option2);
 				}
-			} 
+			}
 			var option=document.createElement("option");
 			if (i==0)
 				option.setAttribute("selected","true");
-				//option.selected = true;			
-			option.innerHTML=idPDB; 
+				//option.selected = true;
+			option.innerHTML=idPDB;
 			select.appendChild(option);
 		}
 		divDd.appendChild(select);
 		segmentUniprot=null;
 		segmentPDB=null;
-	
+
 		jmolInitialize("library/jmol");
 		//jmolSetDocument(document.getElementById("applet3d").document);
 		jmolSetDocument(0);
@@ -497,10 +444,10 @@ function iniStructPanel(){
 
 /**
 *  Public function. Called when a new pdb file is selected.
-*  
+*
 */
-function changePDBFile(){ 
-		var script=getJmolLoadScript();  
+function changePDBFile(){
+		var script=getJmolLoadScript();
 		if (script!=null){
 			jmolScriptWait(script);
 			loadedPDBMessage();
@@ -519,6 +466,9 @@ function changeStructure(){
 	PDBid="";
 	if (punto!=-1){
 		PDBid=PDBname.substring(0,punto);
+	} else {
+		PDBid=PDBname;
+	}
 		structureChain=trim(PDBname.substring(punto+1));
 		//var pathPDB="pdb/"+PDBid+".pdb";
 		//ajaxCall(proxy_url+"?t=10&s=http://www.rcsb.org/pdb/files&m=pdb&q="+PDBid+".pdb",changePDBFile);
@@ -547,7 +497,7 @@ function changeStructure(){
 		}
 
 
-	}  
+	//}
 }
 /**
 *  Private function to erase the spaces at the end and at the beggining of a String
@@ -572,9 +522,9 @@ function trim(cadena){
 /**
 *  Private function to get the initial jmol script to load a model
 */
-function getJmolLoadScript() { 
+function getJmolLoadScript() {
 	if  (PDBid!="") {
-        var pathToPdb = proxy_url+"?t=10&s=http://www.rcsb.org/pdb/files&m=pdb&q="+PDBid+".pdb";
+        var pathToPdb = proxy_url+"?t=10&s=http://www.ebi.ac.uk/pdbe-srv/view/files&m=pdb&q="+PDBid+".pdb";
 		var script ="load "+pathToPdb+"; select all; cartoon on; wireframe off; spacefill off; color chain;";
 		return script;
    }
@@ -587,12 +537,10 @@ function getJmolLoadScript() {
 *  @params: - start: first PDB residue to select, - end: final PDB residue to select
 */
 function selectPDBResidues(start, end){
+    alert(start + " : " + end);
 	var divDd=document.getElementById("dropdown");
 	if (divDd!=null){
-		jmolScriptWait('selectionHalos ON');
-		var scr='select '+start+'-'+end;
-		if (structureChain!="")
-		scr=scr+':'+structureChain;
+		var scr='select '+start+'-'+end+'; selectionHalos on;';
 		jmolScriptWait(scr);
 	}
 }
@@ -644,7 +592,7 @@ function getSequenceRangeSelected(sequenceDiv){
         txt = document.getSelection();
     } else if (document.selection) {
         txt = document.selection.createRange().text;
-    } else return;	
+    } else return;
 	alert(salida+' - - - - - - - '+txt);
 }
 
@@ -664,29 +612,34 @@ function loadedPDBMessage(){
 	var div3=document.getElementById("Applet_Size");
 	div3.innerHTML="";
 	div3.appendChild(createDivOfSize());
-	
+
 }
 
 function createDivOfSize(){
 	var div=document.createElement("div");
 	var small=document.createElement("input");
-	small.setAttribute("type","button");
-	small.setAttribute("value","Small");
-	small.setAttribute("onclick","changeAppletSize(330,330); changeStructure()");
-	
-	div.appendChild(small);
-	var medium=document.createElement("input");
-	medium.setAttribute("type","button");
-	medium.setAttribute("value","Medium");
-	medium.setAttribute("onclick","changeAppletSize(600,600); changeStructure()");
-	div.appendChild(medium);
-	var large=document.createElement("input");
-	large.setAttribute("type","button");
-	large.setAttribute("value","Large");
-	large.setAttribute("onclick","changeAppletSize(800,800); changeStructure()");
-	div.appendChild(large);
+        small.setAttribute("type","button");
+        small.setAttribute("value","Small");
+        small.setAttribute("onclick","changeAppletSize(330,330); changeStructure()");
+
+        div.appendChild(small);
+        var medium=document.createElement("input");
+        medium.setAttribute("type","button");
+        medium.setAttribute("value","Medium");
+        medium.setAttribute("onclick","changeAppletSize(600,600); changeStructure()");
+        div.appendChild(medium);
+        var large=document.createElement("input");
+        large.setAttribute("type","button");
+        large.setAttribute("value","Large");
+        large.setAttribute("onclick","changeAppletSize(800,800); changeStructure()");
+        div.appendChild(large);
 	return div;
 }
+
+
+
+
+
 
 function changeAppletSize(width, height){
 	var applet=document.getElementById("jmolApplet0");
