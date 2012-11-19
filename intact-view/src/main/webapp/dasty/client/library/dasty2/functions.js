@@ -537,7 +537,6 @@ function getJmolLoadScript() {
 *  @params: - start: first PDB residue to select, - end: final PDB residue to select
 */
 function selectPDBResidues(start, end){
-    alert(start + " : " + end);
 	var divDd=document.getElementById("dropdown");
 	if (divDd!=null){
 		var scr='select '+start+'-'+end+'; selectionHalos on;';

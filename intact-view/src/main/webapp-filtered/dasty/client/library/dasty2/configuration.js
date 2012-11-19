@@ -391,30 +391,7 @@ function configuration()
                     feature_url[1] = {id : 'UniProt', url : feature_url_prefix + 'http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/'};
                     feature_url[2] = {id : 'InterPro', url : feature_url_prefix + 'http://www.ebi.ac.uk/das-srv/interpro/das/InterPro/'};
                     feature_url[3] = {id : 'PRIDE', url : feature_url_prefix + 'http://www.ebi.ac.uk/pride-das/das/PrideDataSource/'};
-                    //feature_url[3] = {id : 'chebi', url : feature_url_prefix + '${das.annotationserver.chebi.url}'};
-						//feature_url[1] = {id : 'msdmotif', url : feature_url_prefix + 'http://www.ebi.ac.uk/msd-srv/msdmotif/das/s3dm/'};
-						//feature_url[2] = {id : 'netphos', url : feature_url_prefix + 'http://genome.cbs.dtu.dk:9000/das/netphos/'};
-						//feature_url[3] = {id : 'uniprot2', url : feature_url_prefix + 'http://tc-test-1.ebi.ac.uk:8113/tc-test/proteomics/das-srv/uniprot/das/uniprot/'};
-						//feature_url[4] = {id : 'interpro', url : feature_url_prefix + 'http://www.ebi.ac.uk/das-srv/interpro/das/InterPro/'};
-                    //feature_url[1] = {id : 'intact-S4', url : feature_url_prefix + 'http://www.ebi.ac.uk/enfin-srv/s4-das-srv/das/intact-s4/'};
-
-
-
-					/**
-					* SPECIFIC DAS ANNOTATION SERVERS. LOCAL COPIES.
-					*/
-						//feature_url[1] = {id : 'uniprot', url : 'files/fea_A4_Human_uniprot03.xml'};
-                        //feature_url[0] = {id : 'intact3', url : 'files/fea_P04637_intact.xml'};
-                        //feature_url[1] = {id : 'info', url : 'files/info.xml'};
-
-						//feature_url[1] = {id : 'cbs_total', url : 'files/fea_A4_Human_cbs_total.xml'};
-						//feature_url[2] = {id : 'netphos', url : 'files/fea_A4_Human_netphos.xml'};
-						//feature_url[3] = {id : 'intact', url : 'files/intact_EBI-466029.xml'};
-					//	if(dasty_mainpage_name.indexOf("interactor") != -1)
-					//		{
-					//			feature_url_prefix = proxy_url + '?m=features&q=' + query_id + '&t=' + timeout + '&s=';
-					//			feature_url[0] = {id : 'intact', url : feature_url_prefix + 'http://wwwdev.ebi.ac.uk/dgi/das-intact/das/intact'};
-					//		}
+                    feature_url[4] = {id : 'HPA', url : feature_url_prefix + 'http://das.proteinatlas.org/das/proteinatlas/'};
 				}
 
 			/**
