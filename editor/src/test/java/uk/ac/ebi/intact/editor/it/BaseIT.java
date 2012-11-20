@@ -15,27 +15,9 @@
  */
 package uk.ac.ebi.intact.editor.it;
 
-import org.apache.commons.io.FileUtils;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
-import uk.ac.ebi.intact.editor.it.util.ScreenShotOnFailureRule;
-import uk.ac.ebi.intact.model.user.User;
-
-import java.io.File;
-import java.io.IOException;
-
-import static uk.ac.ebi.intact.editor.Constants.BASE_URL;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -47,6 +29,7 @@ import static uk.ac.ebi.intact.editor.Constants.BASE_URL;
         "classpath*:/META-INF/intact.spring.xml",
         "classpath*:/META-INF/intact-batch.spring.xml",
         "classpath*:/META-INF/editor-test.spring.xml",
+        "classpath*:/META-INF/intact-editor.spring.xml",
         "classpath*:/META-INF/editor.jpa-test.spring.xml"}, inheritLocations = false)
 @DirtiesContext(classMode=DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class BaseIT extends IntactBasicTestCase {
