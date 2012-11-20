@@ -84,4 +84,10 @@
         <property name="description" value="Undefined institution"/>
     </bean>
 
+    <!-- Default application - Users should override this bean in specific applications -->
+    <bean id="defaultApp" class="uk.ac.ebi.intact.model.meta.Application">
+        <property name="key" value="default"/>
+        <property name="description" value="Application generated automatically by intact-core"/>
+    </bean>
+
 </beans>
