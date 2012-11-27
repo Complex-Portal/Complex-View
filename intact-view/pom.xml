@@ -18,9 +18,9 @@
     <name>IntAct Services :: View</name>
 
     <scm>
-        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/branches/intact-view-4.0.2-SNAPSHOT</connection>
-        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/branches/intact-view-4.0.2-SNAPSHOT</developerConnection>
-        <url>https://intact.googlecode.com/svn/repo/service/branches/intact-view-4.0.2-SNAPSHOT</url>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/intact-view</connection>
+        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/intact-view</developerConnection>
+        <url>https://intact.googlecode.com/svn/repo/service/trunk/intact-view</url>
     </scm>
 
     <properties>
