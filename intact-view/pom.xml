@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>uk.ac.ebi.intact.service</groupId>
@@ -20,9 +18,9 @@
     <name>IntAct Services :: View</name>
 
     <scm>
-        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/intact-view</connection>
-        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/intact-view</developerConnection>
-        <url>https://intact.googlecode.com/svn/repo/service/trunk/intact-view</url>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/branches/intact-view-4.0.2-SNAPSHOT</connection>
+        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/branches/intact-view-4.0.2-SNAPSHOT</developerConnection>
+        <url>https://intact.googlecode.com/svn/repo/service/branches/intact-view-4.0.2-SNAPSHOT</url>
     </scm>
 
     <properties>
@@ -63,13 +61,13 @@
         <intact.maxsize.xml>500</intact.maxsize.xml>
         <intact.maxsize.xgmml>5000</intact.maxsize.xgmml>
 
-        <google.analytics.tracker></google.analytics.tracker>
+        <google.analytics.tracker />
 
         <!-- Other intact apps -->
         <intact.hierarchview.url>http://www.ebi.ac.uk/intact/hierarchView-beta</intact.hierarchview.url>
         <intactview.graph.maxInteractionCount>500</intactview.graph.maxInteractionCount>
 
-        <intact.ontologies.lucene.directory></intact.ontologies.lucene.directory>
+        <intact.ontologies.lucene.directory />
 
         <!-- ChEBI -->
         <chebi.url>http://www.ebi.ac.uk/chebi</chebi.url>
@@ -226,7 +224,7 @@
                 <db.driver>org.h2.Driver</db.driver>
                 <db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
                 <db.user>sa</db.user>
-                <db.password></db.password>
+                <db.password />
                 <db.hbm2ddl>update</db.hbm2ddl>
                 <db.alias>test</db.alias>
 
@@ -239,7 +237,7 @@
                 <!-- SOLR -->
                 <intact.solr.interactions.url>http://localhost:33444/solr/core_pub</intact.solr.interactions.url>
                 <intact.solr.ontologies.url>http://localhost:33444/solr/core_ontology_pub</intact.solr.ontologies.url>
-                <intact.ontologies.lucene.directory></intact.ontologies.lucene.directory>
+                <intact.ontologies.lucene.directory />
 
                 <intact.configfile>${project.build.testOutputDirectory}/intact-view-test.cfg</intact.configfile>
 
