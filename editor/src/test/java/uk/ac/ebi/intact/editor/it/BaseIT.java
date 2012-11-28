@@ -29,7 +29,6 @@ import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
         "classpath*:/META-INF/intact.spring.xml",
         "classpath*:/META-INF/intact-batch.spring.xml",
         "classpath*:/META-INF/editor-test.spring.xml",
-        "classpath*:/META-INF/intact-editor.spring.xml",
         "classpath*:/META-INF/editor.jpa-test.spring.xml"}, inheritLocations = false)
 @DirtiesContext(classMode=DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class BaseIT extends IntactBasicTestCase {
