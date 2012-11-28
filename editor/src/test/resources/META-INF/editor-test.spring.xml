@@ -30,6 +30,11 @@
         <property name="description" value="Editor: The IntAct curation interface"/>
     </bean>
 
+    <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext" scope="${userContext.scope}">
+        <property name="userId" value="EDITOR_USER"/>
+        <aop:scoped-proxy/>
+    </bean>
+
     <!-- Spring scopes -->
 
 
