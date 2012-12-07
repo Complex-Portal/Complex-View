@@ -1,0 +1,372 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE html-->
+<!--PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"-->
+<!--"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">-->
+<!--<html xmlns="http://www.w3.org/1999/xhtml" xmlns:tr="http://myfaces.apache.org/trinidad" xml:lang="en" lang="en"-->
+<!--xmlns:ui="http://java.sun.com/jsf/facelets"-->
+<!--xmlns:ebisf="http://www.ebi.ac.uk/faces/site"-->
+<!--xmlns:f="http://java.sun.com/jsf/core"-->
+<!--xmlns:h="http://java.sun.com/jsf/html"-->
+<!--xmlns:c="http://java.sun.com/jstl/core"-->
+<!--xmlns:fn="http://java.sun.com/jsp/jstl/functions">-->
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:ebisf="http://www.ebi.ac.uk/faces/site">
+
+<tr:document title="#{ebiTest['webapp.name']}">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name='robots' content='nofollow'/>
+        <meta http-equiv="Content-Language" content="en-GB"/>
+        <meta http-equiv="Window-target" content="_top"/>
+        <meta name="no-email-collection" content="http://www.unspam.com/noemailcollection/"/>
+
+        <title>
+            <ui:insert name="windowTitle"/>
+        </title>
+
+        <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/contents.css" type="text/css"/>
+        <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/userstyles.css" type="text/css"/>
+        <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/sidebars.css" type="text/css"/>
+
+        <link rel="stylesheet" href="#{facesContext.externalContext.requestContextPath}/skins/ebi/ebi.css"
+              type="text/css"/>
+
+        <script src="#{ebisf:absoluteEbiUrl()}/inc/js/contents.js" type="text/javascript"></script>
+
+        <!-- Stylesheet for validator -->
+        <link type="text/css" rel="stylesheet"
+              href="#{facesContext.externalContext.requestContextPath}/css/validator.css"/>
+
+        <link rel="SHORTCUT ICON" href="http://www.ebi.ac.uk/bookmark.ico"/>
+        <style type="text/css">
+            @media print {
+                body, .contents, .header, .contentsarea, .head {
+                    position: relative;
+                }
+            }
+        </style>
+
+
+        <link type="text/css" rel="stylesheet"
+              href="http://www.ebi.ac.uk/web_guidelines/css/mitigation/develop/ebi-mitigation.css"/>
+        <link type="text/css" rel="stylesheet"
+              href="#{facesContext.externalContext.requestContextPath}/templates/psicquic-colours.css"/>
+
+        <!--<link type="text/css" rel="stylesheet"-->
+        <!--href="//www.ebi.ac.uk/web_guidelines/css/mitigation/develop/embl-petrol-colours.css"/>-->
+
+        <!-- end CSS-->
+
+        <style type="text/css" media="screen, projection">
+
+                /* [FR] Feb 03, 2012 */
+
+                /* The Magnificent Clearfix: Updated to prevent margin-collapsing on child elements.
+                            j.mp/bestclearfix */
+            .clearfix:before, .clearfix:after {
+                content: "\0020";
+                display: block;
+                height: 0;
+                overflow: hidden;
+            }
+
+            .clearfix:after {
+                clear: both;
+            }
+
+                /* Fix clearfix: blueprintcss.lighthouseapp.com/projects/15318/tickets/5-extra-margin-padding-bottom-of-page */
+            .clearfix {
+                zoom: 1;
+            }
+
+            div.cols3 {
+                padding: 10px;
+                clear: both;
+            }
+
+            div.cols3 .col1 {
+                padding: 0;
+                float: left;
+                width: 32%;
+                margin-right: 2%;
+            }
+
+            div.cols3 .col2 {
+                padding: 0;
+                float: left;
+                width: 32%;
+                margin-right: 2%;
+            }
+
+            div.cols3 .col3 {
+                padding: 0;
+                float: left;
+                width: 32%;
+            }
+
+            div.cols3 ul {
+                padding-left: 20px;
+            }
+
+            div#local-title.logo-title h1, div#local-title.logo-title-strapline h1 {
+                display: inline-block;
+            }
+
+        </style>
+
+        <style type="text/css">
+            .dojoDialog {
+                background: #eee;
+                border: 1px solid #999;
+                -moz-border-radius: 5px;
+                padding: 4px; /*positioning outside of the visible scope to prevent some ui glitches visibility hidden does not work*/
+                position: absolute;
+                left: -800px;
+                top: -800px;
+
+                progid: DXImageTransform . Microsoft . dropShadow(Color = AAAAAA, offX = 8, offY = 8, positive = true);
+            }
+        </style>
+
+    </head>
+    <body>
+
+    <div id="wrapper" class="container_24">
+
+        <div id="skip-to">
+            <ul>
+                <li><a href="#content" title="">Skip to main content</a></li>
+                <li><a href="#local-nav" title="">Skip to local navigation</a></li>
+                <li><a href="#global-nav" title="">Skip to EBI global navigation menu</a></li>
+                <li><a href="#global-nav-expanded"
+                       title="">Skip to expanded EBI global navigation menu (includes all sub-sections)</a></li>
+            </ul>
+        </div>
+
+        <ui:insert name="header_tl">
+            <ui:include src="/templates/headerMitigation.xhtml"/>
+        </ui:insert>
+
+
+        <div id="content" class="grid_24 clearfix contents">
+
+            <tr:form id="ebiForm" usesUpload="true" inlineStyle="padding: 10px">
+
+                <!-- To avoid expired sessions, poll every 25 mins -->
+                <tr:poll interval="#{15*60*1000}"/>
+
+                <!-- breadcrumbs -->
+                <ui:insert name="breadcrumbs"/>
+
+                <ui:insert name="content"/>
+
+            </tr:form>
+
+            <ui:insert name="footer_tl">
+                <ui:include src="/templates/footerMitigation.xhtml"/>
+            </ui:insert>
+
+        </div>
+
+
+    </div>
+
+    <!-- Dojo for validator -->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/dojo/1.8.1/dojo/dojo.js"></script>
+
+    <script type="text/javascript"
+            src="#{facesContext.externalContext.requestContextPath}/javascript/validator.js"></script>
+
+
+    <!--<script type="text/javascript" src="#{requestConfigBean.absoluteContextPath}/js/intact.js"></script>-->
+
+    <!--&lt;!&ndash; Dojo for validator &ndash;&gt;-->
+    <!--<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/dojo/1.8.1/dojo/dojo.js"></script>-->
+
+    <!--<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/javascript/validator.js" ></script>-->
+
+    <script defer="defer" type="text/javascript" src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
+    <script defer="defer" type="text/javascript" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
+
+
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-672146-7']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+
+    </body>
+
+</tr:document>
+</ui:composition>
+
+
+        <!--<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"-->
+        <!--xmlns:f="http://java.sun.com/jsf/core"-->
+        <!--xmlns:h="http://java.sun.com/jsf/html"-->
+        <!--xmlns:c="http://java.sun.com/jstl/core"-->
+        <!--xmlns:tr="http://myfaces.apache.org/trinidad"-->
+        <!--xmlns:trh="http://myfaces.apache.org/trinidad/html"-->
+        <!--xmlns:fn="http://java.sun.com/jsp/jstl/functions"-->
+        <!--xmlns:ebi="http://ebi.ac.uk/faces/components"-->
+        <!--xmlns:ebisf="http://www.ebi.ac.uk/faces/site">-->
+
+        <!--<tr:document title="#{ebiTest['webapp.name']}">-->
+
+        <!--<trh:head>-->
+
+        <!--<title>IntAct Search</title>-->
+
+        <!--<meta http-equiv="Content-Type"-->
+        <!--content="text/html; charset=iso-8859-1"/>-->
+
+        <!--<meta name="description" content="IntAct Search"/>-->
+
+
+        <!--&lt;!&ndash; IntAct dynamic application should not be indexed by search engines &ndash;&gt;-->
+        <!--<meta name='robots' content='nofollow'/>-->
+
+        <!--<link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/contents.css" type="text/css"/>-->
+        <!--<link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/userstyles.css" type="text/css"/>-->
+        <!--<link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/sidebars.css" type="text/css"/>-->
+
+        <!--<trh:script source="#{ebisf:absoluteEbiUrl()}/inc/js/contents.js" type="text/javascript"/>-->
+
+        <!--<script type="text/javascript"-->
+        <!--djConfig="isDebug: false"-->
+        <!--src="http://o.aolcdn.com/dojo/1.6/dojo/dojo.xd.js"></script>-->
+
+        <!--<trh:script source="/js/intact.js"/>-->
+
+        <!--<style type="text/css">-->
+        <!--.dojoDialog {-->
+        <!--background: #eee;-->
+        <!--border: 1px solid #999;-->
+        <!---moz-border-radius: 5px;-->
+        <!--padding: 4px; /*positioning outside of the visible scope to prevent some ui glitches visibility hidden does not work*/-->
+        <!--position: absolute;-->
+        <!--left: -800px;-->
+        <!--top: -800px;-->
+
+        <!--progid:DXImageTransform.Microsoft.dropShadow(Color=AAAAAA,offX=8,offY=8,positive= true);-->
+        <!--}-->
+        <!--</style>-->
+
+        <!--<ui:insert name="additionalHeader"/>-->
+
+        <!--</trh:head>-->
+
+        <!--<tr:form id="ebiForm" usesUpload="true">-->
+
+        <!--&lt;!&ndash; To avoid expired sessions, poll every 25 mins &ndash;&gt;-->
+        <!--<tr:poll interval="#{15*60*1000}"/>-->
+
+        <!--&lt;!&ndash; EBI header &ndash;&gt;-->
+        <!--<div class="headerdiv" id="headerdiv"-->
+        <!--style="position:absolute; z-index: 1;">-->
+
+        <!--<iframe src="http://www.ebi.ac.uk/inc/head.html" name="head" id="head" frameborder="0" marginwidth="0"-->
+        <!--marginheight="0"-->
+        <!--scrolling="no" width="100%" style="position:absolute; z-index: 1; height: 57px;"></iframe>-->
+        <!--</div>-->
+
+        <!--&lt;!&ndash; Contents &ndash;&gt;-->
+        <!--<div class="contents" id="contents">-->
+
+        <!--<table class="contentspane" id="contentspane" summary="The main content pane of the page"-->
+        <!--style="width: 100%">-->
+        <!--<tr>-->
+        <!--&lt;!&ndash;<td class="leftmargin">&ndash;&gt;-->
+        <!--&lt;!&ndash;<img src="http://www.ebi.ac.uk/inc/images/spacer.gif" class="spacer" alt="spacer"/>&ndash;&gt;-->
+        <!--&lt;!&ndash;</td>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<td class="leftmenucell" id="leftmenucell">&ndash;&gt;-->
+        <!--&lt;!&ndash;<div class="leftmenu" id="leftmenu"&ndash;&gt;-->
+        <!--&lt;!&ndash;style="width: 145px; visibility: visible; display: block;">&ndash;&gt;-->
+        <!--&lt;!&ndash; InstanceBeginEditable name="leftnav" &ndash;&gt;-->
+
+        <!--&lt;!&ndash; start left menu here  &ndash;&gt;-->
+        <!--&lt;!&ndash;<ui:insert name="sidebar"/>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+        <!--&lt;!&ndash;</td>&ndash;&gt;-->
+
+        <!--<td class="contentsarea" id="contentsarea">-->
+        <!--&lt;!&ndash; InstanceBeginEditable name="contents" &ndash;&gt;-->
+
+        <!--&lt;!&ndash; breadcrumbs &ndash;&gt;-->
+        <!--<ui:insert name="breadcrumbs"/>-->
+
+        <!--&lt;!&ndash; start contents here &ndash;&gt;-->
+
+        <!--<tr:statusIndicator id="status">-->
+        <!--<f:facet name="busy">-->
+        <!--<tr:panelGroupLayout layout="horizontal">-->
+        <!--<tr:image source="/skins/ebi/images/status_busy_redback.gif"-->
+        <!--inlineStyle="vertical-align:middle"/>-->
+        <!--<tr:outputFormatted value="&#160;"/>-->
+        <!--<tr:outputText value="Loading..."/>-->
+        <!--</tr:panelGroupLayout>-->
+        <!--</f:facet>-->
+        <!--</tr:statusIndicator>-->
+
+        <!--<table style="width:100%">-->
+        <!--<tr>-->
+        <!--<td>-->
+        <!--<ui:insert name="content"/>-->
+        <!--</td>-->
+        <!--</tr>-->
+        <!--</table>-->
+
+
+        <!--</td>-->
+        <!--<td class="rightmenucell" id="rightmenucell">-->
+        <!--<div class="rightmenu" id="rightmenu">-->
+        <!--<ui:insert name="right">-->
+        <!--<img src="http://www.ebi.ac.uk/inc/images/spacer.gif" class="spacer" alt="spacer"/>-->
+        <!--</ui:insert>-->
+        <!--</div>-->
+        <!--</td>-->
+        <!--</tr>-->
+        <!--</table>-->
+
+        <!--<table class="footerpane" id="footerpane" summary="The main footer pane of the page">-->
+        <!--<tr>-->
+        <!--<td colspan="4" class="footerrow">-->
+        <!--<div class="footerdiv" id="footerdiv" style="z-index:2;">-->
+        <!--<iframe src="http://www.ebi.ac.uk/inc/foot.html" name="foot" frameborder="0"-->
+        <!--marginwidth="0"-->
+        <!--marginheight="0"-->
+        <!--scrolling="no" height="22" width="100%" style="z-index:2;"></iframe>-->
+        <!--</div>-->
+        <!--</td>-->
+        <!--</tr>-->
+        <!--</table>-->
+
+        <!--<script src="http://www.ebi.ac.uk/inc/js/footer.js" type="text/javascript"></script>-->
+
+        <!--</div>-->
+
+        <!--</tr:form>-->
+
+        <!--</tr:document>-->
+
+        <!--</ui:composition>-->

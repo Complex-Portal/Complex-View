@@ -11,54 +11,12 @@
         template="/WEB-INF/facelets/layout/template.xhtml">
 
 <ui:define name="content">
-<link rel="stylesheet" href="css/validator.css" type="text/css"/>
-<script type="text/javascript" src="javascript/validator.js" />
-
-<trh:tableLayout width="100%">
-
-    <trh:rowLayout>
-        <trh:cellFormat>
-
-            <!-- Header -->
-            <trh:tableLayout width="100%">
-                <trh:rowLayout>
-                    <trh:cellFormat halign="left">
-                        <tr:goLink destination="http://psidev.sourceforge.net/" styleClass="text-align:left">
-                            <tr:image source="images/psi.gif" styleClass="border:0"/>
-                        </tr:goLink>
-                    </trh:cellFormat>
-                    <trh:cellFormat halign="center">
-                        <h1><tr:outputText value="The PSI-MI 2.5 Validator" styleClass="text-align:center"/></h1>
-                        <trh:tableLayout width="70%" borderWidth="0">
-                            <trh:rowLayout>
-                                <trh:cellFormat halign="left" valign="middle">
-                                    <tr:outputText value="This is the version 2.3 of the PSI-MI Semantic Validator" />
-                                    <br/>
-                                </trh:cellFormat>
-                            </trh:rowLayout>
-                        </trh:tableLayout>
-                    </trh:cellFormat>
-                    <trh:cellFormat halign="right">
-                        <tr:goLink destination="http://hupo.org/" styleClass="text-align:right">
-                            <tr:image source="images/hupo.gif" styleClass="border:0"/>
-                        </tr:goLink>
-                    </trh:cellFormat>
-                </trh:rowLayout>
-            </trh:tableLayout>
-
-        </trh:cellFormat>
-    </trh:rowLayout>
-
-</trh:tableLayout>
-
-<tr:spacer height="20" />
 
 
 <!-- Description -->
-
 <tr:panelHeader text="Overview">
 
-    <tr:group>
+<tr:group>
 
         <div style="float:right; padding-left: 20px; padding-top: 20px; background-color: white">
 
@@ -454,7 +412,7 @@
 
         <f:facet name="detailStamp">
 
-            <tr:switcher facetName="#{msg.rule.class.simpleName}" defaultFacet="default" >
+            <tr:switcher facetName="#{msg.rule['class'].simpleName}" defaultFacet="default" >
 
                 <f:facet name="default">
                     <tr:panelFormLayout>
@@ -578,5 +536,4 @@
 </tr:panelHeader>
 
 </ui:define>
-
 </ui:composition>

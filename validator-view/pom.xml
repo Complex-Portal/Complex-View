@@ -28,11 +28,17 @@
     <properties>
         <jetty.port>9095</jetty.port>
 
-        <psimi.obo.url>file:/ebi/sp/pro6/intact/local/data/psi/mi/rel25/data/psi-mi25.obo</psimi.obo.url>
-        <psimod.obo.url>file:/ebi/sp/pro6/intact/local/data/psi/mod/data/PSI-MOD.obo</psimod.obo.url>
-        <psipar.obo.url>file:/ebi/sp/pro6/intact/local/data/psi/mi/controlledVocab/proteomeBinder/psi-par.obo</psipar.obo.url>
+        <!--<psimi.obo.url>file:/ebi/sp/pro6/intact/local/data/psi/mi/rel25/data/psi-mi25.obo</psimi.obo.url>-->
+        <!--<psimod.obo.url>file:/ebi/sp/pro6/intact/local/data/psi/mod/data/PSI-MOD.obo</psimod.obo.url>-->
+        <!--<psipar.obo.url>file:/ebi/sp/pro6/intact/local/data/psi/mi/controlledVocab/proteomeBinder/psi-par.obo</psipar.obo.url>-->
 
-        <notification.emails></notification.emails>
+        <psimi.obo.url>file:/Users/ntoro/Desktop/psi-mi25.obo</psimi.obo.url>
+        <psimod.obo.url>file:/Users/ntoro/Desktop/PSI-MOD.obo</psimod.obo.url>
+        <psipar.obo.url>file:/Users/ntoro/Desktop/psi-par.obo</psipar.obo.url>
+
+        <!--<notification.emails></notification.emails>-->
+        <notification.emails>ntoro@ebi.ac.uk</notification.emails>
+
     </properties>
 
     <build>
@@ -98,11 +104,11 @@
         </dependency>
 
         <!-- Custom EBI component-->
-        <dependency>
-            <groupId>uk.ac.ebi.faces</groupId>
-            <artifactId>ebifaces-core</artifactId>
-            <version>1.3.1</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>uk.ac.ebi.faces</groupId>-->
+            <!--<artifactId>ebifaces-core</artifactId>-->
+            <!--<version>1.3.1</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>uk.ac.ebi.faces.renderkit</groupId>

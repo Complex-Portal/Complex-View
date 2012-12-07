@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:tr="http://myfaces.apache.org/trinidad"
+                xmlns:trh="http://myfaces.apache.org/trinidad/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebi="http://ebi.ac.uk/faces/components"
+                xmlns:ebisf="http://www.ebi.ac.uk/faces/site">
+
+    <div class="headerdiv" id="headerdiv">
+        <div class="header">
+            <div id="global-masthead" class="masthead grid_24">
+                <!--This has to be one line and no newline characters-->
+                <a href="//www.ebi.ac.uk/" title="Go to the EMBL-EBI homepage"><img src="//www.ebi.ac.uk/web_guidelines/images/logos/EMBL-EBI/EMBL_EBI_Logo_white.png" alt="EMBL European Bioinformatics Institute" /></a>
+
+                <div class="nav">
+                    <ul id="global-nav">
+                        <!-- set active class as appropriate -->
+                        <li class="first active" id="services"><a href="//www.ebi.ac.uk/services">Services</a></li>
+                        <li id="research"><a href="//www.ebi.ac.uk/research">Research</a></li>
+                        <li id="training"><a href="//www.ebi.ac.uk/training">Training</a></li>
+                        <li id="industry"><a href="//www.ebi.ac.uk/industry">Industry</a></li>
+                        <li id="about" class="last"><a href="//www.ebi.ac.uk/about">About us</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="local-masthead" class="masthead grid_24">
+
+                <div id="local-title" class="grid_12 alpha logo-title-strapline">
+                    <h:graphicImage value="/images/logo_psi.png" style="width: 120px"/>
+                    <span>
+                        <h1>
+                        <a href="#{facesContext.externalContext.requestContextPath}/start.xhtml" title="Back to #{ebiTest['webapp.name']} homepage">PSI-MI VALIDATOR</a>
+                        </h1>
+                        <br/>
+                        <p><h:outputText value="#{ebiTest['webapp.name']}"/></p>
+                    </span>
+                </div>
+
+                <!--<div class="grid_24" id="local-title-logo" >-->
+                <!--<h1><h:outputText value="#{ebiTest['webapp.name']}"/></h1>-->
+                <!--&lt;!&ndash; it is important that your page has an h1 element, however this is pushed off screen for graphical interfaces &ndash;&gt;-->
+
+                <!--<p>-->
+                    <!--<h:graphicImage value="/images/logo_psi.png" style="width: 140px" styleClass="logo"/>-->
+                    <!--<span class="strapline">-->
+                    <!--<h:outputText value="#{ebiTest['webapp.name']}"/>-->
+                <!--</span>-->
+                <!--</p>-->
+                <!--</div>-->
+                <!--<div id="local-masthead" class="masthead grid_24">-->
+                    <!--<div id="local-title" class="grid_12 alpha logo-title" style="display: inline-block;">-->
+                        <!--<a href="#" title="Back to #{ebiTest['webapp.name']} homepage">-->
+                            <!--<h:graphicImage value="/images/logo_psi.png" alt="PSI logo" width="" height="64"/></a>-->
+                        <!--<span><h1><h:outputText value="#{ebiTest['webapp.name']}"/></h1></span>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+        </div>
+    </div>
+</ui:composition>

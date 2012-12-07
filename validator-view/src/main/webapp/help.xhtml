@@ -6,10 +6,11 @@
         xmlns:trh="http://myfaces.apache.org/trinidad/html"
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:c="http://java.sun.com/jstl/core"
-        xmlns:ebi="http://ebi.ac.uk/faces/components" >
+        xmlns:ebi="http://ebi.ac.uk/faces/components"
+        template="/WEB-INF/facelets/layout/template.xhtml">
 
+<ui:define name="content">
 <tr:document title="Help">
-
 <a name="intro"/>
 <tr:panelHeader text="PSI-MI and PSI-PAR validation">
 
@@ -342,5 +343,5 @@
 <br/>
 
 </tr:document>
-
+</ui:define>
 </ui:composition>

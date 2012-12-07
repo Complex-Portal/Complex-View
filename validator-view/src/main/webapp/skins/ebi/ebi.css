@@ -9,21 +9,14 @@ body {
 }
 
 
-.AFDefaultFont:alias {
-    font-family:helvetica,"trebuchet MS",arial,sans-serif;
-    font-weight:normal;
-    font-size:9pt;
+table, table tr, table tr td  {
+border: 0;
 }
 
-.AFLinkForeground:alias {
-    color:#006666;
-    text-decoration:underline;
+h2 {
+    padding: 0;
 }
 
-.AFActiveLinkForeground:alias {
-    color:#E33E3E;
-    text-decoration:none;
-}
 
 .AFVisitedLinkForeground:alias {
     color:#006666;
@@ -40,6 +33,9 @@ a.OraLink:hover {
     text-decoration: none;
 }
 
+.p_OraHeaderNest {
+    margin: 0;
+}
 /** icons **/
 /***********/
 
