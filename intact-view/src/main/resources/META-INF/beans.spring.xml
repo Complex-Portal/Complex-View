@@ -61,6 +61,7 @@
                 <value>I2D-IMEx</value>
                 <value>UniProt</value>
                 <value>MBInfo</value>
+                <value>MPIDB</value>
             </list>
         </property>
         <property name="ontologyLuceneDirectory" value="${ontologies.lucene.directory}"/>
