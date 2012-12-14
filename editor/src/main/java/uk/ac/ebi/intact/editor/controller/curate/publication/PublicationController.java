@@ -29,8 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.cdb.webservice.Author;
-import uk.ac.ebi.cdb.webservice.Citation;
+import uk.ac.ebi.cdb.webservice.Authors;
+import uk.ac.ebi.cdb.webservice.Result;
 import uk.ac.ebi.intact.bridges.citexplore.CitexploreClient;
 import uk.ac.ebi.intact.bridges.imexcentral.DefaultImexCentralClient;
 import uk.ac.ebi.intact.bridges.imexcentral.ImexCentralException;
@@ -204,9 +204,8 @@ public class PublicationController extends AnnotatedObjectController {
             return true;
         }
         if (log.isDebugEnabled()) log.debug("Checking citexplore status");
-
         try {
-            URL url = new URL("http://www.ebi.ac.uk/webservices/citexplore/v1.0/service?wsdl");
+            URL url = new URL("http://www.ebi.ac.uk/webservices/citexplore/v3.0.1/service?wsdl");
             final URLConnection urlConnection = url.openConnection();
             urlConnection.setConnectTimeout(1000);
             urlConnection.setReadTimeout(1000);
@@ -317,7 +316,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
 
         try {
-            final Citation citation = citexploreClient.getCitationById( id );
+            final Result citation = citexploreClient.getCitationById( id );
 
             // new publication. No autocompletion available and this publication can be created under unassigned
             if ( citation == null && publication.getAc() == null) {
@@ -335,34 +334,36 @@ public class PublicationController extends AnnotatedObjectController {
             publication.setFullName(citation.getTitle());
 
             StringBuilder journalBuf = new StringBuilder(128);
-            final String abbreviation = citation.getJournalIssue().getJournal().getISOAbbreviation();
-            final String issn = citation.getJournalIssue().getJournal().getISSN();
+            final String abbreviation = citation.getJournalInfo().getJournal().getISOAbbreviation();
+            final String issn = citation.getJournalInfo().getJournal().getISSN();
             journalBuf.append( abbreviation );
             if( issn != null ) {
                 journalBuf.append( " (" ).append( issn ).append( ")" );
             }
             setJournal( journalBuf.toString() );
 
-            setYear( citation.getJournalIssue().getYearOfPublication() );
+            setYear( citation.getJournalInfo().getYearOfPublication() );
 
             StringBuilder sbAuthors = new StringBuilder( 64 );
 
-            Iterator<Author> authorIterator = citation.getAuthorCollection().iterator();
-            while ( authorIterator.hasNext() ) {
-                Author author = authorIterator.next();
-                sbAuthors.append( author.getLastName() ).append( " " );
+            if (citation.getAuthorList() != null){
+                Iterator<Authors> authorIterator = citation.getAuthorList().getAuthor().iterator();
+                while ( authorIterator.hasNext() ) {
+                    Authors author = authorIterator.next();
+                    sbAuthors.append( author.getLastName() ).append( " " );
 
-                if (author.getInitials() != null){
-                    for (int i = 0; i < author.getInitials().length(); i++){
-                        char initial = author.getInitials().charAt(i);
-                        sbAuthors.append( initial ).append(".");
+                    if (author.getInitials() != null){
+                        for (int i = 0; i < author.getInitials().length(); i++){
+                            char initial = author.getInitials().charAt(i);
+                            sbAuthors.append( initial ).append(".");
+                        }
                     }
+
+                    if ( authorIterator.hasNext() ) sbAuthors.append( ", " );
                 }
 
-                if ( authorIterator.hasNext() ) sbAuthors.append( ", " );
+                setAuthors( sbAuthors.toString() );
             }
-
-            setAuthors( sbAuthors.toString() );
 
             getChangesController().markAsUnsaved(publication);
 
