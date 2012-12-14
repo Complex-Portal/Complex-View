@@ -583,6 +583,10 @@
                     <groupId>xalan</groupId>
                     <artifactId>serializer</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.geronimo.specs</groupId>
+                    <artifactId>geronimo-servlet_2.5_spec</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
