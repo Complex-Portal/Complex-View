@@ -79,7 +79,7 @@
     </properties>
 
     <build>
-        <finalName>${artifactId}-${intact.instance.name}-${db.alias}-${version}</finalName>
+        <finalName>${artifactId}-${version}</finalName>
 
         <resources>
             <resource>
