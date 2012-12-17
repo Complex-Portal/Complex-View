@@ -106,6 +106,7 @@ public class DasProxyServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        String urlValue = req.getParameter("url");
         String serverUrl = req.getParameter("s");
         String method = req.getParameter("m");
         String query = req.getParameter("q");
@@ -114,14 +115,22 @@ public class DasProxyServlet extends HttpServlet {
         String regLabel = req.getParameter("l");
         String regType = req.getParameter("c");
 
+        // This is the parameter used in the Dasty3 adn BioJS proxy
+        if(urlValue != null){
+            serverUrl = urlValue;
+            method = "url";
+        } else {
+            // add trailing slash to the server if missing
+            if (!serverUrl.endsWith("/")) {
+                serverUrl = serverUrl + "/";
+            }
+        }
+
         if (log.isTraceEnabled()) {
             log.trace("Received request: " + req.getRequestURL() + "?" + req.getQueryString());
         }
 
-        // add trailing slash to the server if missing
-        if (!serverUrl.endsWith("/")) {
-            serverUrl = serverUrl + "/";
-        }
+
 
 //        if (log.isTraceEnabled()) {
 //            log.debug("Received request for: serverUrl="+serverUrl+"; "+method+"="+method+"; query="+query+
@@ -270,6 +279,8 @@ public class DasProxyServlet extends HttpServlet {
             if (regType != null) {
                 url.append("&type=").append(encode(regType));
             }
+        } else if ("url".equals(method)) {
+            // No need to apend anything. Just the URL.
         } else {
             throw new ServletException("Method not supported: " + method);
         }

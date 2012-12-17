@@ -23,6 +23,14 @@
 <script src="library/extra/window/tooltip.js" type="text/javascript"> </script>
 <script src="library/sorttable/sortable.js" type="text/javascript"></script>
 
+<!--BIOJS    -->
+<script language="JavaScript" type="text/javascript" src="library/biojs/Biojs.js"></script>
+<script language="JavaScript" type="text/javascript" src="library/biojs/Biojs.HpaSummaryFeature.js"></script>
+<script language="JavaScript" type="text/javascript" src="library/biojs/Biojs.HpaSummaryFeatures.js"></script>
+<script language="JavaScript" type="text/javascript" src="library/jquery/jquery-1.6.4.js"></script>
+<link href="css/biojs/Biojs.HpaSummaryFeatures.css" rel="stylesheet" type="text/css" />
+<link href="css/biojs/Biojs.HpaSummaryFeature.css" rel="stylesheet" type="text/css">
+
 <!-- DASTY FUNCTIONS -->
 <script src="library/dasty2/configuration.js" type="text/javascript"></script>
 <script src="library/dasty2/globals.js" type="text/javascript"></script>
@@ -105,7 +113,7 @@ Optionally define the URL parametres. Makes Dasty2 independent from the URL.
    	    <td width="15"  valign="top">
 			<span style="display:block; border-bottom: 1px solid #000000; font-weight:bold; color:#222222; margin-bottom: 3px;">
 				<a style="text-decoration:none;" href="javascript:changeDisplayState('display_server_checking_div', 'menu_server_checking_img', 1)">
-					<span id="menu_server_checking_img"><img src="img/plus01.gif" border="0" align="absbottom">&nbsp;</span>
+					<span id="menu_server_checking_img"><img src="img/minus01.gif" border="0" align="absbottom">&nbsp;</span>
 					Annotation servers loaded:				</a>			</span>
 			<div id="progress_bar_empty" style="background-color:#F0F0F0;border:1px solid #999999;height:12px;width:300px;padding:0px;" align="left">
 			<div id="progress_bar_2" style="position:relative;top:0px;left:0px;background-color:#B4B4B4;height:12px;width:0px;padding-top:5px;padding:0px;">
@@ -122,7 +130,7 @@ Optionally define the URL parametres. Makes Dasty2 independent from the URL.
 			<span style="font-style:italic;" id="system_information">... please be patient, Dasty2 is loading data from the DAS servers</span>								        </td>
 	    </tr>
 	</table>
-		<div id="display_server_checking_div" class="divformat" style="display:none">
+		<div id="display_server_checking_div" class="divformat" style="display:block">
         	<div id="display_server_checking"></div>
         </div>
 	</div>
@@ -400,6 +408,21 @@ Optionally define the URL parametres. Makes Dasty2 independent from the URL.
     		<div id="display_query"></div>
     	</div>
 		<!-- END - QUERY INFORMATION -->
+
+</div>
+<!-- END SEQUENCE -->
+
+
+<!-- START HPA -->
+<a id="menu_hpa" style="display:block; text-decoration:none;" class="maintitle" href="javascript:changeDisplayState('display_hpa_div', 'menu_hpa_img', 2)">
+    <span id="menu_hpa_img"><img src="img/plus02.gif" border="0" align="absbottom">&nbsp;</span>
+    ANTIBODY PROTEIN EXPRESSION PROFILES
+</a>
+<div id="display_hpa_div" class="divformat" style="display:block">
+    <div id="display_hpa">
+        ... loading HPA antibody information
+
+    </div>
 
 </div>
 <!-- END SEQUENCE -->

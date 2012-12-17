@@ -10,7 +10,7 @@
  * 2:	Use it for redirections
  */
 function start_dasty(url_control) {
-
+    jQuery.noConflict();
     var dpath = getURLParam('path');
 
     if (dpath != null) {
@@ -266,4 +266,5 @@ function start() {
 		createLabelOptions(das_registry_label, "feature_label_list_select");
 		makeSequenceRequest();
 	}
+    startBiojsHpa();
 }	
