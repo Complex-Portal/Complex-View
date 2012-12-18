@@ -34,6 +34,7 @@ import psidev.psi.mi.tab.converter.tab2xml.XmlConversionException;
 import psidev.psi.mi.tab.model.builder.PsimiTabVersion;
 import psidev.psi.mi.xml.PsimiXmlVersion;
 import psidev.psi.mi.xml.PsimiXmlWriter;
+import psidev.psi.mi.xml.converter.ConverterContext;
 import psidev.psi.mi.xml.model.EntrySet;
 import psidev.psi.mi.xml.stylesheets.XslTransformException;
 import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
@@ -278,6 +279,10 @@ public class BinaryInteractionsExporter {
         } catch (Exception e) {
             throw new IntactViewException("Problem writing XML (format "+format+") for query: "+solrQuery, e);
         }
+        finally {
+            // close threadlocal
+            ConverterContext.remove();
+        }
     }
 
     public void exportToMiXmlTransformed(OutputStream os, SolrQuery searchQuery) throws IOException {
@@ -305,18 +310,20 @@ public class BinaryInteractionsExporter {
 
     public void exportToRdf(OutputStream os, SolrQuery searchQuery, RdfFormat format) throws IOException {
         Writer out = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+        PsimiRdfConverter converter = new PsimiRdfConverter();
 
         try{
             EntrySet entrySet = createEntrySet(searchQuery);
 
             if (entrySet != null && !entrySet.getEntries().isEmpty()){
-                PsimiRdfConverter converter = new PsimiRdfConverter();
                 converter.convert(entrySet, format, out);
             }
         }
         finally {
             // close writer
             out.close();
+            // close thread locals
+            converter.close();
         }
     }
 

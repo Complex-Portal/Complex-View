@@ -137,16 +137,22 @@ public class DataPopulator  {
     private void indexInteractions() throws ConverterException, IOException, TabConversionException {
         final List<Publication> publications = intactContext.getDaoFactory().getPublicationDao().getAll();
 
-        for (Publication pub : publications) {
-            final EntrySet entrySet = psiExchange.exportToEntrySet(IntactEntryFactory.createIntactEntry(intactContext).addPublication(pub));
+        try{
+            for (Publication pub : publications) {
+                final EntrySet entrySet = psiExchange.exportToEntrySet(IntactEntryFactory.createIntactEntry(intactContext).addPublication(pub));
 
-            Xml2Tab xml2tab = new Xml2Tab();
-            xml2tab.setExpansionStrategy(new SpokeWithoutBaitExpansion());
+                Xml2Tab xml2tab = new Xml2Tab();
+                xml2tab.setExpansionStrategy(new SpokeWithoutBaitExpansion());
 
-            Collection<BinaryInteraction> binaryInteractions = xml2tab.convert(entrySet);
+                Collection<BinaryInteraction> binaryInteractions = xml2tab.convert(entrySet);
 
-            storeBinaryInteractions(binaryInteractions);
+                storeBinaryInteractions(binaryInteractions);
+            }
         }
+        finally {
+            psiExchange.close();
+        }
+
     }
 
 }

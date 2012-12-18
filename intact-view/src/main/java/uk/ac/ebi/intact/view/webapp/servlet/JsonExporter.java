@@ -100,7 +100,13 @@ public class JsonExporter extends HttpServlet {
 
     private EntrySet createEntrySet(IntactEntry intactEntry) {
         PsiExchange psiExchange = (PsiExchange) IntactContext.getCurrentInstance().getSpringContext().getBean("psiExchange");
-        EntrySet entrySet = psiExchange.exportToEntrySet(intactEntry);
+        EntrySet entrySet = null;
+        try{
+            entrySet = psiExchange.exportToEntrySet(intactEntry);
+        }
+        finally {
+            psiExchange.close();
+        }
 
         return entrySet;
     }
