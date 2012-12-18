@@ -53,7 +53,7 @@ public class AdvancedSearchIT extends IntactViewIT {
     }
 
     private void showAdvancedFields() {
-        driver.findElement(By.id("addFieldBtn")).click();
+        driver.findElement(By.id(":intactForm:addFieldBtn")).click();
         waitUntilElementIsVisible(By.id(":intactForm:newQuerytxt"));
     }
 
