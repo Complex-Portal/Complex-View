@@ -29,7 +29,7 @@
         <property name="skipSchemaCheck" value="true"/>
     </bean>
 
-    <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext" scope="session">
+    <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext">
         <property name="userId" value="INTACT_VIEW_USER"/>
         <aop:scoped-proxy/>
     </bean>
