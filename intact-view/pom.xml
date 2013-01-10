@@ -520,7 +520,7 @@
                     <artifactId>wstx-asl</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.mortbay.jetty:jetty</groupId>
+                    <groupId>org.mortbay.jetty</groupId>
                     <artifactId>jetty</artifactId>
                 </exclusion>
                 <exclusion>
