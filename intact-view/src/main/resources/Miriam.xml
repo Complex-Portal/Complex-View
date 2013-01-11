@@ -691,10 +691,10 @@
 			</resource>
 
 			<resource id="MIR:00100032" state="up" reliability="99">
-				<dataResource>http://www.ebi.ac.uk/citexplore/</dataResource>
+				<dataResource>http://europepmc.org</dataResource>
 				<dataEntityExample>16333295</dataEntityExample>
-				<dataEntry>http://www.ebi.ac.uk/citexplore/citationDetails.do?dataSource=MED&amp;externalId=$id</dataEntry>
-				<dataInfo>CiteXplore</dataInfo>
+				<dataEntry>http://europepmc.org/abstract/MED/$id</dataEntry>
+				<dataInfo>Europe Pubmed Central</dataInfo>
 				<dataInstitution>European Bioinformatics Institute</dataInstitution>
 
 				<dataLocation>United Kingdom</dataLocation>

@@ -4,13 +4,15 @@
                 xmlns:t="http://myfaces.apache.org/tomahawk"
                 xmlns:c="http://java.sun.com/jstl/core"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-
+                xmlns:ot="http://myfaces.apache.org/orchestra"
                 xmlns:ebisf="http://www.ebi.ac.uk/faces/site"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions">
 
-    <h:outputLink value="http://www.ebi.ac.uk/citexplore/citationDetails.do?externalId=#{query}&amp;dataSource=MED"
-                  target="citexplore" disabled="#{disabled != null? disabled : false}">
-                  <h:outputText value="#{(text != null)? text : query}"/>
-        <ui:insert/>
-    </h:outputLink>
+    <ot:separateConversationContext>
+        <h:outputLink value="http://europepmc.org/abstract/MED/#{query}"
+                      target="_blank" disabled="#{disabled != null? disabled : false}">
+            <h:outputText value="#{(text != null)? text : query}"/>
+            <ui:insert/>
+        </h:outputLink>
+    </ot:separateConversationContext>
 </ui:composition>

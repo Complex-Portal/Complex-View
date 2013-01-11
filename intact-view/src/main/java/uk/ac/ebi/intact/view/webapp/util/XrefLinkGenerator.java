@@ -39,7 +39,7 @@ public class XrefLinkGenerator
         } else if (database.equals("MI")) {
             return replacePlaceholderWithId(linkContext.getOlsUrl(), "MI:" + identifier);
         } else if (database.equals("pubmed")) {
-            return replacePlaceholderWithId(linkContext.getCitexploreUrl(), identifier);
+            return replacePlaceholderWithId(linkContext.getEuropePubmedCentralUrl(), identifier);
         } else if (database.equals("hierarchView")) {
             return replacePlaceholderWithId(linkContext.getHierarchViewUrl(), identifier);
         } else if (linkContext.containsKey(database)) {

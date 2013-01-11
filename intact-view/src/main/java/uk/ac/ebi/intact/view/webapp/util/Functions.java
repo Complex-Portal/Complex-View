@@ -47,7 +47,7 @@ public class Functions {
     private static final String MI_TO_XREF_URL_MAP_PARAM = Functions.class+".MI_TO_XREF_URL_MAP";
     private static final String MI_TO_CV_MAP_PARAM = Functions.class+".MI_TO_CV_MAP";
     private static final String PUBMED_NCBI_URL="http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=${ac}&dopt=Abstract";
-    private static final String CITEXPLORE_URL="http://www.ebi.ac.uk/citexplore/citationDetails.do?externalId=${ac}&dataSource=MED";
+    private static final String EUROPE_PUBMED_CENTRAL_URL="http://europepmc.org/abstract/MED/${ac}";
 
     private static final String OLD_NEWT_URL = "http://www.ebi.ac.uk/newt/display?search=${ac}";
     private static final String NEW_NEWT_URL = "http://www.uniprot.org/taxonomy/${ac}";
@@ -195,7 +195,7 @@ public class Functions {
                 xrefUrl = annotation.getAnnotationText();
             }
             if(PUBMED_NCBI_URL.equals( xrefUrl )){
-                xrefUrl = CITEXPLORE_URL;
+                xrefUrl = EUROPE_PUBMED_CENTRAL_URL;
             }
             if(OLD_NEWT_URL.equals( xrefUrl )){
                 xrefUrl = NEW_NEWT_URL;

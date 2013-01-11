@@ -5,7 +5,7 @@
         xmlns:c="http://java.sun.com/jstl/core"
         xmlns:fn="http://java.sun.com/jsp/jstl/functions"
         xmlns:sf="http://www.ebi.ac.uk/faces/site"
-
+        xmlns:ot="http://myfaces.apache.org/orchestra"
         xmlns:iav="http://intact.ebi.ac.uk/view">
 
     <ui:component rendered="#{rendered == null? true : sf:convertToBoolean(rendered)}">
@@ -22,23 +22,27 @@
 
             <h:panelGroup rendered="#{!itemPerLine}">
                 <nobr>
-                    <h:outputLink title="#{xref.text}"
-                               target="_blank"
-                               value="#{xrefUrl}"
-                               disabled="#{xrefUrl == null or xrefUrl == '#' or itemDisabled}">#{xrefUrl == null? iav:xrefToString(xref, !onlyText, !onlyText, onlyText) : text}</h:outputLink>
-                    <h:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(value)}"/>
-
-
+                    <ot:separateConversationContext>
+                        <h:outputLink title="#{xref.text}"
+                                      target="_blank"
+                                      value="#{xrefUrl}"
+                                      disabled="#{xrefUrl == null or xrefUrl == '#' or itemDisabled}">#{xrefUrl == null? iav:xrefToString(xref, !onlyText, !onlyText, onlyText) : text}
+                        </h:outputLink>
+                        <h:outputText value="; " rendered="#{rowStatus.index + 1 lt fn:length(value)}"/>
+                    </ot:separateConversationContext>
                 </nobr>
             </h:panelGroup>
 
             <h:panelGroup rendered="#{itemPerLine and xrefUrl != null}">
                     <span style="display:block">
                         <nobr>
-                            <h:outputLink title="#{xref.text}"
-                                       target="_blank"
-                                       value="#{iav:xrefUrl(appConfigBean.linkContext, xref)}"
-                                       disabled="#{xrefUrl == '#' or itemDisabled}">#{text}</h:outputLink>
+                            <ot:separateConversationContext>
+                                <h:outputLink title="#{xref.text}"
+                                              target="_blank"
+                                              value="#{iav:xrefUrl(appConfigBean.linkContext, xref)}"
+                                              disabled="#{xrefUrl == '#' or itemDisabled}">#{text}
+                                </h:outputLink>
+                            </ot:separateConversationContext>
                         </nobr>
                     </span>
             </h:panelGroup>
