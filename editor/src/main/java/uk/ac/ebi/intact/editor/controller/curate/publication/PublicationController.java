@@ -203,7 +203,7 @@ public class PublicationController extends AnnotatedObjectController {
         if (isCitexploreActive) {
             return true;
         }
-        if (log.isDebugEnabled()) log.debug("Checking citexplore status");
+        if (log.isDebugEnabled()) log.debug("Checking Europe Pubmed Central status");
         try {
             URL url = new URL("http://www.ebi.ac.uk/webservices/citexplore/v3.0.1/service?wsdl");
             final URLConnection urlConnection = url.openConnection();
@@ -211,7 +211,7 @@ public class PublicationController extends AnnotatedObjectController {
             urlConnection.setReadTimeout(1000);
             urlConnection.connect();
         } catch ( Exception e ) {
-            log.debug("\tCitexplore is not reachable");
+            log.debug("\tEurope Pubmed Central is not reachable");
 
             isCitexploreActive = false;
             return false;

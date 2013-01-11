@@ -23,8 +23,9 @@
 
         <h:panelGroup rendered="#{publicationController.publication.publicationId != null}" styleClass="top-title-details">
             (&#160;
-            <h:outputLink value="http://www.ebi.ac.uk/citexplore/citationDetails.do?externalId=#{publicationController.publication.publicationId}&amp;dataSource=MED"
+            <h:outputLink value="http://europepmc.org/abstract/MED/#{publicationController.publication.publicationId}"
                           target="_blank">
+                <f:param name="conversationPropagation" value="none"/>
                 <h:outputText style="font-weight: normal;" value="#{publicationController.publication.publicationId}"/>
                 <span class="ui-icon ui-icon-extlink" style="display:inline-block; vertical-align: bottom"/>
             </h:outputLink>
