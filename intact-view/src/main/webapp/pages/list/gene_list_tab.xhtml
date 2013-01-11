@@ -57,19 +57,13 @@
             <ui:repeat var="xref" value="#{interactorWrapper.xrefs}"
                        varStatus="rowStatus">
                 <h:panelGroup rendered="#{xref.cvDatabase.shortLabel == 'ensembl'}">
-                    <h:panelGroup rendered="#{xref.cvXrefQualifier.identifier == 'MI:0476'}">
+                    <h:panelGroup rendered="#{xref.cvXrefQualifier.identifier == 'MI:0356'}">
                         <h:outputText
                                 value="#{xref.primaryId}"/>
                     </h:panelGroup>
                 </h:panelGroup>
 
             </ui:repeat>
-
-            <h:panelGroup>
-                <iax:goMoleculeView query="#{interactorWrapper.ac}" onlyLogo="true"/>
-
-                <br/>
-            </h:panelGroup>
         </p:column>
 
         <p:column>
