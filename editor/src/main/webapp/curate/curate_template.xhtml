@@ -23,12 +23,13 @@
 
         <h:panelGroup rendered="#{publicationController.publication.publicationId != null}" styleClass="top-title-details">
             (&#160;
-            <h:outputLink value="http://europepmc.org/abstract/MED/#{publicationController.publication.publicationId}"
-                          target="_blank">
-                <f:param name="conversationPropagation" value="none"/>
-                <h:outputText style="font-weight: normal;" value="#{publicationController.publication.publicationId}"/>
-                <span class="ui-icon ui-icon-extlink" style="display:inline-block; vertical-align: bottom"/>
-            </h:outputLink>
+            <ot:separateConversationContext>
+                <h:outputLink value="http://europepmc.org/abstract/MED/#{publicationController.publication.publicationId}"
+                              target="_blank">
+                    <h:outputText style="font-weight: normal;" value="#{publicationController.publication.publicationId}"/>
+                    <span class="ui-icon ui-icon-extlink" style="display:inline-block; vertical-align: bottom"/>
+                </h:outputLink>
+            </ot:separateConversationContext>
             )
         </h:panelGroup>
     </h:panelGroup>
