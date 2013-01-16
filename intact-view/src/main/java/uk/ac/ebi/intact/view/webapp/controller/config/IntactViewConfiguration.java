@@ -133,8 +133,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private HttpSolrServer solrServer;
     private HttpSolrServer ontologySolrServer;
 
-    private HttpClient httpClientWithProxy;
-    private HttpClient httpClientWithoutProxy;
     private Map<String, PsicquicSimpleClient> psicquicClientMap;
 
     private List<String> databaseNamesUsingSameSolr;
@@ -154,27 +152,6 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         initializeSolrServer();
 
         initializeOntologyServer();
-
-        initializeHttpClients();
-
-    }
-
-    private void initializeHttpClients() {
-        // initialise http clients
-        if (httpClientWithProxy == null) {
-            httpClientWithProxy = new HttpClient(new MultiThreadedHttpConnectionManager());
-
-            if (isValueSet(proxyHost) && isValueSet(proxyPort)) {
-                httpClientWithProxy.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
-
-                log.info("Setting HTTPClient using proxy: " + proxyHost + ":" + proxyPort);
-            } else {
-                log.info("Setting HTTPClient with NO PROXY");
-            }
-        }
-        if (httpClientWithoutProxy == null) {
-            httpClientWithoutProxy = new HttpClient(new MultiThreadedHttpConnectionManager());
-        }
     }
 
     private void initializeOntologyServer() {
@@ -586,13 +563,21 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     }
 
     protected HttpClient getHttpClientWithProxy() {
+        HttpClient httpClientWithProxy = new HttpClient(new MultiThreadedHttpConnectionManager());
 
+        if (isValueSet(proxyHost) && isValueSet(proxyPort)) {
+            httpClientWithProxy.getHostConfiguration().setProxy(proxyHost, Integer.valueOf(proxyPort));
+
+            log.info("Setting HTTPClient using proxy: " + proxyHost + ":" + proxyPort);
+        } else {
+            log.info("Setting HTTPClient with NO PROXY");
+        }
         return httpClientWithProxy;
     }
 
     protected HttpClient getHttpClientWithoutProxy() {
 
-        return httpClientWithoutProxy;
+        return new HttpClient(new MultiThreadedHttpConnectionManager());
     }
 
     public Map<String, PsicquicSimpleClient> getPsicquicClientMap() {
