@@ -2,6 +2,22 @@ a img {
     border: 0;
 }
 
+.center{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Remove for compliance */
+.sidemenu a:hover, a:focus, a:active {
+    border-bottom: none !important;
+}
+
+/* Remove for compliance */
+.contents a:hover, a:focus, a:active {
+    border-bottom: none !important;
+}
+
 /** status **/
 .busyStatus {
     right: 0px; top: 0px;
@@ -86,6 +102,11 @@ td.compoundStructure {
 .ui-dialog .ui-dialog-title {
     margin:  0 !important;
 }
+/* Move the paginator to the left */
+
+.left-paginator .ui-paginator  {
+    text-align: left !important;
+}
 
 /* Participant Legend */
 
@@ -137,10 +158,13 @@ td.compoundStructure {
     margin-right:5px;
 }
 
-.intact_fixedWidth {
-    width:650px;
-}
+/*.intact_fixedWidth {*/
+    /*width:650px;*/
+/*}*/
 
+.ia-results-table th{
+    white-space: normal !important;
+}
 
 .dasty_title
 {
@@ -153,3 +177,5 @@ font-weight:bold;
 font-size:120%;
 color:#006666;
 }
+
+

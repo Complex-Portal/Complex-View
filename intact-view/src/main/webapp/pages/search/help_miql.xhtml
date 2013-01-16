@@ -64,14 +64,13 @@
         </li>
     </ul>
 
-    <h2>MIQL fields</h2>
+    <h1>MIQL fields</h1>
 
     <h:outputText value="You can find more information about the Molecular Interactions Query Language (MIQL) defined for PSICQUIC "/>
     <h:outputLink value="http://code.google.com/p/psicquic/wiki/MiqlDefinition" target="_blank">Here</h:outputLink>
 
-    <hr/>
 
-    <h:panelGrid columns="3" headerClass="contenttable">
+    <h:panelGrid columns="3" headerClass="contenttable" style="padding-top: 10px">
 
         <h:outputText value="Field Name" style="font-weight: bold"/>
         <h:outputText value="Searches on" style="font-weight: bold"/>
@@ -219,15 +218,16 @@
 
     </h:panelGrid>
 
-    <hr/>
-
-    <h2>IntAct fields</h2>
+    <h1>IntAct fields</h1>
 
     <h:outputText value="These field names are specific to IntAct and are not in MIQL definition for PSICQUIC."/>
 
-    <hr/>
+    <h:panelGrid columns="3" headerClass="contenttable" style="padding-top: 10px">
 
-    <h:panelGrid columns="3" headerClass="contenttable">
+
+        <h:outputText value="Field Name" style="font-weight: bold"/>
+        <h:outputText value="Searches on" style="font-weight: bold"/>
+        <h:outputText value="Example" style="font-weight: bold"/>
 
         <h:outputText value="geneName"/>
         <h:outputText value="Gene name for Interactor A or B"/>
@@ -242,7 +242,5 @@
         <iv:queryLink value="intact-miscore:[0.5 TO 1.0]"/>
 
     </h:panelGrid>
-
-    <hr/>
 
 </ui:composition>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ebisf="http://www.ebi.ac.uk/faces/site">
+    <div class="headerdiv" id="headerdiv">
+        <div class="header">
+            <div id="global-masthead" class="masthead grid_24">
+                <!--This has to be one line and no newline characters-->
+                <a href="//www.ebi.ac.uk/" title="Go to the EMBL-EBI homepage"><img
+                        src="//www.ebi.ac.uk/web_guidelines/images/logos/EMBL-EBI/EMBL_EBI_Logo_white.png"
+                        alt="EMBL European Bioinformatics Institute"/></a>
+
+                <div class="nav">
+                    <ul id="global-nav">
+                        <!-- set active class as appropriate -->
+                        <li class="first active" id="services"><a href="//www.ebi.ac.uk/services">Services</a></li>
+                        <li id="research"><a href="//www.ebi.ac.uk/research">Research</a></li>
+                        <li id="training"><a href="//www.ebi.ac.uk/training">Training</a></li>
+                        <li id="industry"><a href="//www.ebi.ac.uk/industry">Industry</a></li>
+                        <li id="about" class="last"><a href="//www.ebi.ac.uk/about">About us</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="local-masthead" class="masthead grid_24">
+
+                <div class="grid_12 alpha logo-title" id="local-title">
+                    <h1 class="visuallyhidden">#{intactView['webapp.name']}</h1>
+                    <!-- it is important that your page has an h1 element, however this is pushed off screen for graphical interfaces -->
+
+                    <h:link outcome="main" title="Back to #{intactView['webapp.name']} homepage">
+                        <h:graphicImage alt="#{intactView['webapp.name']} Logo"
+                                        url="/images/intact_logo_high.png"
+                                        width="200px"
+                                        rendered="#{intactView['webapp.logo.url'] != ''}"
+                                        style="border:0"/>
+                    </h:link>
+                    <!--<span class="strapline">-->
+                    <!--<h:outputText value="#{intactView['webapp.name']}"/>-->
+                    <!--</span>-->
+                    <!--<div class="grid_24" id="local-title">-->
+                    <!--<h1><h:outputText value="#{ebiTest['webapp.name']}/></h1>-->
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</ui:composition>

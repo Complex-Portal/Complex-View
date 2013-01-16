@@ -11,18 +11,18 @@
 
     Some experimental methods such as Tandem Affinity Purification do generate molecular interactions that
     can involve more than 2 molecules. Despite the fact that IntAct curation team do capture the molecular
-    interaction as they were reported in the corresponding experimen, when you search using the intact web
+    interaction as they were reported in the corresponding experiment, when you search using the intact web
     site, the results of your query is always shown as set of binary interactions (i.e. 2 molecules). We
     would like to draw your attention on the fact that whenever the reported interaction was a co-complex
     we do apply an expansion algorithm that transform this n-ary interaction into a set of binary
-    interaction. While none of these agorithms is perfect and will very likely generate some false positive
+    interactions. While none of these agorithms is perfect and will very likely generate some false positive
     interactions, it is useful to present the data in a consistent manner. Bear in mind that we will strive
     to differentiate in the search results which interactions are a real experimental binary from expanded
     ones.
 
     <h2>Existing expansion algorithm</h2>
 
-    There are several known algorithm allowing to transform an n-ary interaction into a set of binary. The
+    There are several known algorithm allowing to transform an n-ary interaction into a set of binaries. The
     illustration below present the two well known expansion model and illustrates why they can be incorrect.
 
     <br/>
@@ -30,9 +30,11 @@
 
     <h:panelGroup style="text-align: center">
         <h:graphicImage alt="sourceExp" url="/images/documentation/matrix-spoke.png"
-                        title="Spoke and Matrix Expansion Algorithm"/>
+                        title="Spoke and Matrix Expansion Algorithm"
+                        class="center"/>
     </h:panelGroup>
 
+    <br/>
     <br/>
 
     <ul>
