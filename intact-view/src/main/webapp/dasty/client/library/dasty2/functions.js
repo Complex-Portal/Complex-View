@@ -119,7 +119,7 @@ function highlightSequence(fstart, fend, aa_num_per_line, color)
 					var menu_server_checking_img = document.getElementById("menu_server_checking_img");
 					if (display_server_checking.style.display == 'block')
 						{
-							menu_server_checking_img.innerHTML = plus_icon;
+							menu_server_checking_img.innerHTML = plus_icon_white;
 						}
 
 					var display_query = document.getElementById("display_query_div");
@@ -665,3 +665,17 @@ function printTest()
 	{
 		printOnTest(PDBid);
 	}
+
+/**
+ * BioJS HPA component
+ */
+var biojsHpa;
+function startBiojsHpa(){
+    biojsHpa = new Biojs.HpaSummaryFeatures({
+        target: 'display_hpa',
+        hpaDasUrl: 'http://das.proteinatlas.org/das/proteinatlas/features?segment='+query_id,
+        width: '585px',
+        imageWidth: '150px',
+        proxyUrl: proxy_url
+    });
+}
