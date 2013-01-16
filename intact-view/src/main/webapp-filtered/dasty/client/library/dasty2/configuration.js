@@ -391,7 +391,7 @@ function configuration()
                     feature_url[1] = {id : 'UniProt', url : feature_url_prefix + 'http://www.ebi.ac.uk/das-srv/uniprot/das/uniprot/'};
                     feature_url[2] = {id : 'InterPro', url : feature_url_prefix + 'http://www.ebi.ac.uk/das-srv/interpro/das/InterPro/'};
                     feature_url[3] = {id : 'PRIDE', url : feature_url_prefix + 'http://www.ebi.ac.uk/pride-das/das/PrideDataSource/'};
-                    feature_url[4] = {id : 'HPA', url : feature_url_prefix + 'http://das.proteinatlas.org/das/proteinatlas/'};
+                    //feature_url[4] = {id : 'HPA', url : feature_url_prefix + 'http://das.proteinatlas.org/das/proteinatlas/'};
 				}
 
 			/**
