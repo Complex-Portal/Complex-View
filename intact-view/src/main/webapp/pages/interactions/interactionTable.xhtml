@@ -10,6 +10,7 @@
 
                 xmlns:iv="http://java.sun.com/jsf/composite/intactview">
 
+
 <p:dialog id="updateColumns" header="Columns displayed" widgetVar="columnsDialog" width="300" height="450">
     Select:
     <p:commandLink id="selectMinimalColumns" value="Minimal" actionListener="#{columnContext.selectMininumColumns()}" update="columnSelection" process="@this" partialSubmit="true" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
@@ -36,6 +37,8 @@
                      process="columnSelection" ajax="true" partialSubmit="true"/>
 </p:dialog>
 
+
+<div style="width: 920px">
 <p:toolbar rendered="#{searchBean.totalResults > 0}">
 
     <p:toolbarGroup align="left">
@@ -78,12 +81,18 @@
 
 <iv:cvLazyDialog dialogVar="cvInfoDialog"/>
 
+<div style="overflow-x: auto; width: inherit">
+
 <p:dataTable id="resultsTable" var="binaryInteraction" value="#{searchBean.results}"
              rows="#{userQuery.pageSize}"
-             dynamic="true" rowIndexVar="row" paginatorPosition="both"
+             dynamic="true" rowIndexVar="row"
+             paginatorPosition="top"
+             paginatorAlwaysVisible="true"
              paginator="#{searchBean.totalResults gt userQuery.pageSize}"
-             rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'} #{searchBean.results.negative? ', negativeInteractionRow' : ''}" rendered="#{searchBean.totalResults > 0}">
-<p:column id="detailCol">
+             rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'} #{searchBean.results.negative? ', negativeInteractionRow' : ''}" rendered="#{searchBean.totalResults > 0}"
+             styleClass="ia-results-table"
+             style="font-size: 90%">
+<p:column data-class="expand" id="detailCol">
     <h:outputLink value="#{request.contextPath}/interaction/#{searchBean.getMainAccessionXref(binaryInteraction).identifier}" onclick="_gaq.push(['_trackEvent', 'Navigation', 'Interaction details','#{detailsBean.interactionAc}'])">
         <h:graphicImage url="/images/magnify.png" alt="details" />
     </h:outputLink>
@@ -213,7 +222,10 @@
         <iam:collapsibleIterator disclosed="false"
                                  value="#{iamf:getExclusionFilteredAliases(binaryInteraction.interactorA.aliases)}"
                                  maxShown="3">
-            <h:outputText value="#{item.name}" style="white-space:nowrap;"/>
+            <!--<h:outputText value="#{item.name}" style="white-space:nowrap;"/>-->
+            <span style="display:block">
+                <h:outputText value="#{item.name}"/>
+            </span>
         </iam:collapsibleIterator>
     </h:panelGroup>
     <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious and binaryInteraction.interactorA == null}">
@@ -229,7 +241,10 @@
         <iam:collapsibleIterator disclosed="false"
                                  value="#{iamf:getExclusionFilteredAliases(binaryInteraction.interactorB.aliases)}"
                                  maxShown="3">
-            <h:outputText value="#{item.name}" style="white-space:nowrap;"/>
+            <!--<h:outputText value="#{item.name}" style="white-space:nowrap;"/>-->
+            <span style="display:block">
+                <h:outputText value="#{item.name}"/>
+            </span>
         </iam:collapsibleIterator>
     </h:panelGroup>
     <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious and binaryInteraction.interactorB == null}">
@@ -470,8 +485,10 @@
                                  value="#{binaryInteraction.interactorA.annotations}"
                                  maxShown="3">
             <span style="display:block">
-                                   <strong><h:outputText value="#{item.topic}" style="white-space:nowrap"/></strong>
-                                    <h:outputText value=" : #{item.text}" style="white-space:nowrap" rendered="#{item.text != null}"/>
+                                   <!--<strong><h:outputText value="#{item.topic}" style="white-space:nowrap"/></strong>-->
+                                    <!--<h:outputText value=" : #{item.text}" style="white-space:nowrap" rendered="#{item.text != null}"/>-->
+                   <strong><h:outputText value="#{item.topic}" /></strong>
+                                    <h:outputText value=" : #{item.text}" rendered="#{item.text != null}"/>
                             </span>
         </iam:collapsibleIterator>
     </h:panelGroup>
@@ -489,8 +506,10 @@
                                  value="#{binaryInteraction.interactorB.annotations}"
                                  maxShown="3">
             <span style="display:block">
-                                   <strong><h:outputText value="#{item.topic}" style="white-space:nowrap"/></strong>
-                                    <h:outputText value=" : #{item.text}" style="white-space:nowrap" rendered="#{item.text != null}"/>
+                               <strong><h:outputText value="#{item.topic}"/></strong>
+                                <h:outputText value=" : #{item.text}" rendered="#{item.text != null}"/>
+                                   <!--<strong><h:outputText value="#{item.topic}" style="white-space:nowrap"/></strong>-->
+                                    <!--<h:outputText value=" : #{item.text}" style="white-space:nowrap" rendered="#{item.text != null}"/>-->
                             </span>
         </iam:collapsibleIterator>
     </h:panelGroup>
@@ -506,8 +525,10 @@
                              value="#{binaryInteraction.annotations}"
                              maxShown="3">
             <span style="display:block">
-                                   <strong><h:outputText value="#{item.topic}" style="white-space:nowrap"/></strong>
-                                    <h:outputText value=" : #{item.text}" style="white-space:nowrap" rendered="#{item.text != null}"/>
+                                   <!--<strong><h:outputText value="#{item.topic}" style="white-space:nowrap"/></strong>-->
+                                    <!--<h:outputText value=" : #{item.text}" style="white-space:nowrap" rendered="#{item.text != null}"/>-->
+                 <strong><h:outputText value="#{item.topic}"/></strong>
+                                    <h:outputText value=" : #{item.text}" rendered="#{item.text != null}"/>
                             </span>
     </iam:collapsibleIterator>
 </p:column>
@@ -616,7 +637,8 @@
                                  value="#{binaryInteraction.interactorA.features}"
                                  maxShown="3">
             <span style="display:block">
-                <strong><h:outputText value="#{item.featureType}" style="white-space:nowrap"/></strong>
+                <!--<strong><h:outputText value="#{item.featureType}" style="white-space:nowrap"/></strong>-->
+                <strong><h:outputText value="#{item.featureType}"/></strong>
                 <h:panelGroup rendered="#{not empty item.ranges}">
                     <h:outputText value=" : " style="white-space:nowrap"/>
                     <ui:repeat var="range" value="#{item.ranges}">
@@ -644,7 +666,8 @@
                                  value="#{binaryInteraction.interactorB.features}"
                                  maxShown="3">
             <span style="display:block">
-                <strong><h:outputText value="#{item.featureType}" style="white-space:nowrap"/></strong>
+                <!--<strong><h:outputText value="#{item.featureType}" style="white-space:nowrap"/></strong>-->
+                <strong><h:outputText value="#{item.featureType}"/></strong>
                 <h:panelGroup rendered="#{not empty item.ranges}">
                     <h:outputText value=" : " style="white-space:nowrap"/>
                     <ui:repeat var="range" value="#{item.ranges}">
@@ -717,5 +740,8 @@
 </p:column>
 
 </p:dataTable>
+</div>
 
+
+</div>
 </ui:composition>

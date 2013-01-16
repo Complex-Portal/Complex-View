@@ -4,12 +4,9 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
-
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:sf="http://www.ebi.ac.uk/faces/site"
-                
                 xmlns:iv="http://java.sun.com/jsf/composite/intactview"
-
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:o="http://myfaces.apache.org/orchestra" >
 
@@ -28,7 +25,7 @@
 
                 <h2>Quick search</h2>
 
-                    <iv:panelLabelAndMessage label="Search query:">
+                    <iv:panelLabelAndMessage label="Search query:" width="40%">
                         <f:facet name="help">
                             <h:panelGroup>
                                 <ul>
@@ -96,14 +93,14 @@
                     <br/><br/>
 
 
-                    <iv:panelLabelAndMessage label="Ontology query:" width="400px">
+                    <iv:panelLabelAndMessage label="Ontology query:" width="40%">
 
                         <p:autoComplete id="autoCompleteTerm" value="#{userQuery.ontologyTerm}"
                                         converter="ontologyTermConverter"
                                         var="term" itemLabel="#{term.name}" itemValue="#{term}"
                                         typeAhead="true" completeMethod="#{ontologyBean.fillAutocomplete}"
                                         autoHighlight="true" forceSelection="true"
-                                        maxResults="20" size="30" scrollHeight="200" dropdown="false"/>
+                                        maxResults="20" size="40" scrollHeight="200" dropdown="false" style="position: relative"/>
 
                         <f:facet name="help">
                             <h:panelGroup>
@@ -187,12 +184,11 @@
 
 <h2>Other Searches</h2>
 
-    <p:panel header="Chemical Search" toggleable="true" collapsed="true" >
+    <p:panel header="Chemical Search" toggleable="true" collapsed="true">
 
          <p:ajax event="toggle" oncomplete="document.getElementById('lalaFrame').src = '#{intactViewConfiguration.chebiUrl}#{intactViewConfiguration.chebiChemicalSearchPath}&amp;callbackUrl=#{requestConfigBean.encodedCallBackUrl}'" />
 
-            <iframe id="lalaFrame" frameborder="0" width="1200" height="1300"
-                    src=""/>
+            <iframe id="lalaFrame" frameborder="0"  width="100%"  height="1100px" src=""/>
 
     </p:panel>
 

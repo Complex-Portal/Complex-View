@@ -93,7 +93,7 @@
 
 
         <p:tabView id="mainPanels" activeIndex="#{contextController.activeTabIndex}" dynamic="true"
-                   widgetVar="mainTabsWidget">
+                   widgetVar="mainTabsWidget" style="width: 950px">
         <p:ajax event="tabChange" listener="#{searchBean.onTabChanged}" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
 
             <p:tab id="homeTab" title="Home">

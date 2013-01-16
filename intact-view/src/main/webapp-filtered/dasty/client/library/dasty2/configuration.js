@@ -247,7 +247,7 @@ function configuration()
 
 				sequence_limit = 110; // Define the "number" of aa per line in the sequence view. 75
 
-				graphic_width = 1100; //1100
+				graphic_width = 890; //1100
 				height_graphic_feature = 7; // Height for the features shown in the graphic.
 				tittle_height = height_graphic_feature + 6;
 
@@ -259,7 +259,7 @@ function configuration()
 				col_server_width = 110;
 
 				// Positional features columns -> 0=no / 1=yes
-				show_col_category = 1;
+				show_col_category = 0;
 				show_col_type = 1;
 				show_col_method = 0;
 				show_col_id = 1; //label

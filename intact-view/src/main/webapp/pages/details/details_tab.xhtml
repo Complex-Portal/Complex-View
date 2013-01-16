@@ -194,7 +194,8 @@
 <p:dataTable id="participantDetailsTable" var="participant" value="#{detailsBean.participants}"
              dynamic="true" rowIndexVar="row" rows="#{userQuery.pageSize}"
              paginatorPosition="both"
-             paginator="#{participantCount gt userQuery.pageSize}">
+             paginator="#{participantCount gt userQuery.pageSize}"
+             styleClass="ia-results-table">
 
 <ui:param name="annotationCount"
           value="#{fn:length(participant.participantXrefs) + fn:length(participant.participantAnnotations)}"/>
