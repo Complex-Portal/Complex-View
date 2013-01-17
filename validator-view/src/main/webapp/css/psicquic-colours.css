@@ -103,8 +103,14 @@ div#footerdiv form input.submit:active { background: #207a7a; }
 div#headerdiv div.box ,
 div#footerdiv div.box { border: 10px solid #7cd17c; }
 
-div#local-masthead { background-color: #4c9191; }
-
+div#local-masthead {
+    background-color: #4c9191;
+    background-image: -moz-linear-gradient(top, #c8dede, #0e5353);
+    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #c8dede),color-stop(1, #0e5353));
+    background-image: -webkit-linear-gradient(#c8dede, #0e5353);
+    background-image: linear-gradient(top, #c8dede, #0e5353);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#c8dede', EndColorStr='#0e5353');
+}
 
 /* For use on the EBI homepage... */
 div#local-masthead.gradient {
