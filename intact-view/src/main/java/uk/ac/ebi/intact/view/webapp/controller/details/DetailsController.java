@@ -220,6 +220,7 @@ public class DetailsController extends JpaBaseController {
 
     public void setExperimentAc( String experimentAc ) {
         this.experimentAc = experimentAc;
+        this.interactionAc = null;
     }
 
     @Transactional(readOnly = true)
@@ -241,6 +242,7 @@ public class DetailsController extends JpaBaseController {
 
     public void setExperiment( Experiment experiment ) {
         this.experiment = experiment;
+        this.interactionAc = null;
     }
 
     public boolean hasInteraction() {
@@ -254,10 +256,12 @@ public class DetailsController extends JpaBaseController {
     public void setInteraction( Interaction interaction ) {
         this.interaction = interaction;
         this.interactionAc = interaction.getAc();
+        this.experimentAc = null;
     }
 
     public void setInteractionAc( String interactionAc ) {
         this.interactionAc = interactionAc;
+        this.experimentAc = null;
     }
 
     @Transactional(readOnly = true)
@@ -544,18 +548,18 @@ public class DetailsController extends JpaBaseController {
         final Experiment experiment = getExperiment();
         Collection<Annotation> selectedAnnotations = new ArrayList<Annotation>( experiment.getAnnotations().size() );
         for ( Annotation annotation : experiment.getAnnotations() ) {
-            
+
             if (!publicationTopics.contains( annotation.getCvTopic().getIdentifier() ) ) {
                 selectedAnnotations.add( annotation );
             }
         }
         return selectedAnnotations;
     }
-    
+
     public Collection<Annotation> getPublicationAnnotations() {
         final Publication publication = getExperiment().getPublication();
         Collection<Annotation> selectedAnnotations = new ArrayList<Annotation>( publication.getAnnotations().size() );
-        
+
         for ( Annotation annotation : publication.getAnnotations() ) {
             if ( publicationTopics.contains( annotation.getCvTopic().getIdentifier() )
                     && !CvTopic.AUTHOR_LIST_MI_REF.equals(annotation.getCvTopic().getIdentifier())
@@ -564,7 +568,7 @@ public class DetailsController extends JpaBaseController {
                 selectedAnnotations.add( annotation );
             }
         }
-            
+
         return selectedAnnotations;
     }
 
@@ -672,16 +676,16 @@ public class DetailsController extends JpaBaseController {
             for ( SimilarInteraction si : similarInteractionTreeSet ) {
 
                 log.debug( StringUtils.rightPad( si.getShortLabel(), 20 ) + " " +
-                           StringUtils.rightPad( si.getMemberCount() + "/" + si.getTotalParticipantCount(), 10 ) + "\t[" +
-                           printSimpleInteractors( si.getMembers() ) + "]" );
+                        StringUtils.rightPad( si.getMemberCount() + "/" + si.getTotalParticipantCount(), 10 ) + "\t[" +
+                        printSimpleInteractors( si.getMembers() ) + "]" );
             }
         }
 
         matrix = new SimilarInteractionsMatrix( new SimpleInteractor( interaction.getAc(),
-                                                                      interaction.getShortLabel(),
-                                                                      interaction.getFullName() ),
-                                                similarInteractionTreeSet,
-                                                referenceMembers );
+                interaction.getShortLabel(),
+                interaction.getFullName() ),
+                similarInteractionTreeSet,
+                referenceMembers );
 
         tableHeaderController.setLabels( referenceMembers );
 
