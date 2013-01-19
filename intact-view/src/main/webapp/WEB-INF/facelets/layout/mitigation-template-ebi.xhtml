@@ -61,7 +61,7 @@
     <!-- end CSS-->
 
     <style type="text/css">
-        body { min-width: 1220px !important; max-width: 1220px !important;  margin: auto; }
+        body { min-width: 1200px !important; max-width: 1200px !important;  margin: auto; }
     </style>
 
     <style type="text/css" media="screen, projection">
@@ -122,8 +122,6 @@
 
 </h:head>
 <body>
-<div id="wrapper" class="container_24 contents">
-
     <div id="skip-to">
         <ul>
             <li><a href="#content" title="">Skip to main content</a></li>
@@ -138,7 +136,7 @@
         <ui:include src="mitigation-header.xhtml"/>
     </ui:insert>
 
-    <div id="content" class="grid_24 clearfix content">
+    <div id="content">
 
         <div id="statusIndicator" class="status-normal"></div>
 
@@ -182,9 +180,8 @@
             <!-- Contents -->
             <div class="contents" id="contents">
 
-                <!--<table class="contentspane" id="contentspane" summary="The main content pane of the page"-->
-                       <!--style="width: 1345px">-->
-                <table class="contentspane" id="contentspane" summary="The main content pane of the page">
+                <table class="contentspane" id="contentspane" summary="The main content pane of the page"
+                       style="width: 100%">
                     <tr>
                         <td class="leftmargin">
                             <img src="http://www.ebi.ac.uk/inc/images/spacer.gif" class="spacer" alt="spacer"/>
@@ -209,26 +206,28 @@
 
                             <!-- start contents here -->
 
-                            <!--<table style="width: 800px">-->
-                                <!--<tr>-->
-                                    <!--<td>-->
+                            <table style="width:100%">
+                                <tr>
+                                    <td>
                                         <ui:insert name="content"/>
-                                    <!--</td>-->
-                                <!--</tr>-->
-                            <!--</table>-->
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                 </table>
             </div>
+
+            <!-- To avoid expired sessions, poll every 25 mins -->
+
+            <p:poll interval="#{25*60*1000}" process="@this"/>
+
         </h:form>
 
         <ui:insert name="footer_tl">
             <ui:include src="mitigation-footer.xhtml"/>
         </ui:insert>
     </div>
-
-
-</div>
 
 <script type="text/javascript" src="#{requestConfigBean.absoluteContextPath}/resources/javascript/intact.js"></script>
 <script type="text/javascript" src="#{requestConfigBean.absoluteContextPath}/resources/javascript/twitter/jquery.tweet.js"></script>

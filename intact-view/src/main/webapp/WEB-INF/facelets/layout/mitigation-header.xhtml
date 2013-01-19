@@ -32,10 +32,10 @@
                     <h1 class="visuallyhidden">#{intactView['webapp.name']}</h1>
                     <!-- it is important that your page has an h1 element, however this is pushed off screen for graphical interfaces -->
 
+                    <!-- TODO Do the logo configurable again #{intactView['webapp.logo.url']}-->
                     <h:link outcome="main" title="Back to #{intactView['webapp.name']} homepage">
                         <h:graphicImage alt="#{intactView['webapp.name']} Logo"
-                                        url="/images/intact_logo_high.png"
-                                        width="200px"
+                                        url="/images/IntAct_logo.png"
                                         rendered="#{intactView['webapp.logo.url'] != ''}"
                                         style="border:0"/>
                     </h:link>
@@ -43,7 +43,7 @@
                     <!--<h:outputText value="#{intactView['webapp.name']}"/>-->
                     <!--</span>-->
                     <!--<div class="grid_24" id="local-title">-->
-                    <!--<h1><h:outputText value="#{ebiTest['webapp.name']}/></h1>-->
+                    <!--<h1><h:outputText value=""#{intactView['webapp.name']}"/></h1>-->
                     <!--</div>-->
                 </div>
             </div>

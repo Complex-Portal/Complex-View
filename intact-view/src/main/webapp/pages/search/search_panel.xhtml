@@ -93,7 +93,7 @@
 
 
                 <h:panelGroup id="newQueryPanel">
-                    <h:inputText id="newQuerytxt" value="#{userQuery.newQueryToken.query}" columns="50" rendered="#{not userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}"/>
+                    <h:inputText id="newQuerytxt" value="#{userQuery.newQueryToken.query}" columns="60" rendered="#{not userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}"/>
 
                     <h:selectOneMenu id="selectFieldMap" value="#{userQuery.newQueryToken.query}"
                                      rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}">

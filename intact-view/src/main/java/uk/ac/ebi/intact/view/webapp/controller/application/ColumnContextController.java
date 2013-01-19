@@ -134,7 +134,7 @@ public class ColumnContextController implements Serializable{
                 selectCompleteColumns();
             }
         } else {
-            selectStandardColumns();
+			selectBasicColumns();
         }
     }
 
