@@ -138,13 +138,13 @@ var. 5 = #ABABAB = rgb(171,171,171)
 /*div#local-masthead { background-color: #eef5f5; }*/
 
 /* We only change the colour of the local master-head to avoid changes in other colours */
-div#local-masthead {
-    background-image: -moz-linear-gradient(top, #c8dede, #0e5353);
-    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #c8dede),color-stop(1, #0e5353));
-    background-image: -webkit-linear-gradient(#c8dede, #0e5353);
-    background-image: linear-gradient(top, #c8dede, #0e5353);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#c8dede', EndColorStr='#0e5353');
-}
+/*div#local-masthead {*/
+    /*background-image: -moz-linear-gradient(top, #c8dede, #0e5353);*/
+    /*background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #c8dede),color-stop(1, #0e5353));*/
+    /*background-image: -webkit-linear-gradient(#c8dede, #0e5353);*/
+    /*background-image: linear-gradient(top, #c8dede, #0e5353);*/
+    /*filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#c8dede', EndColorStr='#0e5353');*/
+/*}*/
 
 
 /* Colour the faux-underline for local menu items */
