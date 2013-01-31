@@ -12,7 +12,7 @@
     <artifactId>editor</artifactId>
     <packaging>war</packaging>
 
-    <version>2.1.7.1-SNAPSHOT</version>
+    <version>2.1.7.1</version>
 
     <name>Service :: IntAct Editor</name>
 
@@ -26,12 +26,12 @@
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <core.version>2.6.2-SNAPSHOT</core.version>
+        <core.version>2.6.1</core.version>
         <spring.version>3.1.2.RELEASE</spring.version>
-        <bridges.version>2.1.7-SNAPSHOT</bridges.version>
-        <dbupdate.version>2.1.4-SNAPSHOT</dbupdate.version>
-        <psimi.version>1.8.4-SNAPSHOT</psimi.version>
-        <dataexchange.version>2.1.7-SNAPSHOT</dataexchange.version>
+        <bridges.version>2.1.6</bridges.version>
+        <dbupdate.version>2.1.3</dbupdate.version>
+        <psimi.version>1.8.3</psimi.version>
+        <dataexchange.version>2.1.6</dataexchange.version>
         <h2.version>1.3.162</h2.version>
 
         <!-- configurable bits -->
@@ -368,7 +368,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dbupdate</groupId>
             <artifactId>intact-proteins-update</artifactId>
-            <version>${dbupdate.version}</version>
+            <version>2.1.3.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>uk.ac.ebi.intact.core</groupId>
@@ -396,7 +396,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.bridges</groupId>
             <artifactId>intact-citexplore</artifactId>
-            <version>${bridges.version}</version>
+            <version>2.1.6.2</version>
         </dependency>
         <dependency>
             <groupId>uk.ac.ebi.intact.bridges</groupId>
@@ -451,13 +451,19 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.commons</groupId>
             <artifactId>intact-commons</artifactId>
-            <version>2.1.9-SNAPSHOT</version>
+            <version>2.1.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.intact.commons</groupId>
+            <artifactId>irefindex-seguid</artifactId>
+            <version>2.1.8.1</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psixml-exchange</artifactId>
-            <version>${dataexchange.version}</version>
+            <version>2.1.6.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>cpdetector</groupId>
@@ -473,7 +479,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psimitab-converters</artifactId>
-            <version>${dataexchange.version}</version>
+            <version>2.1.6.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>cpdetector</groupId>
@@ -489,7 +495,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.imex</groupId>
             <artifactId>imex-id-update</artifactId>
-            <version>2.1.6.1</version>
+            <version>2.1.6.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>uk.ac.ebi.intact.core</groupId>
@@ -501,7 +507,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-solr-core</artifactId>
-            <version>${dataexchange.version}</version>
+            <version>2.1.6.5</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.lucene</groupId>
@@ -588,7 +594,7 @@
         <dependency>
             <groupId>org.apache.myfaces.orchestra</groupId>
             <artifactId>myfaces-orchestra-core20</artifactId>
-            <version>1.5-SNAPSHOT</version>
+            <version>1.5</version>
         </dependency>
 
         <dependency>
