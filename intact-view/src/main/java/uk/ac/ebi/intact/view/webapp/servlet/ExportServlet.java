@@ -146,9 +146,11 @@ public class ExportServlet extends HttpServlet {
         if (sortColumn != null && sortAsc != null) {
             if (sortAsc.equals(SortOrder.ASCENDING)){
                 solrQuery.setSortField(sortColumn, SolrQuery.ORDER.asc);
+                solrQuery.addSortField(FieldNames.BINARY, SolrQuery.ORDER.asc);
             }
             else if (sortAsc.equals(SortOrder.DESCENDING)){
                 solrQuery.setSortField(sortColumn, SolrQuery.ORDER.desc);
+                solrQuery.addSortField(FieldNames.BINARY, SolrQuery.ORDER.desc);
             }
         }
         // add default parameters if nor already there

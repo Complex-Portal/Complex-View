@@ -202,6 +202,7 @@ public class UserQuery extends BaseController {
 
         SolrQuery query = new SolrQuery( searchQuery );
         query.setSortField(userSortColumn, (userSortOrder)? SolrQuery.ORDER.desc : SolrQuery.ORDER.asc);
+        query.addSortField(FieldNames.BINARY, SolrQuery.ORDER.asc);
 
         if (includeNegative){
             query.addFilterQuery(FieldNames.NEGATIVE+":(true OR false)");
