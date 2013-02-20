@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html">
+    <h:outputScript library="javascript" name="highcharts/highcharts.js"/>
+    <h:outputScript library="javascript" name="highcharts/exporting.js"/>
+    <script type="text/javascript">
+        $(function () {
+            var chart;
+            $(document).ready(function() {
+                timeChart01 = new Highcharts.Chart(
+                    #{chartController.jsonTimeChart01}
+                );
+                timeChart02 = new Highcharts.Chart(
+                    #{chartController.jsonTimeChart02}
+                );
+
+               // Radialize the colors
+                Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
+                    return {
+                        radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+                        stops: [
+                            [0, color],
+                            [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+                        ]
+                    };
+                });
+
+                detmethod_s = new Highcharts.Chart(
+                    #{pieChartController.jsonInteractionMethodPie}
+                );
+                type_s = new Highcharts.Chart(
+                    #{pieChartController.jsonInteractionTypePie}
+                );
+                species_s = new Highcharts.Chart(
+                    #{pieChartController.jsonInteractionSpeciePie}
+                );
+            });
+        });
+    </script>
+
+    <h1>Statistics</h1>
+
+
+
+
+
+
+    <div style="width:90%">
+              <table style="margin:20px;">
+                  <tr>
+                      <td style="text-align:right;">
+                           <h:outputText style="font-weight:bold;" value="#{statisticsController.interactorsWithNoInteractions}" />
+                      </td>
+                      <td>
+                          <a href="#tc01">Interactors</a>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:right;">
+                          <h:outputText style="font-weight:bold;" value="#{statisticsController.interactionCount}" />
+                      </td>
+                      <td>
+                          <a href="#tc01">Interactions</a>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:right;">
+                          <h:outputText style="font-weight:bold;" value="#{statisticsController.binaryInteractionCount}" />
+                      </td>
+                      <td>
+                           <a href="#tc01">Binary interactions</a> <small>(Number of interactions, n-ary interactions expanded according to the "spoke" model)</small>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:right;">
+                          <h:outputText style="font-weight:bold;" value="#{statisticsController.experimentCount}" />
+                      </td>
+                      <td>
+                          <a href="#tc02">Experiments</a>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:right;">
+                          <h:outputText style="font-weight:bold;" value="#{statisticsController.publicationCount}" />
+                      </td>
+                      <td>
+                          <a href="#tc02">Publications</a>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:right;">
+                          <h:outputText style="font-weight:bold;" value="#{statisticsController.cvTermsCount}" />
+                      </td>
+                      <td>
+                          <a href="#tc02">Controlled vocabulary terms</a>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:right;">
+
+                      </td>
+                      <td>
+                          <a href="#idm">Interaction detection methods</a>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:right;">
+
+                      </td>
+                      <td>
+                          <a href="#it">Interaction types</a>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td style="text-align:right;">
+
+                      </td>
+                      <td>
+                          <a href="#s">Species</a>
+                      </td>
+                  </tr>
+              </table>
+
+
+
+        <br/><br/>
+        <a id="tc01"><div id="timeChart01"></div></a>
+        <br/><br/>
+        <a id="tc02"><div id="timeChart02"></div></a>
+        <br/><br/>
+        <a id="idm"><div id="detmethod_s"></div></a>
+        <br/><br/>
+        <a id="it"><div id="type_s"></div></a>
+        <br/><br/>
+        <a id="s"><div id="species_s"></div></a>
+    </div>
+
+</ui:composition>

@@ -12,5 +12,10 @@
     <bean id="statisticsController" class="uk.ac.ebi.intact.view.webapp.controller.application.StatisticsController" lazy-init="true">
         <aop:scoped-proxy/>
     </bean>
-
+    <bean id="chartController" class="uk.ac.ebi.intact.view.webapp.controller.application.ChartController" lazy-init="true">
+        <aop:scoped-proxy/>
+    </bean>
+    <bean id="pieChartController" class="uk.ac.ebi.intact.view.webapp.controller.application.PieChartController" lazy-init="true">
+        <aop:scoped-proxy/>
+    </bean>
 </beans>

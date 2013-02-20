@@ -223,10 +223,18 @@
     <navigation-rule>
            <from-view-id>*</from-view-id>
    		<navigation-case>
-   			<from-outcome>documentation.acknowledgements</from-outcome>
-   			<to-view-id>/pages/documentation/acknowledgements.xhtml</to-view-id>
+   			<from-outcome>documentation.statistics</from-outcome>
+   			<to-view-id>/pages/documentation/statistics.xhtml</to-view-id>
    		</navigation-case>
    	</navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>documentation.acknowledgements</from-outcome>
+            <to-view-id>/pages/documentation/acknowledgements.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
 
 	<navigation-rule>
         <from-view-id>*</from-view-id>

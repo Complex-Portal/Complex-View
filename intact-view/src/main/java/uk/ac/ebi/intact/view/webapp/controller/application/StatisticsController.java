@@ -27,6 +27,7 @@ import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
+import javax.persistence.Query;
 
 /**
  * Container for the application statistics (e.g. database counts)
@@ -43,7 +44,7 @@ public class StatisticsController extends SpringInitializedService {
     private IntactViewConfiguration viewConfiguration;
 
     @Autowired
-    private DaoFactory daoFactory;
+    protected DaoFactory daoFactory;
 
     private int binaryInteractionCount = 0;
     private int proteinCount = 0;
@@ -119,6 +120,8 @@ public class StatisticsController extends SpringInitializedService {
             return 0;
         }
     }
+
+
 
     public int getCvTermsCount() {
         return cvTermsCount;
