@@ -11,4 +11,4 @@ MAVEN_PROFILE=$2
 
 echo "use profile ${MAVEN_PROFILE}"
 
-mvn -U clean install -Pexport-xml,${MAVEN_PROFILE} -DxmlFile=$1 -Dmaven.repo.local=repository -Dmaven.test.skip -Ddb=oracle
+mvn -U clean install -Pexport-html,${MAVEN_PROFILE} -DxmlFile=$1 -Dmaven.repo.local=repository -Dmaven.test.skip -Ddb=oracle
