@@ -1,6 +1,7 @@
 package uk.ac.ebi.intact.service;
 
 import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
+import uk.ac.ebi.intact.core.context.IntactContext;
 
 import java.io.File;
 
@@ -28,6 +29,8 @@ public class ExportIntactPublicationToHtml {
             System.out.println("Publication identifier: "+pubFile);
             System.out.println("--------------------------");
         }
+
+        IntactContext.initContext(new String[]{"/META-INF/jpa-exporter.spring.xml"});
 
         File inputFile = new File(pubFile);
 

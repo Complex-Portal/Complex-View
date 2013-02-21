@@ -64,6 +64,8 @@ public class ExportIntactPublicationToMitab {
             }
         }
 
+        IntactContext.initContext(new String[]{"/META-INF/jpa-exporter.spring.xml"});
+
         final DataContext dataContext = IntactContext.getCurrentInstance().getDataContext();
         final DaoFactory daoFactory = dataContext.getDaoFactory();
 

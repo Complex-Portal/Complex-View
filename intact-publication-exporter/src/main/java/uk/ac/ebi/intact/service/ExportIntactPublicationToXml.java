@@ -44,6 +44,8 @@ public class ExportIntactPublicationToXml {
             System.out.println("--------------------------");
         }
 
+        IntactContext.initContext(new String[]{"/META-INF/jpa-exporter.spring.xml"});
+
         final DataContext dataContext = IntactContext.getCurrentInstance().getDataContext();
         final DaoFactory daoFactory = dataContext.getDaoFactory();
 
