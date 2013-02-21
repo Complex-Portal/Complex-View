@@ -60,7 +60,7 @@ public class ExportIntactPublicationToXml {
         InstitutionConverter institutionConverter = new InstitutionConverter();
         InteractionConverter interactionConverter = new InteractionConverter(null);
 
-        File outputFile = new File(pubId+".xml");
+        File outputFile = new File(new File(".").getAbsolutePath(), pubId+".xml");
         PsimiXmlLightweightWriter xmlWriter = new PsimiXmlLightweightWriter(outputFile, PsimiXmlVersion.VERSION_254);
 
         try{
