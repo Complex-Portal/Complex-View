@@ -25,7 +25,7 @@ import java.util.Set;
  */
 @Controller( "helpController" )
 @Scope( "conversation.access" )
-@ViewController( viewIds = {"/help.xhtml", "/start.xhtml"})
+@ViewController( viewIds = {"/help.xhtml"})
 public class HelpController extends BaseController {
 
     private static final Log log = LogFactory.getLog(HelpController.class);

@@ -6,7 +6,9 @@ package uk.ac.ebi.intact.services.validator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.orchestra.viewController.annotations.PreRenderView;
 import org.apache.myfaces.orchestra.viewController.annotations.ViewController;
+import org.apache.myfaces.trinidad.context.RequestContext;
 import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.model.UploadedFile;
 import org.springframework.context.annotation.Scope;
@@ -35,9 +37,9 @@ import java.util.zip.ZipInputStream;
  * @version $Id$
  * @since 2.0
  */
-@Controller( "psiValidatorController" )
-@Scope( "conversation.access" )
-@ViewController( viewIds = "/start.xhtml" )
+@Controller("psiValidatorController")
+@Scope("conversation.access")
+@ViewController( viewIds = {"/start.xhtml"})
 public class PsiValidatorController extends BaseController {
 
     //static private List<String> PROGRESS_STEPS;
@@ -141,7 +143,32 @@ public class PsiValidatorController extends BaseController {
         initialiseCustomizedRules(rules);
     }
 
-    private void initialiseCustomizedRules(Map<ValidationScope, Set<ObjectRule>> rules){
+	private boolean isPartialRequest() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		return RequestContext.getCurrentInstance().isPartialRequest(context);
+	}
+
+	@PreRenderView
+	public void preRender() {
+
+		log.error("Pre Render phase checking timestamp from the Registry");
+
+
+		if (isPartialRequest()) {
+			return;
+		}
+
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		String statusParam = context.getExternalContext().getRequestParameterMap().get("status");
+
+		if (statusParam != null && "exp".equals(statusParam)) {
+				FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_WARN, "Session Expired", "The session have been restored");
+				context.addMessage(null, facesMessage);
+		}
+	}
+
+	private void initialiseCustomizedRules(Map<ValidationScope, Set<ObjectRule>> rules){
         Integer index = 0;
 
         Set<ObjectRule> mimixRules = rules.get(ValidationScope.MIMIX);
