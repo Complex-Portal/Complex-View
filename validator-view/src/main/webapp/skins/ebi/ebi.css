@@ -1,4 +1,4 @@
-body {
+tr | body {
     background-color:#FFFFFF;
     color:#000000;
     font-family:helvetica,"trebuchet MS",arial,sans-serif;
@@ -9,14 +9,21 @@ body {
 }
 
 
-table, table tr, table tr td  {
-border: 0;
+.AFDefaultFont:alias {
+    font-family:helvetica,"trebuchet MS",arial,sans-serif;
+    font-weight:normal;
+    font-size:9pt;
 }
 
-h2 {
-    padding: 0;
+.AFLinkForeground:alias {
+    color:#006666;
+    text-decoration:underline;
 }
 
+.AFActiveLinkForeground:alias {
+    color:#E33E3E;
+    text-decoration:none;
+}
 
 .AFVisitedLinkForeground:alias {
     color:#006666;
@@ -33,9 +40,12 @@ a.OraLink:hover {
     text-decoration: none;
 }
 
-.p_OraHeaderNest {
-    margin: 0;
+.OraLink:hover::SideMenu {
+    text-decoration:underline;
 }
+
+
+
 /** icons **/
 /***********/
 
@@ -100,11 +110,24 @@ af|panelTabbed::body af|panelHeader::level-one
     padding:0pt;
 }
 
+/** panelForLayout **/
+/** -------------- **/
+
+af|panelFormLayout::content-cell {
+    white-space:normal;
+}
+
+af|panelFormLayout::label-cell {
+    font-weight:bold;
+}
+
+
 /** panelBox    **/
 /** ----------- **/
 
 /** light (box with header - news style) **/
-af|panelBox::light af|panelBox::header, af|panelBox::light af|panelBox::body {
+af|panelBox::light af|panelBox::header,
+af|panelBox::light af|panelBox::body {
     border-color: #BFBFBF;
     border-style: solid;
 }
@@ -117,7 +140,7 @@ af|panelBox::light af|panelBox::content{
 }
 
 af|panelBox::light af|panelBox::header {
-    background: #EDF6F5 url("http://www.ebi.ac.uk/inc/images/head_blue2d.gif") no-repeat scroll right top;
+    background: #EDF6F5 url("http://www.ebi.ac.uk/inc/images/head_blue2d.gif") repeat-x scroll right top;
     border-collapse: collapse;
     border-width: 0px 0px 1px;
     color: #1F1F1F;
@@ -134,7 +157,7 @@ af|panelBox::light af|panelBox::body {
 }
 
 af|panelBox::light af|panelBox::content {
-    background: transparent url("http://www.ebi.ac.uk/inc/images/head_blue3b.gif") no-repeat scroll right top;
+    background: transparent url("http://www.ebi.ac.uk/inc/images/head_blue3b.gif") repeat-x scroll right top;
     margin: 0px 0px 0px 2px;
     padding: 3px 4px 5px;
     vertical-align: top;
@@ -174,30 +197,30 @@ af|panelBox::dark af|panelBox::end {
 
 af|panelBox::dark af|panelBox::top-start,
 af|panelBox::dark af|panelBox::top-end:rtl {
-  background-image: url(/skins/ebi/images/rounded_TL.gif);
-  width:6px;
-  height:6px
+    background-image: url(/skins/ebi/images/rounded_TL.gif);
+    width:6px;
+    height:6px
 }
 
 af|panelBox::dark af|panelBox::top-end,
 af|panelBox::dark af|panelBox::top-start:rtl {
-  background-image: url(/skins/ebi/images/rounded_TR.gif);
-  width:6px;
-  height:6px
+    background-image: url(/skins/ebi/images/rounded_TR.gif);
+    width:6px;
+    height:6px
 }
 
 af|panelBox::dark af|panelBox::bottom-start,
 af|panelBox::dark af|panelBox::bottom-end:rtl {
-  background-image: url(/skins/ebi/images/rounded_BL.gif);
-  width:6px;
-  height:6px
+    background-image: url(/skins/ebi/images/rounded_BL.gif);
+    width:6px;
+    height:6px
 }
 
 af|panelBox::dark af|panelBox::bottom-end,
 af|panelBox::dark af|panelBox::bottom-start:rtl {
-  background-image: url(/skins/ebi/images/rounded_BR.gif);
-  width:6px;
-  height:6px
+    background-image: url(/skins/ebi/images/rounded_BR.gif);
+    width:6px;
+    height:6px
 }
 
 af|panelBox::dark af|panelBox::header {
@@ -209,6 +232,10 @@ af|panelBox::dark af|panelBox::header {
     margin-left: 0px;
     padding: 0;
     text-align: left;
+}
+
+af|panelBox::header img{
+    vertical-align:baseline;
 }
 
 af|panelBox::dark af|panelBox::body {
@@ -252,7 +279,7 @@ af|panelSideBar::body {
 /************************/
 
 af|panelPage::copyright {
-   padding: 6px 6px 0 0;
+    padding: 6px 6px 0 0;
 }
 
 af|panelPage::about {
@@ -276,9 +303,7 @@ p|OraContentFooterRule {
 /**************************/
 
 af|panelLabelAndMessage::label {
-    font-weight:bold;
     vertical-align:top;
-    color:#555555;
 }
 
 /** panelTabbed **/
@@ -333,15 +358,6 @@ af|panelTabbed::separator-after-selected{
 }
 
 
-
-/* panelList */
-/*************/
-
-/*af|panelList ul {*/
-
-   /*TODO update this style to reduce the left spacing of the ''Tips'' ul */
-/*}*/
-
 /* panelLabelAndMessage */
 /************************/
 
@@ -366,6 +382,12 @@ af|column::header-text {
 
 af|column::sortable-header-text {
     border: 1px solid #ADADAF;
+    text-decoration: underline;
+}
+
+af|column::sorted-header-text {
+    border: 1px solid #ADADAF;
+    text-decoration: underline;
 }
 
 .AFSortableHeaderSortIcon {
@@ -392,8 +414,27 @@ af|column::cell-text-band {
     background-color: #FFFFFF;
 }
 
+af|column::cell-text,
+af|column::cell-text-band {
+    vertical-align:top;
+}
+
 af|column::cell-text-band a.OraLink {
     font-size: 8pt;
+}
+
+/**for compound and target columns **/
+
+.cellTextCompound {
+    background-color:#f6faf4;
+}
+
+.cellTextTarget {
+    background-color: #eef5f5;
+}
+
+.cellTextInteraction {
+    background-color: #eeeeee;
 }
 
 
@@ -493,30 +534,30 @@ af|messages::end {
 
 af|messages::top-start,
 af|messages::top-end:rtl {
-  background-image: url(/skins/ebi/images/rounded_TL.gif);
-  width:6px;
-  height:6px
+    background-image: url(/skins/ebi/images/rounded_TL.gif);
+    width:6px;
+    height:6px
 }
 
 af|messages::top-end,
 af|messages::top-start:rtl {
-  background-image: url(/skins/ebi/images/rounded_TR.gif);
-  width:6px;
-  height:6px
+    background-image: url(/skins/ebi/images/rounded_TR.gif);
+    width:6px;
+    height:6px
 }
 
 af|messages::bottom-start,
 af|messages::bottom-end:rtl {
-  background-image: url(/skins/ebi/images/rounded_BL.gif);
-  width:6px;
-  height:6px
+    background-image: url(/skins/ebi/images/rounded_BL.gif);
+    width:6px;
+    height:6px
 }
 
 af|messages::bottom-end,
 af|messages::bottom-start:rtl {
-  background-image: url(/skins/ebi/images/rounded_BR.gif);
-  width:6px;
-  height:6px
+    background-image: url(/skins/ebi/images/rounded_BR.gif);
+    width:6px;
+    height:6px
 }
 
 af|messages::header {
@@ -562,3 +603,50 @@ af|inputText:disabled::label {
     color:#dedede;
 }
 
+af|inputText::label,
+af|inputText:disabled::label{
+    vertical-align: top;
+}
+
+/* commandButton */
+/*****************/
+af|commandButton {
+    white-space: nowrap;
+}
+
+
+/* other */
+/*********/
+
+/*for autocomplete */
+.autocomplete-line {
+    cursor:pointer;
+    background-color: white;
+}
+
+.autocomplete-line,
+.autocomplete-selected-line {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd
+}
+
+.autocomplete-selected-line{
+    background-color: #bdd7d7;
+    cursor:pointer;
+}
+
+.autocomplete-button, .autocomplete-button-action{
+    border:0px;
+    width:22px;
+    height:17px;
+    background-color: transparent;
+    background-image:url(/images/autocomplete-button.gif);
+    background-position:top center;
+    background-repeat: no-repeat;
+    cursor:pointer;
+}
+
+.autocomplete-button-action{
+    background-image:url(/images/autocomplete-button-action.gif);
+}

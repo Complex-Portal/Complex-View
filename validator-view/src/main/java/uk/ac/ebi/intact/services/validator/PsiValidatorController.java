@@ -151,7 +151,7 @@ public class PsiValidatorController extends BaseController {
 	@PreRenderView
 	public void preRender() {
 
-		log.error("Pre Render phase checking timestamp from the Registry");
+		log.debug("Pre Render phase, checking session expired");
 
 
 		if (isPartialRequest()) {

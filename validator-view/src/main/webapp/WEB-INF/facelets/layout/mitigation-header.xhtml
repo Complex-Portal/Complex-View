@@ -49,7 +49,7 @@
                     </c:if>
                 <!-- Version without logo -->
                 <c:if test="#{empty ebiTest['logo.url']}">
-                        <div id="local-title">
+                        <div id="local-title" class="grid_24 alpha omega">
                             <h1>
                                 <a href="#{facesContext.externalContext.requestContextPath}/start.xhtml" title="Back to #{ebiTest['webapp.name']} homepage">#{ebiTest['webapp.name']}</a>
                             </h1>

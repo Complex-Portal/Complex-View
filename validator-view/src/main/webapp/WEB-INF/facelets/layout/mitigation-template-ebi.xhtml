@@ -1,190 +1,183 @@
-<!--<?xml version="1.0" encoding="UTF-8"?>-->
-<!--<!DOCTYPE html-->
-<!--PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"-->
-<!--"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">-->
-<!--<html xmlns="http://www.w3.org/1999/xhtml" xmlns:tr="http://myfaces.apache.org/trinidad" xml:lang="en" lang="en"-->
-<!--xmlns:ui="http://java.sun.com/jsf/facelets"-->
-<!--xmlns:ebisf="http://www.ebi.ac.uk/faces/site"-->
-<!--xmlns:f="http://java.sun.com/jsf/core"-->
-<!--xmlns:h="http://java.sun.com/jsf/html"-->
-<!--xmlns:c="http://java.sun.com/jstl/core"-->
-<!--xmlns:fn="http://java.sun.com/jsp/jstl/functions">-->
-<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:c="http://java.sun.com/jstl/core"
-                xmlns:tr="http://myfaces.apache.org/trinidad"
-                xmlns:trh="http://myfaces.apache.org/trinidad/html"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                xmlns:ebi="http://ebi.ac.uk/faces/components"
-                xmlns:ebisf="http://www.ebi.ac.uk/faces/site">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:tr="http://myfaces.apache.org/trinidad"
+      xmlns:trh="http://myfaces.apache.org/trinidad/html"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:ebisf="http://www.ebi.ac.uk/faces/site">
 
-<tr:document title="#{ebiTest['webapp.name']}">
+<trh:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name='robots' content='nofollow'/>
+    <meta http-equiv="Content-Language" content="en-GB"/>
+    <meta http-equiv="Window-target" content="_top"/>
+    <meta name="no-email-collection" content="http://www.unspam.com/noemailcollection/"/>
 
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <meta name='robots' content='nofollow'/>
-        <meta http-equiv="Content-Language" content="en-GB"/>
-        <meta http-equiv="Window-target" content="_top"/>
-        <meta name="no-email-collection" content="http://www.unspam.com/noemailcollection/"/>
+    <title>
+        <ui:insert name="windowTitle"/>
+    </title>
 
-        <title>
-            <ui:insert name="windowTitle"/>
-        </title>
+    <!-- Overrides only the banner -->
+    <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/contents.css" type="text/css"/>
+    <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/userstyles.css" type="text/css"/>
+    <script src="#{ebisf:absoluteEbiUrl()}/inc/js/contents.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/sidebars.css" type="text/css"/>
 
-        <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/contents.css" type="text/css"/>
-        <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/userstyles.css" type="text/css"/>
-        <script src="#{ebisf:absoluteEbiUrl()}/inc/js/contents.js" type="text/javascript"></script>
-        <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/sidebars.css" type="text/css"/>
+    <!-- Custom CSS for Validator View -->
+    <link type="text/css" rel="stylesheet"
+          href="#{facesContext.externalContext.requestContextPath}/css/validator.css"/>
 
-        <!-- Custom CSS for Validator View -->
-        <link rel="stylesheet" href="#{facesContext.externalContext.requestContextPath}/skins/ebi/ebi.css"
-              type="text/css"/>
-
-
-        <!-- Stylesheet for validator -->
-        <link type="text/css" rel="stylesheet"
-              href="#{facesContext.externalContext.requestContextPath}/css/validator.css"/>
-
-        <link rel="SHORTCUT ICON" href="http://www.ebi.ac.uk/bookmark.ico"/>
-        <style type="text/css">
-            @media print {
-                body, .contents, .header, .contentsarea, .head {
-                    position: relative;
-                }
+    <link rel="SHORTCUT ICON" href="http://www.ebi.ac.uk/bookmark.ico"/>
+    <style type="text/css">
+        @media print {
+            body, .contents, .header, .contentsarea, .head {
+                position: relative;
             }
-        </style>
+        }
+    </style>
 
 
-        <link type="text/css" rel="stylesheet"
-              href="//www.ebi.ac.uk/web_guidelines/css/mitigation/develop/ebi-mitigation.css"/>
+    <link type="text/css" rel="stylesheet"
+          href="//www.ebi.ac.uk/web_guidelines/css/mitigation/develop/ebi-mitigation.css"/>
 
-        <link type="text/css" rel="stylesheet"
-        href="//www.ebi.ac.uk/web_guidelines/css/mitigation/develop/embl-petrol-colours.css"/>
+    <link type="text/css" rel="stylesheet"
+          href="//www.ebi.ac.uk/web_guidelines/css/mitigation/develop/embl-petrol-colours.css"/>
 
-        <!-- Overrides only the banner -->
-        <link type="text/css" rel="stylesheet"
-              href="#{facesContext.externalContext.requestContextPath}/css/psicquic-colours.css"/>
+    <link type="text/css" rel="stylesheet"
+          href="#{facesContext.externalContext.requestContextPath}/css/psicquic-colours.css"/>
 
-        <style type="text/css">
-            body { min-width: 1150px !important; max-width: 1600px !important;  margin: auto; }
 
-           /* Added to adjust de logo */
-            div#local-title.logo-title h1, div#local-title.logo-title-strapline h1 {
-                display: inline-block;
-            }
+    <style type="text/css">
+        body {
+            min-width: 1150px !important;
+            max-width: 1200px !important;
+            margin: auto;
+        }
+    </style>
 
-        </style>
+    <style type="text/css" media="screen, projection">
 
-        <style type="text/css" media="screen, projection">
+            /* [FR] Feb 03, 2012 */
 
-                /* [FR] Feb 03, 2012 */
+            /* The Magnificent Clearfix: Updated to prevent margin-collapsing on child elements.
+                        j.mp/bestclearfix */
+        .clearfix:before, .clearfix:after {
+            content: "\0020";
+            display: block;
+            height: 0;
+            overflow: hidden;
+        }
 
-                /* The Magnificent Clearfix: Updated to prevent margin-collapsing on child elements.
-                            j.mp/bestclearfix */
-            .clearfix:before, .clearfix:after {
-                content: "\0020";
-                display: block;
-                height: 0;
-                overflow: hidden;
-            }
+        .clearfix:after {
+            clear: both;
+        }
 
-            .clearfix:after {
-                clear: both;
-            }
+            /* Fix clearfix: blueprintcss.lighthouseapp.com/projects/15318/tickets/5-extra-margin-padding-bottom-of-page */
+        .clearfix {
+            zoom: 1;
+        }
 
-                /* Fix clearfix: blueprintcss.lighthouseapp.com/projects/15318/tickets/5-extra-margin-padding-bottom-of-page */
-            .clearfix {
-                zoom: 1;
-            }
+        div.cols3 {
+            padding: 10px;
+            clear: both;
+        }
 
-            div.cols3 {
-                padding: 10px;
-                clear: both;
-            }
+        div.cols3 .col1 {
+            padding: 0;
+            float: left;
+            width: 32%;
+            margin-right: 2%;
+        }
 
-            div.cols3 .col1 {
-                padding: 0;
-                float: left;
-                width: 32%;
-                margin-right: 2%;
-            }
+        div.cols3 .col2 {
+            padding: 0;
+            float: left;
+            width: 32%;
+            margin-right: 2%;
+        }
 
-            div.cols3 .col2 {
-                padding: 0;
-                float: left;
-                width: 32%;
-                margin-right: 2%;
-            }
+        div.cols3 .col3 {
+            padding: 0;
+            float: left;
+            width: 32%;
+        }
 
-            div.cols3 .col3 {
-                padding: 0;
-                float: left;
-                width: 32%;
-            }
+        div.cols3 ul {
+            padding-left: 20px;
+        }
 
-            div.cols3 ul {
-                padding-left: 20px;
-            }
+    </style>
 
-        </style>
+    <style type="text/css">
+        .dojoDialog {
+            background: #eee;
+            border: 1px solid #999;
+            -moz-border-radius: 5px;
+            padding: 4px; /*positioning outside of the visible scope to prevent some ui glitches visibility hidden does not work*/
+            position: absolute;
+            left: -800px;
+            top: -800px;
 
-        <style type="text/css">
-            .dojoDialog {
-                background: #eee;
-                border: 1px solid #999;
-                -moz-border-radius: 5px;
-                padding: 4px; /*positioning outside of the visible scope to prevent some ui glitches visibility hidden does not work*/
-                position: absolute;
-                left: -800px;
-                top: -800px;
+            progid: DXImageTransform . Microsoft . dropShadow(Color = AAAAAA, offX = 8, offY = 8, positive = true);
+        }
+    </style>
 
-                progid: DXImageTransform . Microsoft . dropShadow(Color = AAAAAA, offX = 8, offY = 8, positive = true);
-            }
-        </style>
+</trh:head>
+<trh:body>
 
-    </head>
-    <body>
+    <ui:insert name="header_tl">
+        <ui:include src="/WEB-INF/facelets/layout/mitigation-header.xhtml"/>
+    </ui:insert>
 
-    <div id="wrapper" class="container_24">
 
-        <div id="skip-to">
-            <ul>
-                <li><a href="#content" title="">Skip to main content</a></li>
-                <li><a href="#local-nav" title="">Skip to local navigation</a></li>
-                <li><a href="#global-nav" title="">Skip to EBI global navigation menu</a></li>
-                <li><a href="#global-nav-expanded"
-                       title="">Skip to expanded EBI global navigation menu (includes all sub-sections)</a></li>
-            </ul>
+    <tr:form id="ebiForm" usesUpload="true">
+
+        <div id="contents" class="contents">
+            <table class="contentspane" id="contentspane" summary="The main content pane of the page"
+                   style="width: 100%">
+                <tbody>
+                <tr>
+                    <td class="contentsarea" id="contentsarea" style="border-color: white">
+
+
+                        <!--breadcrumbs-->
+                        <div class="breadcrumbs">
+                            <!--<a class="firstbreadcrumb" href="http://www.ebi.ac.uk/">EBI</a>-->
+                            <!--<a href="http://www.ebi.ac.uk/Databases">Databases</a>-->
+                            <!--<a href="http://www.ebi.ac.uk/Databases/pathways.html">Pathways &amp; Networks</a>-->
+                            <a class="firstbreadcrumb" href="http://www.ebi.ac.uk/intact">IntAct</a>
+                            <a href="#{ebisf:absoluteContextPath()}">PSI-MI Validator</a>
+                        </div>
+
+                        <table style="width:100%">
+                            <tr>
+                                <td>
+                                    <ui:insert name="content"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
-        <ui:insert name="header_tl">
-            <ui:include src="/WEB-INF/facelets/layout/mitigation-header.xhtml"/>
-        </ui:insert>
+        <!-- To avoid expired sessions, poll every 25 mins -->
+        <tr:poll interval="#{15*60*1000}"/>
 
+    </tr:form>
 
-        <div id="content" class="grid_24 clearfix contents">
+    <ui:insert name="footer_tl">
+        <ui:include src="/WEB-INF/facelets/layout/mitigation-footer.xhtml"/>
+    </ui:insert>
 
-            <tr:form id="ebiForm" usesUpload="true" inlineStyle="padding: 10px">
-
-                <!-- To avoid expired sessions, poll every 25 mins -->
-                <tr:poll interval="#{15*60*1000}"/>
-
-                 <!--breadcrumbs-->
-                <ui:insert name="breadcrumbs"/>
-
-                <ui:insert name="content"/>
-
-            </tr:form>
-
-            <ui:insert name="footer_tl">
-                <ui:include src="/WEB-INF/facelets/layout/mitigation-footer.xhtml"/>
-            </ui:insert>
-
-        </div>
-
-
-    </div>
 
     <!-- Dojo for validator -->
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/dojo/1.8.1/dojo/dojo.js"></script>
@@ -211,8 +204,6 @@
         })();
 
     </script>
+    </trh:body>
 
-    </body>
-
-</tr:document>
-</ui:composition>
+</html>
