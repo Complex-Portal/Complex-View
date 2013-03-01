@@ -15,7 +15,7 @@
     <groupId>uk.ac.ebi.intact.service.validator</groupId>
     <artifactId>psimi-validator</artifactId>
     <packaging>war</packaging>
-    <version>2.3.1-SNAPSHOT</version>
+    <version>2.4.0</version>
 
     <name>IntAct Services :: PSI-MI Validator</name>
 

@@ -188,6 +188,12 @@
        state when they change;  this makes development easier,
        but adds overhead that should be avoided when your application
        is deployed -->
+    <!--When you change your skin css file, you will need to stop/restart the server -->
+    <!--to see your changes unless you set the check file modification flag in your -->
+    <!--web.xml file. If that flag is set, then you can refresh your browser to see-->
+    <!--your css changes, though currently you will not see your server-side changes -->
+    <!--which are 'icon' and 'server-side skin properties'.-->
+    <!--Remember to set this back to false when you are done for performance sake.-->
     <context-param>
         <param-name>org.apache.myfaces.trinidad.CHECK_FILE_MODIFICATION</param-name>
         <param-value>false</param-value>
@@ -205,11 +211,14 @@ to use the fullqualified class name. -->
         <param-value>session</param-value>
     </context-param>
 
-
+    <!--When you run a page and view the html source, you will see styleclasses like class="x10". -->
+    <!--To see instead something more meaningful like class="af_inputText_content" you need to -->
+    <!--disable the styleclass compression which is enabled by default for performance reasons. -->
     <context-param>
         <param-name>org.apache.myfaces.trinidad.DISABLE_CONTENT_COMPRESSION</param-name>
-        <param-value>true</param-value>
+        <param-value>false</param-value>
     </context-param>
+
     <context-param>
         <param-name>org.apache.myfaces.trinidad.ENABLE_LIGHTWEIGHT_DIALOGS</param-name>
         <param-value>true</param-value>
