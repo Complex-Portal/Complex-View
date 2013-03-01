@@ -13,7 +13,7 @@
     <groupId>uk.ac.ebi.intact.service.sandbox</groupId>
     <artifactId>intact-view</artifactId>
     <packaging>war</packaging>
-    <version>4.0.3-SNAPSHOT</version>
+    <version>4.1.0</version>
 
     <name>IntAct Services :: View</name>
 
