@@ -19,6 +19,8 @@
 
         <p:dataTable id="featuresTable" var="feature" value="#{value}" emptyMessage="No features defined"
                      paginator="#{value.rowCount > 10}" rows="10"
+                     paginatorAlwaysVisible="false"
+                     rowsPerPageTemplate="5,10,20"
                      selection="#{participantController.selectedFeatures}">
 
             <f:facet name="header">

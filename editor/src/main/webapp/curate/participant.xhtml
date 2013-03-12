@@ -179,7 +179,7 @@
                                               ajax="false"/>
                      </div>
 
-                    <p:outputPanel id="featuresPanel" autoUpdate="true">
+                    <p:outputPanel id="featuresPanel" autoUpdate="false">
                         <ui:include src="features_table.xhtml">
                             <ui:param name="value" value="#{participantController.featuresDataModel}"/>
                         </ui:include>
@@ -219,7 +219,7 @@
                 </p:tab>
 
             </p:tabView>
-            
+
         </h:panelGroup>
 
     </ui:define>
