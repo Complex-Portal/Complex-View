@@ -13,11 +13,15 @@
         <h:panelGrid id="openAcContent" columns="1" style="margin-bottom:10px">
             <h:panelGroup>
                 <h:outputLabel for="openAc" value="AC:"/>
-                <p:inputText id="openAc" value="#{curateController.acToOpen}" converter="trimmingConverter"/>
+                <p:inputText id="openAc" value="#{curateController.acToOpen}"
+                             converter="trimmingConverter"
+                             onkeyup="handleReturnKey(event, 'dialogsForm:openAcBtn')" />
 
-                <p:commandButton value="Open"
+                <p:commandButton id="openAcBtn"
+                                 value="Open"
                                  process="openAc"
                                  ajax="false"
+                                 global="true"
                                  action="#{curateController.openByAc}"/>
             </h:panelGroup>
         </h:panelGrid>
@@ -28,14 +32,28 @@
     <p:dialog header="Open by PMID" width="400" widgetVar="openByPmidDlg" visible="false" draggable="false"
               modal="true" position="center">
 
+
+        <!--<p:inputText id="queryTxt" value="#{searchController.quickQuery}"-->
+                     <!--converter="trimmingConverter"-->
+                     <!--onkeyup="handleReturnKey(event, 'topSearchBtn')"/>-->
+        <!--<p:commandButton id="topSearchBtn" value="Search" action="#{searchController.doQuickSearch}"-->
+                         <!--ajax="false"-->
+                         <!--process="queryTxt" global="true"/>-->
+        <!--<p:commandButton id="topClearBtn" value="Clear" actionListener="#{searchController.clearQuickSearch}"-->
+                         <!--process="queryTxt" update=":editorForm:queryTxt"/>-->
+
         <h:panelGrid id="openPmidContent" columns="1" style="margin-bottom:10px">
             <h:panelGroup>
                 <h:outputLabel for="openPmid" value="PMID:"/>
-                <p:inputText id="openPmid" value="#{publicationController.identifierToOpen}" converter="trimmingConverter"/>
+                <p:inputText id="openPmid" value="#{publicationController.identifierToOpen}"
+                             converter="trimmingConverter"
+                             onkeyup="handleReturnKey(event, 'dialogsForm:openPmidBtn')"/>
 
-                <p:commandButton value="Open" actionListener="#{publicationController.openByPmid}"
+                <p:commandButton id="openPmidBtn"
+                                 value="Open" actionListener="#{publicationController.openByPmid}"
                                  process="openPmid"
                                  ajax="false"
+                                 global="true"
                                  action="/curate/publication?faces-redirect=true"/>
               </h:panelGroup>
         </h:panelGrid>

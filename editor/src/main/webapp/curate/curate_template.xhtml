@@ -244,14 +244,20 @@
             <h:panelGroup>
                 <h:outputLabel for="newPmid" value="PMID:"/>
 
-                <p:inputText id="newPmid" value="#{publicationController.identifierToImport}" converter="trimmingConverter"/>
+                <p:inputText id="newPmid" value="#{publicationController.identifierToImport}"
+                             converter="trimmingConverter"
+                             onkeyup="handleReturnKey(event, 'autoCompleteBtn')"/>
                 <p:tooltip for="newPmid" value="Type a PMID and click on auto-complete" showDelay="2000"
                            showEvent="focus" hideEvent="blur"/>
 
 
-
-                <p:commandButton value="Auto-complete" type="submit" process="newPmid"
-                                 action="#{publicationController.newAutocomplete}" disabled="#{not publicationController.citexploreOnline}" update=":editorForm"/>
+                <p:commandButton id="autoCompleteBtn"
+                                 value="Auto-complete"
+                                 process="newPmid"
+                                 global="true"
+                                 action="#{publicationController.newAutocomplete}"
+                                 disabled="#{not publicationController.citexploreOnline}"
+                                 ajax="false"/>
 
                 <br/>
 
