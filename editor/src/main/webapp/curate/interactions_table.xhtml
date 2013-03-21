@@ -20,7 +20,10 @@
 
         <p:dataTable var="interaction" value="#{value}"
                      emptyMessage="No interactions found" paginatorPosition="both"
-                     paginator="true" paginatorAlwaysVisible="false" rows="10">
+                     paginator="true" paginatorAlwaysVisible="false" rows="10"
+                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                     rowsPerPageTemplate="10,20,50,100">
+
             <p:column headerText="AC" sortBy="#{interaction.ac}">
                     <h:outputText value="#{interaction.ac}" styleClass="#{changesController.isDeletedAc(interaction.ac)? 'intact-deleted' : ''}"/>
             </p:column>
