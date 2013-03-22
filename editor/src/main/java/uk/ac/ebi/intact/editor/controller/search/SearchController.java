@@ -397,7 +397,7 @@ public class SearchController extends AnnotatedObjectController {
                                                                  "      or lower(i.shortLabel) like :query " +
                                                                  "      or lower(x.primaryId) like :query ",
 
-                                                                 "select count(i.ac) " +
+                                                                 "select count(distinct i.ac) " +
                                                                  "from InteractionImpl i left join i.xrefs as x " +
                                                                  "where    i.ac = :ac " +
                                                                  "      or lower(i.shortLabel) like :query " +
