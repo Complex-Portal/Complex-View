@@ -22,7 +22,10 @@
         <p:dataTable var="experiment" value="#{value}"
                      paginator="true"
                      paginatorAlwaysVisible="false"
-                     rows="10" dynamic="#{lazy}" lazy="#{lazy}" paginatorPosition="bottom"
+                     rows="10" dynamic="#{lazy}" lazy="#{lazy}"
+                     emptyMessage="No interactions found" paginatorPosition="both"
+                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                     rowsPerPageTemplate="10,20,50,100"
                      rowStyleClass="#{experimentController.isAccepted(experiment)? 'ia-accepted' : experimentController.isToBeReviewed(experiment)? 'ia-to-be-reviewed' : 'ia-not-accepted'}">
             <p:column headerText="AC" sortBy="#{experiment.ac}">
                 <h:outputText value="#{experiment.ac}"

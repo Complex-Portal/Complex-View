@@ -358,6 +358,18 @@ public class SearchController extends AnnotatedObjectController {
         return getDaoFactory().getFeatureDao().getByComponentAc(comp.getAc()).size();
     }
 
+	public int countParticipantsExpressIn( String biosourceAc ) {
+		return getDaoFactory().getComponentDao().getByExpressedIn(biosourceAc).size();
+	}
+
+	public int countExperimentsByHostOrganism( String biosourceAc ) {
+		return getDaoFactory().getExperimentDao().getByHostOrganism(biosourceAc).size();
+	}
+
+	public int countInteractorsByOrganism( String biosourceAc ) {
+		return getDaoFactory().getInteractorDao().getByBioSourceAc( biosourceAc).size();
+	}
+
     public CvExperimentalRole getExperimentalRoleForParticipantAc( Component comp ) {
         return getDaoFactory().getComponentDao().getByAc(comp.getAc()).getCvExperimentalRole();
     }
@@ -388,7 +400,7 @@ public class SearchController extends AnnotatedObjectController {
         params.put( "query", query );
         params.put( "ac", originalQuery );
 
-        // Load experiment eagerly to avoid LazyInitializationException when redering the view
+        // Load experiment eagerly to avoid LazyInitializationException when rendering the view
         interactions = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                                  "select distinct i " +
