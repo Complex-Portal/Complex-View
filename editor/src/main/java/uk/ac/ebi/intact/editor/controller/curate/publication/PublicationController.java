@@ -69,11 +69,11 @@ import java.util.regex.Pattern;
  * @version $Id$
  */
 @Controller
-@Scope( "conversation.access" )
-@ConversationName( "general" )
+@Scope("conversation.access")
+@ConversationName("general")
 public class PublicationController extends AnnotatedObjectController {
 
-    private static final Log log = LogFactory.getLog( PublicationController.class );
+    private static final Log log = LogFactory.getLog(PublicationController.class);
 
     public static final String SUBMITTED = "MI:0878";
     public static final String CURATION_REQUEST = "MI:0873";
@@ -112,7 +112,7 @@ public class PublicationController extends AnnotatedObjectController {
     private ImexCentralManager imexCentralManager;
 
     private String curationDepth;
-    
+
     private String newDatasetDescriptionToCreate;
     private String newDatasetNameToCreate;
 
@@ -126,10 +126,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-        setPublication((Publication)annotatedObject);
+        setPublication((Publication) annotatedObject);
     }
 
-    public void loadData( ComponentSystemEvent event ) {
+    public void loadData(ComponentSystemEvent event) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             datasetsSelectItems = new ArrayList<SelectItem>();
@@ -144,38 +144,39 @@ public class PublicationController extends AnnotatedObjectController {
 
     private void loadByAc() {
 
-        if ( ac != null ) {
-            if ( publication == null || !ac.equals( publication.getAc() ) ) {
+        if (ac != null) {
+            if (publication == null || !ac.equals(publication.getAc())) {
                 publication = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getPublicationDao(), ac);
 
                 if (publication == null) {
                     publication = getDaoFactory().getPublicationDao().getByPubmedId(ac);
-                    if (publication != null) {ac = publication.getAc();}
-                    else{
+                    if (publication != null) {
+                        ac = publication.getAc();
+                    } else {
                         super.addErrorMessage("No publication with this AC", ac);
                     }
                 }
             }
 
             refreshDataModels();
-            if ( publication != null ) {
+            if (publication != null) {
                 loadFormFields();
             }
 
             //getCuratorContextController().removeFromUnsavedByAc(ac);
 
-        } else if ( publication != null ) {
+        } else if (publication != null) {
             ac = publication.getAc();
             loadFormFields();
         }
     }
 
     private void refreshDataModels() {
-        interactionDataModel = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
+        interactionDataModel = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
                 "select i from InteractionImpl i join fetch i.experiments as exp " +
                         "where exp.publication.ac = '" + ac + "' order by exp.shortLabel asc",
                 "select count(i) from InteractionImpl i join i.experiments as exp " +
-                        "where exp.publication.ac = '" + ac + "'" );
+                        "where exp.publication.ac = '" + ac + "'");
     }
 
     private void loadFormFields() {
@@ -186,12 +187,12 @@ public class PublicationController extends AnnotatedObjectController {
 
         DatasetPopulator populator = getDatasetPopulator();
 
-        for ( Annotation annotation : publication.getAnnotations() ) {
-            if ( annotation.getCvTopic() != null && CvTopic.DATASET_MI_REF.equals( annotation.getCvTopic().getIdentifier() ) ) {
+        for (Annotation annotation : publication.getAnnotations()) {
+            if (annotation.getCvTopic() != null && CvTopic.DATASET_MI_REF.equals(annotation.getCvTopic().getIdentifier())) {
                 String datasetText = annotation.getAnnotationText();
 
-                SelectItem datasetSelectItem = populator.createSelectItem( datasetText );
-                datasetsSelectItems.add( datasetSelectItem );
+                SelectItem datasetSelectItem = populator.createSelectItem(datasetText);
+                datasetsSelectItems.add(datasetSelectItem);
             }
         }
 
@@ -210,7 +211,7 @@ public class PublicationController extends AnnotatedObjectController {
             urlConnection.setConnectTimeout(1000);
             urlConnection.setReadTimeout(1000);
             urlConnection.connect();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             log.debug("\tEurope Pubmed Central is not reachable");
 
             isCitexploreActive = false;
@@ -221,36 +222,34 @@ public class PublicationController extends AnnotatedObjectController {
         return true;
     }
 
-    public String newAutocomplete( ) {
+    public String newAutocomplete() {
         identifier = identifierToImport;
 
-        if ( identifier == null ) {
-            addErrorMessage( "Cannot auto-complete", "ID is empty" );
+        if (identifier == null) {
+            addErrorMessage("Cannot auto-complete", "ID is empty");
             RequestContext requestContext = RequestContext.getCurrentInstance();
             requestContext.execute("newPublicationDlg.hide()");
             return null;
         }
 
         // check if already exists
-        Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
+        Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId(identifier);
 
-        if ( existingPublication != null ) {
+        if (existingPublication != null) {
             setPublication(existingPublication);
-            addWarningMessage( "Publication already exists", "Loaded from the database" );
+            addWarningMessage("Publication already exists", "Loaded from the database");
             return "/curate/publication?faces-redirect=true&includeViewParams=true";
-        }
-        else {
+        } else {
 
             // check if it already exists in IMEx central
             try {
 
-                if (imexCentralManager.isPublicationAlreadyRegisteredInImexCentral(identifier)){
+                if (imexCentralManager.isPublicationAlreadyRegisteredInImexCentral(identifier)) {
                     RequestContext requestContext = RequestContext.getCurrentInstance();
                     requestContext.execute("newPublicationDlg.hide()");
                     requestContext.execute("imexCentralActionDlg.show()");
                     return null;
-                }
-                else {
+                } else {
                     createNewPublication(null);
 
                     return "/curate/publication?faces-redirect=true";
@@ -258,13 +257,12 @@ public class PublicationController extends AnnotatedObjectController {
             }
             // cannot check IMEx central, add warning and create publication
             catch (ImexCentralException e) {
-                addWarningMessage( "Impossible to check with IMExcentral if "+identifier+" is already curated", e.getMessage() );
+                addWarningMessage("Impossible to check with IMExcentral if " + identifier + " is already curated", e.getMessage());
                 createNewPublication(null);
 
                 return "/curate/publication?faces-redirect=true";
-            }
-            catch (Exception e) {
-                addWarningMessage( "Impossible to check with IMExcentral if "+identifier+" is already curated", e.getMessage() );
+            } catch (Exception e) {
+                addWarningMessage("Impossible to check with IMExcentral if " + identifier + " is already curated", e.getMessage());
                 createNewPublication(null);
 
                 return "/curate/publication?faces-redirect=true";
@@ -274,13 +272,13 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void createNewPublication(ActionEvent evt) {
 
-        if ( identifier == null ) {
-            addErrorMessage( "Cannot create publication", "ID is empty" );
+        if (identifier == null) {
+            addErrorMessage("Cannot create publication", "ID is empty");
             return;
         }
 
         newEmpty();
-        autocomplete( publication, identifier );
+        autocomplete(publication, identifier);
 
         identifier = null;
         identifierToImport = null;
@@ -288,8 +286,8 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void createNewEmptyPublication(ActionEvent evt) {
 
-        if ( identifier == null ) {
-            addErrorMessage( "Cannot create publication", "ID is empty" );
+        if (identifier == null) {
+            addErrorMessage("Cannot create publication", "ID is empty");
             return;
         }
 
@@ -299,84 +297,83 @@ public class PublicationController extends AnnotatedObjectController {
         identifierToImport = null;
     }
 
-    public void doFormAutocomplete( ActionEvent evt ) {
-        if ( publication.getShortLabel() != null ) {
-            autocomplete( publication, publication.getShortLabel() );
+    public void doFormAutocomplete(ActionEvent evt) {
+        if (publication.getShortLabel() != null) {
+            autocomplete(publication, publication.getShortLabel());
         }
     }
 
-    public void autocomplete( Publication publication, String id) {
+    public void autocomplete(Publication publication, String id) {
         CitexploreClient citexploreClient = null;
 
         try {
             citexploreClient = new CitexploreClient();
-        } catch ( Exception e ) {
-            addErrorMessage( "Cannot auto-complete", "Citexplore service is down at the moment" );
+        } catch (Exception e) {
+            addErrorMessage("Cannot auto-complete", "Citexplore service is down at the moment");
             return;
         }
 
         try {
-            final Result citation = citexploreClient.getCitationById( id );
+            final Result citation = citexploreClient.getCitationById(id);
 
             // new publication. No autocompletion available and this publication can be created under unassigned
-            if ( citation == null && publication.getAc() == null) {
-                addErrorMessage( "No citation was found, the auto completion has been aborted", "PMID: " + id );
+            if (citation == null && publication.getAc() == null) {
+                addErrorMessage("No citation was found, the auto completion has been aborted", "PMID: " + id);
                 setPublication(null);
                 return;
-            }
-            else if (citation == null && publication.getAc() != null){
-                addErrorMessage( "This pubmed id does not exist and the autocompletion has been aborted", "PMID: " + id );
+            } else if (citation == null && publication.getAc() != null) {
+                addErrorMessage("This pubmed id does not exist and the autocompletion has been aborted", "PMID: " + id);
                 return;
             }
 
-            setPrimaryReference( id );
+            setPrimaryReference(id);
 
             publication.setFullName(citation.getTitle());
 
             StringBuilder journalBuf = new StringBuilder(128);
             final String abbreviation = citation.getJournalInfo().getJournal().getISOAbbreviation();
             final String issn = citation.getJournalInfo().getJournal().getISSN();
-            journalBuf.append( abbreviation );
-            if( issn != null ) {
-                journalBuf.append( " (" ).append( issn ).append( ")" );
+            journalBuf.append(abbreviation);
+            if (issn != null) {
+                journalBuf.append(" (").append(issn).append(")");
             }
-            setJournal( journalBuf.toString() );
+            setJournal(journalBuf.toString());
 
-            setYear( citation.getJournalInfo().getYearOfPublication() );
+            setYear(citation.getJournalInfo().getYearOfPublication());
 
-            StringBuilder sbAuthors = new StringBuilder( 64 );
+            StringBuilder sbAuthors = new StringBuilder(64);
 
-            if (citation.getAuthorList() != null){
+            if (citation.getAuthorList() != null) {
                 Iterator<Authors> authorIterator = citation.getAuthorList().getAuthor().iterator();
-                while ( authorIterator.hasNext() ) {
+                while (authorIterator.hasNext()) {
                     Authors author = authorIterator.next();
-                    sbAuthors.append( author.getLastName() ).append( " " );
+                    sbAuthors.append(author.getLastName()).append(" ");
 
-                    if (author.getInitials() != null){
-                        for (int i = 0; i < author.getInitials().length(); i++){
+                    if (author.getInitials() != null) {
+                        for (int i = 0; i < author.getInitials().length(); i++) {
                             char initial = author.getInitials().charAt(i);
-                            sbAuthors.append( initial ).append(".");
+                            sbAuthors.append(initial).append(".");
                         }
                     }
 
-                    if ( authorIterator.hasNext() ) sbAuthors.append( ", " );
+                    if (authorIterator.hasNext()) sbAuthors.append(", ");
                 }
 
-                setAuthors( sbAuthors.toString() );
+                setAuthors(sbAuthors.toString());
             }
 
             getChangesController().markAsUnsaved(publication);
 
-            addInfoMessage( "Auto-complete successful", "Fetched details for: " + id );
+            addInfoMessage("Auto-complete successful", "Fetched details for: " + id);
 
-        } catch ( Throwable e ) {
-            addErrorMessage( "Problem auto-completing publication", e.getMessage() );
+        } catch (Throwable e) {
+            addErrorMessage("Problem auto-completing publication", e.getMessage());
             e.printStackTrace();
         }
     }
 
     @Transactional(value = "transactionManager")
-    public String newEmptyUnassigned( ) {
+    public String newEmptyUnassigned() {
         SequenceManager sequenceManager = (SequenceManager) getSpringContext().getBean("sequenceManager");
         try {
             sequenceManager.createSequenceIfNotExists("unassigned_seq");
@@ -387,24 +384,22 @@ public class PublicationController extends AnnotatedObjectController {
         identifier = PublicationUtils.nextUnassignedId(getIntactContext());
 
         // check if already exists, so we skip this unassigned
-        Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
+        Publication existingPublication = getDaoFactory().getPublicationDao().getByPubmedId(identifier);
 
-        if ( existingPublication != null ) {
+        if (existingPublication != null) {
             setPublication(existingPublication);
-            addWarningMessage( "Publication already exists", "Loaded from the database" );
+            addWarningMessage("Publication already exists", "Loaded from the database");
             return "/curate/publication?faces-redirect=true&includeViewParams=true";
-        }
-        else {
+        } else {
             // check if it already exists in IMEx central
             try {
 
-                if (imexCentralManager.isPublicationAlreadyRegisteredInImexCentral(identifier)){
+                if (imexCentralManager.isPublicationAlreadyRegisteredInImexCentral(identifier)) {
                     RequestContext requestContext = RequestContext.getCurrentInstance();
                     requestContext.execute("newPublicationDlg.hide()");
                     requestContext.execute("imexCentralUnassignedActionDlg.show()");
                     return null;
-                }
-                else {
+                } else {
                     newEmpty();
 
                     identifier = null;
@@ -415,16 +410,15 @@ public class PublicationController extends AnnotatedObjectController {
             }
             // cannot check IMEx central, add warning and create publication
             catch (ImexCentralException e) {
-                addWarningMessage( "Impossible to check with IMExcentral if "+identifier+" is already curated", e.getMessage() );
+                addWarningMessage("Impossible to check with IMExcentral if " + identifier + " is already curated", e.getMessage());
                 newEmpty();
 
                 identifier = null;
                 identifierToImport = null;
 
                 return "/curate/publication?faces-redirect=true";
-            }
-            catch (Exception e) {
-                addWarningMessage( "Impossible to check with IMExcentral if "+identifier+" is already curated", e.getMessage() );
+            } catch (Exception e) {
+                addWarningMessage("Impossible to check with IMExcentral if " + identifier + " is already curated", e.getMessage());
                 newEmpty();
 
                 identifier = null;
@@ -438,11 +432,11 @@ public class PublicationController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager")
     public void newEmpty() {
 
-        Publication publication = new Publication( userSessionController.getUserInstitution(), identifier );
+        Publication publication = new Publication(userSessionController.getUserInstitution(), identifier);
         setPublication(publication);
 
         // add the primary reference xref
-        setPrimaryReference( identifier );
+        setPrimaryReference(identifier);
 
         interactionDataModel = LazyDataModelFactory.createEmptyDataModel();
 
@@ -467,16 +461,16 @@ public class PublicationController extends AnnotatedObjectController {
         getChangesController().markAsUnsaved(publication);
     }
 
-    public void openByPmid( ActionEvent evt ) {
+    public void openByPmid(ActionEvent evt) {
         identifier = identifierToOpen;
 
-        if ( identifier == null || identifier.trim().length() == 0 ) {
-            addErrorMessage( "PMID is empty", "No PMID was supplied" );
+        if (identifier == null || identifier.trim().length() == 0) {
+            addErrorMessage("PMID is empty", "No PMID was supplied");
         } else {
-            Publication publicationToOpen = getDaoFactory().getPublicationDao().getByPubmedId( identifier );
+            Publication publicationToOpen = getDaoFactory().getPublicationDao().getByPubmedId(identifier);
 
-            if ( publicationToOpen == null ) {
-                addErrorMessage( "PMID not found", "There is no publication with PMID '" + identifier + "'" );
+            if (publicationToOpen == null) {
+                addErrorMessage("PMID not found", "There is no publication with PMID '" + identifier + "'");
             } else {
                 publication = publicationToOpen;
                 ac = publication.getAc();
@@ -487,7 +481,7 @@ public class PublicationController extends AnnotatedObjectController {
 
     }
 
-    public void doClose( ActionEvent evt ) {
+    public void doClose(ActionEvent evt) {
         publication = null;
         ac = null;
     }
@@ -579,7 +573,7 @@ public class PublicationController extends AnnotatedObjectController {
 
         reasonForReadyForChecking = null;
 
-        addInfoMessage("Publication ready for checking", "Assigned to reviewer: "+publication.getCurrentReviewer().getLogin());
+        addInfoMessage("Publication ready for checking", "Assigned to reviewer: " + publication.getCurrentReviewer().getLogin());
     }
 
     @Transactional
@@ -658,16 +652,16 @@ public class PublicationController extends AnnotatedObjectController {
         return new DateTime().isBefore(eventTime.plusMinutes(getEditorConfig().getRevertDecisionTime()));
     }
 
-    public void doSaveAndClose( ActionEvent evt ) {
-        doSave( evt );
-        doClose( evt );
+    public void doSaveAndClose(ActionEvent evt) {
+        doSave(evt);
+        doClose(evt);
     }
 
-    public void addDataset( ActionEvent evt ) {
-        if ( datasetToAdd != null ) {
-            datasetsSelectItems.add( getDatasetPopulator().createSelectItem( datasetToAdd ) );
+    public void addDataset(ActionEvent evt) {
+        if (datasetToAdd != null) {
+            datasetsSelectItems.add(getDatasetPopulator().createSelectItem(datasetToAdd));
 
-            addAnnotation( CvTopic.DATASET_MI_REF, datasetToAdd );
+            addAnnotation(CvTopic.DATASET_MI_REF, datasetToAdd);
 
             Collection<Experiment> experiments = publication.getExperiments();
 
@@ -675,9 +669,9 @@ public class PublicationController extends AnnotatedObjectController {
                 experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
             }
 
-            if (!experiments.isEmpty()){
+            if (!experiments.isEmpty()) {
                 Collection<String> parentAcs = new ArrayList<String>();
-                if (publication.getAc() != null){
+                if (publication.getAc() != null) {
                     parentAcs.add(publication.getAc());
                 }
                 for (Experiment experiment : experiments) {
@@ -689,35 +683,34 @@ public class PublicationController extends AnnotatedObjectController {
 
             // reset the dataset to add as it has already been added
             datasetToAdd = null;
-            setUnsavedChanges( true );
+            setUnsavedChanges(true);
         }
     }
 
-    public void createAndAddNewDataset( ActionEvent evt ) {
-        if (newDatasetDescriptionToCreate == null){
+    public void createAndAddNewDataset(ActionEvent evt) {
+        if (newDatasetDescriptionToCreate == null) {
             addErrorMessage("A short sentence describing the dataset is required", "dataset description required");
         }
-        if (newDatasetNameToCreate == null){
+        if (newDatasetNameToCreate == null) {
             addErrorMessage("A short dataset name is required", "dataset name required");
         }
-        if ( newDatasetDescriptionToCreate!= null && newDatasetNameToCreate != null) {
+        if (newDatasetDescriptionToCreate != null && newDatasetNameToCreate != null) {
 
             String newDataset = newDatasetNameToCreate + " - " + newDatasetDescriptionToCreate;
             DatasetPopulator populator = getDatasetPopulator();
-            
+
             String sql = "select distinct a.annotationText from Annotation a where a.cvTopic.identifier = :dataset and lower(a.annotationText) like :name";
             Query query = getDaoFactory().getEntityManager().createQuery(sql);
-            query.setParameter("dataset",CvTopic.DATASET_MI_REF);
-            query.setParameter("name",newDatasetNameToCreate.toLowerCase()+" -%");
+            query.setParameter("dataset", CvTopic.DATASET_MI_REF);
+            query.setParameter("name", newDatasetNameToCreate.toLowerCase() + " -%");
 
-            if (!query.getResultList().isEmpty()){
-                addErrorMessage("A dataset with this name already exists. Cannot create two datasets with same name","dataset name already exists");
-            }
-            else {
+            if (!query.getResultList().isEmpty()) {
+                addErrorMessage("A dataset with this name already exists. Cannot create two datasets with same name", "dataset name already exists");
+            } else {
                 // add the new dataset to the publication and list of datasets possible to remove from this publication
-                datasetsSelectItems.add( populator.createSelectItem(newDataset) );
+                datasetsSelectItems.add(populator.createSelectItem(newDataset));
 
-                addAnnotation( CvTopic.DATASET_MI_REF, newDataset );
+                addAnnotation(CvTopic.DATASET_MI_REF, newDataset);
 
                 Collection<Experiment> experiments = publication.getExperiments();
 
@@ -725,9 +718,9 @@ public class PublicationController extends AnnotatedObjectController {
                     experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
                 }
 
-                if (!experiments.isEmpty()){
+                if (!experiments.isEmpty()) {
                     Collection<String> parentAcs = new ArrayList<String>();
-                    if (publication.getAc() != null){
+                    if (publication.getAc() != null) {
                         parentAcs.add(publication.getAc());
                     }
                     for (Experiment experiment : experiments) {
@@ -749,19 +742,19 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    public void removeDatasets( ActionEvent evt ) {
-        if ( datasetsToRemove != null ) {
-            for ( String datasetToRemove : datasetsToRemove ) {
+    public void removeDatasets(ActionEvent evt) {
+        if (datasetsToRemove != null) {
+            for (String datasetToRemove : datasetsToRemove) {
                 Iterator<SelectItem> iterator = datasetsSelectItems.iterator();
 
-                while ( iterator.hasNext() ) {
+                while (iterator.hasNext()) {
                     SelectItem selectItem = iterator.next();
-                    if ( datasetToRemove.equals( selectItem.getValue() ) ) {
+                    if (datasetToRemove.equals(selectItem.getValue())) {
                         iterator.remove();
                     }
                 }
 
-                removeAnnotation( CvTopic.DATASET_MI_REF, datasetToRemove );
+                removeAnnotation(CvTopic.DATASET_MI_REF, datasetToRemove);
 
                 Collection<Experiment> experiments = publication.getExperiments();
 
@@ -769,9 +762,9 @@ public class PublicationController extends AnnotatedObjectController {
                     experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
                 }
 
-                if (!experiments.isEmpty()){
+                if (!experiments.isEmpty()) {
                     Collection<String> parentAcs = new ArrayList<String>();
-                    if (publication.getAc() != null){
+                    if (publication.getAc() != null) {
                         parentAcs.add(publication.getAc());
                     }
                     for (Experiment experiment : experiments) {
@@ -781,7 +774,7 @@ public class PublicationController extends AnnotatedObjectController {
                     }
                 }
             }
-            setUnsavedChanges( true );
+            setUnsavedChanges(true);
         }
     }
 
@@ -790,7 +783,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     private String createExperimentShortLabel() {
-        return getFirstAuthor()+"-"+getYear();
+        return getFirstAuthor() + "-" + getYear();
     }
 
     public int countExperiments(Publication pub) {
@@ -811,15 +804,15 @@ public class PublicationController extends AnnotatedObjectController {
         return -1;
     }
 
-    public boolean getParticipantsAvailable(Publication publication){
-        if(countInteractions(publication) == 0){
+    public boolean getParticipantsAvailable(Publication publication) {
+        if (countInteractions(publication) == 0) {
             return false;
-        }else{
+        } else {
             int count = 0;
-            for(Experiment experiment: publication.getExperiments()){
-                for(Interaction interaction: experiment.getInteractions()){
+            for (Experiment experiment : publication.getExperiments()) {
+                for (Interaction interaction : experiment.getInteractions()) {
                     count = interaction.getComponents().size();
-                    if(count > 0){
+                    if (count > 0) {
                         continue;
                     }
                 }
@@ -830,13 +823,13 @@ public class PublicationController extends AnnotatedObjectController {
 
 
     public String getAc() {
-        if ( ac == null && publication != null ) {
+        if (ac == null && publication != null) {
             return publication.getAc();
         }
         return ac;
     }
 
-    public void setAc( String ac ) {
+    public void setAc(String ac) {
         this.ac = ac;
     }
 
@@ -845,17 +838,17 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     @Override
-    public void refreshTabsAndFocusXref(){
+    public void refreshTabsAndFocusXref() {
         refreshTabs();
     }
 
     @Override
-    public void refreshTabs(){
+    public void refreshTabs() {
         super.refreshTabs();
         this.isLifeCycleDisabled = true;
     }
 
-    public void setPublication( Publication publication ) {
+    public void setPublication(Publication publication) {
         this.publication = publication;
 
         if (publication != null) {
@@ -865,58 +858,58 @@ public class PublicationController extends AnnotatedObjectController {
 
 
     public String getJournal() {
-        final String annot = findAnnotationText( CvTopic.JOURNAL_MI_REF );
+        final String annot = findAnnotationText(CvTopic.JOURNAL_MI_REF);
         return annot;
     }
 
 
-    public void setJournal( String journal ) {
-        setAnnotation( CvTopic.JOURNAL_MI_REF, journal );
+    public void setJournal(String journal) {
+        setAnnotation(CvTopic.JOURNAL_MI_REF, journal);
     }
 
     public String getContactEmail() {
-        return findAnnotationText( CvTopic.CONTACT_EMAIL_MI_REF );
+        return findAnnotationText(CvTopic.CONTACT_EMAIL_MI_REF);
     }
 
-    public void setContactEmail( String contactEmail ) {
-        setAnnotation( CvTopic.CONTACT_EMAIL_MI_REF, contactEmail );
+    public void setContactEmail(String contactEmail) {
+        setAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, contactEmail);
     }
 
     public String getSubmitted() {
         return findAnnotationText(SUBMITTED);
     }
 
-    public void setSubmitted( String submitted ) {
-        setAnnotation(SUBMITTED, submitted );
+    public void setSubmitted(String submitted) {
+        setAnnotation(SUBMITTED, submitted);
     }
 
     public String getCurationRequest() {
         return findAnnotationText(CURATION_REQUEST);
     }
 
-    public void setCurationRequest( String requestedCuration ) {
-        setAnnotation(CURATION_REQUEST, requestedCuration );
+    public void setCurationRequest(String requestedCuration) {
+        setAnnotation(CURATION_REQUEST, requestedCuration);
     }
 
     public Short getYear() {
-        String strYear = findAnnotationText( CvTopic.PUBLICATION_YEAR_MI_REF );
+        String strYear = findAnnotationText(CvTopic.PUBLICATION_YEAR_MI_REF);
 
-        if ( strYear != null ) {
-            return Short.valueOf( strYear );
+        if (strYear != null) {
+            return Short.valueOf(strYear);
         }
 
         return null;
     }
 
-    public void setYear( Short year ) {
-        setAnnotation( CvTopic.PUBLICATION_YEAR_MI_REF, year );
+    public void setYear(Short year) {
+        setAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, year);
     }
 
     public String getIdentifier() {
-        if ( publication != null ) {
+        if (publication != null) {
             String id = getPrimaryReference();
 
-            if ( id != null ) {
+            if (id != null) {
                 identifier = id;
             }
         }
@@ -924,20 +917,20 @@ public class PublicationController extends AnnotatedObjectController {
         return identifier;
     }
 
-    public void setIdentifier( String identifier ) {
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
 
-        if ( identifier != null && getAnnotatedObject() != null ) {
-            setPrimaryReference( identifier );
+        if (identifier != null && getAnnotatedObject() != null) {
+            setPrimaryReference(identifier);
 
             Collection<Experiment> experiments = publication.getExperiments();
 
             if (!IntactCore.isInitialized(publication.getExperiments())) {
                 experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
             }
-            if (!experiments.isEmpty()){
+            if (!experiments.isEmpty()) {
                 Collection<String> parentAcs = new ArrayList<String>();
-                if (publication.getAc() != null){
+                if (publication.getAc() != null) {
                     parentAcs.add(publication.getAc());
                 }
                 for (Experiment experiment : experiments) {
@@ -950,27 +943,27 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public String getPrimaryReference() {
-        return findXrefPrimaryId( CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF );
+        return findXrefPrimaryId(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF);
     }
 
-    public void setPrimaryReference( String id ) {
-        setXref( CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id );
+    public void setPrimaryReference(String id) {
+        setXref(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id);
     }
 
     public String getAuthors() {
-        return findAnnotationText( CvTopic.AUTHOR_LIST_MI_REF );
+        return findAnnotationText(CvTopic.AUTHOR_LIST_MI_REF);
     }
 
-    public void setAuthors( String authors ) {
-        setAnnotation( CvTopic.AUTHOR_LIST_MI_REF, authors );
+    public void setAuthors(String authors) {
+        setAnnotation(CvTopic.AUTHOR_LIST_MI_REF, authors);
     }
 
     public String getOnHold() {
-        return findAnnotationText( CvTopic.ON_HOLD );
+        return findAnnotationText(CvTopic.ON_HOLD);
     }
 
-    public void setOnHold( String reason ) {
-        setAnnotation( CvTopic.ON_HOLD, reason );
+    public void setOnHold(String reason) {
+        setAnnotation(CvTopic.ON_HOLD, reason);
     }
 
     public void setExperimentAnnotation(String topic, String text) {
@@ -981,9 +974,9 @@ public class PublicationController extends AnnotatedObjectController {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
         }
 
-        if (!experiments.isEmpty()){
+        if (!experiments.isEmpty()) {
             Collection<String> parentAcs = new ArrayList<String>();
-            if (publication.getAc() != null){
+            if (publication.getAc() != null) {
                 parentAcs.add(publication.getAc());
             }
             for (Experiment experiment : experiments) {
@@ -1032,7 +1025,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public String getAcceptedMessage() {
-        return findAnnotationText( CvTopic.ACCEPTED );
+        return findAnnotationText(CvTopic.ACCEPTED);
     }
 
     public String getCurationDepth() {
@@ -1045,7 +1038,7 @@ public class PublicationController extends AnnotatedObjectController {
 
     public String getShowCurationDepth() {
         String depth = getCurationDepth();
-        if ( depth == null ) {
+        if (depth == null) {
             depth = "curation depth undefined";
         }
         return depth;
@@ -1098,8 +1091,8 @@ public class PublicationController extends AnnotatedObjectController {
         return PublicationUtils.isAccepted(pub);
     }
 
-    public void setAcceptedMessage( String message ) {
-        setAnnotation( CvTopic.ACCEPTED, message );
+    public void setAcceptedMessage(String message) {
+        setAnnotation(CvTopic.ACCEPTED, message);
     }
 
     public boolean isToBeReviewed(Publication pub) {
@@ -1119,7 +1112,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setImexId(String imexId) {
-        setXref( CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId );
+        setXref(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId);
     }
 
     public String getPublicationTitle() {
@@ -1134,8 +1127,8 @@ public class PublicationController extends AnnotatedObjectController {
     public String getFirstAuthor() {
         final String authors = getAuthors();
 
-        if ( authors != null ) {
-            return authors.split( " " )[0];
+        if (authors != null) {
+            return authors.split(" ")[0];
         }
 
         return null;
@@ -1144,7 +1137,7 @@ public class PublicationController extends AnnotatedObjectController {
     public void acceptPublication(ActionEvent evt) {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
-        setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
+        setAcceptedMessage("Accepted " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase());
 
         addInfoMessage("Publication accepted", "");
 
@@ -1171,23 +1164,21 @@ public class PublicationController extends AnnotatedObjectController {
 
         try {
 
-            if (Pattern.matches(ImexCentralManager.PUBMED_REGEXP.toString(), publication.getPublicationId())){
+            if (Pattern.matches(ImexCentralManager.PUBMED_REGEXP.toString(), publication.getPublicationId())) {
                 imexCentralManager.assignImexAndUpdatePublication(publication.getAc());
 
                 addInfoMessage("Successfully assigned new IMEx identifier to the publication " + publication.getShortLabel(), "");
-            }
-            else {
-                addErrorMessage("Impossible to assign new IMEx id to unassigned publication. Must be assigned manually in IMEx central.","");
+            } else {
+                addErrorMessage("Impossible to assign new IMEx id to unassigned publication. Must be assigned manually in IMEx central.", "");
             }
 
-        }  catch (PublicationImexUpdaterException e) {
+        } catch (PublicationImexUpdaterException e) {
             addErrorMessage("Impossible to assign new IMEx id", e.getMessage());
         } catch (ImexCentralException e) {
             IcentralFault f = (IcentralFault) e.getCause();
 
             processImexCentralException(publication.getShortLabel(), e, f);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             addErrorMessage("Impossible to assign new IMEx id", e.getMessage());
         }
 
@@ -1197,49 +1188,37 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     private void processImexCentralException(String publication, ImexCentralException e, IcentralFault f) {
-        if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.USER_NOT_AUTHORIZED ) {
+        if (f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.USER_NOT_AUTHORIZED) {
             addErrorMessage("User not authorized", e.getMessage());
-        }
-        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.OPERATION_NOT_VALID ) {
+        } else if (f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.OPERATION_NOT_VALID) {
             addErrorMessage("Operation not valid", e.getMessage());
-        }
-        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.IDENTIFIER_MISSING ) {
+        } else if (f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.IDENTIFIER_MISSING) {
             addErrorMessage("Publication identifier is missing", e.getMessage());
-        }
-        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.IDENTIFIER_UNKNOWN ) {
+        } else if (f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.IDENTIFIER_UNKNOWN) {
             addErrorMessage("Publication identifier is unknown (must be valid pubmed)", e.getMessage());
-        }
-        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.NO_RECORD ) {
+        } else if (f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.NO_RECORD) {
             addErrorMessage("No IMEx record could be found for " + publication, e.getMessage());
-        }
-        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.NO_RECORD_CREATED ) {
+        } else if (f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.NO_RECORD_CREATED) {
             addErrorMessage("The publication could not be registered in IMEx central. Must be a valid pubmed Id", e.getMessage());
-        }
-        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.STATUS_UNKNOWN ) {
+        } else if (f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.STATUS_UNKNOWN) {
             addErrorMessage("The status of the publication is unknown is IMEx central", e.getMessage());
-        }
-        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.NO_IMEX_ID ) {
+        } else if (f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.NO_IMEX_ID) {
             addErrorMessage("No IMEx identifier could be found for this publication", e.getMessage());
-        }
-        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.UNKNOWN_USER ) {
+        } else if (f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.UNKNOWN_USER) {
             addErrorMessage("Unknown user in IMEx central", e.getMessage());
-        }
-        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.UNKNOWN_GROUP ) {
+        } else if (f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.UNKNOWN_GROUP) {
             addErrorMessage("Unknown group in IMEx central", e.getMessage());
-        }
-        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.OPERATION_NOT_SUPPORTED ) {
+        } else if (f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.OPERATION_NOT_SUPPORTED) {
             addErrorMessage("Operation not supported in IMEx central", e.getMessage());
-        }
-        else if( f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.INTERNAL_SERVER_ERROR ) {
+        } else if (f.getFaultInfo().getFaultCode() == DefaultImexCentralClient.INTERNAL_SERVER_ERROR) {
             addErrorMessage("Internal server error (IMEx central not responding)", e.getMessage());
-        }
-        else {
+        } else {
             addErrorMessage("Fatal error (IMEx central not responding)", e.getMessage());
         }
     }
 
-    private void registerEditorListenerIfNotDoneYet(){
-        if (imexCentralManager.getListenerList().getListenerCount() == 0){
+    private void registerEditorListenerIfNotDoneYet() {
+        if (imexCentralManager.getListenerList().getListenerCount() == 0) {
             imexCentralManager.addListener(new EditorImexCentralListener());
         }
     }
@@ -1251,17 +1230,17 @@ public class PublicationController extends AnnotatedObjectController {
         for (Experiment exp : IntactCore.ensureInitializedExperiments(publication)) {
             if (ExperimentUtils.isToBeReviewed(exp)) {
                 ExperimentController experimentController = (ExperimentController) getSpringContext().getBean("experimentController");
-                rejectionComments.add("["+exp.getShortLabel()+": "+experimentController.getToBeReviewed(exp)+"]");
+                rejectionComments.add("[" + exp.getShortLabel() + ": " + experimentController.getToBeReviewed(exp) + "]");
             }
         }
 
-        rejectPublication(reasonForRejection + (rejectionComments.isEmpty()? "" : " - "+StringUtils.join(rejectionComments, ", ")));
+        rejectPublication(reasonForRejection + (rejectionComments.isEmpty() ? "" : " - " + StringUtils.join(rejectionComments, ", ")));
 
     }
 
     public void rejectPublication(String reasonForRejection) {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
-        String date = "Rejected " +new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase();
+        String date = "Rejected " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase();
 
         setToBeReviewed(date + ". " + reasonForRejection);
 
@@ -1305,10 +1284,10 @@ public class PublicationController extends AnnotatedObjectController {
             }
         }
 
-        if (timesReadyForChecking > 1) {
-            return "ia-corrected";
-        } else if (timesRejected > 0) {
+        if (publication.getStatus().getIdentifier().equals(CvPublicationStatusType.CURATION_IN_PROGRESS.identifier()) && timesRejected > 0) {
             return "ia-rejected";
+        } else if (publication.getStatus().getIdentifier().equals(CvPublicationStatusType.READY_FOR_CHECKING.identifier()) && timesReadyForChecking > 1) {
+            return "ia-corrected";
         }
 
         return "";
@@ -1344,9 +1323,9 @@ public class PublicationController extends AnnotatedObjectController {
         if (!IntactCore.isInitialized(publication.getExperiments())) {
             experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
         }
-        if (!experiments.isEmpty()){
+        if (!experiments.isEmpty()) {
             Collection<String> parentAcs = new ArrayList<String>();
-            if (publication.getAc() != null){
+            if (publication.getAc() != null) {
                 parentAcs.add(publication.getAc());
             }
             for (Experiment experiment : experiments) {
@@ -1361,40 +1340,40 @@ public class PublicationController extends AnnotatedObjectController {
         for (Experiment exp : publication.getExperiments()) {
             CurateUtils.copyPublicationAnnotationsToExperiment(exp);
             Collection<String> parent = new ArrayList<String>();
-            if (publication.getAc() != null){
+            if (publication.getAc() != null) {
                 parent.add(publication.getAc());
             }
 
             getChangesController().markAsUnsaved(exp, parent);
         }
 
-        addInfoMessage("Annotations copied", publication.getExperiments().size()+" experiments were modified");
+        addInfoMessage("Annotations copied", publication.getExperiments().size() + " experiments were modified");
     }
 
     public void copyPublicationTitleToExperiments(ActionEvent evt) {
         for (Experiment exp : publication.getExperiments()) {
             exp.setFullName(publication.getFullName());
             Collection<String> parent = new ArrayList<String>();
-            if (publication.getAc() != null){
+            if (publication.getAc() != null) {
                 parent.add(publication.getAc());
             }
 
             getChangesController().markAsUnsaved(exp, parent);
         }
 
-        addInfoMessage("Publication title copied", publication.getExperiments().size()+" experiments were modified");
+        addInfoMessage("Publication title copied", publication.getExperiments().size() + " experiments were modified");
     }
 
-    public void copyPrimaryIdentifierToExperiments(){
+    public void copyPrimaryIdentifierToExperiments() {
         Collection<Experiment> experiments = publication.getExperiments();
 
-        if (publication.getShortLabel() != null){
+        if (publication.getShortLabel() != null) {
             if (!IntactCore.isInitialized(publication.getExperiments())) {
                 experiments = getDaoFactory().getExperimentDao().getByPubId(publication.getShortLabel());
             }
-            if (!experiments.isEmpty()){
+            if (!experiments.isEmpty()) {
                 Collection<String> parentAcs = new ArrayList<String>();
-                if (publication.getAc() != null){
+                if (publication.getAc() != null) {
                     parentAcs.add(publication.getAc());
                 }
                 for (Experiment experiment : experiments) {
@@ -1414,7 +1393,7 @@ public class PublicationController extends AnnotatedObjectController {
         return datasetToAdd;
     }
 
-    public void setDatasetToAdd( String datasetToAdd ) {
+    public void setDatasetToAdd(String datasetToAdd) {
         this.datasetToAdd = datasetToAdd;
     }
 
@@ -1422,12 +1401,12 @@ public class PublicationController extends AnnotatedObjectController {
         return datasetsToRemove;
     }
 
-    public void setDatasetsToRemove( String[] datasetsToRemove ) {
+    public void setDatasetsToRemove(String[] datasetsToRemove) {
         this.datasetsToRemove = datasetsToRemove;
     }
 
     public DatasetPopulator getDatasetPopulator() {
-        return ( DatasetPopulator ) IntactContext.getCurrentInstance().getSpringContext().getBean( "datasetPopulator" );
+        return (DatasetPopulator) IntactContext.getCurrentInstance().getSpringContext().getBean("datasetPopulator");
     }
 
     public LazyDataModel<Interaction> getInteractionDataModel() {
@@ -1463,7 +1442,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     @Override
-    protected void refreshUnsavedChangesBeforeRevert(){
+    protected void refreshUnsavedChangesBeforeRevert() {
 
         getChangesController().revertPublication(publication);
     }
@@ -1517,11 +1496,11 @@ public class PublicationController extends AnnotatedObjectController {
         isLifeCycleDisabled = lifeCycleDisabled;
     }
 
-    public boolean isAssignedIMEx(){
+    public boolean isAssignedIMEx() {
         return getImexId() != null;
     }
 
-    public boolean isAssignableIMEx(){
+    public boolean isAssignableIMEx() {
         return getImexId() == null && curationDepth != null
                 && "imex curation".equalsIgnoreCase(curationDepth) && Pattern.matches(ImexCentralManager.PUBMED_REGEXP.toString(), publication.getPublicationId());
     }
@@ -1536,15 +1515,13 @@ public class PublicationController extends AnnotatedObjectController {
 
         super.onTabChanged(e);
 
-        if (isAnnotationTopicDisabled() && isAliasDisabled() && isXrefDisabled()){
-            if (e.getTab().getId().equals("lifeCycleTab")){
+        if (isAnnotationTopicDisabled() && isAliasDisabled() && isXrefDisabled()) {
+            if (e.getTab().getId().equals("lifeCycleTab")) {
                 isLifeCycleDisabled = false;
-            }
-            else {
+            } else {
                 isLifeCycleDisabled = true;
             }
-        }
-        else {
+        } else {
             isLifeCycleDisabled = true;
         }
     }
