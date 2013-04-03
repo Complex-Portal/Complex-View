@@ -62,6 +62,29 @@
     <p:panel id="basic" header="Interaction Details">
 
         <p:outputPanel id="infoPanels">
+            <!--TODO: Add the proper interaction status in the future-->
+            <h:panelGroup rendered="#{experimentController.accepted}">
+                <ia:panelMessage level="info">
+                    The experiment, in which this interaction is part of, is <b>accepted</b>.&#160;
+                    <h:outputText value="#{experimentController.acceptedMessage}" rendered="#{experimentController.acceptedMessage != null}"/>
+                </ia:panelMessage>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{not empty experimentController.toBeReviewed}">
+                <ia:panelMessage level="warn">
+                    <b>Comments "to be reviewed" copied from the experiment: </b> #{experimentController.toBeReviewed}
+                    &#160;&#160;&#160;
+                    <p:commandButton id="clearToBeReviewed" value="Clear" rendered="#{userSessionController.isItMe(publicationController.publication.currentReviewer)}" actionListener="#{experimentController.clearToBeReviewed}"
+                                     update=":editorForm:centralUnit"/>
+                </ia:panelMessage>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{experimentController.correctionComment != null}">
+                <ia:panelMessage level="info">
+                    <b>Correction comments copied from the experiment: </b>#{experimentController.correctionComment}
+                </ia:panelMessage>
+            </h:panelGroup>
+
             <ui:include src="common_info_panels.xhtml">
                 <ui:param name="annotatedObjectController" value="#{interactionController}"/>
             </ui:include>
