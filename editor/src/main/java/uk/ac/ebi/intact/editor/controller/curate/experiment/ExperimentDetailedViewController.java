@@ -26,8 +26,7 @@ import uk.ac.ebi.intact.model.util.FeatureUtils;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -37,9 +36,24 @@ import java.util.Iterator;
 @Scope( "conversation.access" )
 @ConversationName( "general" )
 public class ExperimentDetailedViewController extends JpaAwareController {
-    
+
     private String ac;
     private ExperimentWrapper experimentWrapper;
+
+	private List<String> annotationTopicsForExpOverview =
+			Arrays.asList(
+					CvTopic.ACCEPTED,
+					CvTopic.TO_BE_REVIEWED,
+					CvTopic.ON_HOLD,
+					CvTopic.HIDDEN,
+					CvTopic.COMMENT_MI_REF,
+					CvTopic.REMARK_INTERNAL,
+					CvTopic.CORRECTION_COMMENT,
+					CvTopic.COMMENT,
+					"MI:0591", //experiment description
+					"MI:0627", //experiment modification
+					"MI:0633" //data-processing
+					);
 
     @Autowired
     private ExperimentController experimentController;
@@ -66,17 +80,55 @@ public class ExperimentDetailedViewController extends JpaAwareController {
                 }
             }
         }
-        
+
     }
 
+	//Now in experiment_overview we show all the annotations in the interaction not only these two
+	@Deprecated
     public String figureLegendForInteraction(Interaction interaction) {
         return findAnnotationText(interaction, "MI:0599");
     }
 
+	@Deprecated
     public String commentForInteraction(Interaction interaction) {
         return findAnnotationText(interaction, CvTopic.COMMENT_MI_REF);
     }
-    
+
+	public List<Annotation> experimentAnnotationsByOverviewCriteria(Experiment experiment) {
+
+		if (experiment == null) return null;
+
+		List<Annotation> annotations = new ArrayList<Annotation>();
+		for(String topic: annotationTopicsForExpOverview){
+			Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(experiment, topic);
+			if(annotation!=null){
+				annotations.add(annotation);
+			}
+		}
+		return annotations;
+	}
+
+
+	public static String parameterAsString(Parameter param){
+		if (param == null){
+			return null;
+		}
+
+		String value = null;
+
+		if (param.getFactor() != null) {
+			value = String.valueOf(param.getFactor());
+
+			if ((param.getExponent() != null && param.getExponent() != 0) || (param.getBase() !=null && param.getBase() != 10)) {
+				value = param.getFactor() + "x" + param.getBase() + "^" + param.getExponent();
+			}
+			if (param.getUncertainty()!=null && param.getUncertainty() != 0.0) {
+				value = value + " ~" + param.getUncertainty();
+			}
+		}
+		return value;
+	}
+
     public String featureAsString(Feature feature) {
         StringBuilder sb = new StringBuilder();
         sb.append(feature.getShortLabel());
@@ -125,5 +177,5 @@ public class ExperimentDetailedViewController extends JpaAwareController {
         return experimentWrapper;
     }
 
-    
+
 }

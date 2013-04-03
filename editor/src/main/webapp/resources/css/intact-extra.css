@@ -356,6 +356,9 @@ border-right:0 none !important;
     background: #ffecc4 !important;
 }
 
+.ia-on-hold {
+    background: #c9e3ff !important;
+}
 
 /** dataTable **/
 .ui-datatable .ui-datatable-data td, .ui-datatable .ui-datatable-data-empty td {

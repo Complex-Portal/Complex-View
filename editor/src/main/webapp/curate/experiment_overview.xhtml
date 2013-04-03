@@ -10,107 +10,228 @@
 
                 template="/curate/experiment_template.xhtml">
 
-    <ui:param name="title" value="#{experimentController.experiment != null? 'Experiment Details: ' : ''}#{experimentController.experiment != null? experimentController.experiment.shortLabel : ''} | Curate | Editor"/>
+<ui:param name="title"
+          value="#{experimentController.experiment != null? 'Experiment Details: ' : ''}#{experimentController.experiment != null? experimentController.experiment.shortLabel : ''} | Curate | Editor"/>
 
-    <ui:define name="metadata">
-        <f:metadata>
-            <f:viewParam name="ac" value="#{experimentDetailedViewController.ac}"/>
-        </f:metadata>
-        <f:event type="preRenderView" listener="#{experimentDetailedViewController.loadData}"/>
-        <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(experimentController)}"/>
-    </ui:define>
+<ui:define name="metadata">
+    <f:metadata>
+        <f:viewParam name="ac" value="#{experimentDetailedViewController.ac}"/>
+    </f:metadata>
+    <f:event type="preRenderView" listener="#{experimentDetailedViewController.loadData}"/>
+    <f:event type="preRenderView"
+             listener="#{curateController.setCurrentAnnotatedObjectController(experimentController)}"/>
+</ui:define>
 
-    <ui:define name="experimentContent">
-         <p:panel header="Experiment: #{experimentDetailedViewController.experimentWrapper.experiment.shortLabel}">
 
-             <p>
-             <p:commandLink id="goBackExp" value="Go to the Experiment" action="/curate/experiment?faces-redirect=true&amp;includeViewParams=true"
-                            ajax="false"/>
-             </p>
+<ui:define name="experimentContent">
+<br/>
+<p:fieldset>
+    <f:facet name="legend">
+        <h:outputText>Experiment: </h:outputText>
+        <p:commandLink id="goBackExp"
+                       value="#{experimentDetailedViewController.experimentWrapper.experiment.shortLabel}"
+                       action="/curate/experiment?faces-redirect=true&amp;includeViewParams=true"
+                       style="text-decoration-line: replace-underline"
+                       ajax="false"/>
+        <h:outputText value=" (#{experimentDetailedViewController.experimentWrapper.experiment.ac})"/>
+    </f:facet>
 
-             <p:dataList id="interactionDataList" var="interaction"
-                         value="#{experimentDetailedViewController.experimentWrapper.experiment.interactions}"
-                         type="definition"
-                         paginatorAlwaysVisible="false" paginator="true" rows="50">
 
-                 <div class="interaction-item">
+    <p:accordionPanel id="experimentAccPanel" autoHeight="false" multiple="true">
+        <ui:param name="filteredExperimentAnnotations"
+                  value="#{experimentDetailedViewController.experimentAnnotationsByOverviewCriteria(experimentDetailedViewController.experimentWrapper.experiment)}"/>
+        <p:tab title="Relevant annotations for the experiment: #{filteredExperimentAnnotations != null ? filteredExperimentAnnotations.size(): ''}"
+               rendered="#{filteredExperimentAnnotations != null ? filteredExperimentAnnotations.size() gt 0 : 'false'}">
 
-                 <p:column>
-                     <h:outputText value="Interaction: "/>
+            <p:dataTable id="sumViewExpAnnotations" var="annotation"
+                         value="#{filteredExperimentAnnotations}">
 
-                     <p:commandLink id="interactionLink"
-                                    styleClass="#{interaction.shortLabel}" onclick="load_int.show()"
-                                    action="/curate/interaction?faces-redirect=true&amp;includeViewParams=true"
-                                    value="#{interaction.shortLabel}" ajax="false">
-                         <f:setPropertyActionListener value="#{interaction}"
-                                                      target="#{interactionController.interaction}"/>
-                     </p:commandLink>
-                 </p:column>
+                <p:column headerText="Topic" styleClass="ia-#{annotation.cvTopic.shortLabel}">
+                    <h:outputText value="#{annotation.cvTopic != null ? annotation.cvTopic.shortLabel : ''}" style="white-space: nowrap"/>
+                </p:column>
+                <p:column headerText="Text" styleClass="ia-#{annotation.cvTopic.shortLabel}">
+                    <h:outputText value="#{annotation.annotationText}"/>
+                </p:column>
+            </p:dataTable>
+        </p:tab>
+    </p:accordionPanel>
+    <br/>
 
-                 <f:facet name="description">
-                     <h:panelGroup>
-                         <p>
-                             <h:panelGroup rendered="#{experimentDetailedViewController.figureLegendForInteraction(interaction) != null}">
-                                 Fig. legend: <h:outputText styleClass="fig-legend-value #{interaction.shortLabel}"
-                                                            value="#{experimentDetailedViewController.figureLegendForInteraction(interaction)}"/>
-                                 <br/>
-                             </h:panelGroup>
-                             <h:panelGroup rendered="#{experimentDetailedViewController.commentForInteraction(interaction) != null}">
-                                 Comment: <h:outputText styleClass="comment-value #{interaction.shortLabel}"
-                                                        value="#{experimentDetailedViewController.commentForInteraction(interaction)}"/>
-                                 <br/>
-                             </h:panelGroup>
-                         </p>
+    <p:dataList id="interactionReviewTable" var="interaction" itemType="none"
+                value="#{experimentDetailedViewController.experimentWrapper.experiment.interactions}"
+                paginator="true" paginatorAlwaysVisible="false" rows="10"
+                paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                rowsPerPageTemplate="10,20,50,100">
 
-                         <p:dataTable var="participant" value="#{experimentDetailedViewController.experimentWrapper.sortedParticipants(interaction)}" >
-                             <f:facet name="header">
-                                 Participants: #{interaction.components.size()}
-                              </f:facet>
+        <f:facet name="header">
+            <h:outputText
+                    class="interaction-item">Interactions: #{experimentDetailedViewController.experimentWrapper.experiment.interactions.size()}</h:outputText>
+        </f:facet>
 
-                             <p:column>
-                                 <h:outputLink value="#{request.contextPath}/participant/#{participant.ac}">
-                                     <h:outputText value="#{participantController.participantPrimaryId(participant)}"/>
-                                 </h:outputLink>
-                             </p:column>
-                             <p:column>
-                                 <h:outputText value="#{participant.interactor.shortLabel}"/>
-                             </p:column>
-                             <p:column>
-                                 <h:outputText value="#{participant.cvExperimentalRole.shortLabel}"/>
-                             </p:column>
-                             <p:column>
-                                 <h:outputText value="#{participant.cvBiologicalRole.shortLabel}"/>
-                             </p:column>
-                             <p:column>
-                                 <ui:repeat value="#{participant.features}" var="feature">
-                                     <h:outputText value="#{experimentDetailedViewController.featureAsString(feature)}"
-                                                   styleClass="feature-for-#{participantController.participantPrimaryId(participant)}"/>
+        <!--<p:column>-->
+        <!--<h:outputText value="Interaction: "/>-->
 
-                                     <h:panelGroup rendered="#{feature.boundDomain != null}">
-                                         <div class="ui-icon ui-icon-link linked-feature-for-#{participantController.participantPrimaryId(participant)}"
-                                              style="display:inline-block"
-                                              title="Linked to #{feature.boundDomain.shortLabel}"></div>
-                                     </h:panelGroup>
-                                 <br/>
-                                 </ui:repeat>
-                             </p:column>
-                             <p:column>
-                                 <h:outputText value="#{(participant.expressedIn != null)? participant.expressedIn.shortLabel : '-'}"/>
-                             </p:column>
-                             <p:column>
-                                 <h:outputText value="S: #{participant.stoichiometry}"/>
-                             </p:column>
-                         </p:dataTable>
-                     </h:panelGroup>
-                 </f:facet>
+        <!--<p:commandLink id="interactionLink"-->
+        <!--styleClass="#{interaction.shortLabel}" onclick="load_int.show()"-->
+        <!--action="/curate/interaction?faces-redirect=true&amp;includeViewParams=true"-->
+        <!--value="#{interaction.shortLabel}" ajax="false">-->
+        <!--<f:setPropertyActionListener value="#{interaction}"-->
+        <!--target="#{interactionController.interaction}"/>-->
+        <!--</p:commandLink>-->
+        <!--</p:column>-->
 
-                 </div>
+        <!--class="interaction-item"-->
 
-             </p:dataList>
-         </p:panel>
+        <p:column>
+            <p:fieldset toggleable="true">
+                <f:facet name="legend">
+                    <h:outputText value="Interaction: "/>
 
-        <ia:loadingDialog widgetVar="load_int" message="Loading interaction..."/>
-    </ui:define>
+                    <p:commandLink id="interactionLink"
+                                   onclick="load_int.show()"
+                                   action="/curate/interaction?faces-redirect=true&amp;includeViewParams=true"
+                                   styleClass="#{interaction.shortLabel}"
+                                   value="#{interaction.shortLabel}" ajax="false">
+                        <f:setPropertyActionListener value="#{interaction}"
+                                                     target="#{interactionController.interaction}"/>
+                    </p:commandLink>
+
+                    <h:outputText value=" (#{interaction.ac})"/>
+
+                </f:facet>
+
+
+                <!--<h:panelGroup>-->
+                <!--<p>-->
+                <!--<h:panelGroup rendered="#{experimentDetailedViewController.figureLegendForInteraction(interaction) != null}">-->
+                <!--Fig. legend: <h:outputText styleClass="fig-legend-value #{interaction.shortLabel}"-->
+                <!--value="#{experimentDetailedViewController.figureLegendForInteraction(interaction)}"/>-->
+                <!--<br/>-->
+                <!--</h:panelGroup>-->
+                <!--<h:panelGroup rendered="#{experimentDetailedViewController.commentForInteraction(interaction) != null}">-->
+                <!--Comment: <h:outputText styleClass="comment-value #{interaction.shortLabel}"-->
+                <!--value="#{experimentDetailedViewController.commentForInteraction(interaction)}"/>-->
+                <!--<br/>-->
+                <!--</h:panelGroup>-->
+                <!--</p>-->
+                <p:accordionPanel id="interactionsAccPanel" autoHeight="false" multiple="true" activeIndex="0,1">
+                    <p:tab title="Participants: #{interaction.components.size()}">
+
+                        <p:dataTable var="participant"
+                                     value="#{experimentDetailedViewController.experimentWrapper.sortedParticipants(interaction)}">
+                            <p:column headerText="Identity">
+                                <h:outputLink value="#{request.contextPath}/participant/#{participant.ac}">
+                                    <h:outputText
+                                            value="#{participantController.participantPrimaryId(participant)}"/>
+                                </h:outputLink>
+                            </p:column>
+
+                            <p:column headerText="Short Label">
+                                <h:outputText value="#{participant.interactor.shortLabel}"/>
+                            </p:column>
+
+                            <p:column headerText="Experimental Role">
+                                <h:outputText value="#{participant.cvExperimentalRole.shortLabel}"/>
+                            </p:column>
+
+                            <p:column headerText="Biological Role">
+                                <h:outputText value="#{participant.cvBiologicalRole.shortLabel}"/>
+                            </p:column>
+
+                            <p:column headerText="Features">
+                                <ui:repeat value="#{participant.features}" var="feature">
+                                    <h:outputText
+                                            value="#{experimentDetailedViewController.featureAsString(feature)}"
+                                            styleClass="feature-for-#{participantController.participantPrimaryId(participant)}"/>
+
+                                    <h:panelGroup rendered="#{feature.boundDomain != null}">
+                                        <div class="ui-icon ui-icon-link linked-feature-for-#{participantController.participantPrimaryId(participant)}"
+                                             style="display:inline-block"
+                                             title="Linked to #{feature.boundDomain.shortLabel}"></div>
+                                    </h:panelGroup>
+                                    <br/>
+                                </ui:repeat>
+                            </p:column>
+
+                            <p:column headerText="Expressed In">
+                                <h:outputText
+                                        value="#{(participant.expressedIn != null)? participant.expressedIn.shortLabel : ''}"/>
+                            </p:column>
+
+                            <p:column headerText="Stoichiometry">
+                                <h:outputText value="S: #{participant.stoichiometry}"/>
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </p:tab>
+
+                    <p:tab title="Annotations: #{interaction.annotations.size()}"
+                           rendered="#{interaction.annotations.size() gt 0}">
+
+                        <p:dataTable id="sumViewAnnotations" var="annotation"
+                                     value="#{interaction.annotations}">
+
+                            <p:column headerText="Topic">
+                                <h:outputText
+                                        value="#{annotation.cvTopic != null ? annotation.cvTopic.shortLabel : ''}" style="white-space: nowrap"/>
+                            </p:column>
+                            <p:column headerText="Text">
+                                <h:outputText value="#{annotation.annotationText}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:tab>
+
+                    <p:tab title="Xrefs: #{interaction.xrefs.size()}"
+                           rendered="#{interaction.xrefs.size() gt 0}">
+
+                        <p:dataTable id="xrefsTable" var="xref" value="#{interaction.xrefs}"
+                                     rowIndexVar="xrefIndex"
+                                     style="width:100%">
+                            <p:column headerText="Database">
+                                <h:outputText value="#{xref.cvDatabase != null ? xref.cvDatabase.shortLabel : ''}"/>
+                            </p:column>
+                            <p:column headerText="Identifier">
+                                <h:outputText value="#{xref.primaryId}"/>
+                            </p:column>
+                            <p:column headerText="Secondary">
+                                <h:outputText value="#{xref.secondaryId}"/>
+                            </p:column>
+                            <p:column headerText="Qualifier">
+                                <h:outputText
+                                        value="#{xref.cvXrefQualifier != null ? xref.cvXrefQualifier.shortLabel : ''}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:tab>
+
+                    <p:tab title="Parameters: #{interaction.parameters.size()}"
+                           rendered="#{interaction.parameters.size() > 0}">
+                        <p:column headerText="Parameters">
+                            <ui:repeat value="#{interaction.parameters}" var="parameter">
+                                <h:panelGroup>
+                                    <strong><h:outputText
+                                            value="#{parameter.cvParameterType != null ? parameter.cvParameterType.shortLabel : ''}"
+                                            style="white-space:nowrap"/></strong>
+                                    <h:outputText
+                                            value=": #{experimentDetailedViewController.parameterAsString(parameter)}  #{parameter.cvParameterUnit != null ?  parameter.cvParameterUnit.shortLabel : '' }"
+                                            style="white-space:nowrap"/>
+                                </h:panelGroup>
+                            </ui:repeat>
+                        </p:column>
+                    </p:tab>
+
+                </p:accordionPanel>
+
+            </p:fieldset>
+
+            <br/>
+
+        </p:column>
+    </p:dataList>
+</p:fieldset>
+
+<ia:loadingDialog widgetVar="load_int" message="Loading interaction..."/>
+</ui:define>
 
 
 </ui:composition>
