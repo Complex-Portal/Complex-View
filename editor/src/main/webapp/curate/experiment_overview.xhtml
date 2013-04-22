@@ -26,62 +26,62 @@
 <ui:define name="experimentContent">
 <br/>
 <p:fieldset>
-    <f:facet name="legend">
-        <h:outputText>Experiment: </h:outputText>
-        <p:commandLink id="goBackExp"
-                       value="#{experimentDetailedViewController.experimentWrapper.experiment.shortLabel}"
-                       action="/curate/experiment?faces-redirect=true&amp;includeViewParams=true"
-                       style="text-decoration-line: replace-underline"
-                       ajax="false"/>
-        <h:outputText value=" (#{experimentDetailedViewController.experimentWrapper.experiment.ac})"/>
+<f:facet name="legend">
+    <h:outputText>Experiment: </h:outputText>
+    <p:commandLink id="goBackExp"
+                   value="#{experimentDetailedViewController.experimentWrapper.experiment.shortLabel}"
+                   action="/curate/experiment?faces-redirect=true&amp;includeViewParams=true"
+                   style="text-decoration-line: replace-underline"
+                   ajax="false"/>
+    <h:outputText value=" (#{experimentDetailedViewController.experimentWrapper.experiment.ac})"/>
+</f:facet>
+
+
+<p:accordionPanel id="experimentAccPanel" autoHeight="false" multiple="true">
+    <ui:param name="filteredExperimentAnnotations"
+              value="#{experimentDetailedViewController.experimentAnnotationsByOverviewCriteria(experimentDetailedViewController.experimentWrapper.experiment)}"/>
+    <p:tab title="Relevant annotations for the experiment: #{filteredExperimentAnnotations != null ? filteredExperimentAnnotations.size(): ''}"
+           rendered="#{filteredExperimentAnnotations != null ? filteredExperimentAnnotations.size() gt 0 : 'false'}">
+
+        <p:dataTable id="sumViewExpAnnotations" var="annotation"
+                     value="#{filteredExperimentAnnotations}">
+
+            <p:column headerText="Topic" styleClass="ia-#{annotation.cvTopic.shortLabel}">
+                <h:outputText value="#{annotation.cvTopic != null ? annotation.cvTopic.shortLabel : ''}"
+                              style="white-space: nowrap"/>
+            </p:column>
+            <p:column headerText="Text" styleClass="ia-#{annotation.cvTopic.shortLabel}">
+                <h:outputText value="#{annotation.annotationText}"/>
+            </p:column>
+        </p:dataTable>
+    </p:tab>
+</p:accordionPanel>
+<br/>
+
+<p:dataList id="interactionReviewTable" var="interaction" itemType="none"
+            value="#{experimentDetailedViewController.experimentWrapper.experiment.interactions}"
+            paginator="true" paginatorAlwaysVisible="false" rows="10"
+            paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+            rowsPerPageTemplate="10,20,50,100">
+
+    <f:facet name="header">
+        <h:outputText>Interactions: #{experimentDetailedViewController.experimentWrapper.experiment.interactions.size()}</h:outputText>
     </f:facet>
 
+    <!--<p:column>-->
+    <!--<h:outputText value="Interaction: "/>-->
 
-    <p:accordionPanel id="experimentAccPanel" autoHeight="false" multiple="true">
-        <ui:param name="filteredExperimentAnnotations"
-                  value="#{experimentDetailedViewController.experimentAnnotationsByOverviewCriteria(experimentDetailedViewController.experimentWrapper.experiment)}"/>
-        <p:tab title="Relevant annotations for the experiment: #{filteredExperimentAnnotations != null ? filteredExperimentAnnotations.size(): ''}"
-               rendered="#{filteredExperimentAnnotations != null ? filteredExperimentAnnotations.size() gt 0 : 'false'}">
+    <!--<p:commandLink id="interactionLink"-->
+    <!--styleClass="#{interaction.shortLabel}" onclick="load_int.show()"-->
+    <!--action="/curate/interaction?faces-redirect=true&amp;includeViewParams=true"-->
+    <!--value="#{interaction.shortLabel}" ajax="false">-->
+    <!--<f:setPropertyActionListener value="#{interaction}"-->
+    <!--target="#{interactionController.interaction}"/>-->
+    <!--</p:commandLink>-->
+    <!--</p:column>-->
 
-            <p:dataTable id="sumViewExpAnnotations" var="annotation"
-                         value="#{filteredExperimentAnnotations}">
-
-                <p:column headerText="Topic" styleClass="ia-#{annotation.cvTopic.shortLabel}">
-                    <h:outputText value="#{annotation.cvTopic != null ? annotation.cvTopic.shortLabel : ''}" style="white-space: nowrap"/>
-                </p:column>
-                <p:column headerText="Text" styleClass="ia-#{annotation.cvTopic.shortLabel}">
-                    <h:outputText value="#{annotation.annotationText}"/>
-                </p:column>
-            </p:dataTable>
-        </p:tab>
-    </p:accordionPanel>
-    <br/>
-
-    <p:dataList id="interactionReviewTable" var="interaction" itemType="none"
-                value="#{experimentDetailedViewController.experimentWrapper.experiment.interactions}"
-                paginator="true" paginatorAlwaysVisible="false" rows="10"
-                paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                rowsPerPageTemplate="10,20,50,100">
-
-        <f:facet name="header">
-            <h:outputText
-                    class="interaction-item">Interactions: #{experimentDetailedViewController.experimentWrapper.experiment.interactions.size()}</h:outputText>
-        </f:facet>
-
-        <!--<p:column>-->
-        <!--<h:outputText value="Interaction: "/>-->
-
-        <!--<p:commandLink id="interactionLink"-->
-        <!--styleClass="#{interaction.shortLabel}" onclick="load_int.show()"-->
-        <!--action="/curate/interaction?faces-redirect=true&amp;includeViewParams=true"-->
-        <!--value="#{interaction.shortLabel}" ajax="false">-->
-        <!--<f:setPropertyActionListener value="#{interaction}"-->
-        <!--target="#{interactionController.interaction}"/>-->
-        <!--</p:commandLink>-->
-        <!--</p:column>-->
-
-        <!--class="interaction-item"-->
-
+    <!--Div created for Selenium Test-->
+    <div class="interaction-item">
         <p:column>
             <p:fieldset toggleable="true">
                 <f:facet name="legend">
@@ -173,11 +173,12 @@
                                      value="#{interaction.annotations}">
 
                             <p:column headerText="Topic">
-                                <h:outputText
-                                        value="#{annotation.cvTopic != null ? annotation.cvTopic.shortLabel : ''}" style="white-space: nowrap"/>
+                                <h:outputText id="annotation-topic"
+                                              value="#{annotation.cvTopic != null ? annotation.cvTopic.shortLabel : ''}"
+                                              style="white-space: nowrap"/>
                             </p:column>
                             <p:column headerText="Text">
-                                <h:outputText value="#{annotation.annotationText}"/>
+                                <h:outputText id="annotation-text" value="#{annotation.annotationText}"/>
                             </p:column>
                         </p:dataTable>
                     </p:tab>
@@ -227,7 +228,8 @@
             <br/>
 
         </p:column>
-    </p:dataList>
+    </div>
+</p:dataList>
 </p:fieldset>
 
 <ia:loadingDialog widgetVar="load_int" message="Loading interaction..."/>

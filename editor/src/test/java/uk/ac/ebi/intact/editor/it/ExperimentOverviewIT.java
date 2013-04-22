@@ -40,7 +40,7 @@ public class ExperimentOverviewIT extends EditorIT {
         // Given I am in the detailed page for experiment with label ren-2011-1
         goToExperimentOverviewPageFor("ren-2011-1");
 
-        // When I click on the label for interaction dre4-luc7
+        // When I click on the label for interactor O59734
         clickOnLinkWithText("O59734");
 
         // Then I should navigate to the page for interaction with label dre4-luc7
@@ -54,7 +54,7 @@ public class ExperimentOverviewIT extends EditorIT {
         clickOnLinkWithText("Summary view");
         assertThat(titleForCurrentPage(), startsWith("Experiment Details: ren-2011-1"));
     }
-    
+
     @Test
     public void navigateToExperimentPage() throws Exception {
         // Given I want to go to the experiment page
@@ -83,15 +83,15 @@ public class ExperimentOverviewIT extends EditorIT {
     }
 
     @Test
-    public void interactionsArePaginatedWhenMoreThan50() throws Exception {
-        // Given bigexp-2012-1 is an experiment with more than 50 interactions
-        // And the default number of interactions per page is 50
+    public void interactionsArePaginatedWhenMoreThan10() throws Exception {
+        // Given bigexp-2012-1 is an experiment with more than 10 interactions
+        // And the default number of interactions per page is 10
 
         // When I am in the detailed page for that experiment
         goToExperimentOverviewPageFor("bigexp-2012-1");
 
         // Then I whould see only 50 interactions
-        assertThat(interactionsInThePage(), is(equalTo(50)));
+        assertThat(interactionsInThePage(), is(equalTo(10)));
 
         // And the paginator to navigate to other results
         assertTrue(paginatorIsPresent());
@@ -104,7 +104,10 @@ public class ExperimentOverviewIT extends EditorIT {
 
         // When I look at interaction with label dre4-luc7
         // Then the figure legend should be "Fig. 3"
-        assertThat(figureLegendForInteraction("dre4-luc7"), is(equalTo("Fig. 3")));
+        assertTrue(driver.findElement(By.cssSelector("BODY")).getText().matches("^[\\s\\S]*figure legend[\\s\\S]*$"));
+        // Warning: assertTextPresent may require manual changes
+        assertTrue(driver.findElement(By.cssSelector("BODY")).getText().matches("^[\\s\\S]*Fig\\. 3[\\s\\S]*$"));
+
     }
 
     @Test
@@ -114,7 +117,9 @@ public class ExperimentOverviewIT extends EditorIT {
 
         // When I look at interaction with label prp17-sap61
         // Then the comment should be "This interaction is very nice"
-        assertThat(commentForInteraction("prp17-sap61"), is(equalTo("This interaction is very nice")));
+        assertTrue(driver.findElement(By.cssSelector("BODY")).getText().matches("^[\\s\\S]*comment[\\s\\S]*$"));
+        // Warning: assertTextPresent may require manual changes
+        assertTrue(driver.findElement(By.cssSelector("BODY")).getText().matches("^[\\s\\S]*This interaction is very nice[\\s\\S]*$"));
     }
 
     @Test
@@ -146,7 +151,7 @@ public class ExperimentOverviewIT extends EditorIT {
         // Then the "linked-feature" icon should be displayed after the feature
         assertTrue(linkedFeatureIconIsPresentIn("O14011"));
     }
-    
+
     @Test
     public void usingAnInvalidAccessionShowsNoExperiment() throws Exception {
         goToPageInContext("/expview/LALA-12345");
@@ -164,24 +169,14 @@ public class ExperimentOverviewIT extends EditorIT {
     }
 
     private boolean paginatorIsPresent() {
-        return isElementPresent(By.xpath("//div[@id='interactionDataList_paginator_top']"));
-    }
-
-    private String figureLegendForInteraction(String interactionLabel) {
-        final WebElement element = driver.findElement(By.xpath("//span[@class='fig-legend-value "+interactionLabel+"']"));
-        return element.getText();
-    }
-
-    private String commentForInteraction(String interactionLabel) {
-        final WebElement element = driver.findElement(By.xpath("//span[@class='comment-value "+interactionLabel+"']"));
-        return element.getText();
+        return isElementPresent(By.xpath("//div[@id='interactionReviewTable_paginator_top']"));
     }
 
     private String featuresForParticipant(String participantPrimaryId) {
         final List<WebElement> elements = driver.findElements(By.xpath("//span[@class='feature-for-" + participantPrimaryId + "']"));
 
         List<String> regions = new ArrayList<String>(elements.size());
-        
+
         for (WebElement element : elements) {
             regions.add(element.getText());
         }
