@@ -50,9 +50,9 @@
                          required="true" requiredMessage="You must enter an email address" />
 
             <h:outputLabel value="Institution: " for="institutionTxt"/>
-            <h:selectOneMenu id="institutionTxt" value="#{userAdminController.institution}">
+            <p:selectOneMenu id="institutionTxt" value="#{userAdminController.institution}">
                 <f:selectItems value="#{institutionService.institutionSelectItems}"/>
-            </h:selectOneMenu>
+            </p:selectOneMenu>
 
             <h:outputLabel value="Role(s):" for="rolesPick"/>
             <p:pickList id="rolesPick" value="#{userAdminController.roles}" var="role"
@@ -60,18 +60,18 @@
             </p:pickList>
 
             <h:outputLabel value="Default curation depth:" for="depthSel"/>
-            <h:selectOneMenu id="depthSel" value="#{userAdminController.curationDepth}" >
+            <p:selectOneMenu id="depthSel" value="#{userAdminController.curationDepth}" >
                 <f:selectItem itemLabel="IMEx" itemValue="imex curation"/>
                 <f:selectItem itemLabel="MIMIx" itemValue="mimix curation"/>
-            </h:selectOneMenu>
+            </p:selectOneMenu>
 
             <h:outputLabel for="guTxt" value="Google username: "/>
             <p:inputText id="guTxt" value="#{userAdminController.googleUsername}" converter="trimmingConverter"/>
 
             <h:outputLabel value="Default reviewer: " for="mentorSel"/>
-            <h:selectOneMenu id="mentorSel" value="#{userAdminController.mentorReviewer}">
+            <p:selectOneMenu id="mentorSel" value="#{userAdminController.mentorReviewer}">
                 <f:selectItems value="#{userAdminController.reviewerSelectItems}"/>
-            </h:selectOneMenu>
+            </p:selectOneMenu>
 
             <h:outputLabel value="My Notes:" for="notesArea"/>
             <p:inputTextarea id="notesArea" value="#{userAdminController.rawNotes}" rows="10" cols="80"/>

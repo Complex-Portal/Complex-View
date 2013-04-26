@@ -109,7 +109,7 @@ public class UserAdminController extends AbstractUserController {
 
     private void loadReviewerSelectItems() {
         this.reviewerSelectItems = new ArrayList<SelectItem>();
-        reviewerSelectItems.add(new SelectItem(null, "-- Random --", "Correction assigner", false, false, true));
+        reviewerSelectItems.add(new SelectItem(null, "-- Random --", "Correction assigner", false, true, false));
 
         List<User> reviewers = getDaoFactory().getUserDao().getReviewers();
 
@@ -120,7 +120,7 @@ public class UserAdminController extends AbstractUserController {
 
     public void loadData() {
         log.debug( "AbstractUserController.loadData" );
-        
+
         Collection<User> users = getDaoFactory().getUserDao().getAll();
         allUsers = new SelectableDataModelWrapper(new SelectableCollectionDataModel<User>(users), users);
     }
@@ -136,6 +136,14 @@ public class UserAdminController extends AbstractUserController {
         if ( !IntactCore.isManaged( user ) && ! IntactCore.isDetached( user ) ) {
             userDao.persist( user );
             created = true;
+        }
+
+        // We need to attach the object to the session if we want that orphan removal=true works when
+        // we delete a preference (e.g. mentor.reviewer)
+        if(IntactCore.isDetached( user )){
+            User newUser = getCoreEntityManager().merge(user);
+            setUser(newUser);
+            user = newUser;
         }
 
         // handle roles

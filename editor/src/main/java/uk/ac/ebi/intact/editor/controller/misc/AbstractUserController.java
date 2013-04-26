@@ -2,16 +2,14 @@ package uk.ac.ebi.intact.editor.controller.misc;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import uk.ac.ebi.intact.model.user.Preference;
-import uk.ac.ebi.intact.model.user.User;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.institution.InstitutionService;
 import uk.ac.ebi.intact.model.Institution;
+import uk.ac.ebi.intact.model.user.Preference;
+import uk.ac.ebi.intact.model.user.User;
 import uk.ac.ebi.intact.model.util.UserUtils;
 
-import javax.faces.model.SelectItem;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Controller used when administrating users.
@@ -22,7 +20,7 @@ import java.util.List;
  */
 public abstract class AbstractUserController extends JpaAwareController {
 
-    private static final Log log = LogFactory.getLog( AbstractUserController.class );
+    private static final Log log = LogFactory.getLog(AbstractUserController.class);
 
     private static final String CURATION_DEPTH = "curation.depth";
     public static final String RAW_NOTES = "editor.notes";
@@ -49,7 +47,7 @@ public abstract class AbstractUserController extends JpaAwareController {
         return user;
     }
 
-    public void setUser( User user ) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -104,9 +102,7 @@ public abstract class AbstractUserController extends JpaAwareController {
     }
 
     public void setMentorReviewer(User mentor) {
-        if (mentor != null) {
-            UserUtils.setMentorReviewer(user, mentor);
-        }
+        UserUtils.setMentorReviewer(user, mentor);
     }
 
     private String findPreference(String prefKey) {
