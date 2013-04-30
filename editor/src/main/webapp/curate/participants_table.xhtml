@@ -19,6 +19,8 @@
         </h:panelGroup>
 
         <p:dataTable id="participantsTable" var="wrapper" value="#{value}"
+                     sortBy="#{wrapper.experimentalRole}"
+                     sortFunction="#{wrapper.sortByExperimentalRole}"
                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                      rowsPerPageTemplate="10,20,50,100"
                      rows="10" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="both"
@@ -30,7 +32,11 @@
                 <p:rowToggler/>
             </p:column>
 
-            <p:column headerText="Name" sortBy="#{interactor.shortLabel}">
+            <p:rowExpansion>
+                <h:outputText value="AC: #{participant.ac}"/>
+            </p:rowExpansion>
+
+            <p:column id="shortLabel" headerText="Name" sortBy="#{interactor.shortLabel}">
                 <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
                                value="#{interactor.shortLabel}" rendered="#{interactor != null and not changesController.isDeletedAc(participant.ac)}"
                                styleClass="#{participant.ac == null? 'intact-new' :''}"
@@ -50,7 +56,7 @@
                 </h:panelGroup>
             </p:column>
 
-            <p:column>
+            <p:column id="ao">
                 <ui:include src="common_column_notifications.xhtml">
                     <ui:param name="annotatedObjectController" value="#{participantController}"/>
                     <ui:param name="ao" value="#{participant}"/>
@@ -61,12 +67,12 @@
                 </h:panelGroup>
             </p:column>
 
-            <p:column headerText="Identity">
+            <p:column id="identity" headerText="Identity">
                 <h:outputText id="participantId" value="#{interactionController.getInteractorIdentity(participant.interactor)}"
                               styleClass="#{changesController.isDeletedAc(participant.ac)? 'intact-deleted' : ''}"/>
             </p:column>
 
-            <p:column headerText="Expressed in">
+            <p:column id="expressIn" headerText="Expressed in">
                 <h:selectOneMenu id="expressedInBiosource" value="#{wrapper.expressedIn}" rendered="#{value.size() lt 5}" disabled="#{interactionController.isParticipantDisabled()}">
                     <f:selectItems value="#{bioSourceService.bioSourceSelectItems}" />
                     <p:ajax event="change" listener="#{wrapper.onExpressedInChanged()}" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
@@ -75,19 +81,19 @@
                               rendered="#{value.size() ge 5}"/>
             </p:column>
 
-            <p:column headerText="Experimental role">
+            <p:column id="expRoleCol" headerText="Experimental role" sortFunction="#{wrapper.sortByExperimentalRole}" sortBy="#{wrapper.experimentalRole}">
 
                 <h:selectOneMenu id="expRoleCv" value="#{wrapper.experimentalRole}" rendered="#{value.size() lt 5}" disabled="#{interactionController.isParticipantDisabled()}">
                     <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
                     <p:ajax process="@this" event="change"
                             oncomplete="markAsUnsaved()"
-                            listener="#{wrapper.onExperimentalRoleChanged()}" update=":editorForm:shortlabelTxt,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
+                            listener="#{wrapper.onExperimentalRoleChanged()}" update=":editorForm:shortlabelTxt,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent, participantsTable"/>
                 </h:selectOneMenu>
                 <h:outputText value="#{wrapper.participant.cvExperimentalRole != null? wrapper.participant.cvExperimentalRole.shortLabel : ''}"
                               rendered="#{value.size() ge 5}"/>
             </p:column>
 
-            <p:column headerText="Biological role">
+            <p:column id="bioRoleCol" headerText="Biological role">
 
                 <h:selectOneMenu id="bioRoleCv" value="#{wrapper.biologicalRole}"
                                  rendered="#{value.size() lt 5}" disabled="#{interactionController.isParticipantDisabled()}">

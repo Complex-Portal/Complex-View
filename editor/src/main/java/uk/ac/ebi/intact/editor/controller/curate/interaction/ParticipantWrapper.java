@@ -4,6 +4,7 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectHelper;
 import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
+import uk.ac.ebi.intact.editor.controller.curate.util.ExperimentalRoleComparator;
 import uk.ac.ebi.intact.model.*;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Wrapped participant to allow handling of special fields (eg. author given name) from the interaction view. 
+ * Wrapped participant to allow handling of special fields (eg. author given name) from the interaction view.
  *
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @version $Id$
@@ -195,5 +196,13 @@ public class ParticipantWrapper {
 
     public void setExpressedIn(BioSource expressedIn) {
         this.expressedIn = expressedIn;
+    }
+
+    public int sortByExperimentalRole(Object cvExpRole1, Object cvExpRole2) {
+        if(cvExpRole1 instanceof CvExperimentalRole && cvExpRole2 instanceof CvExperimentalRole){
+            ExperimentalRoleComparator comparator = new ExperimentalRoleComparator();
+            return comparator.compare((CvExperimentalRole)cvExpRole1, (CvExperimentalRole) cvExpRole2);
+        }
+        return 0;
     }
 }
