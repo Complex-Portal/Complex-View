@@ -46,6 +46,10 @@ public class LazyDataModelFactory {
         };
     }
 
+    public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query) {
+        return createLazyDataModel( entityManager, query, Maps.<String, String>newHashMap(), null, null, false  );
+    }
+
     public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query, String countQuery, Map<String, String> params) {
         return createLazyDataModel( entityManager, query, countQuery, params, null, null, false );
     }
