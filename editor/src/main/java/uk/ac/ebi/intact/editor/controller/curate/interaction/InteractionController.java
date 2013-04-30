@@ -144,12 +144,17 @@ public class InteractionController extends ParameterizableObjectController {
         isAdvancedDisabled = true;
     }
 
+//  @Transactional(readOnly = true)
+//  TODO:
+//  Check in future with other interactions that are onHold. At least commenting @Transactional
+//  we don't have the JPA Several DataSource Exception
+//  Issue 925.
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             if ( ac != null ) {
                 if ( interaction == null || !ac.equals( interaction.getAc() ) || !Hibernate.isInitialized(interaction.getExperiments())) {
-                    interaction = loadByAc(getDaoFactory().getInteractionDao(), ac);
+                    interaction = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao(), ac);
                 }
             } else {
                 ac = interaction.getAc();
@@ -174,7 +179,7 @@ public class InteractionController extends ParameterizableObjectController {
 
             if (interaction != null) {
                 if (!Hibernate.isInitialized(interaction.getComponents())) {
-                    interaction = getDaoFactory().getInteractionDao().getByAc( ac );
+                    interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( ac );
                 }
                 refreshParticipants();
             }
@@ -255,7 +260,7 @@ public class InteractionController extends ParameterizableObjectController {
             Publication pub = publicationController.getPublication();
 
             if (!IntactCore.isInitialized(pub.getExperiments())) {
-                pub = IntactContext.getCurrentInstance().getDaoFactory().getPublicationDao().getByAc(pub.getAc());
+                pub = getDaoFactory().getPublicationDao().getByAc(pub.getAc());
                 publicationController.setPublication(pub);
             }
 
