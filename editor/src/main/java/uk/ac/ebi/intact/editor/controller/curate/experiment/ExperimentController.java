@@ -127,15 +127,15 @@ public class ExperimentController extends AnnotatedObjectController {
     private void refreshInteractions() {
         if (experiment == null) return;
 
-        LazyDataModel dataModel = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
+        interactionDataModel = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
                 "select i from InteractionImpl i join i.experiments as exp where exp.ac = '" + experiment.getAc() + "'",
-                "select count(i) from InteractionImpl i join i.experiments as exp where exp.ac = '" + experiment.getAc() + "'");
+                "i","ac",true);
 
-        if (dataModel.getRowCount() > 0 || !IntactCore.isInitialized(experiment.getInteractions())) {
-            interactionDataModel = dataModel;
-        } else {
-            interactionDataModel = LazyDataModelFactory.createLazyDataModel(experiment.getInteractions());
-        }
+//        if (dataModel.getRowCount() > 0 || !IntactCore.isInitialized(experiment.getInteractions())) {
+//            interactionDataModel = dataModel;
+//        } else {
+//            interactionDataModel = LazyDataModelFactory.createLazyDataModel(experiment.getInteractions());
+//        }
     }
 
     @Override

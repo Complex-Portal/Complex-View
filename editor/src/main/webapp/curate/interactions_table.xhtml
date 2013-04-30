@@ -19,21 +19,23 @@
             </h:panelGroup>
 
         <p:dataTable var="interaction" value="#{value}"
+                     sortBy="#{interaction.ac}"
+                     sortOrder="ascending"
                      emptyMessage="No interactions found" paginatorPosition="both"
                      paginator="true" paginatorAlwaysVisible="false" rows="10"
                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                      rowsPerPageTemplate="10,20,50,100">
 
-            <p:column headerText="AC" sortBy="#{interaction.ac}">
+            <p:column id="ac" headerText="AC" sortBy="#{interaction.ac}">
                     <h:outputText value="#{interaction.ac}" styleClass="#{changesController.isDeletedAc(interaction.ac)? 'intact-deleted' : ''}"/>
             </p:column>
-            <p:column>
+            <p:column id="ao">
                 <ui:include src="/curate/common_column_notifications.xhtml">
                     <ui:param name="annotatedObjectController" value="#{interactionController}"/>
                     <ui:param name="ao" value="#{interaction}"/>
                 </ui:include>
             </p:column>
-            <p:column headerText="Shortlabel" sortBy="#{interaction.shortLabel}">
+            <p:column id="shortLabel" headerText="Shortlabel" sortBy="#{interaction.shortLabel}">
                 <h:panelGroup rendered="#{not changesController.isDeletedAc(interaction.ac)}">
                     <p:commandLink onclick="load_int.show()" action="/curate/interaction?faces-redirect=true&amp;includeViewParams=true"
                                style="#{interaction.ac == null? 'color:blue' :''}"
@@ -45,16 +47,16 @@
                     <h:outputText value="#{interaction.shortLabel}" style="color:red; text-decoration:line-through"/>
                 </h:panelGroup>
             </p:column>
-            <p:column headerText="Experiment" rendered="#{showExperiments}">
+            <p:column id="experiment" headerText="Experiment" rendered="#{showExperiments}">
                 <h:outputText value="#{not empty interaction.experiments? interaction.experiments[0].shortLabel : ''}"/>
             </p:column>
-            <p:column headerText="Type">
+            <p:column id="type" headerText="Type">
                 <h:outputText value="#{interaction.cvInteractionType.shortLabel}"/>
             </p:column>
-            <p:column headerText="# Participants">
+            <p:column id="participants" headerText="# Participants">
                 <h:outputText value="#{interactionController.countParticipantsByInteraction(interaction)}"/>
             </p:column>
-            <p:column rendered="#{not readonly}" headerText="Actions">
+            <p:column id="actions" rendered="#{not readonly}" headerText="Actions">
                 <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
                                actionListener="#{changesController.markToDeleteInteraction(interaction, interaction.experiments)}"
                                update=":editorForm" rendered="#{not changesController.isDeletedAc(interaction.ac)}"/>

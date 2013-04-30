@@ -20,6 +20,8 @@
         </h:panelGroup>
 
         <p:dataTable var="experiment" value="#{value}"
+                     sortBy="#{experiment.ac}"
+                     sortOrder="ascending"
                      paginator="true"
                      paginatorAlwaysVisible="false"
                      rows="10" dynamic="#{lazy}" lazy="#{lazy}"
@@ -27,17 +29,17 @@
                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                      rowsPerPageTemplate="10,20,50,100"
                      rowStyleClass="#{experimentController.isAccepted(experiment)? 'ia-accepted' : experimentController.isToBeReviewed(experiment)? 'ia-to-be-reviewed' : 'ia-not-accepted'}">
-            <p:column headerText="AC" sortBy="#{experiment.ac}">
+            <p:column id="ac"  headerText="AC" sortBy="#{experiment.ac}">
                 <h:outputText value="#{experiment.ac}"
                               styleClass="#{changesController.isDeletedAc(experiment.ac)? 'intact-deleted' : ''}"/>
             </p:column>
-            <p:column>
+            <p:column id="ao">
                 <ui:include src="/curate/common_column_notifications.xhtml">
                     <ui:param name="annotatedObjectController" value="#{experimentController}"/>
                     <ui:param name="ao" value="#{experiment}"/>
                 </ui:include>
             </p:column>
-            <p:column headerText="Shortlabel" sortBy="#{experiment.shortLabel}">
+            <p:column id="sortLabel" headerText="Shortlabel" sortBy="#{experiment.shortLabel}">
                 <h:panelGroup rendered="#{not changesController.isDeletedAc(experiment.ac)}">
                     <p:commandLink onclick="load_exp.show()" action="#{curateController.edit(experiment)}"
                                    style="#{experiment.ac == null? 'color:blue' :''}"
@@ -47,7 +49,7 @@
                     <h:outputText value="#{experiment.shortLabel}" style="color:red; text-decoration:line-through"/>
                 </h:panelGroup>
             </p:column>
-             <p:column rendered="#{readonly}" headerText="Publication ID" sortBy="#{experiment.publication}">
+             <p:column id="pubAc" rendered="#{readonly}" headerText="Publication ID" sortBy="#{experiment.publication}">
                 <ot:separateConversationContext>
                     <h:link outcome="/curate/publication" value="#{experiment.publication.shortLabel}"
                             includeViewParams="true">
@@ -55,21 +57,21 @@
                     </h:link>
                 </ot:separateConversationContext>
             </p:column>
-            <p:column headerText="Interaction detection method">
+            <p:column id="intDetMeth" headerText="Interaction detection method">
                 <h:outputText value="#{experiment.cvInteraction != null? experiment.cvInteraction.shortLabel : ''}"/>
             </p:column>
-            <p:column headerText="Participant detection method">
+            <p:column id="partDetMeth" headerText="Participant detection method">
                 <h:outputText
                         value="#{experiment.cvIdentification != null? experiment.cvIdentification.shortLabel : ''}"/>
             </p:column>
-            <p:column headerText="Host organism">
+            <p:column id="hostOrg" headerText="Host organism">
                 <h:outputText
                         value="#{experiment.bioSource != null? experiment.bioSource.shortLabel : ''} (#{experiment.bioSource != null? experiment.bioSource.taxId : ''})"/>
             </p:column>
-            <p:column headerText="# Interactions">
+            <p:column id="interactions" headerText="# Interactions">
                 <h:outputText value="#{experimentController.countInteractionsByExperimentAc(experiment.ac)}"/>
             </p:column>
-            <p:column rendered="#{not readonly}" headerText="Actions">
+            <p:column id="actions" rendered="#{not readonly}" headerText="Actions">
                 <p:commandLink immediate="true" title="Mark to be deleted" styleClass="ui-icon ui-icon-closethick"
                                actionListener="#{changesController.markToDelete(experiment, publicationController.publication)}"
                                update=":editorForm"
