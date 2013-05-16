@@ -36,6 +36,7 @@ import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
+import uk.ac.ebi.intact.editor.controller.curate.util.ParticipantWrapperExperimentalRoleComparator;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
@@ -489,11 +490,19 @@ public class InteractionController extends ParameterizableObjectController {
         for ( Component component : components ) {
             participantWrappers.add( new ParticipantWrapper( component, getChangesController(), this ) );
         }
+
+        if (participantWrappers.size() > 0) {
+            //TODO: Improve the performance
+            //We sort the participants for avoiding confusion with the place that a new participant should be appeared.
+            Collections.sort(participantWrappers, new ParticipantWrapperExperimentalRoleComparator());
+        }
     }
 
     public void addParticipant(Component component) {
         interaction.addComponent(component);
-        participantWrappers.addFirst(new ParticipantWrapper( component, getChangesController(), this ));
+
+//        participantWrappers.addFirst(new ParticipantWrapper(component, getChangesController(), this));
+        participantWrappers.add(new ParticipantWrapper(component, getChangesController(), this));
 
         if (participantWrappers.size() > 0) {
             try {
@@ -501,6 +510,9 @@ public class InteractionController extends ParameterizableObjectController {
             } catch (Exception e) {
                 addErrorMessage("Problem updating shortLabel", e.getMessage());
             }
+            //TODO: Improve the performance
+            //We sort the participants for avoiding confusion with the place that a new participant should be appeared.
+            Collections.sort(participantWrappers, new ParticipantWrapperExperimentalRoleComparator());
 
         }
 

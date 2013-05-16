@@ -21,13 +21,17 @@
         <p:dataTable id="participantsTable" var="wrapper" value="#{value}"
                      sortBy="#{wrapper.experimentalRole}"
                      sortFunction="#{wrapper.sortByExperimentalRole}"
+                     sortOrder="ascending"
                      paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                      rowsPerPageTemplate="10,20,50,100"
                      rows="10" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="both"
-                     rowStyleClass="#{wrapper.participant.ac == null? 'intact-new' : wrapper.deleted? 'intact-deleted' : null}">
+                     rowStyleClass="#{wrapper.participant.ac == null? 'intact-new' : wrapper.deleted? 'intact-deleted' : null}"
+                     widgetVar="participantsTableWidget"
+                     >
 
             <ui:param name="participant" value="#{wrapper.participant}" />
             <ui:param name="interactor" value="#{participant.interactor}" />
+
             <p:column style="width:16px">
                 <p:rowToggler/>
             </p:column>
@@ -36,7 +40,10 @@
                 <h:outputText value="AC: #{participant.ac}"/>
             </p:rowExpansion>
 
-            <p:column id="shortLabel" headerText="Name" sortBy="#{interactor.shortLabel}">
+            <p:column id="shortLabel" headerText="Name"
+                      sortBy="#{interactor.shortLabel}"
+                      filterBy="#{interactor.shortLabel}"
+                      filterMatchMode="contains">
                 <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
                                value="#{interactor.shortLabel}" rendered="#{interactor != null and not changesController.isDeletedAc(participant.ac)}"
                                styleClass="#{participant.ac == null? 'intact-new' :''}"
@@ -67,7 +74,10 @@
                 </h:panelGroup>
             </p:column>
 
-            <p:column id="identity" headerText="Identity">
+            <p:column id="identity" headerText="Identity"
+                      sortBy="#{interactionController.getInteractorIdentity(participant.interactor)}"
+                      filterBy="#{interactionController.getInteractorIdentity(participant.interactor)}"
+                      filterMatchMode="contains">
                 <h:outputText id="participantId" value="#{interactionController.getInteractorIdentity(participant.interactor)}"
                               styleClass="#{changesController.isDeletedAc(participant.ac)? 'intact-deleted' : ''}"/>
             </p:column>
@@ -81,7 +91,11 @@
                               rendered="#{value.size() ge 5}"/>
             </p:column>
 
-            <p:column id="expRoleCol" headerText="Experimental role" sortFunction="#{wrapper.sortByExperimentalRole}" sortBy="#{wrapper.experimentalRole}">
+            <p:column id="expRoleCol" headerText="Experimental role"
+                      sortFunction="#{wrapper.sortByExperimentalRole}"
+                      sortBy="#{wrapper.experimentalRole}"
+                      filterBy="#{wrapper.experimentalRole}"
+                      filterMatchMode="contains">
 
                 <h:selectOneMenu id="expRoleCv" value="#{wrapper.experimentalRole}" rendered="#{value.size() lt 5}" disabled="#{interactionController.isParticipantDisabled()}">
                     <f:selectItems value="#{cvObjectService.experimentalRoleSelectItems}" />
@@ -171,15 +185,6 @@
                                    rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
                 </div>
             </p:column>
-
-            <!--<p:rowExpansion>-->
-            <!--<h:panelGroup>-->
-
-            <!---->
-            <!--</h:panelGroup>-->
-
-            <!--</p:rowExpansion>-->
-
         </p:dataTable>
 
         <ia:loadingDialog widgetVar="load_participant" message="Loading participant..."/>
