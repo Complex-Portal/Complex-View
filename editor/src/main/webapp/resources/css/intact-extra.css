@@ -170,11 +170,11 @@ border-right:0 none !important;
 
 .top-actions {
     text-align: right;
-    border: 1px solid #BFBFBF;
+    border: 1px solid #bfbfbf;
     border-left: 0;
     color: #222222;
     padding-top: 1px;
-    height: 29px;
+    height: 33px;
     min-width: 400px;
 }
 
@@ -365,6 +365,15 @@ border-right:0 none !important;
     padding: 4px 4px 4px 4px !important;
 }
 
+/** fieldset **/
+.ui-fieldset .ui-fieldset-legend a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.ui-fieldset .ui-fieldset-legend a:hover {
+    text-decoration: underline;
+}
 
 /** menu **/
 .wijmo-wijmenu {
@@ -372,3 +381,5 @@ border-right:0 none !important;
     padding: 0;
     border-right: 0;
 }
+
+

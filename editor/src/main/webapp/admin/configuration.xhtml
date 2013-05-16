@@ -12,7 +12,7 @@
         <p:panel header="Look &amp; Feel">
             <h:panelGrid columns="3">
                 <h:outputLabel for="themeSel" value="Default theme: "/>
-                <h:selectOneMenu id="themeSel" value="#{editorConfig.theme}" >
+                <p:selectOneMenu id="themeSel" value="#{editorConfig.theme}" >
                     <f:selectItem itemLabel="Black-Tie" itemValue="black-tie"/>
                     <f:selectItem itemLabel="Casablanca" itemValue="casablanca"/>
                     <f:selectItem itemLabel="EBI" itemValue="ebi"/>
@@ -20,7 +20,7 @@
                     <f:selectItem itemLabel="Sunny" itemValue="sunny"/>
                     <f:selectItem itemLabel="UI-Lightness" itemValue="ui-lightness"/>
                     <f:selectItem itemLabel="Aristo" itemValue="aristo"/>
-                </h:selectOneMenu>
+                </p:selectOneMenu>
             </h:panelGrid>
 
             <p:commandButton value="Change" ajax="false" actionListener="#{applicationInfo.persistConfig}"/>
@@ -72,9 +72,9 @@
                 <p:inputText id="cvPrefixTxt" value="#{intactConfig.localCvPrefix}" converter="trimmingConverter"/>
 
                 <h:outputLabel for="institutionSel" value="Default institution: "/>
-                <h:selectOneMenu id="institutionSel" value="#{intactConfig.defaultInstitution}">
+                <p:selectOneMenu id="institutionSel" value="#{intactConfig.defaultInstitution}">
                     <f:selectItems value="#{applicationInfo.availableInstitutions}"/>
-                </h:selectOneMenu>
+                </p:selectOneMenu>
 
                 <h:outputLabel for="expLabelTxt" value="Auto-update experiment label: "/>
                 <p:selectBooleanCheckbox id="expLabelTxt" value="#{intactConfig.autoUpdateExperimentLabel}"/>

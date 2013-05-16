@@ -16,7 +16,7 @@
                  paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                  rowsPerPageTemplate="10,25,50"
                  rowStyleClass="#{publicationController.calculateStatusStyle(publication)}">
-        <p:column headerText="Publication ID" sortBy="#{publication.shortLabel}">
+        <p:column headerText="Pub. ID " sortBy="#{publication.shortLabel}">
             <ot:separateConversationContext>
                 <h:link outcome="/curate/publication" value="#{publication.shortLabel}" includeViewParams="true">
                     <f:param name="ac" value="#{publication.ac}"/>
@@ -29,7 +29,7 @@
                 <ui:param name="ao" value="#{publication}"/>
             </ui:include>
         </p:column>
-        <p:column headerText="Title" sortBy="#{publication.fullName}">
+        <p:column headerText="Title" sortBy="#{publication.fullName}" style="width: 50%;">
             <h:outputText value="#{publication.fullName}"/>
         </p:column>
         <p:column headerText="# Exps.">

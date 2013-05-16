@@ -29,11 +29,10 @@
 <f:facet name="legend">
     <h:outputText>Experiment: </h:outputText>
     <p:commandLink id="goBackExp"
-                   value="#{experimentDetailedViewController.experimentWrapper.experiment.shortLabel}"
+                   value="#{experimentDetailedViewController.experimentWrapper.experiment.shortLabel}  (#{experimentDetailedViewController.experimentWrapper.experiment.ac})"
                    action="/curate/experiment?faces-redirect=true&amp;includeViewParams=true"
-                   style="text-decoration-line: replace-underline"
                    ajax="false"/>
-    <h:outputText value=" (#{experimentDetailedViewController.experimentWrapper.experiment.ac})"/>
+    <h:outputText value=""/>
 </f:facet>
 
 
@@ -91,29 +90,13 @@
                                    onclick="load_int.show()"
                                    action="/curate/interaction?faces-redirect=true&amp;includeViewParams=true"
                                    styleClass="#{interaction.shortLabel}"
-                                   value="#{interaction.shortLabel}" ajax="false">
+                                   value="#{interaction.shortLabel}  (#{interaction.ac})" ajax="false">
                         <f:setPropertyActionListener value="#{interaction}"
                                                      target="#{interactionController.interaction}"/>
                     </p:commandLink>
 
-                    <h:outputText value=" (#{interaction.ac})"/>
-
                 </f:facet>
 
-
-                <!--<h:panelGroup>-->
-                <!--<p>-->
-                <!--<h:panelGroup rendered="#{experimentDetailedViewController.figureLegendForInteraction(interaction) != null}">-->
-                <!--Fig. legend: <h:outputText styleClass="fig-legend-value #{interaction.shortLabel}"-->
-                <!--value="#{experimentDetailedViewController.figureLegendForInteraction(interaction)}"/>-->
-                <!--<br/>-->
-                <!--</h:panelGroup>-->
-                <!--<h:panelGroup rendered="#{experimentDetailedViewController.commentForInteraction(interaction) != null}">-->
-                <!--Comment: <h:outputText styleClass="comment-value #{interaction.shortLabel}"-->
-                <!--value="#{experimentDetailedViewController.commentForInteraction(interaction)}"/>-->
-                <!--<br/>-->
-                <!--</h:panelGroup>-->
-                <!--</p>-->
                 <p:accordionPanel id="interactionsAccPanel" autoHeight="false" multiple="true" activeIndex="0,1">
                     <p:tab title="Participants: #{interaction.components.size()}">
 
@@ -172,7 +155,7 @@
                         <p:dataTable id="sumViewAnnotations" var="annotation"
                                      value="#{interaction.annotations}">
 
-                            <p:column headerText="Topic">
+                            <p:column headerText="Topic" style="width: 20%">
                                 <h:outputText id="annotation-topic"
                                               value="#{annotation.cvTopic != null ? annotation.cvTopic.shortLabel : ''}"
                                               style="white-space: nowrap"/>

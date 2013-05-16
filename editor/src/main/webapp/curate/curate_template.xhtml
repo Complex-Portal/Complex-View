@@ -49,13 +49,12 @@
 </ui:define>
 
 <ui:define name="actionsBar">
-
         <div class="ui-widget-content top-actions">
             <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
             <ui:insert name="topActionsPanel"/>
 
             <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null}">
-                <h:panelGroup id="topSavePanel" style="padding-left: 10px; padding-right: 10px">
+                <h:panelGroup id="topSavePanel" style="padding: 10px">
                     <p:commandButton type="button" id="topSaveButton" value="Save" styleClass="important-button"
                                      onclick="save(); return false"/>
                     <!--<p:commandButton value="save 2" actionListener="#{annotatedObjectController.doSave}" ajax="false" />-->
@@ -247,8 +246,8 @@
                 <p:inputText id="newPmid" value="#{publicationController.identifierToImport}"
                              converter="trimmingConverter"
                              onkeyup="handleReturnKey(event, 'autoCompleteBtn')"/>
-                <p:tooltip for="newPmid" value="Type a PMID and click on auto-complete" showDelay="2000"
-                           showEvent="focus" hideEvent="blur"/>
+                <!--<p:tooltip for="newPmid" value="Type a PMID and click on auto-complete" showDelay="2000"-->
+                           <!--showEvent="focus" hideEvent="blur"/>-->
 
 
                 <p:commandButton id="autoCompleteBtn"
