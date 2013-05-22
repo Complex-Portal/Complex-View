@@ -1,6 +1,5 @@
 package uk.ac.ebi.intact.view.webapp.it;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -19,7 +18,7 @@ public class HomeIT extends IntactViewIT {
         goToTheStartPage();
 
         // Then: I expect the Interactions tab to be active and display the total number of interactions in the database
-        WebElement interactionsTabLink = driver.findElement(By.linkText("Interactions (101)"));
+        WebElement interactionsTabLink = driver.findElement(By.linkText("Interactions (98)"));
         assertThat(interactionsTabLink, is(notNullValue()));
 
 	}

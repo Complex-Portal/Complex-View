@@ -17,7 +17,7 @@ public class GoBrowserIT extends IntactViewIT {
         clickOnResponseToStress();
 
         assertThat(numberOfResultsDisplayed(), is(equalTo(19)));
-        assertThat(searchQuery(), is(equalTo("17461779 AND go_expanded_id:\"GO:0006950\"")));
+        assertThat(searchQuery(), is(equalTo("(  17461779  ) AND pxref:\"GO:0006950\"")));
 	}
 
 
@@ -27,7 +27,7 @@ public class GoBrowserIT extends IntactViewIT {
 
     private void expandAndClickOnNode(int parent, int node) {
         expandNode(parent);
-        
+
         clickOnNode(parent+"_"+node);
     }
 
@@ -36,12 +36,12 @@ public class GoBrowserIT extends IntactViewIT {
     }
 
     private void expandNode(int node) {
-        driver.findElement(By.xpath("//li[@id='mainPanels:goTree_node_"+node+"']/div/span/span")).click();
+        driver.findElement(By.xpath("//li[@id='mainPanels:goTree:"+node+"']/div/span/span")).click();
         waitUntilLoadingIsComplete();
     }
 
     private void clickOnNode(String nodeId) {
-        driver.findElement(By.xpath("//li[@id='mainPanels:goTree_node_"+nodeId+"']/div/span/span[2]")).click();
+        driver.findElement(By.xpath("//li[@id='mainPanels:goTree:"+nodeId+"']/div/span/span[2]")).click();
         waitUntilLoadingIsComplete();
     }
 

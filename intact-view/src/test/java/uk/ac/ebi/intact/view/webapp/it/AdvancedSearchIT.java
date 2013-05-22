@@ -17,12 +17,12 @@ public class AdvancedSearchIT extends IntactViewIT {
 
         // When: I query 11554746 using Publication ID and click on the Add & Search button
         showAdvancedFields();
-        selectAdvancedFieldByLabel("Pubmed Id");
+        selectAdvancedFieldByLabel("Publication id (Ex: 10837477)");
         typeAdvancedQuery("11554746");
         clickOnAddAndSearch();
 
         // Then: I expect 4 interactions in total
-        assertThat(numberOfResultsDisplayed(), is(equalTo(4)));
+        assertThat(numberOfResultsDisplayed(), is(equalTo(3)));
 	}
 
     @Test
@@ -32,7 +32,7 @@ public class AdvancedSearchIT extends IntactViewIT {
 
         // When: I choose Detection Method and browse the tree selecting "imaging technique"
         showAdvancedFields();
-        selectAdvancedFieldByLabel("Interaction detection method");
+        selectAdvancedFieldByLabel("Interaction detection method (Ex: pull down)");
         clickOnBrowseIcon();
         selectImagingTechniqueInDialog();
         clickOnAddAndSearch();
@@ -53,8 +53,8 @@ public class AdvancedSearchIT extends IntactViewIT {
     }
 
     private void showAdvancedFields() {
-        driver.findElement(By.id(":intactForm:addFieldBtn")).click();
-        waitUntilElementIsVisible(By.id(":intactForm:newQuerytxt"));
+        driver.findElement(By.id("addFieldBtn")).click();
+        waitUntilElementIsVisible(By.id("newQuerytxt"));
     }
 
     private void changeSelectToLabel(By element, String label) {
@@ -67,10 +67,11 @@ public class AdvancedSearchIT extends IntactViewIT {
     }
 
     private void selectImagingTechniqueInDialog()  {
-        driver.findElement(By.xpath("//li[@id='ontologyTree_node_0']/div/span/span")).click();
+        //We need wait to avoid  "Element is not currently visible exception"
+        sleep(100);
+        driver.findElement(By.xpath("//li[@id='ontologyTree:0']/div/span/span")).click();
         waitUntilElementIsVisible(By.id("ontologyTree:0_1:termTxt"));
         driver.findElement(By.id("ontologyTree:0_1:termTxt")).click();
-
         waitUntilElementHasValue(By.id("newQuerytxt"), "MI:0428");
     }
 

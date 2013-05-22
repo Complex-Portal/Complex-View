@@ -18,7 +18,7 @@ public class SearchIT extends IntactViewIT {
         search("detmethod:\"2 hybrid\"");
 
         // Then: I expect to obtain the 2 interactions that display "two hybrid" as detection method
-        assertThat(numberOfResultsDisplayed(), is(equalTo(2)));
+        assertThat(numberOfResultsDisplayed(), is(equalTo(1)));
 	}
 
     @Test
@@ -45,7 +45,7 @@ public class SearchIT extends IntactViewIT {
     public void searchUsingAScoreRange() throws Exception {
         goToTheStartPage();
         search("intact-miscore:[0.5 TO 1]");
-        assertThat(numberOfResultsDisplayed(), is(equalTo(6)));
+        assertThat(numberOfResultsDisplayed(), is(equalTo(5)));
     }
 
 }

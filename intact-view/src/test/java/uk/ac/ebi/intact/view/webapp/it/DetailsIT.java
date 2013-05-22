@@ -2,7 +2,6 @@ package uk.ac.ebi.intact.view.webapp.it;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import uk.ac.ebi.intact.model.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -20,7 +19,7 @@ public class DetailsIT extends IntactViewIT {
         Publication publication = experiment.getPublication();
 
         addAnnotation(experiment, publication, "Cancer dataset", createTopic(CvTopic.DATASET_MI_REF, CvTopic.DATASET));
-        
+
         getCorePersister().saveOrUpdate(interaction);
 
         // When: I go to the interaction details page
@@ -28,7 +27,7 @@ public class DetailsIT extends IntactViewIT {
 
         // Then: I don't expect to see those annotations in the experiment
         assertThat(driver.findElements(By.linkText(CvTopic.DATASET)).size(), is(equalTo(1)));
-        assertThat(driver.findElement(By.id("mainPanels:publicationAnnotTable:publicationAnnotTable:0:annotText")).getText(), is(equalTo("Cancer dataset")));
+        assertThat(driver.findElement(By.id("mainPanels:j_id_18r:publicationAnnotTable:publicationAnnotTable:0:annotText")).getText(), is(equalTo("Cancer dataset")));
 	}
 
     @Test
@@ -50,7 +49,7 @@ public class DetailsIT extends IntactViewIT {
         goToInteractionDetailsPage(interaction.getAc());
 
         // Then: we expect only one row to be shown in the publication annotations - "journal", "author-list" and "publication year" should not be shown as they have their own labels
-        assertThat(rowCountForDataTableWithId("mainPanels:publicationAnnotTable:publicationAnnotTable"), is(equalTo(1)));
+        assertThat(rowCountForDataTableWithId("mainPanels:j_id_18r:publicationAnnotTable:publicationAnnotTable"), is(equalTo(1)));
     }
 
     private CvTopic createTopic(String topicMi, String topicLabel) {

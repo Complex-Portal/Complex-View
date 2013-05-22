@@ -4,7 +4,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsNot;
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -13,7 +12,6 @@ import org.openqa.selenium.support.ui.Select;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class InteractionsIT extends IntactViewIT {
 
@@ -34,7 +32,7 @@ public class InteractionsIT extends IntactViewIT {
 
         // Then: I will obtain 101 results, so the MITAB based formats should be enabled and the MIXML based formats should be disabled
         // and the XGMML format should be disabled
-        assertThat(numberOfResultsDisplayed(), is(equalTo(101)));
+        assertThat(numberOfResultsDisplayed(), is(equalTo(98)));
 
         for (String mitabBasedFormat : MITAB_BASED_FORMATS) {
             assertThat(mitabBasedFormat, isEnabled(exportFormatSelect));
@@ -59,7 +57,7 @@ public class InteractionsIT extends IntactViewIT {
 
         // Then: I will obtain 10 results, so the MITAB based formats should be enabled and the MIXML based formats should be disabled
         // and the XGMML format should be enabled
-        assertThat(numberOfResultsDisplayed(), is(equalTo(10)));
+        assertThat(numberOfResultsDisplayed(), is(equalTo(9)));
 
         for (String mitabBasedFormat : MITAB_BASED_FORMATS) {
             assertThat(mitabBasedFormat, isEnabled(exportFormatSelect));
@@ -86,7 +84,7 @@ public class InteractionsIT extends IntactViewIT {
 
         // Then: I will obtain 4 results, so the MITAB based formats should be enabled and the MIXML based formats should be enabled
         // and the XGMML format should be enabled
-        assertThat(numberOfResultsDisplayed(), is(equalTo(4)));
+        assertThat(numberOfResultsDisplayed(), is(equalTo(3)));
 
         for (String mitabBasedFormat : MITAB_BASED_FORMATS) {
             assertThat(mitabBasedFormat, isEnabled(exportFormatSelect));

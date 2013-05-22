@@ -91,7 +91,7 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
             }
         });
     }
-    
+
     protected void waitUntilElementHasValue(final By by, final String value) {
         wait.until(new ExpectedCondition<Boolean>() {
             public Boolean apply(WebDriver webDriver) {
@@ -107,7 +107,7 @@ public abstract class IntactViewIT extends IntactBasicTestCase {
     }
 
     protected void goToInteractionsTab() {
-        driver.findElement(By.linkText("Interactions (101)")).click();
+        driver.findElement(By.linkText("Interactions (98)")).click();
         waitUntilLoadingIsComplete();
     }
 
