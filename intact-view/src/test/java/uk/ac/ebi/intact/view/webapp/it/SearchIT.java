@@ -5,7 +5,6 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class SearchIT extends IntactViewIT {
 
@@ -31,14 +30,6 @@ public class SearchIT extends IntactViewIT {
 
         // Then: I expect to obtain 0 interactions
         assertThat(numberOfResultsDisplayed(), is(equalTo(0)));
-    }
-
-    @Test
-    public void afterSearchQueryFieldsShowsQuery() throws Exception {
-        goToTheStartPage();
-        search("Traf5");
-        assertThat(searchQuery(), is(equalTo("Traf5")));
-        assertTrue(driver.getCurrentUrl().contains("intact/query/Traf5"));
     }
 
     @Test

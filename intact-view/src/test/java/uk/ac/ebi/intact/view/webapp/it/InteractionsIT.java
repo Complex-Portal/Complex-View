@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
 
 public class InteractionsIT extends IntactViewIT {
 
-    private final String[] MITAB_BASED_FORMATS = new String[]{"MI-TAB 2.5", "MI-TAB 2.5 (Expanded)"};
+    private final String[] MITAB_BASED_FORMATS = new String[]{"MI-TAB 2.5", "MI-TAB 2.6", "MI-TAB 2.6"};
     private final String[] MI_XML_BASED_FORMATS = new String[]{"MI-XML 2.5.3", "MI-XML 2.5.4", "MI-XML 2.5(HTML view)", "BioPAX (Level 3)", "BioPAX (Level 2)",
             "RDF/XML", "RDF/XML (Abbrev)", "RDF (N3)", "RDF (N-Triples)", "RDF (Turtle)"};
     private final String XGMML = "XGMML (Cytoscape)";
@@ -31,7 +31,7 @@ public class InteractionsIT extends IntactViewIT {
         Select exportFormatSelect = new Select(driver.findElement(By.id("mainPanels:exportFormatSelect")));
 
         // Then: I will obtain 101 results, so the MITAB based formats should be enabled and the MIXML based formats should be disabled
-        // and the XGMML format should be disabled
+        // and the XGMML format should be enable after the 4.0 version (that supports streaming)
         assertThat(numberOfResultsDisplayed(), is(equalTo(98)));
 
         for (String mitabBasedFormat : MITAB_BASED_FORMATS) {
@@ -42,7 +42,7 @@ public class InteractionsIT extends IntactViewIT {
             assertThat(miXmlBasedFormat, isDisabled(exportFormatSelect));
         }
 
-        assertThat(XGMML, isDisabled(exportFormatSelect));
+        assertThat(XGMML, isEnabled(exportFormatSelect));
     }
 
     @Test
