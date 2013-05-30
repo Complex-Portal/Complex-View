@@ -13,7 +13,7 @@
 
     <!-- Needed by Spring to find the annotations in the code -->
     <context:component-scan base-package="uk.ac.ebi.intact.editor"/>
-    
+
     <bean name="editorConfig" class="uk.ac.ebi.intact.editor.config.EditorConfig">
         <property name="buildVersion" value="${pom.version}"/>
         <property name="buildTimestamp" value="${timestamp}"/>
@@ -24,6 +24,9 @@
         <property name="googlePassword" value="${google.password}"/>
         <property name="theme" value="ui-lightness" />
     </bean>
+
+    <!-- Chebi -->
+    <bean id="chebiService" class="uk.ac.ebi.intact.dbupdate.bioactiveentity.importer.BioActiveEntityServiceImpl"/>
 
     <!-- Uniprot -->
     <bean id="uniprotService" class="uk.ac.ebi.intact.uniprot.service.UniprotRemoteService"/>
@@ -79,5 +82,5 @@
         <property name="intactImexAssigner" ref="intactImexAssigner"/>
         <property name="imexUpdateConfig" ref="imexUpdateConfig"/>
     </bean>
-   
+
 </beans>

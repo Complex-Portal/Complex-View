@@ -29,7 +29,7 @@
         <core.version>2.6.2</core.version>
         <spring.version>3.1.2.RELEASE</spring.version>
         <bridges.version>2.1.7</bridges.version>
-        <dbupdate.version>2.1.4</dbupdate.version>
+        <dbupdate.version>2.1.5-SNAPSHOT</dbupdate.version>
         <psimi.version>1.8.3</psimi.version>
         <dataexchange.version>2.1.7</dataexchange.version>
         <h2.version>1.3.162</h2.version>
@@ -367,6 +367,18 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dbupdate</groupId>
             <artifactId>intact-proteins-update</artifactId>
+            <version>${dbupdate.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>uk.ac.ebi.intact.core</groupId>
+                    <artifactId>intact-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.intact.dbupdate</groupId>
+            <artifactId>intact-bioactiveentities-update</artifactId>
             <version>${dbupdate.version}</version>
             <exclusions>
                 <exclusion>

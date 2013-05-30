@@ -25,12 +25,15 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
 import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
 import uk.ac.ebi.intact.core.persister.IntactCore;
+import uk.ac.ebi.intact.dbupdate.bioactiveentity.importer.BioActiveEntityService;
+import uk.ac.ebi.intact.dbupdate.bioactiveentity.importer.BioActiveEntityServiceException;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriter;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriterImpl;
 import uk.ac.ebi.intact.dbupdate.prot.report.UpdateReportHandler;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
+import uk.ac.ebi.intact.editor.controller.curate.util.CheckIdentifier;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.XrefUtils;
 import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
@@ -52,11 +55,11 @@ import java.util.*;
  * @version $Id$
  */
 @Controller
-@Scope( "conversation.access" )
-@ConversationName( "general" )
+@Scope("conversation.access")
+@ConversationName("general")
 public class ParticipantImportController extends BaseController {
 
-    private static final Log log = LogFactory.getLog( ParticipantImportController.class );
+    private static final Log log = LogFactory.getLog(ParticipantImportController.class);
 
     @Autowired
     private UniprotRemoteService uniprotRemoteService;
@@ -66,6 +69,9 @@ public class ParticipantImportController extends BaseController {
 
     @Autowired
     private BioSourceService bioSourceService;
+
+    @Autowired
+    private BioActiveEntityService bioActiveEntityService;
 
     @Autowired
     private InteractionController interactionController;
@@ -94,7 +100,7 @@ public class ParticipantImportController extends BaseController {
         this.proteinService.setBiosourceService(bioSourceService);
     }
 
-    public void importParticipants( ActionEvent evt ) {
+    public void importParticipants(ActionEvent evt) {
         importCandidates = new ArrayList<ImportCandidate>();
         queriesNoResults = new ArrayList<String>();
 
@@ -118,9 +124,9 @@ public class ParticipantImportController extends BaseController {
             // only import if the query has more than 4 chars (to avoid massive queries) {
 
             if (participantToImport.length() < 4) {
-                queriesNoResults.add(participantToImport+" (short query - less than 4 chars.)");
+                queriesNoResults.add(participantToImport + " (short query - less than 4 chars.)");
             } else if (participantToImport.contains("*")) {
-                queriesNoResults.add(participantToImport+" (wildcards not allowed)");
+                queriesNoResults.add(participantToImport + " (wildcards not allowed)");
             } else {
                 Set<ImportCandidate> candidates = importParticipant(participantToImport);
 
@@ -148,53 +154,87 @@ public class ParticipantImportController extends BaseController {
     }
 
 
-
     public Set<ImportCandidate> importParticipant(String participantToImport) {
         if (participantToImport == null) {
             addErrorMessage("No participant to import", "Provide one or more accessions");
             return Collections.EMPTY_SET;
         }
-        log.debug( "Importing participant: "+ participantToImport );
+        log.debug("Importing participant: " + participantToImport);
 
         Set<ImportCandidate> candidates = importFromIntAct(participantToImport.toUpperCase());
 
-        if (candidates.isEmpty()) {
-            Set<ImportCandidate> uniprotCandidates = null;
-            try {
-                uniprotCandidates = importFromUniprot(participantToImport.toUpperCase());
-            } catch (ProteinServiceException e) {
-                addErrorMessage("Cannot import participants", "Problem fetching participant: "+participantToImport);
-                handleException(e);
-                return Collections.EMPTY_SET;
-            }
+        if (candidates.isEmpty()) {     //It is not a IntAct one
 
-            // only pre-select those that match the query
-            for (ImportCandidate candidate : uniprotCandidates) {
-                candidate.setSelected(false);
+            CandidateType candidateType = detectCandidate(participantToImport.toUpperCase());
 
-                for (String primaryAc : candidate.getPrimaryAcs()) {
-                    if (candidate.getQuery().equalsIgnoreCase(primaryAc)) {
-                        candidate.setSelected(true);
-                        break;
+            switch (candidateType) {
+                case BIO_ACTIVE_ENTITY:
+                    Set<ImportCandidate> chebiCandidates = null;
+
+                    try {
+                        chebiCandidates = importFromChebi(participantToImport.toUpperCase());
+                    } catch (BioActiveEntityServiceException e) {
+                        addErrorMessage("Cannot import participants", "Problem fetching participant: " + participantToImport);
+                        handleException(e);
+                        return Collections.EMPTY_SET;
                     }
-                    // for feature chains, in IntAct, we add the parent uniprot ac before the chain id so feature chains are never pre-selected
-                    else if (candidate.isChain() && primaryAc.toUpperCase().contains(FEATURE_CHAIN)){
-                        int indexOfChain = primaryAc.indexOf(FEATURE_CHAIN);
+                    candidates.addAll(chebiCandidates);
+                    break;
+                case NUCLEIC_ACID:
+                    //TODO: For the future
+                    break;
+                case PROTEIN:
+                    //TODO: Review
+                    Set<ImportCandidate> uniprotCandidates = null;
 
-                        String chain_ac = primaryAc.substring(indexOfChain);
+                    try {
+                        uniprotCandidates = importFromUniprot(participantToImport.toUpperCase());
+                    } catch (ProteinServiceException e) {
+                        addErrorMessage("Cannot import participants", "Problem fetching participant: " + participantToImport);
+                        handleException(e);
+                        return Collections.EMPTY_SET;
+                    }
 
-                        if (candidate.getQuery().equalsIgnoreCase(chain_ac)) {
-                            candidate.setSelected(true);
-                            break;
+                    // only pre-select those that match the query
+                    for (ImportCandidate candidate : uniprotCandidates) {
+                        candidate.setSelected(false);
+
+                        for (String primaryAc : candidate.getPrimaryAcs()) {
+                            if (candidate.getQuery().equalsIgnoreCase(primaryAc)) {
+                                candidate.setSelected(true);
+                                break;
+                            }
+                            // for feature chains, in IntAct, we add the parent uniprot ac before the chain id so feature chains are never pre-selected
+                            else if (candidate.isChain() && primaryAc.toUpperCase().contains(FEATURE_CHAIN)) {
+                                int indexOfChain = primaryAc.indexOf(FEATURE_CHAIN);
+
+                                String chain_ac = primaryAc.substring(indexOfChain);
+
+                                if (candidate.getQuery().equalsIgnoreCase(chain_ac)) {
+                                    candidate.setSelected(true);
+                                    break;
+                                }
+                            }
                         }
                     }
-                }
+
+                    candidates.addAll(uniprotCandidates);
+                    break;
             }
 
-            candidates.addAll(uniprotCandidates);
         }
 
         return candidates;
+    }
+
+    private CandidateType detectCandidate(String candidateId) {
+        if (CheckIdentifier.checkChebiId(candidateId)) {
+            return CandidateType.BIO_ACTIVE_ENTITY;
+        } else if (CheckIdentifier.checkEnsembleId(candidateId)) {
+            return CandidateType.NUCLEIC_ACID;
+        } else { //If the identifier is not one of the previous we suppose that is a UniprotKB
+            return CandidateType.PROTEIN;
+        }
     }
 
     private Set<ImportCandidate> importFromIntAct(String participantToImport) {
@@ -241,7 +281,6 @@ public class ParticipantImportController extends BaseController {
     }
 
 
-
     private Set<ImportCandidate> importFromUniprot(String participantToImport) throws ProteinServiceException {
         Set<ImportCandidate> candidates = new HashSet<ImportCandidate>();
 
@@ -256,6 +295,20 @@ public class ParticipantImportController extends BaseController {
 
         return candidates;
     }
+
+
+    private Set<ImportCandidate> importFromChebi(String participantToImport) throws BioActiveEntityServiceException {
+        Set<ImportCandidate> candidates = new HashSet<ImportCandidate>();
+
+        final SmallMolecule smallMolecule = bioActiveEntityService.getBioEntityByChebiId(participantToImport);
+
+        ImportCandidate candidate = new ImportCandidate(participantToImport, smallMolecule);
+        candidate.setSource("chebi");
+        candidates.add(candidate);
+
+        return candidates;
+    }
+
 
     private ImportCandidate toImportCandidate(String participantToImport, Interactor interactor) {
         ImportCandidate candidate = new ImportCandidate(participantToImport, interactor);
@@ -295,27 +348,27 @@ public class ParticipantImportController extends BaseController {
 //            interactor = toProtein(candidate);
 //        }
 
-        if (cvExperimentalRole == null || cvBiologicalRole == null){
+        if (cvExperimentalRole == null || cvBiologicalRole == null) {
             CvObjectService cvObjectService = (CvObjectService) getSpringContext().getBean("cvObjectService");
-            
-            if (cvExperimentalRole == null){
+
+            if (cvExperimentalRole == null) {
                 cvExperimentalRole = cvObjectService.getDefaultExperimentalRole();
             }
 
-            if (cvBiologicalRole == null){
+            if (cvBiologicalRole == null) {
                 cvBiologicalRole = cvObjectService.getDefaultBiologicalRole();
             }
         }
-        
+
         Component component = new Component(IntactContext.getCurrentInstance().getInstitution(),
-                interaction, interactor, cvExperimentalRole, cvBiologicalRole );
+                interaction, interactor, cvExperimentalRole, cvBiologicalRole);
         component.setExpressedIn(expressedIn);
         component.setStoichiometry(stoichiometry);
 
-        if (candidate.isChain() || candidate.isIsoform()){
+        if (candidate.isChain() || candidate.isIsoform()) {
             Collection<String> parentAcs = new ArrayList<String>();
 
-            if (interaction.getAc() != null){
+            if (interaction.getAc() != null) {
                 parentAcs.add(interaction.getAc());
 
                 addParentAcsTo(parentAcs, interaction);
@@ -335,27 +388,26 @@ public class ParticipantImportController extends BaseController {
 
     /**
      * Add all the parent acs of this interaction
+     *
      * @param parentAcs
      * @param inter
      */
     protected void addParentAcsTo(Collection<String> parentAcs, Interaction inter) {
-        if (inter.getAc() != null){
+        if (inter.getAc() != null) {
             parentAcs.add(inter.getAc());
         }
 
-        if (IntactCore.isInitialized(inter.getExperiments()) && !inter.getExperiments().isEmpty()){
-            for (Experiment exp : inter.getExperiments()){
+        if (IntactCore.isInitialized(inter.getExperiments()) && !inter.getExperiments().isEmpty()) {
+            for (Experiment exp : inter.getExperiments()) {
                 interactionController.addParentAcsTo(parentAcs, exp);
             }
-        }
-        else if (interactionController.getExperiment() != null){
+        } else if (interactionController.getExperiment() != null) {
             Experiment exp = interactionController.getExperiment();
             interactionController.addParentAcsTo(parentAcs, exp);
-        }
-        else if (!IntactCore.isInitialized(inter.getExperiments())){
+        } else if (!IntactCore.isInitialized(inter.getExperiments())) {
             Collection<Experiment> experiments = IntactCore.ensureInitializedExperiments(inter);
 
-            for (Experiment exp : experiments){
+            for (Experiment exp : experiments) {
                 interactionController.addParentAcsTo(parentAcs, exp);
             }
         }
@@ -368,9 +420,8 @@ public class ParticipantImportController extends BaseController {
         if (candidate.isIsoform() || candidate.isChain()) {
             UniprotProteinTranscript proteinTranscript = (UniprotProteinTranscript) candidate.getUniprotProtein();
 
-            protein = proteinService.getProteinTranscriptFromUniprotEntry(proteinTranscript, "?"+proteinTranscript.getMasterProtein().getPrimaryAc());
-        }
-        else {
+            protein = proteinService.getProteinTranscriptFromUniprotEntry(proteinTranscript, "?" + proteinTranscript.getMasterProtein().getPrimaryAc());
+        } else {
             UniprotProtein uniprotProtein = (UniprotProtein) candidate.getUniprotProtein();
             protein = proteinService.getMasterProteinFromUniprotEntry(uniprotProtein);
         }
