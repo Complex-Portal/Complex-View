@@ -95,11 +95,23 @@
                 </iv:panelLabelAndMessage>
 
                 <iv:panelLabelAndMessage label="Interaction Detection Method:" labelStyleClass="textLabel">
-                    <iv:cvPopup cv="#{experiment.cvInteraction}"/>
+                    <p:commandLink id="interaction_detection_method" type="button" onclick="interactionDetectionMethodDlg.show();" value="#{experiment.cvInteraction.shortLabel}" />
+
+                    <p:dialog widgetVar="interactionDetectionMethodDlg" header="Interaction detection method: #{experiment.cvInteraction.shortLabel}"
+                              height="400" width="750">
+
+                        <iv:cvDetails cv="#{experiment.cvInteraction}"/>
+                    </p:dialog>
                 </iv:panelLabelAndMessage>
 
                 <iv:panelLabelAndMessage label="Participant Identification Method:" labelStyleClass="textLabel">
-                    <iv:cvPopup cv="#{experiment.cvIdentification}"/>
+                    <p:commandLink id="participant_identification_method" type="button" onclick="participantIdentMethodDlg.show();" value="#{experiment.cvIdentification.shortLabel}" />
+
+                    <p:dialog widgetVar="participantIdentMethodDlg" header="Participant identification method: #{experiment.cvIdentification.shortLabel}"
+                              height="400" width="750">
+
+                        <iv:cvDetails cv="#{experiment.cvIdentification}"/>
+                    </p:dialog>
                 </iv:panelLabelAndMessage>
 
                 <iv:panelLabelAndMessage label="Cross References:" labelStyleClass="textLabel" visible="#{not empty experiment.xrefs}">
@@ -144,7 +156,13 @@
                 </iv:panelLabelAndMessage>
 
                 <iv:panelLabelAndMessage label="Type:" labelStyleClass="textLabel">
-                    <iv:cvPopup cv="#{interaction.cvInteractionType}"/>
+                    <p:commandLink id="interaction_type" type="button" onclick="interactionTypeDlg.show();" value="#{interaction.cvInteractionType.shortLabel}" />
+
+                    <p:dialog widgetVar="interactionTypeDlg" header="Interaction type: #{interaction.cvInteractionType.shortLabel}"
+                              height="400" width="750">
+
+                        <iv:cvDetails cv="#{interaction.cvInteractionType}"/>
+                    </p:dialog>
                 </iv:panelLabelAndMessage>
 
                 <iv:panelLabelAndMessage label="Cross References:" labelStyleClass="textLabel" visible="#{not empty interaction.xrefs}">
