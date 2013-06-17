@@ -29,7 +29,7 @@ public class ExperimentOverviewIT extends EditorIT {
         goToExperimentOverviewPageFor("ren-2011-1");
 
         // When I click on the label for interaction dre4-luc7
-        clickOnLinkWithText("dre4-luc7");
+        clickOnLinkWithText("dre4-luc7 (EBI-9029)");
 
         // Then I should navigate to the page for interaction with label dre4-luc7
         assertThat(titleForCurrentPage(), startsWith("Interaction: dre4-luc7"));

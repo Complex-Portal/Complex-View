@@ -84,15 +84,20 @@ public class ExperimentDetailedViewController extends JpaAwareController {
     }
 
 	//Now in experiment_overview we show all the annotations in the interaction not only these two
-	@Deprecated
-    public String figureLegendForInteraction(Interaction interaction) {
-        return findAnnotationText(interaction, "MI:0599");
-    }
+//	@Deprecated
+//    public String figureLegendForInteraction(Interaction interaction) {
+//        return findAnnotationText(interaction, "MI:0599");
+//    }
+//
+//	@Deprecated
+//    public String commentForInteraction(Interaction interaction) {
+//        return findAnnotationText(interaction, CvTopic.COMMENT_MI_REF);
+//    }
 
-	@Deprecated
-    public String commentForInteraction(Interaction interaction) {
-        return findAnnotationText(interaction, CvTopic.COMMENT_MI_REF);
-    }
+//	@Deprecated
+//    public String commentForInteraction(Interaction interaction) {
+//        return findAnnotationText(interaction, CvTopic.COMMENT_MI_REF);
+//    }
 
 	public List<Annotation> experimentAnnotationsByOverviewCriteria(Experiment experiment) {
 
@@ -153,17 +158,18 @@ public class ExperimentDetailedViewController extends JpaAwareController {
         return sb.toString();
     }
 
-    private String findAnnotationText(Interaction interaction, String miOrLabel) {
-        if (interaction == null) return null;
-
-        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(interaction, miOrLabel);
-
-        if (annotation != null) {
-            return annotation.getAnnotationText();
-        }
-
-        return null;
-    }
+//    @Deprecated
+//    private String findAnnotationText(Interaction interaction, String miOrLabel) {
+//        if (interaction == null) return null;
+//
+//        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(interaction, miOrLabel);
+//
+//        if (annotation != null) {
+//            return annotation.getAnnotationText();
+//        }
+//
+//        return null;
+//    }
 
     public String getAc() {
         return ac;

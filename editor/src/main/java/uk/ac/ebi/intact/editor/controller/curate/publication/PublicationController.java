@@ -486,7 +486,7 @@ public class PublicationController extends AnnotatedObjectController {
         ac = null;
     }
 
-    public boolean isNew() {
+    public boolean isNewPublication() {
         return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.NEW.identifier());
     }
 

@@ -28,7 +28,7 @@
 
         <h:panelGroup id="info" rendered="#{cvObjectController.cvObject != null}">
 
-            <h2>CV Object: #{cvObjectController.cvObject.class.simpleName}</h2>
+            <h2>CV Object: #{cvObjectController.cvObject['class'].simpleName}</h2>
 
             <p:panel id="basic" header="CV Object Details">
 
@@ -136,7 +136,7 @@
                 </p:tab>
 
             </p:tabView>
-            
+
         </h:panelGroup>
 
     </ui:define>

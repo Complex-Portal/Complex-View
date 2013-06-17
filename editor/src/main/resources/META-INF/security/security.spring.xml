@@ -12,7 +12,7 @@
              automatically logged out (UserManagerController).
           -->
 
-        <intercept-url pattern="/login.jsf" filters="none"/>
+        <intercept-url pattern="/login.xhtml" filters="none"/>
         <intercept-url pattern="/error" filters="none"/>
         <intercept-url pattern="/test" filters="none"/>
         <intercept-url pattern="/viewExpired*" filters="none"/>
@@ -25,7 +25,7 @@
         <intercept-url pattern="/**" access="ROLE_CURATOR, ROLE_ADMIN"/>
 
         <!-- Login/Logout navigation -->
-        <form-login login-page="/login.jsf" default-target-url="/dashboard/dashboard.jsf" authentication-failure-url="/"/>
+        <form-login login-page="/login.xhtml" default-target-url="/dashboard/" authentication-failure-url="/"/>
         <!--<logout logout-url="/logout" invalidate-session="true"/>-->
 
         <concurrent-session-control max-sessions="2" />
@@ -42,7 +42,7 @@
     <beans:bean id="logoutFilter" class="org.springframework.security.ui.logout.LogoutFilter">
         <custom-filter position="LOGOUT_FILTER"/>
         <!--position was LOGOUT_FILTER-->
-        <beans:constructor-arg index="0" value="/login.jsf"/>
+        <beans:constructor-arg index="0" value="/login.xhtml"/>
         <beans:constructor-arg index="1">
             <beans:list>
                 <beans:ref bean="securityContextLogoutHandler"/>
@@ -52,3 +52,4 @@
     </beans:bean>
 
 </beans:beans>
+

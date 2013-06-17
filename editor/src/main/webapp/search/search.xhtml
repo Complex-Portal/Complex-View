@@ -206,7 +206,7 @@ Results for query: <b>#{searchController.query}</b>
             </ui:include>
         </p:column>
         <p:column headerText="Type">
-            <h:outputText value="#{cvobject.class.simpleName}"/>
+            <h:outputText value="#{cvobject['class'].simpleName}"/>
         </p:column>
         <p:column headerText="Identifier" sortBy="#{cvobject.identifier}">
             <h:outputText value="#{cvobject.identifier}"/>

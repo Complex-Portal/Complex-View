@@ -6,9 +6,6 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.net.URL;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -25,7 +22,7 @@ public class AdminImportXmlIT extends EditorIT {
     @DirtiesContext
     public void importXmlFile() throws Exception {
         // Given: I want to import an XML file as an Admin
-        goToPageInContext("/admin/dbupdate/importXml.jsf");
+        goToPageInContext("/admin/dbupdate/importXml.xhtml");
 
         loginAs("admin");
 

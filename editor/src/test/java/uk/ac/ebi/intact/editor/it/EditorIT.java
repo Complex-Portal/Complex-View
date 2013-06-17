@@ -129,7 +129,7 @@ public abstract class EditorIT extends BaseIT {
     protected User getUserByLogin(String login){
         return getDaoFactory().getUserDao().getByLogin(login);
     }
-    
+
     protected void goToPageInContext(String path) {
         driver.get(BASE_URL+path);
     }
@@ -143,7 +143,7 @@ public abstract class EditorIT extends BaseIT {
     }
 
     protected void goToCuratePage() {
-        goToPageInContext("/curate/curate.jsf");
+        goToPageInContext("/curate/curate.xhtml");
     }
 
     protected void goToExperimentPageByLabel(String expLabel) {
@@ -158,7 +158,7 @@ public abstract class EditorIT extends BaseIT {
     protected void goToInteractionPage(String ac) {
         goToPageInContext("/interaction/"+ac);
     }
-    
+
     protected void goToInteractionPageShortLabel(String shortLabel) {
         final Interaction interaction = getDaoFactory().getInteractionDao().getByShortLabel("prp17-sap61");
         final String interactionAc = interaction.getAc();

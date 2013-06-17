@@ -15,7 +15,7 @@
 
 <ui:define name="metadata">
     <f:metadata>
-        <f:viewParam name="ac" value="#{publicationController.ac}"/>
+        <f:viewParam id="pubAcParam" name="ac" value="#{publicationController.ac}"/>
         <f:event type="preRenderView" listener="#{publicationController.loadData}"/>
         <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(publicationController)}"/>
     </f:metadata>
@@ -24,7 +24,7 @@
 <ui:define name="topActionsPanel">
     <p:commandButton value="Claim ownership"
                      styleClass="important-button-alt"
-                     rendered="#{publicationController.new}"
+                     rendered="#{publicationController.newPublication}"
                      actionListener="#{publicationController.markAsAssignedToMe}"
                      action="#{publicationController.doSave}" ajax="false"/>
     <p:commandButton value="Start curation"

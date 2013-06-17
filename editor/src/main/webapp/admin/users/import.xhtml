@@ -10,7 +10,7 @@
 
     <ui:define name="metadata">
         <f:metadata>
-            <f:viewParam name="reset" value="#{userAdminController.reset}"/>
+            <f:viewParam id="importResetParam" name="reset" value="#{userAdminController.reset}"/>
             <f:event type="preRenderView" listener="#{userAdminController.initUserImport}"/>
         </f:metadata>
     </ui:define>
@@ -42,10 +42,10 @@
         <h:outputScript library="javascript" name="intact.js"/>
 
         <h:graphicImage value="/resources/images/previous.png"/>
-        <h:outputLink value="/editor/admin/dashboard.jsf">Back to admin page</h:outputLink>
+        <h:outputLink value="/editor/admin/dashboard.xhtml">Back to admin page</h:outputLink>
         &#160;&#160;|&#160;&#160;
         <h:graphicImage value="/resources/images/users.png"/>&#160;
-        <h:outputLink value="/editor/admin/users/list.jsf">View users list</h:outputLink>
+        <h:outputLink value="/editor/admin/users/list.xhtml">View users list</h:outputLink>
 
         <br/>
 

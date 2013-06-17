@@ -37,7 +37,7 @@
 
         <script type="text/javascript">
             var #{dialogWidgetId}_icv = new InputCvObject('#{cc.clientId}');
-            #{dialogWidgetId}_icv.setUrl('#{facesContext.externalContext.requestContextPath}/comp/inputcvobject_inner.jsf?identifier=#{cc.attrs.cvIdentifier}&amp;dialogId=#{dialogWidgetId}&amp;clientId=#{cc.clientId}&amp;visible=true');
+            #{dialogWidgetId}_icv.setUrl('#{facesContext.externalContext.requestContextPath}/comp/inputcvobject_inner.xhtml?identifier=#{cc.attrs.cvIdentifier}&amp;dialogId=#{dialogWidgetId}&amp;clientId=#{cc.clientId}&amp;visible=true');
         </script>
 
          <h:panelGrid columns="2" id="inputPanel" onmouseover="document.getElementById('#{cc.clientId}:cvButtons').style.visibility = 'visible';"
@@ -73,8 +73,8 @@
             <h:graphicImage alt="Loading" name="wait_black_indicator.gif" library="images"/>
             Loading controlled vocabulary...
         </p:dialog>
-        
-        <p:dialog header="#{cc.attrs.value.class.simpleName} selection" resizable="true" position="center"
+
+        <p:dialog header="#{cc.attrs.value['class'].simpleName} selection" resizable="true" position="center"
                   widgetVar="#{dialogWidgetId}" modal="#{cc.attrs.modal}" width="510">
             <p:outputPanel id="cvObjectBrowserDialog">
             <div style="height: 500px; overflow-x: auto;">

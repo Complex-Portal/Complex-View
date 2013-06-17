@@ -6,7 +6,7 @@
                 xmlns:ia="http://java.sun.com/jsf/composite/intact-components">
 
     <p:dialog id="unsavedChangesDialog" widgetVar="unsavedChangesDialog" header="Unsaved changes" modal="true"
-              position="center" 
+              position="center"
               width="500">
 
         <p:dataTable id="unsavedTable" var="change" value="#{changesController.unsavedChangesForCurrentUser}" paginator="true" rows="10"
@@ -30,7 +30,7 @@
             </p:column>
             <p:column>
                 <f:facet name="header"><h:outputText value="Class"/></f:facet>
-                <h:outputText value="#{change.unsavedObject.class.simpleName}"/>
+                <h:outputText value="#{change.unsavedObject['class'].simpleName}"/>
             </p:column>
             <p:column>
                 <f:facet name="header"><h:outputText value="AC"/></f:facet>
