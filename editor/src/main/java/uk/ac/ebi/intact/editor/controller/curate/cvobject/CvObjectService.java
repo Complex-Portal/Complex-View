@@ -59,6 +59,7 @@ public class CvObjectService extends JpaAwareController {
     private List<CvTopic> interactorTopics;
     private List<CvTopic> proteinTopics;
     private List<CvTopic> nucleicAcidTopics;
+    private List<CvTopic> smallMoleculeTopics;
     private List<CvTopic> participantTopics;
     private List<CvTopic> featureTopics;
     private List<CvTopic> cvObjectTopics;
@@ -71,6 +72,7 @@ public class CvObjectService extends JpaAwareController {
     private List<SelectItem> interactorTopicSelectItems;
     private List<SelectItem> proteinTopicSelectItems;
     private List<SelectItem> nucleicAcidTopicSelectItems;
+    private List<SelectItem> smallMoleculeTopicSelectItems;
     private List<SelectItem> participantTopicSelectItems;
     private List<SelectItem> featureTopicSelectItems;
     private List<SelectItem> cvObjectTopicSelectItems;
@@ -143,7 +145,7 @@ public class CvObjectService extends JpaAwareController {
     @PostConstruct
     public void loadData() {
         createAdditionalCVs();
-        
+
         refresh( null );
     }
 
@@ -169,7 +171,7 @@ public class CvObjectService extends JpaAwareController {
 
         for ( CvObject cvObject : allCvObjects ) {
             acCvObjectMap.put( cvObject.getAc(), cvObject );
-            cvObjectsByClass.put( cvObject.getClass(), cvObject );
+            cvObjectsByClass.put(cvObject.getClass(), cvObject);
 
             if ( cvObject.getIdentifier() != null ) {
                 CvKey keyId = new CvKey( cvObject.getIdentifier(), cvObject.getClass() );
@@ -195,7 +197,9 @@ public class CvObjectService extends JpaAwareController {
         publicationTopics = getSortedTopicList(Publication.class.getName(), cvObjectsByUsedInClass);
         experimentTopics = getSortedTopicList(Experiment.class.getName(), cvObjectsByUsedInClass);
         interactionTopics = getSortedTopicList( Interaction.class.getName(), cvObjectsByUsedInClass);
-        interactorTopics = getSortedTopicList( NucleicAcid.class.getName(), cvObjectsByUsedInClass);
+        interactorTopics = getSortedTopicList( Interactor.class.getName(), cvObjectsByUsedInClass);
+        nucleicAcidTopics = getSortedTopicList( NucleicAcid.class.getName(), cvObjectsByUsedInClass);
+        smallMoleculeTopics = getSortedTopicList(SmallMolecule.class.getName(), cvObjectsByUsedInClass);
         proteinTopics = getSortedTopicList( Protein.class.getName(), cvObjectsByUsedInClass);
         participantTopics = getSortedTopicList( Component.class.getName(), cvObjectsByUsedInClass);
         featureTopics = getSortedTopicList( Feature.class.getName(), cvObjectsByUsedInClass);
@@ -222,25 +226,36 @@ public class CvObjectService extends JpaAwareController {
         publicationTopicSelectItems.add(pubSelectItemGroup);
         publicationTopicSelectItems.add(expSelectItemGroup);
         publicationTopicSelectItems.add(noClassSelectItemGroup);
-        
+
         experimentTopicSelectItems = createSelectItems( experimentTopics, "-- Select topic --" );
         experimentTopicSelectItems.add(noClassSelectItemGroup);
 
         interactionTopicSelectItems = createSelectItems( interactionTopics, "-- Select topic --" );
         interactionTopicSelectItems.add(noClassSelectItemGroup);
 
+
         SelectItemGroup proteinSelectItemGroup = new SelectItemGroup("Protein");
         proteinTopicSelectItems = createSelectItems(proteinTopics, null);
         proteinSelectItemGroup.setSelectItems(proteinTopicSelectItems.toArray(new SelectItem[proteinTopicSelectItems.size()]));
 
         SelectItemGroup nucleicAcidSelectItemGroup = new SelectItemGroup("Nucleic Acid");
-        nucleicAcidTopicSelectItems = createSelectItems(interactorTopics, null);
+        nucleicAcidTopicSelectItems = createSelectItems(nucleicAcidTopics, null);
         nucleicAcidSelectItemGroup.setSelectItems(nucleicAcidTopicSelectItems.toArray(new SelectItem[nucleicAcidTopicSelectItems.size()]));
+
+        SelectItemGroup smallMoleculeSelectItemGroup = new SelectItemGroup("Small Molecule");
+        smallMoleculeTopicSelectItems = createSelectItems(smallMoleculeTopics, null);
+        smallMoleculeSelectItemGroup.setSelectItems(smallMoleculeTopicSelectItems.toArray(new SelectItem[smallMoleculeTopicSelectItems.size()]));
+
+        SelectItemGroup interactorSelectItemGroup = new SelectItemGroup("Interactor");
+        interactorTopicSelectItems = createSelectItems(interactorTopics, null);
+        interactorSelectItemGroup.setSelectItems(interactorTopicSelectItems.toArray(new SelectItem[interactorTopicSelectItems.size()]));
 
         interactorTopicSelectItems = new ArrayList<SelectItem>();
         interactorTopicSelectItems.add( new SelectItem( null, "-- Select topic --", "-- Select topic --", false, false, true ) );
         interactorTopicSelectItems.add(proteinSelectItemGroup);
         interactorTopicSelectItems.add(nucleicAcidSelectItemGroup);
+        interactorTopicSelectItems.add(smallMoleculeSelectItemGroup);
+        interactorTopicSelectItems.add(interactorSelectItemGroup);
         interactorTopicSelectItems.add(noClassSelectItemGroup);
 
         participantTopicSelectItems = createSelectItems( participantTopics, "-- Select topic --" );
@@ -272,7 +287,7 @@ public class CvObjectService extends JpaAwareController {
 
         participantExperimentalPreparations = getSortedList( CvExperimentalPreparation.class, cvObjectsByClass);
         participantExperimentalPreparationsSelectItems = createSelectItems( participantExperimentalPreparations, "-- Select experimental preparation --" );
-        
+
         interactionTypes = getSortedList( CvInteractionType.class, cvObjectsByClass);
         interactionTypeSelectItems = createSelectItems( interactionTypes, "-- Select type --" );
 
@@ -313,7 +328,7 @@ public class CvObjectService extends JpaAwareController {
 
         IntactContext.getCurrentInstance().getDataContext().commitTransaction( transactionStatus );
     }
-    
+
     public List<CvTopic> getSortedTopicList( String key, Multimap<String, CvTopic> topicMultimap ) {
         if ( topicMultimap.containsKey( key ) ) {
             List<CvTopic> list = new ArrayList<CvTopic>( topicMultimap.get( key ) );
@@ -401,7 +416,7 @@ public class CvObjectService extends JpaAwareController {
         if (!IntactCore.isInitialized(cv.getAnnotations())) {
             cv = getDaoFactory().getCvObjectDao().getByAc(cv.getAc());
         }
-        
+
         boolean obsolete = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( cv, CvTopic.OBSOLETE_MI_REF ) != null;
         return new SelectItem( cv, cv.getShortLabel()+((obsolete? " (obsolete)" : "")), cv.getFullName());
     }

@@ -163,64 +163,54 @@ public class ParticipantImportController extends BaseController {
 
         Set<ImportCandidate> candidates = importFromIntAct(participantToImport.toUpperCase());
 
-        if (candidates.isEmpty()) {     //It is not a IntAct one
+        if (candidates.isEmpty()) {     //It is not an IntAct one
 
             CandidateType candidateType = detectCandidate(participantToImport.toUpperCase());
 
-            switch (candidateType) {
-                case BIO_ACTIVE_ENTITY:
-                    Set<ImportCandidate> chebiCandidates = null;
+            try {
+                switch (candidateType) {
+                    case BIO_ACTIVE_ENTITY:
+                        candidates = importFromChebi(participantToImport.toUpperCase());
+                        break;
+                    case NUCLEIC_ACID:
+                        //TODO: For the future
+                        candidates = importFromEnsembl(participantToImport.toUpperCase());
+                        break;
+                    case PROTEIN:
+                        //TODO: Review
+                        candidates = importFromUniprot(participantToImport.toUpperCase());
+                        break;
+                }
+            } catch (Exception e) {
+                addErrorMessage("Cannot import participants", "Problem fetching participant: " + participantToImport);
+                handleException(e);
+                return Collections.EMPTY_SET;
+            }
 
-                    try {
-                        chebiCandidates = importFromChebi(participantToImport.toUpperCase());
-                    } catch (BioActiveEntityServiceException e) {
-                        addErrorMessage("Cannot import participants", "Problem fetching participant: " + participantToImport);
-                        handleException(e);
-                        return Collections.EMPTY_SET;
+            // only pre-select those that match the query
+            for (ImportCandidate candidate : candidates) {
+                candidate.setSelected(false);
+
+                for (String primaryAc : candidate.getPrimaryAcs()) {
+                    if (candidate.getQuery().equalsIgnoreCase(primaryAc)) {
+                        candidate.setSelected(true);
+                        break;
                     }
-                    candidates.addAll(chebiCandidates);
-                    break;
-                case NUCLEIC_ACID:
-                    //TODO: For the future
-                    break;
-                case PROTEIN:
-                    //TODO: Review
-                    Set<ImportCandidate> uniprotCandidates = null;
+                    // for feature chains, in IntAct, we add the parent uniprot ac before the chain id so feature chains are never pre-selected
+                    else if (candidate.isChain() && primaryAc.toUpperCase().contains(FEATURE_CHAIN)) {
+                        int indexOfChain = primaryAc.indexOf(FEATURE_CHAIN);
 
-                    try {
-                        uniprotCandidates = importFromUniprot(participantToImport.toUpperCase());
-                    } catch (ProteinServiceException e) {
-                        addErrorMessage("Cannot import participants", "Problem fetching participant: " + participantToImport);
-                        handleException(e);
-                        return Collections.EMPTY_SET;
-                    }
+                        String chain_ac = primaryAc.substring(indexOfChain);
 
-                    // only pre-select those that match the query
-                    for (ImportCandidate candidate : uniprotCandidates) {
-                        candidate.setSelected(false);
-
-                        for (String primaryAc : candidate.getPrimaryAcs()) {
-                            if (candidate.getQuery().equalsIgnoreCase(primaryAc)) {
-                                candidate.setSelected(true);
-                                break;
-                            }
-                            // for feature chains, in IntAct, we add the parent uniprot ac before the chain id so feature chains are never pre-selected
-                            else if (candidate.isChain() && primaryAc.toUpperCase().contains(FEATURE_CHAIN)) {
-                                int indexOfChain = primaryAc.indexOf(FEATURE_CHAIN);
-
-                                String chain_ac = primaryAc.substring(indexOfChain);
-
-                                if (candidate.getQuery().equalsIgnoreCase(chain_ac)) {
-                                    candidate.setSelected(true);
-                                    break;
-                                }
-                            }
+                        if (candidate.getQuery().equalsIgnoreCase(chain_ac)) {
+                            candidate.setSelected(true);
+                            break;
                         }
                     }
-
-                    candidates.addAll(uniprotCandidates);
-                    break;
+                }
             }
+
+            candidates.addAll(candidates);
 
         }
 
@@ -301,10 +291,17 @@ public class ParticipantImportController extends BaseController {
         Set<ImportCandidate> candidates = new HashSet<ImportCandidate>();
 
         final SmallMolecule smallMolecule = bioActiveEntityService.getBioEntityByChebiId(participantToImport);
-
-        ImportCandidate candidate = new ImportCandidate(participantToImport, smallMolecule);
+        ImportCandidate candidate = toImportCandidate(participantToImport, smallMolecule);
         candidate.setSource("chebi");
+
         candidates.add(candidate);
+
+        return candidates;
+    }
+
+    //TODO: Finish the method
+    private Set<ImportCandidate> importFromEnsembl(String participantToImport) throws BioActiveEntityServiceException {
+        Set<ImportCandidate> candidates = new HashSet<ImportCandidate>();
 
         return candidates;
     }
