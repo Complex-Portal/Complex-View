@@ -17,9 +17,6 @@ package uk.ac.ebi.intact.editor.servlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.solr.client.solrj.response.SolrPingResponse;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 
@@ -41,7 +38,6 @@ public class HealthCheckServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletContext context = getServletContext();
-        WebApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(context);
 
         resp.setContentType("text/plain");
         resp.getWriter().write("Application: OK\n");
@@ -49,7 +45,7 @@ public class HealthCheckServlet extends HttpServlet {
         // db check
         boolean dbOk = false;
         try {
-            final IntactContext intactContext = (IntactContext) applicationContext.getBean("intactContext");
+            final IntactContext intactContext = IntactContext.getCurrentInstance();
             final DaoFactory daoFactory = intactContext.getDataContext().getDaoFactory();
             final int count = daoFactory.getInstitutionDao().countAll();
             dbOk = (count > 0);
