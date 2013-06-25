@@ -14,10 +14,19 @@ import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.FacetParams;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.springframework.beans.factory.annotation.Autowired;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrException;
+import uk.ac.ebi.intact.model.BioSource;
+import uk.ac.ebi.intact.model.CvObject;
+import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.view.webapp.application.SpringInitializedService;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import javax.faces.bean.ApplicationScoped;
+import javax.persistence.Query;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -37,6 +46,10 @@ import java.util.*;
 public class PieChartController extends SpringInitializedService {
 
     private static final Log log = LogFactory.getLog(PieChartController.class);
+
+    /* Ontology mapping strategy */
+    private String ontologyMappingStrategy = "db"; // "solr" OR "db"
+
     /* TYPE */
     private final String TYPE_FACET_FIELD = "type_s";
     private final String TYPE_TITLE = "Interaction types";
@@ -58,6 +71,9 @@ public class PieChartController extends SpringInitializedService {
     @Autowired
     private IntactViewConfiguration viewConfiguration;
 
+    @Autowired
+    protected DaoFactory daoFactory;
+
 
     public PieChartController() {
 
@@ -69,8 +85,12 @@ public class PieChartController extends SpringInitializedService {
             if (log.isInfoEnabled()) log.info("Calculating Pie Chart statistics");
             QueryResponse interactionsQueryResponse = getFacetInteractionDataFromSolr();
             Set<String> ontologyTermIds = getOntologyTermIds(interactionsQueryResponse.getFacetFields());
-            SolrDocumentList ontologyData = getOntologyDataFromSolr(ontologyTermIds);
-            Map<String,String> ontologyTerms = mapOntologyTerms(ontologyData);
+            Map<String,String> ontologyTerms;
+            if(ontologyMappingStrategy == "solr"){
+                ontologyTerms = getOntologyTermNamesFromSolr(ontologyTermIds);
+            } else {
+                ontologyTerms = getOntologyTermsNamesFromDb(ontologyTermIds);
+            }
             setSeries(interactionsQueryResponse, ontologyTerms);
         }
     }
@@ -79,10 +99,66 @@ public class PieChartController extends SpringInitializedService {
         if (log.isInfoEnabled()) log.info("Calculating Pie Chart statistics");
         QueryResponse interactionsQueryResponse = getFacetInteractionDataFromSolr();
         Set<String> ontologyTermIds = getOntologyTermIds(interactionsQueryResponse.getFacetFields());
-        SolrDocumentList ontologyData = getOntologyDataFromSolr(ontologyTermIds);
-        Map<String,String> ontologyTerms = mapOntologyTerms(ontologyData);
+        Map<String,String> ontologyTerms;
+        if(ontologyMappingStrategy == "solr"){
+            ontologyTerms = getOntologyTermNamesFromSolr(ontologyTermIds);
+        } else {
+            ontologyTerms = getOntologyTermsNamesFromDb(ontologyTermIds);
+        }
         setSeries(interactionsQueryResponse, ontologyTerms);
     }
+
+
+    private Map<String,String> getOntologyTermsNamesFromDb(Set<String>ontologyTermIds){
+        Map<String,String> id2Name = new HashMap<String, String>();
+        Set<String>specieOntologyTermIds = new HashSet<String>();
+        Set<String>miOntologyTermIds = new HashSet<String>();
+        for(String ontologyTermId:ontologyTermIds){
+            if(ontologyTermId.contains("MI:")){
+                miOntologyTermIds.add(ontologyTermId);
+            } else {
+                specieOntologyTermIds.add(ontologyTermId);
+            }
+        }
+        id2Name.putAll(getSpecieOntologyTermsNames(specieOntologyTermIds));
+        id2Name.putAll(getMiOntologyTermsNames(miOntologyTermIds));
+        return id2Name;
+    }
+
+    private Map<String,String> getSpecieOntologyTermsNames(Set<String>specieOntologyTermIds){
+        Map<String,String> id2Name = new HashMap<String, String>();
+        for(String taxId:specieOntologyTermIds){
+            String sql = "select b from BioSource b where b.taxId = (:text) and b.cvCellTypeAc is null and b.cvTissueAc is null";
+            Query query = daoFactory.getEntityManager().createQuery( sql );
+            query.setParameter("text", taxId);
+            List<BioSource> bioSources = query.getResultList();
+            for(BioSource bioSource:bioSources){
+                if(bioSource.getFullName() != null && id2Name.containsKey(taxId) == false){
+                    id2Name.put(taxId,bioSource.getFullName());
+                }
+            }
+        }
+        return id2Name;
+    }
+
+    private Map<String,String> getMiOntologyTermsNames(Set<String>miOntologyTermIds){
+        Map<String,String> id2Name = new HashMap<String, String>();
+        for(String miId:miOntologyTermIds){
+             String sql = "select c from CvObject c where c.identifier = (:text)";
+             Query query = daoFactory.getEntityManager().createQuery( sql );
+             query.setParameter("text", miId);
+             List<CvObject> cvObjects = query.getResultList();
+             for(CvObject cvObject:cvObjects){
+                 if(cvObject.getFullName() != null && id2Name.containsKey(miId) == false){
+                     id2Name.put(miId,cvObject.getFullName());
+                 }
+             }
+        }
+        return id2Name;
+    }
+
+
+
 
 
     private QueryResponse getFacetInteractionDataFromSolr() {
@@ -117,12 +193,17 @@ public class PieChartController extends SpringInitializedService {
         return queryResponse;
     }
 
+    private Map<String,String> getOntologyTermNamesFromSolr(Set<String> ontologyTermIds) {
+        SolrDocumentList ontologyData = getOntologyDataFromSolr(ontologyTermIds);
+        Map<String,String> ontologyTerms = mapOntologyTermsFromSolr(ontologyData);
+        return  ontologyTerms;
+    }
 
-    private SolrDocumentList getOntologyDataFromSolr(Set<String> ontologyTermsIds) {
+    private SolrDocumentList getOntologyDataFromSolr(Set<String> ontologyTermIds) {
         SolrServer ontologySolrServer = viewConfiguration.getOntologySolrServer();
         /* Build lucene query string including all the ontology terms IDs */
         String inputQuery = "";
-        for (String ontologyTermId:ontologyTermsIds){
+        for (String ontologyTermId:ontologyTermIds){
             inputQuery += "\"" + ontologyTermId + "\"" + " OR ";
         }
         inputQuery = inputQuery.substring(0, inputQuery.length() - 4);
@@ -147,7 +228,7 @@ public class PieChartController extends SpringInitializedService {
     }
 
 
-    private Map<String,String> mapOntologyTerms(SolrDocumentList ontologyData){
+    private Map<String,String> mapOntologyTermsFromSolr(SolrDocumentList ontologyData){
         Map<String,String> ontologyTerms = new HashMap<String, String>();
         for(SolrDocument doc:ontologyData){
             String termId = (String) doc.getFieldValue(solrFiledTermId);
@@ -319,7 +400,43 @@ public class PieChartController extends SpringInitializedService {
 
 
 
+    private List<StatsEntry> getStatEntriesFromDb(){
+        List<StatsEntry> statsEntryList = new ArrayList<StatsEntry>();
+        final List<Object[]> rows;
+        try {
+            /* Since displaying of more than 300 points in the chart gets a bit messy,
+            we select around 150 entries by selecting one entry per month (the last entry of the month) */
+            String sql = "SELECT * FROM ia_statistics WHERE timestamp IN (SELECT MAX(timestamp) FROM ia_statistics group by to_char(timestamp, 'Month'), to_char(timestamp, 'YYYY')) order by ac ASC";
+            final Query query = daoFactory.getEntityManager().createNativeQuery(sql);
+            rows = query.getResultList();
+        } catch (IntactViewException e) {
+            if (log.isInfoEnabled()) log.error("Error querying database");
+            throw new IntactViewException("Error querying database: ", e);
+        }
+        for(Object[] row:rows){
+            Integer AC = ((BigDecimal) row[0]).intValue();
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date TIMESTAMP = null;
+            try {
+                TIMESTAMP = (Date)formatter.parse(String.valueOf(row[1]));
+            } catch (ParseException e) {
+                throw new IntactViewException("Date parsing exception: "+TIMESTAMP, e);
+            }
+            Integer PROTEIN_NUMBER = ((BigDecimal) row[2]).intValue();
+            Integer INTERACTION_NUMBER = ((BigDecimal) row[3]).intValue();
+            Integer BINARY_INTERACTIONS = ((BigDecimal) row[4]).intValue();
+            Integer COMPLEX_INTERACTIONS = ((BigDecimal) row[5]).intValue();
+            Integer EXPERIMENT_NUMBER = ((BigDecimal) row[6]).intValue();
+            Integer TERM_NUMBER = ((BigDecimal) row[7]).intValue();
+            Integer PUBLICATION_COUNT = ((BigDecimal) row[8]).intValue();
 
+            statsEntryList.add(new StatsEntry(AC,TIMESTAMP,PROTEIN_NUMBER,INTERACTION_NUMBER,BINARY_INTERACTIONS,
+                    COMPLEX_INTERACTIONS,EXPERIMENT_NUMBER,TERM_NUMBER,PUBLICATION_COUNT));
+        }
+
+        return statsEntryList;
+    }
 
 
 }
+
