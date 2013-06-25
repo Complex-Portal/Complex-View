@@ -6,20 +6,8 @@
                 xmlns:sf="http://www.ebi.ac.uk/faces/site">
 
         <ui:param name="max" value="#{intactViewConfiguration.maxNewsInBox}"/>
-
-        <script>
-            window.onload = function() {
-          		      jQuery(function($){
-          		        $("#intactTwitter").tweet({
-          		          avatar_size: 24,
-          		          count: 5,
-          		          username: ["intact_project"],
-          		          loading_text: "searching twitter..."
-          		        });
-          		      });
-
-          		    };
-        </script>
-        <div style="width:100%;" id="intactTwitter"></div>
+    <div style="margin-left: 3px;">
+        <a class="twitter-timeline" data-tweet-limit="3" data-chrome="noheader nofooter transparent noscrollbar" width="180" height="500" href="https://twitter.com/intact_project" data-widget-id="349528983106355201">Tweets by @intact_project</a>
+    </div>
 
 </ui:composition>

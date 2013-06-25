@@ -21,7 +21,9 @@
     <meta name="viewport" content = "width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no" />
 
 
-    <title>#{intactView['webapp.name']}</title>
+    <title>
+        <ui:insert name="windowTitle"/>
+    </title>
 
     <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/contents.css" type="text/css"/>
     <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/userstyles.css" type="text/css"/>
@@ -60,7 +62,6 @@
     </style>
 
     <style type="text/css" media="screen, projection">
-
 
 
             /* [FR] Feb 03, 2012 */
@@ -117,115 +118,116 @@
 
 </h:head>
 <body>
-    <!--<div id="skip-to">-->
-        <!--<ul>-->
-            <!--<li><a href="#content" title="">Skip to main content</a></li>-->
-            <!--<li><a href="#local-nav" title="">Skip to local navigation</a></li>-->
-            <!--<li><a href="#global-nav" title="">Skip to EBI global navigation menu</a></li>-->
-            <!--<li><a href="#global-nav-expanded"-->
-                   <!--title="">Skip to expanded EBI global navigation menu (includes all sub-sections)</a></li>-->
-        <!--</ul>-->
-    <!--</div>-->
+<!--<div id="skip-to">-->
+<!--<ul>-->
+<!--<li><a href="#content" title="">Skip to main content</a></li>-->
+<!--<li><a href="#local-nav" title="">Skip to local navigation</a></li>-->
+<!--<li><a href="#global-nav" title="">Skip to EBI global navigation menu</a></li>-->
+<!--<li><a href="#global-nav-expanded"-->
+<!--title="">Skip to expanded EBI global navigation menu (includes all sub-sections)</a></li>-->
+<!--</ul>-->
+<!--</div>-->
 
-    <ui:insert name="header_tl">
-        <ui:include src="mitigation-header.xhtml"/>
-    </ui:insert>
+<ui:insert name="header_tl">
+    <ui:include src="mitigation-header.xhtml"/>
+</ui:insert>
 
-    <div>
+<div>
 
-        <div id="statusIndicator" class="status-normal"></div>
+    <div id="statusIndicator" class="status-normal"></div>
 
-        <p:ajaxStatus onstart="document.getElementById('statusIndicator').setAttribute('class', 'status-busy')"
-                      oncomplete="document.getElementById('statusIndicator').setAttribute('class', 'status-normal')">
-            <f:facet name="start">
-                <div class="busyStatus">
-                    <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
-                                    style="vertical-align:middle;"/>
-                    &#160;
-                    <h:outputText value="Loading..."/>
-                </div>
-            </f:facet>
-
-            <f:facet name="complete">
-                <div>
-                    <h:outputText value=""/>
-                </div>
-            </f:facet>
-
-            <f:facet name="success">
-                <div>
-                    <h:outputText value=""/>
-                </div>
-            </f:facet>
-
-            <f:facet name="error">
-                <div class="busyStatus">
-                    <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
-                                    style="vertical-align:middle;"/>
-                    &#160;
-                    <h:outputText value="Error :("/>
-                </div>
-            </f:facet>
-        </p:ajaxStatus>
-
-        <ui:insert name="dialogs"/>
-
-        <h:form id="intactForm" prependId="false">
-
-            <!-- Contents -->
-            <div class="contents" id="contents">
-
-                <table class="contentspane" id="contentspane" summary="The main content pane of the page"
-                       style="width: 100%">
-                    <tr>
-                        <td class="leftmargin">
-                            <img src="http://www.ebi.ac.uk/inc/images/spacer.gif" class="spacer" alt="spacer"/>
-                        </td>
-
-                        <h:panelGroup rendered="#{!hideSidebar}">
-                            <td class="leftmenucell" id="leftmenucell">
-                                <div class="leftmenu" id="leftmenu"
-                                     style="width: 145px; visibility: visible; display: block;">
-
-                                    <!-- start left menu here  -->
-                                    <ui:insert name="sidebar"/>
-
-                                </div>
-                            </td>
-                        </h:panelGroup>
-
-                        <td class="contentsarea" id="contentsarea">
-
-                            <!-- breadcrumbs -->
-                            <ui:insert name="breadcrumbs"/>
-
-                            <!-- start contents here -->
-
-                            <table style="width:100%">
-                                <tr>
-                                    <td>
-                                        <ui:insert name="content"/>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
+    <p:ajaxStatus onstart="document.getElementById('statusIndicator').setAttribute('class', 'status-busy')"
+                  oncomplete="document.getElementById('statusIndicator').setAttribute('class', 'status-normal')">
+        <f:facet name="start">
+            <div class="busyStatus">
+                <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
+                                style="vertical-align:middle;"/>
+                &#160;
+                <h:outputText value="Loading..."/>
             </div>
+        </f:facet>
 
-            <!-- To avoid expired sessions, poll every 25 mins -->
+        <f:facet name="complete">
+            <div>
+                <h:outputText value=""/>
+            </div>
+        </f:facet>
 
-            <p:poll interval="#{25*60*1000}" process="@this"/>
+        <f:facet name="success">
+            <div>
+                <h:outputText value=""/>
+            </div>
+        </f:facet>
 
-        </h:form>
+        <f:facet name="error">
+            <div class="busyStatus">
+                <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
+                                style="vertical-align:middle;"/>
+                &#160;
+                <h:outputText value="Error :("/>
+            </div>
+        </f:facet>
+    </p:ajaxStatus>
 
-        <ui:insert name="footer_tl">
-            <ui:include src="mitigation-footer.xhtml"/>
-        </ui:insert>
-    </div>
+    <ui:insert name="dialogs"/>
+
+    <h:form id="intactForm" prependId="false">
+
+        <!-- Contents -->
+        <div class="contents" id="contents">
+
+            <table class="contentspane" id="contentspane" summary="The main content pane of the page"
+                   style="width: 100%">
+                <tr>
+                    <td class="leftmargin">
+                        <img src="http://www.ebi.ac.uk/inc/images/spacer.gif" class="spacer" alt="spacer"/>
+                    </td>
+
+                    <h:panelGroup rendered="#{!hideSidebar}">
+                        <td class="leftmenucell" id="leftmenucell">
+                            <div class="leftmenu" id="leftmenu"
+                                 style="width: 180px; visibility: visible; display: block;">
+
+                                <!-- start left menu here  -->
+                                <ui:insert name="sidebar"/>
+
+                            </div>
+                        </td>
+                    </h:panelGroup>
+
+                    <td class="contentsarea" id="contentsarea">
+
+                        <!-- breadcrumbs -->
+                        <ui:insert name="breadcrumbs"/>
+
+                        <!-- start contents here -->
+
+                        <table style="width:100%">
+                            <tr>
+                                <td>
+                                    <ui:insert name="content"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- To avoid expired sessions, poll every 25 mins -->
+
+        <p:poll interval="#{25*60*1000}" process="@this"/>
+
+    </h:form>
+
+    <ui:insert name="footer_tl">
+        <ui:include src="mitigation-footer.xhtml"/>
+    </ui:insert>
+</div>
 
 <script type="text/javascript" src="#{requestConfigBean.absoluteContextPath}/resources/javascript/intact.js"></script>
-<script type="text/javascript" src="#{requestConfigBean.absoluteContextPath}/resources/javascript/twitter/jquery.tweet.js"></script>
+<!-- Twitter widget -->
+<script type="text/javascript">!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
 <!-- Google Analytics -->
 <ui:param name="googleTracker" value="#{intactViewConfiguration.googleAnalyticsTracker}"/>
