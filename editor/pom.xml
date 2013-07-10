@@ -26,7 +26,7 @@
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <core.version>2.6.2</core.version>
+        <core.version>2.6.3</core.version>
         <spring.version>3.1.2.RELEASE</spring.version>
         <bridges.version>2.1.7</bridges.version>
         <dbupdate.version>2.1.5</dbupdate.version>
