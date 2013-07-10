@@ -12,7 +12,7 @@
     <artifactId>editor</artifactId>
     <packaging>war</packaging>
 
-    <version>2.2.1-SNAPSHOT</version>
+    <version>2.2.1</version>
 
     <name>Service :: IntAct Editor</name>
 
@@ -29,7 +29,7 @@
         <core.version>2.6.2</core.version>
         <spring.version>3.1.2.RELEASE</spring.version>
         <bridges.version>2.1.7</bridges.version>
-        <dbupdate.version>2.1.5-SNAPSHOT</dbupdate.version>
+        <dbupdate.version>2.1.5</dbupdate.version>
         <psimi.version>1.8.3</psimi.version>
         <dataexchange.version>2.1.7</dataexchange.version>
         <h2.version>1.3.162</h2.version>
