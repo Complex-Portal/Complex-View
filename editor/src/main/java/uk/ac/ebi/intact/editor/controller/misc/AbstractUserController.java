@@ -102,7 +102,19 @@ public abstract class AbstractUserController extends JpaAwareController {
     }
 
     public void setMentorReviewer(User mentor) {
-        UserUtils.setMentorReviewer(user, mentor);
+        if (user != null) {
+            if (mentor == null) {
+                Preference pref = user.getPreference(Preference.KEY_MENTOR_REVIEWER);
+                // If we have null as a mentor, we want to assign random reviewers again and for that we need
+                // to remove the preference reviewer
+                if (pref != null){
+                    user.removePreference(user.getPreference(Preference.KEY_MENTOR_REVIEWER));
+                }
+            } else {
+                user.addOrUpdatePreference(Preference.KEY_MENTOR_REVIEWER, mentor.getAc());
+
+            }
+        }
     }
 
     private String findPreference(String prefKey) {
