@@ -65,6 +65,14 @@ public class MiExportServiceImpl implements MiExportService {
                     }
                 };
             }
+            else if (format.equals("sda")){
+                output = new IntactEntryStreamingOutput(format) {
+                    @Override
+                    public Publication createIntactEntry() {
+                        return IntactContext.getCurrentInstance().getDaoFactory().getPublicationDao().getByAc(ac);
+                    }
+                };
+            }
             else {
                 output = new IntactEntryStreamingOutput(format) {
                     @Override
@@ -98,6 +106,14 @@ public class MiExportServiceImpl implements MiExportService {
                     }
                 };
             }
+            else if (format.equals("sda")){
+                output = new IntactEntryStreamingOutput(format) {
+                    @Override
+                    public Experiment createIntactEntry() {
+                        return IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao().getByAc(ac);
+                    }
+                };
+            }
             else {
                 output = new IntactEntryStreamingOutput(format) {
                     @Override
@@ -128,6 +144,14 @@ public class MiExportServiceImpl implements MiExportService {
                     @Override
                     public EntrySet createIntactEntry() {
                         return createEntrySetFromInteraction(ac);
+                    }
+                };
+            }
+            else if (format.equals("sda")){
+                output = new IntactEntryStreamingOutput(format) {
+                    @Override
+                    public Interaction createIntactEntry() {
+                        return IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc(ac);
                     }
                 };
             }
@@ -180,6 +204,9 @@ public class MiExportServiceImpl implements MiExportService {
             responseType = "txt";
         } else if (format.contains("graphml")) {
             responseType = "xml";
+        }
+        else if (format.contains("sda")) {
+            responseType = "html";
         } else {
             throw new IllegalArgumentException("Unexpected format: "+format);
         }

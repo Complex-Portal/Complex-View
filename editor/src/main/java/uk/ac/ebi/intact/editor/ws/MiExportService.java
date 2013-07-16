@@ -34,6 +34,7 @@ public interface MiExportService {
     String FORMAT_HTML = "html";
     String FORMAT_JSON = "json";
     String FORMAT_GRAPHML = "graphml";
+    String FORMAT_FEBS_SDA = "sda";
 
     @GET
     @Path("/publication")

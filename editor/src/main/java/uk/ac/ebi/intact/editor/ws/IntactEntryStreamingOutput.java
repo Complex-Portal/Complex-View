@@ -27,6 +27,9 @@ import psidev.psi.mi.xml.PsimiXmlWriter;
 import psidev.psi.mi.xml.model.EntrySet;
 import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.dataexchange.StructuredAbstractHtmlWriter;
+import uk.ac.ebi.intact.model.Experiment;
+import uk.ac.ebi.intact.model.Publication;
 
 import javax.persistence.FlushModeType;
 import javax.ws.rs.WebApplicationException;
@@ -68,6 +71,8 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
                 writeJson(outputStream);
             } else if (MiExportService.FORMAT_GRAPHML.equals(format)){
                 writeGraphml(outputStream);
+            } else if (MiExportService.FORMAT_FEBS_SDA.equals(format)){
+                writeSDA(outputStream);
             }
         } catch (Throwable e) {
             throw new IOException(e);
@@ -130,9 +135,6 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
             }  catch ( Exception e ) {
                 throw new IOException("Problem converting to HTML", e);
             }
-            finally {
-                baos.close();
-            }
         }
         else {
             throw new IOException("Export failed, problem exporting to PSI-MI HTML. It was expecting an EntrySet when creating Intact entry.");
@@ -163,13 +165,33 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
             }  catch ( Exception e ) {
                 throw new IOException("Problem converting to JSON", e);
             }
-            finally {
-                baos.close();
-            }
         }
         else {
             throw new IOException("Export failed, problem exporting to JSON. It was expecting an EntrySet when creating Intact entry.");
         }
+    }
+
+    public void writeSDA(OutputStream outputStream) throws IOException {
+        StructuredAbstractHtmlWriter htmlWriter = new StructuredAbstractHtmlWriter(outputStream);
+
+        Object object = createIntactEntry();
+        if (object instanceof Publication){
+            Publication publication = (Publication) object;
+            htmlWriter.writeStructuredAbstract(publication);
+        }
+        else if (object instanceof Experiment){
+            Experiment experiment = (Experiment) object;
+            htmlWriter.writeStructuredAbstract(experiment);
+        }
+        else if (object instanceof uk.ac.ebi.intact.model.Interaction){
+            uk.ac.ebi.intact.model.Interaction interaction = (uk.ac.ebi.intact.model.Interaction) object;
+            htmlWriter.writeStructuredAbstract(interaction);
+        }
+        else {
+            throw new IOException("Export failed, problem exporting to FEBS SDA. It was expecting a publication, experiment or interaction when creating Intact entry.");
+        }
+
+        outputStream.flush();
     }
 
     public void writeGraphml(OutputStream outputStream) throws IOException {
@@ -191,8 +213,6 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
 
         outputStream.write(output.getBytes());
         outputStream.flush();
-        outputStream.close();
-
     }
 
     public void exportToMitab(PsimiTabWriter psimitabWriter, OutputStream outputStream) throws IOException {
@@ -208,9 +228,6 @@ public abstract class IntactEntryStreamingOutput implements StreamingOutput {
                 //transform(os, bais, BinaryInteractionsExporter.class.getResourceAsStream("/META-INF/MIF254_view.xsl"));
             }  catch ( Exception e ) {
                 throw new IOException("Problem converting to MITAB 2.5", e);
-            }
-            finally {
-                writer.close();
             }
         }
         else {
