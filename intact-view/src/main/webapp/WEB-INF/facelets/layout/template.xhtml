@@ -33,14 +33,27 @@
 
         <!--</h:panelGroup>-->
 
+        <!-- LEFT MENU -->
         <ui:include src="/left_main_menu.xhtml"/>
 
+        <!-- TWITTER -->
         <ui:include src="/news_twitter.xhtml"/>
 
-
+        <!-- INTACT VERSION -->
         <p>
             v.#{buildInfo.version}<br/>
         </p>
+
+        <!-- IMEX LOGO -->
+        <br/><br/>
+        <div style="display: block; text-align: center;">
+            <a href="http://www.imexconsortium.org/" target="_blank">
+                <img src="/intact/images/logos/IMEx_logo_webmedium.jpg" width="160px" alt="IMEX" border="0" />
+                <br/><div>IMEx member</div>
+            </a>
+        </div>
+
+
 
     </ui:define>
 
