@@ -28,6 +28,10 @@
     <!-- Chebi -->
     <bean id="chebiService" class="uk.ac.ebi.intact.dbupdate.bioactiveentity.importer.BioActiveEntityServiceImpl"/>
 
+    <!-- SwissProt for gene information -->
+    <bean id="geneService" class="uk.ac.ebi.intact.dbupdate.gene.importer.GeneServiceImpl"/>
+
+
     <!-- Uniprot -->
     <bean id="uniprotService" class="uk.ac.ebi.intact.uniprot.service.UniprotRemoteService"/>
     <bean id="proteinService" class="uk.ac.ebi.intact.util.ProteinServiceImpl"/>

@@ -601,9 +601,20 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         if (xref.getPrimaryId() == null) return false;
         if (xref.getCvDatabase() == null) return true;
 
-        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(xref.getCvDatabase(), CvTopic.XREF_VALIDATION_REGEXP_MI_REF);
-        if (annotation == null) return true;
+        AnnotatedObject ao = xref.getCvDatabase();
 
+        if (!IntactCore.isInitialized(ao.getAnnotations())) {
+            ao = IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(ao.getClass())
+                    .getByAc(getAnnotatedObject().getAc());
+        }
+
+        if (ao == null) { // this can happen if the object has been removed in the same request just before
+            return true;
+        }
+
+        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( ao, CvTopic.XREF_VALIDATION_REGEXP_MI_REF);
+
+        if (annotation == null) return true;
         return xref.getPrimaryId().matches(annotation.getAnnotationText());
     }
 
@@ -612,8 +623,20 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         if (xref.getPrimaryId() == null) return null;
         if (xref.getCvDatabase() == null) return null;
 
-        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(xref.getCvDatabase(), CvTopic.SEARCH_URL_MI_REF);
+        AnnotatedObject ao = xref.getCvDatabase();
+
+        if (!IntactCore.isInitialized(ao.getAnnotations())) {
+            ao = IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(ao.getClass())
+                    .getByAc(getAnnotatedObject().getAc());
+        }
+
+        if (ao == null) { // this can happen if the object has been removed in the same request just before
+            return null;
+        }
+
+        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(ao, CvTopic.SEARCH_URL_MI_REF);
         if (annotation == null) return null;
+
 
         String extUrl = annotation.getAnnotationText();
         return extUrl.replaceAll("\\$\\{ac\\}", xref.getPrimaryId());

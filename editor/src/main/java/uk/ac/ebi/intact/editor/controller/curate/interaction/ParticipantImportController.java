@@ -27,6 +27,8 @@ import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.dbupdate.bioactiveentity.importer.BioActiveEntityService;
 import uk.ac.ebi.intact.dbupdate.bioactiveentity.importer.BioActiveEntityServiceException;
+import uk.ac.ebi.intact.dbupdate.gene.importer.GeneService;
+import uk.ac.ebi.intact.dbupdate.gene.importer.GeneServiceException;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriter;
 import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriterImpl;
 import uk.ac.ebi.intact.dbupdate.prot.report.UpdateReportHandler;
@@ -72,6 +74,9 @@ public class ParticipantImportController extends BaseController {
 
     @Autowired
     private BioActiveEntityService bioActiveEntityService;
+
+    @Autowired
+    private GeneService geneService;
 
     @Autowired
     private InteractionController interactionController;
@@ -172,12 +177,10 @@ public class ParticipantImportController extends BaseController {
                     case BIO_ACTIVE_ENTITY:
                         candidates = importFromChebi(participantToImport.toUpperCase());
                         break;
-                    case NUCLEIC_ACID:
-                        //TODO: For the future
-                        candidates = importFromEnsembl(participantToImport.toUpperCase());
+                    case GENE:
+                        candidates = importFromSwissProtWithEnsemblId(participantToImport.toUpperCase());
                         break;
                     case PROTEIN:
-                        //TODO: Review
                         candidates = importFromUniprot(participantToImport.toUpperCase());
                         break;
                 }
@@ -221,7 +224,7 @@ public class ParticipantImportController extends BaseController {
         if (CheckIdentifier.checkChebiId(candidateId)) {
             return CandidateType.BIO_ACTIVE_ENTITY;
         } else if (CheckIdentifier.checkEnsembleId(candidateId)) {
-            return CandidateType.NUCLEIC_ACID;
+            return CandidateType.GENE;
         } else { //If the identifier is not one of the previous we suppose that is a UniprotKB
             return CandidateType.PROTEIN;
         }
@@ -299,10 +302,17 @@ public class ParticipantImportController extends BaseController {
         return candidates;
     }
 
-    //TODO: Finish the method
-    private Set<ImportCandidate> importFromEnsembl(String participantToImport) throws BioActiveEntityServiceException {
+    private Set<ImportCandidate> importFromSwissProtWithEnsemblId(String participantToImport) throws GeneServiceException {
         Set<ImportCandidate> candidates = new HashSet<ImportCandidate>();
 
+        final Collection<Interactor> genes = geneService.getGeneByEnsemblIdInSwissprot(participantToImport);
+
+        for (Interactor gene : genes) {
+            ImportCandidate candidate = toImportCandidate(participantToImport, gene);
+            candidate.setSource("ensembl");
+
+            candidates.add(candidate);
+        }
         return candidates;
     }
 
