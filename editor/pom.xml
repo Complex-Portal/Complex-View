@@ -23,6 +23,9 @@
     </scm>
 
     <properties>
+        <!-- UTF-8 encoding to generate the build-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
@@ -36,7 +39,7 @@
 
         <!-- configurable bits -->
         <jetty.port>9192</jetty.port>
-        <jetty.contextPath>/${pom.artifactId}</jetty.contextPath>
+        <jetty.contextPath>/${project.artifactId}</jetty.contextPath>
 
         <!-- database defaults -->
         <db.jndi>jdbc/IntactEditorDS</db.jndi>
@@ -65,7 +68,7 @@
     </properties>
 
     <build>
-        <finalName>${artifactId}-${version}</finalName>
+        <finalName>${project.artifactId}-${project.version}</finalName>
 
         <resources>
             <resource>
@@ -89,7 +92,7 @@
                     <scanIntervalSeconds>0</scanIntervalSeconds>
                     <webAppConfig>
                         <contextPath>${jetty.contextPath}</contextPath>
-                        <jettyEnvXml>${build.outputDirectory}/META-INF/jetty-env.xml</jettyEnvXml>
+                        <jettyEnvXml>${project.build.outputDirectory}/META-INF/jetty-env.xml</jettyEnvXml>
                     </webAppConfig>
                 </configuration>
                 <dependencies>
@@ -137,7 +140,8 @@
                 <version>2.1</version>
                 <configuration>
                     <path>/editor</path>
-                    <contextFile>${build.outputDirectory}/META-INF/context.xml</contextFile>
+                    <contextFile>${project.build.outputDirectory}/META-INF/context.xml</contextFile>
+                    <uriEncoding>UTF-8</uriEncoding>
                 </configuration>
             </plugin>
 
@@ -284,7 +288,7 @@
                             <scanIntervalSeconds>0</scanIntervalSeconds>
                             <webAppConfig>
                                 <contextPath>${jetty.contextPath}</contextPath>
-                                <jettyEnvXml>${build.outputDirectory}/META-INF/jetty-env.xml</jettyEnvXml>
+                                <jettyEnvXml>${project.build.outputDirectory}/META-INF/jetty-env.xml</jettyEnvXml>
                             </webAppConfig>
                             <stopPort>29966</stopPort>
                             <stopKey>die!!!!</stopKey>
@@ -642,6 +646,14 @@
             <groupId>org.glassfish.web</groupId>
             <artifactId>el-impl</artifactId>
             <version>2.2</version>
+        </dependency>
+
+        <!-- Tomcat dependency for using encoding filter -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>7.0.30</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- MyFaces Orchestra -->
