@@ -24,8 +24,8 @@
     </scm>
 
     <properties>
-        <core.version>2.6.2-SNAPSHOT</core.version>
-        <dataexchange.version>2.1.7-SNAPSHOT</dataexchange.version>
+        <core.version>2.6.1</core.version>
+        <dataexchange.version>2.1.6</dataexchange.version>
         <spring.version>3.1.2.RELEASE</spring.version>
 
         <debug>false</debug>
@@ -444,7 +444,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.commons</groupId>
             <artifactId>intact-commons</artifactId>
-            <version>2.1.9-SNAPSHOT</version>
+            <version>2.1.8</version>
             <exclusions>
                 <exclusion>
                     <groupId>uk.ac.ebi.intact.core</groupId>
@@ -456,7 +456,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange</groupId>
             <artifactId>intact-cvutils</artifactId>
-            <version>${dataexchange.version}</version>
+            <version>2.1.6.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>lucene</groupId>
@@ -472,7 +472,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psixml-exchange</artifactId>
-            <version>${dataexchange.version}</version>
+            <version>2.1.6.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>cpdetector</groupId>
@@ -517,11 +517,15 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-solr-core</artifactId>
-            <version>${dataexchange.version}</version>
+            <version>2.1.6.7</version>
             <exclusions>
                 <exclusion>
                     <groupId>woodstox</groupId>
                     <artifactId>wstx-asl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>jetty</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>uk.ac.ebi.intact.core</groupId>
@@ -546,7 +550,7 @@
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psi25-xml-rdf</artifactId>
-            <version>1.8.4-SNAPSHOT</version>
+            <version>1.8.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>woodstox</groupId>
@@ -561,18 +565,18 @@
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab</artifactId>
-            <version>1.8.4-SNAPSHOT</version>
+            <version>1.8.3</version>
         </dependency>
 
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>calimocho-tab</artifactId>
-            <version>2.5.1-SNAPSHOT</version>
+            <version>2.5.0</version>
         </dependency>
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>calimocho-xgmml</artifactId>
-            <version>2.5.1-SNAPSHOT</version>
+            <version>2.5.0.3</version>
         </dependency>
 
         <!-- PSICQUIC -->
@@ -603,7 +607,7 @@
         <dependency>
             <groupId>org.hupo.psi.mi.psicquic</groupId>
             <artifactId>psicquic-simple-client</artifactId>
-            <version>1.3.3-SNAPSHOT</version>
+            <version>1.3.2</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -622,7 +626,7 @@
         <dependency>
             <groupId>org.hupo.psi.mi.psicquic</groupId>
             <artifactId>psicquic-registry-client</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
 
         <!-- other -->
@@ -859,13 +863,9 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-firefox-driver</artifactId>
-            <version>2.31.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-server</artifactId>
-            <version>2.31.0</version>
+            <artifactId>selenium-java</artifactId>
+            <version>2.28.0</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
