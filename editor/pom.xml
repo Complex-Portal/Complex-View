@@ -420,6 +420,22 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+                   <groupId>uk.ac.ebi.uniprot.kraken</groupId>
+                   <artifactId>uniprotjapi</artifactId>
+                   <version>LATEST</version>
+                   <exclusions>
+                       <exclusion>
+                            <groupId>org.springframework</groupId>
+                           <artifactId>spring-web</artifactId>
+                       </exclusion>
+                       <exclusion>
+                        <groupId>org.springframework</groupId>
+                           <artifactId>spring-core</artifactId>
+                       </exclusion>
+                   </exclusions>
+        </dependency>
+
         <!-- Bridges -->
         <dependency>
             <groupId>uk.ac.ebi.intact.bridges</groupId>
