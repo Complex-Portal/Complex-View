@@ -14,7 +14,7 @@
 
     <groupId>uk.ac.ebi.intact.service</groupId>
     <artifactId>intact-mart</artifactId>
-    <packaging>zip</packaging>
+    <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <name>IntAct Services :: Mart</name>
