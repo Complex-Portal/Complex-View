@@ -16,6 +16,12 @@
 
     <name>IntAct Services :: Exporter</name>
 
+    <scm>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/exporter</connection>
+        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/exporter</developerConnection>
+        <url>http://code.google.com/p/intact/source/browse/repo/service/trunk/exporter</url>
+    </scm>
+
   <modules>
     <module>intact-exporter</module>
     <module>intact-exporter-webapp</module>
