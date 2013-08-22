@@ -4,7 +4,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.maven</groupId>
         <artifactId>intact-hibernate-master</artifactId>
-        <version>41</version>
+        <version>42</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -12,7 +12,7 @@
     <groupId>uk.ac.ebi.intact.service</groupId>
     <artifactId>service-master</artifactId>
     <packaging>pom</packaging>
-    <version>3-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
 
     <name>IntAct Services</name>
     <description>Services Master POM</description>
@@ -27,17 +27,17 @@
         <user>${env.USERNAME}</user>
         <appRoot>/intact</appRoot>
 
-        <core.version>2.4.0</core.version>
+        <core.version>2.6.4</core.version>
     </properties>
 
     <modules>
-        <module>commons</module>
-        <module>editor</module>
-        <module>statistics</module>
-        <module>imex</module>
-        <module>exporter</module>
+     <module>cv-update-runner</module>
+      <module>protein-update-runner</module>
     <module>dataset-update-runner</module>
     <module>imex-assigner-runner</module>
+    <module>intact-publication-exporter</module>
+     <module>intact-view</module>
+     <module>validator-view</module>
   </modules>
 
     <scm>
