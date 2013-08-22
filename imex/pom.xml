@@ -16,10 +16,17 @@
 
     <name>IntAct Services :: IMEx</name>
 
+<scm>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk</connection>
+        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk</developerConnection>
+        <url>http://code.google.com/p/intact/source/browse/repo/service/trunk</url>
+    </scm>
+
     <modules>
         <module>intact-imex-central</module>
         <module>intact-imex-id-assigner</module>
     <module>intact-imex-exporter</module>
+
   </modules>
 
 </project>
