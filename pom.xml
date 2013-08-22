@@ -38,6 +38,7 @@
     <module>intact-publication-exporter</module>
      <module>intact-view</module>
      <module>validator-view</module>
+     <module>health-check</module>
   </modules>
 
     <scm>
