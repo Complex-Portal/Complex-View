@@ -39,6 +39,7 @@
      <module>intact-view</module>
      <module>validator-view</module>
      <module>health-check</module>
+     <module>intact-widgets</module>
   </modules>
 
     <scm>
