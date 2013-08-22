@@ -17,6 +17,12 @@
     <name>IntAct Services :: Commons</name>
     <description>Common utilities for the web applications</description>
 
+    <scm>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/commons</connection>
+        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/commons</developerConnection>
+        <url>http://code.google.com/p/intact/source/browse/repo/service/trunk/commons</url>
+    </scm>
+
     <modules>
         <module>app-commons</module>
         <module>confidence-score</module>
