@@ -20,10 +20,9 @@
     <name>IntAct Services :: Mart</name>
 
     <scm>
-        <connection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-mart</connection>
-        <developerConnection>scm:svn:https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-mart
-        </developerConnection>
-        <url>https://intact.svn.sourceforge.net/svnroot/intact/repo/service/trunk/intact-mart</url>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/intact-mart</connection>
+        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/intact-mart</developerConnection>
+        <url>http://code.google.com/p/intact/source/browse/repo/service/trunk/intact-mart</url>
     </scm>
 
     <repositories>
