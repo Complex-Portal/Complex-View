@@ -94,7 +94,6 @@ public class ExportIntactPublicationToXml {
             xmlWriter.writeEndDocument();
         }
         finally{
-            xmlWriter.closeOutputFile();
             dataContext.rollbackTransaction(transactionStatus);
         }
     }
