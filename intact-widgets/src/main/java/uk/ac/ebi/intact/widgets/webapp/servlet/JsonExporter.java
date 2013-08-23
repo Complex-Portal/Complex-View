@@ -40,6 +40,8 @@ import java.io.*;
  */
 
 public class JsonExporter extends HttpServlet {
+    private static final String NEW_LINE = System.getProperty("line.separator");
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String interactionAc = req.getParameter("ac");
@@ -48,14 +50,60 @@ public class JsonExporter extends HttpServlet {
             throw new ServletException("Parameter 'ac' was expected");
         }
 
-        // read xml file
-        InputStream xmlStream = new FileInputStream(getServletContext().getRealPath("/files/xml/" + interactionAc + ".xml"));
+        InputStream xmlStream = createXmlStream(interactionAc);
 
         try {
-            // transform xml to json
             XslTransformerUtils.jsonPsiMi(xmlStream, resp.getOutputStream());
         } catch (XslTransformException e) {
             throw new ServletException("Problem writing JSON", e);
         }
+        finally {
+            xmlStream.close();
+        }
+    }
+
+    private InputStream createXmlStream(String interactionAc) throws ServletException {
+        EntrySet entrySet = createEntrySet(interactionAc);
+
+        PsimiXmlWriter writer = new PsimiXmlWriter(PsimiXmlVersion.VERSION_254);
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            writer.write(entrySet, baos);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
+
+            baos.close();
+            return inputStream;
+        } catch (Exception e) {
+            throw new ServletException("Problem writing XML", e);
+        }
+    }
+
+    private EntrySet createEntrySet(String interactionAc) {
+        IntactContext context = IntactContext.getCurrentInstance();
+
+        TransactionStatus status = context.getDataContext().beginTransaction();
+        //context.getDaoFactory().getEntityManager().setFlushMode(FlushModeType.COMMIT);
+        IntactEntry intactEntry = IntactEntryFactory.createIntactEntry(context)
+                .addInteractionWithAc(interactionAc);
+
+        EntrySet entrySet = createEntrySet(intactEntry);
+        context.getDataContext().rollbackTransaction(status);
+
+        return entrySet;
+    }
+
+    private EntrySet createEntrySet(IntactEntry intactEntry) {
+        PsiExchange psiExchange = (PsiExchange) IntactContext.getCurrentInstance().getSpringContext().getBean("psiExchange");
+        EntrySet entrySet = null;
+        try{
+            entrySet = psiExchange.exportToEntrySet(intactEntry);
+        }
+        finally {
+            psiExchange.close();
+        }
+
+        return entrySet;
     }
 }

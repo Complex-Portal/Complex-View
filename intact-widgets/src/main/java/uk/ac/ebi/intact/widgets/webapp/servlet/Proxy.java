@@ -22,14 +22,18 @@ public class Proxy extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String url = req.getParameter("url");
-        if (url == null) {
-            throw new ServletException("Parameter 'url' was expected");
-        }
+        try {
+            String url = req.getParameter("url");
+            if (url == null) {
+                throw new ServletException("Parameter 'url' was expected");
+            }
 
-        // decode url
-        url = URLDecoder.decode(url, "UTF-8");
-        externalRequest(url, resp.getWriter());
+            url = URLDecoder.decode(url, "UTF-8");
+            externalRequest(url, resp.getWriter());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
   /**
@@ -47,10 +51,16 @@ public class Proxy extends HttpServlet {
         InputStream inputStream = method.getResponseBodyAsStream();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-        String line = "";
-        while ((line = bufferedReader.readLine()) != null){
-            outputWriter.append(line + NEW_LINE);
+        try{
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null) {
+                outputWriter.append(line + '\n');
+            }
+            outputWriter.flush();
         }
-        bufferedReader.close();
+        finally {
+            bufferedReader.close();
+            inputStream.close();
+        }
     }
 }
