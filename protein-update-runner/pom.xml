@@ -13,7 +13,7 @@
     <groupId>uk.ac.ebi.intact.service</groupId>
     <artifactId>protein-update-runner</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.1</version>
+    <version>1.1.2-SNAPSHOT</version>
 
     <name>Service :: Protein Update Runner</name>
 
