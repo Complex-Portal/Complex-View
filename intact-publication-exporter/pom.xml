@@ -13,6 +13,11 @@
     <version>1.0.1</version>
     <name>intact-publication-exporter</name>
 
+    <scm>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/intact-publication-exporter</connection>
+        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/intact-publication-exporter</developerConnection>
+    </scm>
+
     <properties>
         <db.url>${db.protocol}:${db.subprotocol}${db.separator}${db.alias}</db.url>
         <db.hbm2ddl>none</db.hbm2ddl>
