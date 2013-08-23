@@ -16,6 +16,12 @@
   <name>intact-widgets Maven Webapp</name>
   <url>http://maven.apache.org</url>
 
+    <scm>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/intact-widgets</connection>
+        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/intact-widgets</developerConnection>
+        <url>https://intact.googlecode.com/svn/repo/service/trunk/intact-widgets</url>
+    </scm>
+
     <properties>
         <dataexchange.version>2.1.8</dataexchange.version>
 
