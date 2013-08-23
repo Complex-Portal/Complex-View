@@ -24,8 +24,8 @@
     </scm>
 
     <properties>
-        <core.version>2.6.1</core.version>
-        <dataexchange.version>2.1.6</dataexchange.version>
+        <core.version>2.6.4</core.version>
+        <dataexchange.version>2.1.8</dataexchange.version>
         <spring.version>3.1.2.RELEASE</spring.version>
 
         <debug>false</debug>
@@ -438,13 +438,13 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
             <artifactId>intact-core-readonly</artifactId>
-            <version>2.6.1.1</version>
+            <version>2.6.4</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.intact.commons</groupId>
             <artifactId>intact-commons</artifactId>
-            <version>2.1.8</version>
+            <version>2.1.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>uk.ac.ebi.intact.core</groupId>
@@ -456,7 +456,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange</groupId>
             <artifactId>intact-cvutils</artifactId>
-            <version>2.1.6.2</version>
+            <version>2.1.8</version>
             <exclusions>
                 <exclusion>
                     <groupId>lucene</groupId>
@@ -472,7 +472,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psixml-exchange</artifactId>
-            <version>2.1.6.1</version>
+            <version>2.1.8</version>
             <exclusions>
                 <exclusion>
                     <groupId>cpdetector</groupId>
@@ -517,7 +517,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-solr-core</artifactId>
-            <version>2.1.6.7</version>
+            <version>2.1.8</version>
             <exclusions>
                 <exclusion>
                     <groupId>woodstox</groupId>
@@ -550,7 +550,7 @@
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psi25-xml-rdf</artifactId>
-            <version>1.8.3</version>
+            <version>1.8.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>woodstox</groupId>
@@ -565,25 +565,25 @@
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab</artifactId>
-            <version>1.8.3</version>
+            <version>1.8.4</version>
         </dependency>
 
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>calimocho-tab</artifactId>
-            <version>2.5.0</version>
+            <version>2.5.1</version>
         </dependency>
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>calimocho-xgmml</artifactId>
-            <version>2.5.0.3</version>
+            <version>2.5.1</version>
         </dependency>
 
         <!-- PSICQUIC -->
         <dependency>
             <groupId>org.hupo.psi.mi.psicquic</groupId>
             <artifactId>psicquic-client</artifactId>
-            <version>1.5.3-SNAPSHOT</version>
+            <version>1.5.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -607,7 +607,7 @@
         <dependency>
             <groupId>org.hupo.psi.mi.psicquic</groupId>
             <artifactId>psicquic-simple-client</artifactId>
-            <version>1.3.2</version>
+            <version>1.3.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -633,12 +633,12 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-            <version>3.6.0</version>
+            <version>3.6.2</version>
         </dependency>
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-highlighter</artifactId>
-            <version>3.6.0</version>
+            <version>3.6.2</version>
         </dependency>
 
         <dependency>
