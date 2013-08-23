@@ -75,6 +75,9 @@
         <property name="publicationIdentifierSynchronizer" ref="publicationIdentifierSynchronizer"/>
         <property name="intactImexAssigner" ref="intactImexAssigner"/>
         <property name="imexUpdateConfig" ref="imexUpdateConfig"/>
+        <property name="updatePublicationAdminGroup" value="true"/>
+        <property name="updatePublicationAdminUser" value="true"/>
+        <property name="updatePublicationStatus" value="true"/>
     </bean>
 
     <!-- Global imex updater -->

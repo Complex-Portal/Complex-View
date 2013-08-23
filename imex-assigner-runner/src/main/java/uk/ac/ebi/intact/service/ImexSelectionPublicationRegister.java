@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class can assign IMEx identifiers to a selection of publication acs in a file (one ac per line)
+ * This script will register all publications from a list
  *
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  * @version $Id$
- * @since <pre>16/04/12</pre>
+ * @since <pre>23/08/13</pre>
  */
 
-public class ImexPublicationSelectionAssigner {
+public class ImexSelectionPublicationRegister {
 
     public static void main( String[] args )
     {
@@ -43,17 +43,16 @@ public class ImexPublicationSelectionAssigner {
         }
         final String fileInputName = args[0];
 
-        System.out.println("File containing publication acs to assign = " + fileInputName);
+        System.out.println("File containing publication acs to register = " + fileInputName);
 
         IntactContext.initContext(new String[]{"/META-INF/jpa-imex-assigner.spring.xml", "/META-INF/imex-assigner.spring.xml"});
 
         try {
-            System.out.println("Reading file containing publication acs to assign...");
+            System.out.println("Reading file containing publication acs to register...");
             List<String> publicationAcs = new ArrayList<String>();
 
             File inputFile = new File(fileInputName);
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-
             try{
                 String line = reader.readLine();
 
@@ -72,13 +71,13 @@ public class ImexPublicationSelectionAssigner {
 
             System.out.println("folder where are the log files = " + ia.getImexUpdateConfig().getUpdateLogsDirectory().getAbsolutePath());
 
-            System.out.println("Starting the IMEx assigner on a selection of publication in " + fileInputName);
-            
+            System.out.println("Starting the IMEx assigner to register a selection of publication in " + fileInputName);
+
             for (String ac : publicationAcs){
                 try {
-                    System.out.println("Assign IMEx to publication " + ac);
+                    System.out.println("Register publication " + ac);
 
-                    ia.assignImexAndUpdatePublication(ac);
+                    ia.registerAndUpdatePublication(ac);
                 } catch (PublicationImexUpdaterException e) {
                     e.printStackTrace();
                 } catch (ImexCentralException e) {
@@ -102,7 +101,7 @@ public class ImexPublicationSelectionAssigner {
         } catch (IOException e) {
             System.err.println("Impossible to find the input file or log file repository.");
             e.printStackTrace();
-        }                
+        }
 
         System.out.println("Finished the selection IMEx assigner.");
     }
