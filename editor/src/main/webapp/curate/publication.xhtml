@@ -308,6 +308,7 @@
                     <f:selectItem itemLabel="-- Not specified --"/>
                     <f:selectItem itemLabel="IMEx" itemValue="imex curation"/>
                     <f:selectItem itemLabel="MIMIx" itemValue="mimix curation"/>
+                    <f:selectItem itemLabel="rapid" itemValue="rapid curation"/>
                     <p:ajax event="change" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:publicationTabs,:editorForm:messagesComponent,:editorForm:basic"
                             process="@this" listener="#{publicationController.curationDepthChanged()}"/>
                 </h:selectOneMenu>
