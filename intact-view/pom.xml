@@ -5,7 +5,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.service</groupId>
         <artifactId>service-master</artifactId>
-        <version>3-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -13,7 +13,7 @@
     <groupId>uk.ac.ebi.intact.service.sandbox</groupId>
     <artifactId>intact-view</artifactId>
     <packaging>war</packaging>
-    <version>4.1.1-SNAPSHOT</version>
+    <version>4.1.1</version>
 
     <name>IntAct Services :: View</name>
 
