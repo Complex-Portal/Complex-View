@@ -79,6 +79,9 @@ public class ParticipantController extends ParameterizableObjectController {
     private List<SelectItem> featureToLink1RangeSelectItems;
     private List<SelectItem> featureToLink2RangeSelectItems;
 
+    private CvExperimentalPreparation preparationToAdd;
+    private CvIdentification identificationToAdd;
+
     /**
      * The AC of the participant to be loaded.
      */
@@ -130,36 +133,49 @@ public class ParticipantController extends ParameterizableObjectController {
                 return;
             }
 
+            if (!IntactCore.isInitialized(participant.getFeatures())){
+                IntactCore.initialize(participant.getFeatures());
+            }
             featuresDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<Feature>(participant.getFeatures()), participant.getFeatures());
 
             // check if the publication, experiment and interaction are null in their controllers (this happens when the
             // participant page is loaded directly using a URL)
 
-            if (participant.getInteraction() != null){
-                Collection<Experiment> experiments = participant.getInteraction().getExperiments();
-
-                if (!IntactCore.isInitialized(experiments)){
-                    experiments = getDaoFactory().getExperimentDao().getByInteractionAc(participant.getInteraction().getAc());
-                }
-
-                if( experiments.isEmpty()) {
-                    addWarningMessage( "The parent interaction of this participant isn't attached to an experiment",
-                            "Abort experiment loading." );
-                    return;
-                }
-                else{
-                    if ( publicationController.getPublication() == null ) {
-                        Publication publication = experiments.iterator().next().getPublication();
-                        publicationController.setPublication( publication );
-                    }
-                    if ( experimentController.getExperiment() == null ) {
-                        experimentController.setExperiment( experiments.iterator().next() );
-                    }
-                }
+            if (!IntactCore.isInitialized(participant.getExperimentalPreparations())){
+                IntactCore.initialize(participant.getExperimentalPreparations());
             }
+            if (!IntactCore.isInitialized(participant.getParticipantDetectionMethods())){
+                IntactCore.initialize(participant.getParticipantDetectionMethods());
+            }
+            if (participant.getInteraction() != null){
+                if (interactionController.getInteraction() == null || !interactionController.getInteraction().getAc().equalsIgnoreCase(participant.getInteraction().getAc())){
+                    if( interactionController.getInteraction() == null ) {
+                        interactionController.setInteraction( participant.getInteraction() );
+                    }
 
-            if( interactionController.getInteraction() == null ) {
-                interactionController.setInteraction( participant.getInteraction() );
+                    Collection<Experiment> experiments = participant.getInteraction().getExperiments();
+
+                    if (!IntactCore.isInitialized(experiments)){
+                        experiments = getDaoFactory().getExperimentDao().getByInteractionAc(participant.getInteraction().getAc());
+                    }
+                    if (!IntactCore.isInitialized(participant.getInteraction().getComponents())){
+                        IntactCore.initialize(participant.getInteraction().getComponents());
+                    }
+                    if( experiments.isEmpty()) {
+                        addWarningMessage( "The parent interaction of this participant isn't attached to an experiment",
+                                "Abort experiment loading." );
+                        return;
+                    }
+                    else{
+                        if ( publicationController.getPublication() == null ) {
+                            Publication publication = experiments.iterator().next().getPublication();
+                            publicationController.setPublication( publication );
+                        }
+                        if ( experimentController.getExperiment() == null ) {
+                            experimentController.setExperiment( experiments.iterator().next() );
+                        }
+                    }
+                }
             }
 
             if (participant.getInteractor() != null) {
@@ -259,6 +275,52 @@ public class ParticipantController extends ParameterizableObjectController {
 
             for (Experiment exp : experiments){
                 addParentAcsTo(parentAcs, exp);
+            }
+        }
+    }
+
+    public void removeExperimentalPreparation(CvExperimentalPreparation prep){
+        if (prep != null){
+            if (participant.getExperimentalPreparations().remove(prep)){
+                changed();
+            }
+            else{
+                addWarningMessage("The experimental preparation " + prep.getFullName()+" has not been removed.","The experimental preparation " + prep.getFullName()+" has not been removed because was not attached to this participant.");
+            }
+        }
+    }
+
+    public void addExperimentalPreparation(){
+        if (this.preparationToAdd != null){
+            if (!participant.getExperimentalPreparations().contains(this.preparationToAdd)){
+                participant.getExperimentalPreparations().add(this.preparationToAdd);
+                changed();
+            }
+            else{
+                addWarningMessage("The experimental preparation " + preparationToAdd.getFullName()+" was already attached to this participant.","The experimental preparation " + preparationToAdd.getFullName()+" was already attached to this participant.");
+            }
+        }
+    }
+
+    public void removeIdentificationMethod(CvIdentification prep){
+        if (prep != null){
+            if(participant.getParticipantDetectionMethods().remove(prep)){
+            changed();
+            }
+            else{
+                addWarningMessage("The identification method " + prep.getFullName() + " has not been removed.", "The identification method " + prep.getFullName() + " has not been removed because was not attached to this participant.");
+            }
+        }
+    }
+
+    public void addIdentificationMethod(){
+        if (this.identificationToAdd != null){
+            if (!participant.getParticipantDetectionMethods().contains(this.identificationToAdd)){
+                participant.getParticipantDetectionMethods().add(this.identificationToAdd);
+                changed();
+            }
+            else{
+                addWarningMessage("The identification method " + identificationToAdd.getFullName()+" was already attached to this participant.","The identification method " + identificationToAdd.getFullName()+" was already attached to this participant.");
             }
         }
     }
@@ -628,5 +690,21 @@ public class ParticipantController extends ParameterizableObjectController {
             isParameterDisabled = true;
             isConfidenceDisabled = true;
         }
+    }
+
+    public CvExperimentalPreparation getPreparationToAdd() {
+        return preparationToAdd;
+    }
+
+    public void setPreparationToAdd(CvExperimentalPreparation preparationToAdd) {
+        this.preparationToAdd = preparationToAdd;
+    }
+
+    public CvIdentification getIdentificationToAdd() {
+        return identificationToAdd;
+    }
+
+    public void setIdentificationToAdd(CvIdentification identificationToAdd) {
+        this.identificationToAdd = identificationToAdd;
     }
 }

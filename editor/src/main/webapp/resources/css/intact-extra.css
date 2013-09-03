@@ -253,6 +253,17 @@ border-right:0 none !important;
     z-index: 2001;
 }
 
+.dataList .ui-datalist-data{
+    border: none;
+    background: transparent;
+    background-image: none;
+}
+
+.ui-panelgrid td, .ui-panelgrid tr
+{
+    border-style: none !important
+}
+
 #intact-blockingDiv {
     position: fixed;
     top: 0;

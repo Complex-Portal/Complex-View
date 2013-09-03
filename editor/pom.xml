@@ -12,7 +12,7 @@
     <artifactId>editor</artifactId>
     <packaging>war</packaging>
 
-    <version>2.2.3-SNAPSHOT</version>
+    <version>2.2.3</version>
 
     <name>Service :: IntAct Editor</name>
 
@@ -29,7 +29,7 @@
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <core.version>2.6.4</core.version>
+        <core.version>2.6.5-SNAPSHOT</core.version>
         <spring.version>3.1.2.RELEASE</spring.version>
         <bridges.version>2.1.8</bridges.version>
         <dbupdate.version>2.1.6</dbupdate.version>
@@ -49,9 +49,9 @@
         <db.hbm2ddl>none</db.hbm2ddl>
 
         <!-- default IMEx central client-->
-        <ic.username>${imex.username}</ic.username>
-        <ic.password>${imex.password}</ic.password>
-        <ic.endpoint>${imex.endpoint}</ic.endpoint>
+        <ic.username></ic.username>
+        <ic.password></ic.password>
+        <ic.endpoint></ic.endpoint>
         <update.log.directory>target/imex-report</update.log.directory>
 
         <!-- other property defaults -->
