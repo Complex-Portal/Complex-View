@@ -91,7 +91,10 @@ public class ParticipantImportController extends BaseController {
     private CvExperimentalRole cvExperimentalRole;
     private CvBiologicalRole cvBiologicalRole;
     private BioSource expressedIn;
-    private CvExperimentalPreparation cvExperimentalPreparation;
+    private Collection<CvExperimentalPreparation> cvExperimentalPreparations = new ArrayList<CvExperimentalPreparation>();
+    private Collection<CvIdentification> cvIdentifications=new ArrayList<CvIdentification>();
+    private CvExperimentalPreparation preparationToAdd;
+    private CvIdentification identificationToAdd;
     private float stoichiometry;
 
     private final static String FEATURE_CHAIN = "PRO_";
@@ -384,10 +387,11 @@ public class ParticipantImportController extends BaseController {
             getInteractionController().getChangesController().markAsHiddenChange(interactor, interaction, parentAcs);
         }
 
-        if (cvExperimentalPreparation != null) {
-            Collection<CvExperimentalPreparation> experimentalPreparations = new ArrayList<CvExperimentalPreparation>();
-            experimentalPreparations.add(cvExperimentalPreparation);
-            component.setExperimentalPreparations(experimentalPreparations);
+        if (!cvExperimentalPreparations.isEmpty()) {
+            component.getExperimentalPreparations().addAll(cvExperimentalPreparations);
+        }
+        if (!cvIdentifications.isEmpty()) {
+            component.getParticipantDetectionMethods().addAll(cvIdentifications);
         }
 
         return component;
@@ -493,12 +497,56 @@ public class ParticipantImportController extends BaseController {
         this.expressedIn = expressedIn;
     }
 
-    public CvExperimentalPreparation getCvExperimentalPreparation() {
-        return cvExperimentalPreparation;
+    public Collection<CvExperimentalPreparation> getCvExperimentalPreparations() {
+        return cvExperimentalPreparations;
     }
 
-    public void setCvExperimentalPreparation(CvExperimentalPreparation cvExperimentalPreparation) {
-        this.cvExperimentalPreparation = cvExperimentalPreparation;
+    public Collection<CvIdentification> getCvIdentifications() {
+        return cvIdentifications;
+    }
+
+    public CvExperimentalPreparation getPreparationToAdd() {
+        return preparationToAdd;
+    }
+
+    public void setPreparationToAdd(CvExperimentalPreparation preparationToAdd) {
+        this.preparationToAdd = preparationToAdd;
+    }
+
+    public CvIdentification getIdentificationToAdd() {
+        return identificationToAdd;
+    }
+
+    public void setIdentificationToAdd(CvIdentification identificationToAdd) {
+        this.identificationToAdd = identificationToAdd;
+    }
+
+    public void removeExperimentalPreparation(CvExperimentalPreparation prep){
+        if (prep != null){
+            cvExperimentalPreparations.remove(prep);
+        }
+    }
+
+    public void addExperimentalPreparation(){
+        if (this.preparationToAdd != null){
+            if (!cvExperimentalPreparations.contains(this.preparationToAdd)){
+                cvExperimentalPreparations.add(this.preparationToAdd);
+            }
+        }
+    }
+
+    public void removeIdentificationMethod(CvIdentification prep){
+        if (prep != null){
+            cvIdentifications.remove(prep);
+        }
+    }
+
+    public void addIdentificationMethod(){
+        if (this.identificationToAdd != null){
+            if (!cvIdentifications.contains(this.identificationToAdd)){
+                cvIdentifications.add(this.identificationToAdd);
+            }
+        }
     }
 
     public float getStoichiometry() {
@@ -632,5 +680,7 @@ public class ParticipantImportController extends BaseController {
         public void close() throws IOException {
 
         }
+
+
     }
 }

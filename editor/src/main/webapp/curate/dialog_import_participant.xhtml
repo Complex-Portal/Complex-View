@@ -49,7 +49,7 @@
                                          oncomplete="adding_load.hide(); " process=":editorForm:interactionTabs:candidatesDialog"
                                          update=":editorForm:interactionTabs:participantsPanel :editorForm:shortlabelTxt :editorForm:messagesComponent :editorForm:changesPanel"/>
                         <p:commandButton type="button" value="Back" rendered="#{empty participantImportController.importCandidates}"
-                        onclick="candidatesDialogWV.hide(); importParticipantDialog.show()"/>
+                                         onclick="candidatesDialogWV.hide(); importParticipantDialog.show()"/>
                     </h:panelGroup>
                 </f:facet>
 
@@ -115,7 +115,7 @@
 
                 <br/>
 
-                <p:panel header="Global attributes" rendered="#{not empty participantImportController.importCandidates}">
+                <p:panel id="globalAttributesId" header="Global attributes" rendered="#{not empty participantImportController.importCandidates}">
                     <h:panelGrid columns="2">
                         <h:outputLabel value="Experimental role: " for="expRoleDialogTxt"/>
                         <ia:inputCvObject id="expRoleDialogTxt" cvIdentifier="MI:0495"
@@ -133,16 +133,58 @@
                         <ia:inputBioSource id="expressedInDialogTxt" value="#{participantImportController.expressedIn}"
                                            modal="false"
                                            selectItems="#{bioSourceService.bioSourceSelectItems}"/>
-
-                        <h:outputLabel value="Delivery method: " for="deliveryInDialogTxt"/>
-                        <ia:inputCvObject id="deliveryInDialogTxt" cvIdentifier="MI:0346"
-                                          modal="false"
-                                          value="#{participantImportController.cvExperimentalPreparation}"
-                                          selectItems="#{cvObjectService.participantExperimentalPreparationsSelectItems}"/>
-
                         <h:outputLabel value="Stoichiometry: " for="stoichiometryDialogTxt"/>
                         <p:spinner id="stoichiometryDialogTxt" value="#{participantImportController.stoichiometry}" min="0" stepFactor="1" size="3" maxlength="2"/>
-
+                        <h:outputLabel value="Experimental preparation(s): " for="deliveryDescription"/>
+                        <h:panelGroup id="deliveryDescription">
+                            <p:dataList id="deliveryListInDialog" value="#{participantImportController.cvExperimentalPreparations}" var="delivery" type="definition" rendered="#{not empty participantImportController.cvExperimentalPreparations}" styleClass="dataList">
+                                <f:facet name="description">
+                                    <h:outputText value=""/>
+                                </f:facet>
+                                <p:column>
+                                    <p:panelGrid columns="2">
+                                        <h:outputText value="#{delivery.shortLabel}"/>
+                                        <p:commandButton value="Remove"
+                                                         actionListener="#{participantImportController.removeExperimentalPreparation(delivery)}" update=":editorForm:interactionTabs:candidatesDialogContent:deliveryDescription"
+                                                         process="@this" immediate="true"/>
+                                    </p:panelGrid>
+                                </p:column>
+                            </p:dataList>
+                            <h:panelGrid columns="2">
+                                <ia:inputSimpleCvObject id="newDeliveryTxtInDialog" cvIdentifier="MI:0346"
+                                                        value="#{participantImportController.preparationToAdd}"
+                                                        modal="false"
+                                                        selectItems="#{cvObjectService.participantExperimentalPreparationsSelectItems}"/>
+                                <p:commandButton id="btnAddDelivery" value="Add"
+                                                 actionListener="#{participantImportController.addExperimentalPreparation}" update=":editorForm:interactionTabs:candidatesDialogContent:deliveryDescription"
+                                                 process="newDeliveryTxtInDialog"/>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                        <h:outputLabel value="Identification method(s): " for="identificationDescription"/>
+                        <h:panelGroup id="identificationDescription">
+                            <p:dataList id="identificationListInDialog" value="#{participantImportController.cvIdentifications}" var="identification" type="definition" rendered="#{not empty participantImportController.cvIdentifications}" styleClass="dataList">
+                                <f:facet name="description">
+                                    <h:outputText value=""/>
+                                </f:facet>
+                                <p:column>
+                                    <p:panelGrid columns="2">
+                                        <h:outputText value="#{identification.shortLabel}"/>
+                                        <p:commandButton value="Remove"
+                                                         actionListener="#{participantImportController.removeIdentificationMethod(identification)}" update=":editorForm:interactionTabs:candidatesDialogContent:identificationDescription"
+                                                         process="@this" immediate="true"/>
+                                    </p:panelGrid>
+                                </p:column>
+                            </p:dataList>
+                            <h:panelGrid columns="2">
+                                <ia:inputSimpleCvObject id="newIdentificationTxtInDialog" cvIdentifier="MI:0002"
+                                                        value="#{participantImportController.identificationToAdd}"
+                                                        modal="false"
+                                                        selectItems="#{cvObjectService.participantDetectionMethodSelectItems}"/>
+                                <p:commandButton id="btnAddIdentification" value="Add"
+                                                 actionListener="#{participantImportController.addIdentificationMethod}" update=":editorForm:interactionTabs:candidatesDialogContent:identificationDescription"
+                                                 process="newIdentificationTxtInDialog"/>
+                            </h:panelGrid>
+                        </h:panelGroup>
                         <h:outputText value=" "/>
                         <h:outputText value=" "/>
                     </h:panelGrid>
