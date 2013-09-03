@@ -43,6 +43,7 @@ import uk.ac.ebi.intact.dataexchange.imex.idassigner.ImexCentralManager;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.PublicationImexUpdaterException;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
@@ -542,6 +543,15 @@ public class PublicationController extends AnnotatedObjectController {
         lifecycleManager.getAssignedStatus().startCuration(publication);
 
         addInfoMessage("Curation started", "Curation is now in progress");
+
+        // try to register/update record in IMEx central if they don't have IMEx. IMEx records are updated automatically with a cronjob
+        if (publication.getAc() != null && getImexId()==null){
+            try {
+                imexCentralManager.registerAndUpdatePublication(publication.getAc());
+            } catch (ImexCentralException e) {
+                addWarningMessage("Impossible to register/update status of " + identifier + " in IMEx central", e.getMessage());
+            }
+        }
     }
 
     public void markAsReadyForChecking(ActionEvent evt) {
@@ -574,6 +584,14 @@ public class PublicationController extends AnnotatedObjectController {
         reasonForReadyForChecking = null;
 
         addInfoMessage("Publication ready for checking", "Assigned to reviewer: " + publication.getCurrentReviewer().getLogin());
+        // try to register/update record in IMEx central. IMEx records are updated automatically with a cron job so if it has an IMEx id we do nothing
+        if (publication.getAc() != null && getImexId() == null){
+            try {
+                imexCentralManager.registerAndUpdatePublication(publication.getAc());
+            } catch (ImexCentralException e) {
+                addWarningMessage("Impossible to register/update status of " + identifier + " in IMEx central", e.getMessage());
+            }
+        }
     }
 
     @Transactional
@@ -582,6 +600,14 @@ public class PublicationController extends AnnotatedObjectController {
         publication.removeLifecycleEvent(event);
 
         publication.setStatus(getDaoFactory().getCvObjectDao(CvPublicationStatus.class).getByIdentifier(CvPublicationStatusType.CURATION_IN_PROGRESS.identifier()));
+        // try to register/update record in IMEx central. IMEx records are updated automatically with a cron job so if it has an IMEx id we do nothing
+        if (publication.getAc() != null && getImexId() == null){
+            try {
+                imexCentralManager.registerAndUpdatePublication(publication.getAc());
+            } catch (ImexCentralException e) {
+                addWarningMessage("Impossible to register/update status of " + identifier + " in IMEx central", e.getMessage());
+            }
+        }
     }
 
     @Transactional
@@ -598,6 +624,14 @@ public class PublicationController extends AnnotatedObjectController {
         }
 
         publication.setStatus(getDaoFactory().getCvObjectDao(CvPublicationStatus.class).getByIdentifier(CvPublicationStatusType.READY_FOR_CHECKING.identifier()));
+        // try to register/update record in IMEx central. IMEx records are updated automatically with a cron job so if it has an IMEx id we do nothing
+        if (publication.getAc() != null && getImexId() == null){
+            try {
+                imexCentralManager.registerAndUpdatePublication(publication.getAc());
+            } catch (ImexCentralException e) {
+                addWarningMessage("Impossible to register/update status of " + identifier + " in IMEx central", e.getMessage());
+            }
+        }
     }
 
     @Transactional
@@ -613,6 +647,14 @@ public class PublicationController extends AnnotatedObjectController {
         }
 
         reasonForOnHoldFromDialog = null;
+        // try to register/update record in IMEx central. IMEx records are updated automatically with a cron job so if it has an IMEx id we do nothing
+        if (publication.getAc() != null && getImexId() == null){
+            try {
+                imexCentralManager.registerAndUpdatePublication(publication.getAc());
+            } catch (ImexCentralException e) {
+                addWarningMessage("Impossible to register/update status of " + identifier + " in IMEx central", e.getMessage());
+            }
+        }
     }
 
     @Transactional
@@ -620,6 +662,14 @@ public class PublicationController extends AnnotatedObjectController {
         removeAnnotation(CvTopic.ON_HOLD);
 
         lifecycleManager.getAcceptedOnHoldStatus().onHoldRemoved(publication, null);
+        // try to register/update record in IMEx central. IMEx records are updated automatically with a cron job so if it has an IMEx id we do nothing
+        if (publication.getAc() != null && getImexId() == null){
+            try {
+                imexCentralManager.registerAndUpdatePublication(publication.getAc());
+            } catch (ImexCentralException e) {
+                addWarningMessage("Impossible to register/update status of " + identifier + " in IMEx central", e.getMessage());
+            }
+        }
     }
 
     public boolean isAllExperimentsAccepted() {
@@ -655,6 +705,37 @@ public class PublicationController extends AnnotatedObjectController {
     public void doSaveAndClose(ActionEvent evt) {
         doSave(evt);
         doClose(evt);
+    }
+
+    @Override
+    public void doSave(boolean refreshCurrentView) {
+        boolean registerPublication = (publication != null && publication.getAc() == null);
+        super.doSave(refreshCurrentView);
+        // try to register/update record in IMEx central. IMEx records are updated automatically with a cron job so if it has an IMEx id we do nothing
+        if (registerPublication && getImexId() == null){
+            try{
+                imexCentralManager.registerAndUpdatePublication(publication.getAc());
+            }
+            // cannot check IMEx central, add warning and create publication
+            catch (ImexCentralException e) {
+                addWarningMessage("Impossible to register " + identifier + " in IMEx central", e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public String doDelete() {
+        if (publication.getAc() != null){
+            try{
+                imexCentralManager.discardPublication(publication.getAc());
+            }
+            // cannot check IMEx central, add warning and create publication
+            catch (ImexCentralException e) {
+                addWarningMessage("Impossible to discard " + identifier + " in IMEx central. Please do it manually.", e.getMessage());
+            }
+        }
+
+        return super.doDelete();
     }
 
     public void addDataset(ActionEvent evt) {
