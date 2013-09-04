@@ -49,9 +49,9 @@
         <db.hbm2ddl>none</db.hbm2ddl>
 
         <!-- default IMEx central client-->
-        <ic.username></ic.username>
-        <ic.password></ic.password>
-        <ic.endpoint></ic.endpoint>
+        <ic.username>${imex.username}</ic.username>
+        <ic.password>${imex.password}</ic.password>
+        <ic.endpoint>${imex.endpoint}</ic.endpoint>
         <update.log.directory>target/imex-report</update.log.directory>
 
         <!-- other property defaults -->
