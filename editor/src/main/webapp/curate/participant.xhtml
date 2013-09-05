@@ -148,6 +148,7 @@
             </td>
 
         </tr>
+        <!-- WARNING : the p:column and immediate = true are required to make the button remove in the p:dataList work-->
         <tr>
             <td class="firstCell">
                 <h:outputLabel value="Experimental preparation(s): " for="deliveryList" rendered="#{not empty participant.experimentalPreparations}"/>
@@ -174,6 +175,7 @@
                                  actionListener="#{participantController.addExperimentalPreparation}" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,:editorForm:info"
                                  process="newDeliveryTxt"/>
             </td>
+            <!-- WARNING : the p:column and immediate = true are required to make the button remove in the p:dataList work-->
             <td class="firstCell">
                 <h:outputLabel value="Identification method(s): " for="identificationList" rendered="#{not empty participant.participantDetectionMethods}"/>
                 <h:outputLabel value="Identification method(s): " for="newIdentificationTxt" rendered="#{empty participant.participantDetectionMethods}"/>

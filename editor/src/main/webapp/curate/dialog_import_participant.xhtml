@@ -136,6 +136,7 @@
                         <h:outputLabel value="Stoichiometry: " for="stoichiometryDialogTxt"/>
                         <p:spinner id="stoichiometryDialogTxt" value="#{participantImportController.stoichiometry}" min="0" stepFactor="1" size="3" maxlength="2"/>
                         <h:outputLabel value="Experimental preparation(s): " for="deliveryDescription"/>
+                        <!-- WARNING : the p:column and immediate = true are required to make the button remove in the p:dataList work-->
                         <h:panelGroup id="deliveryDescription">
                             <p:dataList id="deliveryListInDialog" value="#{participantImportController.cvExperimentalPreparations}" var="delivery" type="definition" rendered="#{not empty participantImportController.cvExperimentalPreparations}" styleClass="dataList">
                                 <f:facet name="description">
@@ -160,6 +161,7 @@
                                                  process="newDeliveryTxtInDialog"/>
                             </h:panelGrid>
                         </h:panelGroup>
+                        <!-- WARNING : the p:column and immediate = true are required to make the button remove in the p:dataList work-->
                         <h:outputLabel value="Identification method(s): " for="identificationDescription"/>
                         <h:panelGroup id="identificationDescription">
                             <p:dataList id="identificationListInDialog" value="#{participantImportController.cvIdentifications}" var="identification" type="definition" rendered="#{not empty participantImportController.cvIdentifications}" styleClass="dataList">
