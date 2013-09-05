@@ -258,11 +258,13 @@ public class PublicationController extends AnnotatedObjectController {
             }
             // cannot check IMEx central, add warning and create publication
             catch (ImexCentralException e) {
+                log.error(e.getMessage(), e);
                 addWarningMessage("Impossible to check with IMExcentral if " + identifier + " is already curated", e.getMessage());
                 createNewPublication(null);
 
                 return "/curate/publication?faces-redirect=true";
             } catch (Exception e) {
+                log.error(e.getMessage(), e);
                 addWarningMessage("Impossible to check with IMExcentral if " + identifier + " is already curated", e.getMessage());
                 createNewPublication(null);
 
