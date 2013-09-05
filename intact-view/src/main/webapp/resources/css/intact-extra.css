@@ -158,9 +158,17 @@ td.compoundStructure {
     margin-right:5px;
 }
 
-/*.intact_fixedWidth {*/
-    /*width:650px;*/
-/*}*/
+
+.ia-front-page-columns {
+    vertical-align: top;
+    padding: 5px;
+}
+
+.ia-front-page-left-column {
+    /*background-color: #F4F4F4;*/
+    border-left: 1px solid #E8E8E8;
+}
+
 
 .ia-results-table th{
     white-space: normal !important;
@@ -168,10 +176,14 @@ td.compoundStructure {
 
 .dasty_title
 {
+background:url(../../dasty/client/img/ebi_bg.gif);
+}
+
+.ia-front-page-title, .dasty_title
+{
 display:block;
 padding: 2px;
 margin-bottom:5px;
-background:url(../../dasty/client/img/ebi_bg.gif);
 background-repeat:repeat-y;
 font-weight:bold;
 font-size:120%;
@@ -182,11 +194,12 @@ color:#006666;
  div.contributorLogo{
      float: left;
      border: 3px solid #E8E8E8;
-     margin: 10px 10px 0px 0px;
+     margin: 10px 0px 0px 10px;
      padding: 3px;
      text-align: center;
      width: 110px;
      height: 85px;
+     background-color: white;
  }
 div.contributorLogo div {
     height: 28px;

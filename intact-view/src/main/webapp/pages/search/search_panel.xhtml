@@ -53,15 +53,65 @@
                 <h:graphicImage alt="helpIcon" url="/images/help.png" inlineStyle="vertical-align: baseline"/>
             </p:commandLink>
         </h:panelGroup>
-        <br/>
-        <h:panelGroup id="searchTips" style="vertical-align:top; font-size: x-small">
-            <ul>
-                <li><h:outputText value="Free text search will look by default for interactor identifier, species, interaction id, detection method, interaction type, publication identifier or author, interactor xrefs, interaction xrefs"/></li>
-                <li><h:outputText value="For a more specific search, use MIQL syntax or advanced search"/></li>
-                <li><h:outputText value="Search based on exact word matches eg. BRCA2 will not match BRCA2B"/></li>
-                <li><h:outputText value="Search for isoforms of 'P12345' by using 'P12345*'"/></li>
-            </ul>
-        </h:panelGroup>
+
+
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 530px;">
+                    <h:panelGroup id="searchTips" style="vertical-align:top; font-size: 95%;">
+                       <ul style="margin-right: 20px;">
+                           <li><h:outputText value="Free text search will look by default for interactor identifier, species, interaction id, detection method, interaction type, publication identifier or author, interactor xrefs, interaction xrefs"/></li>
+                           <li><h:outputText value="For a more specific search, use MIQL syntax or advanced search"/></li>
+                           <li><h:outputText value="Search based on exact word matches eg. BRCA2 will not match BRCA2B"/></li>
+                           <li><h:outputText value="Search for isoforms of 'P12345' by using 'P12345*'"/></li>
+                       </ul>
+                   </h:panelGroup>
+                </td>
+                <td>
+                    <div style="font-weight: bold; padding-top: 1em;">Examples</div>
+                    <ul style="margin-top:0px;font-size: 95%;">
+                        <li>
+                            <h:outputText value="Gene name: e.g. "/>
+                            <h:commandLink id="geneNameExlink" value="BRCA2" action="#{searchBean.doBinarySearchAction}">
+                                <f:setPropertyActionListener value="BRCA2"
+                                                             target="#{userQuery.searchQuery}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:outputText value="UniProtKB Ac: e.g. "/>
+                            <h:commandLink id="uniprotAcExlink" value="Q06609" action="#{searchBean.doBinarySearchAction}">
+                                <f:setPropertyActionListener value="Q06609"
+                                                             target="#{userQuery.searchQuery}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:outputText value="UniProtKB Id: e.g. "/>
+                            <h:commandLink id="uniprotGeneExlink" value="dmc1" action="#{searchBean.doBinarySearchAction}">
+                                <f:setPropertyActionListener value="dmc1"
+                                                             target="#{userQuery.searchQuery}"/>
+                            </h:commandLink>
+                        </li>
+                        <li>
+                            <h:outputText value=" Pubmed Id: e.g. "/>
+                            <h:commandLink id="pubmedExlink" value="10831611" action="#{searchBean.doBinarySearchAction}">
+                                <f:setPropertyActionListener value="10831611"
+                                                             target="#{userQuery.searchQuery}"/>
+                            </h:commandLink>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <p:panel>
+                        <h:panelGroup style="text-align: center;display: block;">
+                            <h:graphicImage alt="infoIcon" url="/images/info-bubble-icon.png"/><br/>
+                            <h:outputLink value="http://www.ebi.ac.uk/support/index.php?query=intact">Support <br/>and feedback</h:outputLink>                        </h:panelGroup>
+                    </p:panel>
+                </td>
+            </tr>
+        </table>
+
+
+
 
     </p:panel>
 
