@@ -254,10 +254,9 @@
                 <p:commandButton id="autoCompleteBtn"
                                  value="Auto-complete"
                                  process="newPmid"
-                                 global="true"
                                  action="#{publicationController.newAutocomplete}"
                                  disabled="#{not publicationController.citexploreOnline}"
-                                 ajax="false"/>
+                                 update=":editorForm"/>
 
                 <br/>
 
