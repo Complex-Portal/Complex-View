@@ -168,7 +168,7 @@ public class ColumnContextController implements Serializable{
             simpleColumns = new String[] {
                     MOLECULE_A_NAME, MOLECULE_A_LINKS, MOLECULE_B_NAME, MOLECULE_B_LINKS,
                     MOLECULE_A_SPECIES, MOLECULE_B_SPECIES,INTERACTION_TYPE, CONFIDENCE_VALUE, PUBMED_IDENTIFIER,
-                    INTERACTION_DETECTION_METHOD, INTERACTION_AC, EXPANSION_METHOD
+                    INTERACTION_DETECTION_METHOD, SOURCE_DATABASE, INTERACTION_AC, EXPANSION_METHOD
             };
         }
         return simpleColumns;
@@ -178,7 +178,7 @@ public class ColumnContextController implements Serializable{
         if (basicColumns == null){
             basicColumns =new String[] {
                     MOLECULE_A_NAME, MOLECULE_A_LINKS, MOLECULE_B_NAME, MOLECULE_B_LINKS,
-                    INTERACTION_DETECTION_METHOD, INTERACTION_AC
+                    INTERACTION_DETECTION_METHOD, SOURCE_DATABASE, INTERACTION_AC
             };
         }
         return basicColumns;
@@ -188,7 +188,7 @@ public class ColumnContextController implements Serializable{
         if (expandedColumns == null){
             expandedColumns =new String[] {
                     MOLECULE_A_NAME, MOLECULE_A_LINKS, MOLECULE_B_NAME, MOLECULE_B_LINKS,
-                    MOLECULE_A_SPECIES, MOLECULE_B_SPECIES,INTERACTION_TYPE, CONFIDENCE_VALUE, PUBMED_IDENTIFIER,
+                    MOLECULE_A_SPECIES, MOLECULE_B_SPECIES,INTERACTION_TYPE, SOURCE_DATABASE, CONFIDENCE_VALUE, PUBMED_IDENTIFIER,
                     INTERACTION_DETECTION_METHOD, INTERACTION_AC, EXPANSION_METHOD, MOLECULE_A_BIOLOGICAL_ROLE, MOLECULE_B_BIOLOGICAL_ROLE,
                     MOLECULE_A_EXPERIMENTAL_ROLE, MOLECULE_B_EXPERIMENTAL_ROLE, MOLECULE_A_INTERACTOR_TYPE, MOLECULE_B_INTERACTOR_TYPE,
                     MOLECULE_A_XREFS, MOLECULE_B_XREFS, INTERACTION_XREFS,
@@ -217,7 +217,7 @@ public class ColumnContextController implements Serializable{
 
     private String[] getMinimumColumns() {
         if (minimumColumns == null){
-           minimumColumns = new String[] { MOLECULE_A_NAME, MOLECULE_B_NAME, INTERACTION_AC};
+           minimumColumns = new String[] { MOLECULE_A_NAME, MOLECULE_B_NAME, SOURCE_DATABASE, INTERACTION_AC};
         }
         return minimumColumns;
     }
