@@ -8,6 +8,7 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.ImexCentralManager;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.PublicationImexUpdaterException;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.listener.ReportWriterListener;
+import uk.ac.ebi.intact.model.Publication;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -82,32 +83,36 @@ public class ImexIntactAdminGroupUpdater {
             System.out.println("Starting the IMEx ADMIN reset a selection of publication in " + fileInputName);
 
             for (String ac : publicationAcs){
-                try {
-                    System.out.println("Reset ADMIN group from " + ac);
-                    System.out.println("Add INTACT CURATOR " + ac);
-                    client.updatePublicationAdminGroup(ac, Operation.ADD, "INTACT CURATORS");
+                Publication intact = IntactContext.getCurrentInstance().getDaoFactory().getPublicationDao().getByShortLabel(ac);
+                if (intact != null){
 
-                }catch (ImexCentralException e) {
-                    e.printStackTrace();
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
+                    try {
+                        System.out.println("Reset ADMIN group from " + ac);
+                        System.out.println("Add INTACT CURATOR " + ac);
+                        client.updatePublicationAdminGroup(ac, Operation.ADD, "INTACT CURATORS");
 
-                try {
-                    System.out.println("drop " + adminToRemove);
-                    client.updatePublicationAdminGroup(ac, Operation.DROP, adminToRemove);
-                } catch (ImexCentralException e) {
-                    e.printStackTrace();
-                }
+                    }catch (ImexCentralException e) {
+                        e.printStackTrace();
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
 
-                try {
-                    System.out.println("Synchronize... " + ac);
+                    try {
+                        System.out.println("drop " + adminToRemove);
+                        client.updatePublicationAdminGroup(ac, Operation.DROP, adminToRemove);
+                    } catch (ImexCentralException e) {
+                        e.printStackTrace();
+                    }
 
-                    ia.updateIntactPublicationHavingIMEx(IntactContext.getCurrentInstance().getDaoFactory().getPublicationDao().getByShortLabel(ac).getAc());
-                } catch (PublicationImexUpdaterException e) {
-                    e.printStackTrace();
-                } catch (ImexCentralException e) {
-                    e.printStackTrace();
+                    try {
+                        System.out.println("Synchronize... " + ac);
+                        ia.updateIntactPublicationHavingIMEx(IntactContext.getCurrentInstance().getDaoFactory().getPublicationDao().getByShortLabel(ac).getAc());
+
+                    } catch (PublicationImexUpdaterException e) {
+                        e.printStackTrace();
+                    } catch (ImexCentralException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
