@@ -10,9 +10,10 @@ echo "IMEx central username $2"
 echo "IMEx central password $3"
 echo "IMEx central endpoint $4"
 echo "File containing selection of publications $6"
+echo "ADMIN group to drop $7"
 
 MAVEN_PROFILE=$5
 
 echo "use profile ${MAVEN_PROFILE}"
 
-mvn -U clean install -Preset-admin,${MAVEN_PROFILE} -Dupdate.log.directory=$1 -Dic.username=$2 -Dic.password=$3 -Dic.endpoint=$4 -DinputFile=$6 -Dmaven.repo.local=repository -Dmaven.test.skip -Ddb=oracle
+mvn -U clean install -Preset-admin,${MAVEN_PROFILE} -Dupdate.log.directory=$1 -Dic.username=$2 -Dic.password=$3 -Dic.endpoint=$4 -DinputFile=$6 -DadminToRemove=$7 -Dmaven.repo.local=repository -Dmaven.test.skip -Ddb=oracle

@@ -40,13 +40,15 @@ public class ImexIntactAdminGroupUpdater {
         }
 
         // two possible arguments
-        if( args.length != 1 ) {
-            System.err.println( "Usage: selectionAssigner <inputFile>" );
+        if( args.length != 2 ) {
+            System.err.println( "Usage: selectionAssigner <inputFile> <ADMINToRemove>" );
             System.exit( 1 );
         }
         final String fileInputName = args[0];
+        final String adminToRemove = args[1];
 
         System.out.println("File containing publication acs for which we want to reset ADMIN group = " + fileInputName);
+        System.out.println("Admin group to remove = " + adminToRemove);
 
         IntactContext.initContext(new String[]{"/META-INF/jpa-imex-assigner.spring.xml", "/META-INF/imex-assigner.spring.xml"});
 
@@ -82,17 +84,29 @@ public class ImexIntactAdminGroupUpdater {
             for (String ac : publicationAcs){
                 try {
                     System.out.println("Reset ADMIN group from " + ac);
-
+                    System.out.println("Add INTACT CURATOR " + ac);
                     client.updatePublicationAdminGroup(ac, Operation.ADD, "INTACT CURATORS");
-                    client.updatePublicationAdminGroup(ac, Operation.DROP, "INTACT");
+
+                }catch (ImexCentralException e) {
+                    e.printStackTrace();
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                try {
+                    System.out.println("drop " + adminToRemove);
+                    client.updatePublicationAdminGroup(ac, Operation.DROP, adminToRemove);
+                } catch (ImexCentralException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    System.out.println("Synchronize... " + ac);
 
                     ia.updateIntactPublicationHavingIMEx(IntactContext.getCurrentInstance().getDaoFactory().getPublicationDao().getByShortLabel(ac).getAc());
-
                 } catch (PublicationImexUpdaterException e) {
                     e.printStackTrace();
                 } catch (ImexCentralException e) {
-                    e.printStackTrace();
-                } catch (Exception e){
                     e.printStackTrace();
                 }
             }

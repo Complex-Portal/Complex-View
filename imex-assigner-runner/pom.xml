@@ -10,7 +10,7 @@
 
   <groupId>uk.ac.ebi.intact.service</groupId>
   <artifactId>imex-assigner-runner</artifactId>
-  <version>1.1.2</version>
+  <version>1.1.3-SNAPSHOT</version>
   <name>Service :: IMEx assigner and updater</name>
 
     <scm>
@@ -164,6 +164,7 @@
                                 <argument>-Djavax.net.ssl.keyStorePassword=${keystore.password}</argument>
                                 <argument>uk.ac.ebi.intact.service.ImexIntactAdminGroupUpdater</argument>
                                 <argument>${inputFile}</argument>
+                                <argument>${adminToRemove}</argument>
                             </arguments>
                         </configuration>
                     </plugin>
