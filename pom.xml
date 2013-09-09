@@ -40,6 +40,7 @@
      <module>validator-view</module>
      <module>health-check</module>
      <module>intact-widgets</module>
+    <module>complex-indexer</module>
   </modules>
 
     <scm>
