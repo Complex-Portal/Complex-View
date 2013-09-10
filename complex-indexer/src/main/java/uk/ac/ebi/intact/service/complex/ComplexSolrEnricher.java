@@ -105,19 +105,23 @@ public class ComplexSolrEnricher  extends BaseFieldEnricher {
                 ID = interactorXref.getPrimaryId ( ) ;
                 ontologyTerm_aux = findOntologyTerm ( ID, shortLabel ) ;
                 // check if the "db_<id>" is GO
-                if ( CvDatabase.GO.equals ( ID ) ) {
+                if ( CvDatabase.GO_MI_REF.equals ( ID ) ) {
                     // then add short label, id, name and synonyms to complex_xref
                     solrDocument.addField ( ComplexFieldNames.COMPLEX_XREF, shortLabel ) ;
                     solrDocument.addField ( ComplexFieldNames.COMPLEX_XREF, ID ) ;
+                    solrDocument.addField ( ComplexFieldNames.COMPLEX_XREF, shortLabel + ":" + ID ) ;
                     solrDocument.addField ( ComplexFieldNames.COMPLEX_XREF, ontologyTerm_aux.getName ( ) ) ;
                     for ( OntologyTerm synonym : ontologyTerm_aux.getSynonyms ( ) ) {
-                        solrDocument.addField ( ComplexFieldNames.COMPLEX_XREF, synonym.getId ( ) ) ;
                         solrDocument.addField ( ComplexFieldNames.COMPLEX_XREF, synonym.getName ( ) ) ;
                     }
                     // add parents to complex_xref_ontology
                     for ( OntologyTerm parent : ontologyTerm_aux.getAllParentsToRoot ( true ) ) {
                         solrDocument.addField ( ComplexFieldNames.COMPLEX_XREF_ONTOLOGY, parent.getId ( ) ) ;
                         solrDocument.addField ( ComplexFieldNames.COMPLEX_XREF_ONTOLOGY, parent.getName ( ) ) ;
+                        // add parent synosyms to complex_xref_ontology
+                        for ( OntologyTerm synonym : parent.getSynonyms ( ) ) {
+                            solrDocument.addField ( ComplexFieldNames.COMPLEX_XREF_ONTOLOGY, synonym.getName ( ) ) ;
+                        }
                     }
                 }
             }
@@ -172,7 +176,7 @@ public class ComplexSolrEnricher  extends BaseFieldEnricher {
         }
         // create the key to search/store in the cache
         final String cacheKey = new StringBuilder ( ) .append ( taxid )
-                .append("_") .append ( name ) .toString ( ) ;
+                .append(":") .append ( name ) .toString ( ) ;
         // check if the ontology term is in the cache
         if ( ontologyTermCache.containsKey ( cacheKey ) ) {
             return ontologyTermCache.get ( cacheKey ) ;
@@ -188,7 +192,7 @@ public class ComplexSolrEnricher  extends BaseFieldEnricher {
         // check if the name is not null
         if ( name == null ) { return null ; }
         // create the key to search/store in the cache
-        final String cacheKey = new StringBuilder ( ) .append ( "_" ) .append ( name ) .toString ( ) ;
+        final String cacheKey = new StringBuilder ( ) .append ( ":" ) .append ( name ) .toString ( ) ;
         // check if the ontology term is in the cache
         if ( ontologyTermCache.containsKey ( cacheKey ) ) { return ontologyTermCache.get(cacheKey) ; }
         // get the ontology term for this interaction and store that in the cache

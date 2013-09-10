@@ -3,8 +3,7 @@ package uk.ac.ebi.intact.service.complex;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.common.SolrInputDocument;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexFieldNames;
-import uk.ac.ebi.intact.service.complex.ComplexSolrEnricher;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
 import uk.ac.ebi.intact.model.*;
 
@@ -43,9 +42,12 @@ public class ComplexSolrConverter {
         ///   COMPLEX FIELDS   ///
         //////////////////////////
 
-        // add info to publication_id and complex_id field: ac, owner, (db, id and db_id) from xrefs
+        // add info to publication_id and complex_id field: ac, owner, (db, id and db:id) from xrefs
         solrDocument.addField ( ComplexFieldNames.COMPLEX_ID, complex.getAc ( ) ) ;
-        solrDocument.addField ( ComplexFieldNames.COMPLEX_ID, complex.getOwner ( ) .getShortLabel() ) ;
+        if ( complex.getOwner ( ) != null ) {
+            solrDocument.addField ( ComplexFieldNames.COMPLEX_ID, complex.getOwner ( ) .getShortLabel() ) ;
+            solrDocument.addField ( ComplexFieldNames.COMPLEX_ID, complex.getOwner ( ) .getShortLabel( ) + ":" + complex.getAc ( ) ) ;
+        }
         String db, id ;
         for ( Xref xref : complex.getXrefs ( ) ) {
             id = xref.getPrimaryId ( ) ;
@@ -53,11 +55,7 @@ public class ComplexSolrConverter {
             solrDocument.addField ( ComplexFieldNames.COMPLEX_ID, id ) ;
             solrDocument.addField ( ComplexFieldNames.COMPLEX_ID, db ) ;
             solrDocument.addField ( ComplexFieldNames.COMPLEX_ID, new StringBuilder ( )
-                        .append ( db ) .append ( "_" ) .append ( id ) .toString ( ) ) ;
-            if ( xref.getCvDatabase ( ) .equals ( "pubmed" )
-                    && xref.getCvXrefQualifier ( ) .equals ( "see_also" ) ) {
-                solrDocument.addField ( ComplexFieldNames.PUBLICATION_ID, xref.getPrimaryId ( ) ) ;
-            }
+                        .append ( db ) .append ( ":" ) .append ( id ) .toString ( ) ) ;
         }
         // add info to complex_alias field: short label, full name, (name and type) from  alias
         // and add info to complex_name
@@ -71,7 +69,7 @@ public class ComplexSolrConverter {
             solrDocument.addField ( ComplexFieldNames.COMPLEX_ALIAS, a_name ) ;
             solrDocument.addField ( ComplexFieldNames.COMPLEX_ALIAS, a_type ) ;
             solrDocument.addField ( ComplexFieldNames.COMPLEX_ALIAS, new StringBuilder ( )
-                        .append ( a_type ) .append ( "_" ) .append ( a_name ) .toString ( ) ) ;
+                        .append ( a_type ) .append ( ":" ) .append ( a_name ) .toString ( ) ) ;
             if ( ! one && alias.getCvAliasType ( ) . getShortLabel ( ) .equals ( "recommended name" ) ) {
                 one = true ;
                 solrDocument.addField ( ComplexFieldNames.COMPLEX_NAME, alias.getName ( ) ) ;
@@ -80,8 +78,14 @@ public class ComplexSolrConverter {
         if ( ! one ) {
             solrDocument.addField ( ComplexFieldNames.COMPLEX_NAME, complex.getShortLabel ( ) ) ;
         }
-        // add info to complex_organism, complex_organism_f and organism_name fields:
+        // add info to source and source_f, complex_organism, complex_organism_f and organism_name fields:
+        CvObject cvObject = null ;
         for ( Experiment experiment : complex.getExperiments ( ) ) {
+            cvObject = experiment.getCvInteraction ( ) ;
+            solrDocument.addField ( ComplexFieldNames.SOURCE, cvObject.getShortLabel ( ) ) ;
+            solrDocument.addField ( ComplexFieldNames.SOURCE_F, cvObject.getShortLabel ( ) ) ;
+            solrDocument.addField ( ComplexFieldNames.SOURCE, cvObject.getFullName ( ) ) ;
+
             OntologyTerm ontologyTerm = complexSolrEnricher.findOntologyTermByName ( experiment.getBioSource ( ) .getShortLabel ( ) ) ;
             solrDocument.addField ( ComplexFieldNames.COMPLEX_ORGANISM, ontologyTerm.getName ( ) ) ;
             solrDocument.addField ( ComplexFieldNames.COMPLEX_ORGANISM_F, ontologyTerm.getName ( ) ) ;
@@ -126,7 +130,8 @@ public class ComplexSolrConverter {
         Set < String > indexed = new HashSet < String > ( ) ;
         indexed.add ( complex.getAc ( ) ) ;
         Interactor interactorAux;
-        float number_participants = 0 , stoichiometry = 0 ;
+        boolean stc = false;
+        float number_participants = 0.0f , stoichiometry = 0.0f ;
         do {
             interactorAux = stack.pop ( ) ;
             // if interactorAux is an instance of InteractionImpl we need to get all its components
@@ -138,21 +143,61 @@ public class ComplexSolrConverter {
                         stack.push ( component.getInteractor ( ) ) ;
                         stoichiometry = component.getStoichiometry ( ) ;
                         number_participants += stoichiometry == 0.0f ? 1 : stoichiometry ;
+                        stc |= stoichiometry != 0.0f ;
                         indexed.add ( AC ) ;
                     }
                 }
             }
             // now, we get the information of the interactorAux
+            String shortLabel = null ;
+            String ID = null;
             solrDocument.addField ( ComplexFieldNames.INTERACTOR_ID, interactorAux.getAc ( ) ) ;
             for ( InteractorXref xref : interactorAux.getXrefs ( ) ) {
-                solrDocument.addField ( ComplexFieldNames.INTERACTOR_ID, xref.getAc ( ) ) ;
-                solrDocument.addField ( ComplexFieldNames.INTERACTOR_ID, xref.getPrimaryId ( ) ) ;
+                //solrDocument.addField ( ComplexFieldNames.INTERACTOR_ID, xref.getAc ( ) ) ;
+                CvXrefQualifier cvXrefQualifier = xref.getCvXrefQualifier ( ) ;
+                if ( cvXrefQualifier != null &&
+                        (  cvXrefQualifier.getIdentifier ( ) .equals ( CvXrefQualifier.IDENTITY_MI_REF )
+                        || cvXrefQualifier.getIdentifier ( ) .equals ( CvXrefQualifier.SECONDARY_AC_MI_REF )
+                        || cvXrefQualifier.getShortLabel ( ) .equalsIgnoreCase ( "intact-secondary" ) ) ) {
+                    shortLabel = xref.getCvDatabase ( ) .getShortLabel ( ) ;
+                    ID = xref.getPrimaryId() ;
+                    solrDocument.addField ( ComplexFieldNames.INTERACTOR_ID, ID ) ;
+                    solrDocument.addField ( ComplexFieldNames.INTERACTOR_ID, shortLabel ) ;
+                    solrDocument.addField ( ComplexFieldNames.INTERACTOR_ID,
+                           new StringBuilder ( ) .append ( shortLabel ) .append ( ":" ) .append ( ID ) .toString ( ) ) ;
+                }
+                else {
+                    if ( xref.getCvDatabase ( ) .getIdentifier() .equals(CvDatabase.GO_MI_REF) ) {
+                        solrDocument.addField ( ComplexFieldNames.INTERACTOR_XREF_ONTOLOGY, ID ) ;
+                    }
+                    solrDocument.addField ( ComplexFieldNames.INTERACTOR_XREF, ID ) ;
+                    solrDocument.addField ( ComplexFieldNames.INTERACTOR_XREF, shortLabel ) ;
+                    solrDocument.addField ( ComplexFieldNames.INTERACTOR_XREF,
+                           new StringBuilder ( ) .append ( shortLabel ) .append ( ":" ) .append ( ID ) .toString ( ) ) ;
+                    if ( xref.getCvXrefQualifier ( ) != null ){
+                        solrDocument.addField ( ComplexFieldNames.INTERACTOR_XREF, cvXrefQualifier.getShortLabel() ) ;
+                    }
+                }
             }
         } while ( ! stack.isEmpty ( ) ) ;
+        solrDocument.addField ( ComplexFieldNames.STC, stc ) ;
+        solrDocument.addField(ComplexFieldNames.PARAM, complex.getParameters().isEmpty()) ;
 
-
-        // add info to interactor_alias and interactor_alias_f fields:
+        // add info to features, features_f, biorole, biorole_f, interactor_alias and interactor_alias_f fields:
+        CvBiologicalRole biologicalRole = null ;
+        CvFeatureType featureType = null ;
         for ( Component component : complex.getComponents ( ) ) {
+            biologicalRole = component.getCvBiologicalRole ( ) ;
+            solrDocument.addField ( ComplexFieldNames.BIOROLE, biologicalRole.getShortLabel ( ) ) ;
+            solrDocument.addField ( ComplexFieldNames.BIOROLE_F, biologicalRole.getShortLabel ( ) ) ;
+            solrDocument.addField ( ComplexFieldNames.BIOROLE, biologicalRole.getFullName ( ) ) ;
+            for ( Feature feature : component.getFeatures ( ) ) {
+                featureType = feature.getCvFeatureType ( ) ;
+                solrDocument.addField ( ComplexFieldNames.FEATURES, featureType.getShortLabel ( ) ) ;
+                solrDocument.addField ( ComplexFieldNames.FEATURES_F, featureType.getShortLabel ( ) ) ;
+                solrDocument.addField ( ComplexFieldNames.FEATURES, featureType.getFullName ( ) ) ;
+            }
+
             solrDocument.addField ( ComplexFieldNames.INTERACTOR_ALIAS, component.getShortLabel ( ) ) ;
             solrDocument.addField ( ComplexFieldNames.INTERACTOR_ALIAS, component.getFullName ( ) ) ;
             solrDocument.addField ( ComplexFieldNames.INTERACTOR_ALIAS_F, component.getShortLabel ( ) ) ;
@@ -163,7 +208,7 @@ public class ComplexSolrConverter {
                 solrDocument.addField ( ComplexFieldNames.INTERACTOR_ALIAS, a_name ) ;
                 solrDocument.addField ( ComplexFieldNames.INTERACTOR_ALIAS, a_type ) ;
                 solrDocument.addField ( ComplexFieldNames.INTERACTOR_ALIAS, new StringBuilder ( )
-                        .append ( a_type ) .append ( "_" ) .append ( a_name ) .toString ( ) ) ;
+                        .append ( a_type ) .append ( ":" ) .append(a_name) .toString() ) ;
             }
         }
         // add info to interactor_type field:
@@ -175,20 +220,8 @@ public class ComplexSolrConverter {
         ///////////////////////////
         ///   PSICQUIC FIELDS   ///
         ///////////////////////////
+        // Most of psicquic fields have been indexed above
 
-        // add info to features, features_f, biorole and biorole_f fields:
-        for ( Component component : complex.getComponents ( ) ) {
-            CvBiologicalRole biologicalRole = component.getCvBiologicalRole ( ) ;
-            solrDocument.addField ( ComplexFieldNames.BIOROLE, biologicalRole.getShortLabel ( ) ) ;
-            solrDocument.addField ( ComplexFieldNames.BIOROLE_F, biologicalRole.getShortLabel ( ) ) ;
-            solrDocument.addField ( ComplexFieldNames.BIOROLE, biologicalRole.getFullName ( ) ) ;
-            for ( Feature feature : component.getFeatures ( ) ) {
-                CvFeatureType featureType = feature.getCvFeatureType ( ) ;
-                solrDocument.addField ( ComplexFieldNames.FEATURES, featureType.getShortLabel ( ) ) ;
-                solrDocument.addField ( ComplexFieldNames.FEATURES_F, featureType.getShortLabel ( ) ) ;
-                solrDocument.addField ( ComplexFieldNames.FEATURES, featureType.getFullName ( ) ) ;
-            }
-        }
         // add info to biorole_ontology field:
         // It will do by the enricher
         // add info to features_ontology field:
@@ -198,17 +231,24 @@ public class ComplexSolrConverter {
         ///   OTHER FIELDS   ///
         ////////////////////////
 
-        // add info to source and source_f fields:
-        for ( Experiment experiment : complex.getExperiments ( ) ) {
-            CvObject cvObject = null ;
-            solrDocument.addField ( ComplexFieldNames.SOURCE, cvObject.getShortLabel ( ) ) ;
-            solrDocument.addField ( ComplexFieldNames.SOURCE_F, cvObject.getShortLabel ( ) ) ;
-            solrDocument.addField ( ComplexFieldNames.SOURCE, cvObject.getFullName ( ) ) ;
-        }
         // add info to source_ontology field:
         // It will do by the enricher
         // add info to number_participants field:
         solrDocument.addField ( ComplexFieldNames.NUMBER_PARTICIPANTS, number_participants ) ;
+        //add info to publication_id
+        InteractionImpl interaction = IntactContext.getCurrentInstance ( )
+                                        .getDaoFactory ( )
+                                        .getInteractionDao ( )
+                                        .getByAc ( complex.getAc ( ) ) ;
+        for ( Experiment experiment : interaction.getExperiments ( ) ) {
+            for ( Xref xref : experiment.getPublication ( ) .getXrefs ( ) ) {
+                if ( xref.hasValidPrimaryId ( ) ) {
+                    solrDocument.addField ( ComplexFieldNames.PUBLICATION_ID, xref.getPrimaryId ( ) ) ;
+                }
+            }
+        }
+        //add info to update
+        solrDocument.addField ( ComplexFieldNames.UDATE, complex.getUpdated ( ) .getDate ( ) ) ;
 
         /////////////////////////
         ///   ENRICH FIELDS   ///
