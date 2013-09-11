@@ -147,13 +147,13 @@ public class ComplexSolrConverter {
                 String AC = null ;
                 for ( Component component : ( ( InteractionImpl) interactorAux ) .getComponents ( ) ) {
                     AC = component.getAc ( ) ;
+                    stoichiometry = component.getStoichiometry ( ) ;
                     if ( ! indexed.contains ( AC ) ) {
                         stack.push ( component.getInteractor ( ) ) ;
-                        stoichiometry = component.getStoichiometry ( ) ;
-                        number_participants += stoichiometry == 0.0f ? 1 : stoichiometry ;
                         stc |= stoichiometry != 0.0f ;
                         indexed.add ( AC ) ;
                     }
+                    number_participants += stoichiometry == 0.0f ? 1 : stoichiometry ;
                 }
             }
             // now, we get the information of the interactorAux
