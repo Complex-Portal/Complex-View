@@ -2,11 +2,19 @@ package uk.ac.ebi.intact.service.complex;
 
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.common.SolrInputDocument;
+import org.hupo.psi.mi.psicquic.registry.ServiceType;
+import org.hupo.psi.mi.psicquic.registry.client.registry.DefaultPsicquicRegistryClient;
+import org.hupo.psi.mi.psicquic.registry.client.registry.PsicquicRegistryClient;
+import org.hupo.psi.mi.psicquic.wsclient.PsicquicSimpleClient;
+import psidev.psi.mi.tab.PsimiTabReader;
+import psidev.psi.mi.tab.model.BinaryInteraction;
+import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.bridges.ontologies.term.OntologyTerm;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.ontology.OntologySearcher;
 import uk.ac.ebi.intact.model.*;
 
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -236,7 +244,8 @@ public class ComplexSolrConverter {
         // add info to number_participants field:
         solrDocument.addField ( ComplexFieldNames.NUMBER_PARTICIPANTS, number_participants ) ;
         //add info to publication_id
-        InteractionImpl interaction = IntactContext.getCurrentInstance ( )
+        // that was the old code
+        /*InteractionImpl interaction = IntactContext.getCurrentInstance ( )
                                         .getDaoFactory ( )
                                         .getInteractionDao ( )
                                         .getByAc ( complex.getAc ( ) ) ;
@@ -249,6 +258,41 @@ public class ComplexSolrConverter {
         }
         //add info to update
         solrDocument.addField ( ComplexFieldNames.UDATE, complex.getUpdated ( ) .getDate ( ) ) ;
+        */
+        // that is the new code
+        DefaultPsicquicRegistryClient defaultPsicquicRegistryClient = new DefaultPsicquicRegistryClient ( ) ;
+        // I need to create a Map to get the real name for the Data Base
+        PsicquicSimpleClient psicquicSimpleClient = null ;
+        String DB = null ;
+        String ID = null ;
+        PsimiTabReader psimiTabReader = new PsimiTabReader ( ) ;
+        for ( ServiceType serviceType : defaultPsicquicRegistryClient.listActiveServices ( ) ) {
+            psicquicSimpleClient = new PsicquicSimpleClient ( serviceType.getRestUrl ( ) ) ;
+            InputStream inputStream = psicquicSimpleClient.getByInteraction (
+                    // it needs a map to the real names of the DB
+                    new StringBuilder ( ) .append ( serviceType.getName ( ) )
+                    .append ( "/" )
+                    .append ( serviceType.getRestUrl ( ) )
+                    .toString ( )
+            ) ;
+            for ( BinaryInteraction interaction : psimiTabReader.read ( inputStream ) ){
+                for ( Object crossReference : interaction.getPublications ( ) ) {
+                    DB = ((CrossReference)crossReference).getDatabase ( ) ;
+                    ID = ((CrossReference)crossReference).getIdentifier ( ) ;
+                    solrDocument.addField ( ComplexFieldNames.PUBLICATION_ID, DB ) ;
+                    solrDocument.addField ( ComplexFieldNames.PUBLICATION_ID, ID ) ;
+                    solrDocument.addField ( ComplexFieldNames.PUBLICATION_ID, new StringBuilder ( )
+                            .append ( DB )
+                            .append ( ":" )
+                            .append ( ID )
+                            .toString ( )
+                    ) ;
+                }
+            }
+
+        }
+
+
 
         /////////////////////////
         ///   ENRICH FIELDS   ///
