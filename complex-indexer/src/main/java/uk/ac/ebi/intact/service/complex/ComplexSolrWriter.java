@@ -17,6 +17,7 @@ import org.springframework.batch.item.ItemStream;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.ItemWriter;
 import org.xml.sax.SAXException;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSolrConverter;
 import uk.ac.ebi.intact.model.InteractionImpl;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -30,7 +31,7 @@ import java.util.List;
  * @version $Id$
  * @since 25/07/13
  */
-public class ComplexSolrWriter implements ItemWriter< InteractionImpl >, ItemStream {
+public class ComplexSolrWriter implements ItemWriter < InteractionImpl >, ItemStream {
     /********************************/
     /*      Private attributes      */
     /********************************/
