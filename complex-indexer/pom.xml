@@ -108,6 +108,7 @@
                                 <classpath />
 
                                 <argument>psidev.psi.mi.jami.batch.MIBatchJobManager</argument>
+                                <argument>${spring.config}</argument>
                                 <argument>complexJob</argument>
                             </arguments>
                         </configuration>
