@@ -44,7 +44,6 @@
                 <prop key="hibernate.generate_statistics">true</prop>
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.hbm2ddl.auto">${intact.db.hbm2ddl}</prop>
-                <prop key="hibernate.ejb.event.flush">uk.ac.ebi.intact.release.jpa.FlushDebugListener</prop>
             </props>
         </property>
 
