@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.batch.item.ExecutionContext;
-import uk.ac.ebi.intact.service.complex.ComplexSolrWriter;
 
 /**
  * @author Oscar Forner (oforner@ebi.ac.uk)
