@@ -43,6 +43,8 @@ public class ComplexSolrWriter implements ItemWriter< InteractionImpl >, ItemStr
     private int defaultMaxConnectionsPerHost ;
     private boolean allowCompression ;
     private boolean needToCommitOnClose;
+    private String ontologySolrUrl;
+    private HttpSolrServer ontologySolrServer = null ;
 
     /**************************/
     /*      Constructors      */
@@ -69,7 +71,10 @@ public class ComplexSolrWriter implements ItemWriter< InteractionImpl >, ItemStr
     public void setNeedToCommitOnClose ( boolean commitOnClose ) { this.needToCommitOnClose = commitOnClose ; }
     public boolean getNeedToCommitOnClose ( ) { return this.needToCommitOnClose ; }
     public SolrServer getSolrServer ( ) throws ParserConfigurationException, SAXException, IOException {
-        return this.createSolrServer ( ) ;
+        if (this.solrServer == null){
+           this.solrServer = createSolrServer(this.solrUrl);
+        }
+        return this.solrServer ;
     }
 
     /*******************************/
@@ -86,17 +91,11 @@ public class ComplexSolrWriter implements ItemWriter< InteractionImpl >, ItemStr
         return httpClient;
     }
 
-    protected SolrServer createSolrServer ( ) throws IOException, SAXException, ParserConfigurationException {
-        if ( this.solrServer == null ) {
-            if ( this.solrUrl == null ) {
-                throw new NullPointerException ( "No 'solr url' configured for ComplexSolrWriter" ) ;
-            }
-            this.solrServer = new HttpSolrServer ( this.solrUrl, createHttpClient ( ) ) ;
-            this.solrServer.setMaxRetries ( 0 ) ;
-            this.solrServer.setAllowCompression ( this.allowCompression ) ;
-            this.complexSolrConverter = new ComplexSolrConverter( this.solrServer ) ;
-        }
-        return this.solrServer ;
+    protected HttpSolrServer createSolrServer ( String url ) throws IOException, SAXException, ParserConfigurationException {
+        HttpSolrServer server = new HttpSolrServer ( url, createHttpClient ( ) ) ;
+        server.setMaxRetries ( 0 ) ;
+        server.setAllowCompression ( this.allowCompression ) ;
+        return server ;
     }
 
     /******************************/
@@ -106,7 +105,7 @@ public class ComplexSolrWriter implements ItemWriter< InteractionImpl >, ItemStr
     public void open ( ExecutionContext executionContext ) throws ItemStreamException {
         if ( this.solrUrl != null ) {
             try {
-                createSolrServer ( ) ;
+                this.solrServer = createSolrServer ( this.solrUrl) ;
             } catch (IOException e) {
                 throw new ItemStreamException ( new StringBuilder ( ) .append ( "Cannot connect to SolrServer: " ) .append ( this.solrUrl ) .toString ( ), e ) ;
             } catch (SAXException e) {
@@ -114,6 +113,25 @@ public class ComplexSolrWriter implements ItemWriter< InteractionImpl >, ItemStr
             } catch (ParserConfigurationException e) {
                 throw new ItemStreamException ( "Impossible to create a new HTTP solr server", e ) ;
             }
+        }
+        else{
+            throw new ItemStreamException("The complexes solr url is mandatory");
+        }
+        if ( this.ontologySolrUrl != null ) {
+            try {
+                this.ontologySolrServer = createSolrServer ( this.ontologySolrUrl) ;
+            } catch (IOException e) {
+                throw new ItemStreamException ( new StringBuilder ( ) .append ( "Cannot connect to SolrServer: " ) .append ( this.solrUrl ) .toString ( ), e ) ;
+            } catch (SAXException e) {
+                throw new ItemStreamException ( "Impossible to create a new HTTP solr server", e ) ;
+            } catch (ParserConfigurationException e) {
+                throw new ItemStreamException ( "Impossible to create a new HTTP solr server", e ) ;
+            }
+
+            this.complexSolrConverter = new ComplexSolrConverter( this.ontologySolrServer ) ;
+        }
+        else{
+            throw new ItemStreamException("The complexes solr url is mandatory");
         }
     }
 
@@ -155,5 +173,13 @@ public class ComplexSolrWriter implements ItemWriter< InteractionImpl >, ItemStr
                 this.solrServer.add ( this.complexSolrConverter.convertComplexToSolrDocument ( interaction ) ) ;
             }
         }
+    }
+
+    public String getOntologySolrUrl() {
+        return ontologySolrUrl;
+    }
+
+    public void setOntologySolrUrl(String ontologySolrUrl) {
+        this.ontologySolrUrl = ontologySolrUrl;
     }
 }

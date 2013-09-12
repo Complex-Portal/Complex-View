@@ -14,31 +14,172 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
        http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath*:/complex-indexer.properties</value>
+            </list>
+        </property>
+    </bean>
 
-    <bean id="curatedComplexReader" class="org.springframework.batch.item.database.JpaPagingItemReader" parent="baseModelReader" lazy-init="true">
+    <import resource="classpath*:/META-INF/psimi-batch-spring.xml"/>
+
+    <!--JPA config for IntAct database-->
+
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+        <property name="dataSource" ref="intactComplexDataSource"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="intact-core-default"/>
+        <property name="dataSource" ref="intactComplexDataSource"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.generate_statistics">true</prop>
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.hbm2ddl.auto">${intact.db.hbm2ddl}</prop>
+                <prop key="hibernate.ejb.event.flush">uk.ac.ebi.intact.release.jpa.FlushDebugListener</prop>
+            </props>
+        </property>
+
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="databasePlatform" value="${intact.db.dialect}"/>
+                <property name="showSql" value="false"/>
+                <property name="generateDdl" value="false"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- IntAct config -->
+    <!-- Default institutions -->
+    <bean id="institutionIntact" class="uk.ac.ebi.intact.model.util.InstitutionFactoryBean">
+        <property name="name" value="intact"/>
+        <property name="description" value="European Bioinformatics Institute"/>
+        <property name="miAc" value="MI:0469"/>
+        <property name="pubmed" value="14681455"/>
+        <property name="url" value="http://www.ebi.ac.uk/intact/"/>
+        <property name="address" value="European Bioinformatics Institute; Wellcome Trust Genome Campus; Hinxton, Cambridge; CB10 1SD; United Kingdom"/>
+        <property name="aliases">
+            <list>
+                <value>ebi</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="intactConfig" class="uk.ac.ebi.intact.core.config.IntactConfiguration">
+        <property name="acPrefix" value="EBI"/>
+        <property name="defaultInstitution" ref="institutionIntact"/>
+        <property name="skipSchemaCheck" value="true"/>
+    </bean>
+
+    <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext">
+        <property name="userId" value="INTACT_COMPLEX"/>
+    </bean>
+
+    <bean id="intactComplexDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="${intact.db.driver}"/>
+        <property name="url" value="${intact.db.url}"/>
+        <property name="username" value="${intact.db.username}"/>
+        <property name="password" value="${intact.db.password}"/>
+        <property name="initialSize" value="5" />
+        <property name="maxActive" value="20" />
+        <property name="MaxIdle" value="10"/>
+        <property name="MinIdle" value="2"/>
+        <property name="maxWait" value="5000" />
+    </bean>
+
+    <!-- Base steps -->
+    <bean id="releaseNotifiedStep" parent="basicBatchStep" abstract="true">
+        <property name="listeners">
+            <list>
+                <ref bean="mailStepListener"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Step listeners -->
+    <bean id="mailStepListener" class="uk.ac.ebi.intact.service.complex.MailNotifierStepExecutionListener">
+        <property name="mailSender">
+            <bean class="org.springframework.mail.javamail.JavaMailSenderImpl">
+                <property name="host" value="${intact.notification.email.smtpHost}"/>
+                <property name="port" value="${intact.notification.email.smtpPort}"/>
+            </bean>
+        </property>
+        <property name="recipientAddresses" value="${intact.notification.email.recipients}"/>
+        <property name="senderAddress" value="${intact.notification.email.sender}"/>
+    </bean>
+    <bean id="complexSolrServerRollbackListener" class="org.hupo.psi.mi.psicquic.indexing.batch.listener.SolrServerRollbackListener">
+        <property name="solrUrl" value="${solr.complex.url}"/>
+        <property name="numberOfRetries" value="5"/>
+    </bean>
+
+    <!-- common reader -->
+    <bean id="curatedComplexReader" class="org.springframework.batch.item.database.JpaPagingItemReader" lazy-init="true">
         <property name="queryString" value="select i from InteractionImpl i join i.annotations as a where a.cvTopic.shortLabel = :curatedComplex order by i.created, i.ac"/>
         <property name="parameterValues">
             <map>
                 <entry key="curatedComplex" value="curated-complex"/>
             </map>
         </property>
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
-    <bean id="curatedComplexWriter" class="uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSolrWriter" parent="baseModelWriter">
-        <property name="solrUrl" value="http://localhost:8983/solr/core_complex_pub" />
+    <!-- writer -->
+    <bean id="curatedComplexWriter" class="uk.ac.ebi.intact.service.complex.ComplexSolrWriter">
+        <property name="solrUrl" value="${solr.complex.url}" />
+        <property name="ontologySolrUrl" value="${solr.ontology.url}" />
     </bean>
 
-    <!-- Job for Complex -->
-    <batch:step id="indexSolrComplex" parent="intactBatchStep">
-        <batch:tasklet>
+    <!-- Steps for Complex -->
+    <bean id="complexCleanerTasklet" class="uk.ac.ebi.intact.service.complex.SolrCleanerTasklet">
+        <property name="solrUrl" value="${solr.complex.url}"/>
+    </bean>
+    <batch:step id="indexSolrComplex" parent="releaseNotifiedStep">
+        <batch:tasklet task-executor="syncTaskExecutor">
+            <batch:listeners>
+                <batch:listener ref="mailStepListener" />
+                <batch:listener ref="basicChunkLoggerListener" />
+            </batch:listeners>
             <batch:chunk reader="curatedComplexReader"
-                         writer="curatedComplexWriter">
+                         writer="curatedComplexWriter"
+                         retry-limit="10" commit-interval="100">
                 <batch:streams>
                     <batch:stream ref="curatedComplexReader"/>
                     <batch:stream ref="curatedComplexWriter"/>
                 </batch:streams>
+
+                <batch:retryable-exception-classes>
+                    <batch:include class="org.apache.solr.client.solrj.SolrServerException"/>
+                </batch:retryable-exception-classes>
+
+                <batch:retry-listeners>
+                    <batch:listener ref="complexSolrServerRollbackListener"/>
+                </batch:retry-listeners>
             </batch:chunk>
         </batch:tasklet>
     </batch:step>
 
+    <!-- final job which will export binary interactions, cluster and score them and index in solr -->
+    <batch:job id="complexJob" job-repository="basicBatchJobRepository">
+
+        <batch:listeners>
+            <batch:listener ref="basicJobLoggerListener"/>
+        </batch:listeners>
+
+        <batch:step id="cleanSolr" parent="releaseNotifiedStep">
+            <batch:tasklet ref="complexCleanerTasklet"/>
+            <batch:end on="FAILED"/>
+            <batch:next on="*" to="indexComplexes"/>
+        </batch:step>
+        <batch:step id="indexComplexes" parent="indexSolrComplex"/>
+
+    </batch:job>
 </beans>
