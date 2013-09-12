@@ -3,7 +3,7 @@
 if [ $# == 1 ];
 then
       MAVEN_PROFILE=$1
-      #MAVEN_OPTS="$MAVEN_OPTS -DmiFile=${INPUT_FILE} -DmiOutput=${OUTPUT_FILE}"
+      #MAVEN_OPTS="$MAVEN_OPTS"
       #export MAVEN_OPTS
       echo "Profile: ${MAVEN_PROFILE}"
       mvn clean install -P${MAVEN_PROFILE},index -Dspring.config=classpath:META-INF/complex-indexer-spring.xml -Dmaven.test.skip
