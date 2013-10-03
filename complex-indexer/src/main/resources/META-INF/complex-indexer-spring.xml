@@ -118,7 +118,7 @@
         <property name="recipientAddresses" value="${intact.notification.email.recipients}"/>
         <property name="senderAddress" value="${intact.notification.email.sender}"/>
     </bean>
-    <bean id="complexSolrServerRollbackListener" class="org.hupo.psi.mi.psicquic.indexing.batch.listener.SolrServerRollbackListener">
+    <bean id="complexSolrServerRollbackListener" class="uk.ac.ebi.intact.service.complex.SolrServerRollbackListener">
         <property name="solrUrl" value="${solr.complex.url}"/>
         <property name="numberOfRetries" value="5"/>
     </bean>

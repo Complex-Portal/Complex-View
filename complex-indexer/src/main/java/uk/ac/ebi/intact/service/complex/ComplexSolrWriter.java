@@ -106,7 +106,7 @@ public class ComplexSolrWriter implements ItemWriter < InteractionImpl >, ItemSt
     public void open ( ExecutionContext executionContext ) throws ItemStreamException {
         if ( this.solrUrl != null ) {
             try {
-                this.solrServer = createSolrServer ( this.solrUrl) ;
+                this.solrServer = createSolrServer ( this.solrUrl ) ;
             } catch (IOException e) {
                 throw new ItemStreamException ( new StringBuilder ( ) .append ( "Cannot connect to SolrServer: " ) .append ( this.solrUrl ) .toString ( ), e ) ;
             } catch (SAXException e) {
@@ -116,7 +116,7 @@ public class ComplexSolrWriter implements ItemWriter < InteractionImpl >, ItemSt
             }
         }
         else{
-            throw new ItemStreamException("The complexes solr url is mandatory");
+            throw new ItemStreamException ( "The complexes solr url is mandatory" ) ;
         }
         if ( this.ontologySolrUrl != null ) {
             try {
@@ -132,7 +132,7 @@ public class ComplexSolrWriter implements ItemWriter < InteractionImpl >, ItemSt
             this.complexSolrConverter = new ComplexSolrConverter( this.ontologySolrServer ) ;
         }
         else{
-            throw new ItemStreamException("The complexes solr url is mandatory");
+            throw new ItemStreamException ( "The complexes solr url is mandatory" ) ;
         }
     }
 

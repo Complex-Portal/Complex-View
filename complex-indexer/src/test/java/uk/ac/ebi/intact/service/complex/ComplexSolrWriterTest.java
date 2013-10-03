@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.ItemStreamException;
 
 /**
  * @author Oscar Forner (oforner@ebi.ac.uk)
@@ -74,12 +75,24 @@ public class ComplexSolrWriterTest {
     public void testOpen() throws Exception {
         ExecutionContext executionContext = new ExecutionContext ( ) ;
         // Test without Solr URL
-        this.complexSolrWriter.open ( executionContext ) ;
-        Assert.assertNull("Test Open without url", this.complexSolrWriter.solrServer) ;
+        Throwable exception = null ;
+        try{
+            this.complexSolrWriter.open ( executionContext ) ;
+        }
+        catch ( Throwable e ) {
+            exception = e;
+        }
+        Assert.assertTrue ( "Test Open without url", exception instanceof ItemStreamException ) ;
         // Test with Solr URL
+        exception = null ;
         this.complexSolrWriter.setSolrUrl ( URL ) ;
-        this.complexSolrWriter.open ( executionContext ) ;
-        Assert.assertNotNull("Test Open without url", this.complexSolrWriter.solrServer) ;
+        try{
+            this.complexSolrWriter.open ( executionContext ) ;
+        }
+        catch ( Throwable e ) {
+            exception = e;
+        }
+        Assert.assertTrue("Test Open without url", exception instanceof ItemStreamException) ;
     }
     /*
     @Test
