@@ -16,7 +16,10 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStream;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.SAXException;
+import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.converter.ComplexSolrConverter;
 import uk.ac.ebi.intact.model.InteractionImpl;
 
@@ -166,13 +169,19 @@ public class ComplexSolrWriter implements ItemWriter < InteractionImpl >, ItemSt
     }
 
     @Override
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public void write ( List < ? extends InteractionImpl > interactions ) throws Exception {
         if ( solrServer == null ) { throw new IllegalStateException ( "No HttpSolrServer configured for ComplexSolrWriter" ) ; }
         if ( ! interactions.isEmpty ( ) ) {
             this.needToCommitOnClose = false ;
             for ( InteractionImpl interaction : interactions ) {
-                this.solrServer.add ( this.complexSolrConverter.convertComplexToSolrDocument ( interaction ) ) ;
+                // reattach the interaction object to the entity manager because connection may have been closed after reading the object
+                InteractionImpl reloadedInteraction = IntactContext.getCurrentInstance().getDaoFactory().getEntityManager().merge(interaction);
+
+                this.solrServer.add ( this.complexSolrConverter.convertComplexToSolrDocument ( reloadedInteraction ) ) ;
             }
+
+            IntactContext.getCurrentInstance().getDaoFactory().getEntityManager().clear();
         }
     }
 
