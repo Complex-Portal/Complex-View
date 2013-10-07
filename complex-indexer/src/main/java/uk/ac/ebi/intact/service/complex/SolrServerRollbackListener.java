@@ -1,10 +1,5 @@
 package uk.ac.ebi.intact.service.complex;
 
-/**
- * @author Oscar Forner (oforner@ebi.ac.uk)
- * @version $Id$
- * @since 03/10/13
- */
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.HttpClient;

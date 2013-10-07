@@ -204,6 +204,11 @@
           <artifactId>ojdbc6</artifactId>
           <version>11.2.0.3.0</version>
       </dependency>
+      <dependency>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>solr-solrj</artifactId>
+          <version>3.6.2</version>
+      </dependency>
 
   </dependencies>
 
