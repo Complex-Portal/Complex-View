@@ -113,10 +113,10 @@
 
     <bean id="intactComplexDataSource" class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close">
-        <property name="driverClassName" value="${intact.db.driver}"/>
-        <property name="url" value="${intact.db.url}"/>
-        <property name="username" value="${intact.db.username}"/>
-        <property name="password" value="${intact.db.password}"/>
+        <property name="driverClassName" value="${db.driver}"/>
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.username}"/>
+        <property name="password" value="${db.password}"/>
         <property name="initialSize" value="5" />
         <property name="maxActive" value="20" />
         <property name="MaxIdle" value="10"/>
@@ -137,12 +137,12 @@
     <bean id="mailStepListener" class="uk.ac.ebi.intact.service.complex.MailNotifierStepExecutionListener">
         <property name="mailSender">
             <bean class="org.springframework.mail.javamail.JavaMailSenderImpl">
-                <property name="host" value="${intact.notification.email.smtpHost}"/>
-                <property name="port" value="${intact.notification.email.smtpPort}"/>
+                <property name="host" value="${notification.email.smtpHost}"/>
+                <property name="port" value="${notification.email.smtpPort}"/>
             </bean>
         </property>
-        <property name="recipientAddresses" value="${intact.notification.email.recipients}"/>
-        <property name="senderAddress" value="${intact.notification.email.sender}"/>
+        <property name="recipientAddresses" value="${notification.email.recipients}"/>
+        <property name="senderAddress" value="${notification.email.sender}"/>
     </bean>
     <bean id="complexSolrServerRollbackListener" class="uk.ac.ebi.intact.service.complex.SolrServerRollbackListener">
         <property name="solrUrl" value="${solr.complex.url}"/>
