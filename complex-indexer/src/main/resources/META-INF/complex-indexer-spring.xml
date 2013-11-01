@@ -60,7 +60,10 @@
     </bean>
 
     <!-- IntAct config -->
-    <bean id="intactInitializer" class="uk.ac.ebi.intact.core.context.IntactInitializer" init-method="init"/>
+    <bean id="intactInitializer" class="uk.ac.ebi.intact.core.context.IntactInitializer" init-method="init">
+        <property name="autoPersist" value="false"/>
+    </bean>
+
     <bean id="schemaVersion" class="uk.ac.ebi.intact.core.config.SchemaVersion">
         <constructor-arg value="2"/>
         <constructor-arg value="5"/>
