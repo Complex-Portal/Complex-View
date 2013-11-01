@@ -165,6 +165,12 @@
           <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
           <artifactId>intact-solr-core</artifactId>
           <version>2.1.9-SNAPSHOT</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>uk.ac.ebi.intact.core</groupId>
+                  <artifactId>intact-core</artifactId>
+              </exclusion>
+          </exclusions>
       </dependency>
 
       <!-- JAMI spring batch config -->
