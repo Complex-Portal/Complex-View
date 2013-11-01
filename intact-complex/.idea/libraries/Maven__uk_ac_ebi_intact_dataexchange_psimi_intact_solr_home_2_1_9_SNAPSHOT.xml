@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: uk.ac.ebi.intact.dataexchange.psimi:intact-solr-home:2.1.9-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/uk/ac/ebi/intact/dataexchange/psimi/intact-solr-home/2.1.9-SNAPSHOT/intact-solr-home-2.1.9-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/uk/ac/ebi/intact/dataexchange/psimi/intact-solr-home/2.1.9-SNAPSHOT/intact-solr-home-2.1.9-SNAPSHOT-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/uk/ac/ebi/intact/dataexchange/psimi/intact-solr-home/2.1.9-SNAPSHOT/intact-solr-home-2.1.9-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

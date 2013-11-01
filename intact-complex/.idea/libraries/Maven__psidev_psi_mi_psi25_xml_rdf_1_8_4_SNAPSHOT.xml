@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: psidev.psi.mi:psi25-xml-rdf:1.8.4-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/psidev/psi/mi/psi25-xml-rdf/1.8.4-SNAPSHOT/psi25-xml-rdf-1.8.4-20130520.095007-5.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/psidev/psi/mi/psi25-xml-rdf/1.8.4-SNAPSHOT/psi25-xml-rdf-1.8.4-20130520.095007-5-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/psidev/psi/mi/psi25-xml-rdf/1.8.4-SNAPSHOT/psi25-xml-rdf-1.8.4-20130520.095007-5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

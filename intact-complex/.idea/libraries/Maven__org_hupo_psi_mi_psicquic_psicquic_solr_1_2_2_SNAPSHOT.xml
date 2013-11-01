@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.hupo.psi.mi.psicquic:psicquic-solr:1.2.2-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/hupo/psi/mi/psicquic/psicquic-solr/1.2.2-SNAPSHOT/psicquic-solr-1.2.2-20130429.135005-8.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/hupo/psi/mi/psicquic/psicquic-solr/1.2.2-SNAPSHOT/psicquic-solr-1.2.2-20130429.135005-8-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/hupo/psi/mi/psicquic/psicquic-solr/1.2.2-SNAPSHOT/psicquic-solr-1.2.2-20130429.135005-8-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

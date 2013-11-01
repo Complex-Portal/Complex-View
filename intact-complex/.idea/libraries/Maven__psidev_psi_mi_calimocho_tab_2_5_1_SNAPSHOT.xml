@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: psidev.psi.mi:calimocho-tab:2.5.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/psidev/psi/mi/calimocho-tab/2.5.1-SNAPSHOT/calimocho-tab-2.5.1-20130423.170453-3.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/psidev/psi/mi/calimocho-tab/2.5.1-SNAPSHOT/calimocho-tab-2.5.1-20130423.170453-3-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/psidev/psi/mi/calimocho-tab/2.5.1-SNAPSHOT/calimocho-tab-2.5.1-20130423.170453-3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

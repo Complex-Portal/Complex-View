@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: uk.ac.ebi.intact.core:intact-apt:2.6.5-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/uk/ac/ebi/intact/core/intact-apt/2.6.5-SNAPSHOT/intact-apt-2.6.5-20130904.080930-13.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/uk/ac/ebi/intact/core/intact-apt/2.6.5-SNAPSHOT/intact-apt-2.6.5-20130904.080930-13-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/uk/ac/ebi/intact/core/intact-apt/2.6.5-SNAPSHOT/intact-apt-2.6.5-20130904.080930-13-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
