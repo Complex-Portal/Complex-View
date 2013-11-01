@@ -6,7 +6,7 @@ then
       #MAVEN_OPTS="$MAVEN_OPTS"
       #export MAVEN_OPTS
       echo "Profile: ${MAVEN_PROFILE}"
-      mvn clean install -P${MAVEN_PROFILE},index -Dspring.config=classpath:META-INF/complex-indexer-spring.xml -Dmaven.test.skip
+      mvn clean install -P${MAVEN_PROFILE},index -Dspring.config=classpath:META-INF/complex-indexer-spring.xml -Dmaven.test.skip -Dmaven.repo.local=repository
 else
       echo ""
       echo "ERROR: wrong number of parameters ($#)."
