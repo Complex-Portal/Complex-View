@@ -129,8 +129,8 @@
     <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:com.springsource.org.apache.commons.collections:3.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:com.springsource.org.apache.commons.lang:2.4.0" level="project" />
-    <orderEntry type="library" name="Maven: org.hupo.psi.mi.psicquic:psicquic-solr:1.2.2" level="project" />
-    <orderEntry type="library" name="Maven: psidev.psi.mi:psi25-xml-rdf:1.8.4" level="project" />
+    <orderEntry type="library" name="Maven: org.hupo.psi.mi.psicquic:psicquic-solr:1.2.2-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: psidev.psi.mi:psi25-xml-rdf:1.8.4-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.biopax.paxtools:psimi-converter:4.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.biopax.paxtools:paxtools-core:4.1.1" level="project" />
     <orderEntry type="library" name="Maven: net.sourceforge.collections:collections-generic:4.01" level="project" />
@@ -163,31 +163,31 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-oxm:3.2.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.biopax:miriam-lib:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.biopax.paxtools:biopax-converter:4.0.1" level="project" />
-    <orderEntry type="library" name="Maven: psidev.psi.mi:calimocho-solr:2.5.1" level="project" />
+    <orderEntry type="library" name="Maven: psidev.psi.mi:calimocho-solr:2.5.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.apache.solr:solr-solrj:3.6.2" level="project" />
     <orderEntry type="library" name="Maven: commons-httpclient:commons-httpclient:3.1" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.2" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.codehaus.woodstox:wstx-asl:3.2.7" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.6.1" level="project" />
-    <orderEntry type="library" name="Maven: psidev.psi.mi:calimocho-tab:2.5.1" level="project" />
-    <orderEntry type="library" name="Maven: psidev.psi.mi:calimocho:2.5.1" level="project" />
-    <orderEntry type="library" name="Maven: psidev.psi.mi:calimocho-xgmml:2.5.1" level="project" />
+    <orderEntry type="library" name="Maven: psidev.psi.mi:calimocho-tab:2.5.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: psidev.psi.mi:calimocho:2.5.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: psidev.psi.mi:calimocho-xgmml:2.5.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty:6.1.26" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty-util:6.1.26" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:servlet-api:2.5-20081211" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.solr:solr-core:3.6.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:3.6.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers:3.6.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-highlighter:3.6.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-memory:3.6.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queries:3.6.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-kuromoji:3.6.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-misc:3.6.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-phonetic:3.6.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-spatial:3.6.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-spellchecker:3.6.2" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-grouping:3.6.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.solr:solr-core:3.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:3.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-analyzers:3.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-highlighter:3.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-memory:3.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queries:3.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-kuromoji:3.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-misc:3.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-phonetic:3.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-spatial:3.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-spellchecker:3.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.lucene:lucene-grouping:3.6.0" level="project" />
     <orderEntry type="library" name="Maven: commons-fileupload:commons-fileupload:1.2.1" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:servlet-api:2.4" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.batch:spring-batch-core:2.2.1.RELEASE" level="project" />
@@ -199,6 +199,7 @@
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpmime:4.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.hupo.psi.mi.psicquic:psicquic-simple-client:1.3.4-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: uk.ac.ebi.intact.dataexchange.psimi:intact-solr-home:2.1.9-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: uk.ac.ebi.intact.bridges:intact-ontologies:2.1.9-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.geneontology:obo:2.000-beta38" level="project" />
