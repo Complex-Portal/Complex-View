@@ -1,0 +1,31 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <context:component-scan base-package="uk.ac.ebi.intact.service.complex"/>
+
+    <mvc:annotation-driven />
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- solr configuration-->
+    <context:property-placeholder location="classpath:solr.properties"/>
+    <bean id="searcher" class="uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSolrSearcher">
+        <constructor-arg index="0" name="solrUrl"      value="${solr.url}"          />
+        <constructor-arg index="1" name="maxConnHost"  value="${solr.maxConnHost}"  />
+        <constructor-arg index="2" name="maxConnTotal" value="${solr.maxConnTotal}" />
+        <constructor-arg index="3" name="maxRetries"   value="${solr.maxRetries}"   />
+        <constructor-arg index="4" name="compresion"   value="${solr.compression}"  />
+    </bean>
+
+</beans>
