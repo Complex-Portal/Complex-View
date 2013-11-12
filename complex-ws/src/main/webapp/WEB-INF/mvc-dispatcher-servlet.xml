@@ -13,6 +13,31 @@
 
     <mvc:annotation-driven />
 
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="order" value="1" />
+        <property name="mediaTypes">
+            <map>
+                <entry key="json" value="application/json" />
+                <entry key="xml" value="application/xml" />
+            </map>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <!-- JSON View -->
+                <bean            class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+                </bean>
+
+                <!--  XML view -->
+                <bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+                    <constructor-arg>
+                        <bean class="org.springframework.oxm.castor.CastorMarshaller">
+                        </bean>
+                    </constructor-arg>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/pages/"/>
         <property name="suffix" value=".jsp"/>

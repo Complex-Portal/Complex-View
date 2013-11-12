@@ -74,6 +74,19 @@
             <version>1.9.13</version>
         </dependency>
 
+        <!-- Castor for XML -->
+        <dependency>
+            <groupId>org.codehaus.castor</groupId>
+            <artifactId>castor</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
         <!-- Solr -->
         <dependency>
             <groupId>org.apache.solr</groupId>
