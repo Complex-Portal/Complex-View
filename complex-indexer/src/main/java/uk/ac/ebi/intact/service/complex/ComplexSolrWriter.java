@@ -176,8 +176,16 @@ public class ComplexSolrWriter implements ItemWriter < InteractionImpl >, ItemSt
             this.needToCommitOnClose = false ;
             for ( InteractionImpl interaction : interactions ) {
                 // reattach the interaction object to the entity manager because connection may have been closed after reading the object
-                InteractionImpl reloadedInteraction = IntactContext.getCurrentInstance().getDaoFactory().getEntityManager().merge(interaction);
-                this.solrServer.add ( this.complexSolrConverter.toSolrDocument ( reloadedInteraction ) ) ;
+                InteractionImpl reloadedInteraction = IntactContext
+                        .getCurrentInstance()
+                        .getDaoFactory()
+                        .getEntityManager()
+                        .merge(interaction);
+                this.solrServer.add (
+                        this.complexSolrConverter.toSolrDocument (
+                                reloadedInteraction
+                        )
+                ) ;
             }
 
             IntactContext.getCurrentInstance().getDaoFactory().getEntityManager().clear();

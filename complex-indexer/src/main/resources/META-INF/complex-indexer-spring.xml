@@ -198,6 +198,9 @@
         </batch:tasklet>
     </batch:step>
 
+    <!-- Test -->
+    <bean class="org.springframework.batch.test.JobLauncherTestUtils"/>
+
     <!-- final job which will export binary interactions, cluster and score them and index in solr -->
     <batch:job id="complexJob" job-repository="basicBatchJobRepository">
 
