@@ -74,6 +74,8 @@ public class ComplexSolrWriter implements ItemWriter < InteractionImpl >, ItemSt
     public boolean getAllowCompression ( ) { return this.allowCompression ; }
     public void setNeedToCommitOnClose ( boolean commitOnClose ) { this.needToCommitOnClose = commitOnClose ; }
     public boolean getNeedToCommitOnClose ( ) { return this.needToCommitOnClose ; }
+    public String getOntologySolrUrl() { return ontologySolrUrl ; }
+    public void setOntologySolrUrl(String ontologySolrUrl) { this.ontologySolrUrl = ontologySolrUrl ; }
     public SolrServer getSolrServer ( ) throws ParserConfigurationException, SAXException, IOException {
         if (this.solrServer == null){
            this.solrServer = createSolrServer(this.solrUrl);
@@ -190,13 +192,5 @@ public class ComplexSolrWriter implements ItemWriter < InteractionImpl >, ItemSt
 
             IntactContext.getCurrentInstance().getDaoFactory().getEntityManager().clear();
         }
-    }
-
-    public String getOntologySolrUrl() {
-        return ontologySolrUrl;
-    }
-
-    public void setOntologySolrUrl(String ontologySolrUrl) {
-        this.ontologySolrUrl = ontologySolrUrl;
     }
 }

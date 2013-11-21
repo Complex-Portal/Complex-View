@@ -15,11 +15,12 @@ import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.server.IntactSolrJettyRunner;
-import uk.ac.ebi.intact.model.CvInteractionType;
-import uk.ac.ebi.intact.model.CvInteractorType;
-import uk.ac.ebi.intact.model.Institution;
-import uk.ac.ebi.intact.model.InteractionImpl;
+import uk.ac.ebi.intact.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +30,13 @@ import java.util.List;
  * @version $Id$
  * @since 28/08/13
  */
+@Transactional(propagation = Propagation.NEVER)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-"classpath:META-INF/complex-indexer-spring.xml"
+        "classpath:/META-INF/intact.spring.xml",
+        "classpath:META-INF/complex-indexer-spring.xml"
 })
-public class ComplexSolrWriterTest {
+public class ComplexSolrWriterTest extends IntactBasicTestCase {
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
 
@@ -147,12 +150,13 @@ public class ComplexSolrWriterTest {
         this.complexSolrWriter.write ( list );
         Assert.assertTrue ( "Test write with an empty list", this.complexSolrWriter.getNeedToCommitOnClose ( ) ) ;
         // Test write
+        Institution EBI = new Institution("EBI");
         InteractionImpl interaction = new InteractionImpl(
                 new ArrayList(),
-                new CvInteractionType(),
-                new CvInteractorType(),
+                new CvInteractionType(EBI, "InteractionType"),
+                new CvInteractorType(EBI, "InteractorType"),
                 "ShortLabel",
-                new Institution ( "Institution.ShortLabel" )
+                EBI
         ) ;
         list.add ( interaction ) ;
         Throwable exception = null ;
@@ -162,7 +166,46 @@ public class ComplexSolrWriterTest {
         catch ( Throwable e ) {
             exception = e ;
         }
-        Assert.assertTrue ("Test write", exception instanceof SolrServerException) ;
+        Assert.assertTrue ("Test write solr exception", exception instanceof SolrServerException) ;
+    }
+
+    @Test
+    public void createInteractionAndPersist(){
+        // Create and make persistent a complex
+        TransactionStatus status = getDataContext().beginTransaction();
+        Interaction interaction = getMockBuilder().createInteractionRandomBinary();
+        getCorePersister().saveOrUpdate(interaction);
+        getDataContext().commitTransaction(status);
+        List<Experiment> exp = new ArrayList<Experiment>();
+        exp.add(getMockBuilder().createExperimentRandom(1234));
+        List<Component> comp = new ArrayList<Component>();
+        comp.add(getMockBuilder().createComponentRandom());
+        CvInteractionType cvinteractiontype = interaction.getCvInteractionType();
+        CvInteractorType cvinteractortype = interaction.getCvInteractorType();
+        String shorlabel = interaction.getShortLabel();
+        Institution institution = interaction.getOwner();
+        InteractionImpl complex = new InteractionImpl(
+                exp,comp,cvinteractiontype,cvinteractortype,shorlabel,institution) ;
+
+        // Set a Solr service up
+        JobExecution jobExecution = null;
+        try {
+            jobExecution = jobLauncherTestUtils.launchJob ( );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ExecutionContext executionContext = jobExecution.getExecutionContext ( ) ;
+        List< InteractionImpl > list = new ArrayList<InteractionImpl>( ) ;
+        this.complexSolrWriter.setSolrUrl ( this.httpSolrServer.getBaseURL() ) ;
+        this.complexSolrWriter.setOntologySolrUrl ( this.OntolyUrl ) ;
+        this.complexSolrWriter.open ( executionContext ) ;
+        this.complexSolrWriter.setNeedToCommitOnClose ( true ) ;
+        list.add(complex);
+        try {
+            this.complexSolrWriter.write ( list ) ;
+        } catch (Exception e) {
+            e.printStackTrace(); //That never should happen
+        }
     }
 
 }
