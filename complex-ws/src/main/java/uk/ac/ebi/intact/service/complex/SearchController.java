@@ -1,12 +1,15 @@
 package uk.ac.ebi.intact.service.complex;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexFieldNames;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
-@RequestMapping("/")
 public class SearchController {
     /********************************/
     /*      Private attributes      */
@@ -43,6 +46,38 @@ public class SearchController {
         IN THE SPRING FILE.
      */
 
+    /*******************************/
+    /*      Protected methods      */
+    /*******************************/
+    // This method controls the first and number parameters and retrieve data
+    protected ComplexRestResult query(String query, String first, String number) {
+        // Get parameters (if we have them)
+        int f, n;
+        // If we have first parameter parse it to integer
+        if ( first != null ) f = Integer.parseInt(first);
+            // else set first parameter to 0
+        else f = 0;
+        // If we have number parameter parse it to integer
+        if ( number != null ) n = Integer.parseInt(number);
+            // else set number parameter to max integer - first (to avoid problems)
+        else n = Integer.MAX_VALUE - f;
+
+        // Retrieve data using that parameters and return it
+        return this.dataProvider.getData( query, f, n );
+    }
+
+    // This method is to force to query only for a list of fields
+    protected String improveQuery(String query, List<String> fields) {
+        StringBuilder improvedQuery = new StringBuilder();
+        for ( String field : fields ) {
+            improvedQuery.append(field)
+                         .append(":(")
+                         .append(query)
+                         .append(")");
+        }
+        return improvedQuery.toString();
+    }
+
     /****************************/
     /*      Public methods      */
     /****************************/
@@ -60,19 +95,7 @@ public class SearchController {
 	public ComplexRestResult search(@PathVariable String query,
                                     @RequestParam (required = false) String first,
                                     @RequestParam (required = false) String number) {
-        // Get parameters (if we have them)
-        int f, n;
-        // If we have first parameter parse it to integer
-        if ( first != null ) f = Integer.parseInt(first);
-        // else set first parameter to 0
-        else f = 0;
-        // If we have number parameter parse it to integer
-        if ( number != null ) n = Integer.parseInt(number);
-        // else set number parameter to max integer - first (to avoid problem)
-        else n = Integer.MAX_VALUE - f;
-
-        // Retrieve data using that parameters and return it
-        return this.dataProvider.getData( query, f, n );
+        return query(query, first, number);
 	}
 
     /*
@@ -89,34 +112,15 @@ public class SearchController {
     public ComplexRestResult searchInteractor(@PathVariable String query,
                                               @RequestParam (required = false) String first,
                                               @RequestParam (required = false) String number) {
-        // Get parameters (if we have them)
-        int f, n;
-        // If we have first parameter parse it to integer
-        if ( first != null ) f = Integer.parseInt(first);
-            // else set first parameter to 0
-        else f = 0;
-        // If we have number parameter parse it to integer
-        if ( number != null ) n = Integer.parseInt(number);
-            // else set number parameter to max integer - first (to avoid problem)
-        else n = Integer.MAX_VALUE - f;
 
         // Query improvement. Force to query only in the id, alias and pxref
         // fields.
-        StringBuilder improvedQuery = new StringBuilder();
-        improvedQuery.append(ComplexFieldNames.INTERACTOR_ID)
-                     .append(":(")
-                     .append(query)
-                     .append(")");
-        improvedQuery.append(ComplexFieldNames.INTERACTOR_ALIAS)
-                     .append(":(")
-                     .append(query)
-                     .append(")");
-        improvedQuery.append(ComplexFieldNames.INTERACTOR_XREF)
-                     .append(":(")
-                     .append(query)
-                     .append(")");
+        List<String> fields = new ArrayList<String>();
+        fields.add(ComplexFieldNames.INTERACTOR_ID);
+        fields.add(ComplexFieldNames.INTERACTOR_ALIAS);
+        fields.add(ComplexFieldNames.INTERACTOR_XREF);
         // Retrieve data using that parameters and return it
-        return this.dataProvider.getData( query, f, n );
+        return query(improveQuery(query, fields), first, number);
     }
 
     /*
@@ -134,34 +138,15 @@ public class SearchController {
     public ComplexRestResult searchInteraction(@PathVariable String query,
                                                @RequestParam (required = false) String first,
                                                @RequestParam (required = false) String number) {
-        // Get parameters (if we have them)
-        int f, n;
-        // If we have first parameter parse it to integer
-        if ( first != null ) f = Integer.parseInt(first);
-            // else set first parameter to 0
-        else f = 0;
-        // If we have number parameter parse it to integer
-        if ( number != null ) n = Integer.parseInt(number);
-            // else set number parameter to max integer - first (to avoid problem)
-        else n = Integer.MAX_VALUE - f;
 
         // Query improvement. Force to query only in the complex_id,
         // complex_alias and complex_xref fields.
-        StringBuilder improvedQuery = new StringBuilder();
-        improvedQuery.append(ComplexFieldNames.COMPLEX_ID)
-                .append(":(")
-                .append(query)
-                .append(")");
-        improvedQuery.append(ComplexFieldNames.COMPLEX_ALIAS)
-                .append(":(")
-                .append(query)
-                .append(")");
-        improvedQuery.append(ComplexFieldNames.COMPLEX_XREF)
-                .append(":(")
-                .append(query)
-                .append(")");
+        List<String> fields = new ArrayList<String>();
+        fields.add(ComplexFieldNames.COMPLEX_ID);
+        fields.add(ComplexFieldNames.COMPLEX_ALIAS);
+        fields.add(ComplexFieldNames.COMPLEX_XREF);
         // Retrieve data using that parameters and return it
-        return this.dataProvider.getData( improvedQuery.toString(), f, n );
+        return query(improveQuery(query, fields), first, number);
     }
 
     /*
@@ -178,30 +163,14 @@ public class SearchController {
     public ComplexRestResult searchOrganism(@PathVariable String query,
                                             @RequestParam (required = false) String first,
                                             @RequestParam (required = false) String number) {
-        // Get parameters (if we have them)
-        int f, n;
-        // If we have first parameter parse it to integer
-        if ( first != null ) f = Integer.parseInt(first);
-            // else set first parameter to 0
-        else f = 0;
-        // If we have number parameter parse it to integer
-        if ( number != null ) n = Integer.parseInt(number);
-            // else set number parameter to max integer - first (to avoid problem)
-        else n = Integer.MAX_VALUE - f;
 
         // Query improvement. Force to query only in the organism_name and
         // species (complex_organism) fields.
-        StringBuilder improvedQuery = new StringBuilder();
-        improvedQuery.append(ComplexFieldNames.ORGANISM_NAME)
-                .append(":(")
-                .append(query)
-                .append(")");
-        improvedQuery.append(ComplexFieldNames.COMPLEX_ORGANISM)
-                .append(":(")
-                .append(query)
-                .append(")");
+        List<String> fields = new ArrayList<String>();
+        fields.add(ComplexFieldNames.ORGANISM_NAME);
+        fields.add(ComplexFieldNames.COMPLEX_ORGANISM);
         // Retrieve data using that parameters and return it
-        return this.dataProvider.getData( improvedQuery.toString(), f, n );
+        return query(improveQuery(query, fields), first, number);
     }
 
 }
