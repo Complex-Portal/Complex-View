@@ -39,9 +39,10 @@ public class DataProvider {
         ComplexResultIterator iterator; // Used to stored the query's result
         try {
             iterator = this.searcher.search ( query, // query
-                    offset, // first result
-                    size, // end result
-                    "" );// filters to use
+                                             offset, // first result
+                                               size, // end result
+                                                "" ) // filters to use
+            ;
             // Check if iterator has information and return the right result
             return iterator.hasNext() ? iterator : null;
         }
@@ -57,7 +58,6 @@ public class DataProvider {
     /****************************/
     // getData function return the results of the query
     public ComplexRestResult getData(String query, int first, int number) {
-        // Variables
         int i = first;
         boolean in = false; // to know if we went into the loop
         ComplexResultIterator iterator = null; // Gives retrieve method results
