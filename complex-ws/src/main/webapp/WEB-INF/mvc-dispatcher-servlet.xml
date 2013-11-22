@@ -14,6 +14,8 @@
     <mvc:annotation-driven />
 
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="defaultContentType" value="application/json" />
+        <property name="favorParameter" value="true" />
         <property name="order" value="1" />
         <property name="mediaTypes">
             <map>
@@ -24,7 +26,7 @@
         <property name="defaultViews">
             <list>
                 <!-- JSON View -->
-                <bean            class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+                <bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
                 </bean>
 
                 <!--  XML view -->
@@ -51,6 +53,12 @@
         <constructor-arg index="2" name="maxConnTotal" value="${solr.maxConnTotal}" />
         <constructor-arg index="3" name="maxRetries"   value="${solr.maxRetries}"   />
         <constructor-arg index="4" name="compresion"   value="${solr.compression}"  />
+    </bean>
+
+    <!-- Data provider -->
+    <context:property-placeholder location="classpath:solr.properties"/>
+    <bean id="dataProvider" class="uk.ac.ebi.intact.service.complex.DataProvider">
+        <constructor-arg index="0" name="size"  value="500" />
     </bean>
 
 </beans>

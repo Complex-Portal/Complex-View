@@ -17,14 +17,21 @@ import java.util.List;
 @XmlRootElement(name = "Complexes")
 public class ComplexRestResult {
     private List<ComplexSearchResults> elements;
+    private int size;
 
-    public ComplexRestResult( ) { this.elements = new ArrayList<ComplexSearchResults>(); }
+    public ComplexRestResult( ) {
+        this.elements = new ArrayList<ComplexSearchResults>();
+        size = 0;
+    }
     public void add( ComplexResultIterator iterator ) {
+        size += iterator.getNumberOfResults();
         while ( iterator.hasNext() ) {
             this.elements.add( iterator.next() );
         }
     }
+
+    @XmlElement
+    public int getSize() { return size; }
     @XmlElement
     public List<ComplexSearchResults> getElements() { return elements; }
-
 }
