@@ -13,16 +13,20 @@
 
     <mvc:annotation-driven />
 
-    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-        <property name="defaultContentType" value="application/json" />
+    <bean id="contentManager"
+          class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <property name="favorParameter" value="true" />
-        <property name="order" value="1" />
+        <property name="defaultContentType" value="application/json" />
         <property name="mediaTypes">
             <map>
                 <entry key="json" value="application/json" />
                 <entry key="xml" value="application/xml" />
             </map>
         </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="contentNegotiationManager" ref="contentManager"/>
         <property name="defaultViews">
             <list>
                 <!-- JSON View -->
@@ -39,6 +43,7 @@
             </list>
         </property>
     </bean>
+
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/pages/"/>

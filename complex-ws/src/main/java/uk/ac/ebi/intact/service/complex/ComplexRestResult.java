@@ -5,6 +5,7 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSearchResults;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,8 +17,8 @@ import java.util.List;
  */
 @XmlRootElement(name = "Complexes")
 public class ComplexRestResult {
-    private List<ComplexSearchResults> elements;
     private int size;
+    private List<ComplexSearchResults> elements;
 
     public ComplexRestResult( ) {
         this.elements = new ArrayList<ComplexSearchResults>();

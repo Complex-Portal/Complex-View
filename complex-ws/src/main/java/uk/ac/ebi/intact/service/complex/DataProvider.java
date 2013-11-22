@@ -28,6 +28,9 @@ public class DataProvider {
     /*      Constructor      */
     /*************************/
     public DataProvider( int size ) { this.chunkSize = size ; }
+    public DataProvider( ) { }
+
+    //Setter for the chunkSize
 
     /*******************************/
     /*      Protected methods      */
