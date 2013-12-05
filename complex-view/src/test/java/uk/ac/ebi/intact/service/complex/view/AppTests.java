@@ -24,6 +24,8 @@ public class AppTests {
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     protected WebApplicationContext wac;
+    @Autowired
+    protected RestConnection restConnection;
 
     @Before
     public void setup() {
@@ -35,5 +37,15 @@ public class AppTests {
         mockMvc.perform(get("/*"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("results"));
+    }
+
+    @Test
+    public void getPageNumber() throws Exception {
+        System.err.println("Page: " + restConnection.getPageNumber("1") + "; Prev: " + restConnection.getPreviousPage("1") + "; Next: " + restConnection.getNextPage("1"));
+        System.err.println("Page: " + restConnection.getPageNumber("2") + "; Prev: " + restConnection.getPreviousPage("2") + "; Next: " + restConnection.getNextPage("2"));
+        System.err.println("Page: " + restConnection.getPageNumber("0") + "; Prev: " + restConnection.getPreviousPage("0") + "; Next: " + restConnection.getNextPage("0"));
+        System.err.println("Page: " + restConnection.getPageNumber("-1") + "; Prev: " + restConnection.getPreviousPage("-1") + "; Next: " + restConnection.getNextPage("-1"));
+        System.err.println("Page: " + restConnection.getPageNumber("-100") + "; Prev: " + restConnection.getPreviousPage("-100") + "; Next: " + restConnection.getNextPage("-100"));
+        System.err.println("Page: " + restConnection.getPageNumber("2000") + "; Prev: " + restConnection.getPreviousPage("2000") + "; Next: " + restConnection.getNextPage("2000"));
     }
 }

@@ -14,6 +14,9 @@ import java.util.List;
 public class ComplexRestResult {
     private int size;
     private List<ComplexSearchResults> elements;
+    private int prevPage, page, nextPage;
+    private int numberOfElementsPerPage;
+    private String originaQuery = null;
 
     public ComplexRestResult( ) {
         this.elements = new LinkedList<ComplexSearchResults>();
@@ -32,5 +35,14 @@ public class ComplexRestResult {
 
     public int getSize() { return size; }
     public List<ComplexSearchResults> getElements() { return elements; }
+    public void setPrevPage( int prev ) { this.prevPage = prev; }
+    public int getPrevPage() { return this.prevPage; }
+    public void setPage( int p ) { this.page = p; }
+    public int getPage() { return this.page; }
+    public void setNextPage( int next ) { this.nextPage = next; }
+    public int getNextPage () { return this.nextPage; }
+    public void setNumberOfElementsPerPage( int num ) { this.numberOfElementsPerPage = num; }
+    public int getNumberOfElementsPerPage () { return this.numberOfElementsPerPage; }
+    public void setOriginalQuery(String query) { this.originaQuery = query; }
+    public String getOriginaQuery () { return this.originaQuery; }
 }
-

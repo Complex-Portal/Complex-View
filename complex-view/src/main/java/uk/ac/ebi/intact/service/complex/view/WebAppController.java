@@ -9,26 +9,32 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 @Controller
 public class WebAppController {
     @Autowired
     RestConnection restConnection;
 
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String HomeController(ModelMap model) {
+        model.addAttribute("date", new Date());
+        return "home";
+    }
+
     @RequestMapping(value = "/{query}", method = RequestMethod.GET)
 	public String SearchController(@PathVariable String query,
-                                   @RequestParam ( required = false ) String first,
-                                   @RequestParam ( required = false ) String number,
+                                   @RequestParam ( required = false ) String page,
                                    @RequestParam ( required = false ) String filter,
                                    @RequestParam ( required = false ) String type,
                                    ModelMap model,
                                    HttpSession session)
     {
-		session.setAttribute("table",restConnection.query (query,
-                                                           first,
-                                                           number,
+		session.setAttribute("results",restConnection.query (query,
+                                                           page,
                                                            filter,
                                                            type) );
-		return "results";
+		model.addAttribute("complex_portal_name", "Intact Complex Portal");
+        return "results";
 	}
 }

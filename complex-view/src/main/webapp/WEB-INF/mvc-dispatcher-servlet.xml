@@ -13,7 +13,8 @@
     </bean>
 
     <bean id="restConnection" class="uk.ac.ebi.intact.service.complex.view.RestConnection">
-        <constructor-arg index="0" value="http://localhost:8080/complex-ws/"/>
+        <constructor-arg index="0" type="java.lang.String" value="http://localhost:8080/complex-ws/"/>
+        <constructor-arg index="1" type="java.lang.Integer" value="10"/>
     </bean>
 
 </beans>

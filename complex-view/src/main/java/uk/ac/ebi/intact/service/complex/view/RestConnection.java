@@ -25,12 +25,34 @@ public class RestConnection {
     /*      Private attributes      */
     /********************************/
     String WS_URL = null;
-
+    int number;
+    int max_elements;
     /*************************/
     /*      Constructor      */
     /*************************/
     // To autowire
-    public RestConnection( String url ) { this.WS_URL = url ; }
+    public RestConnection( String url, Integer elementsPage ) {
+        this.WS_URL = url ;
+        this.number = elementsPage.intValue() ;
+        // We make a first connect to know how many complexes we have
+        this.max_elements = getNumberOfComplexes();
+    }
+    private int getNumberOfComplexes() {
+        int result = 0;
+        String query = new StringBuilder() .append(this.WS_URL)
+                       .append(QueryTypes.DEFAULT.value)
+                       .append("/*?format=json")
+                       .toString();
+        try {
+            result = getDataFromWS(query)
+                    .getJSONObject("complexRestResult")
+                    .getInt("size");
+        } catch (JSONException e) {
+            //We must log that
+            e.printStackTrace();
+        }
+        return result;
+    }
 
     /*******************************/
     /*      Protected methods      */
@@ -55,9 +77,44 @@ public class RestConnection {
         }
         return q.toString();
     }
+
+    protected int getPageNumber( String page ) {
+        int pageNumber = 0;
+        if ( page != null ) {
+            try{
+                pageNumber = Integer.parseInt(page);
+            }
+            catch (NumberFormatException e) {
+                // We must log that
+            }
+            if ( pageNumber > 0 ){
+                if (pageNumber * this.number >= this.max_elements )
+                    pageNumber = (max_elements / this.number);
+            }
+            else
+                pageNumber = 0;
+        }
+        return pageNumber;
+    }
+
+    protected int getPreviousPage ( String page ) {
+        int prevPage = getPageNumber(page);
+        return --prevPage;
+    }
+
+    protected int getNextPage ( String page ) {
+        int nextPage = getPageNumber(page);
+        return ++nextPage * this.number >= this.max_elements ? -1 : nextPage;
+    }
+
+    protected void setPrevAndNextPage ( ComplexRestResult result, String page ) {
+        result.setNextPage ( getNextPage ( page ) ) ;
+        result.setPage ( getPageNumber ( page ) ) ;
+        result.setPrevPage ( getPreviousPage ( page ) ) ;
+    }
+
     protected String createQuery( String q,
-                                  String first,
-                                  String number,
+                                  String page,
                                   String filter,
                                   String queryType)
     {
@@ -70,8 +127,8 @@ public class RestConnection {
                     .toString();
         }
         query.append( q );
-        if ( first != null ) query.append("&first=" + first);
-        if ( number != null ) query.append("&number=" + number);
+        query.append("&first=" + getPageNumber(page) * this.number);
+        query.append("&number=" + this.number);
         //We have to do something with the filter
         return query.toString();
     }
@@ -100,7 +157,7 @@ public class RestConnection {
         ComplexRestResult result = null;
         try {
             JSONArray elements = json.getJSONObject("complexRestResult")
-                    .getJSONArray("elements");
+                                     .getJSONArray("elements");
             result = new ComplexRestResult();
             ComplexSearchResults res = null;
             JSONObject ob = null;
@@ -125,14 +182,17 @@ public class RestConnection {
     /****************************/
 
     public ComplexRestResult query( String query,
-                                    String first,
-                                    String number,
+                                    String page,
                                     String filter,
                                     String queryType)
     {
-        String q = createQuery(query, first, number, filter, queryType);
+        String q = createQuery(query, page, filter, queryType);
         JSONObject json = getDataFromWS(q);
-        return JSONToComplexRestResult(json);
+        ComplexRestResult result = JSONToComplexRestResult(json);
+        setPrevAndNextPage(result, page);
+        result.setOriginalQuery(query);
+        result.setNumberOfElementsPerPage(this.number);
+        return result;
     }
 
 }
