@@ -1,5 +1,6 @@
 package uk.ac.ebi.intact.service.complex.view;
 
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -34,18 +36,42 @@ public class AppTests {
 
     @Test
     public void simple() throws Exception {
-        mockMvc.perform(get("/*"))
+        mockMvc.perform(post("/").param("query", "*"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("results"));
     }
 
     @Test
     public void getPageNumber() throws Exception {
-        System.err.println("Page: " + restConnection.getPageNumber("1") + "; Prev: " + restConnection.getPreviousPage("1") + "; Next: " + restConnection.getNextPage("1"));
-        System.err.println("Page: " + restConnection.getPageNumber("2") + "; Prev: " + restConnection.getPreviousPage("2") + "; Next: " + restConnection.getNextPage("2"));
-        System.err.println("Page: " + restConnection.getPageNumber("0") + "; Prev: " + restConnection.getPreviousPage("0") + "; Next: " + restConnection.getNextPage("0"));
-        System.err.println("Page: " + restConnection.getPageNumber("-1") + "; Prev: " + restConnection.getPreviousPage("-1") + "; Next: " + restConnection.getNextPage("-1"));
-        System.err.println("Page: " + restConnection.getPageNumber("-100") + "; Prev: " + restConnection.getPreviousPage("-100") + "; Next: " + restConnection.getNextPage("-100"));
-        System.err.println("Page: " + restConnection.getPageNumber("2000") + "; Prev: " + restConnection.getPreviousPage("2000") + "; Next: " + restConnection.getNextPage("2000"));
+        String page = "1";
+        ComplexRestResult result = restConnection.query("*", page, null, null);
+        Assert.assertEquals(result.getPrevPage(), 0);
+        Assert.assertEquals(result.getPage(), 1);
+        Assert.assertEquals(result.getNextPage(), 2);
+        page = "2";
+        result = restConnection.query("*", page, null, null);
+        Assert.assertEquals(result.getPrevPage(), 1);
+        Assert.assertEquals(result.getPage(), 2);
+        Assert.assertEquals(result.getNextPage(), 3);
+        page = "0";
+        result = restConnection.query("*", page, null, null);
+        Assert.assertEquals(result.getPrevPage(), -1);
+        Assert.assertEquals(result.getPage(), 0);
+        Assert.assertEquals(result.getNextPage(), 1);
+        page = "-1";
+        result = restConnection.query("*", page, null, null);
+        Assert.assertEquals(result.getPrevPage(), -1);
+        Assert.assertEquals(result.getPage(), 0);
+        Assert.assertEquals(result.getNextPage(), 1);
+        page = "-100";
+        result = restConnection.query("*", page, null, null);
+        Assert.assertEquals(result.getPrevPage(), -1);
+        Assert.assertEquals(result.getPage(), 0);
+        Assert.assertEquals(result.getNextPage(), 1);
+        page = "20000000";
+        result = restConnection.query("*", page, null, null);
+        Assert.assertEquals(result.getPrevPage(), result.getLastPage() - 1);
+        Assert.assertEquals(result.getPage(), result.getLastPage());
+        Assert.assertEquals(result.getNextPage(), -1);
     }
 }
