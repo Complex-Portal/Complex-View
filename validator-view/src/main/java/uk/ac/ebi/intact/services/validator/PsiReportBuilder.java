@@ -452,6 +452,9 @@ public class PsiReportBuilder {
             }
 
             report.setInteractionCount( validatorReport.getInteractionCount() );
+            report.setValidatorMessages(new ArrayList<ValidatorMessage>());
+            report.setSemanticsStatus(null);
+            report.setSyntaxStatus(null);
 
             // finally, we set the messages obtained (if any) to the report
             if (validatorReport.hasSyntaxMessages()) {
@@ -464,7 +467,7 @@ public class PsiReportBuilder {
                     report.setSyntaxStatus(PsiReport.WARNINGS);
                 }
 
-                report.setSyntaxReport(new ArrayList<ValidatorMessage>(validatorReport.getSyntaxMessages()));
+                report.getValidatorMessages().addAll(validatorReport.getSyntaxMessages());
             } else {
                 report.setSyntaxStatus(PsiReport.VALID);
             }
@@ -475,8 +478,8 @@ public class PsiReportBuilder {
                 report.setSemanticsReport("Semantic validation was not requested");
 
             } else if ( validatorReport.hasSemanticMessages()) {
+                report.getValidatorMessages().addAll(validatorReport.getSemanticMessages());
 
-                report.setValidatorMessages(new ArrayList<ValidatorMessage>(validatorReport.getSemanticMessages()));
 
                 // we need to determine the status of the semantics validation.
                 // If there are no validatorMessages, the status is "valid" (already set).

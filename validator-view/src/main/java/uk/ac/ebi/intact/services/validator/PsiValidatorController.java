@@ -531,38 +531,41 @@ public class PsiValidatorController extends BaseController {
 
         // we execute the method of the builder that actually creates the report
         log.info( "About to start building the PSI report" );
+        try{
+            if (!validationScope.equals(ValidationScope.CUSTOMIZED)){
+                this.currentPsiReport = builder.createPsiReport(streamToValidate);
+            }
+            else{
+                List<ObjectRule> customizedRules = new ArrayList<ObjectRule>();
 
-        if (!validationScope.equals(ValidationScope.CUSTOMIZED)){
-            this.currentPsiReport = builder.createPsiReport(streamToValidate);
+                List<Integer> rules = this.customizedRules.get(ValidationScope.PSI_MI);
+
+                if (rules != null && !rules.isEmpty()){
+                    extractSelectedRules(customizedRules, rules);
+                }
+
+                rules = this.customizedRules.get(ValidationScope.MIMIX);
+
+                if (rules != null && !rules.isEmpty()){
+                    extractSelectedRules(customizedRules, rules);
+                }
+
+                rules = this.customizedRules.get(ValidationScope.IMEX);
+
+                if (rules != null && !rules.isEmpty()){
+                    extractSelectedRules(customizedRules, rules);
+                }
+
+                this.currentPsiReport = builder.createPsiReport(streamToValidate, customizedRules);
+            }
+            if (this.currentPsiReport.isSyntaxValid()){
+                builder.createHtmlView(this.currentPsiReport, streamToView);
+            }
         }
-        else{
-            List<ObjectRule> customizedRules = new ArrayList<ObjectRule>();
-
-            List<Integer> rules = this.customizedRules.get(ValidationScope.PSI_MI);
-
-            if (rules != null && !rules.isEmpty()){
-                extractSelectedRules(customizedRules, rules);
-            }
-
-            rules = this.customizedRules.get(ValidationScope.MIMIX);
-
-            if (rules != null && !rules.isEmpty()){
-                extractSelectedRules(customizedRules, rules);
-            }
-
-            rules = this.customizedRules.get(ValidationScope.IMEX);
-
-            if (rules != null && !rules.isEmpty()){
-                extractSelectedRules(customizedRules, rules);
-            }
-
-            this.currentPsiReport = builder.createPsiReport(streamToValidate, customizedRules);
+        finally{
+            streamToValidate.close();
+            streamToView.close();
         }
-
-        streamToValidate.close();
-
-        builder.createHtmlView(this.currentPsiReport, streamToView);
-        streamToView.close();
     }
 
     private void extractSelectedRules(List<ObjectRule> customizedRules, List<Integer> rules) {

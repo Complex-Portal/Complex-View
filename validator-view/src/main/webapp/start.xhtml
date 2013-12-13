@@ -397,7 +397,7 @@
 <a name="v_report"/>
 <tr:panelHeader text="PSI MI Validation Report" rendered="#{psiValidatorController.currentPsiReport.semanticReportAvailable or psiValidatorController.currentPsiReport.syntaxInvalid or psiValidatorController.currentPsiReport.syntaxStatus == 'warnings'}">
 
-    <tr:outputText value="#{psiValidatorController.currentPsiReport.interactionCount} interaction(s) validated." />
+    <tr:outputText value="#{psiValidatorController.currentPsiReport.interactionCount} interaction(s) validated." rendered="#{psiValidatorController.currentPsiReport.semanticReportAvailable}"/>
 
     <tr:table width="90%" var="msg" value="#{psiValidatorController.currentPsiReport.validatorMessages}">
 

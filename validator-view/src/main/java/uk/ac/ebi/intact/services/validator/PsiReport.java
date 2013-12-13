@@ -127,7 +127,7 @@ public class PsiReport {
     }
 
     public boolean isSemanticReportAvailable() {
-        return validatorMessages != null && !validatorMessages.isEmpty();
+        return semanticsStatus != null;
     }
 
     public void setSemanticsStatus(String semanticsStatus) {
