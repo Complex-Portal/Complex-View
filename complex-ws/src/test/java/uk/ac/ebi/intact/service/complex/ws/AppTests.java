@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(locations = {"classpath:spring-config.xml", "file:src/main/webapp/WEB-INF/complex-ws-servlet.xml"})
+@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/complex-ws-servlet.xml"})
 public class AppTests extends IntactBasicTestCase {
     private MockMvc mockMvc;
 
