@@ -35,12 +35,12 @@ public class PsiReport {
     /**
      * The status of the xml syntax validation (valid|invalid)
      */
-    private String xmlSyntaxStatus;
+    private String syntaxStatus;
 
     /**
      * Report of the validation. If failed, contains the stacktrace
      */
-    private List<ValidatorMessage> xmlSyntaxReport;
+    private List<ValidatorMessage> syntaxReport;
 
     /**
      * The status of the semantics validation (valid|warnings|invalid)
@@ -82,43 +82,43 @@ public class PsiReport {
         this.name = name;
     }
 
-    public boolean isXmlSyntaxValid() {
-        return VALID.equals(xmlSyntaxStatus);
+    public boolean isSyntaxValid() {
+        return VALID.equals(syntaxStatus);
     }
 
-    public boolean isXmlSyntaxWarning() {
-        return WARNINGS.equals(xmlSyntaxStatus);
+    public boolean isSyntaxWarning() {
+        return WARNINGS.equals(syntaxStatus);
     }
 
-    public boolean isXmlSyntaxInvalid() {
-        return INVALID.equals(xmlSyntaxStatus);
+    public boolean isSyntaxInvalid() {
+        return INVALID.equals(syntaxStatus);
     }
 
-    public String getXmlSyntaxStatus() {
-        return xmlSyntaxStatus;
+    public String getSyntaxStatus() {
+        return syntaxStatus;
     }
 
-    public void setXmlSyntaxStatus(String xmlSyntaxStatus) {
-        this.xmlSyntaxStatus = xmlSyntaxStatus;
+    public void setSyntaxStatus(String syntaxStatus) {
+        this.syntaxStatus = syntaxStatus;
     }
 
-    public List<ValidatorMessage> getXmlSyntaxReport() {
-        return xmlSyntaxReport;
+    public List<ValidatorMessage> getSyntaxReport() {
+        return syntaxReport;
     }
 
-    public void setXmlSyntaxReport(List<ValidatorMessage> xmlSyntaxReport) {
-        this.xmlSyntaxReport = xmlSyntaxReport;
+    public void setSyntaxReport(List<ValidatorMessage> syntaxReport) {
+        this.syntaxReport = syntaxReport;
     }
 
     public boolean hasSemanticStatus() {
         return semanticsStatus != null;
     }
 
-    public boolean isXmlSemanticValid() {
+    public boolean isSemanticValid() {
         return VALID.equals(semanticsStatus);
     }
 
-    public boolean isXmlSemanticInvalid() {
+    public boolean isSemanticInvalid() {
         return INVALID.equals(semanticsStatus);
     }
 
@@ -173,11 +173,11 @@ public class PsiReport {
     }
 
     public int getNumberOfSyntaxMessages(){
-        if (this.xmlSyntaxReport == null){
+        if (this.syntaxReport == null){
             return 0;
         }
 
-        return this.xmlSyntaxReport.size();
+        return this.syntaxReport.size();
     }
 
     public int getNumberOfSemanticMessages(){

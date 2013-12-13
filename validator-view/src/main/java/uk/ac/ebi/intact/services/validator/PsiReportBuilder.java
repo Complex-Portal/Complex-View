@@ -6,9 +6,13 @@ package uk.ac.ebi.intact.services.validator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import psidev.psi.mi.jami.commons.MIDataSourceOptionFactory;
+import psidev.psi.mi.jami.datasource.InteractionStream;
+import psidev.psi.mi.jami.factory.MIDataSourceFactory;
+import psidev.psi.mi.jami.html.MIEvidenceHtmlWriter;
+import psidev.psi.mi.jami.model.InteractionEvidence;
 import psidev.psi.mi.validator.ValidatorReport;
-import psidev.psi.mi.validator.extension.Mi25Validator;
-import psidev.psi.mi.xml.stylesheets.XslTransformerUtils;
+import psidev.psi.mi.validator.extension.MiValidator;
 import psidev.psi.tools.validator.MessageLevel;
 import psidev.psi.tools.validator.ValidatorMessage;
 import psidev.psi.tools.validator.preferences.UserPreferences;
@@ -130,7 +134,7 @@ public class PsiReportBuilder {
             }
 
             // create a new validator
-            Mi25Validator validator =  factory.getValidator(validationScope, model);
+            MiValidator validator =  factory.getValidator(validationScope, model);
 
             // validate the file
             validateInputStream(report, streamToValidate, validator);
@@ -180,7 +184,7 @@ public class PsiReportBuilder {
             ValidatorFactory factory = new ValidatorFactory();
 
             // create a new validator
-            Mi25Validator validator =  factory.getValidator(customizedRules);
+            MiValidator validator =  factory.getValidator(customizedRules);
 
             // validate the file
             validateInputStream(report, streamToValidate, validator);
@@ -217,30 +221,53 @@ public class PsiReportBuilder {
      */
     public void createHtmlView( PsiReport report, InputStream is ) {
         log.debug("Completed file validation ... about to build the report now ...");
+        InteractionStream<InteractionEvidence> dataSource = null;
+        MIEvidenceHtmlWriter htmlWriter = null;
+        try {
+            MIDataSourceFactory dataSourceFactory = MIDataSourceFactory.getInstance();
+            MIDataSourceOptionFactory optionFactory = MIDataSourceOptionFactory.getInstance();
+            dataSource = dataSourceFactory.getInteractionSourceWith(optionFactory.getDefaultOptions(is));
 
-        if (report.isXmlSyntaxValid()) {
-            String transformedOutput = null;
-            try {
-                // we transform the xml to html using an utility class that returns
-                // the output stream with the html content
-                final ByteArrayOutputStream os = new ByteArrayOutputStream( 4096 );
-                
-                try{
-                    XslTransformerUtils.viewPsiMi25(is, os);
-                    transformedOutput = os.toString();
-                }
-                finally {
-                    os.close();
-                }
+            ByteArrayOutputStream output = new ByteArrayOutputStream( 4096 );
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
+            htmlWriter = new MIEvidenceHtmlWriter(writer);
+            htmlWriter.setWriteHeader(false);
+
+            try{
+                htmlWriter.start();
+                htmlWriter.write(dataSource.getInteractionsIterator());
+                htmlWriter.end();
+                htmlWriter.flush();
+
+                report.setHtmlView( output.toString() );
             }
-            catch ( Exception e ) {
-                log.error( "Failed to produce the HTML view", e );
+            catch (Exception e){
+                log.error( "Failed to produce the HTML view", e);
                 FacesContext context = FacesContext.getCurrentInstance();
-                FacesMessage message = new FacesMessage( "Failed to produce the HTML view of your data: " + e.getMessage() );
+                FacesMessage message = new FacesMessage( "Failed to produce the HTML view of your data: the interaction data source is not recognized");
                 context.addMessage( null, message );
+                report.setHtmlView(null);
             }
-            report.setHtmlView( transformedOutput );
-        } else {
+            finally {
+
+                if (htmlWriter != null){
+                    htmlWriter.close();
+                }
+            }
+        } catch ( Exception e ) {
+            log.error( "Failed to produce the HTML view", e );
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage( "Failed to produce the HTML view of your data: " + e.getMessage() );
+            context.addMessage( null, message );
+            report.setHtmlView(null);
+        }
+        finally {
+            if (dataSource != null){
+                dataSource.close();
+            }
+        }
+
+        if (!report.isSyntaxValid()) {
             //if the xml validation is wrong, the second validation won't be run
             report.setSemanticsStatus( PsiReport.NOT_RUN ); // not checked, XML syntax needs to be valid first
         }
@@ -277,7 +304,7 @@ public class PsiReportBuilder {
         
         try {
             // We read the configuration file, included inside the jar
-            ontologyCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/ontologies.xml" );
+            ontologyCfg = MiValidator.class.getClassLoader().getResourceAsStream( "config/psi_mi/ontologies.xml" );
 
             if ( log.isInfoEnabled() ) {
                 log.info( "Model: " + model );
@@ -295,17 +322,17 @@ public class PsiReportBuilder {
                     break;
 
                 case CV_ONLY:
-                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/cv-mapping.xml" );
+                    cvMappingCfg = MiValidator.class.getClassLoader().getResourceAsStream( "config/psi_mi/cv-mapping.xml" );
                     break;
 
                 case MIMIX:
-                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/cv-mapping.xml" );
-                    ruleCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/mimix-rules.xml" );
+                    cvMappingCfg = MiValidator.class.getClassLoader().getResourceAsStream( "config/psi_mi/cv-mapping.xml" );
+                    ruleCfg = MiValidator.class.getClassLoader().getResourceAsStream( "config/psi_mi/mimix-rules.xml" );
                     break;
 
                 case IMEX:
-                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/cv-mapping.xml" );
-                    ruleCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_mi/imex-rules.xml" );
+                    cvMappingCfg = MiValidator.class.getClassLoader().getResourceAsStream( "config/psi_mi/cv-mapping.xml" );
+                    ruleCfg = MiValidator.class.getClassLoader().getResourceAsStream( "config/psi_mi/imex-rules.xml" );
                     break;
 
                 default:
@@ -360,7 +387,7 @@ public class PsiReportBuilder {
 
         try {
             // We read the configuration file, included inside the jar
-            InputStream ontologyCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_par/ontologies.xml" );
+            InputStream ontologyCfg = MiValidator.class.getClassLoader().getResourceAsStream( "config/psi_par/ontologies.xml" );
             InputStream cvMappingCfg = null;
             InputStream ruleCfg = null;
 
@@ -380,7 +407,7 @@ public class PsiReportBuilder {
                     break;
 
                 case CV_ONLY:
-                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( "config/psi_par/cv-mapping.xml" );
+                    cvMappingCfg = MiValidator.class.getClassLoader().getResourceAsStream( "config/psi_par/cv-mapping.xml" );
                     break;
 
                 default:
@@ -402,7 +429,7 @@ public class PsiReportBuilder {
         }
     }
 
-    private void validateInputStream(PsiReport report, InputStream streamToValidate, Mi25Validator validator){
+    private void validateInputStream(PsiReport report, InputStream streamToValidate, MiValidator validator){
         // Printwriter to get the stacktrace messages
         StringWriter sw = new StringWriter( 1024 );
 
@@ -428,11 +455,18 @@ public class PsiReportBuilder {
 
             // finally, we set the messages obtained (if any) to the report
             if (validatorReport.hasSyntaxMessages()) {
-                report.setXmlSyntaxStatus("XML syntax validation failed ("+validatorReport.getSyntaxMessages().size()+" messages)");
-                report.setXmlSyntaxStatus(PsiReport.INVALID);
-                report.setXmlSyntaxReport(new ArrayList<ValidatorMessage>(validatorReport.getSyntaxMessages()));
+                if (!validatorReport.isSyntaxValid()){
+                    report.setSyntaxStatus("File syntax validation failed (" + validatorReport.getSyntaxMessages().size() + " messages)");
+                    report.setSyntaxStatus(PsiReport.INVALID);
+                }
+                else {
+                    report.setSyntaxStatus("File syntax validation with warnings (" + validatorReport.getSyntaxMessages().size() + " messages)");
+                    report.setSyntaxStatus(PsiReport.WARNINGS);
+                }
+
+                report.setSyntaxReport(new ArrayList<ValidatorMessage>(validatorReport.getSyntaxMessages()));
             } else {
-                report.setXmlSyntaxStatus(PsiReport.VALID);
+                report.setSyntaxStatus(PsiReport.VALID);
             }
 
             if( ValidationScope.SYNTAX.equals(validationScope)) {
@@ -550,7 +584,7 @@ public class PsiReportBuilder {
             preferences.setSaxValidationEnabled(true);
 
             // we instantiate the MI25 validator
-            Mi25Validator validator = new Mi25Validator(ontologyCfg, cvMappingCfg, ruleCfg);
+            MiValidator validator = new MiValidator(ontologyCfg, cvMappingCfg, ruleCfg);
             validator.setUserPreferences(preferences);
 
             log.debug("Validation starting");
@@ -572,11 +606,18 @@ public class PsiReportBuilder {
 
             // finally, we set the messages obtained (if any) to the report
             if (validatorReport.hasSyntaxMessages()) {
-                report.setXmlSyntaxStatus("XML syntax validation failed ("+validatorReport.getSyntaxMessages().size()+" messages)");
-                report.setXmlSyntaxStatus(PsiReport.INVALID);
-                report.setXmlSyntaxReport(new ArrayList<ValidatorMessage>(validatorReport.getSyntaxMessages()));
+                if (!validatorReport.isSyntaxValid()){
+                    report.setSyntaxStatus("File syntax validation failed (" + validatorReport.getSyntaxMessages().size() + " messages)");
+                    report.setSyntaxStatus(PsiReport.INVALID);
+                }
+                else {
+                    report.setSyntaxStatus("File syntax validation with warnings (" + validatorReport.getSyntaxMessages().size() + " messages)");
+                    report.setSyntaxStatus(PsiReport.WARNINGS);
+                }
+
+                report.setSyntaxReport(new ArrayList<ValidatorMessage>(validatorReport.getSyntaxMessages()));
             } else {
-                report.setXmlSyntaxStatus(PsiReport.VALID);
+                report.setSyntaxStatus(PsiReport.VALID);
             }
 
             if( ValidationScope.SYNTAX.equals(validationScope) ) {

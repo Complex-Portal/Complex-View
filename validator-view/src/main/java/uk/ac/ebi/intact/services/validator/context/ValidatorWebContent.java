@@ -1,7 +1,7 @@
 package uk.ac.ebi.intact.services.validator.context;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import psidev.psi.mi.validator.extension.Mi25Validator;
+import psidev.psi.mi.validator.extension.MiValidator;
 import psidev.psi.tools.cvrReader.CvRuleReader;
 import psidev.psi.tools.cvrReader.CvRuleReaderException;
 import psidev.psi.tools.cvrReader.mapping.jaxb.CvMapping;
@@ -30,7 +30,7 @@ public class ValidatorWebContent {
     /**
      * The CVRule reader to read the cv-mapping rules
      */
-    CvRuleReader cvRulesReader;
+    private CvRuleReader cvRulesReader;
 
     /**
      * This map contains all the ObjectRules to be executed with a specific scope (IMEx or MIMIx)
@@ -367,11 +367,11 @@ public class ValidatorWebContent {
      * @throws ValidatorWebContextException
      */
     private void setUpPsiParValidatorEnvironments(ValidatorFactory factory) throws ValidatorWebContextException {
-        Mi25Validator validator = factory.getReInitialisedValidator(ValidationScope.CV_ONLY, DataModel.PSI_PAR);
+        MiValidator validator = factory.getReInitialisedValidator(ValidationScope.CV_ONLY, DataModel.PSI_PAR);
         setPsiParOntologyManager(validator.getOntologyMngr());
         ValidatorWebContext context = ValidatorWebContext.getInstance();
 
-        InputStream cvConfig = Mi25Validator.class.getClassLoader().getResourceAsStream( ValidatorFactory.getPsiParCvMapping() );
+        InputStream cvConfig = MiValidator.class.getClassLoader().getResourceAsStream( ValidatorFactory.getPsiParCvMapping() );
         try {
             setPsiParCvMapping(cvRulesReader.read(cvConfig));
             //preLoadOntologySynonyms(this.psiParCvMapping, this.psiParOntologyManager);
@@ -395,21 +395,21 @@ public class ValidatorWebContent {
      * @throws ValidatorWebContextException
      */
     private void setUpPsiMiValidatorEnvironments(ValidatorFactory factory) throws ValidatorWebContextException {
-        Mi25Validator validator = factory.getReInitialisedValidator(ValidationScope.MIMIX, DataModel.PSI_MI);
+        MiValidator validator = factory.getReInitialisedValidator(ValidationScope.MIMIX, DataModel.PSI_MI);
         setPsiMiOntologyManager(validator.getOntologyMngr());
         ValidatorWebContext context = ValidatorWebContext.getInstance();
 
-        this.psiMiObjectRules.put(ValidationScope.MIMIX, validator.getObjectRules());
+        this.psiMiObjectRules.put(ValidationScope.MIMIX, new HashSet<ObjectRule>(validator.getAllRules()));
 
         validator = factory.getReInitialisedValidator(ValidationScope.IMEX, DataModel.PSI_MI);
 
-        this.psiMiObjectRules.put(ValidationScope.IMEX, validator.getObjectRules());
+        this.psiMiObjectRules.put(ValidationScope.IMEX, new HashSet<ObjectRule>(validator.getAllRules()));
 
         validator = factory.getReInitialisedValidator(ValidationScope.PSI_MI, DataModel.PSI_MI);
 
-        this.psiMiObjectRules.put(ValidationScope.PSI_MI, validator.getObjectRules());
+        this.psiMiObjectRules.put(ValidationScope.PSI_MI, new HashSet<ObjectRule>(validator.getAllRules()));
 
-        InputStream cvConfig = Mi25Validator.class.getClassLoader().getResourceAsStream( ValidatorFactory.getPsiMiCvMapping() );
+        InputStream cvConfig = MiValidator.class.getClassLoader().getResourceAsStream( ValidatorFactory.getPsiMiCvMapping() );
         try {
             setPsiMiCvMapping(cvRulesReader.read(cvConfig));
             //preLoadOntologySynonyms(this.psiMiCvMapping, this.psiMiOntologyManager);
@@ -459,8 +459,8 @@ public class ValidatorWebContent {
      * Sets up the PSI-PAR scopes
      */
     private void setUpPsiParScopes(){
-        this.psiMiScopes.add(ValidationScope.SYNTAX);
-        this.psiMiScopes.add(ValidationScope.CV_ONLY);
+        this.psiParScopes.add(ValidationScope.SYNTAX);
+        this.psiParScopes.add(ValidationScope.CV_ONLY);
     }
 
     /**

@@ -2,7 +2,7 @@ package uk.ac.ebi.intact.services.validator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import psidev.psi.mi.validator.extension.Mi25Validator;
+import psidev.psi.mi.validator.extension.MiValidator;
 import psidev.psi.tools.cvrReader.mapping.jaxb.CvMapping;
 import psidev.psi.tools.ontology_manager.OntologyManager;
 import psidev.psi.tools.validator.preferences.UserPreferences;
@@ -49,7 +49,7 @@ public class ValidatorFactory {
      * @return A new instance of the validator which has reloaded the ontologies and rules from the configuration files
      * @throws ValidatorWebContextException
      */
-    public Mi25Validator getReInitialisedValidator(ValidationScope scope, DataModel dataModel) throws ValidatorWebContextException {
+    public MiValidator getReInitialisedValidator(ValidationScope scope, DataModel dataModel) throws ValidatorWebContextException {
         if (dataModel == null){
             throw new IllegalArgumentException("The dataModel cannot be null.");
         }
@@ -88,7 +88,7 @@ public class ValidatorFactory {
      * @return A new instance of the validator which uses the OntologyManager instance of the ValidatorWebContext
      * @throws ValidatorWebContextException
      */
-    public Mi25Validator getValidator(ValidationScope scope, DataModel dataModel) throws ValidatorWebContextException {
+    public MiValidator getValidator(ValidationScope scope, DataModel dataModel) throws ValidatorWebContextException {
         if (dataModel == null){
             throw new IllegalArgumentException("The dataModel cannot be null.");
         }
@@ -126,7 +126,7 @@ public class ValidatorFactory {
      * @return A new instance of the validator which uses the OntologyManager instance of the ValidatorWebContext
      * @throws ValidatorWebContextException
      */
-    public Mi25Validator getValidator(List<ObjectRule> customizedRules) throws ValidatorWebContextException {
+    public MiValidator getValidator(List<ObjectRule> customizedRules) throws ValidatorWebContextException {
 
         if ( log.isInfoEnabled() ) {
             log.info( "Model: " + DataModel.PSI_MI.toString());
@@ -140,7 +140,7 @@ public class ValidatorFactory {
      * Set up the user preferences
      * @param validator
      */
-    private void setUpUserPreferences(Mi25Validator validator){
+    private void setUpUserPreferences(MiValidator validator){
         // set work directory
         UserPreferences preferences = new UserPreferences();
         preferences.setKeepDownloadedOntologiesOnDisk(true);
@@ -156,7 +156,7 @@ public class ValidatorFactory {
      * @return a new Validator initialized for a PSI-PAR validation with the specific scope
      * @throws ValidatorWebContextException
      */
-    private Mi25Validator createPsiParValidator(ValidationScope scope) throws ValidatorWebContextException {
+    private MiValidator createPsiParValidator(ValidationScope scope) throws ValidatorWebContextException {
         InputStream ontologyCfg = null;
         InputStream cvMappingCfg = null;
         InputStream ruleCfg = null;
@@ -171,7 +171,7 @@ public class ValidatorFactory {
                     break;
 
                 case CV_ONLY:
-                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( psiParCvMapping );
+                    cvMappingCfg = MiValidator.class.getClassLoader().getResourceAsStream( psiParCvMapping );
 
                     if (cvMappingCfg == null){
                         throw new IllegalStateException("The file containing the Cv-mapping rules '" + psiParCvMapping + " has not been loaded and it is needed to" +
@@ -186,7 +186,7 @@ public class ValidatorFactory {
             log.info( "Is the Cv mapping file null: " + ( cvMappingCfg == null ) );
 
             // we instantiate the MI25 validator
-            Mi25Validator validator = new Mi25Validator(ontologyCfg, cvMappingCfg, ruleCfg);
+            MiValidator validator = new MiValidator(ontologyCfg, cvMappingCfg, ruleCfg);
 
             setUpUserPreferences(validator);
 
@@ -226,7 +226,7 @@ public class ValidatorFactory {
      * @return a new Validator initialized for a PSI-PAR validation with the specific scope
      * @throws ValidatorWebContextException
      */
-    private Mi25Validator getPsiParValidator(ValidationScope scope) throws ValidatorWebContextException {
+    private MiValidator getPsiParValidator(ValidationScope scope) throws ValidatorWebContextException {
         ValidatorWebContext context = ValidatorWebContext.getInstance();
 
         if (context == null){
@@ -255,7 +255,7 @@ public class ValidatorFactory {
             }
 
             // we instantiate the MI25 validator
-            Mi25Validator validator = new Mi25Validator(ontologymanager, cvMapping, objectRules);
+            MiValidator validator = new MiValidator(ontologymanager, cvMapping, objectRules);
 
             setUpUserPreferences(validator);
 
@@ -273,7 +273,7 @@ public class ValidatorFactory {
      * @return a new Validator initialized for a PSI-MI validation with the specific scope
      * @throws ValidatorWebContextException
      */
-    private Mi25Validator getPsiMiValidator(ValidationScope scope) throws ValidatorWebContextException {
+    private MiValidator getPsiMiValidator(ValidationScope scope) throws ValidatorWebContextException {
         ValidatorWebContext context = ValidatorWebContext.getInstance();
 
         if (context == null){
@@ -317,7 +317,7 @@ public class ValidatorFactory {
             }
 
             // we instantiate the MI25 validator
-            Mi25Validator validator = new Mi25Validator(ontologymanager, cvMapping, objectRules);
+            MiValidator validator = new MiValidator(ontologymanager, cvMapping, objectRules);
 
             setUpUserPreferences(validator);
 
@@ -329,7 +329,7 @@ public class ValidatorFactory {
         }
     }
 
-    private Mi25Validator getCustomizedPsiMiValidator(List<ObjectRule> customizedRules) throws ValidatorWebContextException {
+    private MiValidator getCustomizedPsiMiValidator(List<ObjectRule> customizedRules) throws ValidatorWebContextException {
         ValidatorWebContext context = ValidatorWebContext.getInstance();
 
         if (context == null){
@@ -345,7 +345,7 @@ public class ValidatorFactory {
             CvMapping cvMapping = validatorContent.getPsiMiCvMapping();
 
             // we instantiate the MI25 validator
-            Mi25Validator validator = new Mi25Validator(ontologymanager, cvMapping, customizedRules);
+            MiValidator validator = new MiValidator(ontologymanager, cvMapping, customizedRules);
 
             setUpUserPreferences(validator);
 
@@ -363,7 +363,7 @@ public class ValidatorFactory {
      * @return a new Validator initialized for a PSI-MI validation with the specific scope
      * @throws ValidatorWebContextException
      */
-    private Mi25Validator createPsiMiValidator(ValidationScope scope) throws ValidatorWebContextException {
+    private MiValidator createPsiMiValidator(ValidationScope scope) throws ValidatorWebContextException {
 
         InputStream ontologyCfg = null;
         InputStream cvMappingCfg = null;
@@ -377,7 +377,7 @@ public class ValidatorFactory {
                     break;
 
                 case CV_ONLY:
-                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( psiMiCvMapping );
+                    cvMappingCfg = MiValidator.class.getClassLoader().getResourceAsStream( psiMiCvMapping );
 
                     if (cvMappingCfg == null){
                         throw new IllegalStateException("The file containing the Cv-mapping rules '" + psiMiCvMapping + " has not been loaded and it is needed to" +
@@ -385,14 +385,14 @@ public class ValidatorFactory {
                     }
                     break;
                 case PSI_MI:
-                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( psiMiCvMapping );
+                    cvMappingCfg = MiValidator.class.getClassLoader().getResourceAsStream( psiMiCvMapping );
 
                     if (cvMappingCfg == null){
                         throw new IllegalStateException("The file containing the Cv-mapping rules '" + psiMiCvMapping + " has not been loaded and it is needed to" +
                                 "validate the file with the scope " + scope.toString());
                     }
 
-                    ruleCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( psimiRules );
+                    ruleCfg = MiValidator.class.getClassLoader().getResourceAsStream( psimiRules );
 
                     if (ruleCfg == null){
                         throw new IllegalStateException("The file containing the PSI-MI rules '" + psimiRules + " has not been loaded and it is needed to" +
@@ -400,14 +400,14 @@ public class ValidatorFactory {
                     }
                     break;
                 case MIMIX:
-                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( psiMiCvMapping );
+                    cvMappingCfg = MiValidator.class.getClassLoader().getResourceAsStream( psiMiCvMapping );
 
                     if (cvMappingCfg == null){
                         throw new IllegalStateException("The file containing the Cv-mapping rules '" + psiMiCvMapping + " has not been loaded and it is needed to" +
                                 "validate the file with the scope " + scope.toString());
                     }
 
-                    ruleCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( mimixRules );
+                    ruleCfg = MiValidator.class.getClassLoader().getResourceAsStream( mimixRules );
 
                     if (ruleCfg == null){
                         throw new IllegalStateException("The file containing the mimix rules '" + mimixRules + " has not been loaded and it is needed to" +
@@ -416,14 +416,14 @@ public class ValidatorFactory {
                     break;
 
                 case IMEX:
-                    cvMappingCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( psiMiCvMapping );
+                    cvMappingCfg = MiValidator.class.getClassLoader().getResourceAsStream( psiMiCvMapping );
 
                     if (cvMappingCfg == null){
                         throw new IllegalStateException("The file containing the Cv-mapping rules '" + psiParCvMapping + " has not been loaded and it is needed to" +
                                 "validate the file with the scope " + scope.toString());
                     }
 
-                    ruleCfg = Mi25Validator.class.getClassLoader().getResourceAsStream( imexRules );
+                    ruleCfg = MiValidator.class.getClassLoader().getResourceAsStream( imexRules );
 
                     if (ruleCfg == null){
                         throw new IllegalStateException("The file containing the imex rules '" + imexRules + " has not been loaded and it is needed to" +
@@ -437,7 +437,7 @@ public class ValidatorFactory {
             }
 
             // we instantiate the MI25 validator
-            Mi25Validator validator = new Mi25Validator(ontologyCfg, cvMappingCfg, ruleCfg);
+            MiValidator validator = new MiValidator(ontologyCfg, cvMappingCfg, ruleCfg);
 
             setUpUserPreferences(validator);
 
