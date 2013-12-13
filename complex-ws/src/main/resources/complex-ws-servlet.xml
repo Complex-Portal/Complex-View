@@ -7,9 +7,9 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
 
-    <context:component-scan base-package="uk.ac.ebi.intact.service.complex"/>
+    <context:component-scan base-package="uk.ac.ebi.intact"/>
 
     <mvc:annotation-driven />
 
@@ -61,8 +61,7 @@
     </bean>
 
     <!-- Data provider -->
-    <context:property-placeholder location="classpath:solr.properties"/>
-    <bean id="dataProvider" class="uk.ac.ebi.intact.service.complex.DataProvider">
+    <bean id="dataProvider" class="uk.ac.ebi.intact.service.complex.ws.DataProvider">
         <constructor-arg index="0" name="size"  value="500" />
     </bean>
 
