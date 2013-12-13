@@ -356,7 +356,7 @@
                          and aggregate the errors into the same report.
                     -->
 
-                    <trh:rowLayout rendered="#{psiValidatorController.currentPsiReport.semanticReportAvailable}">
+                    <trh:rowLayout rendered="#{not psiValidatorController.currentPsiReport.semanticInvalid}">
                         <trh:cellFormat>
                             <tr:image source="images/icon_success_sml.gif"
                                       rendered="#{psiValidatorController.currentPsiReport.semanticValid}"/>
@@ -397,7 +397,7 @@
 <a name="v_report"/>
 <tr:panelHeader text="PSI MI Validation Report" rendered="#{psiValidatorController.currentPsiReport.semanticReportAvailable or psiValidatorController.currentPsiReport.syntaxInvalid or psiValidatorController.currentPsiReport.syntaxStatus == 'warnings'}">
 
-    <tr:outputText value="#{psiValidatorController.currentPsiReport.interactionCount} interaction(s) validated." rendered="#{psiValidatorController.currentPsiReport.semanticReportAvailable}"/>
+    <tr:outputText value="#{psiValidatorController.currentPsiReport.interactionCount} interaction(s) validated." rendered="#{not psiValidatorController.currentPsiReport.semanticInvalid}"/>
 
     <tr:table width="90%" var="msg" value="#{psiValidatorController.currentPsiReport.validatorMessages}">
 
