@@ -11,6 +11,8 @@ import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexFieldNames;
 import uk.ac.ebi.intact.model.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +24,12 @@ public class SearchController {
     /********************************/
     @Autowired
     private DataProvider dataProvider ;
-    
+
+    @PersistenceContext(unitName="intact-core-default")
+    private EntityManager complexManager;
+
+    @Autowired
+    private DaoFactory daoFactory;
 
      /*
      -- BASIC KNOWLEDGE ABOUT SPRING MVC CONTROLLERS --
@@ -183,40 +190,43 @@ public class SearchController {
     @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET)
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public ComplexDetails retrieveComplex(@PathVariable String ac) {
-        DaoFactory factory = IntactContext.getCurrentInstance().getDaoFactory();
-        InteractionDao interactionDao = factory.getInteractionDao();
+        InteractionDao interactionDao = daoFactory.getInteractionDao();
         InteractionImpl complex = interactionDao.getByAc(ac);
-        ComplexDetails details = new ComplexDetails();
+        ComplexDetails details = null;
         // Function
-        CvTopic cvTopic = null ;
-        for ( Annotation annotation : complex.getAnnotations ( ) ) {
-            cvTopic = annotation != null ? annotation.getCvTopic ( ) : null ;
-            if ( cvTopic != null && cvTopic.getShortLabel ( ) .equalsIgnoreCase( "curated-complex" ) && annotation.getAnnotationText() != null) {
-                details.setFunction ( annotation.getAnnotationText ( ) ) ;
-                break ; // We only want the first one
+        if ( complex != null ) {
+            details = new ComplexDetails();
+            CvTopic cvTopic = null ;
+            for ( Annotation annotation : complex.getAnnotations ( ) ) {
+                cvTopic = annotation != null ? annotation.getCvTopic ( ) : null ;
+                if ( cvTopic != null && cvTopic.getShortLabel ( ) .equalsIgnoreCase( "curated-complex" ) && annotation.getAnnotationText() != null) {
+                    details.setFunction ( annotation.getAnnotationText ( ) ) ;
+                    break ; // We only want the first one
+                }
             }
-        }
-        // Names
-        String firstSystematic=null;
-        List<String> complexSynonyms = new LinkedList<String>();
+            // Names
+            String firstSystematic=null;
+            List<String> complexSynonyms = new LinkedList<String>();
 
-        for ( Alias alias : complex.getAliases ( ) ) {
-            if (alias.getName() != null){
-                if (alias.getCvAliasType() != null){
-                    CvAliasType type = alias.getCvAliasType();
-                    if (firstSystematic == null && "MI:1316".equals(type.getIdentifier())){
-                        firstSystematic = alias.getName();
-                    }
-                    else if ( "complex synonym".equals(type.getIdentifier())){
-                        complexSynonyms.add ( alias.getName() );
+            for ( Alias alias : complex.getAliases ( ) ) {
+                if (alias.getName() != null){
+                    if (alias.getCvAliasType() != null){
+                        CvAliasType type = alias.getCvAliasType();
+                        if (firstSystematic == null && "MI:1316".equals(type.getIdentifier())){
+                            firstSystematic = alias.getName();
+                        }
+                        else if ( "complex synonym".equals(type.getIdentifier())){
+                            complexSynonyms.add ( alias.getName() );
+                        }
                     }
                 }
             }
-        }
 
-        details.setSystematicName(firstSystematic);
-        details.setSynonyms(complexSynonyms);
-        details.setProperties(null);
+            details.setSystematicName(firstSystematic);
+            details.setSynonyms(complexSynonyms);
+            details.setProperties(null);
+
+        }
 
         return details;
     }

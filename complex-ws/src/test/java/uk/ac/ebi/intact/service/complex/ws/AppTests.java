@@ -15,13 +15,14 @@ import org.springframework.web.context.WebApplicationContext;
 import uk.ac.ebi.intact.core.unit.IntactBasicTestCase;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(locations = {"classpath:spring-config.xml"})
+@ContextConfiguration(locations = {"classpath:spring-config.xml", "file:src/main/webapp/WEB-INF/complex-ws-servlet.xml"})
 public class AppTests extends IntactBasicTestCase {
     private MockMvc mockMvc;
 
@@ -167,5 +168,13 @@ public class AppTests extends IntactBasicTestCase {
                 // this test is dependent on the number of indexed complexes
                 .andExpect(jsonPath("$.complexRestResult.size").value(0))
         ;
+    }
+
+    @Test
+    public void testDetails() throws Exception {
+        mockMvc.perform(get("/details/EBI-1245484?format=json"))
+               .andExpect(status().isOk())
+               .andDo(print())
+               .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }

@@ -50,19 +50,4 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <!-- solr configuration-->
-    <context:property-placeholder location="classpath:solr.properties"/>
-    <bean id="searcher" class="uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSolrSearcher">
-        <constructor-arg index="0" name="solrUrl"      value="${solr.url}"          />
-        <constructor-arg index="1" name="maxConnHost"  value="${solr.maxConnHost}"  />
-        <constructor-arg index="2" name="maxConnTotal" value="${solr.maxConnTotal}" />
-        <constructor-arg index="3" name="maxRetries"   value="${solr.maxRetries}"   />
-        <constructor-arg index="4" name="compresion"   value="${solr.compression}"  />
-    </bean>
-
-    <!-- Data provider -->
-    <bean id="dataProvider" class="uk.ac.ebi.intact.service.complex.ws.DataProvider">
-        <constructor-arg index="0" name="size"  value="500" />
-    </bean>
-
 </beans>
