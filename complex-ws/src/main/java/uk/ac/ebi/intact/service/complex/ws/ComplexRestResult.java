@@ -1,13 +1,11 @@
-package uk.ac.ebi.intact.service.complex;
+package uk.ac.ebi.intact.service.complex.ws;
 
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexResultIterator;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSearchResults;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -21,18 +19,18 @@ public class ComplexRestResult {
     private List<ComplexSearchResults> elements;
 
     public ComplexRestResult( ) {
-        this.elements = new ArrayList<ComplexSearchResults>();
-        size = 0;
+        this.elements = new LinkedList<ComplexSearchResults>();
+        this.size = 0;
     }
     public void add( ComplexResultIterator iterator ) {
-        size += iterator.getNumberOfResults();
+        this.size += iterator.getNumberOfResults();
         while ( iterator.hasNext() ) {
             this.elements.add( iterator.next() );
         }
     }
 
     @XmlElement
-    public int getSize() { return size; }
+    public int getSize() { return this.size; }
     @XmlElement
-    public List<ComplexSearchResults> getElements() { return elements; }
+    public List<ComplexSearchResults> getElements() { return this.elements; }
 }
