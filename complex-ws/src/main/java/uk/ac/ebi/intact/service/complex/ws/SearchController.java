@@ -1,12 +1,18 @@
-package uk.ac.ebi.intact.service.complex;
+package uk.ac.ebi.intact.service.complex.ws;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
+import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexFieldNames;
+import uk.ac.ebi.intact.model.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Controller
@@ -16,6 +22,7 @@ public class SearchController {
     /********************************/
     @Autowired
     private DataProvider dataProvider ;
+    
 
      /*
      -- BASIC KNOWLEDGE ABOUT SPRING MVC CONTROLLERS --
@@ -171,6 +178,47 @@ public class SearchController {
         fields.add(ComplexFieldNames.COMPLEX_ORGANISM);
         // Retrieve data using that parameters and return it
         return query(improveQuery(query, fields), first, number);
+    }
+
+    @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET)
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public ComplexDetails retrieveComplex(@PathVariable String ac) {
+        DaoFactory factory = IntactContext.getCurrentInstance().getDaoFactory();
+        InteractionDao interactionDao = factory.getInteractionDao();
+        InteractionImpl complex = interactionDao.getByAc(ac);
+        ComplexDetails details = new ComplexDetails();
+        // Function
+        CvTopic cvTopic = null ;
+        for ( Annotation annotation : complex.getAnnotations ( ) ) {
+            cvTopic = annotation != null ? annotation.getCvTopic ( ) : null ;
+            if ( cvTopic != null && cvTopic.getShortLabel ( ) .equalsIgnoreCase( "curated-complex" ) && annotation.getAnnotationText() != null) {
+                details.setFunction ( annotation.getAnnotationText ( ) ) ;
+                break ; // We only want the first one
+            }
+        }
+        // Names
+        String firstSystematic=null;
+        List<String> complexSynonyms = new LinkedList<String>();
+
+        for ( Alias alias : complex.getAliases ( ) ) {
+            if (alias.getName() != null){
+                if (alias.getCvAliasType() != null){
+                    CvAliasType type = alias.getCvAliasType();
+                    if (firstSystematic == null && "MI:1316".equals(type.getIdentifier())){
+                        firstSystematic = alias.getName();
+                    }
+                    else if ( "complex synonym".equals(type.getIdentifier())){
+                        complexSynonyms.add ( alias.getName() );
+                    }
+                }
+            }
+        }
+
+        details.setSystematicName(firstSystematic);
+        details.setSynonyms(complexSynonyms);
+        details.setProperties(null);
+
+        return details;
     }
 
 }

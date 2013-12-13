@@ -1,4 +1,4 @@
-package uk.ac.ebi.intact.service.complex;
+package uk.ac.ebi.intact.service.complex.ws;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +30,11 @@ public class DataProvider {
     public DataProvider( int size ) { this.chunkSize = size ; }
     public DataProvider( ) { }
 
-    //Setter for the chunkSize
+    /********************************/
+    /*      Setter and getters      */
+    /********************************/
+    public int getChunkSize() { return chunkSize; }
+    public void setChunkSize(int size) { chunkSize = size; }
 
     /*******************************/
     /*      Protected methods      */
