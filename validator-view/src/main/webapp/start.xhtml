@@ -397,7 +397,7 @@
 <a name="v_report"/>
 <tr:panelHeader text="PSI MI Validation Report" rendered="#{psiValidatorController.currentPsiReport.semanticReportAvailable or psiValidatorController.currentPsiReport.syntaxInvalid or psiValidatorController.currentPsiReport.syntaxStatus == 'warnings'}">
 
-    <tr:outputText value="#{psiValidatorController.currentPsiReport.interactionCount} interaction(s) validated." rendered="#{not psiValidatorController.currentPsiReport.semanticInvalid}"/>
+    <tr:outputText value="#{psiValidatorController.currentPsiReport.interactionCount} interaction(s) validated." rendered="#{not psiValidatorController.currentPsiReport.syntaxInvalid}"/>
 
     <tr:table width="90%" var="msg" value="#{psiValidatorController.currentPsiReport.validatorMessages}">
 
@@ -481,7 +481,7 @@
             </tr:iterator>
             <tr:iterator value="#{msg.context.contexts}" var="ctxt" first="3">
                 <h:panelGroup styleClass="errorContext errorContextDetails">
-                    <tr:goLink destination="##{ctxt.locator.toString}" rendered="#{ctxt.contextWithAnchor}">
+                    <tr:goLink destination="##{ctxt.locator}" rendered="#{ctxt.contextWithAnchor}">
                         <nobr><tr:outputText value="#{ctxt.objectLabel} #{ctxt.locator}" /></nobr>
                     </tr:goLink>
                     <tr:outputText value="#{ctxt.objectLabel} #{ctxt.locator}" rendered="#{ not ctxt.contextWithAnchor}"/>

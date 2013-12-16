@@ -438,7 +438,6 @@ public class PsiReportBuilder {
         try{
             log.debug("Validation starting");
             //progressModel.setValue( 4L );
-
             final long start = System.currentTimeMillis();
             final ValidatorReport validatorReport = validator.validate( streamToValidate );
             final long stop = System.currentTimeMillis();
