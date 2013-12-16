@@ -3,6 +3,7 @@ package uk.ac.ebi.intact.service.complex.view;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,17 +28,16 @@ public class WebAppController {
                                    ModelMap model,
                                    HttpSession session)
     {
-		session.setAttribute("results",restConnection.query (query,
-                                                           page,
-                                                           filter,
-                                                           type) );
+        ComplexRestResult results = restConnection.query(query, page, filter, type);
+		session.setAttribute("results", results );
 		model.addAttribute("complex_portal_name", "Intact Complex Portal");
         return "results";
 	}
     @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET)
-    public String DetailsController(@RequestParam String ac,
+    public String DetailsController(@PathVariable String ac,
                                     HttpSession session) {
-        session.setAttribute("details", restConnection.getDetails(ac, QueryTypes.DETAILS.value));
+        ComplexDetails details = restConnection.getDetails(ac, QueryTypes.DETAILS.value);
+        session.setAttribute("details", details );
         return "details";
     }
 }

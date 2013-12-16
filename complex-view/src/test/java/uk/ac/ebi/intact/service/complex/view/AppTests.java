@@ -36,7 +36,7 @@ public class AppTests {
 
     @Test
     public void simple() throws Exception {
-        mockMvc.perform(post("/").param("query", "*"))
+        mockMvc.perform(post("/").param("query", "saccharomyces cerevisiae"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("results"));
     }
@@ -74,4 +74,5 @@ public class AppTests {
         Assert.assertEquals(result.getPage(), result.getLastPage());
         Assert.assertEquals(result.getNextPage(), -1);
     }
+
 }

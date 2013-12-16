@@ -5,9 +5,10 @@ package uk.ac.ebi.intact.service.complex.view;
  * @version $Id$
  * @since 03/12/13
  */
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSearchResults;
 
 import java.io.BufferedReader;
@@ -43,13 +44,10 @@ public class RestConnection {
                        .append(q)
                        .append("?format=json")
                        .toString();
-        try {
-            result = getDataFromWS(query)
-                    .getJSONObject("complexRestResult")
-                    .getInt("size");
-        } catch (JSONException e) {
-            //We must log that
-            e.printStackTrace();
+        Object o = getDataFromWS(query);
+        if ( o != null) {
+            JSONObject jo = (JSONObject) ((JSONObject) o).get("complexRestResult");
+            result = ((Long)jo.get("size")).intValue();
         }
         return result;
     }
@@ -107,6 +105,8 @@ public class RestConnection {
 
     protected JSONObject getDataFromWS( String query ) {
         JSONObject response = null;
+        StringBuilder info = new StringBuilder();
+        String aux = null;
         try{
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(
@@ -115,12 +115,11 @@ public class RestConnection {
                                     .getInputStream()
                     )
             );
-            response = new JSONObject(reader.readLine());
+            while ( ( aux = reader.readLine()) != null )
+                info.append(aux);
+            response = (JSONObject) JSONValue.parse(info.toString());
         }
         catch (IOException e){
-            e.printStackTrace();
-        }
-        catch (JSONException e) {
             e.printStackTrace();
         }
         return response;
@@ -128,13 +127,13 @@ public class RestConnection {
 
     protected ComplexRestResult JSONToComplexRestResult( JSONObject json ) {
         ComplexRestResult result = null;
-        try {
-            JSONArray elements = json.getJSONObject("complexRestResult")
-                                     .getJSONArray("elements");
+        if (json != null) {
+            JSONObject complexRestResults = (JSONObject) json.get("complexRestResult");
+            JSONArray elements = (JSONArray) complexRestResults.get("elements");
             result = new ComplexRestResult();
             ComplexSearchResults res = null;
             JSONObject ob = null;
-            for ( int i = 0; i < elements.length(); ++i ) {
+            for ( int i = 0; i < elements.size(); ++i ) {
                 res = new ComplexSearchResults();
                 ob = (JSONObject) elements.get(i);
                 res.setComplexAC( (String) ob.get("complexAC") );
@@ -144,15 +143,27 @@ public class RestConnection {
                 res.setOrganismName( (String) ob.get("organismName") );
                 result.add(res);
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         return result;
     }
 
     private ComplexDetails JSONToComplexDetails(JSONObject json) {
-        ComplexDetails details = null;
-        // We must do something here
+        ComplexDetails details = new ComplexDetails();
+        if ( json != null ) {
+            JSONObject j = (JSONObject) json.get("complexDetails");
+            if ( j != null) {
+                details.setSystematicName( (String) j.get("systematicName") );
+                details.setFunction( (String) j.get("function") );
+                details.setProperties( (String) j.get("properties") );
+                details.setAc( (String) j.get("ac") );
+                details.setName( (String) j.get("name") );
+                details.setSpecie( (String) j.get("specie") );
+                JSONArray synonyms = (JSONArray) j.get("synonyms");
+                for ( int i = 0; i < synonyms.size(); ++i ) {
+                    details.addSynonym((String) synonyms.get(i));
+                }
+            }
+        }
         return details;
     }
 
@@ -169,8 +180,10 @@ public class RestConnection {
         Page pageInfo = new Page(page, this.number, max_elements);
         String q = createQuery(query, pageInfo, filter, queryType);
         ComplexRestResult result = JSONToComplexRestResult(getDataFromWS(q));
-        result.setOriginalQuery(query);
-        result.setPageInfo(pageInfo);
+        if (result != null) {
+            result.setOriginalQuery(query);
+            result.setPageInfo(pageInfo);
+        }
         return result;
     }
 

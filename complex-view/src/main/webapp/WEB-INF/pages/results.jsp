@@ -75,7 +75,7 @@
             <%
                 for( ComplexSearchResults res : results.getElements() ) {
             %>
-            <li><p class="complex_name"><%= res.getComplexName() %> complex (<%= res.getOrganismName() %>)</p>
+            <li><a class="complex_name" href="<%=request.getContextPath()%>/details/<%=res.getComplexAC()%>"><%= res.getComplexName() %> complex (<%= res.getOrganismName() %>)</a>
                 <p class="complex_description"><%= res.getDescription() %></p>
                 <p class="complex_ac">Intact AC: <%= res.getComplexAC() %></p>
             </li>
