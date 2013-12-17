@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexFieldNames;
@@ -205,29 +204,83 @@ public class SearchController {
                 }
             }
             // Names
+            String firstRecommended=null;
             String firstSystematic=null;
-            List<String> complexSynonyms = new LinkedList<String>();
+            String firstComplexSynonym=null;
+            String firstAlias=null;
 
             for ( Alias alias : complex.getAliases ( ) ) {
                 if (alias.getName() != null){
                     if (alias.getCvAliasType() != null){
                         CvAliasType type = alias.getCvAliasType();
-                        if (firstSystematic == null && "MI:1316".equals(type.getIdentifier())){
+                        if ( firstRecommended == null && "MI:1315".equals(type.getIdentifier()) ){
+                            firstRecommended = alias.getName();
+                        }
+                        else if ( firstSystematic == null && "MI:1316".equals(type.getIdentifier()) ){
                             firstSystematic = alias.getName();
                         }
-                        else if ( "complex synonym".equals(type.getIdentifier())){
-                            complexSynonyms.add ( alias.getName() );
+                        else if ( "MI:0673".equals(type.getIdentifier()) ){
+                            if ( firstComplexSynonym == null ) firstComplexSynonym = alias.getName();
+                            details.addSynonym(alias.getName());
                         }
+                    }
+                    else if (firstAlias == null){
+                        firstAlias = alias.getName();
                     }
                 }
             }
 
+            // we index complex name
+            if ( firstRecommended != null ) {
+                details.setName(firstRecommended);
+            }
+            else if ( firstSystematic != null ) {
+                details.setName(firstSystematic);
+            }
+            else if ( firstComplexSynonym != null ) {
+                details.setName(firstComplexSynonym);
+            }
+            else if ( firstAlias != null ) {
+                details.setName(firstAlias);
+            }
+            else{
+                details.setName(complex.getShortLabel());
+            }
+
             details.setSystematicName(firstSystematic);
-            details.setSynonyms(complexSynonyms);
             details.setProperties(null);
+            details.setSpecie(null);
+            details.setAc(complex.getAc());
+            for( Component component : complex.getComponents() ) {
+                details.addComponentAC(component.getAc());
+                firstAlias = null;
+                firstComplexSynonym=null;
+                for ( Alias alias : component.getAliases ( ) ) {
+                    if (alias.getName() != null){
+                        if (alias.getCvAliasType() != null){
+                            CvAliasType type = alias.getCvAliasType();
+                            if ( firstComplexSynonym == null && "MI:0673".equals(type.getIdentifier()) ){
+                                firstComplexSynonym = alias.getName();
+                            }
+                        }
+                        else if (firstAlias == null){
+                            firstAlias = alias.getName();
+                        }
+                    }
+                }
 
+                // we index complex name
+                if ( firstComplexSynonym != null ) {
+                    details.addComponentName(firstComplexSynonym);
+                }
+                else if ( firstAlias != null ) {
+                    details.addComponentName(firstAlias);
+                }
+                else{
+                    details.addComponentName(complex.getShortLabel());
+                }
+            }
         }
-
         return details;
     }
 
