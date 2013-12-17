@@ -14,7 +14,9 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSearchResults;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * @author Oscar Forner (oforner@ebi.ac.uk)
@@ -41,7 +43,7 @@ public class RestConnection {
         String query = new StringBuilder() .append(this.WS_URL)
                        .append(QueryTypes.DEFAULT.value)
                        .append("/")
-                       .append(q)
+                       .append(q.replaceAll(" ", "%20"))
                        .append("?format=json")
                        .toString();
         Object o = getDataFromWS(query);
@@ -86,7 +88,7 @@ public class RestConnection {
     {
         StringBuilder query = new StringBuilder();
         query.append( getBaseURL(queryType) );
-        query.append( q );
+        query.append( q.replaceAll(" ", "%20") );
         query.append("?format=json");
         query.append("&first=" + pageInfo.getPage() * this.number);
         query.append("&number=" + this.number);
@@ -107,6 +109,7 @@ public class RestConnection {
         JSONObject response = null;
         StringBuilder info = new StringBuilder();
         String aux = null;
+        System.err.println(query);
         try{
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(
@@ -161,6 +164,12 @@ public class RestConnection {
                 JSONArray synonyms = (JSONArray) j.get("synonyms");
                 for ( int i = 0; i < synonyms.size(); ++i ) {
                     details.addSynonym((String) synonyms.get(i));
+                }
+                JSONArray componentsName = (JSONArray) j.get("componentsName");
+                JSONArray componentsAC   = (JSONArray) j.get("componentsAC");
+                for (  int i = 0; i < componentsName.size(); ++i ) {
+                    details.addComponentName((String) componentsName.get(i));
+                    details.addComponentAC  ((String) componentsAC  .get(i));
                 }
             }
         }

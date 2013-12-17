@@ -1,5 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import="uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSearchResults" %>
+<%@ page import="java.util.List" %>
 <html>
 
 <%@include file="header.jsp"%>
@@ -98,6 +99,28 @@
             <%if(details.getProperties() != null){%>
                 <label class="sectionValue"><%=details.getProperties()%></label>
             <%}else{%>&lt;Not available&gt;<%}%>
+        </div>
+        <br>
+        <div class="section">
+            <h4 class="sectionTitle">Participants</h4>
+            <table class="participants">
+                <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>Name</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%  List<String> names = details.getComponentsName();
+                        List<String> acs = details.getComponentsAC();
+                        for(int i = 0; i < acs.size(); ++i){%>
+                        <tr>
+                            <td><a href="<%=request.getContextPath()%>/details/<%=acs.get(i)%>"><%=acs.get(i)%></a></td>
+                            <td><%=names.get(i)%></td>
+                        </tr>
+                    <%}%>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

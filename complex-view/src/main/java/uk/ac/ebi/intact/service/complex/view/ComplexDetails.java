@@ -16,15 +16,19 @@ public class ComplexDetails {
     private String ac;
     private String name;
     private String specie;
+    private List<String> componentsAC;
+    private List<String> componentsName;
 
     public ComplexDetails() {
         this.synonyms = new LinkedList<String>();
+        this.componentsAC = new LinkedList<String>();
+        this.componentsName = new LinkedList<String>();
     }
 
     public void setSystematicName ( String systematic ) {
         this.systematicName = systematic;
     }
-    public String getSystematicName () { return this.systematicName; }
+   public String getSystematicName () { return this.systematicName; }
     public void setSynonyms ( List<String> syns ) { this.synonyms = syns; }
     public void addSynonym ( String syn ) { this.synonyms.add(syn); }
     public List<String> getSynonyms() { return this.synonyms; }
@@ -38,4 +42,11 @@ public class ComplexDetails {
     public String getName () { return this.name; }
     public void setSpecie ( String s ) { this.specie = s; }
     public String getSpecie () { return this.specie; }
+    public void setComponentsAC (List<String> list) { this.componentsAC = list; }
+    public void addComponentAC(String value) { this.componentsAC.add(value); }
+    public List<String> getComponentsAC() { return this.componentsAC; }
+    public void setComponentsName (List<String> list) { this.componentsName = list; }
+    public void addComponentName(String value) { this.componentsName.add(value); }
+    public List<String> getComponentsName() { return this.componentsName; }
+
 }
