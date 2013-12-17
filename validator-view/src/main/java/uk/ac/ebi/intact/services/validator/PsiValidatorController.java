@@ -13,6 +13,7 @@ import org.apache.myfaces.trinidad.event.DisclosureEvent;
 import org.apache.myfaces.trinidad.model.UploadedFile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import psidev.psi.mi.validator.extension.MiValidator;
 import psidev.psi.tools.validator.rules.codedrule.ObjectRule;
 import uk.ac.ebi.faces.controller.BaseController;
 import uk.ac.ebi.intact.services.validator.context.ValidatorWebContent;
@@ -135,12 +136,12 @@ public class PsiValidatorController extends BaseController {
 
         ValidatorWebContent content = context.getValidatorWebContent();
 
-        Map<ValidationScope, Set<ObjectRule>> rules = content.getPsiMiObjectRules();
+        Map<ValidationScope, MiValidator> validators = content.getPsiMiValidators();
 
         itemRules = new HashMap<ValidationScope, List<SelectItem>>();
         customizedRules = new HashMap<ValidationScope, List<Integer>>();
 
-        initialiseCustomizedRules(rules);
+        initialiseCustomizedRules(validators);
     }
 
 	private boolean isPartialRequest() {
@@ -168,10 +169,10 @@ public class PsiValidatorController extends BaseController {
 		}
 	}
 
-	private void initialiseCustomizedRules(Map<ValidationScope, Set<ObjectRule>> rules){
+	private void initialiseCustomizedRules(Map<ValidationScope, MiValidator> validators){
         Integer index = 0;
 
-        Set<ObjectRule> mimixRules = rules.get(ValidationScope.MIMIX);
+        Collection<ObjectRule> mimixRules = validators.get(ValidationScope.MIMIX).getAllRules();
 
         for (ObjectRule rule : mimixRules){
             ValidationScope scope;
@@ -216,7 +217,7 @@ public class PsiValidatorController extends BaseController {
             }
         }
 
-        Set<ObjectRule> imexRules = rules.get(ValidationScope.IMEX);
+        Collection<ObjectRule> imexRules = validators.get(ValidationScope.IMEX).getAllRules();
 
         for (ObjectRule rule : imexRules){
             ValidationScope scope;

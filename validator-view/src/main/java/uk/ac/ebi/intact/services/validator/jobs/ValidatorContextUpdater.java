@@ -60,12 +60,12 @@ public class ValidatorContextUpdater implements Job {
             // the ontology manager for PSI-MI is up to date but not the one for PSI-PAR
             if (isPsiMiUpToDate && !isPsiParUpToDate){
                 // We will create a new validator web content which re-loads the ontologies for PSI-PAR but re-use the loaded ontologies for PSI-MI
-                newWebContent = new ValidatorWebContent(validatorContent.getPsiMiOntologyManager(), validatorContent.getPsiMiCvMapping(), validatorContent.getPsiMiObjectRules());
+                newWebContent = new ValidatorWebContent(validatorContent.getPsiMiOntologyManager(), validatorContent.getPsiMiValidators());
             }
             // the ontology manager for PSI-PAR is up to date but not the one for PSI-MI
             else if (!isPsiMiUpToDate && isPsiParUpToDate){
                 // We will create a new validator web content which re-loads the ontologies for PSI-MI but re-use the loaded ontologies for PSI-PAR
-                newWebContent = new ValidatorWebContent(validatorContent.getPsiParOntologyManager(), validatorContent.getPsiParCvMapping());
+                newWebContent = new ValidatorWebContent(validatorContent.getPsiParOntologyManager());
             }
             // Both the ontology managers for PSI-MI and PSI-PAR are not up to date
             else if (!isPsiMiUpToDate && !isPsiParUpToDate){

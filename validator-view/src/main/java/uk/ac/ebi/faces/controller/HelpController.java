@@ -14,7 +14,6 @@ import uk.ac.ebi.intact.services.validator.context.ValidatorWebContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The HelpController will list all the Imex rules and MIMIx rules in the user's guide
@@ -40,7 +39,7 @@ public class HelpController extends BaseController {
 
         ValidatorWebContent validatorContent = validatorContext.getValidatorWebContent();
 
-        Set<ObjectRule> rules = validatorContent.getPsiMiObjectRules().get(ValidationScope.IMEX);
+        Collection<ObjectRule> rules = validatorContent.getPsiMiValidators().get(ValidationScope.IMEX).getAllRules();
 
         List<ObjectRule> imexRules = extractImexRulesFrom(rules);
         imexRules.addAll(extractMimixRulesFrom(rules));
@@ -58,7 +57,7 @@ public class HelpController extends BaseController {
 
         ValidatorWebContent validatorContent = validatorContext.getValidatorWebContent();
 
-        Set<ObjectRule> rules = validatorContent.getPsiMiObjectRules().get(ValidationScope.IMEX);
+        Collection<ObjectRule> rules = validatorContent.getPsiMiValidators().get(ValidationScope.IMEX).getAllRules();
 
         List<ObjectRule> imexRules = extractImexRulesFrom(rules);
 
@@ -74,7 +73,7 @@ public class HelpController extends BaseController {
 
         ValidatorWebContent validatorContent = validatorContext.getValidatorWebContent();
 
-        List<ObjectRule> rules = new ArrayList(validatorContent.getPsiMiObjectRules().get(ValidationScope.PSI_MI));
+        List<ObjectRule> rules = new ArrayList(validatorContent.getPsiMiValidators().get(ValidationScope.PSI_MI).getAllRules());
 
         return rules;
     }
@@ -88,7 +87,7 @@ public class HelpController extends BaseController {
 
         ValidatorWebContent validatorContent = validatorContext.getValidatorWebContent();
 
-        Set<ObjectRule> rules = validatorContent.getPsiMiObjectRules().get(ValidationScope.MIMIX);
+        Collection<ObjectRule> rules = validatorContent.getPsiMiValidators().get(ValidationScope.MIMIX).getAllRules();
 
         List<ObjectRule> mimixRules = extractMimixRulesFrom(rules);
 
@@ -105,36 +104,12 @@ public class HelpController extends BaseController {
 
         ValidatorWebContent validatorContent = validatorContext.getValidatorWebContent();
 
-        Set<ObjectRule> rules = validatorContent.getPsiMiObjectRules().get(ValidationScope.MIMIX);
+        Collection<ObjectRule> rules = validatorContent.getPsiMiValidators().get(ValidationScope.MIMIX).getAllRules();
 
         List<ObjectRule> mimixRules = extractMimixRulesFrom(rules);
         mimixRules.addAll(extractObjectRulesFrom(rules));
 
         return mimixRules;
-    }
-
-    /**
-     *
-     * @return the list of CVRules executed during a 'PSI-MI' validation.
-     */
-    public List<CvRule> getPsiMiCvRules(){
-        ValidatorWebContext validatorContext = ValidatorWebContext.getInstance();
-
-        ValidatorWebContent validatorContent = validatorContext.getValidatorWebContent();
-
-        return getCvRules(validatorContent.getPsiMiCvRules());
-    }
-
-    /**
-     *
-     * @return the list of CVRules executed during a 'PSI-PAR' validation.
-     */
-    public List<CvRule> getPsiParCvRules(){
-        ValidatorWebContext validatorContext = ValidatorWebContext.getInstance();
-
-        ValidatorWebContent validatorContent = validatorContext.getValidatorWebContent();
-
-        return getCvRules(validatorContent.getPsiParCvRules());
     }
 
     /**
@@ -160,7 +135,7 @@ public class HelpController extends BaseController {
      * @param rules : the set of rules to sort
      * @return
      */
-    private List<ObjectRule> extractImexRulesFrom(Set<ObjectRule> rules){
+    private List<ObjectRule> extractImexRulesFrom(Collection<ObjectRule> rules){
         List<ObjectRule> imexRules = new ArrayList<ObjectRule>();
 
         if (rules != null){
@@ -179,7 +154,7 @@ public class HelpController extends BaseController {
      * @param rules : the set of rules to sort
      * @return
      */
-    private List<ObjectRule> extractMimixRulesFrom(Set<ObjectRule> rules){
+    private List<ObjectRule> extractMimixRulesFrom(Collection<ObjectRule> rules){
         List<ObjectRule> mimixRules = new ArrayList<ObjectRule>();
 
         if (rules != null){
@@ -198,7 +173,7 @@ public class HelpController extends BaseController {
      * @param rules : the set of rules to sort
      * @return
      */
-    private List<ObjectRule> extractObjectRulesFrom(Set<ObjectRule> rules){
+    private List<ObjectRule> extractObjectRulesFrom(Collection<ObjectRule> rules){
         List<ObjectRule> simpleRules = new ArrayList<ObjectRule>();
 
         if (rules != null){

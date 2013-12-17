@@ -14,9 +14,7 @@ import uk.ac.ebi.intact.services.validator.context.ValidatorWebContextException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The factory which returns a new instance of the Validator depending on the ValidationScope and Validator scope
@@ -238,24 +236,10 @@ public class ValidatorFactory {
             ValidatorWebContent validatorContent = context.getValidatorWebContent();
 
             // We get the pre-instantiated ontologyManager and object rules
-            OntologyManager ontologymanager = validatorContent.getPsiParOntologyManager();
-            CvMapping cvMapping = null;
-            Set<ObjectRule> objectRules = new HashSet<ObjectRule>();
-
-            switch( scope ) {
-                case SYNTAX:
-                    break;
-
-                case CV_ONLY:
-                    cvMapping = validatorContent.getPsiParCvMapping();
-                    break;
-
-                default:
-                    throw new IllegalStateException( "Unsupported validation scope: '"+ scope +"', the application is not correctly configured." );
+            MiValidator validator = validatorContent.getPsiParValidators().get(ValidationScope.SYNTAX);
+            if (validator == null){
+                throw new IllegalStateException( "Unsupported validation scope: '"+ scope +"', the application is not correctly configured." );
             }
-
-            // we instantiate the MI25 validator
-            MiValidator validator = new MiValidator(ontologymanager, cvMapping, objectRules);
 
             setUpUserPreferences(validator);
 
@@ -285,39 +269,10 @@ public class ValidatorFactory {
             ValidatorWebContent validatorContent = context.getValidatorWebContent();
 
             // We get the pre-instantiated ontologyManager and object rules
-            OntologyManager ontologymanager = validatorContent.getPsiMiOntologyManager();
-            CvMapping cvMapping = null;
-            Set<ObjectRule> objectRules = new HashSet<ObjectRule>();
-
-            switch( scope ) {
-                case SYNTAX:
-                    break;
-
-                case CV_ONLY:
-                    cvMapping = validatorContent.getPsiMiCvMapping();
-                    break;
-
-                case PSI_MI:
-                    cvMapping = validatorContent.getPsiMiCvMapping();
-                    objectRules = validatorContent.getPsiMiObjectRules().get(scope);
-                    break;
-
-                case MIMIX:
-                    cvMapping = validatorContent.getPsiMiCvMapping();
-                    objectRules = validatorContent.getPsiMiObjectRules().get(scope);
-                    break;
-
-                case IMEX:
-                    cvMapping = validatorContent.getPsiMiCvMapping();
-                    objectRules = validatorContent.getPsiMiObjectRules().get(scope);
-                    break;
-
-                default:
-                    throw new IllegalArgumentException( "Unsupported validation scope: '"+ scope +"', the application is not correctly configured." );
+            MiValidator validator = validatorContent.getPsiMiValidators().get(ValidationScope.SYNTAX);
+            if (validator == null){
+                throw new IllegalArgumentException( "Unsupported validation scope: '"+ scope +"', the application is not correctly configured." );
             }
-
-            // we instantiate the MI25 validator
-            MiValidator validator = new MiValidator(ontologymanager, cvMapping, objectRules);
 
             setUpUserPreferences(validator);
 
