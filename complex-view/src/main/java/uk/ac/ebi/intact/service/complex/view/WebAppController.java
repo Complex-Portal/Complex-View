@@ -16,7 +16,9 @@ public class WebAppController {
     RestConnection restConnection;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String HomeController() {
+    public String HomeController(ModelMap model) {
+        model.addAttribute("complex_portal_name", "Intact Complex Portal");
+        model.addAttribute("page_title", "Complex Search");
         return "home";
     }
 
@@ -31,13 +33,17 @@ public class WebAppController {
         ComplexRestResult results = restConnection.query(query, page, filter, type);
 		session.setAttribute("results", results );
 		model.addAttribute("complex_portal_name", "Intact Complex Portal");
+        model.addAttribute("page_title", "Complex Results");
         return "results";
 	}
     @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET)
     public String DetailsController(@PathVariable String ac,
+                                    ModelMap model,
                                     HttpSession session) {
         ComplexDetails details = restConnection.getDetails(ac, QueryTypes.DETAILS.value);
         session.setAttribute("details", details );
+        model.addAttribute("complex_portal_name", "Intact Complex Portal");
+        model.addAttribute("page_title", "Complex Details");
         return "details";
     }
 }

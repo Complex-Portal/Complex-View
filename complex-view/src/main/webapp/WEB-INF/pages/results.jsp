@@ -1,4 +1,3 @@
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import="uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSearchResults" %>
 <html>
 
@@ -18,7 +17,7 @@
 
     <nav>
         <ul class="grid_24" id="local-nav">
-            <li class="first active"><a href="${complex_home_url}">Home</a></li>
+            <li class="first active"><a href="">Home</a></li>
             <li><a href="${complex_documentation_url}">Documentation</a></li>
             <li class="last"><a href="${complex_about_url}">About ${complex_portal_name}</a></li>
             <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
@@ -68,40 +67,47 @@
         <!-- End suggested layout containers -->
 
         <jsp:useBean id="results" class="uk.ac.ebi.intact.service.complex.view.ComplexRestResult" scope="session"/>
-    <h2>Search result for '<%= results.getOriginaQuery() %>'</h2>
-    <h3><%= results.getTotalNumberOfElements() %> curated complexes were found.</h3>
+    <h2 class="titleResults">Search result for '<%= results.getOriginaQuery() %>'</h2>
+    <h3 class="subtitleResults"><%= results.getTotalNumberOfElements() %> curated complexes were found.</h3>
     <div class="results">
         <ol start="<%= results.getStartListCount() %>">
             <%
                 for( ComplexSearchResults res : results.getElements() ) {
             %>
-            <li><a class="complex_name" href="<%=request.getContextPath()%>/details/<%=res.getComplexAC()%>"><%= res.getComplexName() %> complex (<%= res.getOrganismName() %>)</a>
-                <p class="complex_description"><%= res.getDescription() %></p>
-                <p class="complex_ac">Intact AC: <%= res.getComplexAC() %></p>
+            <li><a class="complex_name" href="<%=request.getContextPath()%>/details/<%=res.getComplexAC()%>"><%= res.getComplexName() %> (<%= res.getOrganismName() %>)</a>
+                <br><label class="complex_description"><%= res.getDescription() %></label>
+                <br><label class="complex_ac">Intact AC: <%= res.getComplexAC() %></label>
+                <br><br>
             </li>
             <%}%>
         </ol>
         <div class="pages">
             <% if ( (results.getPrevPage() != -1) || (results.getNextPage() != -1) ) { %>
                 <% if (results.getPrevPage() != -1) { %>
-                    <form class="pagePrevForm" method="POST" action="">
-                        <input name="query"  id="queryPrev"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                        <input name="page"   id="pagePrev"   hidden="true" value="<%= results.getPrevPage() %>"/>
-                        <input name="button" id="buttonPrev" value="PrevPage" type="submit"/>
-                    </form>
+                    <span class="pagePrevSpan">
+                        <form class="pagePrevForm" method="POST" action="">
+                            <input name="query"  id="queryPrev"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
+                            <input name="page"   id="pagePrev"   hidden="true" value="<%= results.getPrevPage() %>"/>
+                            <input name="button" class="prevPage" id="buttonPrev" value="PrevPage" type="submit"/>
+                        </form>
+                    </span>
                 <%}%>
-                <form class="pageCurrentForm" method="POST" action="">
-                    Page <input name="page" type="text" class="pageCurrent" value="<%= results.getPage() %>"/> of <%= results.getLastPage() %>
-                    <input name="query"  id="queryCurrent"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                    <input name="button" id="buttonCurrent" hidden="true" type="submit">
-                </form>
-                <% if (results.getNextPage() != -1) { %>
-                    <form class="pageNextForm" method="POST" action="">
-                        <input name="query"  id="queryNext"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                        <input name="page"   id="pageNext"   hidden="true" value="<%= results.getNextPage() %>"/>
-                        <input name="button" id="buttonNext" value="NextPage" type="submit"/>
+                <span class="pageCurrentSpan">
+                    <form class="pageCurrentForm" method="POST" action="">
+                        Page <input name="page" type="text" class="pageCurrent" value="<%= results.getPage() %>"/> of <%= results.getLastPage() %>
+                        <input name="query"  id="queryCurrent"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
+                        <input name="button" id="buttonCurrent" hidden="true" type="submit">
                     </form>
-                <%}%>
+                </span>
+            <% if (results.getNextPage() != -1) { %>
+                    <span class="pageNextSpan">
+                        <form class="pageNextForm" method="POST" action="">
+                            <input name="query"  id="queryNext"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
+                            <input name="page"   id="pageNext"   hidden="true" value="<%= results.getNextPage() %>"/>
+                            <input name="button" class="nextPage" id="buttonNext" value="NextPage" type="submit"/>
+                        </form>
+                    </span>
+            <%}%>
             <%}%>
         </div>
     </div>

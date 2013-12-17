@@ -36,7 +36,7 @@ public class AppTests {
 
     @Test
     public void simple() throws Exception {
-        mockMvc.perform(post("/").param("query", "saccharomyces cerevisiae"))
+        mockMvc.perform(post("/").param("query", "saccharomyces"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("results"));
     }

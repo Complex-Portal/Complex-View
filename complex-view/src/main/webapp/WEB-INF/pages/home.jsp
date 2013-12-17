@@ -25,7 +25,7 @@
 
     <nav>
         <ul class="grid_24" id="local-nav">
-            <li class="first active"><a href="${complex_home_url}">Home</a></li>
+            <li class="first active"><a href="">Home</a></li>
             <li><a href="${complex_documentation_url}">Documentation</a></li>
             <li class="last"><a href="${complex_about_url}">About ${complex_portal_name}</a></li>
             <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
@@ -77,7 +77,8 @@
 
     <div class="searchDiv">
         <form class="searchForm" method="POST" action="">
-            <input name="query"  id="query"  type="text"   class="searchBox"    value="Enter search term(s)..." />
+            <input name="query"  id="query"  type="text"   class="searchBox"    placeholder="Enter search term(s)..." />
+            <br>
             <input name="button" id="button" type="submit" class="searchButton" value="Search" />
         </form>
     </div>

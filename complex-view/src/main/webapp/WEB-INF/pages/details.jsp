@@ -18,7 +18,7 @@
 
     <nav>
         <ul class="grid_24" id="local-nav">
-            <li class="first active"><a href="${complex_home_url}">Home</a></li>
+            <li class="first active"><a href="">Home</a></li>
             <li><a href="${complex_documentation_url}">Documentation</a></li>
             <li class="last"><a href="${complex_about_url}">About ${complex_portal_name}</a></li>
             <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
@@ -68,28 +68,35 @@
     <!-- End suggested layout containers -->
 
     <jsp:useBean id="details" class="uk.ac.ebi.intact.service.complex.view.ComplexDetails" scope="session"/>
-    <h2><%if(details.getName() != null){%><%= details.getName() %><%}else{%>&lt;Not available&gt;<%}%> <%if (details.getSpecie() != null){%>(<%= details.getSpecie() %>)<%}%></h2>
-    <h3>Intact AC: <%if(details.getAc() != null){%><%= details.getAc() %><%}else{%>&lt;Not available&gt;<%}%></h3>
+    <h2 class="titleDetails"><%if(details.getName() != null){%><%= details.getName() %><%}else{%>&lt;Not available&gt;<%}%> <%if (details.getSpecie() != null){%>(<%= details.getSpecie() %>)<%}%></h2>
+    <h3 class="subtitleDetails">Intact AC: <%if(details.getAc() != null){%><%= details.getAc() %><%}else{%>&lt;Not available&gt;<%}%></h3>
     <div class="details">
         <div class="section">
-            <p class="sectionTitle">Summary</p>
-            <p class="systematicName">Systematic Name:</p>
+            <h4 class="sectionTitle">Summary</h4>
+            <label class="sectionEntry">Systematic Name:</label>
+            <br>
             <%if(details.getSystematicName() != null){%>
-                <%=details.getSystematicName()%>
+                <label class="sectionValue"><%=details.getSystematicName()%></label>
             <%}else{%>&lt;Not available&gt;<%}%>
-            <p class="synonyms">Synonyms:</p>
+            <br><br>
+            <label class="sectionEntry">Synonyms:</label>
+            <br>
             <%if(details.getSynonyms() != null){%>
                 <%for( String synonym : details.getSynonyms() ) {%>
-                    <%=synonym%><br>
+                    <label class="sectionValue"><%=synonym%><br></label>
                 <%}%>
             <%}else{%>&lt;Not available&gt;<%}%>
-            <p class="function">Function:</p>
+            <br><br>
+            <label class="sectionEntry">Function:</label>
+            <br>
             <%if(details.getFunction() != null){%>
-                <%=details.getFunction()%>
+                <label class="sectionValue"><%=details.getFunction()%></label>
             <%}else{%>&lt;Not available&gt;<%}%>
-            <p class="properties">Properties:</p>
+            <br><br>
+            <label class="sectionEntry">Properties:</label>
+            <br>
             <%if(details.getProperties() != null){%>
-                <%=details.getProperties()%>
+                <label class="sectionValue"><%=details.getProperties()%></label>
             <%}else{%>&lt;Not available&gt;<%}%>
         </div>
     </div>

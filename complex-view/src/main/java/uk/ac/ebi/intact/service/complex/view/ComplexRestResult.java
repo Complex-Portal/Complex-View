@@ -20,6 +20,7 @@ public class ComplexRestResult {
     public ComplexRestResult( ) {
         this.elements = new LinkedList<ComplexSearchResults>();
         size = 0;
+        this.pageInfo = new Page("0", 10, 0);
     }
     public void add( ComplexResultIterator iterator ) {
         size += iterator.getNumberOfResults();
