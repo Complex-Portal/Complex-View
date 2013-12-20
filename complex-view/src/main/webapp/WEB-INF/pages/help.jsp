@@ -1,12 +1,3 @@
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: maitesin
-  Date: 05/12/13
-  Time: 10:50
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 
 <%@include file="header.jsp"%>
@@ -74,39 +65,10 @@
     </section>
     -->
     <!-- End suggested layout containers -->
-    <section>
-        <div class="homeTitles">
-            <h2 class="titleHome">IntAct</h2>
-            <h5 class="subtitleHome">IntAct provides a freely available, open source database system and analysis tools for molecular interaction data. All interactions are derived from literature curation or direct user submissions and are freely available. To perform a search in the IntAct database use the search box below.</h5>
-        </div>
-        <br>
-        <br>
-        <div class="searchDiv">
-            <form class="searchForm" method="POST" action="">
-                <textarea name="query" rows="10" id="querySearchBox"  type="text"   class="searchBox"    placeholder="Enter search term(s)..."></textarea>
-                <br>
-                <input name="button" id="button" type="submit" class="searchButton" value="Search" />
-            </form>
-            <br>
-            <br>
-            <ul class="helpList">
-                <li>Free text search will look by default for interactor identifier, interactor alias, species, interaction identifier, interaction alias and interaction xrefs.</li>
-                <li>Search for isoforms of 'P12345' by using 'P12345*'</li>
-            </ul>
-        </div>
-        <div class="exampleDiv">
-            <label class="searchExamples">Examples:</label>
-            <ul class="exampleList">
-                <li>Gene name: <form class="exampleForm" id="example1form" action="" method="POST"><input type="hidden" name="query" value="Ndc80"/><a href="#" onclick="document.getElementById('example1form').submit();">Ndc80</a></form></li>
-                <li>Protein name: <form class="exampleForm" id="example2form" action="" method="POST"><input type="hidden" name="query" value="PCNA"/><a href="#" onclick="document.getElementById('example2form').submit();">PCNA</a></form></li>
-                <li>UniProt AC: <form class="exampleForm" id="example3form" action="" method="POST"><input type="hidden" name="query" value="Q05471"/><a href="#" onclick="document.getElementById('example3form').submit();">Q05471</a></form></li>
-                <%--<li>Pubmed ID: 22540012</li>--%>
-            </ul>
-            <a href="JavaScript:newPopup('<%=request.getContextPath()%>/help/');">Help</a>
-        </div>
-    </section>
+
 </div>
 
 
-<%@include file="footer.jsp"%>
+
+    <%@include file="footer.jsp"%>
 </html>

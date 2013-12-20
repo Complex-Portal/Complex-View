@@ -1,5 +1,4 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ page import="uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSearchResults" %>
 <%@ page import="java.util.List" %>
 <html>
 
@@ -19,9 +18,10 @@
 
     <nav>
         <ul class="grid_24" id="local-nav">
-            <li class="first active"><a href="">Home</a></li>
+            <li class="first active"><a href="${complex_home_url}">Home</a></li>
             <li><a href="${complex_documentation_url}">Documentation</a></li>
-            <li class="last"><a href="${complex_about_url}">About ${complex_portal_name}</a></li>
+            <li><a href="${complex_about_url}">About ${complex_portal_name}</a></li>
+            <li class="last"><a href="${complex_help_url}">Help</a></li>
             <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
                  add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
                  whichever one will show up last...

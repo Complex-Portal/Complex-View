@@ -34,6 +34,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: uk.ac.ebi.intact.dataexchange.psimi:intact-solr-core:2.1.9-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: uk.ac.ebi.intact.dataexchange.psimi:intact-solr-home:2.1.9-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: uk.ac.ebi.intact.bridges:intact-ontologies:2.1.9-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: uk.ac.ebi.intact.core:intact-core-readonly:2.6.4" level="project" />
     <orderEntry type="library" name="Maven: uk.ac.ebi.intact.commons:intact-commons:2.1.9" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.15" level="project" />
@@ -88,7 +92,7 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-context-support:3.2.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.aspectj:aspectjrt:1.6.8" level="project" />
     <orderEntry type="library" name="Maven: org.aspectj:aspectjweaver:1.6.8" level="project" />
-    <orderEntry type="library" name="Maven: uk.ac.ebi.intact.dataexchange.psimi:intact-solr-core:2.1.9-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="intact-solr-core" />
     <orderEntry type="library" name="Maven: psidev.psi.mi:psimitab:1.8.5-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: psidev.psi.mi:psi25-xml:1.8.5-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: psidev.psi.tools:xxindex:0.11" level="project" />
@@ -186,8 +190,8 @@
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpmime:4.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.hupo.psi.mi.psicquic:psicquic-simple-client:1.3.4-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: uk.ac.ebi.intact.dataexchange.psimi:intact-solr-home:2.1.9-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: uk.ac.ebi.intact.bridges:intact-ontologies:2.1.9-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="intact-solr-home" />
+    <orderEntry type="module" module-name="intact-ontologies" />
     <orderEntry type="library" name="Maven: org.geneontology:obo:2.000-beta38" level="project" />
     <orderEntry type="library" name="Maven: org.geneontology:bbop:2.000-beta38" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-web:3.2.4.RELEASE" level="project" />

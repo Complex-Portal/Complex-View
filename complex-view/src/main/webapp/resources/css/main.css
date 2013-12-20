@@ -1,14 +1,46 @@
 /*Search page*/
-div.searchDiv {
-    padding-left: 20%;
-    padding-right: 20%;
+
+h2.titleHome
+{
+    text-align: left;
 }
-form input.searchBox
+h5.subtitleHome
+{
+    text-align: justify;
+    display: block;
+}
+div.searchDiv
+{
+    width: 70%;
+    float: left;
+    display:inline;
+    margin-left: 7%;
+}
+textarea.searchBox
 {
     width: 100%;
     height: 20%;
 }
 form input.searchButton
+{
+    float: right;
+}
+form input.clearButton
+{
+    float: right;
+}
+div.helpDiv
+{
+    padding-left: 20%;
+    padding-right: 20%;
+}
+div.exampleDiv
+{
+    float: right;
+    display:inline;
+    margin-right: 7%;
+}
+form.exampleForm
 {
     float: right;
 }
@@ -101,4 +133,5 @@ label.sectionEntry
 label.sectionValue
 {
     text-align: justify;
+    display: block;
 }

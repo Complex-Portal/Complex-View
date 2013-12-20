@@ -1,6 +1,9 @@
 package uk.ac.ebi.intact.service.complex.view;
 
+import org.jsoup.Jsoup;
+import org.jsoup.examples.HtmlToPlainText;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -16,9 +20,8 @@ public class WebAppController {
     RestConnection restConnection;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String HomeController(ModelMap model) {
-        model.addAttribute("complex_portal_name", "Intact Complex Portal");
-        model.addAttribute("page_title", "Complex Search");
+    public String HomeController(ModelMap model, HttpServletRequest request) {
+        defaultModelMapValues(model, request);
         return "home";
     }
 
@@ -28,22 +31,46 @@ public class WebAppController {
                                    @RequestParam ( required = false ) String filter,
                                    @RequestParam ( required = false ) String type,
                                    ModelMap model,
-                                   HttpSession session)
+                                   HttpSession session,
+                                   HttpServletRequest request)
     {
-        ComplexRestResult results = restConnection.query(query, page, filter, type);
+        ComplexRestResult results = restConnection.query(cleanQuery(query), page, filter, type);
 		session.setAttribute("results", results );
-		model.addAttribute("complex_portal_name", "Intact Complex Portal");
-        model.addAttribute("page_title", "Complex Results");
+        defaultModelMapValues(model, request);
         return "results";
 	}
     @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET)
     public String DetailsController(@PathVariable String ac,
                                     ModelMap model,
-                                    HttpSession session) {
-        ComplexDetails details = restConnection.getDetails(ac, QueryTypes.DETAILS.value);
-        session.setAttribute("details", details );
-        model.addAttribute("complex_portal_name", "Intact Complex Portal");
-        model.addAttribute("page_title", "Complex Details");
+                                    HttpSession session,
+                                    HttpServletRequest request) {
+        ComplexDetails details = restConnection.getDetails(cleanQuery(ac), QueryTypes.DETAILS.value);
+        session.setAttribute("details", details);
+        defaultModelMapValues(model, request);
         return "details";
     }
+    @RequestMapping(value = "/help/", method = RequestMethod.GET)
+    public String HelpController(ModelMap model,
+                                 HttpServletRequest request) {
+        defaultModelMapValues(model, request);
+        return "help";
+    }
+
+    /*****************************/
+    /***   Private functions   ***/
+    /*****************************/
+    private void defaultModelMapValues(ModelMap model, HttpServletRequest request) {
+        model.addAttribute("complex_portal_name", "Intact Complex Portal");
+        model.addAttribute("page_title", "Complex Details");
+        model.addAttribute("complex_home_url", request.getContextPath());
+        model.addAttribute("complex_help_url", request.getContextPath() + "/help/");
+        //model.addAttribute("complex_documentation_url", request.getContextPath() + "/documentation/");
+        //model.addAttribute("complex_about_url", request.getContextPath() + "/about/" );
+    }
+
+    private String cleanQuery(String query) {
+        query = new HtmlToPlainText().getPlainText(Jsoup.parse(query));
+        return query.trim();
+    }
+
 }

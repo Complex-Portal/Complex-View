@@ -253,13 +253,21 @@ public class SearchController {
             details.setAc(complex.getAc());
             for( Component component : complex.getComponents() ) {
                 details.addComponentAC(component.getAc());
-                firstAlias = null;
+                firstRecommended=null;
+                firstSystematic=null;
                 firstComplexSynonym=null;
+                firstAlias=null;
                 for ( Alias alias : component.getAliases ( ) ) {
                     if (alias.getName() != null){
                         if (alias.getCvAliasType() != null){
                             CvAliasType type = alias.getCvAliasType();
-                            if ( firstComplexSynonym == null && "MI:0673".equals(type.getIdentifier()) ){
+                            if (firstRecommended == null && "MI:1315".equals(type.getIdentifier())){
+                                firstRecommended = alias.getName();
+                            }
+                            else if (firstSystematic == null && "MI:1316".equals(type.getIdentifier())){
+                                firstSystematic = alias.getName();
+                            }
+                            else if (firstComplexSynonym == null && "MI:0673".equals(type.getIdentifier())){
                                 firstComplexSynonym = alias.getName();
                             }
                         }
@@ -270,7 +278,13 @@ public class SearchController {
                 }
 
                 // we index complex name
-                if ( firstComplexSynonym != null ) {
+                if ( firstRecommended != null ) {
+                    details.addComponentName(firstRecommended);
+                }
+                else if ( firstSystematic != null ) {
+                    details.addComponentName(firstSystematic);
+                }
+                else if ( firstComplexSynonym != null ) {
                     details.addComponentName(firstComplexSynonym);
                 }
                 else if ( firstAlias != null ) {

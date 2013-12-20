@@ -53,7 +53,7 @@
     <link href="<%=request.getContextPath()%>/resources/css/main.css" rel="stylesheet"> <%--Added by Oscar--%>
     <!-- end CSS-->
     <%--Begin JS--%>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> <%--Added by Oscar--%>
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script> <%--Added by Oscar--%>
     <script src="<%=request.getContextPath()%>/resources/js/main.js"></script>
 
     <!-- All JavaScript at the bottom, except for Modernizr / Respond.
