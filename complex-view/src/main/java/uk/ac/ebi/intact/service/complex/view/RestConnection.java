@@ -1,11 +1,5 @@
 package uk.ac.ebi.intact.service.complex.view;
 
-/**
- * @author Oscar Forner (oforner@ebi.ac.uk)
- * @version $Id$
- * @since 03/12/13
- */
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -29,6 +23,7 @@ public class RestConnection {
     /********************************/
     String WS_URL = null;
     int number;
+
     /*************************/
     /*      Constructor      */
     /*************************/
@@ -38,14 +33,18 @@ public class RestConnection {
         this.number = elementsPage.intValue() ;
         // We make a first connect to know how many complexes we have
     }
-    private int getNumberOfComplexes(String q) {
+
+    /*******************************/
+    /*      Protected methods      */
+    /*******************************/
+    protected int getNumberOfComplexes(String q) {
         int result = 0;
         String query = new StringBuilder() .append(this.WS_URL)
-                       .append(QueryTypes.DEFAULT.value)
-                       .append("/")
-                       .append(q.replaceAll(" ", "%20"))
-                       .append("?format=json")
-                       .toString();
+                .append(QueryTypes.DEFAULT.value)
+                .append("/")
+                .append(q.replaceAll(" ", "%20"))
+                .append("?format=json")
+                .toString();
         Object o = getDataFromWS(query);
         if ( o != null) {
             JSONObject jo = (JSONObject) ((JSONObject) o).get("complexRestResult");
@@ -54,9 +53,6 @@ public class RestConnection {
         return result;
     }
 
-    /*******************************/
-    /*      Protected methods      */
-    /*******************************/
     protected String getBaseURL(String queryType) {
         StringBuilder q = new StringBuilder() .append(this.WS_URL);
         queryType = queryType != null ? queryType : QueryTypes.DEFAULT.value;
@@ -97,7 +93,7 @@ public class RestConnection {
     }
 
 
-    private String createDetailsQuery(String ac, String queryType) {
+    protected String createDetailsQuery(String ac, String queryType) {
         StringBuilder query = new StringBuilder();
         query.append( getBaseURL(queryType) );
         query.append( ac );
@@ -109,7 +105,6 @@ public class RestConnection {
         JSONObject response = null;
         StringBuilder info = new StringBuilder();
         String aux = null;
-        System.err.println(query);
         try{
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(
@@ -150,7 +145,7 @@ public class RestConnection {
         return result;
     }
 
-    private ComplexDetails JSONToComplexDetails(JSONObject json) {
+    protected ComplexDetails JSONToComplexDetails(JSONObject json) {
         ComplexDetails details = new ComplexDetails();
         if ( json != null ) {
             JSONObject j = (JSONObject) json.get("complexDetails");
@@ -180,18 +175,20 @@ public class RestConnection {
     /*      Public methods      */
     /****************************/
 
+    public Page getPage(String page, String query) {
+        int max_elements = getNumberOfComplexes(query);
+        return new Page(page, this.number, max_elements);
+    }
+
     public ComplexRestResult query( String query,
-                                    String page,
+                                    Page page,
                                     String filter,
                                     String queryType)
     {
-        int max_elements = getNumberOfComplexes(query);
-        Page pageInfo = new Page(page, this.number, max_elements);
-        String q = createQuery(query, pageInfo, filter, queryType);
+        String q = createQuery(query, page, filter, queryType);
         ComplexRestResult result = JSONToComplexRestResult(getDataFromWS(q));
         if (result != null) {
             result.setOriginalQuery(query);
-            result.setPageInfo(pageInfo);
         }
         return result;
     }

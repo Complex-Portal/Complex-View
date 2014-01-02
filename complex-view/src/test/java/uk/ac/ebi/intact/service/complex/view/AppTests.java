@@ -44,35 +44,35 @@ public class AppTests {
     @Test
     public void getPageNumber() throws Exception {
         String page = "1";
-        ComplexRestResult result = restConnection.query("*", page, null, null);
-        Assert.assertEquals(result.getPrevPage(), 0);
-        Assert.assertEquals(result.getPage(), 1);
-        Assert.assertEquals(result.getNextPage(), 2);
+        Page pageInfo = restConnection.getPage(page, "*");
+        Assert.assertEquals(pageInfo.getPrevPage(), 0);
+        Assert.assertEquals(pageInfo.getPage(), 1);
+        Assert.assertEquals(pageInfo.getNextPage(), 2);
         page = "2";
-        result = restConnection.query("*", page, null, null);
-        Assert.assertEquals(result.getPrevPage(), 1);
-        Assert.assertEquals(result.getPage(), 2);
-        Assert.assertEquals(result.getNextPage(), 3);
+        pageInfo = restConnection.getPage(page, "*");
+        Assert.assertEquals(pageInfo.getPrevPage(), 1);
+        Assert.assertEquals(pageInfo.getPage(), 2);
+        Assert.assertEquals(pageInfo.getNextPage(), 3);
         page = "0";
-        result = restConnection.query("*", page, null, null);
-        Assert.assertEquals(result.getPrevPage(), -1);
-        Assert.assertEquals(result.getPage(), 0);
-        Assert.assertEquals(result.getNextPage(), 1);
+        pageInfo = restConnection.getPage(page, "*");
+        Assert.assertEquals(pageInfo.getPrevPage(), -1);
+        Assert.assertEquals(pageInfo.getPage(), 0);
+        Assert.assertEquals(pageInfo.getNextPage(), 1);
         page = "-1";
-        result = restConnection.query("*", page, null, null);
-        Assert.assertEquals(result.getPrevPage(), -1);
-        Assert.assertEquals(result.getPage(), 0);
-        Assert.assertEquals(result.getNextPage(), 1);
+        pageInfo = restConnection.getPage(page, "*");
+        Assert.assertEquals(pageInfo.getPrevPage(), -1);
+        Assert.assertEquals(pageInfo.getPage(), 0);
+        Assert.assertEquals(pageInfo.getNextPage(), 1);
         page = "-100";
-        result = restConnection.query("*", page, null, null);
-        Assert.assertEquals(result.getPrevPage(), -1);
-        Assert.assertEquals(result.getPage(), 0);
-        Assert.assertEquals(result.getNextPage(), 1);
+        pageInfo = restConnection.getPage(page, "*");
+        Assert.assertEquals(pageInfo.getPrevPage(), -1);
+        Assert.assertEquals(pageInfo.getPage(), 0);
+        Assert.assertEquals(pageInfo.getNextPage(), 1);
         page = "20000000";
-        result = restConnection.query("*", page, null, null);
-        Assert.assertEquals(result.getPrevPage(), result.getLastPage() - 1);
-        Assert.assertEquals(result.getPage(), result.getLastPage());
-        Assert.assertEquals(result.getNextPage(), -1);
+        pageInfo = restConnection.getPage(page, "*");
+        Assert.assertEquals(pageInfo.getPrevPage(), pageInfo.getLastPage() - 1);
+        Assert.assertEquals(pageInfo.getPage(), pageInfo.getLastPage());
+        Assert.assertEquals(pageInfo.getNextPage(), -1);
     }
 
 }

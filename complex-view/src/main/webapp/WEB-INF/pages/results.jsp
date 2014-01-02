@@ -68,32 +68,33 @@
         <!-- End suggested layout containers -->
 
         <jsp:useBean id="results" class="uk.ac.ebi.intact.service.complex.view.ComplexRestResult" scope="session"/>
+        <jsp:useBean id="pageInfo"    class="uk.ac.ebi.intact.service.complex.view.Page"              scope="session"/>
     <h2 class="titleResults">Search result for '<%= results.getOriginaQuery() %>'</h2>
-    <h3 class="subtitleResults"><%= results.getTotalNumberOfElements() %> curated complexes were found.</h3>
+    <h3 class="subtitleResults"><%= pageInfo.getTotalNumberOfElements() %> curated complexes were found.</h3>
     <div class="results">
         <div class="pages">
-            <% if ( (results.getPrevPage() != -1) || (results.getNextPage() != -1) ) { %>
-            <% if (results.getPrevPage() != -1) { %>
+            <% if ( (pageInfo.getPrevPage() != -1) || (pageInfo.getNextPage() != -1) ) { %>
+            <% if (pageInfo.getPrevPage() != -1) { %>
                     <span class="pagePrevSpan">
                         <form class="pagePrevForm" method="POST" action="">
                             <input name="query"  id="queryPrevTop"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                            <input name="page"   id="pagePrevTop"   hidden="true" value="<%= results.getPrevPage() %>"/>
+                            <input name="page"   id="pagePrevTop"   hidden="true" value="<%= pageInfo.getPrevPage() %>"/>
                             <input name="button" class="prevPage" id="buttonPrevTop" value="PrevPage" type="submit"/>
                         </form>
                     </span>
             <%}%>
                 <span class="pageCurrentSpan">
                     <form class="pageCurrentForm" method="POST" action="">
-                        Page <input name="page" type="text" class="pageCurrent" value="<%= results.getPage() %>"/> of <%= results.getLastPage() %>
+                        Page <input name="pageInfo" type="text" class="pageCurrent" value="<%= pageInfo.getPage() %>"/> of <%= pageInfo.getLastPage() %>
                         <input name="query"  id="queryCurrent"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
                         <input name="button" id="buttonCurrent" hidden="true" type="submit">
                     </form>
                 </span>
-            <% if (results.getNextPage() != -1) { %>
+            <% if (pageInfo.getNextPage() != -1) { %>
                     <span class="pageNextSpan">
                         <form class="pageNextForm" method="POST" action="">
                             <input name="query"  id="queryNext"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                            <input name="page"   id="pageNext"   hidden="true" value="<%= results.getNextPage() %>"/>
+                            <input name="page"   id="pageNext"   hidden="true" value="<%= pageInfo.getNextPage() %>"/>
                             <input name="button" class="nextPage" id="buttonNext" value="NextPage" type="submit"/>
                         </form>
                     </span>
@@ -101,7 +102,7 @@
             <%}%>
         </div>
         <br><br>
-        <ol start="<%= results.getStartListCount() %>">
+        <ol start="<%= pageInfo.getStartListCount() %>">
             <%
                 for( ComplexSearchResults res : results.getElements() ) {
             %>
@@ -113,28 +114,28 @@
             <%}%>
         </ol>
         <div class="pages">
-            <% if ( (results.getPrevPage() != -1) || (results.getNextPage() != -1) ) { %>
-                <% if (results.getPrevPage() != -1) { %>
+            <% if ( (pageInfo.getPrevPage() != -1) || (pageInfo.getNextPage() != -1) ) { %>
+                <% if (pageInfo.getPrevPage() != -1) { %>
                     <span class="pagePrevSpan">
                         <form class="pagePrevForm" method="POST" action="">
                             <input name="query"  id="queryPrev"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                            <input name="page"   id="pagePrev"   hidden="true" value="<%= results.getPrevPage() %>"/>
+                            <input name="page"   id="pagePrev"   hidden="true" value="<%= pageInfo.getPrevPage() %>"/>
                             <input name="button" class="prevPage" id="buttonPrev" value="PrevPage" type="submit"/>
                         </form>
                     </span>
                 <%}%>
                 <span class="pageCurrentSpan">
                     <form class="pageCurrentForm" method="POST" action="">
-                        Page <input name="page" type="text" class="pageCurrent" value="<%= results.getPage() %>"/> of <%= results.getLastPage() %>
+                        Page <input name="page" type="text" class="pageCurrent" value="<%= pageInfo.getPage() %>"/> of <%= pageInfo.getLastPage() %>
                         <input name="query"  id="queryCurrent"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
                         <input name="button" id="buttonCurrent" hidden="true" type="submit">
                     </form>
                 </span>
-            <% if (results.getNextPage() != -1) { %>
+            <% if (pageInfo.getNextPage() != -1) { %>
                     <span class="pageNextSpan">
                         <form class="pageNextForm" method="POST" action="">
                             <input name="query"  id="queryNextBottom"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                            <input name="page"   id="pageNextBottom"   hidden="true" value="<%= results.getNextPage() %>"/>
+                            <input name="page"   id="pageNextBottom"   hidden="true" value="<%= pageInfo.getNextPage() %>"/>
                             <input name="button" class="nextPage" id="buttonNextBottom" value="NextPage" type="submit"/>
                         </form>
                     </span>

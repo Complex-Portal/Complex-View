@@ -34,8 +34,11 @@ public class WebAppController {
                                    HttpSession session,
                                    HttpServletRequest request)
     {
-        ComplexRestResult results = restConnection.query(cleanQuery(query), page, filter, type);
-		session.setAttribute("results", results );
+        query = cleanQuery(query);
+        Page pageInfo = restConnection.getPage(page, query);
+        ComplexRestResult results = restConnection.query(query, pageInfo, filter, type);
+		session.setAttribute("results", results);
+        session.setAttribute("pageInfo", pageInfo);
         defaultModelMapValues(model, request);
         return "results";
 	}
