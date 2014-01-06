@@ -174,7 +174,6 @@ public class AppTests extends IntactBasicTestCase {
     public void testDetails() throws Exception {
         mockMvc.perform(get("/details/EBI-1245484?format=json"))
                .andExpect(status().isOk())
-               .andDo(print())
                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }

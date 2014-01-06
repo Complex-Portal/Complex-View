@@ -13,7 +13,6 @@ import uk.ac.ebi.intact.model.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 @Controller
