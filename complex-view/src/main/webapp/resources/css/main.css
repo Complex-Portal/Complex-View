@@ -16,6 +16,11 @@ div.searchDiv
     display:inline;
     margin-left: 7%;
 }
+div.searchDivZeroResults
+{
+    margin-left:7%;
+    margin-right:7%;
+}
 textarea.searchBox
 {
     width: 100%;

@@ -10,6 +10,9 @@ public class Page {
     int totalNumberOfElements;
     int prevPage, page, nextPage, lastPage;
 
+    public Page() {
+    }
+
     public Page ( String p, int num, int max ) {
         this.numberOfElementsPerPage = num;
         this.totalNumberOfElements = max;
@@ -37,6 +40,30 @@ public class Page {
                 pageNumber = 0;
         }
         return pageNumber;
+    }
+
+    public void setNumberOfElementsPerPage(int numberOfElementsPerPage) {
+        this.numberOfElementsPerPage = numberOfElementsPerPage;
+    }
+
+    public void setTotalNumberOfElements(int totalNumberOfElements) {
+        this.totalNumberOfElements = totalNumberOfElements;
+    }
+
+    public void setPrevPage(int prevPage) {
+        this.prevPage = prevPage;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public void setNextPage(int nextPage) {
+        this.nextPage = nextPage;
+    }
+
+    public void setLastPage(int lastPage) {
+        this.lastPage = lastPage;
     }
 
     public int getNumberOfElementsPerPage () { return this.numberOfElementsPerPage; }

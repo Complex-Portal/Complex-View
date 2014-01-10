@@ -67,8 +67,9 @@
         -->
         <!-- End suggested layout containers -->
 
-        <jsp:useBean id="results" class="uk.ac.ebi.intact.service.complex.view.ComplexRestResult" scope="session"/>
-        <jsp:useBean id="pageInfo"    class="uk.ac.ebi.intact.service.complex.view.Page"              scope="session"/>
+        <jsp:useBean id="results"  class="uk.ac.ebi.intact.service.complex.view.ComplexRestResult" scope="session"/>
+        <jsp:useBean id="pageInfo" class="uk.ac.ebi.intact.service.complex.view.Page"              scope="session"/>
+    <% if (results.getOriginaQuery() != null) { if(pageInfo.getTotalNumberOfElements() != 0) { %>
     <h2 class="titleResults">Search result for '<%= results.getOriginaQuery() %>'</h2>
     <h3 class="subtitleResults"><%= pageInfo.getTotalNumberOfElements() %> curated complexes were found.</h3>
     <div class="results">
@@ -106,11 +107,15 @@
             <%
                 for( ComplexSearchResults res : results.getElements() ) {
             %>
-            <li><a class="complex_name" href="<%=request.getContextPath()%>/details/<%=res.getComplexAC()%>"><%= res.getComplexName() %> (<%= res.getOrganismName() %>); Intact AC: <%= res.getComplexAC() %></a>
+             <%--<c:forEach var="res" items="results.getElements()">--%>
+                <li><a class="complex_name" href="<%=request.getContextPath()%>/details/<%=res.getComplexAC()%>"><%= res.getComplexName() %> (<%= res.getOrganismName() %>); Intact AC: <%= res.getComplexAC() %></a>
                 <br><label class="complex_description"><%= res.getDescription() %></label>
-                <%--<br><label class="complex_ac"></label>--%>
                 <br>
+                 <%--<li><a class="complex_name" href="<c:out value="${request.getContextPath()}"/>/details/<c:out value="${res.getComplexAC()}"/>"><c:out value="${res.getComplexName()}" /> (<c:out value="${res.getOrganismName()}" />); Intact AC: <c:out value="${res.getComplexAC()}" /></a>--%>
+                     <%--<br><label class="complex_description"><c:out value="${res.getDescription()}" /></label>--%>
+                     <%--<br>--%>
             </li>
+             <%--</c:forEach>--%>
             <%}%>
         </ol>
         <div class="pages">
@@ -143,6 +148,23 @@
             <%}%>
         </div>
     </div>
+    <%}
+    else{//Case 0 results%>
+    <h2 class="titleResults">Search result for '<%= results.getOriginaQuery() %>'</h2>
+    <h3 class="subtitleResults"><%= pageInfo.getTotalNumberOfElements() %> curated complexes were found.</h3>
+    <div class="searchDivZeroResults">
+        <form class="searchForm" method="POST" action="">
+            <textarea name="query" rows="10" id="querySearchBox"  type="text"   class="searchBox"    placeholder="Enter search term(s)..."><%= results.getOriginaQuery() %></textarea>
+            <br>
+            <input name="button" id="button" type="submit" class="searchButton" value="Search" />
+        </form>
+    </div>
+    <%}
+      }// End if (results.getOriginaQuery() != null)
+      else{%>
+    <h2 class="titleNoData">No data available</h2>
+    <h3 class="subtitleNoData">Please contact with the webadmin</h3>
+    <%}%>
 </div>
 
 

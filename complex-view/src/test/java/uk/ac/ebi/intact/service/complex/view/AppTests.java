@@ -13,6 +13,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -38,6 +39,7 @@ public class AppTests {
     public void simple() throws Exception {
         mockMvc.perform(post("/").param("query", "saccharomyces cerevisiae"))
                 .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(view().name("results"));
     }
 

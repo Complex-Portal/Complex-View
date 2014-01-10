@@ -31,7 +31,6 @@ public class RestConnection {
     public RestConnection( String url, Integer elementsPage ) {
         this.WS_URL = url ;
         this.number = elementsPage.intValue() ;
-        // We make a first connect to know how many complexes we have
     }
 
     /*******************************/

@@ -33,6 +33,20 @@ public class ComplexRestResult {
 
     public int getSize() { return size; }
     public List<ComplexSearchResults> getElements() { return elements; }
+    public void setSize(int size) { this.size = size; }
+    public void setElements(List<ComplexSearchResults> elements) {
+        this.elements = elements;
+    }
+    public void setOriginaQuery(String originaQuery) {
+        this.originaQuery = originaQuery;
+    }
     public void setOriginalQuery(String query) { this.originaQuery = query; }
     public String getOriginaQuery () { return this.originaQuery; }
+
+    @Override
+    public String toString(){
+        return new StringBuilder() .append("size:") .append(size)
+                .append("; query: ") .append(originaQuery)
+                .append("; elements: ") .append(elements) .toString();
+    }
 }
