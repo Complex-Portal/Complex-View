@@ -56,8 +56,6 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-
-
     <!--JPA config for IntAct database-->
 
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
