@@ -17,8 +17,10 @@
 
     <mvc:annotation-driven />
 
+    <context:property-placeholder location="classpath:complex.properties"/>
+
     <bean id="restConnection" class="uk.ac.ebi.intact.service.complex.view.RestConnection">
-        <constructor-arg index="0" type="java.lang.String" value="http://localhost:8080/complex-ws/"/>
+        <constructor-arg index="0" type="java.lang.String" value="${complex.ws.url}"/>
         <constructor-arg index="1" type="java.lang.Integer" value="10"/>
     </bean>
 
