@@ -3,6 +3,8 @@ package uk.ac.ebi.intact.service.complex.view;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSearchResults;
 
 import java.io.BufferedReader;
@@ -23,6 +25,7 @@ public class RestConnection {
     /********************************/
     String WS_URL = null;
     int number;
+    private static final Log log = LogFactory.getLog(RestConnection.class);
 
     /*************************/
     /*      Constructor      */
@@ -117,6 +120,8 @@ public class RestConnection {
             response = (JSONObject) JSONValue.parse(info.toString());
         }
         catch (IOException e){
+            if ( log.isInfoEnabled() )
+                log.info("RestConnection error, it could not retrieve information from the web service", e);
             e.printStackTrace();
         }
         return response;
