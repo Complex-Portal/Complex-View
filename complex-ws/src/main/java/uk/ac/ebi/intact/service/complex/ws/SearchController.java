@@ -73,9 +73,15 @@ public class SearchController {
         if ( number != null ) n = Integer.parseInt(number);
             // else set number parameter to max integer - first (to avoid problems)
         else n = Integer.MAX_VALUE - f;
-
-        // Retrieve data using that parameters and return it
-        return this.dataProvider.getData( query, f, n );
+        try{
+            // Retrieve data using that parameters and return it
+            return this.dataProvider.getData( query, f, n );
+        }
+        catch (SolrServerException e){
+            if ( log.isInfoEnabled() )
+                log.info( "DataProvider error, it could not connect to Solr Server", e);
+            return null;
+        }
     }
 
     // This method is to force to query only for a list of fields

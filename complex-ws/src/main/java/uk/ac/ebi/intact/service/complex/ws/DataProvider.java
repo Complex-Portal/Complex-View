@@ -42,29 +42,21 @@ public class DataProvider {
     // This method is for abstract the way to retrieve information from Solr.
     // It does not check the parameter because it is called from getData method
     // , where we control all that things
-    protected ComplexResultIterator retrieve(String query, int offset, int size) {
+    protected ComplexResultIterator retrieve(String query, int offset, int size) throws SolrServerException {
         ComplexResultIterator iterator; // Used to stored the query's result
-        try {
-            iterator = this.searcher.search ( query, // query
-                                             offset, // first result
-                                               size, // end result
-                                                "" ) // filters to use
-            ;
-            // Check if iterator has information and return the right result
-            return iterator.hasNext() ? iterator : null;
-        }
-        catch (SolrServerException e) {
-            if ( log.isInfoEnabled() )
-                log.info( "DataProvider error, we could not connect to Solr Server", e);
-            e.printStackTrace();
-        }
-        return null;
+        iterator = this.searcher.search ( query, // query
+                                         offset, // first result
+                                           size, // end result
+                                            "" ) // filters to use
+        ;
+        // Check if iterator has information and return the right result
+        return iterator.hasNext() ? iterator : null;
     }
     /****************************/
     /*      Public methods      */
     /****************************/
     // getData function return the results of the query
-    public ComplexRestResult getData(String query, int first, int number) {
+    public ComplexRestResult getData(String query, int first, int number) throws SolrServerException {
         int i = first;
         boolean in = false; // to know if we went into the loop
         ComplexResultIterator iterator = null; // Gives retrieve method results

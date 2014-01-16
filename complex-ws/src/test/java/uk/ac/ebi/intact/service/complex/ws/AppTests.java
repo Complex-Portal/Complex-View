@@ -51,10 +51,10 @@ public class AppTests extends IntactBasicTestCase {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         ;
-        // Test Header XML
+        // Test Header XML and return a Json
         mockMvc.perform(get("/search/*").accept(MediaType.APPLICATION_XML))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_XML))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         ;
     }
 
