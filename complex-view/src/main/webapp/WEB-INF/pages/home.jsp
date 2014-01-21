@@ -95,9 +95,9 @@
         <div class="exampleDiv">
             <label class="searchExamples">Examples:</label>
             <ul class="exampleList">
-                <li>Gene name: <form class="exampleForm" id="example1form" action="" method="POST"><input type="hidden" name="query" value="Ndc80"/><a href="#" onclick="document.getElementById('example1form').submit();">Ndc80</a></form></li>
-                <li>Protein name: <form class="exampleForm" id="example2form" action="" method="POST"><input type="hidden" name="query" value="PCNA"/><a href="#" onclick="document.getElementById('example2form').submit();">PCNA</a></form></li>
-                <li>UniProt AC: <form class="exampleForm" id="example3form" action="" method="POST"><input type="hidden" name="query" value="Q05471"/><a href="#" onclick="document.getElementById('example3form').submit();">Q05471</a></form></li>
+                <li>Gene name(s): <form class="exampleForm" id="example1form" action="" method="POST"><input type="hidden" name="query" value="Ndc80"/><a href="#" onclick="document.getElementById('example1form').submit();">Ndc80</a></form></li>
+                <li>Protein name(s): <form class="exampleForm" id="example2form" action="" method="POST"><input type="hidden" name="query" value="PCNA"/><a href="#" onclick="document.getElementById('example2form').submit();">PCNA</a></form></li>
+                <li>UniProt AC(s): <form class="exampleForm" id="example3form" action="" method="POST"><input type="hidden" name="query" value="Q05471"/><a href="#" onclick="document.getElementById('example3form').submit();">Q05471</a></form></li>
                 <%--<li>Pubmed ID: 22540012</li>--%>
             </ul>
             <a href="JavaScript:newPopup('<%=request.getContextPath()%>/help/');">Help</a>

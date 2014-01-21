@@ -71,6 +71,11 @@ a.complex_name
 {
     font-weight: bold;
 }
+label.complex_ac
+{
+    float: right;
+    font-weight: bold;
+}
 label.complex_description
 {
     text-overflow: ellipsis;

@@ -108,7 +108,7 @@
                 for( ComplexSearchResults res : results.getElements() ) {
             %>
              <%--<c:forEach var="res" items="results.getElements()">--%>
-                <li><a class="complex_name" href="<%=request.getContextPath()%>/details/<%=res.getComplexAC()%>"><%= res.getComplexName() %> (<%= res.getOrganismName() %>); Intact AC: <%= res.getComplexAC() %></a>
+                <li><a class="complex_name" href="<%=request.getContextPath()%>/details/<%=res.getComplexAC()%>"><%= res.getComplexName() %> (<%= res.getOrganismName() %>)</a><label class="complex_ac"><%= res.getComplexAC() %></label>
                 <br><label class="complex_description"><%= res.getDescription() %></label>
                 <br>
                  <%--<li><a class="complex_name" href="<c:out value="${request.getContextPath()}"/>/details/<c:out value="${res.getComplexAC()}"/>"><c:out value="${res.getComplexName()}" /> (<c:out value="${res.getOrganismName()}" />); Intact AC: <c:out value="${res.getComplexAC()}" /></a>--%>

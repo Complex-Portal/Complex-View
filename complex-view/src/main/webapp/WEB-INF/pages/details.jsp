@@ -70,37 +70,36 @@
 
     <jsp:useBean id="details" class="uk.ac.ebi.intact.service.complex.view.ComplexDetails" scope="session"/>
     <h2 class="titleDetails"><%if(details.getName() != null){%><%= details.getName() %><%}else{%>&lt;Not available&gt;<%}%> <%if (details.getSpecie() != null){%>(<%= details.getSpecie() %>)<%}%></h2>
-    <h3 class="subtitleDetails">Intact AC: <%if(details.getAc() != null){%><%= details.getAc() %><%}else{%>&lt;Not available&gt;<%}%></h3>
+    <h3 class="subtitleDetails">IntAct AC: <%if(details.getAc() != null){%><%= details.getAc() %><%}else{%>&lt;Not available&gt;<%}%></h3>
     <div class="details">
+        <%if(details.getSystematicName() != null || details.getSynonyms().size() != 0 || details.getFunction() != null || details.getProperties() != null){%>
         <div class="section">
             <h4 class="sectionTitle">Summary</h4>
-            <label class="sectionEntry">Systematic Name:</label>
-            <br>
             <%if(details.getSystematicName() != null){%>
+                <label class="sectionEntry">Systematic Name:</label>
+                <br>
                 <label class="sectionValue"><%=details.getSystematicName()%></label>
-            <%}else{%>&lt;Not available&gt;<%}%>
             <br><br>
-            <label class="sectionEntry">Synonyms:</label>
-            <br>
-            <%if(details.getSynonyms() != null){%>
+            <%}if(details.getSynonyms().size() != 0){%>
+                <label class="sectionEntry">Synonyms:</label>
+                <br>
                 <%for( String synonym : details.getSynonyms() ) {%>
                     <label class="sectionValue"><%=synonym%><br></label>
                 <%}%>
-            <%}else{%>&lt;Not available&gt;<%}%>
             <br><br>
-            <label class="sectionEntry">Function:</label>
-            <br>
-            <%if(details.getFunction() != null){%>
+            <%}if(details.getFunction() != null){%>
+                <label class="sectionEntry">Function:</label>
+                <br>
                 <label class="sectionValue"><%=details.getFunction()%></label>
-            <%}else{%>&lt;Not available&gt;<%}%>
             <br><br>
-            <label class="sectionEntry">Properties:</label>
-            <br>
-            <%if(details.getProperties() != null){%>
+            <%}if(details.getProperties() != null){%>
+                <label class="sectionEntry">Properties:</label>
+                <br>
                 <label class="sectionValue"><%=details.getProperties()%></label>
-            <%}else{%>&lt;Not available&gt;<%}%>
+            <%}%>
         </div>
         <br>
+        <%}%>
         <div class="section">
             <h4 class="sectionTitle">Participants</h4>
             <table class="participants">
