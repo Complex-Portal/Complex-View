@@ -23,6 +23,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
@@ -104,13 +105,14 @@ public class DetailsController extends JpaBaseController {
         variableName2conditions = new HashMap<String,Map<String,List<Integer>>>();
     }
 
-    @Transactional(readOnly = true)
     public void loadData() {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             log.info( "DetailsController.loadData" );
 
             UserQuery userQuery = (UserQuery) getBean("userQuery");
             SearchController searchController = (SearchController) getBean("searchBean");
+
+            TransactionStatus status = getIntactContext().getDataContext().beginTransaction();
 
             if( interactionAc != null && experimentAc != null ) {
                 addErrorMessage( "Please either request an interaction or an experiment accession number.",
@@ -170,6 +172,8 @@ public class DetailsController extends JpaBaseController {
             }
 
             this.numberInteractions = countInteractionNumbers();
+
+            getIntactContext().getDataContext().commitTransaction(status);
         }
     }
 
@@ -180,7 +184,7 @@ public class DetailsController extends JpaBaseController {
             return 0;
         }
 
-        return getIntactContext().getDaoFactory().getExperimentDao().countInteractionsForExperimentWithAc(exp.getAc());
+        return getDaoFactory().getExperimentDao().countInteractionsForExperimentWithAc(exp.getAc());
     }
 
     private int countParticipantNumbers(){
@@ -188,7 +192,7 @@ public class DetailsController extends JpaBaseController {
         if (interaction == null){
             return 0;
         }
-        Long l = (Long) getIntactContext().getDaoFactory().getEntityManager().createQuery("select count(distinct p.ac) from InteractionImpl i join i.components as p " +
+        Long l = (Long) getDaoFactory().getEntityManager().createQuery("select count(distinct p.ac) from InteractionImpl i join i.components as p " +
                 "where i.ac = :ac").setParameter("ac", interactionAc).getSingleResult();
 
         return l.intValue();
@@ -290,7 +294,7 @@ public class DetailsController extends JpaBaseController {
     private void loadParticipants(){
         this.numberParticipants = countParticipantNumbers();
 
-        this.participants = new ParticipantLazyDataModel(getIntactContext().getDataContext(), getIntactContext().getDaoFactory().getEntityManager(), this.interactionAc, this.numberParticipants);
+        this.participants = new ParticipantLazyDataModel(getIntactContext().getDataContext(), getDaoFactory().getEntityManager(), this.interactionAc, this.numberParticipants);
         loadFeatureNumber();
     }
 
@@ -317,7 +321,7 @@ public class DetailsController extends JpaBaseController {
      */
     @Transactional(readOnly = true)
     public void loadNumberOfInteractorsInExperiment(){
-        Long number = (Long) getIntactContext().getDaoFactory().getEntityManager().createQuery("select count(distinct interactor.ac) " +
+        Long number = (Long) getDaoFactory().getEntityManager().createQuery("select count(distinct interactor.ac) " +
                 "from Experiment e join e.interactions as i join i.components as comp join comp.interactor as interactor " +
                 "where e.ac = :experimentAc").setParameter("experimentAc", getExperiment().getAc()).getSingleResult();
         this.numberOfInteractorsInExperiment = number != null ? number.intValue() : 0;
@@ -599,7 +603,7 @@ public class DetailsController extends JpaBaseController {
             featureAvailable=false;
             return;
         }
-        Long number = (Long) getIntactContext().getDaoFactory().getEntityManager().createQuery("select count(f.ac) from Feature f join f.component as c " +
+        Long number = (Long) getDaoFactory().getEntityManager().createQuery("select count(f.ac) from Feature f join f.component as c " +
                 "join c.interaction as i where i.ac = :ac").setParameter("ac", interactionAc).getSingleResult();
 
         featureAvailable = number > 0;
@@ -709,7 +713,9 @@ public class DetailsController extends JpaBaseController {
 
         for ( Component component : interaction.getComponents() ) {
             final Interactor interactor = component.getInteractor();
-            members.add( new SimpleInteractor( interactor.getAc(), interactor.getShortLabel() ) );
+            if (component.getInteractor() != null){
+                members.add( new SimpleInteractor( interactor.getAc(), interactor.getShortLabel() ) );
+            }
         }
         return members;
     }
