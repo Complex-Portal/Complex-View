@@ -2,10 +2,8 @@ package uk.ac.ebi.intact.service.complex.ws;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Oscar Forner (oforner@ebi.ac.uk)
@@ -21,13 +19,13 @@ public class ComplexDetails {
     private String ac;
     private String name;
     private String specie;
-    private List<String> componentsAC;
-    private List<String> componentsName;
+    private ComplexDetailsParticipants participants;
+    private ComplexDetailsCrossReferences crossReferences;
 
     public ComplexDetails() {
         this.synonyms = new LinkedList<String>();
-        this.componentsAC = new LinkedList<String>();
-        this.componentsName = new LinkedList<String>();
+        this.participants = new ComplexDetailsParticipants();
+        this.crossReferences = new ComplexDetailsCrossReferences();
     }
 
     public void setSystematicName ( String systematic ) {
@@ -54,13 +52,14 @@ public class ComplexDetails {
     public void setSpecie ( String s ) { this.specie = s; }
     @XmlElement
     public String getSpecie () { return this.specie; }
-    public void setComponentsAC (List<String> list) { this.componentsAC = list; }
-    public void addComponentAC(String value) { this.componentsAC.add(value); }
     @XmlElement
-    public List<String> getComponentsAC() { return this.componentsAC; }
-    public void setComponentsName (List<String> list) { this.componentsName = list; }
-    public void addComponentName(String value) { this.componentsName.add(value); }
+    public ComplexDetailsParticipants getParticipants() { return participants; }
+    public void setParticipants(ComplexDetailsParticipants participants) {
+        this.participants = participants;
+    }
     @XmlElement
-    public List<String> getComponentsName() { return this.componentsName; }
-
+    public ComplexDetailsCrossReferences getCrossReference() { return crossReferences; }
+    public void setCrossReferences(ComplexDetailsCrossReferences crossReferences) {
+        this.crossReferences = crossReferences;
+    }
 }

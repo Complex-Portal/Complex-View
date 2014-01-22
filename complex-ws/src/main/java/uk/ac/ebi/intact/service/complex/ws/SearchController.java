@@ -1,5 +1,8 @@
 package uk.ac.ebi.intact.service.complex.ws;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,6 +31,8 @@ public class SearchController {
 
     @Autowired
     private DaoFactory daoFactory;
+
+    private static final Log log = LogFactory.getLog(SearchController.class);
 
      /*
      -- BASIC KNOWLEDGE ABOUT SPRING MVC CONTROLLERS --
@@ -235,7 +240,6 @@ public class SearchController {
                 }
             }
 
-            // we index complex name
             if ( firstRecommended != null ) {
                 details.setName(firstRecommended);
             }
@@ -256,51 +260,12 @@ public class SearchController {
             details.setProperties(null);
             details.setSpecie(null);
             details.setAc(complex.getAc());
-            for( Component component : complex.getComponents() ) {
-                details.addComponentAC(component.getAc());
-                firstRecommended=null;
-                firstSystematic=null;
-                firstComplexSynonym=null;
-                firstAlias=null;
-                for ( Alias alias : component.getAliases ( ) ) {
-                    if (alias.getName() != null){
-                        if (alias.getCvAliasType() != null){
-                            CvAliasType type = alias.getCvAliasType();
-                            if (firstRecommended == null && "MI:1315".equals(type.getIdentifier())){
-                                firstRecommended = alias.getName();
-                            }
-                            else if (firstSystematic == null && "MI:1316".equals(type.getIdentifier())){
-                                firstSystematic = alias.getName();
-                            }
-                            else if (firstComplexSynonym == null && "MI:0673".equals(type.getIdentifier())){
-                                firstComplexSynonym = alias.getName();
-                            }
-                        }
-                        else if (firstAlias == null){
-                            firstAlias = alias.getName();
-                        }
-                    }
-                }
 
-                // we index complex name
-                if ( firstRecommended != null ) {
-                    details.addComponentName(firstRecommended);
-                }
-                else if ( firstSystematic != null ) {
-                    details.addComponentName(firstSystematic);
-                }
-                else if ( firstComplexSynonym != null ) {
-                    details.addComponentName(firstComplexSynonym);
-                }
-                else if ( firstAlias != null ) {
-                    details.addComponentName(firstAlias);
-                }
-                else{
-                    details.addComponentName(complex.getShortLabel());
-                }
-            }
+            ComplexDetailsParticipants participants = details.getParticipants();
+            ComplexDetailsCrossReferences crossReferences = details.getCrossReference();
+
+
         }
         return details;
     }
-
 }
