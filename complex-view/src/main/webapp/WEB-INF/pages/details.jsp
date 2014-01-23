@@ -1,5 +1,9 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import="java.util.List" %>
+<%@ page import="uk.ac.ebi.intact.service.complex.view.ComplexDetailsParticipants" %>
+<%@ page import="uk.ac.ebi.intact.service.complex.view.ComplexDetailsCrossReferences" %>
+<%@ page import="java.util.Collections" %>
+<%@ page import="uk.ac.ebi.intact.service.complex.view.ComplexDetailsFeatures" %>
 <html>
 
 <%@include file="header.jsp"%>
@@ -102,22 +106,59 @@
         <%}%>
         <div class="section">
             <h4 class="sectionTitle">Participants</h4>
-            <table class="participants">
+            <table id="participants" class="participants">
                 <thead>
                     <tr>
                         <td>ID</td>
                         <td>Name</td>
+                        <td>Description</td>
+                        <td>Stochiometry</td>
+                        <td>Biological Role</td>
+                        <td>Interactor Type</td>
+                        <td>Linked Features</td>
+                        <td>Other Features</td>
                     </tr>
                 </thead>
                 <tbody>
-                    <%  List<String> names = details.getComponentsName();
-                        List<String> acs = details.getComponentsAC();
-                        for(int i = 0; i < acs.size(); ++i){%>
+                    <% for(ComplexDetailsParticipants part : details.getParticipants()) { %>
                         <tr>
-                            <td><a href="<%=request.getContextPath()%>/details/<%=acs.get(i)%>"><%=acs.get(i)%></a></td>
-                            <td><%=names.get(i)%></td>
+                            <td><%if(part.getIdentifier() != null){%><a target="_blank" href="<%=part.getIdentifierLink()%>"><%=part.getIdentifier()%></a><br/><%}%>
+                                <%if(part.getInteractorAC() != null){%><a target="_blank" href="http://www.ebi.ac.uk/intact/molecule/<%=part.getInteractorAC()%>"><%=part.getInteractorAC()%></a><%}%></td>
+                            <td><%if(part.getName() != null){%><%=part.getName()%><%}%></td>
+                            <td><%if(part.getDescription() != null){%><%=part.getDescription()%><%}%></td>
+                            <td><%if(part.getStochiometry() != null){%><%=new Double(part.getStochiometry()).intValue()%><%}%></td>
+                            <td><%if(part.getBioRole() != null){%><%=part.getBioRole()%><%}%></td>
+                            <td><%if(part.getInteractorType() != null){%><%=part.getInteractorType()%><%}%></td>
+                            <td><%if(part.getLinkedFeatures().size() > 0){%><%for (ComplexDetailsFeatures linked : part.getLinkedFeatures()) {%><%=linked.getFeatureType()%> <%=linked.getParticipantId()%>
+                                <%for(String range : linked.getRanges()){%>[<%=range%>] <%}%><br/><%}}%></td>
+                            <td><%if(part.getOtherFeatures().size() > 0){%><%for (ComplexDetailsFeatures other : part.getOtherFeatures()) {%><%=other.getFeatureType()%> <%=other.getParticipantId()%>
+                                <%for(String range : other.getRanges()){%>[<%=range%>] <%}%><br/><%}}%></td>
                         </tr>
                     <%}%>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <div class="section">
+            <h4 class="sectionTitle">Cross References</h4>
+            <table id="crossReferences" class="crossReferences">
+                <thead>
+                <tr>
+                    <td>Type</td>
+                    <td>Database</td>
+                    <td>Identifier</td>
+                    <td>Description</td>
+                </tr>
+                </thead>
+                <tbody>
+                <% for(ComplexDetailsCrossReferences cross : details.getCrossReferences()) { %>
+                <tr>
+                    <td><%if(cross.getQualifier() != null){%><%=cross.getQualifier()%><%}%></td>
+                    <td><%if(cross.getDatabase() != null){%><%=cross.getDatabase()%><%}%></td>
+                    <td><%if(cross.getIdentifier() != null){%><%if(cross.getSearchURL() != null){%><a target="_blank" href="<%=cross.getSearchURL()%>"><%}%><%=cross.getIdentifier()%><%if(cross.getSearchURL() != null){%></a><%}}%></td>
+                    <td><%if(cross.getDescription() != null){%><%=cross.getDescription()%><%}%></td>
+                </tr>
+                <%}%>
                 </tbody>
             </table>
         </div>

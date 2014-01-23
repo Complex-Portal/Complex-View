@@ -1,5 +1,6 @@
 package uk.ac.ebi.intact.service.complex.view;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,13 +17,13 @@ public class ComplexDetails {
     private String ac;
     private String name;
     private String specie;
-    private List<String> componentsAC;
-    private List<String> componentsName;
+    private Collection<ComplexDetailsParticipants> participants;
+    private Collection<ComplexDetailsCrossReferences> crossReferences;
 
     public ComplexDetails() {
         this.synonyms = new LinkedList<String>();
-        this.componentsAC = new LinkedList<String>();
-        this.componentsName = new LinkedList<String>();
+        this.participants = new LinkedList<ComplexDetailsParticipants>();
+        this.crossReferences = new LinkedList<ComplexDetailsCrossReferences>();
     }
 
     public void setSystematicName ( String systematic ) {
@@ -42,11 +43,6 @@ public class ComplexDetails {
     public String getName () { return this.name; }
     public void setSpecie ( String s ) { this.specie = s; }
     public String getSpecie () { return this.specie; }
-    public void setComponentsAC (List<String> list) { this.componentsAC = list; }
-    public void addComponentAC(String value) { this.componentsAC.add(value); }
-    public List<String> getComponentsAC() { return this.componentsAC; }
-    public void setComponentsName (List<String> list) { this.componentsName = list; }
-    public void addComponentName(String value) { this.componentsName.add(value); }
-    public List<String> getComponentsName() { return this.componentsName; }
-
+    public Collection<ComplexDetailsParticipants> getParticipants() { return participants; }
+    public Collection<ComplexDetailsCrossReferences> getCrossReferences() { return crossReferences; }
 }

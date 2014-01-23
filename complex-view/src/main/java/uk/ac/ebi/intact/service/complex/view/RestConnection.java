@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Collection;
 
 /**
  * @author Oscar Forner (oforner@ebi.ac.uk)
@@ -164,12 +165,78 @@ public class RestConnection {
                 for ( int i = 0; i < synonyms.size(); ++i ) {
                     details.addSynonym((String) synonyms.get(i));
                 }
-                JSONArray componentsName = (JSONArray) j.get("componentsName");
-                JSONArray componentsAC   = (JSONArray) j.get("componentsAC");
-                for (  int i = 0; i < componentsName.size(); ++i ) {
-                    details.addComponentName((String) componentsName.get(i));
-                    details.addComponentAC  ((String) componentsAC  .get(i));
+                // Setting the participants information
+                JSONArray partArray = (JSONArray) j.get("participants");
+                ComplexDetailsParticipants participant = null;
+                JSONArray featuresArray = null;
+                ComplexDetailsFeatures features = null;
+                JSONArray rangesArray = null;
+                Collection<String> ranges = null;
+                for ( int i = 0; i < partArray.size(); ++i ){
+                    participant = new ComplexDetailsParticipants();
+                    JSONObject part = (JSONObject) partArray.get(i);
+                    participant.setInteractorAC( (String) part.get("interactorAC") );
+                    participant.setIdentifier((String) part.get("identifier"));
+                    participant.setIdentifierLink((String) part.get("identifierLink"));
+                    participant.setName((String) part.get("name"));
+                    participant.setDescription((String) part.get("description"));
+                    participant.setStochiometry((String) part.get("stochiometry"));
+                    participant.setBioRole((String) part.get("bioRole"));
+                    participant.setBioRoleMI((String) part.get("bioRoleMI"));
+                    participant.setBioRoleDefinition((String) part.get("bioRoleDefinition"));
+                    participant.setInteractorType((String) part.get("interactorType"));
+                    participant.setInteractorTypeMI((String) part.get("interactorTypeMI"));
+                    participant.setInteractorTypeDefinition((String) part.get("interactorTypeDefinition"));
+                    featuresArray = (JSONArray) part.get("linkedFeatures");
+                    for ( int k = 0; k < featuresArray.size(); ++k ){
+                        features = new ComplexDetailsFeatures();
+                        JSONObject jfeatures = (JSONObject) featuresArray.get(k);
+                        features.setParticipantId( (String) jfeatures.get("participantId") );
+                        features.setFeatureType((String) jfeatures.get("featureType"));
+                        features.setFeatureTypeMI((String) jfeatures.get("featureTypeMI"));
+                        features.setFeatureTypeDefinition( (String) jfeatures.get("featureTypeDefinition") );
+                        rangesArray = (JSONArray) jfeatures.get("ranges");
+                        for ( int l = 0; l < rangesArray.size(); ++l ){
+                            ranges = features.getRanges();
+                            ranges.add( (String) rangesArray.get(l));
+                        }
+                        participant.getLinkedFeatures().add(features);
+                    }
+                    featuresArray = (JSONArray) part.get("otherFeatures");
+                    for ( int k = 0; k < featuresArray.size(); ++k ){
+                        features = new ComplexDetailsFeatures();
+                        JSONObject jfeatures = (JSONObject) featuresArray.get(k);
+                        features.setParticipantId( (String) jfeatures.get("participantId") );
+                        features.setFeatureType((String) jfeatures.get("featureType"));
+                        features.setFeatureTypeMI((String) jfeatures.get("featureTypeMI"));
+                        features.setFeatureTypeDefinition( (String) jfeatures.get("featureTypeDefinition") );
+                        rangesArray = (JSONArray) jfeatures.get("ranges");
+                        for ( int l = 0; l < rangesArray.size(); ++l ){
+                            ranges = features.getRanges();
+                            ranges.add( (String) rangesArray.get(l));
+                        }
+                        participant.getOtherFeatures().add(features);
+                    }
+                    details.getParticipants().add(participant);
                 }
+                // Setting the cross references information
+                JSONArray crossArray = (JSONArray) j.get("crossReferences");
+                ComplexDetailsCrossReferences crossReference = null;
+                for ( int i = 0; i < crossArray.size() ; ++i) {
+                    crossReference = new ComplexDetailsCrossReferences();
+                    JSONObject cross = (JSONObject) crossArray.get(i);
+                    crossReference.setDatabase( (String) cross.get("database") );
+                    crossReference.setQualifier( (String) cross.get("qualifier") );
+                    crossReference.setIdentifier( (String) cross.get("identifier") );
+                    crossReference.setDescription( (String) cross.get("description") );
+                    crossReference.setSearchURL( (String) cross.get("searchURL") );
+                    crossReference.setDbMI( (String) cross.get("dbMI") );
+                    crossReference.setQualifierMI( (String) cross.get("qualifierMI") );
+                    crossReference.setDbdefinition( (String) cross.get("dbdefinition") );
+                    crossReference.setQualifierDefinition( (String) cross.get("qualifierDefinition") );
+                    details.getCrossReferences().add(crossReference);
+                }
+
             }
         }
         return details;

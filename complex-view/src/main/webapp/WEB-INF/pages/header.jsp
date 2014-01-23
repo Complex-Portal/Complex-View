@@ -53,8 +53,8 @@
     <link href="<%=request.getContextPath()%>/resources/css/main.css" rel="stylesheet"> <%--Added by Oscar--%>
     <!-- end CSS-->
     <%--Begin JS--%>
-    <script src="//code.jquery.com/jquery-1.10.2.js"></script> <%--Added by Oscar--%>
-    <script src="<%=request.getContextPath()%>/resources/js/main.js"></script>
+    <script type="text/javascript" charset="utf-8" src="//code.jquery.com/jquery-1.10.2.js"></script> <%--Added by Oscar--%>
+    <script type="text/javascript" charset="utf-8" src="<%=request.getContextPath()%>/resources/js/main.js"></script> <%--Added by Oscar--%>
 
     <!-- All JavaScript at the bottom, except for Modernizr / Respond.
          Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
