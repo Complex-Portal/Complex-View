@@ -29,7 +29,7 @@ public class AppTests extends IntactBasicTestCase {
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     protected WebApplicationContext wac;
-    protected int numberOfComplexes = 596; //You have to update this value
+    protected int numberOfComplexes = 622; //You have to update this value
                                            //when you indexed new complexes
 
     @Before

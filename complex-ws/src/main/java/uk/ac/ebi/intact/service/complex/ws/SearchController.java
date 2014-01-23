@@ -12,10 +12,12 @@ import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexFieldNames;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -210,7 +212,9 @@ public class SearchController {
                 cvTopic = annotation != null ? annotation.getCvTopic ( ) : null ;
                 if ( cvTopic != null && cvTopic.getShortLabel ( ) .equalsIgnoreCase( "curated-complex" ) && annotation.getAnnotationText() != null) {
                     details.setFunction ( annotation.getAnnotationText ( ) ) ;
-                    break ; // We only want the first one
+                }
+                else if ( annotation.getCvTopic() != null && annotation.getCvTopic().getIdentifier() != null && annotation.getCvTopic().getIdentifier().equals("MI:0629") ) {
+                        details.setProperties(annotation.getAnnotationText());
                 }
             }
             // Names
@@ -257,13 +261,154 @@ public class SearchController {
             }
 
             details.setSystematicName(firstSystematic);
-            details.setProperties(null);
-            details.setSpecie(null);
+            if (! complex.getExperiments().isEmpty()){
+                Experiment exp = complex.getExperiments().iterator().next();
+                BioSource bioSource = exp.getBioSource();
+                if ( bioSource != null ){
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append(bioSource.getFullName() != null ? bioSource.getFullName() : bioSource.getShortLabel());
+                    stringBuilder.append("(").append(bioSource.getTaxId()).append(")");
+                    details.setSpecie(stringBuilder.toString());
+                }
+            }
             details.setAc(complex.getAc());
 
-            ComplexDetailsParticipants participants = details.getParticipants();
-            ComplexDetailsCrossReferences crossReferences = details.getCrossReference();
 
+            Collection<ComplexDetailsParticipants> participants = details.getParticipants();
+            ComplexDetailsParticipants part;
+            for ( Component component : complex.getComponents() ) {
+                part = new ComplexDetailsParticipants();
+                Interactor interactor = component.getInteractor();
+                if ( interactor != null ) {
+                    part.setInteractorAC(interactor.getAc());
+                    part.setDescription(interactor.getFullName());
+                    Xref xref = null;
+                    if (CvObjectUtils.isProteinType(interactor.getCvInteractorType())) {
+                        xref = ProteinUtils.getUniprotXref(interactor);
+
+                        String geneName = null;
+                        for (Alias alias : interactor.getAliases()) {
+                            if ( alias.getCvAliasType() != null && CvAliasType.GENE_NAME_MI_REF.equals(alias.getCvAliasType().getIdentifier())) {
+                                geneName = alias.getName();
+                                break;
+                            }
+                        }
+                        part.setName(geneName !=null ? geneName : interactor.getShortLabel());
+
+                    }
+                    else if( CvObjectUtils.isSmallMoleculeType(interactor.getCvInteractorType()) || CvObjectUtils.isPolysaccharideType(interactor.getCvInteractorType()) ){
+                        xref = SmallMoleculeUtils.getChebiXref(interactor);
+                        part.setName(interactor.getShortLabel());
+                    }
+                    else {
+                        part.setName(interactor.getShortLabel());
+                        xref = XrefUtils.getIdentityXref(interactor, CvDatabase.ENSEMBL_MI_REF);
+                        xref = xref != null ? xref : XrefUtils.getIdentityXref(interactor, "MI:1013");
+                    }
+                    if (xref != null) {
+                        part.setIdentifier(xref.getPrimaryId());
+                        for ( Annotation annotation : xref.getCvDatabase().getAnnotations() ) {
+                            if ( annotation.getCvTopic() != null && CvTopic.SEARCH_URL_MI_REF.equals(annotation.getCvTopic().getIdentifier()) ) {
+                                part.setIdentifierLink(annotation.getAnnotationText().replaceAll("\\$*\\{ac\\}", xref.getPrimaryId()));
+                            }
+                        }
+                    }
+                    part.setInteractorType(interactor.getCvInteractorType().getFullName() != null ? interactor.getCvInteractorType().getFullName() : interactor.getCvInteractorType().getShortLabel());
+                    part.setInteractorTypeMI(interactor.getCvInteractorType().getIdentifier());
+                    for ( Annotation annotation : interactor.getCvInteractorType().getAnnotations() ) {
+                       if( annotation.getCvTopic().getShortLabel().equalsIgnoreCase(CvTopic.DEFINITION) ){
+                            part.setInteractorTypeDefinition(annotation.getAnnotationText());
+                        }
+                    }
+                }
+                part.setStochiometry(component.getStoichiometry() == 0.0f ? null : Float.toString(component.getStoichiometry()));
+                if (component.getCvBiologicalRole() != null) {
+                    part.setBioRole(component.getCvBiologicalRole().getFullName() != null ? component.getCvBiologicalRole().getFullName() : component.getCvBiologicalRole().getShortLabel());
+                    part.setBioRoleMI(component.getCvBiologicalRole().getIdentifier());
+                    for ( Annotation annotation : component.getCvBiologicalRole().getAnnotations() ) {
+                        if( annotation.getCvTopic().getShortLabel().equalsIgnoreCase(CvTopic.DEFINITION) ){
+                            part.setBioRoleDefinition(annotation.getAnnotationText());
+                        }
+                    }
+                }
+
+                for( Feature feature : component.getFeatures() ) {
+                    ComplexDetailsFeatures complexDetailsFeatures = new ComplexDetailsFeatures();
+                    if ( feature.getBoundDomain() != null ) {
+                        part.getLinkedFeatures().add(complexDetailsFeatures);
+                        Component featureComponent = feature.getBoundDomain().getComponent();
+                        if (featureComponent != null) {
+                            Interactor linkedInteractor = featureComponent.getInteractor();
+                            if ( linkedInteractor != null ) {
+                                Xref xref = null;
+                                if (CvObjectUtils.isProteinType(linkedInteractor.getCvInteractorType())) {
+                                    xref = ProteinUtils.getUniprotXref(linkedInteractor);
+
+                                }
+                                else if( CvObjectUtils.isSmallMoleculeType(linkedInteractor.getCvInteractorType()) || CvObjectUtils.isPolysaccharideType(linkedInteractor.getCvInteractorType()) ){
+                                    xref = SmallMoleculeUtils.getChebiXref(linkedInteractor);
+                                }
+                                else {
+                                    xref = XrefUtils.getIdentityXref(linkedInteractor, CvDatabase.ENSEMBL_MI_REF);
+                                    xref = xref != null ? xref : XrefUtils.getIdentityXref(linkedInteractor, "MI:1013");
+                                }
+                                if (xref != null) {
+                                    complexDetailsFeatures.setParticipantId(xref.getPrimaryId());
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        part.getOtherFeatures().add(complexDetailsFeatures);
+                    }
+                    if (feature.getCvFeatureType() != null) {
+                        complexDetailsFeatures.setFeatureType(feature.getCvFeatureType().getFullName() != null ? feature.getCvFeatureType().getFullName() : feature.getCvFeatureType().getShortLabel());
+                        complexDetailsFeatures.setFeatureTypeMI(feature.getCvFeatureType().getIdentifier());
+                        for ( Annotation annotation : component.getCvBiologicalRole().getAnnotations() ) {
+                            if( annotation.getCvTopic().getShortLabel().equalsIgnoreCase(CvTopic.DEFINITION) ){
+                                complexDetailsFeatures.setFeatureTypeDefinition(annotation.getAnnotationText());
+                            }
+                        }
+                    }
+                    for ( Range range : feature.getRanges() ) {
+                        complexDetailsFeatures.getRanges().add(FeatureUtils.convertRangeIntoString(range));
+                    }
+                }
+
+                participants.add(part);
+            }
+
+            Collection<ComplexDetailsCrossReferences> crossReferences = details.getCrossReferences();
+            ComplexDetailsCrossReferences cross;
+            for ( Xref xref : complex.getXrefs()) {
+                cross = new ComplexDetailsCrossReferences();
+                CvDatabase cvDatabase = xref.getCvDatabase();
+                CvXrefQualifier cvXrefQualifier = xref.getCvXrefQualifier();
+                String primaryId = xref.getPrimaryId();
+                String secondayId = xref.getSecondaryId();
+                cross.setIdentifier(primaryId);
+                cross.setDescription(secondayId);
+                cross.setDatabase(cvDatabase.getFullName() != null ? cvDatabase.getFullName() : cvDatabase.getShortLabel());
+                cross.setDbMI(cvDatabase.getIdentifier());
+                for ( Annotation annotation : cvDatabase.getAnnotations() ) {
+                    if ( annotation.getCvTopic() != null && CvTopic.SEARCH_URL_MI_REF.equals(annotation.getCvTopic().getIdentifier()) ) {
+                        cross.setSearchURL(annotation.getAnnotationText().replaceAll("\\$*\\{ac\\}",primaryId));
+                    }
+                    else if( annotation.getCvTopic().getShortLabel().equalsIgnoreCase(CvTopic.DEFINITION) ){
+                        cross.setDbdefinition(annotation.getAnnotationText());
+                    }
+                }
+                if( cvXrefQualifier != null ) {
+                    cross.setQualifier(cvXrefQualifier.getFullName() != null ? cvXrefQualifier.getFullName() : cvXrefQualifier.getShortLabel());
+                    cross.setQualifierMI(cvXrefQualifier.getIdentifier());
+                    for ( Annotation annotation : cvXrefQualifier.getAnnotations() ) {
+                        if( annotation.getCvTopic().getShortLabel().equalsIgnoreCase(CvTopic.DEFINITION) ){
+                            cross.setQualifierDefinition(annotation.getAnnotationText());
+                        }
+                    }
+                }
+                crossReferences.add(cross);
+            }
 
         }
         return details;

@@ -1,6 +1,10 @@
 package uk.ac.ebi.intact.service.complex.ws;
 
-import java.util.LinkedList;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -8,49 +12,95 @@ import java.util.List;
  * @version $Id$
  * @since 21/01/14
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public class ComplexDetailsParticipants {
+    private String interactorAC;
     private String identifier;
     private String identifierLink;
-    private String geneName;
-    private String proteinName;
+    private String name;
+    private String description;
     private String stochiometry;
     private String bioRole;
+    private String bioRoleMI;
+    private String bioRoleDefinition;
     private String interactorType;
-    private List<String> linkedFeatures;
-    private List<String> otherFeatures;
+    private String interactorTypeMI;
+    private String interactorTypeDefinition;
+    private Collection<ComplexDetailsFeatures> linkedFeatures;
+    private Collection<ComplexDetailsFeatures> otherFeatures;
 
     public ComplexDetailsParticipants() {
         this.identifier     = null;
         this.identifierLink = null;
-        this.geneName       = null;
-        this.proteinName    = null;
+        this.name           = null;
+        this.description    = null;
         this.stochiometry   = null;
         this.bioRole        = null;
         this.interactorType = null;
-        this.linkedFeatures = new LinkedList<String>();
-        this.otherFeatures  = new LinkedList<String>();
+        this.linkedFeatures = new ArrayList<ComplexDetailsFeatures>();
+        this.otherFeatures  = new ArrayList<ComplexDetailsFeatures>();
     }
 
     public ComplexDetailsParticipants(String identifier,
                                       String identifierLink,
-                                      String geneName,
-                                      String proteinName,
+                                      String name,
+                                      String description,
                                       String stochiometry,
                                       String bioRole,
                                       String interactorType,
-                                      List<String> linkedFeatures,
-                                      List<String> otherFeatures) {
+                                      List<ComplexDetailsFeatures> linkedFeatures,
+                                      List<ComplexDetailsFeatures> otherFeatures) {
         this.identifier = identifier;
         this.identifierLink = identifierLink;
-        this.geneName = geneName;
-        this.proteinName = proteinName;
+        this.name = name;
+        this.description = description;
         this.stochiometry = stochiometry;
         this.bioRole = bioRole;
         this.interactorType = interactorType;
         this.linkedFeatures = linkedFeatures;
         this.otherFeatures = otherFeatures;
     }
+    @XmlElement
+    public String getBioRoleMI() {
+        return bioRoleMI;
+    }
 
+    public void setBioRoleMI(String bioRoleMI) {
+        this.bioRoleMI = bioRoleMI;
+    }
+    @XmlElement
+    public String getBioRoleDefinition() {
+        return bioRoleDefinition;
+    }
+
+    public void setBioRoleDefinition(String bioRoleDefinition) {
+        this.bioRoleDefinition = bioRoleDefinition;
+    }
+    @XmlElement
+    public String getInteractorTypeMI() {
+        return interactorTypeMI;
+    }
+
+    public void setInteractorTypeMI(String interactorTypeMI) {
+        this.interactorTypeMI = interactorTypeMI;
+    }
+    @XmlElement
+    public String getInteractorTypeDefinition() {
+        return interactorTypeDefinition;
+    }
+
+    public void setInteractorTypeDefinition(String interactorTypeDefinition) {
+        this.interactorTypeDefinition = interactorTypeDefinition;
+    }
+    @XmlElement
+    public String getInteractorAC() {
+        return interactorAC;
+    }
+
+    public void setInteractorAC(String interactorAC) {
+        this.interactorAC = interactorAC;
+    }
+    @XmlElement
     public String getIdentifier() {
         return identifier;
     }
@@ -58,7 +108,7 @@ public class ComplexDetailsParticipants {
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
-
+    @XmlElement
     public String getIdentifierLink() {
         return identifierLink;
     }
@@ -66,23 +116,23 @@ public class ComplexDetailsParticipants {
     public void setIdentifierLink(String identifierLink) {
         this.identifierLink = identifierLink;
     }
-
-    public String getGeneName() {
-        return geneName;
+    @XmlElement
+    public String getName() {
+        return name;
     }
 
-    public void setGeneName(String geneName) {
-        this.geneName = geneName;
+    public void setName(String name) {
+        this.name = name;
+    }
+    @XmlElement
+    public String getDescription() {
+        return description;
     }
 
-    public String getProteinName() {
-        return proteinName;
+    public void setDescription(String description) {
+        this.description = description;
     }
-
-    public void setProteinName(String proteinName) {
-        this.proteinName = proteinName;
-    }
-
+    @XmlElement
     public String getStochiometry() {
         return stochiometry;
     }
@@ -90,7 +140,7 @@ public class ComplexDetailsParticipants {
     public void setStochiometry(String stochiometry) {
         this.stochiometry = stochiometry;
     }
-
+    @XmlElement
     public String getBioRole() {
         return bioRole;
     }
@@ -98,7 +148,7 @@ public class ComplexDetailsParticipants {
     public void setBioRole(String bioRole) {
         this.bioRole = bioRole;
     }
-
+    @XmlElement
     public String getInteractorType() {
         return interactorType;
     }
@@ -106,20 +156,13 @@ public class ComplexDetailsParticipants {
     public void setInteractorType(String interactorType) {
         this.interactorType = interactorType;
     }
-
-    public List<String> getLinkedFeatures() {
+    @XmlElement
+    public Collection<ComplexDetailsFeatures> getLinkedFeatures() {
         return linkedFeatures;
     }
-
-    public void setLinkedFeatures(List<String> linkedFeatures) {
-        this.linkedFeatures = linkedFeatures;
-    }
-
-    public List<String> getOtherFeatures() {
+    @XmlElement
+    public Collection<ComplexDetailsFeatures> getOtherFeatures() {
         return otherFeatures;
     }
 
-    public void setOtherFeatures(List<String> otherFeatures) {
-        this.otherFeatures = otherFeatures;
-    }
 }

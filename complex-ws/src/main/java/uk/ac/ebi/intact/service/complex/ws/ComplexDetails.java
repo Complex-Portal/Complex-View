@@ -1,7 +1,11 @@
 package uk.ac.ebi.intact.service.complex.ws;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,21 +15,22 @@ import java.util.List;
  * @since 09/12/13
  */
 @XmlRootElement(name = "ComplexDetails")
+@XmlAccessorType(XmlAccessType.NONE)
 public class ComplexDetails {
     private String systematicName;
-    private List<String> synonyms;
+    private Collection<String> synonyms;
     private String function;
     private String properties;
     private String ac;
     private String name;
     private String specie;
-    private ComplexDetailsParticipants participants;
-    private ComplexDetailsCrossReferences crossReferences;
+    private Collection<ComplexDetailsParticipants> participants;
+    private Collection<ComplexDetailsCrossReferences> crossReferences;
 
     public ComplexDetails() {
         this.synonyms = new LinkedList<String>();
-        this.participants = new ComplexDetailsParticipants();
-        this.crossReferences = new ComplexDetailsCrossReferences();
+        this.participants = new ArrayList<ComplexDetailsParticipants>();
+        this.crossReferences = new ArrayList<ComplexDetailsCrossReferences>();
     }
 
     public void setSystematicName ( String systematic ) {
@@ -36,7 +41,7 @@ public class ComplexDetails {
     public void setSynonyms ( List<String> syns ) { this.synonyms = syns; }
     public void addSynonym ( String syn ) { this.synonyms.add(syn); }
     @XmlElement
-    public List<String> getSynonyms() { return this.synonyms; }
+    public Collection<String> getSynonyms() { return this.synonyms; }
     public void setFunction ( String func ) { this.function = func; }
     @XmlElement
     public String getFunction () { return this.function; }
@@ -52,14 +57,10 @@ public class ComplexDetails {
     public void setSpecie ( String s ) { this.specie = s; }
     @XmlElement
     public String getSpecie () { return this.specie; }
-    @XmlElement
-    public ComplexDetailsParticipants getParticipants() { return participants; }
-    public void setParticipants(ComplexDetailsParticipants participants) {
-        this.participants = participants;
+    public Collection<ComplexDetailsParticipants> getParticipants() {
+        return participants;
     }
-    @XmlElement
-    public ComplexDetailsCrossReferences getCrossReference() { return crossReferences; }
-    public void setCrossReferences(ComplexDetailsCrossReferences crossReferences) {
-        this.crossReferences = crossReferences;
+    public Collection<ComplexDetailsCrossReferences> getCrossReferences() {
+        return crossReferences;
     }
 }
