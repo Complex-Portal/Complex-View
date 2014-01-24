@@ -145,3 +145,16 @@ label.sectionValue
     text-align: justify;
     display: block;
 }
+tr.trHead
+{
+    font-weight: bold;
+    background-color: #A3D3A3;
+}
+tr.trEven
+{
+    background-color: #EEF5F5;
+}
+tr.trOdd
+{
+    background-color: #C3F3C3;
+}

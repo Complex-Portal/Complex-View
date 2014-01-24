@@ -73,7 +73,8 @@
     <!-- End suggested layout containers -->
 
     <jsp:useBean id="details" class="uk.ac.ebi.intact.service.complex.view.ComplexDetails" scope="session"/>
-    <h2 class="titleDetails"><%if(details.getName() != null){%><%= details.getName() %><%}else{%>&lt;Not available&gt;<%}%> <%if (details.getSpecie() != null){%>(<%= details.getSpecie() %>)<%}%></h2>
+    <h2 class="titleDetails"><%if(details.getName() != null){%><%= details.getName() %><%}else{%>&lt;Not available&gt;<%}%></h2>
+    <h3 class="subtitleDetails">Specie: <%if (details.getSpecie() != null){%><%= details.getSpecie() %><%}else{%>&lt;Not available&gt;<%}%></h3>
     <h3 class="subtitleDetails">IntAct AC: <%if(details.getAc() != null){%><%= details.getAc() %><%}else{%>&lt;Not available&gt;<%}%></h3>
     <div class="details">
         <%if(details.getSystematicName() != null || details.getSynonyms().size() != 0 || details.getFunction() != null || details.getProperties() != null){%>
@@ -108,7 +109,7 @@
             <h4 class="sectionTitle">Participants</h4>
             <table id="participants" class="participants">
                 <thead>
-                    <tr>
+                    <tr class="trHead">
                         <td>ID</td>
                         <td>Name</td>
                         <td>Description</td>
@@ -120,8 +121,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% for(ComplexDetailsParticipants part : details.getParticipants()) { %>
-                        <tr>
+                    <% int i = 0; for(ComplexDetailsParticipants part : details.getParticipants()) { %>
+                        <%if(i%2 == 0){%>
+                            <tr class="trEven">
+                        <%}else{%>
+                            <tr class="trOdd">
+                        <%}%>
                             <td><%if(part.getIdentifier() != null){%><a target="_blank" href="<%=part.getIdentifierLink()%>"><%=part.getIdentifier()%></a><br/><%}%>
                                 <%if(part.getInteractorAC() != null){%><a target="_blank" href="http://www.ebi.ac.uk/intact/molecule/<%=part.getInteractorAC()%>"><%=part.getInteractorAC()%></a><%}%></td>
                             <td><%if(part.getName() != null){%><%=part.getName()%><%}%></td>
@@ -134,7 +139,7 @@
                             <td><%if(part.getOtherFeatures().size() > 0){%><%for (ComplexDetailsFeatures other : part.getOtherFeatures()) {%><%=other.getFeatureType()%> <%=other.getParticipantId()%>
                                 <%for(String range : other.getRanges()){%>[<%=range%>] <%}%><br/><%}}%></td>
                         </tr>
-                    <%}%>
+                    <% ++i; }%>
                 </tbody>
             </table>
         </div>
@@ -143,7 +148,7 @@
             <h4 class="sectionTitle">Cross References</h4>
             <table id="crossReferences" class="crossReferences">
                 <thead>
-                <tr>
+                <tr class="trHead">
                     <td>Type</td>
                     <td>Database</td>
                     <td>Identifier</td>
@@ -151,14 +156,18 @@
                 </tr>
                 </thead>
                 <tbody>
-                <% for(ComplexDetailsCrossReferences cross : details.getCrossReferences()) { %>
-                <tr>
+                <% i = 0; for(ComplexDetailsCrossReferences cross : details.getCrossReferences()) { %>
+                <%if(i%2 == 0){%>
+                <tr class="trEven">
+                        <%}else{%>
+                <tr class="trOdd">
+                    <%}%>
                     <td><%if(cross.getQualifier() != null){%><%=cross.getQualifier()%><%}%></td>
                     <td><%if(cross.getDatabase() != null){%><%=cross.getDatabase()%><%}%></td>
                     <td><%if(cross.getIdentifier() != null){%><%if(cross.getSearchURL() != null){%><a target="_blank" href="<%=cross.getSearchURL()%>"><%}%><%=cross.getIdentifier()%><%if(cross.getSearchURL() != null){%></a><%}}%></td>
                     <td><%if(cross.getDescription() != null){%><%=cross.getDescription()%><%}%></td>
                 </tr>
-                <%}%>
+                <% ++i; }%>
                 </tbody>
             </table>
         </div>
