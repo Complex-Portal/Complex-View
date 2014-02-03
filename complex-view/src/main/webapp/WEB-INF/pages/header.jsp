@@ -53,7 +53,8 @@
     <link href="<%=request.getContextPath()%>/resources/css/main.css" rel="stylesheet"> <%--Added by Oscar--%>
     <!-- end CSS-->
     <%--Begin JS--%>
-    <script type="text/javascript" charset="utf-8" src="//code.jquery.com/jquery-1.10.2.js"></script> <%--Added by Oscar--%>
+    <script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> <%--Added by Oscar--%>
+    <script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> <%--Added by Oscar--%>
     <script type="text/javascript" charset="utf-8" src="<%=request.getContextPath()%>/resources/js/main.js"></script> <%--Added by Oscar--%>
 
     <!-- All JavaScript at the bottom, except for Modernizr / Respond.

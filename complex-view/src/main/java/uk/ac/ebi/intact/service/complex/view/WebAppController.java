@@ -22,12 +22,19 @@ public class WebAppController {
     @Autowired
     RestConnection restConnection;
 
+    /****************************/
+    /***   Public functions   ***/
+    /****************************/
+
+    // HOME
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String HomeController(ModelMap model, HttpServletRequest request) {
         defaultModelMapValues(model, request);
+        model.addAttribute("page_title", "Complex Home");
         return "home";
     }
 
+    // SEARCH
     @RequestMapping(value = "/", method = RequestMethod.POST)
 	public String SearchController(@RequestParam String query,
                                    @RequestParam ( required = false ) String page,
@@ -43,8 +50,11 @@ public class WebAppController {
 		session.setAttribute("results", results);
         session.setAttribute("pageInfo", pageInfo);
         defaultModelMapValues(model, request);
+        model.addAttribute("page_title", "Complex Search");
         return "results";
 	}
+
+    // DETAILS
     @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET)
     public String DetailsController(@PathVariable String ac,
                                     ModelMap model,
@@ -53,12 +63,16 @@ public class WebAppController {
         ComplexDetails details = restConnection.getDetails(cleanQuery(ac), QueryTypes.DETAILS.value);
         session.setAttribute("details", details);
         defaultModelMapValues(model, request);
+        model.addAttribute("page_title", "Complex Details");
         return "details";
     }
+
+    // HELP
     @RequestMapping(value = "/help/", method = RequestMethod.GET)
     public String HelpController(ModelMap model,
                                  HttpServletRequest request) {
         defaultModelMapValues(model, request);
+        model.addAttribute("page_title", "Complex Help");
         return "help";
     }
 
@@ -67,7 +81,6 @@ public class WebAppController {
     /*****************************/
     private void defaultModelMapValues(ModelMap model, HttpServletRequest request) {
         model.addAttribute("complex_portal_name", "Intact Complex Portal");
-        model.addAttribute("page_title", "Complex Details");
         model.addAttribute("complex_home_url", request.getContextPath());
         model.addAttribute("complex_help_url", request.getContextPath() + "/help/");
         //model.addAttribute("complex_documentation_url", request.getContextPath() + "/documentation/");

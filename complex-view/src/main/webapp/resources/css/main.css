@@ -148,13 +148,13 @@ label.sectionValue
 tr.trHead
 {
     font-weight: bold;
-    background-color: #A3D3A3;
+    background-color: #497777;
 }
 tr.trEven
 {
-    background-color: #EEF5F5;
+    background-color: #70BDBD;
 }
 tr.trOdd
 {
-    background-color: #C3F3C3;
+    background-color: #8be0e0;
 }
