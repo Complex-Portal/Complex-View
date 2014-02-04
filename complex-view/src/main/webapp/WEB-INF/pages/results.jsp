@@ -67,104 +67,102 @@
         -->
         <!-- End suggested layout containers -->
 
-        <jsp:useBean id="results"  class="uk.ac.ebi.intact.service.complex.view.ComplexRestResult" scope="session"/>
-        <jsp:useBean id="pageInfo" class="uk.ac.ebi.intact.service.complex.view.Page"              scope="session"/>
-    <% if (results.getOriginaQuery() != null) { if(pageInfo.getTotalNumberOfElements() != 0) { %>
-    <h2 class="titleResults">Search result for '<%= results.getOriginaQuery() %>'</h2>
-    <h3 class="subtitleResults"><%= pageInfo.getTotalNumberOfElements() %> curated complexes were found.</h3>
-    <div class="results">
-        <div class="pages">
-            <% if ( (pageInfo.getPrevPage() != -1) || (pageInfo.getNextPage() != -1) ) { %>
-            <% if (pageInfo.getPrevPage() != -1) { %>
-                    <span class="pagePrevSpan">
-                        <form class="pagePrevForm" method="POST" action="">
-                            <input name="query"  id="queryPrevTop"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                            <input name="page"   id="pagePrevTop"   hidden="true" value="<%= pageInfo.getPrevPage() %>"/>
-                            <input name="button" class="prevPage" id="buttonPrevTop" value="PrevPage" type="submit"/>
-                        </form>
-                    </span>
-            <%}%>
-                <span class="pageCurrentSpan">
-                    <form class="pageCurrentForm" method="POST" action="">
-                        Page <input name="pageInfo" type="text" class="pageCurrent" value="<%= pageInfo.getPage() %>"/> of <%= pageInfo.getLastPage() %>
-                        <input name="query"  id="queryCurrent"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                        <input name="button" id="buttonCurrent" hidden="true" type="submit">
-                    </form>
-                </span>
-            <% if (pageInfo.getNextPage() != -1) { %>
-                    <span class="pageNextSpan">
-                        <form class="pageNextForm" method="POST" action="">
-                            <input name="query"  id="queryNext"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                            <input name="page"   id="pageNext"   hidden="true" value="<%= pageInfo.getNextPage() %>"/>
-                            <input name="button" class="nextPage" id="buttonNext" value="NextPage" type="submit"/>
-                        </form>
-                    </span>
-            <%}%>
-            <%}%>
-        </div>
-        <br><br>
-        <ol start="<%= pageInfo.getStartListCount() %>">
-            <%
-                for( ComplexSearchResults res : results.getElements() ) {
-            %>
-             <%--<c:forEach var="res" items="results.getElements()">--%>
-                <li><a class="complex_name" href="<%=request.getContextPath()%>/details/<%=res.getComplexAC()%>"><%= res.getComplexName() %> (<%= res.getOrganismName() %>)</a><label class="complex_ac"><%= res.getComplexAC() %></label>
-                <br><label class="complex_description"><%= res.getDescription() %></label>
-                <br>
-                 <%--<li><a class="complex_name" href="<c:out value="${request.getContextPath()}"/>/details/<c:out value="${res.getComplexAC()}"/>"><c:out value="${res.getComplexName()}" /> (<c:out value="${res.getOrganismName()}" />); Intact AC: <c:out value="${res.getComplexAC()}" /></a>--%>
-                     <%--<br><label class="complex_description"><c:out value="${res.getDescription()}" /></label>--%>
-                     <%--<br>--%>
-            </li>
-             <%--</c:forEach>--%>
-            <%}%>
-        </ol>
-        <div class="pages">
-            <% if ( (pageInfo.getPrevPage() != -1) || (pageInfo.getNextPage() != -1) ) { %>
-                <% if (pageInfo.getPrevPage() != -1) { %>
-                    <span class="pagePrevSpan">
-                        <form class="pagePrevForm" method="POST" action="">
-                            <input name="query"  id="queryPrev"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                            <input name="page"   id="pagePrev"   hidden="true" value="<%= pageInfo.getPrevPage() %>"/>
-                            <input name="button" class="prevPage" id="buttonPrev" value="PrevPage" type="submit"/>
-                        </form>
-                    </span>
-                <%}%>
-                <span class="pageCurrentSpan">
-                    <form class="pageCurrentForm" method="POST" action="">
-                        Page <input name="page" type="text" class="pageCurrent" value="<%= pageInfo.getPage() %>"/> of <%= pageInfo.getLastPage() %>
-                        <input name="query"  id="queryCurrent"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                        <input name="button" id="buttonCurrent" hidden="true" type="submit">
-                    </form>
-                </span>
-            <% if (pageInfo.getNextPage() != -1) { %>
-                    <span class="pageNextSpan">
-                        <form class="pageNextForm" method="POST" action="">
-                            <input name="query"  id="queryNextBottom"  hidden="true" value="<%= results.getOriginaQuery() %>"/>
-                            <input name="page"   id="pageNextBottom"   hidden="true" value="<%= pageInfo.getNextPage() %>"/>
-                            <input name="button" class="nextPage" id="buttonNextBottom" value="NextPage" type="submit"/>
-                        </form>
-                    </span>
-            <%}%>
-            <%}%>
-        </div>
-    </div>
-    <%}
-    else{//Case 0 results%>
-    <h2 class="titleResults">Search result for '<%= results.getOriginaQuery() %>'</h2>
-    <h3 class="subtitleResults"><%= pageInfo.getTotalNumberOfElements() %> curated complexes were found.</h3>
-    <div class="searchDivZeroResults">
-        <form class="searchForm" method="POST" action="">
-            <textarea name="query" rows="10" id="querySearchBox"  type="text"   class="searchBox"    placeholder="Enter search term(s)..."><%= results.getOriginaQuery() %></textarea>
-            <br>
-            <input name="button" id="button" type="submit" class="searchButton" value="Search" />
-        </form>
-    </div>
-    <%}
-      }// End if (results.getOriginaQuery() != null)
-      else{%>
-    <h2 class="titleNoData">No data available</h2>
-    <h3 class="subtitleNoData">Please contact with the webadmin</h3>
-    <%}%>
+    <jsp:useBean id="results"  class="uk.ac.ebi.intact.service.complex.view.ComplexRestResult" scope="session"/>
+    <jsp:useBean id="pageInfo" class="uk.ac.ebi.intact.service.complex.view.Page"              scope="session"/>
+    <c:choose>
+        <c:when test="${not empty sessionScope.results.originaQuery}">
+            <c:choose>
+                <c:when test="${sessionScope.pageInfo.totalNumberOfElements != 0}">
+                    <h2 class="titleResults">Search result for '<c:out value="${sessionScope.results.originaQuery}"/>'</h2>
+                    <h3 class="subtitleResults"><c:out value="${sessionScope.pageInfo.totalNumberOfElements}"/> curated complexes were found.</h3>
+                    <div class="results">
+                        <div class="pages">
+                            <c:if test="${sessionScope.pageInfo.prevPage != -1 || sessionScope.pageInfo.nextPage != -1}">
+                                <c:if test="${sessionScope.pageInfo.prevPage != -1}">
+                                    <span class="pagePrevSpan">
+                                        <form class="pagePrevForm" method="POST" action="">
+                                            <input name="query"  id="queryPrevTop"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                                            <input name="page"   id="pagePrevTop"   hidden="true" value="<c:out value="${sessionScope.pageInfo.prevPage}"/>"/>
+                                            <input name="button" class="prevPage" id="buttonPrevTop" value="PrevPage" type="submit"/>
+                                        </form>
+                                    </span>
+                                </c:if>
+                                <span class="pageCurrentSpan">
+                                    <form class="pageCurrentForm" method="POST" action="">
+                                        Page <input name="pageInfo" type="text" class="pageCurrent" value="<c:out value="${sessionScope.pageInfo.page}"/>"/> of <c:out value="${sessionScope.pageInfo.lastPage}"/>
+                                        <input name="query"  id="queryCurrent"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                                        <input name="button" id="buttonCurrent" hidden="true" type="submit">
+                                    </form>
+                                </span>
+                                <c:if  test="${sessionScope.pageInfo.nextPage != -1}">
+                                    <span class="pageNextSpan">
+                                        <form class="pageNextForm" method="POST" action="">
+                                            <input name="query"  id="queryNext"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                                            <input name="page"   id="pageNext"   hidden="true" value="<c:out value="${sessionScope.pageInfo.nextPage}"/>"/>
+                                            <input name="button" class="nextPage" id="buttonNext" value="NextPage" type="submit"/>
+                                        </form>
+                                    </span>
+                                </c:if>
+                            </c:if>
+                        </div>
+                        <br><br>
+                        <ol start="<c:out value="${sessionScope.pageInfo.startListCount}"/>">
+                             <c:forEach var="res" items="${sessionScope.results.elements}">
+                                 <li><a class="complex_name" href="<%=request.getContextPath()%><c:out value="${res.complexAC}"/>"><c:out value="${res.complexName}" /> (<c:out value="${res.organismName}"/>)</a> <label class="complex_ac"><c:out value="${res.complexAC}" /></label>
+                                    <br><label class="complex_description"><c:out value="${res.description}" /></label>
+                                    <br>
+                                </li>
+                             </c:forEach>
+                        </ol>
+                        <div class="pages">
+                            <c:if test="${sessionScope.pageInfo.prevPage != -1 || sessionScope.pageInfo.nextPage != -1}">
+                                <c:if test="${sessionScope.pageInfo.prevPage != -1}">
+                                    <span class="pagePrevSpan">
+                                        <form class="pagePrevForm" method="POST" action="">
+                                            <input name="query"  id="queryPrev"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                                            <input name="page"   id="pagePrev"   hidden="true" value="<c:out value="${sessionScope.pageInfo.prevPage}"/>"/>
+                                            <input name="button" class="prevPage" id="buttonPrev" value="PrevPage" type="submit"/>
+                                        </form>
+                                    </span>
+                                </c:if>
+                                <span class="pageCurrentSpan">
+                                    <form class="pageCurrentForm" method="POST" action="">
+                                        Page <input name="page" type="text" class="pageCurrent" value="<c:out value="${sessionScope.pageInfo.page}"/>"/> of <c:out value="${sessionScope.pageInfo.lastPage}"/>
+                                        <input name="query"  id="queryCurrent"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                                        <input name="button" id="buttonCurrent" hidden="true" type="submit">
+                                    </form>
+                                </span>
+                                <c:if  test="${sessionScope.pageInfo.nextPage != -1}">
+                                    <span class="pageNextSpan">
+                                        <form class="pageNextForm" method="POST" action="">
+                                            <input name="query"  id="queryNextBottom"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                                            <input name="page"   id="pageNextBottom"   hidden="true" value="<c:out value="${sessionScope.pageInfo.nextPage}"/>"/>
+                                            <input name="button" class="nextPage" id="buttonNextBottom" value="NextPage" type="submit"/>
+                                        </form>
+                                    </span>
+                                </c:if>
+                            </c:if>
+                        </div>
+                    </div>
+            </c:when>
+            <c:otherwise> <!--Case 0 results-->
+                 <h2 class="titleResults">Search result for '<c:out value="${sessionScope.results.originaQuery}"/>'</h2>
+                 <h3 class="subtitleResults"><c:out value="${sessionScope.pageInfo.totalNumberOfElements}"/> curated complexes were found.</h3>
+                 <div class="searchDivZeroResults">
+                     <form class="searchForm" method="POST" action="">
+                         <textarea name="query" rows="10" id="querySearchBox"  type="text"   class="searchBox"    placeholder="Enter search term(s)..."><c:out value="${sessionScope.results.originaQuery}"/></textarea>
+                         <br>
+                         <input name="button" id="button" type="submit" class="searchButton" value="Search" />
+                     </form>
+                 </div>
+            </c:otherwise>
+        </c:choose>
+    </c:when>
+        <c:otherwise>
+            <h2 class="titleNoData">No data available</h2>
+            <h3 class="subtitleNoData">Please contact with the webadmin</h3>
+        </c:otherwise>
+    </c:choose>
 </div>
 
 

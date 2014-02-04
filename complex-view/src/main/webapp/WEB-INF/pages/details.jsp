@@ -1,8 +1,5 @@
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ page import="java.util.List" %>
 <%@ page import="uk.ac.ebi.intact.service.complex.view.ComplexDetailsParticipants" %>
 <%@ page import="uk.ac.ebi.intact.service.complex.view.ComplexDetailsCrossReferences" %>
-<%@ page import="java.util.Collections" %>
 <%@ page import="uk.ac.ebi.intact.service.complex.view.ComplexDetailsFeatures" %>
 <html>
 
@@ -73,38 +70,41 @@
     <!-- End suggested layout containers -->
 
     <jsp:useBean id="details" class="uk.ac.ebi.intact.service.complex.view.ComplexDetails" scope="session"/>
-    <h2 class="titleDetails"><%if(details.getName() != null){%><%= details.getName() %><%}else{%>&lt;Not available&gt;<%}%></h2>
-    <h3 class="subtitleDetails">Specie: <%if (details.getSpecie() != null){%><%= details.getSpecie() %><%}else{%>&lt;Not available&gt;<%}%></h3>
-    <h3 class="subtitleDetails">IntAct AC: <%if(details.getAc() != null){%><%= details.getAc() %><%}else{%>&lt;Not available&gt;<%}%></h3>
+    <h2 class="titleDetails"><c:choose><c:when test="${not empty sessionScope.details.name}"><c:out value="${sessionScope.details.name}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h2>
+    <h3 class="subtitleDetails">Specie: <c:choose><c:when test="${not empty sessionScope.details.specie}"><c:out value="${sessionScope.details.specie}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
+    <h3 class="subtitleDetails">IntAct AC: <c:choose><c:when test="${not empty sessionScope.details.ac}"><c:out value="${sessionScope.details.ac}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
     <div class="details">
-        <%if(details.getSystematicName() != null || details.getSynonyms().size() != 0 || details.getFunction() != null || details.getProperties() != null){%>
-        <div class="section">
-            <h4 class="sectionTitle">Summary</h4>
-            <%if(details.getSystematicName() != null){%>
-                <label class="sectionEntry">Systematic Name:</label>
-                <br>
-                <label class="sectionValue"><%=details.getSystematicName()%></label>
-            <br><br>
-            <%}if(details.getSynonyms().size() != 0){%>
-                <label class="sectionEntry">Synonyms:</label>
-                <br>
-                <%for( String synonym : details.getSynonyms() ) {%>
-                    <label class="sectionValue"><%=synonym%><br></label>
-                <%}%>
-            <br><br>
-            <%}if(details.getFunction() != null){%>
-                <label class="sectionEntry">Function:</label>
-                <br>
-                <label class="sectionValue"><%=details.getFunction()%></label>
-            <br><br>
-            <%}if(details.getProperties() != null){%>
-                <label class="sectionEntry">Properties:</label>
-                <br>
-                <label class="sectionValue"><%=details.getProperties()%></label>
-            <%}%>
-        </div>
-        <br>
-        <%}%>
+        <c:if test="${not empty sessionScope.details.systematicName || not empty sessionScope.details.synonyms || not empty sessionScope.details.function || not empty sessionScope.details.properties}">
+            <div class="section">
+                <h4 class="sectionTitle">Summary</h4>
+                <c:if test="${not empty sessionScope.details.systematicName}">
+                    <label class="sectionEntry">Systematic Name:</label>
+                    <br>
+                    <label class="sectionValue"><c:out value="${sessionScope.details.systematicName}"/></label>
+                <br><br>
+                </c:if>
+                <c:if test="${not empty sessionScope.details.synonyms}">
+                    <label class="sectionEntry">Synonyms:</label>
+                    <br>
+                    <c:forEach var="synonym" items="${sessionScope.details.synonyms}">
+                        <label class="sectionValue"><c:out value="${synonym}"/><br></label>
+                    </c:forEach>
+                <br><br>
+                </c:if>
+                <c:if test="${not empty sessionScope.details.function}">
+                    <label class="sectionEntry">Function:</label>
+                    <br>
+                    <label class="sectionValue"><c:out value="${sessionScope.details.function}"/></label>
+                <br><br>
+                </c:if>
+                <c:if test="${not empty sessionScope.details.properties}">
+                    <label class="sectionEntry">Properties:</label>
+                    <br>
+                    <label class="sectionValue"><c:out value="${sessionScope.details.properties}"/></label>
+                </c:if>
+            </div>
+            <br>
+        </c:if>
         <div class="section">
             <h4 class="sectionTitle">Participants</h4>
             <table id="participants" class="participants">
@@ -121,25 +121,36 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% int i = 0; for(ComplexDetailsParticipants part : details.getParticipants()) { %>
-                        <%if(i%2 == 0){%>
-                            <tr class="trEven">
-                        <%}else{%>
-                            <tr class="trOdd">
-                        <%}%>
-                            <td><%if(part.getIdentifier() != null){%><a target="_blank" href="<%=part.getIdentifierLink()%>"><%=part.getIdentifier()%></a><br/><%}%>
-                                <%if(part.getInteractorAC() != null){%><a target="_blank" href="http://www.ebi.ac.uk/intact/molecule/<%=part.getInteractorAC()%>"><%=part.getInteractorAC()%></a><%}%></td>
-                            <td><%if(part.getName() != null){%><%=part.getName()%><%}%></td>
-                            <td><%if(part.getDescription() != null){%><%=part.getDescription()%><%}%></td>
-                            <td><%if(part.getStochiometry() != null){%><%=new Double(part.getStochiometry()).intValue()%><%}%></td>
-                            <td><%if(part.getBioRole() != null){%><%=part.getBioRole()%><%}%></td>
-                            <td><%if(part.getInteractorType() != null){%><%=part.getInteractorType()%><%}%></td>
-                            <td><%if(part.getLinkedFeatures().size() > 0){%><%for (ComplexDetailsFeatures linked : part.getLinkedFeatures()) {%><%=linked.getFeatureType()%> <%=linked.getParticipantId()%>
-                                <%for(String range : linked.getRanges()){%>[<%=range%>] <%}%><br/><%}}%></td>
-                            <td><%if(part.getOtherFeatures().size() > 0){%><%for (ComplexDetailsFeatures other : part.getOtherFeatures()) {%><%=other.getFeatureType()%> <%=other.getParticipantId()%>
-                                <%for(String range : other.getRanges()){%>[<%=range%>] <%}%><br/><%}}%></td>
+                    <c:forEach var="part" items="${sessionScope.details.participants}" varStatus="loop">
+                        <tr class="${loop.index % 2 == 0 ? 'trEven' : 'trOdd'}">
+                            <td><c:if test="${not empty part.identifier}"><a target="_blank" href="<c:out value="${part.identifierLink}"/>"><c:out value="${part.identifier}"/></a><br/></c:if>
+                                <c:if test="${not empty part.interactorAC}"><a target="_blank" href="http://www.ebi.ac.uk/intact/molecule/<c:out value="${part.interactorAC}"/>"><c:out value="${part.interactorAC}"/></a></c:if></td>
+                            <td><c:if test="${not empty part.name}"><c:out value="${part.name}"/></c:if></td>
+                            <td><c:if test="${not empty part.description}"><c:out value="${part.description}"/></c:if></td>
+                            <td><c:if test="${not empty part.stochiometry}"><c:out value="${part.stochiometry}"/></c:if></td>
+                            <%--<td><%if(part.getStochiometry() != null){%><%=new Double(part.getStochiometry()).intValue()%><%}%></td>--%>
+                            <td><c:if test="${not empty part.bioRole}"><c:out value="${part.bioRole}"/></c:if></td>
+                            <td><c:if test="${not empty part.interactorType}"><c:out value="${part.interactorType}"/></c:if></td>
+                            <td><c:if test="${not empty part.linkedFeatures}">
+                                <c:forEach var="linked" items="${part.linkedFeatures}">
+                                    <c:out value="${linked.featureType}"/> <c:out value="${linked.participantId}"/>
+                                    <c:forEach var="range" items="${linked.ranges}">
+                                        [<c:out value="${range}"/>]
+                                    </c:forEach>
+                                    <br/>
+                                </c:forEach>
+                            </c:if></td>
+                            <td><c:if test="${not empty part.otherFeatures}">
+                                <c:forEach var="other" items="${part.otherFeatures}">
+                                    <c:out value="${other.featureType}"/> <c:out value="${other.participantId}"/>
+                                    <c:forEach var="range" items="${other.ranges}">
+                                        [<c:out value="${range}"/>]
+                                    </c:forEach>
+                                    <br/>
+                                </c:forEach>
+                            </c:if></td>
                         </tr>
-                    <% ++i; }%>
+                    </c:forEach>
                 </tbody>
             </table>
         </div>
@@ -156,18 +167,23 @@
                 </tr>
                 </thead>
                 <tbody>
-                <% i = 0; for(ComplexDetailsCrossReferences cross : details.getCrossReferences()) { %>
-                <%if(i%2 == 0){%>
-                <tr class="trEven">
-                        <%}else{%>
-                <tr class="trOdd">
-                    <%}%>
-                    <td><%if(cross.getQualifier() != null){%><%=cross.getQualifier()%><%}%></td>
-                    <td><%if(cross.getDatabase() != null){%><%=cross.getDatabase()%><%}%></td>
-                    <td><%if(cross.getIdentifier() != null){%><%if(cross.getSearchURL() != null){%><a target="_blank" href="<%=cross.getSearchURL()%>"><%}%><%=cross.getIdentifier()%><%if(cross.getSearchURL() != null){%></a><%}}%></td>
-                    <td><%if(cross.getDescription() != null){%><%=cross.getDescription()%><%}%></td>
-                </tr>
-                <% ++i; }%>
+                <c:forEach var="cross" items="${sessionScope.details.crossReferences}" varStatus="loop">
+                    <tr class="${loop.index % 2 == 0 ? 'trEven' : 'trOdd'}">
+                        <td><c:if test="${not empty cross.qualifier}"><c:out value="${cross.qualifier}"/></c:if></td>
+                        <td><c:if test="${not empty cross.database}"><c:out value="${cross.database}"/></c:if></td>
+                        <td><c:if test="${not empty cross.identifier}">
+                                <c:if test="${not empty cross.searchURL}">
+                                    <a target="_blank" href="<c:out value="${cross.searchURL}"/>
+                                </c:if>
+                                <c:out value="${cross.identifier}"/>
+                                <c:if test="${not empty cross.searchURL}">
+                                    </a>
+                                </c:if>
+                            </c:if>
+                            </td>
+                        <td><c:if test="${not empty cross.description}"><c:out value="${cross.description}"/></c:if></td>
+                    </tr>
+                </c:forEach>
                 </tbody>
             </table>
         </div>
