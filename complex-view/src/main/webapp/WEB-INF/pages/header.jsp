@@ -51,12 +51,12 @@
             /* You have the option of setting a maximum width for your page, and making sure everything is centered */
             /* body { max-width: 1600px; margin: 0 auto; } */
     </style>
-    <link href="<%=request.getContextPath()%>/resources/css/main.css" rel="stylesheet"> <%--Added by Oscar--%>
+    <link href="<c:url value="/resources/css/main.css" />" rel="stylesheet"> <%--Added by Oscar--%>
     <!-- end CSS-->
     <%--Begin JS--%>
     <script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> <%--Added by Oscar--%>
     <script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> <%--Added by Oscar--%>
-    <script type="text/javascript" charset="utf-8" src="<%=request.getContextPath()%>/resources/js/main.js"></script> <%--Added by Oscar--%>
+    <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/main.js"/>"></script> <%--Added by Oscar--%>
 
     <!-- All JavaScript at the bottom, except for Modernizr / Respond.
          Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries

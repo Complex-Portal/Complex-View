@@ -100,7 +100,7 @@
                 <li>UniProt AC(s): <form class="exampleForm" id="example3form" action="" method="POST"><input type="hidden" name="query" value="Q05471"/><a href="#" onclick="document.getElementById('example3form').submit();">Q05471</a></form></li>
                 <%--<li>Pubmed ID: 22540012</li>--%>
             </ul>
-            <a href="JavaScript:newPopup('<%=request.getContextPath()%>/help/');">Help</a>
+            <a href="JavaScript:newPopup('<c:url value="/help/"/>');">Help</a>
         </div>
     </section>
 </div>

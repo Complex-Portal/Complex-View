@@ -1,6 +1,3 @@
-<%@ page import="uk.ac.ebi.intact.service.complex.view.ComplexDetailsParticipants" %>
-<%@ page import="uk.ac.ebi.intact.service.complex.view.ComplexDetailsCrossReferences" %>
-<%@ page import="uk.ac.ebi.intact.service.complex.view.ComplexDetailsFeatures" %>
 <html>
 
 <%@include file="header.jsp"%>
@@ -134,21 +131,23 @@
                             <td><c:if test="${not empty part.linkedFeatures}">
                                 <c:forEach var="linked" items="${part.linkedFeatures}">
                                     <c:out value="${linked.featureType}"/> <c:out value="${linked.participantId}"/>
-                                    <c:forEach var="range" items="${linked.ranges}">
-                                        [<c:out value="${range}"/>]
+                                        <c:forEach var="range" items="${linked.ranges}">
+                                            [<c:out value="${range}"/>]
+                                        </c:forEach>
+                                        <br/>
                                     </c:forEach>
-                                    <br/>
-                                </c:forEach>
-                            </c:if></td>
+                                </c:if>
+                            </td>
                             <td><c:if test="${not empty part.otherFeatures}">
-                                <c:forEach var="other" items="${part.otherFeatures}">
-                                    <c:out value="${other.featureType}"/> <c:out value="${other.participantId}"/>
-                                    <c:forEach var="range" items="${other.ranges}">
-                                        [<c:out value="${range}"/>]
+                                    <c:forEach var="other" items="${part.otherFeatures}">
+                                        <c:out value="${other.featureType}"/> <c:out value="${other.participantId}"/>
+                                        <c:forEach var="range" items="${other.ranges}">
+                                            [<c:out value="${range}"/>]
+                                        </c:forEach>
+                                        <br/>
                                     </c:forEach>
-                                    <br/>
-                                </c:forEach>
-                            </c:if></td>
+                                </c:if>
+                            </td>
                         </tr>
                     </c:forEach>
                 </tbody>
@@ -159,31 +158,31 @@
             <h4 class="sectionTitle">Cross References</h4>
             <table id="crossReferences" class="crossReferences">
                 <thead>
-                <tr class="trHead">
-                    <td>Type</td>
-                    <td>Database</td>
-                    <td>Identifier</td>
-                    <td>Description</td>
-                </tr>
+                    <tr class="trHead">
+                        <td>Type</td>
+                        <td>Database</td>
+                        <td>Identifier</td>
+                        <td>Description</td>
+                    </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="cross" items="${sessionScope.details.crossReferences}" varStatus="loop">
-                    <tr class="${loop.index % 2 == 0 ? 'trEven' : 'trOdd'}">
-                        <td><c:if test="${not empty cross.qualifier}"><c:out value="${cross.qualifier}"/></c:if></td>
-                        <td><c:if test="${not empty cross.database}"><c:out value="${cross.database}"/></c:if></td>
-                        <td><c:if test="${not empty cross.identifier}">
-                                <c:if test="${not empty cross.searchURL}">
-                                    <a target="_blank" href="<c:out value="${cross.searchURL}"/>
+                    <c:forEach var="cross" items="${sessionScope.details.crossReferences}" varStatus="loop">
+                        <tr class="${loop.index % 2 == 0 ? 'trEven' : 'trOdd'}">
+                            <td><c:if test="${not empty cross.qualifier}"><c:out value="${cross.qualifier}"/></c:if></td>
+                            <td><c:if test="${not empty cross.database}"><c:out value="${cross.database}"/></c:if></td>
+                            <td><c:if test="${not empty cross.identifier}">
+                                    <c:if test="${not empty cross.searchURL}">
+                                        <a target="_blank" href="<c:out value="${cross.searchURL}"/>">
+                                    </c:if>
+                                    <c:out value="${cross.identifier}"/>
+                                    <c:if test="${not empty cross.searchURL}">
+                                        </a>
+                                    </c:if>
                                 </c:if>
-                                <c:out value="${cross.identifier}"/>
-                                <c:if test="${not empty cross.searchURL}">
-                                    </a>
-                                </c:if>
-                            </c:if>
                             </td>
-                        <td><c:if test="${not empty cross.description}"><c:out value="${cross.description}"/></c:if></td>
-                    </tr>
-                </c:forEach>
+                            <td><c:if test="${not empty cross.description}"><c:out value="${cross.description}"/></c:if></td>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
         </div>

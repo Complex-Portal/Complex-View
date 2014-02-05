@@ -1,6 +1,4 @@
-<%@ page import="uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSearchResults" %>
 <html>
-
 <%@include file="header.jsp"%>
 
 <div id="local-masthead" class="masthead grid_24 nomenu">
@@ -108,7 +106,7 @@
                         <br><br>
                         <ol start="<c:out value="${sessionScope.pageInfo.startListCount}"/>">
                              <c:forEach var="res" items="${sessionScope.results.elements}">
-                                 <li><a class="complex_name" href="<%=request.getContextPath()%><c:out value="${res.complexAC}"/>"><c:out value="${res.complexName}" /> (<c:out value="${res.organismName}"/>)</a> <label class="complex_ac"><c:out value="${res.complexAC}" /></label>
+                                 <li><a class="complex_name" href="<c:url value="/details/${res.complexAC}"/>"><c:out value="${res.complexName}" /> (<c:out value="${res.organismName}"/>)</a> <label class="complex_ac"><c:out value="${res.complexAC}" /></label>
                                     <br><label class="complex_description"><c:out value="${res.description}" /></label>
                                     <br>
                                 </li>
