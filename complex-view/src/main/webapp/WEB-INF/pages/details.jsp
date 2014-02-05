@@ -108,7 +108,7 @@
                 <thead>
                     <tr class="trHead">
                         <td>ID</td>
-                        <td>Name</td>
+                        <td>Gene Name</td>
                         <td>Description</td>
                         <td>Stochiometry</td>
                         <td>Biological Role</td>

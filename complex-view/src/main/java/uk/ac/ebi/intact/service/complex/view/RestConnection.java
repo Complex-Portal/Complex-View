@@ -180,7 +180,8 @@ public class RestConnection {
                     participant.setIdentifierLink((String) part.get("identifierLink"));
                     participant.setName((String) part.get("name"));
                     participant.setDescription((String) part.get("description"));
-                    participant.setStochiometry((String) part.get("stochiometry"));
+                    String stochiometry = (String) part.get("stochiometry");
+                    participant.setStochiometry( stochiometry != null ? String.valueOf( new Double(stochiometry).intValue() ) : null );
                     participant.setBioRole((String) part.get("bioRole"));
                     participant.setBioRoleMI((String) part.get("bioRoleMI"));
                     participant.setBioRoleDefinition((String) part.get("bioRoleDefinition"));
