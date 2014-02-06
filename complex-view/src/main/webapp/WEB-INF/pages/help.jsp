@@ -66,37 +66,34 @@
     -->
     <!-- End suggested layout containers -->
 
-    <h3>Help: Searches in IntAct</h3>To do a search you can use the Molecular Interaction Query Language (MIQL), which is based on <a href="http://lucene.apache.org/core/3_6_0/queryparsersyntax.html?conversationContext=3#Terms" target="_blank">Lucene's syntax.</a>
+    <h3>Help: Searches in IntAct Complex Portal</h3>To do a search you can use the Complex Query Language (CQL), which is based on <a href="http://lucene.apache.org/core/3_6_0/queryparsersyntax.html?conversationContext=3#Terms" target="_blank">Lucene's syntax.</a>
 
     <ul>
         <li>Search based on exact word matches.
             <ul>
-                <li><i>BRCA2</i> will not match <i>BRCA2B</i></li>
-                <li><i>Association</i> will retrieve both <i>physical association</i> and <i>association</i></li>
-                <li>To retrieve all isoforms of <i>P12345</i>, use <i>P12345*</i></li>
+                <li><i>Ndc8</i> will not match <i>Ndc80</i></li>
+                <%--<li><i>Association</i> will retrieve both <i>physical association</i> and <i>association</i></li>--%>
+                <%--<li>To retrieve all isoforms of <i>P12345</i>, use <i>P12345*</i></li>--%>
             </ul>
         </li>
-        <li>Search will recognize ontologies and synonyms.
-            <ul>
-                <li><i>Eukaryota</i> will retrieve all children of <i>Eukaryota</i> using the Uniprot taxonomy</li>
-                <li><i>affinity techniques</i> will match <i>affinity technology</i> because it is affinity techniques is a synonym of affinity technology in the PSI-MI ontology</li>
-            </ul>
-        </li>
+        <%--<li>Search will recognize ontologies and synonyms.--%>
+            <%--<ul>--%>
+                <%--<li><i>Eukaryota</i> will retrieve all children of <i>Eukaryota</i> using the Uniprot taxonomy</li>--%>
+                <%--<li><i>affinity techniques</i> will match <i>affinity technology</i> because it is affinity techniques is a synonym of affinity technology in the PSI-MI ontology</li>--%>
+            <%--</ul>--%>
+        <%--</li>--%>
         <li>Default fields are used when no field is specified (simple search) :
             <ul>
-                <li>Interactor id, alias</li>
-                <li>Interactor species</li>
-                <li>Interaction id</li>
-                <li>Publication id, first author</li>
-                <li>Interaction type</li>
-                <li>Interaction detection method</li>
-                <li>Interactor xrefs (GO, uniprot secondary xrefs, ...)</li>
-                <li>Interaction xrefs (GO, ...)</li>
+                <li>Interactor identifier(s)</li>
+                <li>Interactor alias(es)</li>
+                <li>Interaction identifier(s)</li>
+                <li>Interaction alias(es)</li>
+                <li>Interaction Xref(s)</li>
+                <li>Interaction specie</li>
             </ul>.
             <br />For instance, if you put
-            <i>'P12345'</i> in the simple query box,
-            this will mean the same as <i>  identifier:P12345 OR pubid:P12345 OR pubauth:P12345 OR species:P12345
-                OR type:P12345 OR detmethod:P12345 OR interaction_id:P12345</i></li>
+            <i>'PCNA'</i> in the simple query box,
+            this will mean the same as <i>complex_id:PCNA OR id:PCNA OR complex_name:PCNA OR alias:PCNA OR species:PCNA OR complex_xref:PCNA</i></li>
         <li>Use OR or space ' ' to search for ANY of the terms in a field</li>
         <li>Use AND if you want to search for those interactions where ALL of your terms are found</li>
         <li>Use quotes (&quot;) if you look for a specific phrase (group of terms that must be searched together) or terms
@@ -108,39 +105,40 @@
         </li>
         <li>Optionally, you can prepend a symbol in from of your term.
             <ul>
-                <li>+ (plus): include this term. Equivalent to AND. e.g. +P12345</li>
-                <li>- (minus): do not include this term. Equivalent to NOT. e.g. -P12345</li>
-                <li>Nothing in front of the term. Equivalent to OR. e.g. P12345</li>
+                <li>+ (plus): include this term. Equivalent to AND. e.g. +Ndc80</li>
+                <li>- (minus): do not include this term. Equivalent to NOT. e.g. -Ndc80</li>
+                <li>Nothing in front of the term. Equivalent to OR. e.g. Ndc80</li>
             </ul>
         </li>
     </ul>
 
-    <h3>MIQL fields</h3>You can find more information about the Molecular Interactions Query Language (MIQL) defined for PSICQUIC <a href="http://code.google.com/p/psicquic/wiki/MiqlDefinition?conversationContext=3" target="_blank">Here</a><table style="padding-top: 10px"><tbody>
+    <h3>Complex Query Language (CQL) fields</h3>
+<table style="padding-top: 10px"><tbody>
 <tr><td><span style="font-weight: bold">Field Name</span></td><td><span style="font-weight: bold">Searches on</span></td><td><span style="font-weight: bold">Example</span></td></tr>
 <%--Complex Information--%>
-<tr><td>complex_id</td><td>Complex identifier(s)</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=idA%3AP74565&amp;conversationContext=3" target="_top">idA:P74565</a></td></tr>
-<tr><td>complex_name</td><td>Complex name(s)</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=idB%3AP74565&amp;conversationContext=3" target="_top">idB:P74565</a></td></tr>
-<tr><td>complex_alias</td><td>Complex alias(es)</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=id%3AP74565&amp;conversationContext=3" target="_top">id:P74565</a></td></tr>
-<tr><td>species</td><td>Complex Tax ID</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=alias%3A%28KHDRBS1+OR+HCK%29&amp;conversationContext=3" target="_top">alias:(KHDRBS1 OR HCK)</a></td></tr>
-<tr><td>complex_type</td>Complex type(s)<td></td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=identifier%3AP74565&amp;conversationContext=3" target="_top">identifier:P74565</a></td></tr>
-<tr><td>type</td><td>Type(s)</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=pubauth%3Ascott&amp;conversationContext=3" target="_top">pubauth:scott</a></td></tr>
-<tr><td>complex_xref</td><td>Complex xref(s)</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=pubid%3A%2810837477+OR+12029088%29&amp;conversationContext=3" target="_top">pubid:(10837477 OR 12029088)</a></td></tr>
-<tr><td>complex_AC</td><td>Complex AC</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=taxidA%3Amouse&amp;conversationContext=3" target="_top">taxidA:mouse</a></td></tr>
-<tr><td>description</td><td>Complex description</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=taxidB%3A9606&amp;conversationContext=3" target="_top">taxidB:9606</a></td></tr>
-<tr><td>organism_name</td><td></td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=species%3Ahuman&amp;conversationContext=3" target="_top">species:human</a></td></tr>
-<tr><td>udate</td><td></td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=type%3A%22physical+interaction%22&amp;conversationContext=3" target="_top">type:&quot;physical interaction&quot;</a></td></tr>
-<tr><td>param</td><td></td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=detmethod%3A%22two+hybrid*%22&amp;conversationContext=3" target="_top">detmethod:&quot;two hybrid*&quot;</a></td></tr>
+<tr><td>complex_id</td><td>Interaction identifier(s)</td><td><a href="" target="_top">idA:P74565</a></td></tr>
+<tr><td>complex_name</td><td>Interaction name(s)</td><td><a href="" target="_top">idB:P74565</a></td></tr>
+<tr><td>complex_alias</td><td>Interaction alias(es)</td><td><a href="" target="_top">id:P74565</a></td></tr>
+<tr><td>species</td><td>Interaction Tax ID</td><td><a href="" target="_top">alias:(KHDRBS1 OR HCK)</a></td></tr>
+<tr><td>complex_type</td>Interaction type(s)<td></td><td><a href="" target="_top">identifier:P74565</a></td></tr>
+<tr><td>type</td><td>Type(s)</td><td><a href="" target="_top">pubauth:scott</a></td></tr>
+<tr><td>complex_xref</td><td>Interaction xref(s)</td><td><a href="" target="_top">pubid:(10837477 OR 12029088)</a></td></tr>
+<tr><td>complex_AC</td><td>Interaction AC</td><td><a href="" target="_top">taxidA:mouse</a></td></tr>
+<tr><td>description</td><td>Interaction description</td><td><a href="" target="_top">taxidB:9606</a></td></tr>
+<tr><td>organism_name</td><td></td><td><a href="" target="_top">species:human</a></td></tr>
+<tr><td>udate</td><td></td><td><a href="" target="_top">type:&quot;physical interaction&quot;</a></td></tr>
+<tr><td>param</td><td></td><td><a href="" target="_top">detmethod:&quot;two hybrid*&quot;</a></td></tr>
 <%--Interactor Information--%>
-<tr><td>id</td><td>Interactor identifier(s)</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=interaction_id%3AEBI-761050&amp;conversationContext=3" target="_top">interaction_id:EBI-761050</a></td></tr>
-<tr><td>alias</td><td>Interactor alia(es)</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=pbioroleA%3Aenzyme&amp;conversationContext=3" target="_top">pbioroleA:enzyme</a></td></tr>
-<tr><td>ptype</td><td>Interactor type(s)</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=pbioroleB%3Aenzyme&amp;conversationContext=3" target="_top">pbioroleB:enzyme</a></td></tr>
-<tr><td>pxref</td><td>Interactor xref(s)</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=pbiorole%3Aenzyme&amp;conversationContext=3" target="_top">pbiorole:enzyme</a></td></tr>
-<tr><td>stc</td><td>STC</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=ptypeA%3Aprotein&amp;conversationContext=3" target="_top">ptypeA:protein</a></td></tr>
+<tr><td>id</td><td>Interactor identifier(s)</td><td><a href="" target="_top">interaction_id:EBI-761050</a></td></tr>
+<tr><td>alias</td><td>Interactor alias(es)</td><td><a href="" target="_top">pbioroleA:enzyme</a></td></tr>
+<tr><td>ptype</td><td>Interactor type(s)</td><td><a href="" target="_top">pbioroleB:enzyme</a></td></tr>
+<tr><td>pxref</td><td>Interactor xref(s)</td><td><a href="" target="_top">pbiorole:enzyme</a></td></tr>
+<tr><td>stc</td><td>STC</td><td><a href="" target="_top">ptypeA:protein</a></td></tr>
 <%--Other Fields (PSICQUIC, IntAct)--%>
-<tr><td>pbiorole</td><td>Biological role(s)</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=ptypeB%3Aprotein&amp;conversationContext=3" target="_top">ptypeB:protein</a></td></tr>
-<tr><td>ftype</td><td>Feature type(s)</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=ptype%3Aprotein&amp;conversationContext=3" target="_top">ptype:protein</a></td></tr>
-<tr><td>source</td><td>Source database(s)</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=pxrefA%3A%22GO%3A0005794%22&amp;conversationContext=3" target="_top">pxrefA:&quot;GO:0005794&quot;</a></td></tr>
-<tr><td>number_participants</td><td>Number of participants</td><td><a href="http://www.ebi.ac.uk:80/intact/pages/interactions/interactions.xhtml?query=pxrefB%3A%22GO%3A0005794%22&amp;conversationContext=3" target="_top">pxrefB:&quot;GO:0005794&quot;</a></td></tr>
+<tr><td>pbiorole</td><td>Biological role(s)</td><td><a href="" target="_top">ptypeB:protein</a></td></tr>
+<tr><td>ftype</td><td>Feature type(s)</td><td><a href="" target="_top">ptype:protein</a></td></tr>
+<tr><td>source</td><td>Source database(s)</td><td><a href="" target="_top">pxrefA:&quot;GO:0005794&quot;</a></td></tr>
+<tr><td>number_participants</td><td>Number of participants</td><td><a href="" target="_top">pxrefB:&quot;GO:0005794&quot;</a></td></tr>
 </tbody>
 </table>
 
