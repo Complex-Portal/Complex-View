@@ -76,6 +76,15 @@ public class WebAppController {
         return "help";
     }
 
+    // DOCUMENTATION
+    @RequestMapping(value = "/documentation/", method = RequestMethod.GET)
+    public String DocumentationController(ModelMap model,
+                                 HttpServletRequest request) {
+        defaultModelMapValues(model, request);
+        model.addAttribute("page_title", "Complex Documentation");
+        return "documentation";
+    }
+
     /*****************************/
     /***   Private functions   ***/
     /*****************************/
@@ -83,7 +92,7 @@ public class WebAppController {
         model.addAttribute("complex_portal_name", "Intact Complex Portal");
         model.addAttribute("complex_home_url", request.getContextPath());
         model.addAttribute("complex_help_url", request.getContextPath() + "/help/");
-        //model.addAttribute("complex_documentation_url", request.getContextPath() + "/documentation/");
+        model.addAttribute("complex_documentation_url", request.getContextPath() + "/documentation/");
         //model.addAttribute("complex_about_url", request.getContextPath() + "/about/" );
     }
 

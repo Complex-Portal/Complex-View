@@ -116,29 +116,24 @@
 <table style="padding-top: 10px"><tbody>
 <tr><td><span style="font-weight: bold">Field Name</span></td><td><span style="font-weight: bold">Searches on</span></td><td><span style="font-weight: bold">Example</span></td></tr>
 <%--Complex Information--%>
-<tr><td>complex_id</td><td>Interaction identifier(s)</td><td><a href="" target="_top">idA:P74565</a></td></tr>
-<tr><td>complex_name</td><td>Interaction name(s)</td><td><a href="" target="_top">idB:P74565</a></td></tr>
-<tr><td>complex_alias</td><td>Interaction alias(es)</td><td><a href="" target="_top">id:P74565</a></td></tr>
-<tr><td>species</td><td>Interaction Tax ID</td><td><a href="" target="_top">alias:(KHDRBS1 OR HCK)</a></td></tr>
-<tr><td>complex_type</td>Interaction type(s)<td></td><td><a href="" target="_top">identifier:P74565</a></td></tr>
-<tr><td>type</td><td>Type(s)</td><td><a href="" target="_top">pubauth:scott</a></td></tr>
-<tr><td>complex_xref</td><td>Interaction xref(s)</td><td><a href="" target="_top">pubid:(10837477 OR 12029088)</a></td></tr>
-<tr><td>complex_AC</td><td>Interaction AC</td><td><a href="" target="_top">taxidA:mouse</a></td></tr>
-<tr><td>description</td><td>Interaction description</td><td><a href="" target="_top">taxidB:9606</a></td></tr>
-<tr><td>organism_name</td><td></td><td><a href="" target="_top">species:human</a></td></tr>
-<tr><td>udate</td><td></td><td><a href="" target="_top">type:&quot;physical interaction&quot;</a></td></tr>
-<tr><td>param</td><td></td><td><a href="" target="_top">detmethod:&quot;two hybrid*&quot;</a></td></tr>
+<tr><td>complex_id</td><td>Interaction identifier(s)</td><td>complex_id:EBI-1224506</td></tr>
+<tr><td>complex_alias</td><td>Interaction alias(es)</td><td>complex_alias:&quot;coenzyme Q-cytochrome c reductase&quot;</td></tr>
+<tr><td>species</td><td>Interaction Tax ID</td><td>species:Human</td></tr>
+<tr><td>complex_xref</td><td>Interaction xref(s)</td><td>complex_xref:15210332</td></tr>
+<%--<tr><td>description</td><td>Interaction description</td><td><a href="" target="_top">taxidB:9606</a></td></tr>--%>
+<%--<tr><td>udate</td><td></td><td><a href="" target="_top">type:&quot;physical interaction&quot;</a></td></tr>--%>
+<%--<tr><td>param</td><td></td><td><a href="" target="_top">detmethod:&quot;two hybrid*&quot;</a></td></tr>--%>
 <%--Interactor Information--%>
-<tr><td>id</td><td>Interactor identifier(s)</td><td><a href="" target="_top">interaction_id:EBI-761050</a></td></tr>
-<tr><td>alias</td><td>Interactor alias(es)</td><td><a href="" target="_top">pbioroleA:enzyme</a></td></tr>
-<tr><td>ptype</td><td>Interactor type(s)</td><td><a href="" target="_top">pbioroleB:enzyme</a></td></tr>
-<tr><td>pxref</td><td>Interactor xref(s)</td><td><a href="" target="_top">pbiorole:enzyme</a></td></tr>
-<tr><td>stc</td><td>STC</td><td><a href="" target="_top">ptypeA:protein</a></td></tr>
+<tr><td>id</td><td>Interactor identifier(s)</td><td>id:EBI-358311</td></tr>
+<tr><td>alias</td><td>Interactor alias(es)</td><td>alias:Cyclin</td></tr>
+<%--<tr><td>ptype</td><td>Interactor type(s)</td><td><a href="" target="_top">pbioroleB:enzyme</a></td></tr>--%>
+<tr><td>pxref</td><td>Interactor xref(s)</td><td>pxref:P38</td></tr>
+<tr><td>stc</td><td>STC</td><td>stc:32</td></tr>
 <%--Other Fields (PSICQUIC, IntAct)--%>
-<tr><td>pbiorole</td><td>Biological role(s)</td><td><a href="" target="_top">ptypeB:protein</a></td></tr>
-<tr><td>ftype</td><td>Feature type(s)</td><td><a href="" target="_top">ptype:protein</a></td></tr>
-<tr><td>source</td><td>Source database(s)</td><td><a href="" target="_top">pxrefA:&quot;GO:0005794&quot;</a></td></tr>
-<tr><td>number_participants</td><td>Number of participants</td><td><a href="" target="_top">pxrefB:&quot;GO:0005794&quot;</a></td></tr>
+<%--<tr><td>pbiorole</td><td>Biological role(s)</td><td><a href="" target="_top">ptypeB:protein</a></td></tr>--%>
+<%--<tr><td>ftype</td><td>Feature type(s)</td><td><a href="" target="_top">ptype:protein</a></td></tr>--%>
+<tr><td>source</td><td>Source database(s)</td><td>source:intact</td></tr>
+<tr><td>number_participants</td><td>Number of participants</td><td>number_participants:3</td></tr>
 </tbody>
 </table>
 
