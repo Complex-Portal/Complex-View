@@ -446,7 +446,7 @@ public class SearchController {
             if ( bioSource != null ){
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append(bioSource.getFullName() != null ? bioSource.getFullName() : bioSource.getShortLabel());
-                stringBuilder.append("(").append(bioSource.getTaxId()).append(")");
+                stringBuilder.append(" (").append(bioSource.getTaxId()).append(")");
                 details.setSpecie(stringBuilder.toString());
             }
         }
