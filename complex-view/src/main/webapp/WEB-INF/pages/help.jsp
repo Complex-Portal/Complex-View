@@ -121,17 +121,17 @@
 <tr><td>species</td><td>Interaction Tax ID</td><td>species:Human</td></tr>
 <tr><td>complex_xref</td><td>Interaction xref(s)</td><td>complex_xref:15210332</td></tr>
 <%--<tr><td>description</td><td>Interaction description</td><td><a href="" target="_top">taxidB:9606</a></td></tr>--%>
-<%--<tr><td>udate</td><td></td><td><a href="" target="_top">type:&quot;physical interaction&quot;</a></td></tr>--%>
-<%--<tr><td>param</td><td></td><td><a href="" target="_top">detmethod:&quot;two hybrid*&quot;</a></td></tr>--%>
+<tr><td>udate</td><td>Last update of the interaction</td><td>udate:[20110607 TO 20120906]</td></tr>
 <%--Interactor Information--%>
-<tr><td>id</td><td>Interactor identifier(s)</td><td>id:EBI-358311</td></tr>
+<tr><td>id</td><td>Interactor identifier(s)</td><td>id:P38326</td></tr>
 <tr><td>alias</td><td>Interactor alias(es)</td><td>alias:Cyclin</td></tr>
-<%--<tr><td>ptype</td><td>Interactor type(s)</td><td><a href="" target="_top">pbioroleB:enzyme</a></td></tr>--%>
-<tr><td>pxref</td><td>Interactor xref(s)</td><td>pxref:P38</td></tr>
-<tr><td>stc</td><td>STC</td><td>stc:32</td></tr>
+<tr><td>ptype</td><td>Interactor type(s)</td><td>ptype:protein</td></tr>
+<tr><td>pxref</td><td>Interactor xref(s)</td><td>pxref:GO:0031577</td></tr>
+<tr><td>stc</td><td>Boolean value to know if the Interactor has stoichiometry information</td><td>stc:true</td></tr>
+<%--<tr><td>param</td><td>Boolean value to know if the Interaction has some parameters</td><td>param:true</td></tr>--%>
 <%--Other Fields (PSICQUIC, IntAct)--%>
-<%--<tr><td>pbiorole</td><td>Biological role(s)</td><td><a href="" target="_top">ptypeB:protein</a></td></tr>--%>
-<%--<tr><td>ftype</td><td>Feature type(s)</td><td><a href="" target="_top">ptype:protein</a></td></tr>--%>
+<tr><td>pbiorole</td><td>Biological role(s)</td><td>pbiorole:enzyme</td></tr>
+<tr><td>ftype</td><td>Feature type(s)</td><td>ftype:&quot;binding site&quot;</td></tr>
 <tr><td>source</td><td>Source database(s)</td><td>source:intact</td></tr>
 <tr><td>number_participants</td><td>Number of participants</td><td>number_participants:3</td></tr>
 </tbody>

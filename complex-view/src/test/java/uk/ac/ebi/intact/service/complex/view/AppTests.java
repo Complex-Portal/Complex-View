@@ -39,7 +39,6 @@ public class AppTests {
     public void simple() throws Exception {
         mockMvc.perform(post("/").param("query", "saccharomyces cerevisiae"))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andExpect(view().name("results"));
     }
 
@@ -60,8 +59,16 @@ public class AppTests {
         Assert.assertEquals(pageInfo.getPrevPage(), -1);
         Assert.assertEquals(pageInfo.getPage(), 0);
         Assert.assertEquals(pageInfo.getNextPage(), 1);
-        page = "-1";
+        page = "12";
         pageInfo = restConnection.getPage(page, "*");
+        Assert.assertEquals(pageInfo.getPrevPage(), 11);
+        Assert.assertEquals(pageInfo.getPage(), 12);
+        Assert.assertEquals(pageInfo.getNextPage(), 13);
+    }
+    @Test
+    public void getPageNegativeNumber() throws Exception {
+        String page = "-1";
+        Page pageInfo = restConnection.getPage(page, "*");
         Assert.assertEquals(pageInfo.getPrevPage(), -1);
         Assert.assertEquals(pageInfo.getPage(), 0);
         Assert.assertEquals(pageInfo.getNextPage(), 1);
@@ -70,8 +77,11 @@ public class AppTests {
         Assert.assertEquals(pageInfo.getPrevPage(), -1);
         Assert.assertEquals(pageInfo.getPage(), 0);
         Assert.assertEquals(pageInfo.getNextPage(), 1);
-        page = "20000000";
-        pageInfo = restConnection.getPage(page, "*");
+    }
+    @Test
+    public void getPageHugeNumber() throws Exception {
+        String page = "20000000";
+        Page pageInfo = restConnection.getPage(page, "*");
         Assert.assertEquals(pageInfo.getPrevPage(), pageInfo.getLastPage() - 1);
         Assert.assertEquals(pageInfo.getPage(), pageInfo.getLastPage());
         Assert.assertEquals(pageInfo.getNextPage(), -1);

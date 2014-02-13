@@ -30,7 +30,7 @@ public class Page {
                 pageNumber = Integer.parseInt(p);
             }
             catch (NumberFormatException e) {
-                // We must log that
+                pageNumber = 0;
             }
             if ( pageNumber > 0 ){
                 if ( pageNumber * num >= max )
@@ -73,4 +73,6 @@ public class Page {
     public int getNextPage () { return this.nextPage; }
     public int getLastPage() { return this.lastPage; }
     public int getStartListCount () { return this.page * this.numberOfElementsPerPage + 1; }
+    public int getPageForShow () { return this.page + 1; }
+    public int getLastPageForShow () { return this.lastPage + 1; }
 }

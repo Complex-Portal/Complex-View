@@ -140,6 +140,7 @@ label.sectionEntry
 {
     font-weight: bold;
 }
+
 label.sectionValue
 {
     text-align: justify;
@@ -155,7 +156,12 @@ tr.trEven
 {
     background-color: #70BDBD;
 }
+
 tr.trOdd
 {
     background-color: #8be0e0;
+}
+
+p {
+    text-align: justify;
 }

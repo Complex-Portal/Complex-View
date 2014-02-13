@@ -86,8 +86,9 @@
                                     </span>
                                 </c:if>
                                 <span class="pageCurrentSpan">
-                                    <form class="pageCurrentForm" method="POST" action="">
-                                        Page <input name="pageInfo" type="text" class="pageCurrent" value="<c:out value="${sessionScope.pageInfo.page}"/>"/> of <c:out value="${sessionScope.pageInfo.lastPage}"/>
+                                    <form name="Top" class="pageCurrentForm" method="POST" action="" onsubmit="return checkPageNumberTop()">
+                                        Page <input name="pageFake" type="text" class="pageCurrent" value="<c:out value="${sessionScope.pageInfo.pageForShow}"/>"/> of <c:out value="${sessionScope.pageInfo.lastPageForShow}"/>
+                                        <input name="page" type="text" hidden="true"/>
                                         <input name="query"  id="queryCurrent"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
                                         <input name="button" id="buttonCurrent" hidden="true" type="submit">
                                     </form>
@@ -124,8 +125,9 @@
                                     </span>
                                 </c:if>
                                 <span class="pageCurrentSpan">
-                                    <form class="pageCurrentForm" method="POST" action="">
-                                        Page <input name="page" type="text" class="pageCurrent" value="<c:out value="${sessionScope.pageInfo.page}"/>"/> of <c:out value="${sessionScope.pageInfo.lastPage}"/>
+                                    <form name="Bottom" class="pageCurrentForm" method="POST" action="" onsubmit="return checkPageNumberBottom()">
+                                        Page <input name="pageFake" type="text" class="pageCurrent" value="<c:out value="${sessionScope.pageInfo.pageForShow}"/>"/> of <c:out value="${sessionScope.pageInfo.lastPageForShow}"/>
+                                        <input name="page" type="text" hidden="true"/>
                                         <input name="query"  id="queryCurrent"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
                                         <input name="button" id="buttonCurrent" hidden="true" type="submit">
                                     </form>

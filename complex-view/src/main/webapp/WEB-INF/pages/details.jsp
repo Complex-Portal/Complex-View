@@ -68,7 +68,7 @@
 
     <jsp:useBean id="details" class="uk.ac.ebi.intact.service.complex.view.ComplexDetails" scope="session"/>
     <h2 class="titleDetails"><c:choose><c:when test="${not empty sessionScope.details.name}"><c:out value="${sessionScope.details.name}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h2>
-    <h3 class="subtitleDetails">Specie: <c:choose><c:when test="${not empty sessionScope.details.specie}"><c:out value="${sessionScope.details.specie}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
+    <h3 class="subtitleDetails">Species: <c:choose><c:when test="${not empty sessionScope.details.specie}"><c:out value="${sessionScope.details.specie}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
     <h3 class="subtitleDetails">IntAct AC: <c:choose><c:when test="${not empty sessionScope.details.ac}"><c:out value="${sessionScope.details.ac}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
     <div class="details">
         <c:if test="${not empty sessionScope.details.systematicName || not empty sessionScope.details.synonyms || not empty sessionScope.details.function || not empty sessionScope.details.properties}">
