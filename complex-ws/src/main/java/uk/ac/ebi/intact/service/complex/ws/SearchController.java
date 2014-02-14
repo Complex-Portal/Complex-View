@@ -353,7 +353,7 @@ public class SearchController {
         part.setInteractorTypeMI(cvInteractorType.getIdentifier());
         String annotation = getAnnotation(cvInteractorType);
         if (annotation != null) {
-            part.setInteractorType(annotation);
+            part.setInteractorTypeDefinition(annotation);
         }
     }
 
