@@ -28,7 +28,7 @@ public class WebAppController {
 
     // HOME
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String HomeController(ModelMap model, HttpServletRequest request) {
+    public String goHome(ModelMap model, HttpServletRequest request) {
         defaultModelMapValues(model, request);
         model.addAttribute("page_title", "Complex Home");
         return "home";
@@ -36,7 +36,7 @@ public class WebAppController {
 
     // SEARCH
     @RequestMapping(value = "/", method = RequestMethod.POST)
-	public String SearchController(@RequestParam String query,
+	public String search(@RequestParam String query,
                                    @RequestParam ( required = false ) String page,
                                    @RequestParam ( required = false ) String filter,
                                    @RequestParam ( required = false ) String type,
@@ -56,7 +56,7 @@ public class WebAppController {
 
     // DETAILS
     @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET)
-    public String DetailsController(@PathVariable String ac,
+    public String showDetails(@PathVariable String ac,
                                     ModelMap model,
                                     HttpSession session,
                                     HttpServletRequest request) {
@@ -69,7 +69,7 @@ public class WebAppController {
 
     // HELP
     @RequestMapping(value = "/help/", method = RequestMethod.GET)
-    public String HelpController(ModelMap model,
+    public String goHelp(ModelMap model,
                                  HttpServletRequest request) {
         defaultModelMapValues(model, request);
         model.addAttribute("page_title", "Complex Help");
@@ -78,7 +78,7 @@ public class WebAppController {
 
     // DOCUMENTATION
     @RequestMapping(value = "/documentation/", method = RequestMethod.GET)
-    public String DocumentationController(ModelMap model,
+    public String goDocumentation(ModelMap model,
                                  HttpServletRequest request) {
         defaultModelMapValues(model, request);
         model.addAttribute("page_title", "Complex Documentation");
@@ -91,8 +91,10 @@ public class WebAppController {
     private void defaultModelMapValues(ModelMap model, HttpServletRequest request) {
         model.addAttribute("complex_portal_name", "Intact Complex Portal");
         model.addAttribute("complex_home_url", request.getContextPath());
+        model.addAttribute("complex_search_url", request.getContextPath());
         model.addAttribute("complex_help_url", request.getContextPath() + "/help/");
         model.addAttribute("complex_documentation_url", request.getContextPath() + "/documentation/");
+        model.addAttribute("complex_contact_url", "mailto:intact-help@ebi.ac.uk?Subject=Complex%20Portal");
         //model.addAttribute("complex_about_url", request.getContextPath() + "/about/" );
     }
 

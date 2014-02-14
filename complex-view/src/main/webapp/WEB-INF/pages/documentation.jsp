@@ -1,37 +1,6 @@
 <html
 <%@include file="header.jsp"%>
 
-<div id="local-masthead" class="masthead grid_24 nomenu">
-
-    <!-- local-title -->
-
-    <div class="grid_24 alpha" id="local-title">
-        <h1><a href="${complex_home_url}" title="Back to ${complex_portal_name} homepage"><img src="http://www.ebi.ac.uk/intact/images/IntAct_logo.png"> Complex Portal</a></h1>
-    </div>
-
-    <!-- /local-title -->
-
-    <!-- /local-nav -->
-
-    <nav>
-        <ul class="grid_24" id="local-nav">
-            <li class="first active"><a href="${complex_home_url}">Home</a></li>
-            <li><a href="${complex_documentation_url}">Documentation</a></li>
-            <li><a href="${complex_about_url}">About ${complex_portal_name}</a></li>
-            <li class="last"><a href="${complex_help_url}">Help</a></li>
-            <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
-                 add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
-                 whichever one will show up last...
-                 For example: -->
-        </ul>
-
-    </nav>
-
-    <!-- /local-nav -->
-
-</div>
-
-</header>
 
     <div id="content" role="main" class="grid_24 clearfix">
         <h2>What can be described as a complex</h2>

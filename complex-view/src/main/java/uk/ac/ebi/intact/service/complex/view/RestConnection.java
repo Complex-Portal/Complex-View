@@ -1,5 +1,7 @@
 package uk.ac.ebi.intact.service.complex.view;
 
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -88,6 +90,11 @@ public class RestConnection {
         StringBuilder query = new StringBuilder();
         query.append( getBaseURL(queryType) );
         query.append( q.replaceAll(" ", "%20") );
+//        try {
+//            query.append(URIUtil.encodeQuery(q));
+//        } catch (URIException e) {
+//            e.printStackTrace();
+//        }
         query.append("?format=json");
         query.append("&first=" + pageInfo.getPage() * this.number);
         query.append("&number=" + this.number);
