@@ -1,6 +1,31 @@
 <html>
 <%@include file="header.jsp"%>
 
+
+<nav>
+    <ul class="grid_24" id="local-nav">
+        <li class="first"><a href="${complex_home_url}">Home</a></li>
+        <li><a href="${complex_about_url}">About</a></li>
+        <li><a href="${complex_documentation_url}">Documentation</a></li>
+        <li class="active"><a href="${complex_search_url}">Search</a></li>
+        <%--<li><a href="${complex_advanced_search_url}">Advanced Search</a></li>--%>
+        <%--<li><a href="${complex_downloads_url}">Downloads</a></li>--%>
+        <li><a href="${complex_help_url}">Help</a></li>
+        <li class="last"><a href="${complex_contact_url}">Contact Us</a></li>
+        <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
+             add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
+             whichever one will show up last...
+             For example: -->
+    </ul>
+
+</nav>
+
+<!-- /local-nav -->
+
+</div>
+
+</header>
+
 <div id="content" role="main" class="grid_24 clearfix">
         <!-- Suggested layout containers -->
         <!--

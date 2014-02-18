@@ -85,6 +85,15 @@ public class WebAppController {
         return "documentation";
     }
 
+    // ABOUT
+    @RequestMapping(value = "/about/", method = RequestMethod.GET)
+    public String goAbout(ModelMap model,
+                                  HttpServletRequest request) {
+        defaultModelMapValues(model, request);
+        model.addAttribute("page_title", "Complex About");
+        return "about";
+    }
+
     /*****************************/
     /***   Private functions   ***/
     /*****************************/
@@ -95,7 +104,8 @@ public class WebAppController {
         model.addAttribute("complex_help_url", request.getContextPath() + "/help/");
         model.addAttribute("complex_documentation_url", request.getContextPath() + "/documentation/");
         model.addAttribute("complex_contact_url", "mailto:intact-help@ebi.ac.uk?Subject=Complex%20Portal");
-        //model.addAttribute("complex_about_url", request.getContextPath() + "/about/" );
+        model.addAttribute("complex_about_url", request.getContextPath() + "/about/" );
+        model.addAttribute("intact_url", "http://www.ebi.ac.uk/intact/");
     }
 
     private String cleanQuery(String query) {

@@ -9,6 +9,31 @@
 
 <%@include file="header.jsp"%>
 
+
+<nav>
+    <ul class="grid_24" id="local-nav">
+        <li class="first active"><a href="${complex_home_url}">Home</a></li>
+        <li><a href="${complex_about_url}">About</a></li>
+        <li><a href="${complex_documentation_url}">Documentation</a></li>
+        <li><a href="${complex_search_url}">Search</a></li>
+        <%--<li><a href="${complex_advanced_search_url}">Advanced Search</a></li>--%>
+        <%--<li><a href="${complex_downloads_url}">Downloads</a></li>--%>
+        <li><a href="${complex_help_url}">Help</a></li>
+        <li class="last"><a href="${complex_contact_url}">Contact Us</a></li>
+        <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
+             add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
+             whichever one will show up last...
+             For example: -->
+    </ul>
+
+</nav>
+
+<!-- /local-nav -->
+
+</div>
+
+</header>
+
 <div id="content" role="main" class="grid_24 clearfix">
     <!-- Suggested layout containers -->
     <!--
@@ -42,8 +67,8 @@
     <!-- End suggested layout containers -->
     <section>
         <div class="homeTitles">
-            <h2 class="titleHome">IntAct</h2>
-            <h5 class="subtitleHome">IntAct provides a freely available, open source database system and analysis tools for molecular interaction data. All interactions are derived from literature curation or direct user submissions and are freely available. To perform a search in the IntAct database use the search box below.</h5>
+            <%--<h5 class="subtitleHome">IntAct provides a freely available, open source database system and analysis tools for molecular interaction data. All interactions are derived from literature curation or direct user submissions and are freely available. To perform a search in the IntAct database use the search box below.</h5>--%>
+            <h5 class="subtitleHome">The Complex Portal is a manually curate, encyclopaedic resource of macromolecular complexes from a number of key model organisms. All data is freely available for search and download. To perform a search for macromolecular complexes use the search box below.</h5>
         </div>
         <br>
         <br>
@@ -63,9 +88,10 @@
         <div class="exampleDiv">
             <label class="searchExamples">Examples:</label>
             <ul class="exampleList">
-                <li>Gene name(s): <form class="exampleForm" id="example1form" action="" method="POST"><input type="hidden" name="query" value="Ndc80"/>  <a href="<c:out value="#"/>" onclick="document.getElementById('example1form').submit();">Ndc80</a></form></li>
-                <li>Protein name(s): <form class="exampleForm" id="example2form" action="" method="POST"><input type="hidden" name="query" value="PCNA"/><a href="<c:out value="#"/>" onclick="document.getElementById('example2form').submit();">PCNA</a></form></li>
-                <li>UniProt AC(s): <form class="exampleForm" id="example3form" action="" method="POST"><input type="hidden" name="query" value="Q05471"/><a href="<c:out value="#"/>" onclick="document.getElementById('example3form').submit();">Q05471</a></form></li>
+                <li>GO term(s): <form class="exampleForm" id="example4form" action="" method="POST"><input type="hidden" name="query" value="GO:0016491"/><a href="<c:out value="#"/>" onclick="document.getElementById('example4form').submit();">GO:0016491</a></form></li>
+                <li>Gene name(s): <form class="exampleForm" id="example1form" action="" method="POST"><input type="hidden" name="query" value="Ndc80"/>   <a href="<c:out value="#"/>" onclick="document.getElementById('example1form').submit();">Ndc80</a></form></li>
+                <li>UniProt AC(s): <form class="exampleForm" id="example3form" action="" method="POST"><input type="hidden" name="query" value="Q05471"/> <a href="<c:out value="#"/>" onclick="document.getElementById('example3form').submit();">Q05471</a></form></li>
+                <li>Protein name(s): <form class="exampleForm" id="example2form" action="" method="POST"><input type="hidden" name="query" value="PCNA"/> <a href="<c:out value="#"/>" onclick="document.getElementById('example2form').submit();">PCNA</a></form></li>
                 <%--<li>Pubmed ID: 22540012</li>--%>
             </ul>
             <a href="JavaScript:newPopup('<c:url value="/help/"/>');">Help</a>

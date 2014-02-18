@@ -44,13 +44,17 @@ public class RestConnection {
     /*******************************/
     protected int getNumberOfComplexes(String q) {
         int result = 0;
-        String query = new StringBuilder() .append(this.WS_URL)
+        StringBuilder queryBuilder = new StringBuilder()
+                .append(this.WS_URL)
                 .append(QueryTypes.DEFAULT.value)
-                .append("/")
-                .append(q.replaceAll(" ", "%20"))
-                .append("?format=json")
-                .toString();
-        Object o = getDataFromWS(query);
+                .append("/");
+        try {
+            queryBuilder.append(URIUtil.encodeQuery(q));
+        } catch (URIException e) {
+            e.printStackTrace();
+        }
+        queryBuilder.append("?format=json");
+        Object o = getDataFromWS(queryBuilder.toString());
         if ( o != null) {
             JSONObject jo = (JSONObject) ((JSONObject) o).get("complexRestResult");
             result = ((Long)jo.get("size")).intValue();
@@ -89,12 +93,11 @@ public class RestConnection {
     {
         StringBuilder query = new StringBuilder();
         query.append( getBaseURL(queryType) );
-        query.append( q.replaceAll(" ", "%20") );
-//        try {
-//            query.append(URIUtil.encodeQuery(q));
-//        } catch (URIException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            query.append(URIUtil.encodeQuery(q));
+        } catch (URIException e) {
+            e.printStackTrace();
+        }
         query.append("?format=json");
         query.append("&first=" + pageInfo.getPage() * this.number);
         query.append("&number=" + this.number);

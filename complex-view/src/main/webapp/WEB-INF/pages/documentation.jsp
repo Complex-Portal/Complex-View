@@ -2,6 +2,30 @@
 <%@include file="header.jsp"%>
 
 
+<nav>
+    <ul class="grid_24" id="local-nav">
+        <li class="first"><a href="${complex_home_url}">Home</a></li>
+        <li><a href="${complex_about_url}">About</a></li>
+        <li class="active"><a href="${complex_documentation_url}">Documentation</a></li>
+        <li><a href="${complex_search_url}">Search</a></li>
+        <%--<li><a href="${complex_advanced_search_url}">Advanced Search</a></li>--%>
+        <%--<li><a href="${complex_downloads_url}">Downloads</a></li>--%>
+        <li><a href="${complex_help_url}">Help</a></li>
+        <li class="last"><a href="${complex_contact_url}">Contact Us</a></li>
+        <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
+             add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
+             whichever one will show up last...
+             For example: -->
+    </ul>
+
+</nav>
+
+<!-- /local-nav -->
+
+</div>
+
+</header>
+
     <div id="content" role="main" class="grid_24 clearfix">
         <h2>What can be described as a complex</h2>
         <p>A stable set of (two or more) interacting macromolecules such as proteins which can be co-purified by an acceptable method and have been shown to exist as an isolated, functional unit in vivo. Any interacting non-protein molecular (e.g. small molecules, nucleic acids) will also be included.</p>
@@ -44,7 +68,7 @@
         <p><b>Experimental evidence</b> - when high quality evidence for the existence of this complex is present in an IMEx database, this will be added manually as a cross-reference so that it may be downloaded in the same file as the complex.</p>
         <p><b>3D structure</b> - representative PDB cross-references will be added when the complex has been crystallised in its entirety.</p>
         <p><b>Electron microscopy</b> - representative EMDB cross-references will be added when the complex has been visualised by electron microscopy in its entirety</p>
-        <p><b>Evidence codes</b> - the following ECO codes will be used to indicate the strength of evidence that a complex exists:</p>
+        <p><a id="evidences"><b>Evidence codes</b></a> - the following ECO codes will be used to indicate the strength of evidence that a complex exists:</p>
         <blockquote>
         <lu>
             <li>ECO:0000021 (physical interaction evidence) indicates that  full experimental evidence for the complexes has been added to the entry. This will consist of either a cross-reference to experimental data in an IMEx database, PDB or EMDB.</li>

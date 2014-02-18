@@ -2,6 +2,31 @@
 
 <%@include file="header.jsp"%>
 
+
+<nav>
+    <ul class="grid_24" id="local-nav">
+        <li class="first"><a href="${complex_home_url}">Home</a></li>
+        <li><a href="${complex_about_url}">About</a></li>
+        <li><a href="${complex_documentation_url}">Documentation</a></li>
+        <li><a href="${complex_search_url}">Search</a></li>
+        <%--<li><a href="${complex_advanced_search_url}">Advanced Search</a></li>--%>
+        <%--<li><a href="${complex_downloads_url}">Downloads</a></li>--%>
+        <li class="active"><a href="${complex_help_url}">Help</a></li>
+        <li class="last"><a href="${complex_contact_url}">Contact Us</a></li>
+        <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
+             add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
+             whichever one will show up last...
+             For example: -->
+    </ul>
+
+</nav>
+
+<!-- /local-nav -->
+
+</div>
+
+</header>
+
 <div id="content" role="main" class="grid_24 clearfix">
     <!-- Suggested layout containers -->
     <!--
@@ -34,7 +59,8 @@
     -->
     <!-- End suggested layout containers -->
 
-    <h3>Help: Searches in IntAct Complex Portal</h3>To do a search you can use the Complex Query Language (CQL), which is based on <a href="http://lucene.apache.org/core/3_6_0/queryparsersyntax.html?conversationContext=3#Terms" target="_blank">Lucene's syntax.</a>
+    <h3>Help: Searches in IntAct Complex Portal</h3>
+    <p>To do a search you can use the Complex Query Language (CQL), which is based on <a href="http://lucene.apache.org/core/3_6_0/queryparsersyntax.html?conversationContext=3#Terms" target="_blank">Lucene's syntax.</a></p>
 
     <ul>
         <li>Search based on exact word matches.
@@ -86,7 +112,7 @@
 <%--Complex Information--%>
 <tr><td>complex_id</td><td>Interaction identifier(s)</td><td>complex_id:EBI-1224506</td></tr>
 <tr><td>complex_alias</td><td>Interaction alias(es)</td><td>complex_alias:&quot;coenzyme Q-cytochrome c reductase&quot;</td></tr>
-<tr><td>species</td><td>Interaction Tax ID</td><td>species:Human</td></tr>
+<tr><td>species</td><td>Interaction Tax ID</td><td>species:9606</td></tr>
 <tr><td>complex_xref</td><td>Interaction xref(s)</td><td>complex_xref:15210332</td></tr>
 <%--<tr><td>description</td><td>Interaction description</td><td><a href="" target="_top">taxidB:9606</a></td></tr>--%>
 <tr><td>udate</td><td>Last update of the interaction</td><td>udate:[20110607 TO 20120906]</td></tr>
