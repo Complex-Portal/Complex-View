@@ -227,7 +227,6 @@ public class DetailsController extends JpaBaseController {
         this.interactionAc = null;
     }
 
-    @Transactional(readOnly = true)
     public void loadExperiment( ) {
         if ( log.isDebugEnabled() ) log.debug( "Calling setExperimentAc( '" + experimentAc + "' )..." );
         experiment = getDaoFactory().getExperimentDao().getByAc( experimentAc );
@@ -268,7 +267,6 @@ public class DetailsController extends JpaBaseController {
         this.experimentAc = null;
     }
 
-    @Transactional(readOnly = true)
     public void loadInteraction( ) {
         if ( log.isDebugEnabled() ) log.debug( "Calling setInteractionAc( '" + interactionAc + "' )..." );
         interaction = getDaoFactory().getInteractionDao().getByAc( interactionAc );
@@ -319,7 +317,6 @@ public class DetailsController extends JpaBaseController {
      * Get number of interactors looking at all the interactions in one experiment
      * @return
      */
-    @Transactional(readOnly = true)
     public void loadNumberOfInteractorsInExperiment(){
         Long number = (Long) getDaoFactory().getEntityManager().createQuery("select count(distinct interactor.ac) " +
                 "from Experiment e join e.interactions as i join i.components as comp join comp.interactor as interactor " +
@@ -337,7 +334,6 @@ public class DetailsController extends JpaBaseController {
      * interaction annotations.
      * @return
      */
-    @Transactional(readOnly = true)
     public void loadJsonExperimentInteractions(){
         this.variableName2conditions.clear();
         this.variableName2title.clear();
@@ -592,12 +588,10 @@ public class DetailsController extends JpaBaseController {
         return getAnnotationTextByMi( getExperiment().getPublication(), CONTACT_EMAIL );
     }
 
-    @Transactional(readOnly = true)
     public boolean isFeaturesAvailable(){
         return featureAvailable;
     }
 
-    @Transactional(readOnly = true)
     public void loadFeatureNumber(){
         if (interactionAc == null){
             featureAvailable=false;

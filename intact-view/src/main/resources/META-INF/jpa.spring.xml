@@ -49,11 +49,15 @@
 
     </bean>
 
-    <jee:jndi-lookup id="dataSourceJdni" jndi-name="${db.jndi}" resource-ref="true" expected-type="javax.sql.DataSource"/>
+    <!--<jee:jndi-lookup id="dataSourceJdni" jndi-name="${db.jndi}" resource-ref="true" expected-type="javax.sql.DataSource"/>-->
 
-    <bean id="intactViewDataSource" class="org.apache.myfaces.orchestra.connectionManager.ConnectionManagerDataSource">
-        <property name="dataSource" ref="dataSourceJdni" />
+    <bean id="intactViewDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/${db.jndi}"/>
     </bean>
+
+    <!--<bean id="intactViewDataSource" class="org.apache.myfaces.orchestra.connectionManager.ConnectionManagerDataSource">
+        <property name="dataSource" ref="dataSourceJdni" />
+    </bean>-->
 
     <!-- shared transactionTemplate for post initialization methods -->
     <bean id="sharedTransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
