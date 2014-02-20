@@ -52,6 +52,16 @@ public class DataProvider {
         // Check if iterator has information and return the right result
         return iterator.hasNext() ? iterator : null;
     }
+
+    protected ComplexResultIterator retrieve(String query, int offset, int size, String facets) throws SolrServerException {
+        return this.searcher.searchWithFacets( query, // query
+                                                  offset, // first result
+                                                    size, // end result
+                                                      "", // filters to use
+                                                  facets) // facets fields to use
+        ;
+    }
+
     /****************************/
     /*      Public methods      */
     /****************************/
