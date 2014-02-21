@@ -66,7 +66,7 @@ public class DataProvider {
     /*      Public methods      */
     /****************************/
     // getData function return the results of the query
-    public ComplexRestResult getData(String query, int first, int number) throws SolrServerException {
+    public ComplexRestResult getData(String query, int first, int number, String facets) throws SolrServerException {
         int i = first;
         boolean in = false; // to know if we went into the loop
         ComplexResultIterator iterator = null; // Gives retrieve method results
@@ -87,9 +87,12 @@ public class DataProvider {
         // i = 70; 70 + 20 > 65 + 10, then exit
         for ( /* i = first */ ; i + chunkSize < number + first ; i+= chunkSize ) {
             in = true;
-            iterator = retrieve(query, i, chunkSize);
+            iterator = facets != null ? retrieve(query, i, chunkSize, facets) : retrieve(query, i, chunkSize);
             // This method will traverse the iterator and get the elements
-            if ( iterator != null ) result.add(iterator);
+            if ( iterator != null && iterator.hasNext() ) {
+                result.add(iterator);
+
+            }
             else return result;
         }
         // If we went into the loop
@@ -100,9 +103,12 @@ public class DataProvider {
         // i = 70 and number = 65, we have to query for from 70 to 75
         // for that we query from 70 to 75 ( number + first - i = 65 + 10 - 70 )
         if ( i < number + first ) {
-            iterator = retrieve(query, i, number + first - i);
+            iterator = facets != null ? retrieve(query, i, number + first - i, facets) : retrieve(query, i, number + first - i);
             // This method will traverse the iterator and get the elements
-            if ( iterator != null ) result.add(iterator);
+            if ( iterator != null ) {
+                result.add(iterator);
+
+            }
         }
         // Return the results
         return result;
