@@ -149,19 +149,14 @@ label.sectionValue
 tr.trHead
 {
     font-weight: bold;
-    background-color: #497777;
-    color: #ffffff;
-}
-tr.trEven
-{
     background-color: #70BDBD;
 }
-
-tr.trOdd
-{
-    background-color: #8be0e0;
-}
-
 p {
     text-align: justify;
+}
+div.detailsTable
+{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    height: 110px;
 }

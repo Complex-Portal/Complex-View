@@ -13,7 +13,8 @@ function checkPageNumberTop(){
         final = final - 1;
         document.forms["Top"]["page"].value = final.toString();
     }
-}
+};
+
 function checkPageNumberBottom(){
     var readed = document.forms["Bottom"]["pageFake"].value;
     var final;
@@ -22,4 +23,13 @@ function checkPageNumberBottom(){
         final = final - 1;
         document.forms["Bottom"]["page"].value = final.toString();
     }
-}
+};
+
+$(document).on({
+    'mouseenter': function (e) {
+        $(this).tooltip('show');
+    },
+    'mouseeleave': function (e) {
+        $(this).tooltip('hide');
+    }
+}, '*[rel=tooltip]');

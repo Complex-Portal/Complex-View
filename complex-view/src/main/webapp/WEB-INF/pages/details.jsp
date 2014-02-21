@@ -110,8 +110,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="part" items="${sessionScope.details.participants}" varStatus="loop">
-                        <tr class="${loop.index % 2 == 0 ? 'trEven' : 'trOdd'}">
+                    <c:forEach var="part" items="${sessionScope.details.participants}">
+                        <tr>
                             <td><c:if test="${not empty part.identifier}"><a target="_blank" href="<c:out value="${part.identifierLink}"/>"><c:out value="${part.identifier}"/></a><br/></c:if>
                                 <c:if test="${not empty part.interactorAC}"><a target="_blank" href="http://www.ebi.ac.uk/intact/molecule/<c:out value="${part.interactorAC}"/>"><c:out value="${part.interactorAC}"/></a></c:if></td>
                             <td><c:if test="${not empty part.name}"><c:out value="${part.name}"/></c:if></td>
@@ -120,7 +120,9 @@
                             <%--<td><%if(part.getStochiometry() != null){%><%=new Double(part.getStochiometry()).intValue()%><%}%></td>--%>
                             <td><c:if test="${not empty part.bioRole}"><c:out value="${part.bioRole}"/></c:if></td>
                             <td><c:if test="${not empty part.interactorType}"><c:out value="${part.interactorType}"/></c:if></td>
-                            <td><c:if test="${not empty part.linkedFeatures}">
+                            <td><div class="detailsTable" rel="tooltip" data-placement="left" title="<c:if test="${not empty part.linkedFeatures}"><c:forEach var="linked" items="${part.linkedFeatures}"><c:out value="${linked.featureType}"/><c:out value="${linked.participantId}"/><c:forEach var="range" items="${linked.ranges}">[<c:out value="${range}"/>]</c:forEach>
+</c:forEach></c:if>">
+                                <c:if test="${not empty part.linkedFeatures}">
                                 <c:forEach var="linked" items="${part.linkedFeatures}">
                                     <c:out value="${linked.featureType}"/> <c:out value="${linked.participantId}"/>
                                         <c:forEach var="range" items="${linked.ranges}">
@@ -129,8 +131,10 @@
                                         <br/>
                                     </c:forEach>
                                 </c:if>
-                            </td>
-                            <td><c:if test="${not empty part.otherFeatures}">
+                            </div></td>
+                            <td><div class="detailsTable" rel="tooltip" data-placement="right" title="<c:if test="${not empty part.otherFeatures}"><c:forEach var="other" items="${part.otherFeatures}"><c:out value="${other.featureType}"/><c:out value="${other.participantId}"/><c:forEach var="range" items="${other.ranges}">[<c:out value="${range}"/>]</c:forEach>
+</c:forEach></c:if>">
+                                <c:if test="${not empty part.otherFeatures}">
                                     <c:forEach var="other" items="${part.otherFeatures}">
                                         <c:out value="${other.featureType}"/> <c:out value="${other.participantId}"/>
                                         <c:forEach var="range" items="${other.ranges}">
@@ -139,7 +143,7 @@
                                         <br/>
                                     </c:forEach>
                                 </c:if>
-                            </td>
+                            </div></td>
                         </tr>
                     </c:forEach>
                 </tbody>
@@ -158,8 +162,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="cross" items="${sessionScope.details.crossReferences}" varStatus="loop">
-                        <tr class="${loop.index % 2 == 0 ? 'trEven' : 'trOdd'}">
+                    <c:forEach var="cross" items="${sessionScope.details.crossReferences}">
+                        <tr>
                             <td><c:if test="${not empty cross.qualifier}"><c:out value="${cross.qualifier}"/></c:if></td>
                             <td><c:if test="${not empty cross.database}"><c:out value="${cross.database}"/></c:if></td>
                             <td><c:if test="${not empty cross.identifier}">

@@ -83,6 +83,7 @@
             <ul class="helpList">
                 <li>Free text search will look by default for interactor identifier, interactor alias, species, interaction identifier, interaction alias and interaction xrefs.</li>
                 <li>Search for isoforms of 'P12345' by using 'P12345*'</li>
+                <li>Search for groups of complexes by using the Gene Ontology. For example, GO:0016491 will search for all complexes annotated with &quot;oxidoreductase activity&quot; and all downstream child terms of this.</li>
             </ul>
         </div>
         <div class="exampleDiv">

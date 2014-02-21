@@ -59,11 +59,11 @@
     <!-- End suggested layout containers -->
 
     <h3>About:</h3>
-    <p>The Complex Portal is a manually curated, encyclopaedic resource of macromolecular complexes from a number of key model organisms, entered into the <a href="${intact_url}">IntAct</a> molecular interaction database. Data includes protein-only complexes as well as protein-small molecule and protein-nucleic acid complexes. All complexes are derived from physical molecular interaction evidences derived from the literature, and cross-referenced in the entry, or by curator inference from information on orthologues in closely related species. Any complex which currently lacks direct experimental evidence is tagged as such, using controlled vocabulary terms from the <a href="${complex_documentation_url}#evidences">Evidence Code Ontology</a>.</p>
+    <p>The Complex Portal is a manually curated, encyclopaedic resource of macromolecular complexes from a number of key model organisms, entered into the <a href="${intact_url}">IntAct</a> molecular interaction database. Data includes protein-only complexes as well as protein-small molecule and protein-nucleic acid complexes. All complexes are derived from physical molecular interaction evidences extracted from the literature, and cross-referenced in the entry, or by curator inference from information on orthologues in closely related species. Any complex which currently lacks direct experimental evidence is tagged as such, using controlled vocabulary terms from the <a href="${complex_documentation_url}#evidences">Evidence Code Ontology</a>.</p>
     <p>The number of complexes available is currently limited, but will be added to over time. If you wish to request the curation of one or more complexes, or to amend or contribute to an existing entry, please contact us on <a href="${complex_contact_url}">intact-help</a>.</p>
     <p>To read more on complex curation, go to <a href="${complex_documentation_url}">Documentation</a>.</p>
-    <p>o find out more about the search algorithms, go to <a href="${complex_help_url}">Help</a>.</p>
-    <p>Downloads: At the moment, the download option is restricted to species-specific complex- files in PSI-MI <a href="http://www.psidev.info/mif">XML 2.5.4</a> format from our <a href="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/">ftp site</a>. In future more download options will be available, including individual complex files.</p>
+    <p>To find out more about the search algorithms, go to <a href="${complex_help_url}">Help</a>.</p>
+    <p>Downloads: At the moment, the download option is restricted to species-specific complex files in PSI-MI <a href="http://www.psidev.info/mif">XML 2.5.4</a> format from our <a href="ftp://ftp.ebi.ac.uk/pub/databases/intact/current/">ftp site</a>. In future more download options will be available, including individual complex files.</p>
 </div>
 
 
