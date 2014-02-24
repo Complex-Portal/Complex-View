@@ -12,6 +12,9 @@ import javax.xml.bind.annotation.XmlElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class ComplexDetailsCrossReferences {
+    /********************************/
+    /*      Private attributes      */
+    /********************************/
     private String database;
     private String qualifier;
     private String identifier;
@@ -23,6 +26,10 @@ public class ComplexDetailsCrossReferences {
     private String dbdefinition;
     private String qualifierDefinition;
 
+
+    /**************************/
+    /*      Constructors      */
+    /**************************/
     public ComplexDetailsCrossReferences() {
         this.database    = null;
         this.qualifier   = null;
@@ -37,6 +44,10 @@ public class ComplexDetailsCrossReferences {
         this.description = description;
     }
 
+
+    /*********************************/
+    /*      Getters and Setters      */
+    /*********************************/
     @XmlElement
     public String getDatabase() {
         return database;

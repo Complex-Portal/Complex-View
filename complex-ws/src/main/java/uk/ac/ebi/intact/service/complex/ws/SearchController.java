@@ -22,21 +22,8 @@ import java.util.List;
 
 @Controller
 public class SearchController {
-    /********************************/
-    /*      Private attributes      */
-    /********************************/
-    @Autowired
-    private DataProvider dataProvider ;
 
-    @PersistenceContext(unitName="intact-core-default")
-    private EntityManager complexManager;
-
-    @Autowired
-    private DaoFactory daoFactory;
-
-    private static final Log log = LogFactory.getLog(SearchController.class);
-
-     /*
+    /*
      -- BASIC KNOWLEDGE ABOUT SPRING MVC CONTROLLERS --
       * They look like the next one:
       @RequestMapping(value = "/<path to listen>/{<variable>}")
@@ -65,6 +52,19 @@ public class SearchController {
         IN THE SPRING FILE.
      */
 
+    /********************************/
+    /*      Private attributes      */
+    /********************************/
+    @Autowired
+    private DataProvider dataProvider ;
+    @PersistenceContext(unitName="intact-core-default")
+    private EntityManager complexManager;
+    @Autowired
+    private DaoFactory daoFactory;
+    private static final Log log = LogFactory.getLog(SearchController.class);
+
+    final private String CURATED_COMPLEX = "curated-complex";
+
     /****************************/
     /*      Public methods      */
     /****************************/
@@ -73,8 +73,7 @@ public class SearchController {
          http://<servername>:<port>/search/<something to query>
        and
          http://<servername>:<port>/search/<something to query>?format=<type>
-     - If we do not use the format parameter we take the values in the headers
-     - If we use the format parameter we do not mind in the headers
+     - If we do not use the format parameter we will receive the answer in json
      - Only listen request via GET never via POST.
      - Does not change the query.
      */
@@ -91,8 +90,7 @@ public class SearchController {
          http://<servername>:<port>/interactor/<something to query>
        and
          http://<servername>:<port>/interactor/<something to query>?format=<type>
-     - If we do not use the format parameter we take the values in the headers
-     - If we use the format parameter we do not mind in the headers
+     - If we do not use the format parameter we will receive the answer in json
      - Only listen request via GET never via POST.
      - Force to query only in the id, alias and pxref fields.
      */
@@ -116,8 +114,7 @@ public class SearchController {
          http://<servername>:<port>/complex/<something to query>
        and
          http://<servername>:<port>/complex/<something to query>?format=<type>
-     - If we do not use the format parameter we take the values in the headers
-     - If we use the format parameter we do not mind in the headers
+     - If we do not use the format parameter we will receive the answer in json
      - Only listen request via GET never via POST.
      - Force to query only in the complex_id, complex_alias and complex_xref
        fields.
@@ -142,8 +139,7 @@ public class SearchController {
          http://<servername>:<port>/organism/<something to query>
        and
          http://<servername>:<port>/organism/<something to query>?format=<type>
-     - If we do not use the format parameter we take the values in the headers
-     - If we use the format parameter we do not mind in the headers
+     - If we do not use the format parameter we will receive the answer in json
      - Only listen request via GET never via POST.
      - Force to query only in the organism_name and species fields.
      */
@@ -161,6 +157,15 @@ public class SearchController {
         return query(improveQuery(query, fields), first, number, null);
     }
 
+    /*
+     - We can access to that method using:
+         http://<servername>:<port>/details/<ac of a complex>
+       and
+         http://<servername>:<port>/details/<ac of a complex>?format=<type>
+     - If we do not use the format parameter we will receive the answer in json
+     - Only listen request via GET never via POST.
+     - Query the information in our database about the ac of the complex.
+     */
     @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET)
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public ComplexDetails retrieveComplex(@PathVariable String ac) {
@@ -173,7 +178,7 @@ public class SearchController {
             CvTopic cvTopic = null ;
             for ( Annotation annotation : complex.getAnnotations ( ) ) {
                 cvTopic = annotation != null ? annotation.getCvTopic ( ) : null ;
-                if ( cvTopic != null && cvTopic.getShortLabel ( ) .equalsIgnoreCase( "curated-complex" ) && annotation.getAnnotationText() != null) {
+                if ( cvTopic != null && cvTopic.getShortLabel ( ) .equalsIgnoreCase( CURATED_COMPLEX ) && annotation.getAnnotationText() != null) {
                     details.setFunction ( annotation.getAnnotationText ( ) ) ;
                 }
                 else if ( annotation.getCvTopic() != null && annotation.getCvTopic().getIdentifier() != null && annotation.getCvTopic().getIdentifier().equals("MI:0629") ) {
@@ -185,8 +190,6 @@ public class SearchController {
 
             setParticipants(complex, details);
             setCrossReferences(complex, details);
-
-
         }
         return details;
     }
@@ -230,6 +233,7 @@ public class SearchController {
         return improvedQuery.toString();
     }
 
+    // This method fills the cross references table for the view
     protected void setCrossReferences(InteractionImpl complex, ComplexDetails details) {
         Collection<ComplexDetailsCrossReferences> crossReferences = details.getCrossReferences();
         ComplexDetailsCrossReferences cross;
@@ -258,6 +262,7 @@ public class SearchController {
         }
     }
 
+    // This method fills the participants table for the view
     protected void setParticipants(InteractionImpl complex, ComplexDetails details) {
         Collection<ComplexDetailsParticipants> participants = details.getParticipants();
         ComplexDetailsParticipants part;
@@ -311,6 +316,7 @@ public class SearchController {
         }
     }
 
+    // this method fills the linked features and the other features cells in the participants table
     protected void setFeatures(ComplexDetailsParticipants part, Component component) {
         for( Feature feature : component.getFeatures() ) {
             ComplexDetailsFeatures complexDetailsFeatures = new ComplexDetailsFeatures();
@@ -349,42 +355,8 @@ public class SearchController {
         }
     }
 
-    protected void setInteractorType(ComplexDetailsParticipants part, CvInteractorType cvInteractorType) {
-        part.setInteractorType(cvInteractorType.getFullName() != null ? cvInteractorType.getFullName() : cvInteractorType.getShortLabel());
-        part.setInteractorTypeMI(cvInteractorType.getIdentifier());
-        String annotation = getAnnotation(cvInteractorType);
-        if (annotation != null) {
-            part.setInteractorTypeDefinition(annotation);
-        }
-    }
 
-    protected void setBiologicalRole(ComplexDetailsParticipants part, CvBiologicalRole cvBiologicalRole) {
-        part.setBioRole(cvBiologicalRole.getFullName() != null ? cvBiologicalRole.getFullName() : cvBiologicalRole.getShortLabel());
-        part.setBioRoleMI(cvBiologicalRole.getIdentifier());
-        String annotation = getAnnotation(cvBiologicalRole);
-        if (annotation != null) {
-            part.setBioRoleDefinition(annotation);
-        }
-    }
-
-    protected void setFeatureType(ComplexDetailsFeatures complexDetailsFeatures, CvFeatureType feature, Component component) {
-        complexDetailsFeatures.setFeatureType(feature.getFullName() != null ? feature.getFullName() : feature.getShortLabel());
-        complexDetailsFeatures.setFeatureTypeMI(feature.getIdentifier());
-        String annotation = getAnnotation(component.getCvBiologicalRole());
-        if (annotation != null) {
-            complexDetailsFeatures.setFeatureTypeDefinition(annotation);
-        }
-    }
-
-    protected void setXrefQualifier(ComplexDetailsCrossReferences cross, CvXrefQualifier cvXrefQualifier) {
-        cross.setQualifier(cvXrefQualifier.getFullName() != null ? cvXrefQualifier.getFullName() : cvXrefQualifier.getShortLabel());
-        cross.setQualifierMI(cvXrefQualifier.getIdentifier());
-        String annotation = getAnnotation(cvXrefQualifier);
-        if (annotation != null) {
-            cross.setQualifierDefinition(annotation);
-        }
-    }
-
+    // This method is a generic method to get the annotations of a CvDagObject
     protected String getAnnotation(CvDagObject cv) {
         if (cv != null){
             for ( Annotation annotation : cv.getAnnotations() ) {
@@ -396,6 +368,47 @@ public class SearchController {
         return null;
     }
 
+    // This method sets the interactor type information
+    protected void setInteractorType(ComplexDetailsParticipants part, CvInteractorType cvInteractorType) {
+        part.setInteractorType(cvInteractorType.getFullName() != null ? cvInteractorType.getFullName() : cvInteractorType.getShortLabel());
+        part.setInteractorTypeMI(cvInteractorType.getIdentifier());
+        String annotation = getAnnotation(cvInteractorType);
+        if (annotation != null) {
+            part.setInteractorTypeDefinition(annotation);
+        }
+    }
+
+    // This method sets the biological role information
+    protected void setBiologicalRole(ComplexDetailsParticipants part, CvBiologicalRole cvBiologicalRole) {
+        part.setBioRole(cvBiologicalRole.getFullName() != null ? cvBiologicalRole.getFullName() : cvBiologicalRole.getShortLabel());
+        part.setBioRoleMI(cvBiologicalRole.getIdentifier());
+        String annotation = getAnnotation(cvBiologicalRole);
+        if (annotation != null) {
+            part.setBioRoleDefinition(annotation);
+        }
+    }
+
+    // This method sets the feature type information
+    protected void setFeatureType(ComplexDetailsFeatures complexDetailsFeatures, CvFeatureType feature, Component component) {
+        complexDetailsFeatures.setFeatureType(feature.getFullName() != null ? feature.getFullName() : feature.getShortLabel());
+        complexDetailsFeatures.setFeatureTypeMI(feature.getIdentifier());
+        String annotation = getAnnotation(component.getCvBiologicalRole());
+        if (annotation != null) {
+            complexDetailsFeatures.setFeatureTypeDefinition(annotation);
+        }
+    }
+
+    // This method sets the xref qualifier information
+    protected void setXrefQualifier(ComplexDetailsCrossReferences cross, CvXrefQualifier cvXrefQualifier) {
+        cross.setQualifier(cvXrefQualifier.getFullName() != null ? cvXrefQualifier.getFullName() : cvXrefQualifier.getShortLabel());
+        cross.setQualifierMI(cvXrefQualifier.getIdentifier());
+        String annotation = getAnnotation(cvXrefQualifier);
+        if (annotation != null) {
+            cross.setQualifierDefinition(annotation);
+        }
+    }
+
+    // set the recommended name, the systematic name, the synonyms, the alias and the species of the complex
     protected void setComplexNames(InteractionImpl complex, ComplexDetails details) {
         // Names
         String firstRecommended=null;

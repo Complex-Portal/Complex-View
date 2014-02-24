@@ -16,15 +16,25 @@ import java.util.List;
  */
 @XmlRootElement(name = "Complexes")
 public class ComplexRestResult {
+    /********************************/
+    /*      Private attributes      */
+    /********************************/
     private int size;
     private List<ComplexSearchResults> elements;
     private List<ComplexFacetResults> facets;
 
+    /*************************/
+    /*      Constructor      */
+    /*************************/
     public ComplexRestResult( ) {
         this.elements = new LinkedList<ComplexSearchResults>();
         this.size = 0;
         this.facets = null;
     }
+
+    /***************************/
+    /*      Public method      */
+    /***************************/
     public void add( ComplexResultIterator iterator ) {
         this.size += iterator.getNumberOfResults();
         if ( this.facets == null ) {
@@ -40,6 +50,9 @@ public class ComplexRestResult {
         }
     }
 
+    /*********************/
+    /*      Getters      */
+    /*********************/
     @XmlElement
     public int getSize() { return this.size; }
     @XmlElement

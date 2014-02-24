@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ *  This class is to map the details of a complex retrieved from the DB
+ *
  * @author Oscar Forner (oforner@ebi.ac.uk)
  * @version $Id$
  * @since 09/12/13
@@ -17,6 +19,10 @@ import java.util.List;
 @XmlRootElement(name = "ComplexDetails")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ComplexDetails {
+
+    /********************************/
+    /*      Private attributes      */
+    /********************************/
     private String systematicName;
     private Collection<String> synonyms;
     private String function;
@@ -27,12 +33,18 @@ public class ComplexDetails {
     private Collection<ComplexDetailsParticipants> participants;
     private Collection<ComplexDetailsCrossReferences> crossReferences;
 
+    /*************************/
+    /*      Constructor      */
+    /*************************/
     public ComplexDetails() {
         this.synonyms = new LinkedList<String>();
         this.participants = new ArrayList<ComplexDetailsParticipants>();
         this.crossReferences = new ArrayList<ComplexDetailsCrossReferences>();
     }
 
+    /*********************************/
+    /*      Getters and Setters      */
+    /*********************************/
     public void setSystematicName ( String systematic ) {
         this.systematicName = systematic;
     }

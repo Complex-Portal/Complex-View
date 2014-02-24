@@ -14,6 +14,9 @@ import java.util.List;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class ComplexDetailsParticipants {
+    /********************************/
+    /*      Private attributes      */
+    /********************************/
     private String interactorAC;
     private String identifier;
     private String identifierLink;
@@ -29,6 +32,9 @@ public class ComplexDetailsParticipants {
     private Collection<ComplexDetailsFeatures> linkedFeatures;
     private Collection<ComplexDetailsFeatures> otherFeatures;
 
+    /**************************/
+    /*      Constructors      */
+    /**************************/
     public ComplexDetailsParticipants() {
         this.identifier     = null;
         this.identifierLink = null;
@@ -60,6 +66,10 @@ public class ComplexDetailsParticipants {
         this.linkedFeatures = linkedFeatures;
         this.otherFeatures = otherFeatures;
     }
+
+    /*********************************/
+    /*      Getters and Setters      */
+    /*********************************/
     @XmlElement
     public String getBioRoleMI() {
         return bioRoleMI;

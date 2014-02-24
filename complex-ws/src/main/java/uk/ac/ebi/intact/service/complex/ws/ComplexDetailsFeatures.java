@@ -13,12 +13,18 @@ import java.util.Collection;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class ComplexDetailsFeatures {
+    /********************************/
+    /*      Private attributes      */
+    /********************************/
     private String participantId;
     private String featureType;
     private String featureTypeMI;
     private String featureTypeDefinition;
     private Collection<String> ranges;
 
+    /**************************/
+    /*      Constructors      */
+    /**************************/
     public ComplexDetailsFeatures() {
         this.participantId = null;
         this.featureType = null;
@@ -34,6 +40,10 @@ public class ComplexDetailsFeatures {
         this.featureTypeDefinition = featureTypeDefinition;
         this.ranges = ranges;
     }
+
+    /*********************************/
+    /*      Getters and Setters      */
+    /*********************************/
     @XmlElement
     public String getParticipantId() {
         return participantId;

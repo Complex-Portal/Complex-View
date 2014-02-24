@@ -10,10 +10,15 @@ import java.util.List;
  * @since 21/02/14
  */
 public class ComplexFacetResults {
-
+    /********************************/
+    /*      Private attributes      */
+    /********************************/
     private String name;
     private Long count;
 
+    /**************************/
+    /*      Constructors      */
+    /**************************/
     public ComplexFacetResults() {
         this.name = null;
         this.count = null;
@@ -24,6 +29,9 @@ public class ComplexFacetResults {
         this.count = count;
     }
 
+    /*********************************/
+    /*      Getters and Setters      */
+    /*********************************/
     public String getName() {
         return name;
     }
