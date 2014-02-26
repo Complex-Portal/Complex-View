@@ -6,6 +6,7 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSearchResults;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class ComplexRestResult {
     /***************************/
     public void add( ComplexResultIterator iterator ) {
         this.size += iterator.getNumberOfResults();
-        if ( this.facets == null ) {
+        if ( this.facets == null && iterator != null && iterator.getFacetFields() != null ) {
             this.facets = new LinkedList<ComplexFacetResults>();
             for ( FacetField f : iterator.getFacetFields() ) {
                 for (FacetField.Count count : f.getValues() ){
