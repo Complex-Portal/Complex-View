@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
@@ -105,14 +106,13 @@ public class DetailsController extends JpaBaseController {
         variableName2conditions = new HashMap<String,Map<String,List<Integer>>>();
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public void loadData() {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             log.info( "DetailsController.loadData" );
 
             UserQuery userQuery = (UserQuery) getBean("userQuery");
             SearchController searchController = (SearchController) getBean("searchBean");
-
-            TransactionStatus status = getIntactContext().getDataContext().beginTransaction();
 
             if( interactionAc != null && experimentAc != null ) {
                 addErrorMessage( "Please either request an interaction or an experiment accession number.",
@@ -172,8 +172,6 @@ public class DetailsController extends JpaBaseController {
             }
 
             this.numberInteractions = countInteractionNumbers();
-
-            getIntactContext().getDataContext().commitTransaction(status);
         }
     }
 

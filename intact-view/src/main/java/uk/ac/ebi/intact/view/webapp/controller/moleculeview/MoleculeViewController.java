@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.model.Interactor;
 import uk.ac.ebi.intact.view.webapp.controller.ContextController;
@@ -49,7 +50,7 @@ public class MoleculeViewController extends JpaBaseController{
 
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public void loadInteractor() {
         FacesContext context = FacesContext.getCurrentInstance();
 
