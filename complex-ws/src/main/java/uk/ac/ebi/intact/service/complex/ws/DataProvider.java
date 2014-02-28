@@ -42,12 +42,12 @@ public class DataProvider {
     // This method is for abstract the way to retrieve information from Solr.
     // It does not check the parameter because it is called from getData method
     // , where we control all that things
-    protected ComplexResultIterator retrieve(String query, int offset, int size) throws SolrServerException {
+    protected ComplexResultIterator retrieve(String query, int offset, int size, String filters) throws SolrServerException {
         ComplexResultIterator iterator; // Used to stored the query's result
         iterator = this.searcher.search ( query, // query
                                          offset, // first result
                                            size, // end result
-                                            "" ) // filters to use
+                                       filters ) // filters to use
         ;
         // Check if iterator has information and return the right result
         return iterator.hasNext() ? iterator : null;
@@ -56,11 +56,11 @@ public class DataProvider {
     // This method is for abstract the way to retrieve information from Solr.
     // It does not check the parameter because it is called from getData method
     // , where we control all that things. Moreover, it uses the facets
-    protected ComplexResultIterator retrieve(String query, int offset, int size, String facets) throws SolrServerException {
+    protected ComplexResultIterator retrieve(String query, int offset, int size, String filters, String facets) throws SolrServerException {
         return this.searcher.searchWithFacets( query, // query
                                                   offset, // first result
                                                     size, // end result
-                                                      "", // filters to use
+                                                 filters, // filters to use
                                                   facets) // facets fields to use
         ;
     }
@@ -69,7 +69,7 @@ public class DataProvider {
     /*      Public methods      */
     /****************************/
     // getData function return the results of the query
-    public ComplexRestResult getData(String query, int first, int number, String facets) throws SolrServerException {
+    public ComplexRestResult getData(String query, int first, int number, String filters, String facets) throws SolrServerException {
         int i = first;
         boolean in = false; // to know if we went into the loop
         ComplexResultIterator iterator = null; // Gives retrieve method results
@@ -90,7 +90,7 @@ public class DataProvider {
         // i = 70; 70 + 20 > 65 + 10, then exit
         for ( /* i = first */ ; i + chunkSize < number + first ; i+= chunkSize ) {
             in = true;
-            iterator = facets != null ? retrieve(query, i, chunkSize, facets) : retrieve(query, i, chunkSize);
+            iterator = facets != null ? retrieve(query, i, chunkSize, filters, facets) : retrieve(query, i, chunkSize, filters);
             // This method will traverse the iterator and get the elements
             if ( iterator != null && iterator.hasNext() ) {
                 result.add(iterator);
@@ -106,7 +106,7 @@ public class DataProvider {
         // i = 70 and number = 65, we have to query for from 70 to 75
         // for that we query from 70 to 75 ( number + first - i = 65 + 10 - 70 )
         if ( i < number + first ) {
-            iterator = facets != null ? retrieve(query, i, number + first - i, facets) : retrieve(query, i, number + first - i);
+            iterator = facets != null ? retrieve(query, i, number + first - i, filters, facets) : retrieve(query, i, number + first - i, filters);
             // This method will traverse the iterator and get the elements
             if ( iterator != null ) {
                 result.add(iterator);

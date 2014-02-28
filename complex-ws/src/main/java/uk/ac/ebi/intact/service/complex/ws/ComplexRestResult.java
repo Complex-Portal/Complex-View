@@ -6,9 +6,7 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSearchResults;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Oscar Forner (oforner@ebi.ac.uk)
@@ -22,7 +20,7 @@ public class ComplexRestResult {
     /********************************/
     private int size;
     private List<ComplexSearchResults> elements;
-    private List<ComplexFacetResults> facets;
+    private Map<String,List<ComplexFacetResults>> facets;
 
     /*************************/
     /*      Constructor      */
@@ -39,11 +37,14 @@ public class ComplexRestResult {
     public void add( ComplexResultIterator iterator ) {
         this.size += iterator.getNumberOfResults();
         if ( this.facets == null && iterator != null && iterator.getFacetFields() != null ) {
-            this.facets = new LinkedList<ComplexFacetResults>();
-            for ( FacetField f : iterator.getFacetFields() ) {
-                for (FacetField.Count count : f.getValues() ){
-                    this.facets.add( new ComplexFacetResults( count.getName(), count.getCount() ) );
+            this.facets = new HashMap<String, List<ComplexFacetResults>>();
+            Map<String, List<FacetField.Count>> map = iterator.getFacetFields();
+            for ( String field : map.keySet() ) {
+                List<ComplexFacetResults> list = new ArrayList<ComplexFacetResults>();
+                for (FacetField.Count count : map.get(field) ){
+                    list.add( new ComplexFacetResults(count.getName(), count.getCount()));
                 }
+                this.facets.put(field, list);
             }
         }
         while ( iterator.hasNext() ) {
@@ -59,5 +60,5 @@ public class ComplexRestResult {
     @XmlElement
     public List<ComplexSearchResults> getElements() { return this.elements; }
     @XmlElement
-    public List<ComplexFacetResults> getFacets() { return this.facets; }
+    public Map<String,List<ComplexFacetResults>> getFacets() { return this.facets; }
 }

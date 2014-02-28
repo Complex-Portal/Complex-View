@@ -81,8 +81,9 @@ public class SearchController {
 	public ComplexRestResult search(@PathVariable String query,
                                     @RequestParam (required = false) String first,
                                     @RequestParam (required = false) String number,
+                                    @RequestParam (required = false) String filters,
                                     @RequestParam (required = false) String facets) {
-        return query(query, first, number, facets);
+        return query(query, first, number, filters, facets);
 	}
 
     /*
@@ -106,7 +107,7 @@ public class SearchController {
         fields.add(ComplexFieldNames.INTERACTOR_ALIAS);
         fields.add(ComplexFieldNames.INTERACTOR_XREF);
         // Retrieve data using that parameters and return it
-        return query(improveQuery(query, fields), first, number, null);
+        return query(improveQuery(query, fields), first, number, null, null);
     }
 
     /*
@@ -131,7 +132,7 @@ public class SearchController {
         fields.add(ComplexFieldNames.COMPLEX_ALIAS);
         fields.add(ComplexFieldNames.COMPLEX_XREF);
         // Retrieve data using that parameters and return it
-        return query(improveQuery(query, fields), first, number, null);
+        return query(improveQuery(query, fields), first, number, null, null);
     }
 
     /*
@@ -154,7 +155,7 @@ public class SearchController {
         fields.add(ComplexFieldNames.ORGANISM_NAME);
         fields.add(ComplexFieldNames.COMPLEX_ORGANISM);
         // Retrieve data using that parameters and return it
-        return query(improveQuery(query, fields), first, number, null);
+        return query(improveQuery(query, fields), first, number, null, null);
     }
 
     /*
@@ -199,7 +200,7 @@ public class SearchController {
     /*      Protected methods      */
     /*******************************/
     // This method controls the first and number parameters and retrieve data
-    protected ComplexRestResult query(String query, String first, String number, String facets) {
+    protected ComplexRestResult query(String query, String first, String number, String filters, String facets) {
         // Get parameters (if we have them)
         int f, n;
         // If we have first parameter parse it to integer
@@ -212,7 +213,7 @@ public class SearchController {
         else n = Integer.MAX_VALUE - f;
         try{
             // Retrieve data using that parameters and return it
-            return this.dataProvider.getData( query, f, n , facets);
+            return this.dataProvider.getData( query, f, n, filters , facets);
         }
         catch (SolrServerException e){
             if ( log.isInfoEnabled() )
