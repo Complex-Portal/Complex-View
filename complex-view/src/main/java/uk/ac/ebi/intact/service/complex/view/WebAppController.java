@@ -38,7 +38,8 @@ public class WebAppController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
 	public String search(@RequestParam String query,
                                    @RequestParam ( required = false ) String page,
-                                   @RequestParam ( required = false ) String filter,
+                                   @RequestParam ( required = false ) String filters,
+                                   @RequestParam ( required = false ) String facets,
                                    @RequestParam ( required = false ) String type,
                                    ModelMap model,
                                    HttpSession session,
@@ -46,7 +47,7 @@ public class WebAppController {
     {
         query = cleanQuery(query);
         Page pageInfo = restConnection.getPage(page, query);
-        ComplexRestResult results = restConnection.query(query, pageInfo, filter, type);
+        ComplexRestResult results = restConnection.query(query, pageInfo, filters, facets, type);
 		session.setAttribute("results", results);
         session.setAttribute("pageInfo", pageInfo);
         defaultModelMapValues(model, request);

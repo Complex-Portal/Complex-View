@@ -15,7 +15,10 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Oscar Forner (oforner@ebi.ac.uk)
@@ -28,15 +31,17 @@ public class RestConnection {
     /********************************/
     String WS_URL = null;
     int number;
+    Map<String, String> facetFieldNames;
     private static final Log log = LogFactory.getLog(RestConnection.class);
 
     /*************************/
     /*      Constructor      */
     /*************************/
     // To autowire
-    public RestConnection( String url, Integer elementsPage ) {
+    public RestConnection( String url, Integer elementsPage, Map<String, String> map ) {
         this.WS_URL = url ;
         this.number = elementsPage.intValue() ;
+        this.facetFieldNames = map ;
     }
 
     /*******************************/
@@ -88,7 +93,8 @@ public class RestConnection {
 
     protected String createQuery( String q,
                                   Page pageInfo,
-                                  String filter,
+                                  String filters,
+                                  String facets,
                                   String queryType)
     {
         StringBuilder query = new StringBuilder();
@@ -101,7 +107,8 @@ public class RestConnection {
         query.append("?format=json");
         query.append("&first=" + pageInfo.getPage() * this.number);
         query.append("&number=" + this.number);
-        //We have to do something with the filter
+        query.append("&filters=" + filters);
+        query.append("&facets=" + facets);
         return query.toString();
     }
 
@@ -155,6 +162,23 @@ public class RestConnection {
                 res.setDescription( (String) ob.get("description") );
                 res.setOrganismName( (String) ob.get("organismName") );
                 result.add(res);
+            }
+            if ( complexRestResults.containsKey("facets") ) {
+                List<ComplexFacetResults> list;
+                ComplexFacetResults facetResults;
+                JSONObject facetsOb = (JSONObject) complexRestResults.get("facets");
+                for(Object facetField : facetsOb.keySet() ) {
+                    list = new ArrayList<ComplexFacetResults>();
+                    JSONArray facetA = (JSONArray) facetsOb.get(facetField);
+                    for ( int i = 0; i < facetA.size(); ++i ) {
+                        facetResults = new ComplexFacetResults();
+                        ob = (JSONObject) facetA.get(i);
+                        facetResults.setName( (String) ob.get("name") );
+                        facetResults.setCount( (Long) ob.get("count") );
+                        list.add(facetResults);
+                    }
+                    result.add( String.valueOf( facetField ) , list);
+                }
             }
         }
         return result;
@@ -264,10 +288,11 @@ public class RestConnection {
 
     public ComplexRestResult query( String query,
                                     Page page,
-                                    String filter,
+                                    String filters,
+                                    String facets,
                                     String queryType)
     {
-        String q = createQuery(query, page, filter, queryType);
+        String q = createQuery(query, page, filters, facets, queryType);
         ComplexRestResult result = JSONToComplexRestResult(getDataFromWS(q));
         if (result != null) {
             result.setOriginalQuery(query);
