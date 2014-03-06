@@ -47,8 +47,9 @@ public class RestConnection {
     /*******************************/
     /*      Protected methods      */
     /*******************************/
-    protected int getNumberOfComplexes(String q) {
+    protected int getNumberOfComplexes(String q, String filters, String facets) {
         int result = 0;
+        Object o = null;
         StringBuilder queryBuilder = new StringBuilder()
                 .append(this.WS_URL)
                 .append(QueryTypes.DEFAULT.value)
@@ -59,7 +60,13 @@ public class RestConnection {
             e.printStackTrace();
         }
         queryBuilder.append("?format=json");
-        Object o = getDataFromWS(queryBuilder.toString());
+        if (filters != null) queryBuilder.append("&filters=" + filters );
+        if (facets != null) queryBuilder.append("&facets=" + facets );
+        try {
+            o = getDataFromWS(URIUtil.encodeQuery(queryBuilder.toString()));
+        } catch (URIException e) {
+            e.printStackTrace();
+        }
         if ( o != null) {
             JSONObject jo = (JSONObject) ((JSONObject) o).get("complexRestResult");
             result = ((Long)jo.get("size")).intValue();
@@ -99,17 +106,18 @@ public class RestConnection {
     {
         StringBuilder query = new StringBuilder();
         query.append( getBaseURL(queryType) );
-        try {
-            query.append(URIUtil.encodeQuery(q));
-        } catch (URIException e) {
-            e.printStackTrace();
-        }
+        query.append(q);
         query.append("?format=json");
         query.append("&first=" + pageInfo.getPage() * this.number);
         query.append("&number=" + this.number);
-        query.append("&filters=" + filters);
-        query.append("&facets=" + facets);
-        return query.toString();
+        if (filters != null) query.append("&filters=" + filters );
+        if (facets != null) query.append("&facets=" + facets );
+        try {
+            return URIUtil.encodeQuery(query.toString());
+        } catch (URIException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -147,7 +155,7 @@ public class RestConnection {
 
     protected ComplexRestResult JSONToComplexRestResult( JSONObject json ) {
         ComplexRestResult result = null;
-        if (json != null) {
+        if (json != null && json.size() > 0) {
             JSONObject complexRestResults = (JSONObject) json.get("complexRestResult");
             JSONArray elements = (JSONArray) complexRestResults.get("elements");
             result = new ComplexRestResult();
@@ -163,10 +171,10 @@ public class RestConnection {
                 res.setOrganismName( (String) ob.get("organismName") );
                 result.add(res);
             }
-            if ( complexRestResults.containsKey("facets") ) {
-                List<ComplexFacetResults> list;
-                ComplexFacetResults facetResults;
-                JSONObject facetsOb = (JSONObject) complexRestResults.get("facets");
+            JSONObject facetsOb = (JSONObject) complexRestResults.get("facets");
+            List<ComplexFacetResults> list;
+            ComplexFacetResults facetResults;
+            if ( facetsOb != null ) {
                 for(Object facetField : facetsOb.keySet() ) {
                     list = new ArrayList<ComplexFacetResults>();
                     JSONArray facetA = (JSONArray) facetsOb.get(facetField);
@@ -281,8 +289,8 @@ public class RestConnection {
     /*      Public methods      */
     /****************************/
 
-    public Page getPage(String page, String query) {
-        int max_elements = getNumberOfComplexes(query);
+    public Page getPage(String page, String query, String filters, String facets) {
+        int max_elements = getNumberOfComplexes(query, filters, facets);
         return new Page(page, this.number, max_elements);
     }
 

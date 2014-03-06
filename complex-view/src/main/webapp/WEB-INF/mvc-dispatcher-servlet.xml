@@ -31,8 +31,8 @@
         <entry key="complex_type_f" value="Complex type"/>
         <entry key="type_f"         value="Interaction type"/>
         <entry key="ptype_f"        value="Interactor type"/>
-        <entry key="pbiorole_f"     value="Biological role"/>
-        <entry key="ftype_f"        value="Type"/>
+        <entry key="pbiorole_f"     value="Participant's biological role"/>
+        <entry key="ftype_f"        value="Feature type"/>
         <entry key="source_f"       value="Source"/>
     </util:map>
 

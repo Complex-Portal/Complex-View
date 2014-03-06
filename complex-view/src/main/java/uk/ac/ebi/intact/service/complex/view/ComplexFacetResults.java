@@ -43,4 +43,9 @@ public class ComplexFacetResults {
     public void setCount(Long count) {
         this.count = count;
     }
+
+    @Override
+    public String toString() {
+        return name + " (" + count + ')';
+    }
 }

@@ -25,6 +25,40 @@ function checkPageNumberBottom(){
     }
 };
 
+function goBack(){
+    window.history.back()
+};
+
+function clearFilters(){
+    var species = document.forms['filtersForm']['species'];
+    if (typeof species.length != 'undefined') {
+        for (var i = 0; i < species.length; i++){
+            species[i].checked = false;
+        }
+    }
+    else{
+        species.checked = false;
+    }
+    var types = document.forms['filtersForm']['types'];
+    if (typeof types.length != 'undefined') {
+        for (var i = 0; i < types.length; i++){
+            types[i].checked = false;
+        }
+    }
+    else{
+        types.checked = false;
+    }
+    var bioroles = document.forms['filtersForm']['bioroles'];
+    if (typeof bioroles.length != 'undefined') {
+        for (var i = 0; i < bioroles.length; i++){
+            bioroles[i].checked = false;
+        }
+    }
+    else{
+        bioroles.checked = false;
+    }
+}
+
 $(document).on({
     'mouseenter': function (e) {
         $(this).tooltip('show');

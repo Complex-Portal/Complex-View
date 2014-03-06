@@ -29,7 +29,7 @@ public class ComplexDetails {
     public void setSystematicName ( String systematic ) {
         this.systematicName = systematic;
     }
-   public String getSystematicName () { return this.systematicName; }
+    public String getSystematicName () { return this.systematicName; }
     public void setSynonyms ( List<String> syns ) { this.synonyms = syns; }
     public void addSynonym ( String syn ) { this.synonyms.add(syn); }
     public List<String> getSynonyms() { return this.synonyms; }

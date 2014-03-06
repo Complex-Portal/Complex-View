@@ -76,6 +76,7 @@
             <form class="searchForm" method="POST" action="">
                 <textarea name="query" rows="10" id="querySearchBox"  type="text"   class="searchBox"    placeholder="Enter search term(s)..."></textarea>
                 <br>
+                <input name="facets" id="facets" type="hidden" value="${facetFields}" />
                 <input name="button" id="button" type="submit" class="searchButton submit" value="Search" />
             </form>
             <br>
@@ -89,10 +90,10 @@
         <div class="exampleDiv">
             <label class="searchExamples">Examples:</label>
             <ul class="exampleList">
-                <li>GO term(s): <form class="exampleForm" id="example4form" action="" method="POST"><input type="hidden" name="query" value="GO:0016491"/><a href="<c:out value="#"/>" onclick="document.getElementById('example4form').submit();">GO:0016491</a></form></li>
-                <li>Gene name(s): <form class="exampleForm" id="example1form" action="" method="POST"><input type="hidden" name="query" value="Ndc80"/>   <a href="<c:out value="#"/>" onclick="document.getElementById('example1form').submit();">Ndc80</a></form></li>
-                <li>UniProt AC(s): <form class="exampleForm" id="example3form" action="" method="POST"><input type="hidden" name="query" value="Q05471"/> <a href="<c:out value="#"/>" onclick="document.getElementById('example3form').submit();">Q05471</a></form></li>
-                <li>Protein name(s): <form class="exampleForm" id="example2form" action="" method="POST"><input type="hidden" name="query" value="PCNA"/> <a href="<c:out value="#"/>" onclick="document.getElementById('example2form').submit();">PCNA</a></form></li>
+                <li>GO term(s): <form class="exampleForm" id="example4form" action="" method="POST"><input type="hidden" name="query" value="GO:0016491"/><a href="<c:out value="#"/>" onclick="document.getElementById('example4form').submit();">GO:0016491</a><input name="facets" id="facets4Example" type="hidden" value="${facetFields}" /></form></li>
+                <li>Gene name(s): <form class="exampleForm" id="example1form" action="" method="POST"><input type="hidden" name="query" value="Ndc80"/>   <a href="<c:out value="#"/>" onclick="document.getElementById('example1form').submit();">Ndc80</a><input name="facets" id="facets1Example" type="hidden" value="${facetFields}" /></form></li>
+                <li>UniProt AC(s): <form class="exampleForm" id="example3form" action="" method="POST"><input type="hidden" name="query" value="Q05471"/> <a href="<c:out value="#"/>" onclick="document.getElementById('example3form').submit();">Q05471</a><input name="facets" id="facets2Example" type="hidden" value="${facetFields}" /></form></li>
+                <li>Protein name(s): <form class="exampleForm" id="example2form" action="" method="POST"><input type="hidden" name="query" value="PCNA"/> <a href="<c:out value="#"/>" onclick="document.getElementById('example2form').submit();">PCNA</a><input name="facets" id="facets3Example" type="hidden" value="${facetFields}" /></form></li>
                 <%--<li>Pubmed ID: 22540012</li>--%>
             </ul>
             <a href="JavaScript:newPopup('<c:url value="/help/"/>');">Help</a>

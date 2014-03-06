@@ -64,7 +64,16 @@ div.results
     border-radius: 25px;
     margin-left: auto;
     margin-right: auto;
-    padding: 35px 40px;
+    padding: 35px 10px;
+    width: 90%;
+}
+div.filters
+{
+    border: 2px solid #E3E3E3;
+    border-radius: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px 10px;
     width: 90%;
 }
 a.complex_name
@@ -109,6 +118,11 @@ span.pagePrevSpan
 span.pageNextSpan
 {
     float: left;
+}
+
+label.filterName
+{
+    font-weight: bold;
 }
 
 /*Details page*/

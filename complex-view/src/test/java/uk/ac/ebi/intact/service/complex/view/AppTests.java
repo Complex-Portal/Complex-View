@@ -45,22 +45,22 @@ public class AppTests {
     @Test
     public void getPageNumber() throws Exception {
         String page = "1";
-        Page pageInfo = restConnection.getPage(page, "*");
+        Page pageInfo = restConnection.getPage(page, "*", null, null);
         Assert.assertEquals(pageInfo.getPrevPage(), 0);
         Assert.assertEquals(pageInfo.getPage(), 1);
         Assert.assertEquals(pageInfo.getNextPage(), 2);
         page = "2";
-        pageInfo = restConnection.getPage(page, "*");
+        pageInfo = restConnection.getPage(page, "*", null, null);
         Assert.assertEquals(pageInfo.getPrevPage(), 1);
         Assert.assertEquals(pageInfo.getPage(), 2);
         Assert.assertEquals(pageInfo.getNextPage(), 3);
         page = "0";
-        pageInfo = restConnection.getPage(page, "*");
+        pageInfo = restConnection.getPage(page, "*", null, null);
         Assert.assertEquals(pageInfo.getPrevPage(), -1);
         Assert.assertEquals(pageInfo.getPage(), 0);
         Assert.assertEquals(pageInfo.getNextPage(), 1);
         page = "12";
-        pageInfo = restConnection.getPage(page, "*");
+        pageInfo = restConnection.getPage(page, "*", null, null);
         Assert.assertEquals(pageInfo.getPrevPage(), 11);
         Assert.assertEquals(pageInfo.getPage(), 12);
         Assert.assertEquals(pageInfo.getNextPage(), 13);
@@ -68,12 +68,12 @@ public class AppTests {
     @Test
     public void getPageNegativeNumber() throws Exception {
         String page = "-1";
-        Page pageInfo = restConnection.getPage(page, "*");
+        Page pageInfo = restConnection.getPage(page, "*", null, null);
         Assert.assertEquals(pageInfo.getPrevPage(), -1);
         Assert.assertEquals(pageInfo.getPage(), 0);
         Assert.assertEquals(pageInfo.getNextPage(), 1);
         page = "-100";
-        pageInfo = restConnection.getPage(page, "*");
+        pageInfo = restConnection.getPage(page, "*", null, null);
         Assert.assertEquals(pageInfo.getPrevPage(), -1);
         Assert.assertEquals(pageInfo.getPage(), 0);
         Assert.assertEquals(pageInfo.getNextPage(), 1);
@@ -81,7 +81,7 @@ public class AppTests {
     @Test
     public void getPageHugeNumber() throws Exception {
         String page = "20000000";
-        Page pageInfo = restConnection.getPage(page, "*");
+        Page pageInfo = restConnection.getPage(page, "*", null, null);
         Assert.assertEquals(pageInfo.getPrevPage(), pageInfo.getLastPage() - 1);
         Assert.assertEquals(pageInfo.getPage(), pageInfo.getLastPage());
         Assert.assertEquals(pageInfo.getNextPage(), -1);
