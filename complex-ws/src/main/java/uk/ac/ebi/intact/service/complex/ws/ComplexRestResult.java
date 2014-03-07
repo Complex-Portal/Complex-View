@@ -40,11 +40,13 @@ public class ComplexRestResult {
             this.facets = new HashMap<String, List<ComplexFacetResults>>();
             Map<String, List<FacetField.Count>> map = iterator.getFacetFields();
             for ( String field : map.keySet() ) {
-                List<ComplexFacetResults> list = new ArrayList<ComplexFacetResults>();
-                for (FacetField.Count count : map.get(field) ){
-                    list.add( new ComplexFacetResults(count.getName(), count.getCount()));
+                if ( map.get(field) != null ) {
+                    List<ComplexFacetResults> list = new ArrayList<ComplexFacetResults>();
+                    for (FacetField.Count count : map.get(field) ){
+                        list.add( new ComplexFacetResults(count.getName(), count.getCount()));
+                    }
+                    this.facets.put(field, list);
                 }
-                this.facets.put(field, list);
             }
         }
         while ( iterator.hasNext() ) {
