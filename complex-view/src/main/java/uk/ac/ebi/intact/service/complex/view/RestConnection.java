@@ -166,7 +166,6 @@ public class RestConnection {
                 ob = (JSONObject) elements.get(i);
                 res.setComplexAC( (String) ob.get("complexAC") );
                 res.setComplexName( (String) ob.get("complexName") );
-                res.setCuratedComplex( (String) ob.get("curatedComplex") );
                 res.setDescription( (String) ob.get("description") );
                 res.setOrganismName( (String) ob.get("organismName") );
                 result.add(res);
@@ -203,6 +202,9 @@ public class RestConnection {
                 details.setAc( (String) j.get("ac") );
                 details.setName( (String) j.get("name") );
                 details.setSpecie( (String) j.get("specie") );
+                details.setLigand( (String) j.get("ligand") );
+                details.setDisease( (String) j.get("disease") );
+                details.setComplexAssembly( (String) j.get("complexAssembly") );
                 JSONArray synonyms = (JSONArray) j.get("synonyms");
                 for ( int i = 0; i < synonyms.size(); ++i ) {
                     details.addSynonym((String) synonyms.get(i));

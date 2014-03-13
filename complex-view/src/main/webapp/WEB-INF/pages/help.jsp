@@ -59,7 +59,7 @@
     -->
     <!-- End suggested layout containers -->
 
-    <h3>Help: Searches in IntAct Complex Portal</h3>
+    <h2>Searches in IntAct Complex Portal</h2>
     <p>To do a search you can use the Complex Query Language (CQL), which is based on <a href="http://lucene.apache.org/core/3_6_0/queryparsersyntax.html?conversationContext=3#Terms" target="_blank">Lucene's syntax.</a></p>
 
     <ul>
@@ -83,7 +83,7 @@
                 <li>Interaction identifier(s)</li>
                 <li>Interaction alias(es)</li>
                 <li>Interaction Xref(s)</li>
-                <li>Interaction specie</li>
+                <li>Interaction species</li>
             </ul>.
             <br />For instance, if you put
             <i>'PCNA'</i> in the simple query box,
@@ -106,7 +106,7 @@
         </li>
     </ul>
 
-    <h3>Complex Query Language (CQL) fields</h3>
+    <h2>Complex Query Language (CQL) fields</h2>
 <table style="padding-top: 10px"><tbody>
 <tr><td><span style="font-weight: bold">Field Name</span></td><td><span style="font-weight: bold">Searches on</span></td><td><span style="font-weight: bold">Example</span></td></tr>
 <%--Complex Information--%>

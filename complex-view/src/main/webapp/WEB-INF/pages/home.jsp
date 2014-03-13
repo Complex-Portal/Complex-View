@@ -66,13 +66,14 @@
     -->
     <!-- End suggested layout containers -->
     <section>
-        <div class="homeTitles">
-            <%--<h5 class="subtitleHome">IntAct provides a freely available, open source database system and analysis tools for molecular interaction data. All interactions are derived from literature curation or direct user submissions and are freely available. To perform a search in the IntAct database use the search box below.</h5>--%>
-            <h5 class="subtitleHome">The Complex Portal is a manually curate, encyclopaedic resource of macromolecular complexes from a number of key model organisms. All data is freely available for search and download. To perform a search for macromolecular complexes use the search box below.</h5>
-        </div>
+        <%--<div class="homeTitles">--%>
+            <%--&lt;%&ndash;<h5 class="subtitleHome">IntAct provides a freely available, open source database system and analysis tools for molecular interaction data. All interactions are derived from literature curation or direct user submissions and are freely available. To perform a search in the IntAct database use the search box below.</h5>&ndash;%&gt;--%>
+            <%--<h5 class="subtitleHome">The Complex Portal is a manually curate, encyclopaedic resource of macromolecular complexes from a number of key model organisms. All data is freely available for search and download. To perform a search for macromolecular complexes use the search box below.</h5>--%>
+        <%--</div>--%>
+            <p class="intro">The Complex Portal is a manually curate, encyclopaedic resource of macromolecular complexes from a number of key model organisms. All data is freely available for search and download. To perform a search for macromolecular complexes use the search box below.</p>
         <br>
         <br>
-        <div class="searchDiv">
+        <div class="grid_20 alpha">
             <form class="searchForm" method="POST" action="">
                 <textarea name="query" rows="10" id="querySearchBox"  type="text"   class="searchBox"    placeholder="Enter search term(s)..."></textarea>
                 <br>
@@ -83,11 +84,12 @@
             <br>
             <ul class="helpList">
                 <li>Free text search will look by default for interactor identifier, interactor alias, species, interaction identifier, interaction alias and interaction xrefs.</li>
+                <li>To search for a list of terms copy/paste all terms into the search box using either spaces or line breaks to separate them.</li>
                 <li>Search for isoforms of 'P12345' by using 'P12345*'</li>
                 <li>Search for groups of complexes by using the Gene Ontology. For example, GO:0016491 will search for all complexes annotated with &quot;oxidoreductase activity&quot; and all downstream child terms of this.</li>
             </ul>
         </div>
-        <div class="exampleDiv">
+        <div class="grid_4 omega">
             <label class="searchExamples">Examples:</label>
             <ul class="exampleList">
                 <li>GO term(s): <form class="exampleForm" id="example4form" action="" method="POST"><input type="hidden" name="query" value="GO:0016491"/><a href="<c:out value="#"/>" onclick="document.getElementById('example4form').submit();">GO:0016491</a><input name="facets" id="facets4Example" type="hidden" value="${facetFields}" /></form></li>
@@ -96,7 +98,9 @@
                 <li>Protein name(s): <form class="exampleForm" id="example2form" action="" method="POST"><input type="hidden" name="query" value="PCNA"/> <a href="<c:out value="#"/>" onclick="document.getElementById('example2form').submit();">PCNA</a><input name="facets" id="facets3Example" type="hidden" value="${facetFields}" /></form></li>
                 <%--<li>Pubmed ID: 22540012</li>--%>
             </ul>
-            <a href="JavaScript:newPopup('<c:url value="/help/"/>');">Help</a>
+            <%--<a href="JavaScript:newPopup('<c:url value="/help/"/>');">Help</a>--%>
+            <p rel="tooltip" title="You can search for one or several of the following types of terms: complex_id, complex_alias, species, complex_xref, udate, id, alias, ptype, stc, pbiorole, ftype, source and number_participants.
+By default, we search for entries that contain ANY of your search terms. If you would like to restrict your search, please link your terms with 'AND' or use the filters available once you have made an initial search.">Help</p>
         </div>
     </section>
 </div>

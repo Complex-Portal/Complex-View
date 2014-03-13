@@ -61,10 +61,10 @@
     <jsp:useBean id="pageInfo" class="uk.ac.ebi.intact.service.complex.view.Page"                   scope="session"/>
     <jsp:useBean id="species"  class="java.util.ArrayList"          type="java.util.List"           scope="session"/>
     <jsp:useBean id="speciesSelected"  class="java.util.ArrayList"  type="java.util.List"           scope="session"/>
-    <jsp:useBean id="types" class="java.util.ArrayList"       type="java.util.List"           scope="session"/>
-    <jsp:useBean id="typesSelected" class="java.util.ArrayList"       type="java.util.List"   scope="session"/>
-    <jsp:useBean id="bioroles" class="java.util.ArrayList"       type="java.util.List"           scope="session"/>
-    <jsp:useBean id="biorolesSelected" class="java.util.ArrayList"       type="java.util.List"   scope="session"/>
+    <jsp:useBean id="types" class="java.util.ArrayList"             type="java.util.List"           scope="session"/>
+    <jsp:useBean id="typesSelected" class="java.util.ArrayList"     type="java.util.List"           scope="session"/>
+    <jsp:useBean id="bioroles" class="java.util.ArrayList"          type="java.util.List"           scope="session"/>
+    <jsp:useBean id="biorolesSelected" class="java.util.ArrayList"  type="java.util.List"           scope="session"/>
         <section id="searchResults">
         <c:choose>
             <c:when test="${not empty sessionScope.results.originaQuery}">

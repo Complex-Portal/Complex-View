@@ -63,7 +63,7 @@
     <h3 class="subtitleDetails">Species: <c:choose><c:when test="${not empty sessionScope.details.specie}"><c:out value="${sessionScope.details.specie}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
     <h3 class="subtitleDetails">IntAct AC: <c:choose><c:when test="${not empty sessionScope.details.ac}"><c:out value="${sessionScope.details.ac}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
     <div class="details">
-        <c:if test="${not empty sessionScope.details.systematicName || not empty sessionScope.details.synonyms || not empty sessionScope.details.function || not empty sessionScope.details.properties}">
+        <c:if test="${not empty sessionScope.details.systematicName || not empty sessionScope.details.synonyms || not empty sessionScope.details.function || not empty sessionScope.details.properties || not empty sessionScope.details.ligand || not empty sessionScope.details.disease || not empty sessionScope.details.complexAssembly}">
             <div class="section">
                 <h4 class="sectionTitle">Summary</h4>
                 <c:if test="${not empty sessionScope.details.systematicName}">
@@ -90,6 +90,24 @@
                     <label class="sectionEntry">Properties:</label>
                     <br>
                     <label class="sectionValue"><c:out value="${sessionScope.details.properties}"/></label>
+                <br><br>
+                </c:if>
+                <c:if test="${not empty sessionScope.details.ligand}">
+                    <label class="sectionEntry">Ligand:</label>
+                    <br>
+                    <label class="sectionValue"><c:out value="${sessionScope.details.ligand}"/></label>
+                <br><br>
+                </c:if>
+                <c:if test="${not empty sessionScope.details.disease}">
+                    <label class="sectionEntry">Disease:</label>
+                    <br>
+                    <label class="sectionValue"><c:out value="${sessionScope.details.disease}"/></label>
+                <br><br>
+                </c:if>
+                <c:if test="${not empty sessionScope.details.complexAssembly}">
+                    <label class="sectionEntry">Complex Assembly:</label>
+                    <br>
+                    <label class="sectionValue"><c:out value="${sessionScope.details.complexAssembly}"/></label>
                 </c:if>
             </div>
             <br>
@@ -100,7 +118,7 @@
                 <thead>
                     <tr class="trHead">
                         <td>ID</td>
-                        <td>Gene Name</td>
+                        <td>Name</td>
                         <td>Description</td>
                         <td>Stochiometry</td>
                         <td>Biological Role</td>
