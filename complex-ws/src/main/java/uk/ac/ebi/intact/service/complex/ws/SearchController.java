@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
@@ -16,6 +17,7 @@ import uk.ac.ebi.intact.model.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -68,6 +70,18 @@ public class SearchController {
     /****************************/
     /*      Public methods      */
     /****************************/
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String showHomeHelp(){
+        return "home";
+    }
+    @RequestMapping(value = "/search/", method = RequestMethod.GET)
+    public String showSearchHelp(){
+        return "search";
+    }
+    @RequestMapping(value = "/details/", method = RequestMethod.GET)
+    public String showDetailsHelp(){
+        return "details";
+    }
     /*
      - We can access to that method using:
          http://<servername>:<port>/search/<something to query>
@@ -183,7 +197,16 @@ public class SearchController {
                     details.setFunction ( annotation.getAnnotationText ( ) ) ;
                 }
                 else if ( annotation.getCvTopic() != null && annotation.getCvTopic().getIdentifier() != null && annotation.getCvTopic().getIdentifier().equals("MI:0629") ) {
-                        details.setProperties(annotation.getAnnotationText());
+                    details.setProperties(annotation.getAnnotationText());
+                }
+                else if ( annotation.getCvTopic() != null && annotation.getCvTopic().getIdentifier() != null && annotation.getCvTopic().getIdentifier().equals("MI:0617") ) {
+                    details.setDisease(annotation.getAnnotationText());
+                }
+                else if ( annotation.getCvTopic() != null && annotation.getCvTopic().getIdentifier() != null && annotation.getCvTopic().getIdentifier().equals("IA:2738") ) {
+                    details.setLigand(annotation.getAnnotationText());
+                }
+                else if ( annotation.getCvTopic() != null && annotation.getCvTopic().getIdentifier() != null && annotation.getCvTopic().getIdentifier().equals("IA:2783") ) {
+                    details.setComplexAssembly(annotation.getAnnotationText());
                 }
             }
             setComplexNames(complex, details);

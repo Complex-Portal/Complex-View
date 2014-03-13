@@ -30,6 +30,9 @@ public class ComplexDetails {
     private String ac;
     private String name;
     private String specie;
+    private String ligand;
+    private String complexAssembly;
+    private String disease;
     private Collection<ComplexDetailsParticipants> participants;
     private Collection<ComplexDetailsCrossReferences> crossReferences;
 
@@ -69,6 +72,15 @@ public class ComplexDetails {
     public void setSpecie ( String s ) { this.specie = s; }
     @XmlElement
     public String getSpecie () { return this.specie; }
+    @XmlElement
+    public String getLigand() { return ligand; }
+    public void setLigand(String ligand) { this.ligand = ligand; }
+    @XmlElement
+    public String getComplexAssembly() { return complexAssembly; }
+    public void setComplexAssembly(String complexAssembly) { this.complexAssembly = complexAssembly; }
+    @XmlElement
+    public String getDisease() { return disease; }
+    public void setDisease(String disease) { this.disease = disease; }
     public Collection<ComplexDetailsParticipants> getParticipants() {
         return participants;
     }

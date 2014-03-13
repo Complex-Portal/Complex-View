@@ -26,7 +26,7 @@
           class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <property name="favorParameter" value="true" />
         <property name="defaultContentType" value="application/json" />
-        <property name="ignoreAcceptHeader" value="true"/>
+        <!--<property name="ignoreAcceptHeader" value="true"/>-->
         <property name="mediaTypes">
             <map>
                 <entry key="json" value="application/json" />
