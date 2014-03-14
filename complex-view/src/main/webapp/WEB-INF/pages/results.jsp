@@ -127,8 +127,8 @@
                                 </form>
                             </div>
                         </section>
-                        <section id="searchResults"class="grid_18">
-                            <div class="results">
+                        <section id="searchResults"class="grid_18 omega">
+                            <div class="results grid_24">
                                 <div class="pages">
                                     <c:if test="${sessionScope.pageInfo.prevPage != -1 || sessionScope.pageInfo.nextPage != -1}">
                                         <c:if test="${sessionScope.pageInfo.prevPage != -1}">

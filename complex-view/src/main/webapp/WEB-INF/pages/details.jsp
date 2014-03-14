@@ -62,59 +62,53 @@
     <h2 class="titleDetails"><c:choose><c:when test="${not empty sessionScope.details.name}"><c:out value="${sessionScope.details.name}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h2>
     <h3 class="subtitleDetails">Species: <c:choose><c:when test="${not empty sessionScope.details.specie}"><c:out value="${sessionScope.details.specie}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
     <h3 class="subtitleDetails">IntAct AC: <c:choose><c:when test="${not empty sessionScope.details.ac}"><c:out value="${sessionScope.details.ac}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
-    <div class="details">
+    <div class="grid_24">
         <c:if test="${not empty sessionScope.details.systematicName || not empty sessionScope.details.synonyms || not empty sessionScope.details.function || not empty sessionScope.details.properties || not empty sessionScope.details.ligand || not empty sessionScope.details.disease || not empty sessionScope.details.complexAssembly}">
-            <div class="section">
-                <h4 class="sectionTitle">Summary</h4>
+            <div class="grid_24">
+                <h4>Summary</h4>
+                <br>
                 <c:if test="${not empty sessionScope.details.systematicName}">
-                    <label class="sectionEntry">Systematic Name:</label>
-                    <br>
-                    <label class="sectionValue"><c:out value="${sessionScope.details.systematicName}"/></label>
-                <br><br>
+                    <h5>Systematic Name:</h5>
+                    <h6 style="text-align: justify;"><c:out value="${sessionScope.details.systematicName}"/></h6>
+                <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.synonyms}">
-                    <label class="sectionEntry">Synonyms:</label>
-                    <br>
+                    <h5>Synonyms:</h5>
                     <c:forEach var="synonym" items="${sessionScope.details.synonyms}">
-                        <label class="sectionValue"><c:out value="${synonym}"/><br></label>
+                        <h6 style="text-align: justify;"><c:out value="${synonym}"/><br></h6>
                     </c:forEach>
-                <br><br>
+                <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.function}">
-                    <label class="sectionEntry">Function:</label>
-                    <br>
-                    <label class="sectionValue"><c:out value="${sessionScope.details.function}"/></label>
-                <br><br>
+                    <h5>Function:</h5>
+                    <h6 style="text-align: justify;"><c:out value="${sessionScope.details.function}"/></h6>
+                <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.properties}">
-                    <label class="sectionEntry">Properties:</label>
-                    <br>
-                    <label class="sectionValue"><c:out value="${sessionScope.details.properties}"/></label>
-                <br><br>
+                    <h5>Properties:</h5>
+                    <h6 style="text-align: justify;"><c:out value="${sessionScope.details.properties}"/></h6>
+                <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.ligand}">
-                    <label class="sectionEntry">Ligand:</label>
-                    <br>
-                    <label class="sectionValue"><c:out value="${sessionScope.details.ligand}"/></label>
-                <br><br>
+                    <h5>Ligand:</h5>
+                    <h6 style="text-align: justify;"><c:out value="${sessionScope.details.ligand}"/></h6>
+                <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.disease}">
-                    <label class="sectionEntry">Disease:</label>
-                    <br>
-                    <label class="sectionValue"><c:out value="${sessionScope.details.disease}"/></label>
-                <br><br>
+                    <h5>Disease:</h5>
+                    <h6 style="text-align: justify;"><c:out value="${sessionScope.details.disease}"/></h6>
+                <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.complexAssembly}">
-                    <label class="sectionEntry">Complex Assembly:</label>
-                    <br>
-                    <label class="sectionValue"><c:out value="${sessionScope.details.complexAssembly}"/></label>
+                    <h5>Complex Assembly:</h5>
+                    <h6 style="text-align: justify;"><c:out value="${sessionScope.details.complexAssembly}"/></h6>
                 </c:if>
             </div>
             <br>
         </c:if>
-        <div class="section">
-            <h4 class="sectionTitle">Participants</h4>
-            <table id="participants" class="participants">
+        <div class="grid_24">
+            <h4>Participants</h4>
+            <table id="participants" class="table">
                 <thead>
                     <tr class="trHead">
                         <td>ID</td>
@@ -168,9 +162,9 @@
             </table>
         </div>
         <br>
-        <div class="section">
-            <h4 class="sectionTitle">Cross References</h4>
-            <table id="crossReferences" class="crossReferences">
+        <div class="grid_24">
+            <h4>Cross References</h4>
+            <table id="crossReferences" class="table">
                 <thead>
                     <tr class="trHead">
                         <td>Type</td>
