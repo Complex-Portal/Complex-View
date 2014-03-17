@@ -54,6 +54,7 @@
     <link href="<c:url value="/resources/css/main.css" />" rel="stylesheet"> <%--Added by Oscar--%>
     <!-- end CSS-->
     <%--Begin JS--%>
+    <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/ga.js"/>"></script>
     <script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> <%--Added by Oscar--%>
     <%--<script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> &lt;%&ndash;Added by Oscar&ndash;%&gt;--%>
     <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/main.js"/>"></script> <%--Added by Oscar--%>
@@ -101,7 +102,7 @@
 
             <!-- local-title -->
 
-            <div class="grid_24 alpha" id="local-title">
+            <div class="grid_12 alpha" id="local-title">
                 <h1><a href="${complex_home_url}" title="Back to ${complex_portal_name} homepage">Complex Portal</a></h1>
             </div>
 

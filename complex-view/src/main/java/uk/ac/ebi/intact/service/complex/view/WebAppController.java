@@ -47,39 +47,46 @@ public class WebAppController {
                                    HttpSession session,
                                    HttpServletRequest request)
     {
+        model.addAttribute("complex_search_form", request.getRequestURL().toString());
         query = cleanQuery(query);
         String filters = buildFilters(species, types, bioroles);
         Page pageInfo = restConnection.getPage(page, query, filters, facets);
         ComplexRestResult results = restConnection.query(query, pageInfo, filters, facets, type);
-        if ( results != null ) {
-            Map<String, List<ComplexFacetResults>> facetResults = results.getFacets();
-            session.setAttribute("species", facetResults.get("species_f"));
-            session.setAttribute("types", facetResults.get("ptype_f"));
-            session.setAttribute("bioroles", facetResults.get("pbiorole_f"));
-        }
         session.setAttribute("results", results);
-        session.setAttribute("pageInfo", pageInfo);
-        List<String> speciesList = null;
-        if ( species != null ) {
-            speciesList = new ArrayList<String>();
-            Collections.addAll(speciesList, species);
+        if (pageInfo.getTotalNumberOfElements() != 0) {
+            if ( results != null ) {
+                Map<String, List<ComplexFacetResults>> facetResults = results.getFacets();
+                session.setAttribute("species", facetResults.get("species_f"));
+                session.setAttribute("types", facetResults.get("ptype_f"));
+                session.setAttribute("bioroles", facetResults.get("pbiorole_f"));
+            }
+            session.setAttribute("pageInfo", pageInfo);
+            List<String> speciesList = null;
+            if ( species != null ) {
+                speciesList = new ArrayList<String>();
+                Collections.addAll(speciesList, species);
+            }
+            session.setAttribute("speciesSelected",speciesList);
+            List<String> typesList = null;
+            if ( types != null ) {
+                typesList = new ArrayList<String>();
+                Collections.addAll(typesList, types);
+            }
+            session.setAttribute("typesSelected", typesList);
+            List<String> biorolesList = null;
+            if ( bioroles != null ) {
+                biorolesList = new ArrayList<String>();
+                Collections.addAll(biorolesList, bioroles);
+            }
+            session.setAttribute("biorolesSelected", biorolesList);
+            setDefaultModelMapValues(model, request);
+            model.addAttribute("page_title", "Complex Search");
+            return "results";
         }
-        session.setAttribute("speciesSelected",speciesList);
-        List<String> typesList = null;
-        if ( types != null ) {
-            typesList = new ArrayList<String>();
-            Collections.addAll(typesList, types);
+        else{
+            setDefaultModelMapValues(model, request);
+            return "noResults";
         }
-        session.setAttribute("typesSelected", typesList);
-        List<String> biorolesList = null;
-        if ( bioroles != null ) {
-            biorolesList = new ArrayList<String>();
-            Collections.addAll(biorolesList, bioroles);
-        }
-        session.setAttribute("biorolesSelected", biorolesList);
-        setDefaultModelMapValues(model, request);
-        model.addAttribute("page_title", "Complex Search");
-        return "results";
 	}
 
     // DETAILS
@@ -91,6 +98,7 @@ public class WebAppController {
         ComplexDetails details = restConnection.getDetails(cleanQuery(ac), QueryTypes.DETAILS.value);
         session.setAttribute("details", details);
         setDefaultModelMapValues(model, request);
+        model.addAttribute("complex_search_form", request.getRequestURL().toString().split("details/")[0]);
         model.addAttribute("page_title", "Complex Details");
         return "details";
     }
@@ -101,6 +109,7 @@ public class WebAppController {
                                  HttpServletRequest request) {
         setDefaultModelMapValues(model, request);
         model.addAttribute("page_title", "Complex Help");
+        model.addAttribute("complex_search_form", request.getRequestURL().toString().split("help/")[0]);
         return "help";
     }
 
@@ -110,6 +119,7 @@ public class WebAppController {
                                  HttpServletRequest request) {
         setDefaultModelMapValues(model, request);
         model.addAttribute("page_title", "Complex Documentation");
+        model.addAttribute("complex_search_form", request.getRequestURL().toString().split("documentation/")[0]);
         return "documentation";
     }
 
@@ -119,6 +129,7 @@ public class WebAppController {
                                   HttpServletRequest request) {
         setDefaultModelMapValues(model, request);
         model.addAttribute("page_title", "Complex About");
+        model.addAttribute("complex_search_form", request.getRequestURL().toString().split("about/")[0]);
         return "about";
     }
 
@@ -126,7 +137,7 @@ public class WebAppController {
     /***   Private functions   ***/
     /*****************************/
     private void setDefaultModelMapValues(ModelMap model, HttpServletRequest request) {
-        model.addAttribute("complex_portal_name", "Intact Complex Portal");
+        model.addAttribute("complex_portal_name", "Complex Portal");
         model.addAttribute("complex_home_url", request.getContextPath());
         model.addAttribute("complex_search_url", request.getContextPath());
         model.addAttribute("complex_help_url", request.getContextPath() + "/help/");

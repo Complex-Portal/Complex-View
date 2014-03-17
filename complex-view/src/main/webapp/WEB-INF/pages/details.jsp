@@ -1,13 +1,35 @@
 <html>
 
 <%@include file="header.jsp"%>
+<jsp:useBean id="details" class="uk.ac.ebi.intact.service.complex.view.ComplexDetails" scope="session"/>
+
+
+<div class="grid_12 omega">
+    <form id="local-search" name="local-search" action="${complex_search_form}" method="post">
+        <fieldset>
+            <div class="left">
+                <label>
+                    <input type="text" name="query" id="local-searchbox" value="">
+                </label>
+                <!-- Include some example searchterms - keep them short and few! -->
+                <%--<span class="examples">Examples: <a href="#" title="">thing1</a>, <a href="#" title="">thing2</a>, <a href="#" title="">thing3</a></span>--%>
+            </div>
+            <input name="facets" id="facets" type="hidden" value="${facetFields}" />
+            <div class="right">
+                <input type="submit" name="submit" value="Search" class="submit">
+                <!-- If your search is more complex than just a keyword search, you can link to an Advanced Search,
+                     with whatever features you want available -->
+            </div>
+        </fieldset>
+    </form>
+</div>
 
 <nav>
     <ul class="grid_24" id="local-nav">
         <li class="first"><a href="${complex_home_url}">Home</a></li>
         <li><a href="${complex_about_url}">About</a></li>
         <li><a href="${complex_documentation_url}">Documentation</a></li>
-        <li class="active"><a href="${complex_search_url}">Search</a></li>
+        <li><a href="${complex_search_url}">Search</a></li>
         <%--<li><a href="${complex_advanced_search_url}">Advanced Search</a></li>--%>
         <%--<li><a href="${complex_downloads_url}">Downloads</a></li>--%>
         <li><a href="${complex_help_url}">Help</a></li>
@@ -57,11 +79,16 @@
     </section>
     -->
     <!-- End suggested layout containers -->
+    <nav id="breadcrumb">
+        <p>
+            <a href="${complex_home_url}">${complex_portal_name}</a> &gt;
+            Details
+        </p>
+    </nav>
 
-    <jsp:useBean id="details" class="uk.ac.ebi.intact.service.complex.view.ComplexDetails" scope="session"/>
-    <h2 class="titleDetails"><c:choose><c:when test="${not empty sessionScope.details.name}"><c:out value="${sessionScope.details.name}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h2>
-    <h3 class="subtitleDetails">Species: <c:choose><c:when test="${not empty sessionScope.details.specie}"><c:out value="${sessionScope.details.specie}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
-    <h3 class="subtitleDetails">IntAct AC: <c:choose><c:when test="${not empty sessionScope.details.ac}"><c:out value="${sessionScope.details.ac}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
+    <h2><c:choose><c:when test="${not empty sessionScope.details.name}"><c:out value="${sessionScope.details.name}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h2>
+    <h3>Species: <c:choose><c:when test="${not empty sessionScope.details.specie}"><c:out value="${sessionScope.details.specie}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose>
+    <br>IntAct AC: <c:choose><c:when test="${not empty sessionScope.details.ac}"><c:out value="${sessionScope.details.ac}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
     <div class="grid_24">
         <c:if test="${not empty sessionScope.details.systematicName || not empty sessionScope.details.synonyms || not empty sessionScope.details.function || not empty sessionScope.details.properties || not empty sessionScope.details.ligand || not empty sessionScope.details.disease || not empty sessionScope.details.complexAssembly}">
             <div class="grid_24">
@@ -69,41 +96,42 @@
                 <br>
                 <c:if test="${not empty sessionScope.details.systematicName}">
                     <h5>Systematic Name:</h5>
-                    <h6 style="text-align: justify;"><c:out value="${sessionScope.details.systematicName}"/></h6>
+                    <p style="text-align: justify;"><c:out value="${sessionScope.details.systematicName}"/></p>
                 <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.synonyms}">
                     <h5>Synonyms:</h5>
                     <c:forEach var="synonym" items="${sessionScope.details.synonyms}">
-                        <h6 style="text-align: justify;"><c:out value="${synonym}"/><br></h6>
+                        <p style="text-align: justify;"><c:out value="${synonym}"/><br></p>
                     </c:forEach>
                 <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.function}">
                     <h5>Function:</h5>
-                    <h6 style="text-align: justify;"><c:out value="${sessionScope.details.function}"/></h6>
+                    <p style="text-align: justify;"><c:out value="${sessionScope.details.function}"/></p>
                 <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.properties}">
                     <h5>Properties:</h5>
-                    <h6 style="text-align: justify;"><c:out value="${sessionScope.details.properties}"/></h6>
+                    <p style="text-align: justify;"><c:out value="${sessionScope.details.properties}"/></p>
                 <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.ligand}">
                     <h5>Ligand:</h5>
-                    <h6 style="text-align: justify;"><c:out value="${sessionScope.details.ligand}"/></h6>
+                    <p style="text-align: justify;"><c:out value="${sessionScope.details.ligand}"/></p>
                 <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.disease}">
                     <h5>Disease:</h5>
-                    <h6 style="text-align: justify;"><c:out value="${sessionScope.details.disease}"/></h6>
+                    <p style="text-align: justify;"><c:out value="${sessionScope.details.disease}"/></p>
                 <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.complexAssembly}">
                     <h5>Complex Assembly:</h5>
-                    <h6 style="text-align: justify;"><c:out value="${sessionScope.details.complexAssembly}"/></h6>
+                    <p style="text-align: justify;"><c:out value="${sessionScope.details.complexAssembly}"/></p>
                 </c:if>
             </div>
+            <br>
             <br>
         </c:if>
         <div class="grid_24">
@@ -129,7 +157,6 @@
                             <td><c:if test="${not empty part.name}"><c:out value="${part.name}"/></c:if></td>
                             <td><c:if test="${not empty part.description}"><c:out value="${part.description}"/></c:if></td>
                             <td><c:if test="${not empty part.stochiometry}"><c:out value="${part.stochiometry}"/></c:if></td>
-                            <%--<td><%if(part.getStochiometry() != null){%><%=new Double(part.getStochiometry()).intValue()%><%}%></td>--%>
                             <td><c:if test="${not empty part.bioRole}"><c:out value="${part.bioRole}"/></c:if></td>
                             <td><c:if test="${not empty part.interactorType}"><c:out value="${part.interactorType}"/></c:if></td>
                             <td><div class="detailsTable" rel="tooltip" data-placement="left" title="<c:if test="${not empty part.linkedFeatures}"><c:forEach var="linked" items="${part.linkedFeatures}"><c:out value="${linked.featureType}"/><c:out value="${linked.participantId}"/><c:forEach var="range" items="${linked.ranges}">[<c:out value="${range}"/>]</c:forEach>

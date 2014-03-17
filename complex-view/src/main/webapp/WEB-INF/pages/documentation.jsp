@@ -1,6 +1,25 @@
 <html
 <%@include file="header.jsp"%>
 
+<div class="grid_12 omega">
+    <form id="local-search" name="local-search" action="${complex_search_form}" method="post">
+        <fieldset>
+            <div class="left">
+                <label>
+                    <input type="text" name="query" id="local-searchbox" value="">
+                </label>
+                <!-- Include some example searchterms - keep them short and few! -->
+                <%--<span class="examples">Examples: <a href="#" title="">thing1</a>, <a href="#" title="">thing2</a>, <a href="#" title="">thing3</a></span>--%>
+            </div>
+            <input name="facets" id="facets" type="hidden" value="${facetFields}" />
+            <div class="right">
+                <input type="submit" name="submit" value="Search" class="submit">
+                <!-- If your search is more complex than just a keyword search, you can link to an Advanced Search,
+                     with whatever features you want available -->
+            </div>
+        </fieldset>
+    </form>
+</div>
 
 <nav>
     <ul class="grid_24" id="local-nav">
@@ -27,6 +46,12 @@
 </header>
 
     <div id="content" role="main" class="grid_24 clearfix">
+        <nav id="breadcrumb">
+            <p>
+                <a href="${complex_home_url}">${complex_portal_name}</a> &gt;
+                Documentation
+            </p>
+        </nav>
         <h2>What can be described as a complex</h2>
         <p>A stable set of (two or more) interacting macromolecules such as proteins which can be co-purified by an acceptable method and have been shown to exist as an isolated, functional unit in vivo. Any interacting non-protein molecular (e.g. small molecules, nucleic acids) will also be included.</p>
         <p>What should not be captured:</p>

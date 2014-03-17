@@ -53,13 +53,9 @@ public class RestConnection {
         StringBuilder queryBuilder = new StringBuilder()
                 .append(this.WS_URL)
                 .append(QueryTypes.DEFAULT.value)
-                .append("/");
-        try {
-            queryBuilder.append(URIUtil.encodeQuery(q));
-        } catch (URIException e) {
-            e.printStackTrace();
-        }
-        queryBuilder.append("?format=json");
+                .append("/")
+                .append(q)
+                .append("?format=json");
         if (filters != null) queryBuilder.append("&filters=" + filters );
         if (facets != null) queryBuilder.append("&facets=" + facets );
         try {
