@@ -88,7 +88,7 @@
 
     <h2><c:choose><c:when test="${not empty sessionScope.details.name}"><c:out value="${sessionScope.details.name}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h2>
     <h3>Species: <c:choose><c:when test="${not empty sessionScope.details.specie}"><c:out value="${sessionScope.details.specie}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose>
-    <br>IntAct AC: <c:choose><c:when test="${not empty sessionScope.details.ac}"><c:out value="${sessionScope.details.ac}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
+    <br>Accession number: <c:choose><c:when test="${not empty sessionScope.details.ac}"><c:out value="${sessionScope.details.ac}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
     <div class="grid_24">
         <c:if test="${not empty sessionScope.details.systematicName || not empty sessionScope.details.synonyms || not empty sessionScope.details.function || not empty sessionScope.details.properties || not empty sessionScope.details.ligand || not empty sessionScope.details.disease || not empty sessionScope.details.complexAssembly}">
             <div class="grid_24">
@@ -97,41 +97,36 @@
                 <c:if test="${not empty sessionScope.details.systematicName}">
                     <h5>Systematic Name:</h5>
                     <p style="text-align: justify;"><c:out value="${sessionScope.details.systematicName}"/></p>
-                <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.synonyms}">
                     <h5>Synonyms:</h5>
+                    <p style="text-align: justify;">
                     <c:forEach var="synonym" items="${sessionScope.details.synonyms}">
-                        <p style="text-align: justify;"><c:out value="${synonym}"/><br></p>
+                        <c:out value="${synonym}"/><br>
                     </c:forEach>
-                <br>
+                    </p>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.function}">
                     <h5>Function:</h5>
                     <p style="text-align: justify;"><c:out value="${sessionScope.details.function}"/></p>
-                <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.properties}">
                     <h5>Properties:</h5>
                     <p style="text-align: justify;"><c:out value="${sessionScope.details.properties}"/></p>
-                <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.ligand}">
                     <h5>Ligand:</h5>
                     <p style="text-align: justify;"><c:out value="${sessionScope.details.ligand}"/></p>
-                <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.disease}">
                     <h5>Disease:</h5>
                     <p style="text-align: justify;"><c:out value="${sessionScope.details.disease}"/></p>
-                <br>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.complexAssembly}">
                     <h5>Complex Assembly:</h5>
                     <p style="text-align: justify;"><c:out value="${sessionScope.details.complexAssembly}"/></p>
                 </c:if>
             </div>
-            <br>
             <br>
         </c:if>
         <div class="grid_24">
