@@ -11,18 +11,18 @@
 <jsp:useBean id="biorolesSelected" class="java.util.ArrayList"  type="java.util.List"           scope="session"/>
 
 <div class="grid_12 omega">
-    <form id="local-search" name="local-search" action="${complex_search_form}" method="post">
+    <form id="local-search" name="local-search" action="${complex_search_form}" method="get">
         <fieldset>
             <div class="left">
                 <label>
-                    <input type="text" name="query" id="local-searchbox" value="<c:out value="${sessionScope.results.originaQuery}"/>">
+                    <input type="text" name="q" id="local-searchbox" value="<c:out value="${sessionScope.results.originaQuery}"/>">
                 </label>
                 <!-- Include some example searchterms - keep them short and few! -->
                 <%--<span class="examples">Examples: <a href="#" title="">thing1</a>, <a href="#" title="">thing2</a>, <a href="#" title="">thing3</a></span>--%>
             </div>
-            <input name="facets" id="facets" type="hidden" value="${facetFields}" />
+            <%--<input name="facets" id="facets" type="hidden" value="${facetFields}" />--%>
             <div class="right">
-                <input type="submit" name="submit" value="Search" class="submit">
+                <input type="submit" value="Search" class="submit">
                 <!-- If your search is more complex than just a keyword search, you can link to an Advanced Search,
                      with whatever features you want available -->
             </div>
@@ -78,11 +78,10 @@
         <c:if test="${sessionScope.pageInfo.prevPage != -1 || sessionScope.pageInfo.nextPage != -1}">
             <c:if test="${sessionScope.pageInfo.prevPage != -1}">
                 <span class="pagePrevSpan">
-                    <form class="pagePrevForm" method="POST" action="">
-                        <input name="query"  id="queryPrevTop"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                    <form class="pagePrevForm" method="GET" action="${complex_search_form}">
+                        <input name="q"  id="queryPrevTop"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
                         <input name="page"   id="pagePrevTop"   hidden="true" value="<c:out value="${sessionScope.pageInfo.prevPage}"/>"/>
-                        <input name="facets" id="facetsPrevTop" type="hidden" value="${facetFields}" />
-                        <input name="button" class="prevPage" id="buttonPrevTop" value="PrevPage" type="submit"/>
+                        <input class="prevPage" value="PrevPage" type="submit"/>
                         <c:forEach var="s" items="${sessionScope.species}">
                             <c:set var="contains" value="false"/>
                             <c:forEach var="current" items="${sessionScope.speciesSelected}">
@@ -117,12 +116,11 @@
                 </span>
             </c:if>
                 <span class="pageCurrentSpan">
-                    <form name="Top" class="pageCurrentForm" method="POST" action="" onsubmit="return checkPageNumberTop()">
+                    <form name="Top" class="pageCurrentForm" method="GET" action="${complex_search_form}" onsubmit="return checkPageNumberTop()">
                         Page <input name="pageFake" type="text" class="pageCurrent" value="<c:out value="${sessionScope.pageInfo.pageForShow}"/>"/> of <c:out value="${sessionScope.pageInfo.lastPageForShow}"/>
                         <input name="page" type="text" hidden="true"/>
-                        <input name="query"  id="queryCurrent"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
-                        <input name="facets" id="facetsCurrent" type="hidden" value="${facetFields}" />
-                        <input name="button" id="buttonCurrent" hidden="true" type="submit">
+                        <input name="q"  id="queryCurrent"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                        <input name="button" hidden="true" type="submit">
                         <c:forEach var="s" items="${sessionScope.species}">
                             <c:set var="contains" value="false"/>
                             <c:forEach var="current" items="${sessionScope.speciesSelected}">
@@ -157,11 +155,10 @@
                 </span>
             <c:if  test="${sessionScope.pageInfo.nextPage != -1}">
                 <span class="pageNextSpan">
-                    <form class="pageNextForm" method="POST" action="">
-                        <input name="query"  id="queryNext"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                    <form class="pageNextForm" method="GET" action="${complex_search_form}">
+                        <input name="q"  id="queryNext"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
                         <input name="page"   id="pageNext"   hidden="true" value="<c:out value="${sessionScope.pageInfo.nextPage}"/>"/>
-                        <input name="facets" id="facetsNext" type="hidden" value="${facetFields}" />
-                        <input name="button" class="nextPage" id="buttonNext" value="NextPage" type="submit"/>
+                        <input class="nextPage"  value="NextPage" type="submit"/>
                         <c:forEach var="s" items="${sessionScope.species}">
                             <c:set var="contains" value="false"/>
                             <c:forEach var="current" items="${sessionScope.speciesSelected}">
@@ -213,11 +210,10 @@
         <c:if test="${sessionScope.pageInfo.prevPage != -1 || sessionScope.pageInfo.nextPage != -1}">
             <c:if test="${sessionScope.pageInfo.prevPage != -1}">
                 <span class="pagePrevSpan">
-                    <form class="pagePrevForm" method="POST" action="">
-                        <input name="query"  id="queryPrev"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                    <form class="pagePrevForm" method="GET" action="${complex_search_form}">
+                        <input name="q"  id="queryPrev"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
                         <input name="page"   id="pagePrev"   hidden="true" value="<c:out value="${sessionScope.pageInfo.prevPage}"/>"/>
-                        <input name="facets" id="facetsPrev" type="hidden" value="${facetFields}" />
-                        <input name="button" class="prevPage" id="buttonPrev" value="PrevPage" type="submit"/>
+                        <input class="prevPage" value="PrevPage" type="submit"/>
                         <c:forEach var="s" items="${sessionScope.species}">
                             <c:set var="contains" value="false"/>
                             <c:forEach var="current" items="${sessionScope.speciesSelected}">
@@ -252,12 +248,11 @@
                 </span>
             </c:if>
                 <span class="pageCurrentSpan">
-                    <form name="Bottom" class="pageCurrentForm" method="POST" action="" onsubmit="return checkPageNumberBottom()">
+                    <form name="Bottom" class="pageCurrentForm" method="GET" action="${complex_search_form}" onsubmit="return checkPageNumberBottom()">
                         Page <input name="pageFake" type="text" class="pageCurrent" value="<c:out value="${sessionScope.pageInfo.pageForShow}"/>"/> of <c:out value="${sessionScope.pageInfo.lastPageForShow}"/>
                         <input name="page" type="text" hidden="true"/>
-                        <input name="query"  id="queryCurrent"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
-                        <input name="facets" id="facetsCurrent" type="hidden" value="${facetFields}" />
-                        <input name="button" id="buttonCurrent" hidden="true" type="submit">
+                        <input name="q"  id="queryCurrent"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                        <input id="buttonCurrent" hidden="true" type="submit">
                         <c:forEach var="s" items="${sessionScope.species}">
                             <c:set var="contains" value="false"/>
                             <c:forEach var="current" items="${sessionScope.speciesSelected}">
@@ -292,11 +287,10 @@
                 </span>
             <c:if  test="${sessionScope.pageInfo.nextPage != -1}">
                 <span class="pageNextSpan">
-                    <form class="pageNextForm" method="POST" action="">
-                        <input name="query"  id="queryNextBottom"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                    <form class="pageNextForm" method="GET" action="${complex_search_form}">
+                        <input name="q"  id="queryNextBottom"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
                         <input name="page"   id="pageNextBottom"   hidden="true" value="<c:out value="${sessionScope.pageInfo.nextPage}"/>"/>
-                        <input name="facets" id="facetsNextBottom" type="hidden" value="${facetFields}" />
-                        <input name="button" class="nextPage" id="buttonNextBottom" value="NextPage" type="submit"/>
+                        <input class="nextPage" value="NextPage" type="submit"/>
                         <c:forEach var="s" items="${sessionScope.species}">
                             <c:set var="contains" value="false"/>
                             <c:forEach var="current" items="${sessionScope.speciesSelected}">
@@ -338,9 +332,8 @@
     <!-- if you have filters or facets... -->
     <section class="grid_6 pull_18 alpha" id="search-filters">
         <div id="filtersDiv" class="filters grid_24">
-            <form name="filtersForm" id="filtersForm" method="POST" action="">
-                <input name="facets" id="facets" type="hidden" value="${facetFields}" />
-                <input name="query"  id="query"  type="hidden" value="${sessionScope.results.originaQuery}" />
+            <form name="filtersForm" id="filtersForm" method="GET" action="${complex_search_form}">
+                <input name="q" type="hidden" value="${sessionScope.results.originaQuery}" />
                 <strong>Species:</strong>
                 <br>
                 <c:forEach var="s" items="${sessionScope.species}" varStatus="loopStatus">
@@ -385,8 +378,8 @@
                     <c:set var="contains" value="false"/>
                 </c:forEach>
                 <div id="filterButtons" class="filterButtons">
-                    <input name="button" id="button" type="submit" style="float: left;" class="submit filterButton" value="Filter" />
-                    <c:if test="${not empty sessionScope.speciesSelected or not empty sessionScope.typesSelected or not empty sessionScope.biorolesSelected}"><input name="clearButton" id="clearButton" type="submit" style="float: right;" class="submit clearButton" value="Reset filters" onclick="return clearFilters();" /></c:if>
+                    <input type="submit" style="float: left;" class="submit filterButton" value="Filter" />
+                    <c:if test="${not empty sessionScope.speciesSelected or not empty sessionScope.typesSelected or not empty sessionScope.biorolesSelected}"><input type="submit" style="float: right;" class="submit clearButton" value="Reset filters" onclick="return clearFilters();" /></c:if>
                 </div>
             </form>
         </div>

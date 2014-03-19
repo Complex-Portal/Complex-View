@@ -3,18 +3,18 @@
 <%@include file="header.jsp"%>
 
 <div class="grid_12 omega">
-    <form id="local-search" name="local-search" action="${complex_search_form}" method="post">
+    <form id="local-search" name="local-search" action="${complex_search_form}" method="get">
         <fieldset>
             <div class="left">
                 <label>
-                    <input type="text" name="query" id="local-searchbox" value="">
+                    <input type="text" name="q" id="local-searchbox" value="">
                 </label>
                 <!-- Include some example searchterms - keep them short and few! -->
                 <%--<span class="examples">Examples: <a href="#" title="">thing1</a>, <a href="#" title="">thing2</a>, <a href="#" title="">thing3</a></span>--%>
             </div>
-            <input name="facets" id="facets" type="hidden" value="${facetFields}" />
+            <%--<input name="facets" id="facets" type="hidden" value="${facetFields}" />--%>
             <div class="right">
-                <input type="submit" name="submit" value="Search" class="submit">
+                <input type="submit" value="Search" class="submit">
                 <!-- If your search is more complex than just a keyword search, you can link to an Advanced Search,
                      with whatever features you want available -->
             </div>
@@ -135,24 +135,24 @@
 <table style="padding-top: 10px"><tbody>
 <tr><td><span style="font-weight: bold">Field Name</span></td><td><span style="font-weight: bold">Searches on</span></td><td><span style="font-weight: bold">Example</span></td></tr>
 <%--Complex Information--%>
-<tr><td>complex_id</td><td>Interaction identifier(s)</td><td><form id="example1form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="complex_id:EBI-1224506"/>   <a href="javascript: document.getElementById('example1form').submit();">complex_id:EBI-1224506</a><input name="facets" id="facets1Example" type="hidden" value="${facetFields}" /></form></td></tr>
-<tr><td>complex_alias</td><td>Interaction alias(es)</td><td><form id="example2form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="complex_alias:&quot;coenzyme Q-cytochrome c reductase&quot;"/>   <a href="javascript: document.getElementById('example2form').submit();">complex_alias:&quot;coenzyme Q-cytochrome c reductase&quot;</a><input name="facets" id="facets2Example" type="hidden" value="${facetFields}" /></form></td></tr>
-<tr><td>species</td><td>Interaction Tax ID</td><td><form id="example3form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="species:9606"/>   <a href="javascript: document.getElementById('example3form').submit();">species:9606</a><input name="facets" id="facets3Example" type="hidden" value="${facetFields}" /></form></td></tr>
-<tr><td>complex_xref</td><td>Interaction xref(s)</td><td><form id="example4form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="complex_xref:15210332"/>   <a href="javascript: document.getElementById('example4form').submit();">complex_xref:15210332</a><input name="facets" id="facets4Example" type="hidden" value="${facetFields}" /></form></td></tr>
+<tr><td>complex_id</td><td>Interaction identifier(s)</td><td><form id="example1form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="complex_id:EBI-1224506"/><a href="javascript: document.getElementById('example1form').submit();">complex_id:EBI-1224506</a></form></td></tr>
+<tr><td>complex_alias</td><td>Interaction alias(es)</td><td><form id="example2form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="complex_alias:&quot;coenzyme Q-cytochrome c reductase&quot;"/><a href="javascript: document.getElementById('example2form').submit();">complex_alias:&quot;coenzyme Q-cytochrome c reductase&quot;</a></form></td></tr>
+<tr><td>species</td><td>Interaction Tax ID</td><td><form id="example3form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="species:9606"/><a href="javascript: document.getElementById('example3form').submit();">species:9606</a></form></td></tr>
+<tr><td>complex_xref</td><td>Interaction xref(s)</td><td><form id="example4form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="complex_xref:15210332"/><a href="javascript: document.getElementById('example4form').submit();">complex_xref:15210332</a></form></td></tr>
 <%--<tr><td>description</td><td>Interaction description</td><td><a href="" target="_top">taxidB:9606</a></td></tr>--%>
-<tr><td>udate</td><td>Last update of the interaction</td><td><form id="example5form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="udate:[20110607 TO 20120906]"/>   <a href="javascript: document.getElementById('example5form').submit();">udate:[20110607 TO 20120906]</a><input name="facets" id="facets5Example" type="hidden" value="${facetFields}" /></form></td></tr>
+<tr><td>udate</td><td>Last update of the interaction</td><td><form id="example5form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="udate:[20110607 TO 20120906]"/><a href="javascript: document.getElementById('example5form').submit();">udate:[20110607 TO 20120906]</a></form></td></tr>
 <%--Interactor Information--%>
-<tr><td>id</td><td>Interactor identifier(s)</td><td><form id="example6form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="id:P38326"/>   <a href="javascript: document.getElementById('example6form').submit();">id:P38326</a><input name="facets" id="facets6Example" type="hidden" value="${facetFields}" /></form></td></tr>
-<tr><td>alias</td><td>Interactor alias(es)</td><td><form id="example7form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="alias:Cyclin"/>   <a href="javascript: document.getElementById('example7form').submit();">alias:Cyclin</a><input name="facets" id="facets7Example" type="hidden" value="${facetFields}" /></form></td></tr>
-<tr><td>ptype</td><td>Interactor type(s)</td><td><form id="example8form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="ptype:protein"/>   <a href="javascript: document.getElementById('example8form').submit();">ptype:protein</a><input name="facets" id="facets8Example" type="hidden" value="${facetFields}" /></form></td></tr>
-<tr><td>pxref</td><td>Interactor xref(s)</td><td><form id="example9form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="pxref:GO:0031577"/>   <a href="javascript: document.getElementById('example9form').submit();">pxref:GO:0031577</a><input name="facets" id="facets9Example" type="hidden" value="${facetFields}" /></form></td></tr>
-<tr><td>stc</td><td>Boolean value to know if the Interactor has stoichiometry information</td><td><form id="example10form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="stc:true"/>   <a href="javascript: document.getElementById('example10form').submit();">stc:true</a><input name="facets" id="facets10Example" type="hidden" value="${facetFields}" /></form></td></tr>
+<tr><td>id</td><td>Interactor identifier(s)</td><td><form id="example6form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="id:P38326"/><a href="javascript: document.getElementById('example6form').submit();">id:P38326</a></form></td></tr>
+<tr><td>alias</td><td>Interactor alias(es)</td><td><form id="example7form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="alias:Cyclin"/><a href="javascript: document.getElementById('example7form').submit();">alias:Cyclin</a></form></td></tr>
+<tr><td>ptype</td><td>Interactor type(s)</td><td><form id="example8form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="ptype:protein"/><a href="javascript: document.getElementById('example8form').submit();">ptype:protein</a></form></td></tr>
+<tr><td>pxref</td><td>Interactor xref(s)</td><td><form id="example9form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="pxref:GO:0031577"/><a href="javascript: document.getElementById('example9form').submit();">pxref:GO:0031577</a></form></td></tr>
+<tr><td>stc</td><td>Boolean value to know if the Interactor has stoichiometry information</td><td><form id="example10form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="stc:true"/><a href="javascript: document.getElementById('example10form').submit();">stc:true</a></form></td></tr>
 <%--<tr><td>param</td><td>Boolean value to know if the Interaction has some parameters</td><td>param:true</td></tr>--%>
 <%--Other Fields (PSICQUIC, IntAct)--%>
-<tr><td>pbiorole</td><td>Biological role(s)</td><td><form id="example11form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="pbiorole:enzyme"/>   <a href="javascript: document.getElementById('example11form').submit();">pbiorole:enzyme</a><input name="facets" id="facets11Example" type="hidden" value="${facetFields}" /></form></td></tr>
-<tr><td>ftype</td><td>Feature type(s)</td><td><form id="example13form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="ftype:&quot;binding site&quot;"/>   <a href="javascript: document.getElementById('example12form').submit();">ftype:&quot;binding site&quot;</a><input name="facets" id="facets12Example" type="hidden" value="${facetFields}" /></form></td></tr>
-<tr><td>source</td><td>Source database(s)</td><td><form id="example14form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="source:intact"/>   <a href="javascript: document.getElementById('example13form').submit();">source:intact</a><input name="facets" id="facets13Example" type="hidden" value="${facetFields}" /></form></td></tr>
-<tr><td>number_participants</td><td>Number of participants</td><td><form id="example15form" action="${complex_search_form}" method="POST"><input type="hidden" name="query" value="number_participants:3"/>   <a href="javascript: document.getElementById('example14form').submit();">number_participants:3</a><input name="facets" id="facets14Example" type="hidden" value="${facetFields}" /></form></td></tr>
+<tr><td>pbiorole</td><td>Biological role(s)</td><td><form id="example11form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="pbiorole:enzyme"/><a href="javascript: document.getElementById('example11form').submit();">pbiorole:enzyme</a></form></td></tr>
+<tr><td>ftype</td><td>Feature type(s)</td><td><form id="example12form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="ftype:&quot;binding site&quot;"/><a href="javascript: document.getElementById('example12form').submit();">ftype:&quot;binding site&quot;</a></form></td></tr>
+<tr><td>source</td><td>Source database(s)</td><td><form id="example13form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="source:intact"/><a href="javascript: document.getElementById('example13form').submit();">source:intact</a></form></td></tr>
+<tr><td>number_participants</td><td>Number of participants</td><td><form id="example14form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="number_participants:3"/><a href="javascript: document.getElementById('example14form').submit();">number_participants:3</a></form></td></tr>
 </tbody>
 </table>
 

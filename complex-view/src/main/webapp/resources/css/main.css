@@ -172,5 +172,5 @@ div.detailsTable
 {
     text-overflow: ellipsis;
     overflow: hidden;
-    height: 110px;
+    max-height: 110px;
 }

@@ -4,18 +4,18 @@
 <jsp:useBean id="results"  class="uk.ac.ebi.intact.service.complex.view.ComplexRestResult"      scope="session"/>
 
 <div class="grid_12 omega">
-    <form id="local-search" name="local-search" action="${complex_search_form}" method="post">
+    <form id="local-search" name="local-search" action="${complex_search_form}" method="get">
         <fieldset>
             <div class="left">
                 <label>
-                    <input type="text" name="query" id="local-searchbox" value="<c:out value="${sessionScope.results.originaQuery}"/>">
+                    <input type="text" name="q" id="local-searchbox" value="<c:out value="${sessionScope.results.originaQuery}"/>">
                 </label>
                 <!-- Include some example searchterms - keep them short and few! -->
                 <%--<span class="examples">Examples: <a href="#" title="">thing1</a>, <a href="#" title="">thing2</a>, <a href="#" title="">thing3</a></span>--%>
             </div>
-            <input name="facets" id="facets" type="hidden" value="${facetFields}" />
+            <%--<input name="facets" id="facets" type="hidden" value="${facetFields}" />--%>
             <div class="right">
-                <input type="submit" name="submit" value="Search" class="submit">
+                <input type="submit" value="Search" class="submit">
                 <!-- If your search is more complex than just a keyword search, you can link to an Advanced Search,
                      with whatever features you want available -->
             </div>

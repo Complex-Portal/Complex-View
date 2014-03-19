@@ -21,18 +21,11 @@ import java.util.Map;
 public class WebAppController {
     @Autowired
     RestConnection restConnection;
+    private final String facets = "species_f,ptype_f,pbiorole_f";
 
     /****************************/
     /***   Public functions   ***/
     /****************************/
-
-    // HOME
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String goHome(ModelMap model, HttpServletRequest request) {
-        setDefaultModelMapValues(model, request);
-        model.addAttribute("page_title", "Complex Home");
-        return "home";
-    }
 
     // SEARCH
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -48,46 +41,105 @@ public class WebAppController {
                                    HttpServletRequest request)
     {
         model.addAttribute("complex_search_form", request.getRequestURL().toString());
+        model.addAttribute("page_title", "Complex Search");
+        setDefaultModelMapValues(model, request);
         query = cleanQuery(query);
-        String filters = buildFilters(species, types, bioroles);
-        Page pageInfo = restConnection.getPage(page, query, filters, facets);
-        ComplexRestResult results = restConnection.query(query, pageInfo, filters, facets, type);
-        session.setAttribute("results", results);
-        if (pageInfo.getTotalNumberOfElements() != 0) {
-            if ( results != null ) {
-                Map<String, List<ComplexFacetResults>> facetResults = results.getFacets();
-                session.setAttribute("species", facetResults.get("species_f"));
-                session.setAttribute("types", facetResults.get("ptype_f"));
-                session.setAttribute("bioroles", facetResults.get("pbiorole_f"));
-            }
+        if ( !query.equals("") && query.length()> 0 ) {
+            String filters = buildFilters(species, types, bioroles);
+            Page pageInfo = restConnection.getPage(page, query, filters, facets);
+            ComplexRestResult results = restConnection.query(query, pageInfo, filters, facets, type);
             session.setAttribute("pageInfo", pageInfo);
-            List<String> speciesList = null;
-            if ( species != null ) {
-                speciesList = new ArrayList<String>();
-                Collections.addAll(speciesList, species);
+            session.setAttribute("results", results);
+            if (pageInfo.getTotalNumberOfElements() != 0) {
+                if (results != null) {
+                    Map<String, List<ComplexFacetResults>> facetResults = results.getFacets();
+                    session.setAttribute("species", facetResults.get("species_f"));
+                    session.setAttribute("types", facetResults.get("ptype_f"));
+                    session.setAttribute("bioroles", facetResults.get("pbiorole_f"));
+                }
+                List<String> speciesList = null;
+                if (species != null) {
+                    speciesList = new ArrayList<String>();
+                    Collections.addAll(speciesList, species);
+                }
+                session.setAttribute("speciesSelected", speciesList);
+                List<String> typesList = null;
+                if (types != null) {
+                    typesList = new ArrayList<String>();
+                    Collections.addAll(typesList, types);
+                }
+                session.setAttribute("typesSelected", typesList);
+                List<String> biorolesList = null;
+                if (bioroles != null) {
+                    biorolesList = new ArrayList<String>();
+                    Collections.addAll(biorolesList, bioroles);
+                }
+                session.setAttribute("biorolesSelected", biorolesList);
+                return "results";
+            } else {
+                return "noResults";
             }
-            session.setAttribute("speciesSelected",speciesList);
-            List<String> typesList = null;
-            if ( types != null ) {
-                typesList = new ArrayList<String>();
-                Collections.addAll(typesList, types);
-            }
-            session.setAttribute("typesSelected", typesList);
-            List<String> biorolesList = null;
-            if ( bioroles != null ) {
-                biorolesList = new ArrayList<String>();
-                Collections.addAll(biorolesList, bioroles);
-            }
-            session.setAttribute("biorolesSelected", biorolesList);
-            setDefaultModelMapValues(model, request);
-            model.addAttribute("page_title", "Complex Search");
-            return "results";
         }
-        else{
-            setDefaultModelMapValues(model, request);
-            return "noResults";
-        }
+        return "home";
 	}
+
+    // GET PARTIAL SEARCH
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String search(@RequestParam ( required = false ) String q,
+                         @RequestParam ( required = false ) String page,
+                         @RequestParam ( required = false ) String [] species,
+                         @RequestParam ( required = false ) String [] types,
+                         @RequestParam ( required = false ) String [] bioroles,
+                         @RequestParam ( required = false ) String type,
+                         ModelMap model,
+                         HttpSession session,
+                         HttpServletRequest request){
+        model.addAttribute("complex_search_form", request.getRequestURL().toString());
+        setDefaultModelMapValues(model, request);
+        if ( q !=null && !q.equals("") && q.length()> 0 ) {
+            model.addAttribute("page_title", "Complex Search");
+            q = cleanQuery(q);
+//            String[] speciesFilter  = species  != null ? species.split(",")  : null;
+//            String[] typesFilter    = types    != null ? types.split(",")    : null;
+//            String[] biorolesFilter = bioroles != null ? bioroles.split(",") : null;
+            String filters = buildFilters(species, types, bioroles);
+            Page pageInfo = restConnection.getPage(page, q, filters, facets);
+            ComplexRestResult results = restConnection.query(q, pageInfo, filters, facets, type);
+            session.setAttribute("pageInfo", pageInfo);
+            session.setAttribute("results", results);
+            if (pageInfo.getTotalNumberOfElements() != 0) {
+                if (results != null) {
+                    Map<String, List<ComplexFacetResults>> facetResults = results.getFacets();
+                    session.setAttribute("species", facetResults.get("species_f"));
+                    session.setAttribute("types", facetResults.get("ptype_f"));
+                    session.setAttribute("bioroles", facetResults.get("pbiorole_f"));
+                }
+                List<String> speciesList = null;
+                if (species != null) {
+                    speciesList = new ArrayList<String>();
+                    Collections.addAll(speciesList, species);
+                }
+                session.setAttribute("speciesSelected", speciesList);
+                List<String> typesList = null;
+                if (types != null) {
+                    typesList = new ArrayList<String>();
+                    Collections.addAll(typesList, types);
+                }
+                session.setAttribute("typesSelected", typesList);
+                List<String> biorolesList = null;
+                if (bioroles != null) {
+                    biorolesList = new ArrayList<String>();
+                    Collections.addAll(biorolesList, bioroles);
+                }
+                session.setAttribute("biorolesSelected", biorolesList);
+                return "results";
+            } else {
+                return "noResults";
+            }
+        }
+        model.addAttribute("page_title", "Complex Home");
+        return "home";
+    }
 
     // DETAILS
     @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET)
@@ -145,7 +197,7 @@ public class WebAppController {
         model.addAttribute("complex_contact_url", "mailto:intact-help@ebi.ac.uk?Subject=Complex%20Portal");
         model.addAttribute("complex_about_url", request.getContextPath() + "/about/" );
         model.addAttribute("intact_url", "http://www.ebi.ac.uk/intact/");
-        model.addAttribute("facetFields", "species_f,ptype_f,pbiorole_f");
+        model.addAttribute("facetFields", this.facets);
     }
 
     private String cleanQuery(String query) {
