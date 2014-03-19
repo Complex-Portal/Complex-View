@@ -30,7 +30,7 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearchResult;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.IntactSolrSearcher;
 import uk.ac.ebi.intact.model.CvDatabase;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
-import uk.ac.ebi.intact.view.webapp.application.PsicquicThreadConfig;
+import uk.ac.ebi.intact.view.webapp.application.IntactThreadConfig;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.config.IntactViewConfiguration;
 import uk.ac.ebi.intact.view.webapp.controller.search.SearchController;
@@ -84,7 +84,7 @@ public class BrowseController extends JpaBaseController {
     private ExecutorService executorService;
 
     @Autowired
-    private PsicquicThreadConfig psicquicThreadConfig;
+    private IntactThreadConfig psicquicThreadConfig;
 
     public BrowseController() {
     }

@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * This class contains some configuration to use multithreading when querying for PSICQUIC services
+ * This class contains some configuration to use multithreading when querying for PSICQUIC services/ complex webservice
  *
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  * @version $Id$
@@ -17,12 +17,12 @@ import java.util.concurrent.Executors;
  */
 @Controller
 @ApplicationScoped
-public class PsicquicThreadConfig implements InitializingBean, DisposableBean{
+public class IntactThreadConfig implements InitializingBean, DisposableBean{
 
     private ExecutorService executorService;
     private int maxNumberThreads = 250;
 
-    public PsicquicThreadConfig(){
+    public IntactThreadConfig(){
     }
 
     public ExecutorService getExecutorService() {

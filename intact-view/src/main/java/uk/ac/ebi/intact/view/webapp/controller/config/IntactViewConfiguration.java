@@ -84,6 +84,8 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private static final String PROXY_PORT = "intact.proxy.port";
     private static final String PSICQUIC_REGISTRY_URL = "psicquic.registry.url";
     private static final String PSICQUIC_VIEW_URL = "psicquic.view.url";
+    private static final String COMPLEX_VIEW_URL = "complex.view.url";
+    private static final String COMPLEX_WS_URL = "complex.ws.url";
     private static final String IMEX_VIEW_URL = "imex.view.url";
     private static final String MAX_SIZE_XML_EXPORT = "intact.maxsize.xml";
     private static final String MAX_SIZE_XGMML_EXPORT = "intact.maxsize.xgmml";
@@ -126,6 +128,8 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private int maxSizeXmlExport;
     private int maxSizeXgmmlExport;
 
+    private String complexWsUrl;
+    private String complexViewUrl;
     private String psicquicRegistryUrl;
     private String psicquicViewUrl;
     private String imexViewUrl;
@@ -249,6 +253,8 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         mailRecipients = properties.getProperty(INTACT_RECIPIENTS, mailRecipients);
         psicquicRegistryUrl = properties.getProperty(PSICQUIC_REGISTRY_URL, psicquicRegistryUrl);
         psicquicViewUrl = properties.getProperty(PSICQUIC_VIEW_URL, psicquicViewUrl);
+        complexWsUrl = properties.getProperty(COMPLEX_WS_URL, complexWsUrl);
+        complexViewUrl = properties.getProperty(COMPLEX_VIEW_URL, complexViewUrl);
         imexViewUrl = properties.getProperty(IMEX_VIEW_URL, imexViewUrl);
         maxSizeXmlExport = Integer.parseInt(properties.getProperty(MAX_SIZE_XML_EXPORT, String.valueOf(maxSizeXmlExport)));
         maxSizeXgmmlExport = Integer.parseInt(properties.getProperty(MAX_SIZE_XGMML_EXPORT, String.valueOf(maxSizeXgmmlExport)));
@@ -285,6 +291,8 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         addProperty(properties, INTACT_RECIPIENTS, mailRecipients);
         addProperty(properties, PSICQUIC_REGISTRY_URL, psicquicRegistryUrl);
         addProperty(properties, PSICQUIC_VIEW_URL, psicquicViewUrl);
+        addProperty(properties, COMPLEX_WS_URL, complexWsUrl);
+        addProperty(properties, COMPLEX_VIEW_URL, complexViewUrl);
         addProperty(properties, IMEX_VIEW_URL, imexViewUrl);
         addProperty(properties, MAX_SIZE_XML_EXPORT, String.valueOf(maxSizeXmlExport));
         addProperty(properties, MAX_SIZE_XGMML_EXPORT, String.valueOf(maxSizeXgmmlExport));
@@ -512,6 +520,22 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     public HttpSolrServer getOntologySolrServer() {
 
         return ontologySolrServer;
+    }
+
+    public String getComplexViewUrl() {
+        return complexViewUrl;
+    }
+
+    public void setComplexViewUrl(String complexViewUrl) {
+        this.complexViewUrl = complexViewUrl;
+    }
+
+    public String getComplexWsUrl() {
+        return complexWsUrl;
+    }
+
+    public void setComplexWsUrl(String complexWsUrl) {
+        this.complexWsUrl = complexWsUrl;
     }
 
     private HttpSolrServer createSolrServer(String solrUrl) throws MalformedURLException {

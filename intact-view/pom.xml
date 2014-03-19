@@ -24,8 +24,8 @@
     </scm>
 
     <properties>
-        <core.version>2.6.4</core.version>
-        <dataexchange.version>2.1.8</dataexchange.version>
+        <core.version>2.6.5-SNAPSHOT</core.version>
+        <dataexchange.version>2.1.9-SNAPSHOT</dataexchange.version>
         <spring.version>3.1.2.RELEASE</spring.version>
 
         <debug>false</debug>
@@ -68,6 +68,8 @@
         <intactview.graph.maxInteractionCount>500</intactview.graph.maxInteractionCount>
 
         <intact.ontologies.lucene.directory />
+        <complex.view.url/>
+        <complex.ws.url/>
 
         <!-- ChEBI -->
         <chebi.url>http://www.ebi.ac.uk/chebi</chebi.url>
@@ -437,8 +439,8 @@
         <!-- Intact -->
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
-            <artifactId>intact-core-readonly</artifactId>
-            <version>2.6.4</version>
+            <artifactId>intact-core</artifactId>
+            <version>2.6.5-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -456,7 +458,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange</groupId>
             <artifactId>intact-cvutils</artifactId>
-            <version>2.1.8</version>
+            <version>2.1.9-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>lucene</groupId>
@@ -472,7 +474,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psixml-exchange</artifactId>
-            <version>2.1.8</version>
+            <version>2.1.9-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>cpdetector</groupId>
@@ -517,7 +519,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-solr-core</artifactId>
-            <version>2.1.8</version>
+            <version>2.1.9-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>woodstox</groupId>

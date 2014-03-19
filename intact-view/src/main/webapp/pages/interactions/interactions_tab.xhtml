@@ -100,6 +100,26 @@
         </h:panelGroup>
     </ul>
 
+        <h:panelGroup id="countedComplex"
+                  style="margin-top:-10px; margin-left: 10px; margin-bottom:30px"
+                  rendered="#{searchBean.complexSearchManager.complexServiceResponding and searchBean.complexSearchManager.complexCount gt 0}">
+            <br/>
+            <strong><h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
+
+            <ot:separateConversationContext>
+                <h:outputLink value="#{intactViewConfiguration.complexViewUrl}/#{userQuery.searchQuery}" target="_blank">
+                    <h:outputText value="#{searchBean.complexSearchManager.complexCount}" style="font-weight:bold">
+                        <f:convertNumber pattern="#,###"/>
+                    </h:outputText>
+                </h:outputLink>
+            </ot:separateConversationContext>
+
+            biological complexes in IntAct.
+            <p:commandLink type="button" onclick="complexDialog.show()">
+                <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+            </p:commandLink></strong>
+        </h:panelGroup>
+
     <h:panelGroup id="countedPsicquic"
                   style="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
 

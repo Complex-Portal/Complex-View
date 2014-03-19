@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ot="http://myfaces.apache.org/orchestra">
+
+    <ot:separateConversationContext>
+            <h2>How is the number of biological complexes in IntAct obtained?</h2>
+            <div style="padding:5px">
+                <p>
+                    <h:outputLink target="_blank" value="#{intactViewConfiguration.complexViewUrl}">The IntAct Complex Portal</h:outputLink>
+                    is is a manually curate, encyclopaedic resource of macromolecular complexes from a number of key model organisms.
+                    All data is freely available for search and download.
+                </p>
+                <p>
+                    Check the&#160;<h:outputLink target="_blank" value="#{intactViewConfiguration.complexViewUrl}/documentation">Complex Portal Documentation</h:outputLink> for more information.
+                </p>
+            </div>
+
+    </ot:separateConversationContext>
+
+</ui:composition>

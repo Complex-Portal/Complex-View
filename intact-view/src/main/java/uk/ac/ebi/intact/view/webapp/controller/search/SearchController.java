@@ -16,7 +16,7 @@ import psidev.psi.mi.tab.model.CrossReference;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.FieldNames;
 import uk.ac.ebi.intact.view.webapp.IntactViewException;
 import uk.ac.ebi.intact.view.webapp.application.OntologyInteractorTypeConfig;
-import uk.ac.ebi.intact.view.webapp.application.PsicquicThreadConfig;
+import uk.ac.ebi.intact.view.webapp.application.IntactThreadConfig;
 import uk.ac.ebi.intact.view.webapp.controller.JpaBaseController;
 import uk.ac.ebi.intact.view.webapp.controller.application.StatisticsController;
 import uk.ac.ebi.intact.view.webapp.controller.browse.BrowseController;
@@ -93,9 +93,10 @@ public class SearchController extends JpaBaseController {
     private ExecutorService executorService;
 
     @Autowired
-    private PsicquicThreadConfig psicquicThreadConfig;
+    private IntactThreadConfig psicquicThreadConfig;
 
     private PsicquicSearchManager psicquicController;
+    private ComplexSearchManager complexSearchManager;
     private OntologyInteractorTypeConfig typeConfig;
 
     private String acPrefix;
@@ -119,6 +120,7 @@ public class SearchController extends JpaBaseController {
         }
 
         this.psicquicController = new PsicquicSearchManager(this.executorService, this.intactViewConfiguration);
+        this.complexSearchManager = new ComplexSearchManager(this.executorService, this.intactViewConfiguration);
     }
 
     public void searchOnLoad(ComponentSystemEvent evt) {
@@ -198,6 +200,7 @@ public class SearchController extends JpaBaseController {
             final SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
             final int pageSize = getUserQuery().getPageSize();
             final PsicquicSearchManager psicquicController = this.psicquicController;
+            final ComplexSearchManager complexController = this.complexSearchManager;
             final String query = solrQuery.getQuery();
 
             // prepare solr search
@@ -209,11 +212,14 @@ public class SearchController extends JpaBaseController {
 
             Future<Integer> intactFuture = executorService.submit(intactRunnable);
 
+            // count complex results
+            complexController.countNumberOfComplexes(query);
             // count psicquic results while searching in Intact
             psicquicController.countResultsInOtherDatabases(query);
 
             // resume tasks
             checkAndResumeSearchTasks(intactFuture);
+            complexController.checkAndResumeComplexTasks();
             psicquicController.checkAndResumePsicquicTasks();
 
             if ( log.isDebugEnabled() ) log.debug( "\tResults: " + totalResults );
@@ -703,6 +709,10 @@ public class SearchController extends JpaBaseController {
 
     public PsicquicSearchManager getPsicquicSearchManager() {
         return psicquicController;
+    }
+
+    public ComplexSearchManager getComplexSearchManager() {
+        return complexSearchManager;
     }
 
     public boolean hasLoadedCurrentQuery() {
