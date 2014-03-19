@@ -45,7 +45,7 @@ public class ChartController extends SpringInitializedService {
     private final String proteinTitle = "Proteins";
     private final String interactionTitle = "Interactions";
     private final String binaryInteractionTitle = "Binary interactions";
-    private final String complexTitle = "Complexes";
+    private final String complexTitle = "n-ary interactions";
     private final String experimentTitle = "Experiments";
     private final String termTitle = "Ontology terms";
     private final String publicationTitle = "Publications";
@@ -92,7 +92,7 @@ public class ChartController extends SpringInitializedService {
         serieList.add(interactionSerie);
         serieList.add(binaryInteractionSerie);
         serieList.add(complexSerie);
-        JSONObject chart = buildJSONChart("timeChart01", "Proteins, Interactions, Binary interactions and Complexes", serieList);
+        JSONObject chart = buildJSONChart("timeChart01", "Proteins, Interactions, Binary interactions and n-ary interactions", serieList);
         String jsonString = chart.toString();
         jsonString = jsonString.replaceAll("\"(Date.UTC)(\\(\\d+,\\d+,\\d+\\))\"", "$1$2");  //["Date.UTC(2012,10,24)",62533] to [Date.UTC(2012,10,24),62533]
         return jsonString;
