@@ -67,3 +67,10 @@ $(document).on({
         $(this).tooltip('hide');
     }
 }, '*[rel=tooltip]');
+
+$(document).ready(function()
+    {
+        $("#participants").tablesorter();
+        $("#crossReferences").tablesorter();
+    }
+);

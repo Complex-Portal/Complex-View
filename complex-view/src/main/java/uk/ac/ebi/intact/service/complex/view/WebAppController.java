@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexFieldNames;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -21,7 +22,9 @@ import java.util.Map;
 public class WebAppController {
     @Autowired
     RestConnection restConnection;
-    private final String facets = "species_f,ptype_f,pbiorole_f";
+    private final String facets = new StringBuilder() .append(ComplexFieldNames.COMPLEX_ORGANISM_F).append(",")
+                                    .append(ComplexFieldNames.INTERACTOR_TYPE_F).append(",")
+                                    .append(ComplexFieldNames.BIOROLE_F).toString();
 
     /****************************/
     /***   Public functions   ***/
@@ -46,16 +49,16 @@ public class WebAppController {
         query = cleanQuery(query);
         if ( !query.equals("") && query.length()> 0 ) {
             String filters = buildFilters(species, types, bioroles);
-            Page pageInfo = restConnection.getPage(page, query, filters, facets);
-            ComplexRestResult results = restConnection.query(query, pageInfo, filters, facets, type);
+            Page pageInfo = restConnection.getPage(page, query, filters, this.facets);
+            ComplexRestResult results = restConnection.query(query, pageInfo, filters, this.facets, type);
             session.setAttribute("pageInfo", pageInfo);
             session.setAttribute("results", results);
             if (pageInfo.getTotalNumberOfElements() != 0) {
                 if (results != null) {
                     Map<String, List<ComplexFacetResults>> facetResults = results.getFacets();
-                    session.setAttribute("species", facetResults.get("species_f"));
-                    session.setAttribute("types", facetResults.get("ptype_f"));
-                    session.setAttribute("bioroles", facetResults.get("pbiorole_f"));
+                    session.setAttribute("species", facetResults.get(ComplexFieldNames.COMPLEX_ORGANISM_F));
+                    session.setAttribute("types", facetResults.get(ComplexFieldNames.INTERACTOR_TYPE_F));
+                    session.setAttribute("bioroles", facetResults.get(ComplexFieldNames.BIOROLE_F));
                 }
                 List<String> speciesList = null;
                 if (species != null) {
@@ -110,9 +113,9 @@ public class WebAppController {
             if (pageInfo.getTotalNumberOfElements() != 0) {
                 if (results != null) {
                     Map<String, List<ComplexFacetResults>> facetResults = results.getFacets();
-                    session.setAttribute("species", facetResults.get("species_f"));
-                    session.setAttribute("types", facetResults.get("ptype_f"));
-                    session.setAttribute("bioroles", facetResults.get("pbiorole_f"));
+                    session.setAttribute("species", facetResults.get(ComplexFieldNames.COMPLEX_ORGANISM_F));
+                    session.setAttribute("types", facetResults.get(ComplexFieldNames.INTERACTOR_TYPE_F));
+                    session.setAttribute("bioroles", facetResults.get(ComplexFieldNames.BIOROLE_F));
                 }
                 List<String> speciesList = null;
                 if (species != null) {
@@ -197,7 +200,6 @@ public class WebAppController {
         model.addAttribute("complex_contact_url", "mailto:intact-help@ebi.ac.uk?Subject=Complex%20Portal");
         model.addAttribute("complex_about_url", request.getContextPath() + "/about/" );
         model.addAttribute("intact_url", "http://www.ebi.ac.uk/intact/");
-        model.addAttribute("facetFields", this.facets);
     }
 
     private String cleanQuery(String query) {
@@ -211,13 +213,13 @@ public class WebAppController {
         if ( species != null || complexType != null || sources != null ) {
             filters = new StringBuilder();
             if ( species != null ) {
-                filters.append(buildFilter("species_f", species)).append(",");
+                filters.append(buildFilter(ComplexFieldNames.COMPLEX_ORGANISM_F, species)).append(",");
             }
             if ( complexType != null ) {
-                filters.append(buildFilter("ptype_f", complexType)).append(",");
+                filters.append(buildFilter(ComplexFieldNames.INTERACTOR_TYPE_F, complexType)).append(",");
             }
             if ( sources != null ) {
-                filters.append(buildFilter("pbiorole_f", sources)).append(",");
+                filters.append(buildFilter(ComplexFieldNames.BIOROLE_F, sources)).append(",");
             }
         }
 

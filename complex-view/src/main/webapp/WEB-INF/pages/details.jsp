@@ -131,7 +131,7 @@
         </c:if>
         <div class="grid_24">
             <h4>Participants</h4>
-            <table id="participants" class="table">
+            <table id="participants" class="tablesorter">
                 <thead>
                     <tr class="trHead">
                         <td>ID</td>
@@ -186,7 +186,7 @@
         <br>
         <div class="grid_24">
             <h4>Cross References</h4>
-            <table id="crossReferences" class="table">
+            <table id="crossReferences" class="tablesorter">
                 <thead>
                     <tr class="trHead">
                         <td>Type</td>

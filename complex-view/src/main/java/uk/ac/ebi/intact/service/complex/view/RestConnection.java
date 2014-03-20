@@ -129,8 +129,9 @@ public class RestConnection {
         JSONObject response = null;
         StringBuilder info = new StringBuilder();
         String aux = null;
+        BufferedReader reader = null;
         try{
-            BufferedReader reader = new BufferedReader(
+            reader = new BufferedReader(
                     new InputStreamReader(
                             new URL(query)
                                     .openConnection()
@@ -145,6 +146,15 @@ public class RestConnection {
             if ( log.isInfoEnabled() )
                 log.info("RestConnection error, it could not retrieve information from the web service", e);
             e.printStackTrace();
+        }
+        finally {
+            if( reader != null ){
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return response;
     }
