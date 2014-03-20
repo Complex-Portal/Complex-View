@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,8 +66,6 @@ public class SearchController {
     private DaoFactory daoFactory;
     private static final Log log = LogFactory.getLog(SearchController.class);
 
-    final private String CURATED_COMPLEX = "curated-complex";
-
     /****************************/
     /*      Public methods      */
     /****************************/
@@ -81,6 +80,12 @@ public class SearchController {
     @RequestMapping(value = "/details/", method = RequestMethod.GET)
     public String showDetailsHelp(){
         return "details";
+    }
+    @RequestMapping(value = "/count/{query}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+    public String count(@PathVariable String query, ModelMap model) {
+        long total = query(query, null, null, null, null).getTotalNumberOfResults();
+        model.addAttribute("count", total);
+        return "count";
     }
     /*
      - We can access to that method using:
@@ -191,9 +196,10 @@ public class SearchController {
         if ( complex != null ) {
             details = new ComplexDetails();
             CvTopic cvTopic = null ;
+
             for ( Annotation annotation : complex.getAnnotations ( ) ) {
                 cvTopic = annotation != null ? annotation.getCvTopic ( ) : null ;
-                if ( cvTopic != null && cvTopic.getShortLabel ( ) .equalsIgnoreCase( CURATED_COMPLEX ) && annotation.getAnnotationText() != null) {
+                if ( cvTopic != null && cvTopic.getShortLabel ( ) .equalsIgnoreCase( CvTopic.CURATED_COMPLEX ) && annotation.getAnnotationText() != null) {
                     details.setFunction ( annotation.getAnnotationText ( ) ) ;
                 }
                 else if ( annotation.getCvTopic() != null && annotation.getCvTopic().getIdentifier() != null && annotation.getCvTopic().getIdentifier().equals("MI:0629") ) {

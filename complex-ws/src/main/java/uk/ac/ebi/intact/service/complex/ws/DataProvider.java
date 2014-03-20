@@ -94,7 +94,7 @@ public class DataProvider {
             // This method will traverse the iterator and get the elements
             if ( iterator != null && iterator.hasNext() ) {
                 result.add(iterator);
-
+                result.setTotalNumberOfResults(iterator.getTotalNumberOfResults());
             }
             else return result;
         }
@@ -110,7 +110,7 @@ public class DataProvider {
             // This method will traverse the iterator and get the elements
             if ( iterator != null ) {
                 result.add(iterator);
-
+                result.setTotalNumberOfResults(iterator.getTotalNumberOfResults());
             }
         }
         // Return the results

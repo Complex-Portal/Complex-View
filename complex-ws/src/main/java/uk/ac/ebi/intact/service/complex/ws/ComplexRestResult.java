@@ -18,7 +18,8 @@ public class ComplexRestResult {
     /********************************/
     /*      Private attributes      */
     /********************************/
-    private int size;
+    private long size;
+    private long totalNumberOfResults;
     private List<ComplexSearchResults> elements;
     private Map<String,List<ComplexFacetResults>> facets;
 
@@ -27,9 +28,11 @@ public class ComplexRestResult {
     /*************************/
     public ComplexRestResult( ) {
         this.elements = new LinkedList<ComplexSearchResults>();
-        this.size = 0;
+        this.size = 0L;
         this.facets = null;
+        this.totalNumberOfResults = 0L;
     }
+    public void setTotalNumberOfResults(long total) { this.totalNumberOfResults = total; }
 
     /***************************/
     /*      Public method      */
@@ -58,9 +61,11 @@ public class ComplexRestResult {
     /*      Getters      */
     /*********************/
     @XmlElement
-    public int getSize() { return this.size; }
+    public long getSize() { return this.size; }
     @XmlElement
     public List<ComplexSearchResults> getElements() { return this.elements; }
     @XmlElement
     public Map<String,List<ComplexFacetResults>> getFacets() { return this.facets; }
+    @XmlElement
+    public long getTotalNumberOfResults() { return this.totalNumberOfResults; }
 }

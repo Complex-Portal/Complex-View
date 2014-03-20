@@ -29,8 +29,8 @@
         <!--<property name="ignoreAcceptHeader" value="true"/>-->
         <property name="mediaTypes">
             <map>
-                <entry key="json" value="application/json" />
-                <entry key="xml"  value="application/xml"  />
+                <entry key="json"  value="application/json" />
+                <entry key="xml"   value="application/xml"  />
             </map>
         </property>
     </bean>
