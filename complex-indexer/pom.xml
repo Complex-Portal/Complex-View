@@ -155,15 +155,15 @@
   <dependencies>
       <dependency>
           <groupId>uk.ac.ebi.intact.core</groupId>
-          <artifactId>intact-core-readonly</artifactId>
-          <version>2.6.4</version>
+          <artifactId>intact-core</artifactId>
+          <version>2.6.5</version>
       </dependency>
 
       <!-- IntAct solr schema dependencies -->
       <dependency>
           <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
           <artifactId>intact-solr-core</artifactId>
-          <version>2.1.9-SNAPSHOT</version>
+          <version>2.1.9</version>
           <exclusions>
               <exclusion>
                   <groupId>uk.ac.ebi.intact.core</groupId>
