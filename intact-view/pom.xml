@@ -68,8 +68,8 @@
         <intactview.graph.maxInteractionCount>500</intactview.graph.maxInteractionCount>
 
         <intact.ontologies.lucene.directory />
-        <complex.view.url/>
-        <complex.ws.url/>
+        <complex.view.url>http://wwwdev.ebi.ac.uk/intact/complex</complex.view.url>
+        <complex.ws.url>http://wwwdev.ebi.ac.uk/intact/complex-ws</complex.ws.url>
 
         <!-- ChEBI -->
         <chebi.url>http://www.ebi.ac.uk/chebi</chebi.url>

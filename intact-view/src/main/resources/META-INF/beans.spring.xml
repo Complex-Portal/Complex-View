@@ -48,6 +48,8 @@
         <property name="proxyPort" value="${intact.proxy.port}"/>
         <property name="psicquicRegistryUrl" value="${psicquic.registry.url}"/>
         <property name="psicquicViewUrl" value="${psicquic.view.url}"/>
+        <property name="complexViewUrl" value="${complex.view.url}"/>
+        <property name="complexWsUrl" value="${complex.ws.url}"/>
         <property name="imexViewUrl" value="${imex.view.url}"/>
         <property name="maxSizeXmlExport" value="${intact.maxsize.xml}"/>
         <property name="maxSizeXgmmlExport" value="${intact.maxsize.xgmml}"/>
@@ -62,6 +64,9 @@
                 <value>UniProt</value>
                 <value>MBInfo</value>
                 <value>MPIDB</value>
+                <value>MINT</value>
+                <value>HPIDb</value>
+                <value>bhf-ucl</value>
             </list>
         </property>
         <property name="ontologyLuceneDirectory" value="${ontologies.lucene.directory}"/>

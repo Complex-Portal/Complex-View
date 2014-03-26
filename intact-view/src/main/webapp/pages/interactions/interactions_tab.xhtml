@@ -107,7 +107,7 @@
             <strong><h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
 
             <ot:separateConversationContext>
-                <h:outputLink value="#{intactViewConfiguration.complexViewUrl}/#{userQuery.searchQuery}" target="_blank">
+                <h:outputLink value="#{intactViewConfiguration.complexViewUrl}/?q=#{userQuery.searchQuery}" target="_blank">
                     <h:outputText value="#{searchBean.complexSearchManager.complexCount}" style="font-weight:bold">
                         <f:convertNumber pattern="#,###"/>
                     </h:outputText>
