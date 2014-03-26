@@ -439,8 +439,8 @@
         <!-- Intact -->
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
-            <artifactId>intact-core</artifactId>
-            <version>2.6.5-SNAPSHOT</version>
+            <artifactId>intact-core-readonly</artifactId>
+            <version>2.6.5</version>
         </dependency>
 
         <dependency>
@@ -458,7 +458,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange</groupId>
             <artifactId>intact-cvutils</artifactId>
-            <version>2.1.9-SNAPSHOT</version>
+            <version>2.1.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>lucene</groupId>
@@ -474,7 +474,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psixml-exchange</artifactId>
-            <version>2.1.9-SNAPSHOT</version>
+            <version>2.1.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>cpdetector</groupId>
@@ -519,7 +519,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-solr-core</artifactId>
-            <version>2.1.9-SNAPSHOT</version>
+            <version>2.1.9</version>
             <exclusions>
                 <exclusion>
                     <groupId>woodstox</groupId>
@@ -565,9 +565,15 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.hupo.psi.mi.psicquic</groupId>
+            <artifactId>psicquic-solr</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab</artifactId>
-            <version>1.8.4</version>
+            <version>1.8.4.1</version>
         </dependency>
 
         <dependency>

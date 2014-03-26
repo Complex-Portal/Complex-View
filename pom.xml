@@ -27,7 +27,7 @@
         <user>${env.USERNAME}</user>
         <appRoot>/intact</appRoot>
 
-        <core.version>2.6.4</core.version>
+        <core.version>2.6.5</core.version>
     </properties>
 
     <modules>
