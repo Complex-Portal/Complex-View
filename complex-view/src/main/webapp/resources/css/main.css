@@ -41,9 +41,7 @@ div.helpDiv
 }
 div.exampleDiv
 {
-    float: right;
-    display:inline;
-    margin-right: 7%;
+    min-width: 220px;
 }
 form.exampleForm
 {

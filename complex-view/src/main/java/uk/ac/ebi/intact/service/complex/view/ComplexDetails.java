@@ -1,6 +1,7 @@
 package uk.ac.ebi.intact.service.complex.view;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,12 +17,12 @@ public class ComplexDetails {
     private String properties;
     private String ac;
     private String name;
-    private String specie;
+    private String species;
     private String ligand;
     private String complexAssembly;
     private String disease;
-    private Collection<ComplexDetailsParticipants> participants;
-    private Collection<ComplexDetailsCrossReferences> crossReferences;
+    private List<ComplexDetailsParticipants> participants;
+    private List<ComplexDetailsCrossReferences> crossReferences;
 
     public ComplexDetails() {
         this.synonyms = new LinkedList<String>();
@@ -44,8 +45,8 @@ public class ComplexDetails {
     public String getAc () { return this.ac; }
     public void setName ( String n ) { this.name = n; }
     public String getName () { return this.name; }
-    public void setSpecie ( String s ) { this.specie = s; }
-    public String getSpecie () { return this.specie; }
+    public void setSpecies ( String s ) { this.species = s; }
+    public String getSpecies () { return this.species; }
     public String getLigand() { return ligand; }
     public void setLigand(String ligand) { this.ligand = ligand; }
     public String getComplexAssembly() { return complexAssembly; }
@@ -53,5 +54,8 @@ public class ComplexDetails {
     public String getDisease() { return disease; }
     public void setDisease(String disease) { this.disease = disease; }
     public Collection<ComplexDetailsParticipants> getParticipants() { return participants; }
-    public Collection<ComplexDetailsCrossReferences> getCrossReferences() { return crossReferences; }
+    public Collection<ComplexDetailsCrossReferences> getCrossReferences() {
+        Collections.sort(crossReferences);
+        return crossReferences;
+    }
 }

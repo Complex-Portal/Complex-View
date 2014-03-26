@@ -73,7 +73,7 @@
             <p class="intro">The Complex Portal is a manually curate, encyclopaedic resource of macromolecular complexes from a number of key model organisms. All data is freely available for search and download. To perform a search for macromolecular complexes use the search box below.</p>
         <br>
         <br>
-        <div class="grid_20 alpha">
+        <div class="grid_19 alpha">
             <form class="searchForm" method="GET" action="">
                 <textarea name="q" rows="10" id="querySearchBox"  type="text"   class="searchBox"    placeholder="Enter search term(s)..."></textarea>
                 <br>
@@ -82,26 +82,41 @@
             </form>
             <br>
             <br>
-            <ul class="helpList">
-                <li>Free text search will look by default for interactor identifier, interactor alias, species, interaction identifier, interaction alias and interaction xrefs.</li>
-                <li>To search for a list of terms copy/paste all terms into the search box using either spaces or line breaks to separate them.</li>
-                <li>Search for isoforms of 'P12345' by using 'P12345*'</li>
-                <li>Search for groups of complexes by using the Gene Ontology. For example, GO:0016491 will search for all complexes annotated with &quot;oxidoreductase activity&quot; and all downstream child terms of this.</li>
-            </ul>
         </div>
-        <div class="grid_4 omega">
+        <div class="grid_5 omega exampleDiv">
             <label class="searchExamples">Examples:</label>
             <ul class="exampleList">
-                <li>GO term(s): <form class="exampleForm" id="example4form" action="" method="GET"><input type="hidden" name="q" value="GO:0016491"/><a href="<c:out value="#"/>" onclick="document.getElementById('example4form').submit();">GO:0016491</a></form></li>
-                <li>Gene name(s): <form class="exampleForm" id="example1form" action="" method="GET"><input type="hidden" name="q" value="Ndc80"/>   <a href="<c:out value="#"/>" onclick="document.getElementById('example1form').submit();">Ndc80</a></form></li>
-                <li>UniProt AC(s): <form class="exampleForm" id="example3form" action="" method="GET"><input type="hidden" name="q" value="Q05471"/> <a href="<c:out value="#"/>" onclick="document.getElementById('example3form').submit();">Q05471</a></form></li>
-                <li>Protein name(s): <form class="exampleForm" id="example2form" action="" method="GET"><input type="hidden" name="q" value="PCNA"/> <a href="<c:out value="#"/>" onclick="document.getElementById('example2form').submit();">PCNA</a></form></li>
+                <li>GO term(s): <form class="exampleForm" id="example4form" action="" method="GET"><input type="hidden" name="q" value="GO:0016491"/> <a href="<c:out value="#"/>" onclick="document.getElementById('example4form').submit();">GO:0016491</a></form></li>
+                <li>Gene name(s): <form class="exampleForm" id="example1form" action="" method="GET"><input type="hidden" name="q" value="Ndc80"/>    <a href="<c:out value="#"/>" onclick="document.getElementById('example1form').submit();">Ndc80</a></form></li>
+                <li>UniProt AC(s): <form class="exampleForm" id="example3form" action="" method="GET"><input type="hidden" name="q" value="Q05471"/>  <a href="<c:out value="#"/>" onclick="document.getElementById('example3form').submit();">Q05471</a></form></li>
+                <li>Protein name(s): <form class="exampleForm" id="example2form" action="" method="GET"><input type="hidden" name="q" value="PCNA"/>  <a href="<c:out value="#"/>" onclick="document.getElementById('example2form').submit();">PCNA</a></form></li>
+                <li>Complex AC: <form class="exampleForm" id="example5form" action="" method="GET"><input type="hidden" name="q" value="EBI-9008420"/><a href="<c:out value="#"/>" onclick="document.getElementById('example5form').submit();">EBI-9008420</a></form></li>
                 <%--<li>Pubmed ID: 22540012</li>--%>
             </ul>
             <%--<a href="JavaScript:newPopup('<c:url value="/help/"/>');">Help</a>--%>
             <p rel="tooltip" title="You can search for one or several of the following types of terms: complex_id, complex_alias, species, complex_xref, udate, id, alias, ptype, stc, pbiorole, ftype, source and number_participants.
 By default, we search for entries that contain ANY of your search terms. If you would like to restrict your search, please link your terms with 'AND' or use the filters available once you have made an initial search.">Help</p>
         </div>
+            <div class="grid_19 alpha">
+                <ul class="helpList">
+                    <li>Free text search will look by default for:</li>
+                    <ul>
+                        <li type="square">Identifiers, names and synonyms of molecules (protein, gene, small molecule).</li>
+                        <li type="square">Identifiers, names and synonyms of complexes.</li>
+                        <li type="square">Cross-references of complexes.</li>
+                        <li type="square">Species</li>
+                    </ul>
+                    <li>To search for a list of terms copy/paste all terms into the search box using either spaces or line breaks to separate them.</li>
+                    <li>Search for isoforms of 'P12345' by using 'P12345*'</li>
+                    <li>Search for groups of complexes by using the Gene Ontology. For example, GO:0016491 will search for all complexes annotated with &quot;oxidoreductase activity&quot; and all downstream child terms of this.</li>
+                    <li>Narrow your initial search result by using the filters on the results page for:</li>
+                    <ul>
+                        <li type="square">Species.</li>
+                        <li type="square">Molecule type.</li>
+                        <li type="square">Biological role.</li>
+                    </ul>
+                </ul>
+            </div>
     </section>
 </div>
 

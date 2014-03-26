@@ -207,7 +207,7 @@ public class RestConnection {
                 details.setProperties( (String) j.get("properties") );
                 details.setAc( (String) j.get("ac") );
                 details.setName( (String) j.get("name") );
-                details.setSpecie( (String) j.get("specie") );
+                details.setSpecies( (String) j.get("species") );
                 details.setLigand( (String) j.get("ligand") );
                 details.setDisease( (String) j.get("disease") );
                 details.setComplexAssembly( (String) j.get("complexAssembly") );

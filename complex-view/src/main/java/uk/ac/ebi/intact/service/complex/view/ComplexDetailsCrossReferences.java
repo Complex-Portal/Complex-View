@@ -6,7 +6,7 @@ package uk.ac.ebi.intact.service.complex.view;
  * @version $Id$
  * @since 21/01/14
  */
-public class ComplexDetailsCrossReferences {
+public class ComplexDetailsCrossReferences implements Comparable<ComplexDetailsCrossReferences> {
     private String database;
     private String qualifier;
     private String identifier;
@@ -104,4 +104,18 @@ public class ComplexDetailsCrossReferences {
         this.qualifierDefinition = qualifierDefinition;
     }
 
+    @Override
+    public int compareTo(ComplexDetailsCrossReferences complexDetailsCrossReferences) {
+        //Compare Database
+        int state = this.database.compareTo(complexDetailsCrossReferences.database);
+        if (state == 0){
+            //Compare Type
+            state = this.qualifier.compareTo(complexDetailsCrossReferences.qualifier);
+            if(state == 0) {
+                //Compare Identifier
+                state = this.identifier.compareTo(complexDetailsCrossReferences.identifier);
+            }
+        }
+        return state;
+    }
 }
