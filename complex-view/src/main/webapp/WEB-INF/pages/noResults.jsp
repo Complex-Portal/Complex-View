@@ -54,7 +54,7 @@
     <h2>No ${complex_portal_name} results found</h2>
     <p class="alert">We're sorry but we couldn't find anything that matched your search for <c:out value="${sessionScope.results.originaQuery}"/></p>
 
-    <section class="grid_16 alpha">
+    <section class="grid_24 alpha">
         <%--<h3>Try the advanced search</h3>--%>
         <p>Please consider refining your terms:</p>
         <ul>

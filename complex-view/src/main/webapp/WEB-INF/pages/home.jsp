@@ -107,8 +107,8 @@ By default, we search for entries that contain ANY of your search terms. If you 
                         <li type="square">Species</li>
                     </ul>
                     <li>To search for a list of terms copy/paste all terms into the search box using either spaces or line breaks to separate them.</li>
-                    <li>Search for isoforms of 'P12345' by using 'P12345*'</li>
-                    <li>Search for groups of complexes by using the Gene Ontology. For example, GO:0016491 will search for all complexes annotated with &quot;oxidoreductase activity&quot; and all downstream child terms of this.</li>
+                    <li>Search for isoforms of '<a href="<c:url value="${complex_search_form}?q=Q07817"/>">Q07817</a>' by using '<a href="<c:url value="${complex_search_form}?q=Q07817*"/>">Q07817*</a>'</li>
+                    <li>Search for groups of complexes by using the Gene Ontology. For example, <a href="<c:url value="${complex_search_form}?q=GO:0016491"/>">GO:0016491</a> will search for all complexes annotated with &quot;oxidoreductase activity&quot; and all downstream child terms of this.</li>
                     <li>Narrow your initial search result by using the filters on the results page for:</li>
                     <ul>
                         <li type="square">Species.</li>

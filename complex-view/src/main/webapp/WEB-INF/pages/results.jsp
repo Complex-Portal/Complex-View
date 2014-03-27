@@ -9,6 +9,7 @@
 <jsp:useBean id="typesSelected" class="java.util.ArrayList"     type="java.util.List"           scope="session"/>
 <jsp:useBean id="bioroles" class="java.util.ArrayList"          type="java.util.List"           scope="session"/>
 <jsp:useBean id="biorolesSelected" class="java.util.ArrayList"  type="java.util.List"           scope="session"/>
+<jsp:useBean id="htmlOriginalQuery" class="java.lang.String"    type="java.lang.String"         scope="session"/>
 
 <div class="grid_12 omega">
     <form id="local-search" name="local-search" action="${complex_search_form}" method="get">
@@ -79,7 +80,7 @@
             <c:if test="${sessionScope.pageInfo.prevPage != -1}">
                 <span class="pagePrevSpan">
                     <form class="pagePrevForm" method="GET" action="${complex_search_form}">
-                        <input name="q"  id="queryPrevTop"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                        <input name="q"  id="queryPrevTop"  hidden="true" value="<c:out value="${sessionScope.htmlOriginalQuery}"/>"/>
                         <input name="page"   id="pagePrevTop"   hidden="true" value="<c:out value="${sessionScope.pageInfo.prevPage}"/>"/>
                         <input class="prevPage" value="PrevPage" type="submit"/>
                         <c:forEach var="s" items="${sessionScope.species}">
@@ -119,7 +120,7 @@
                     <form name="Top" class="pageCurrentForm" method="GET" action="${complex_search_form}" onsubmit="return checkPageNumberTop()">
                         Page <input name="pageFake" type="text" class="pageCurrent" value="<c:out value="${sessionScope.pageInfo.pageForShow}"/>"/> of <c:out value="${sessionScope.pageInfo.lastPageForShow}"/>
                         <input name="page" type="text" hidden="true"/>
-                        <input name="q"  id="queryCurrent"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                        <input name="q"  id="queryCurrent"  hidden="true" value="<c:out value="${sessionScope.htmlOriginalQuery}"/>"/>
                         <input name="button" hidden="true" type="submit">
                         <c:forEach var="s" items="${sessionScope.species}">
                             <c:set var="contains" value="false"/>
@@ -156,7 +157,7 @@
             <c:if  test="${sessionScope.pageInfo.nextPage != -1}">
                 <span class="pageNextSpan">
                     <form class="pageNextForm" method="GET" action="${complex_search_form}">
-                        <input name="q"  id="queryNext"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                        <input name="q"  id="queryNext"  hidden="true" value="<c:out value="${sessionScope.htmlOriginalQuery}"/>"/>
                         <input name="page"   id="pageNext"   hidden="true" value="<c:out value="${sessionScope.pageInfo.nextPage}"/>"/>
                         <input class="nextPage"  value="NextPage" type="submit"/>
                         <c:forEach var="s" items="${sessionScope.species}">
@@ -211,7 +212,7 @@
             <c:if test="${sessionScope.pageInfo.prevPage != -1}">
                 <span class="pagePrevSpan">
                     <form class="pagePrevForm" method="GET" action="${complex_search_form}">
-                        <input name="q"  id="queryPrev"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                        <input name="q"  id="queryPrev"  hidden="true" value="<c:out value="${sessionScope.htmlOriginalQuery}"/>"/>
                         <input name="page"   id="pagePrev"   hidden="true" value="<c:out value="${sessionScope.pageInfo.prevPage}"/>"/>
                         <input class="prevPage" value="PrevPage" type="submit"/>
                         <c:forEach var="s" items="${sessionScope.species}">
@@ -251,7 +252,7 @@
                     <form name="Bottom" class="pageCurrentForm" method="GET" action="${complex_search_form}" onsubmit="return checkPageNumberBottom()">
                         Page <input name="pageFake" type="text" class="pageCurrent" value="<c:out value="${sessionScope.pageInfo.pageForShow}"/>"/> of <c:out value="${sessionScope.pageInfo.lastPageForShow}"/>
                         <input name="page" type="text" hidden="true"/>
-                        <input name="q"  id="queryCurrent"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                        <input name="q"  id="queryCurrent"  hidden="true" value="<c:out value="${sessionScope.htmlOriginalQuery}"/>"/>
                         <input id="buttonCurrent" hidden="true" type="submit">
                         <c:forEach var="s" items="${sessionScope.species}">
                             <c:set var="contains" value="false"/>
@@ -288,7 +289,7 @@
             <c:if  test="${sessionScope.pageInfo.nextPage != -1}">
                 <span class="pageNextSpan">
                     <form class="pageNextForm" method="GET" action="${complex_search_form}">
-                        <input name="q"  id="queryNextBottom"  hidden="true" value="<c:out value="${sessionScope.results.originaQuery}"/>"/>
+                        <input name="q"  id="queryNextBottom"  hidden="true" value="<c:out value="${sessionScope.htmlOriginalQuery}"/>"/>
                         <input name="page"   id="pageNextBottom"   hidden="true" value="<c:out value="${sessionScope.pageInfo.nextPage}"/>"/>
                         <input class="nextPage" value="NextPage" type="submit"/>
                         <c:forEach var="s" items="${sessionScope.species}">
@@ -333,7 +334,7 @@
     <section class="grid_6 pull_18 alpha" id="search-filters">
         <div id="filtersDiv" class="filters grid_24">
             <form name="filtersForm" id="filtersForm" method="GET" action="${complex_search_form}">
-                <input name="q" type="hidden" value="${sessionScope.results.originaQuery}" />
+                <input name="q" type="hidden" value="${sessionScope.htmlOriginalQuery}" />
                 <strong>Species:</strong>
                 <br>
                 <c:forEach var="s" items="${sessionScope.species}" varStatus="loopStatus">

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.HtmlUtils;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexFieldNames;
 
 import javax.servlet.http.HttpServletRequest;
@@ -110,6 +111,7 @@ public class WebAppController {
             ComplexRestResult results = restConnection.query(q, pageInfo, filters, facets, type);
             session.setAttribute("pageInfo", pageInfo);
             session.setAttribute("results", results);
+            session.setAttribute("htmlOriginalQuery", HtmlUtils.htmlEscape(results.getOriginaQuery()));
             if (pageInfo.getTotalNumberOfElements() != 0) {
                 if (results != null) {
                     Map<String, List<ComplexFacetResults>> facetResults = results.getFacets();
