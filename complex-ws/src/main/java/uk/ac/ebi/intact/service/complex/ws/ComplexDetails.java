@@ -29,7 +29,7 @@ public class ComplexDetails {
     private String properties;
     private String ac;
     private String name;
-    private String specie;
+    private String species;
     private String ligand;
     private String complexAssembly;
     private String disease;
@@ -69,9 +69,9 @@ public class ComplexDetails {
     public void setName ( String n ) { this.name = n; }
     @XmlElement
     public String getName () { return this.name; }
-    public void setSpecie ( String s ) { this.specie = s; }
+    public void setSpecies ( String s ) { this.species = s; }
     @XmlElement
-    public String getSpecie () { return this.specie; }
+    public String getSpecies () { return this.species; }
     @XmlElement
     public String getLigand() { return ligand; }
     public void setLigand(String ligand) { this.ligand = ligand; }

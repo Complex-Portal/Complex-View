@@ -195,28 +195,17 @@ public class SearchController {
         // Function
         if ( complex != null ) {
             details = new ComplexDetails();
-            CvTopic cvTopic = null ;
-
-            for ( Annotation annotation : complex.getAnnotations ( ) ) {
-                cvTopic = annotation != null ? annotation.getCvTopic ( ) : null ;
-                if ( cvTopic != null && cvTopic.getShortLabel ( ) .equalsIgnoreCase( CvTopic.CURATED_COMPLEX ) && annotation.getAnnotationText() != null) {
-                    details.setFunction ( annotation.getAnnotationText ( ) ) ;
-                }
-                else if ( annotation.getCvTopic() != null && annotation.getCvTopic().getIdentifier() != null && annotation.getCvTopic().getIdentifier().equals("MI:0629") ) {
-                    details.setProperties(annotation.getAnnotationText());
-                }
-                else if ( annotation.getCvTopic() != null && annotation.getCvTopic().getIdentifier() != null && annotation.getCvTopic().getIdentifier().equals("MI:0617") ) {
-                    details.setDisease(annotation.getAnnotationText());
-                }
-                else if ( annotation.getCvTopic() != null && annotation.getCvTopic().getIdentifier() != null && annotation.getCvTopic().getIdentifier().equals("IA:2738") ) {
-                    details.setLigand(annotation.getAnnotationText());
-                }
-                else if ( annotation.getCvTopic() != null && annotation.getCvTopic().getIdentifier() != null && annotation.getCvTopic().getIdentifier().equals("IA:2783") ) {
-                    details.setComplexAssembly(annotation.getAnnotationText());
-                }
-            }
-            setComplexNames(complex, details);
             details.setAc(complex.getAc());
+            details.setFunction         ( ComplexUtils.getFunction          ( complex ) );
+            details.setProperties       ( ComplexUtils.getProperties        ( complex ) );
+            details.setDisease          ( ComplexUtils.getDisease           ( complex ) );
+            details.setLigand           ( ComplexUtils.getLigand            ( complex ) );
+            details.setComplexAssembly  ( ComplexUtils.getComplexAssembly   ( complex ) );
+            details.setName             ( getName /*DEPRECATED. USE COMPLEXUTILS*/ ( complex ) );
+            details.setSynonyms         ( getSynonyms /*DEPRECATED, USE COMPLEXUTILS*/ ( complex ) );
+            details.setSystematicName   ( ComplexUtils.getSystematicName    ( complex ) );
+            details.setSpecies          ( ComplexUtils.getSpeciesName       ( complex ) + "; " +
+                                          ComplexUtils.getSpeciesTaxId      ( complex ) );
 
             setParticipants(complex, details);
             setCrossReferences(complex, details);
@@ -261,6 +250,28 @@ public class SearchController {
                     .append(")");
         }
         return improvedQuery.toString();
+    }
+
+    public static String getName(InteractionImpl complex) {
+        String name = ComplexUtils.getRecommendedName(complex);
+        if (name != null) return name;
+        name = ComplexUtils.getSystematicName(complex);
+        if (name != null) return name;
+        List<String> synonyms = getSynonyms(complex);
+        if (! synonyms.isEmpty()) return synonyms.get(0);
+        name = ComplexUtils.getFirstAlias(complex);
+        if (name != null) return name;
+        return complex.getShortLabel();
+    }
+
+    public static List<String> getSynonyms(InteractionImpl complex) {
+        List<String> synosyms = new ArrayList<String>();
+        for (Alias alias : complex.getAliases()) {
+            if (alias.getName() != null && alias.getCvAliasType() != null && alias.getCvAliasType().getIdentifier().equals(CvAliasType.COMPLEX_SYNONYM_NAME_MI_REF)) {
+                synosyms.add(alias.getName());
+            }
+        }
+        return synosyms;
     }
 
     // This method fills the cross references table for the view
@@ -438,61 +449,4 @@ public class SearchController {
         }
     }
 
-    // set the recommended name, the systematic name, the synonyms, the alias and the species of the complex
-    protected void setComplexNames(InteractionImpl complex, ComplexDetails details) {
-        // Names
-        String firstRecommended=null;
-        String firstSystematic=null;
-        String firstComplexSynonym=null;
-        String firstAlias=null;
-
-        for ( Alias alias : complex.getAliases ( ) ) {
-            if (alias.getName() != null){
-                if (alias.getCvAliasType() != null){
-                    CvAliasType type = alias.getCvAliasType();
-                    if ( firstRecommended == null && "MI:1315".equals(type.getIdentifier()) ){
-                        firstRecommended = alias.getName();
-                    }
-                    else if ( firstSystematic == null && "MI:1316".equals(type.getIdentifier()) ){
-                        firstSystematic = alias.getName();
-                    }
-                    else if ( "MI:0673".equals(type.getIdentifier()) ){
-                        if ( firstComplexSynonym == null ) firstComplexSynonym = alias.getName();
-                        details.addSynonym(alias.getName());
-                    }
-                }
-                else if (firstAlias == null){
-                    firstAlias = alias.getName();
-                }
-            }
-        }
-
-        if ( firstRecommended != null ) {
-            details.setName(firstRecommended);
-        }
-        else if ( firstSystematic != null ) {
-            details.setName(firstSystematic);
-        }
-        else if ( firstComplexSynonym != null ) {
-            details.setName(firstComplexSynonym);
-        }
-        else if ( firstAlias != null ) {
-            details.setName(firstAlias);
-        }
-        else{
-            details.setName(complex.getShortLabel());
-        }
-
-        details.setSystematicName(firstSystematic);
-        if (! complex.getExperiments().isEmpty()){
-            Experiment exp = complex.getExperiments().iterator().next();
-            BioSource bioSource = exp.getBioSource();
-            if ( bioSource != null ){
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(bioSource.getFullName() != null ? bioSource.getFullName() : bioSource.getShortLabel());
-                stringBuilder.append("; ").append(bioSource.getTaxId());
-                details.setSpecie(stringBuilder.toString());
-            }
-        }
-    }
 }
