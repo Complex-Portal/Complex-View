@@ -70,7 +70,7 @@
             <%--&lt;%&ndash;<h5 class="subtitleHome">IntAct provides a freely available, open source database system and analysis tools for molecular interaction data. All interactions are derived from literature curation or direct user submissions and are freely available. To perform a search in the IntAct database use the search box below.</h5>&ndash;%&gt;--%>
             <%--<h5 class="subtitleHome">The Complex Portal is a manually curate, encyclopaedic resource of macromolecular complexes from a number of key model organisms. All data is freely available for search and download. To perform a search for macromolecular complexes use the search box below.</h5>--%>
         <%--</div>--%>
-            <p class="intro">The Complex Portal is a manually curate, encyclopaedic resource of macromolecular complexes from a number of key model organisms. All data is freely available for search and download. To perform a search for macromolecular complexes use the search box below.</p>
+            <p class="intro">The Complex Portal is a manually curated, encyclopaedic resource of macromolecular complexes from a number of key model organisms. All data is freely available for search and download. To perform a search for macromolecular complexes use the search box below.</p>
         <br>
         <br>
         <div class="grid_19 alpha">
