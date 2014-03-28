@@ -8,7 +8,7 @@
     </parent>
     <artifactId>complex-ws</artifactId>
     <packaging>war</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>complex-ws</name>
 
     <properties>
@@ -54,6 +54,7 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -166,11 +167,11 @@
         </dependency>
 
         <!-- Solr -->
-        <dependency>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-solrj</artifactId>
-            <version>3.6.2</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.solr</groupId>-->
+            <!--<artifactId>solr-solrj</artifactId>-->
+            <!--<version>3.6.2</version>-->
+        <!--</dependency>-->
 
         <!-- Complexes DataBase -->
         <dependency>
