@@ -3,13 +3,16 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>uk.ac.ebi.intact.service</groupId>
-    <artifactId>service-master</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <!--<groupId>uk.ac.ebi.intact.service</groupId>-->
+    <!--<artifactId>service-master</artifactId>-->
+    <!--<version>3.0.0-SNAPSHOT</version>-->
+          <groupId>uk.ac.ebi.intact.maven</groupId>
+          <artifactId>intact-hibernate-master</artifactId>
+          <version>42</version>
   </parent>
 
   <artifactId>complex-indexer</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>complex-indexer</name>
 
   <properties>
@@ -17,13 +20,19 @@
     <db.url>${dbUrl}</db.url>
     <db.user>${dbUser}</db.user>
     <db.password>${dbPassword}</db.password>
-    <email.recipients>${recipients}</email.recipients>
-    <email.sender>${sender}</email.sender>
-    <email.smtpPort>${smtpPort}</email.smtpPort>
-    <email.smtpHost>${smtpHost}</email.smtpHost>
+    <email.recipients>oforner@ebi.ac.uk</email.recipients>
+    <email.sender>complex@ebi.ac.uk</email.sender>
+    <email.smtpPort>25</email.smtpPort>
+    <email.smtpHost>smtp.ebi.ac.uk</email.smtpHost>
     <complex.url>${complexUrl}</complex.url>
     <ontology.url>${ontologyUrl}</ontology.url>
   </properties>
+
+    <scm>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/complex-indexer</connection>
+        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/complex-indexer</developerConnection>
+        <url>http://code.google.com/p/intact/source/browse/repo/service/trunk/complex-indexer</url>
+    </scm>
 
     <build>
         <resources>
@@ -83,7 +92,6 @@
     <profiles>
         <profile>
             <id>index</id>
-
             <build>
                 <plugins>
                     <plugin>
@@ -163,7 +171,7 @@
       <dependency>
           <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
           <artifactId>intact-solr-core</artifactId>
-          <version>2.1.9</version>
+          <version>2.1.9.2</version>
           <exclusions>
               <exclusion>
                   <groupId>uk.ac.ebi.intact.core</groupId>
@@ -176,7 +184,7 @@
       <dependency>
           <groupId>psidev.psi.mi.jami</groupId>
           <artifactId>jami-batch</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>0.1-alpha</version>
       </dependency>
 
     <dependency>
@@ -227,11 +235,11 @@
           <artifactId>ojdbc6</artifactId>
           <version>11.2.0.3.0</version>
       </dependency>
-      <dependency>
-          <groupId>org.apache.solr</groupId>
-          <artifactId>solr-solrj</artifactId>
-          <version>3.6.2</version>
-      </dependency>
+      <!--<dependency>-->
+          <!--<groupId>org.apache.solr</groupId>-->
+          <!--<artifactId>solr-solrj</artifactId>-->
+          <!--<version>3.6.2</version>-->
+      <!--</dependency>-->
       <dependency>
           <groupId>org.springframework</groupId>
           <artifactId>spring-test</artifactId>

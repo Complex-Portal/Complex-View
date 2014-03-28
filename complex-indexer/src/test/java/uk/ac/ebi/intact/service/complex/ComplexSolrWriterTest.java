@@ -33,8 +33,8 @@ import java.util.List;
 @Transactional(propagation = Propagation.NEVER)
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-        "classpath:/META-INF/intact.spring.xml",
-        "classpath:META-INF/complex-indexer-spring.xml"
+        "classpath:/META-INF/intact.spring.test.xml",
+        "classpath:META-INF/complex-indexer-spring-test.xml"
 })
 public class ComplexSolrWriterTest extends IntactBasicTestCase {
     @Autowired

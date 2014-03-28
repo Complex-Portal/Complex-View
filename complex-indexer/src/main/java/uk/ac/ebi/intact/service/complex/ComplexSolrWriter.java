@@ -42,7 +42,7 @@ public class ComplexSolrWriter implements ItemWriter < InteractionImpl >, ItemSt
     protected String solrUrl = null ;
     protected HttpSolrServer solrServer = null ;
     protected ComplexSolrConverter complexSolrConverter = null ;
-
+    private String complexPropertiesFile = null;
     private int maxTotalConnections ;
     private int defaultMaxConnectionsPerHost ;
     private boolean allowCompression ;
@@ -59,6 +59,15 @@ public class ComplexSolrWriter implements ItemWriter < InteractionImpl >, ItemSt
         this.defaultMaxConnectionsPerHost = 24 ;
         this.allowCompression = true ;
         this.needToCommitOnClose = false ;
+    }
+
+    public ComplexSolrWriter ( String complexPropertiesFile ) {
+        //default settings for solr server
+        this.maxTotalConnections = 128 ;
+        this.defaultMaxConnectionsPerHost = 24 ;
+        this.allowCompression = true ;
+        this.needToCommitOnClose = false ;
+        this.complexPropertiesFile = complexPropertiesFile;
     }
 
     /*********************************/
@@ -82,6 +91,8 @@ public class ComplexSolrWriter implements ItemWriter < InteractionImpl >, ItemSt
         }
         return this.solrServer ;
     }
+
+
 
     /*******************************/
     /*      Protected methods      */
@@ -133,8 +144,14 @@ public class ComplexSolrWriter implements ItemWriter < InteractionImpl >, ItemSt
             } catch (ParserConfigurationException e) {
                 throw new ItemStreamException ( "Impossible to create a new HTTP solr server", e ) ;
             }
-
             this.complexSolrConverter = new ComplexSolrConverter( this.ontologySolrServer ) ;
+            if(this.complexPropertiesFile != null) {
+                try {
+                    this.complexSolrConverter.setComplexPropertiesFile(this.complexPropertiesFile);
+                } catch (IOException e) {
+                    throw new ItemStreamException("Impossible use the complex properties file: " + this.complexPropertiesFile, e);
+                }
+            }
         }
         else{
             throw new ItemStreamException ( "The complexes solr url is mandatory" ) ;
