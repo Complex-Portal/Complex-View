@@ -20,10 +20,10 @@
     <db.url>${dbUrl}</db.url>
     <db.user>${dbUser}</db.user>
     <db.password>${dbPassword}</db.password>
-    <email.recipients>oforner@ebi.ac.uk</email.recipients>
-    <email.sender>complex@ebi.ac.uk</email.sender>
-    <email.smtpPort>25</email.smtpPort>
-    <email.smtpHost>smtp.ebi.ac.uk</email.smtpHost>
+    <email.recipients>${notification.email.recipients}</email.recipients>
+    <email.sender>${notification.email.sender}</email.sender>
+    <email.smtpPort>${notification.email.smtpPort}</email.smtpPort>
+    <email.smtpHost>${notification.email.smtpHost}</email.smtpHost>
     <complex.url>${complexUrl}</complex.url>
     <ontology.url>${ontologyUrl}</ontology.url>
   </properties>

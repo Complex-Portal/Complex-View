@@ -30,29 +30,61 @@
 
     <!--JPA config for IntAct database-->
 
+    <!--<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>-->
+    <!--<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>-->
+    <!--<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">-->
+        <!--<property name="entityManagerFactory" ref="entityManagerFactory"/>-->
+        <!--<property name="dataSource" ref="intactComplexDataSource"/>-->
+    <!--</bean>-->
+
+    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
+
+    <!--<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">-->
+        <!--<property name="persistenceUnitName" value="intact-core-default"/>-->
+        <!--<property name="dataSource" ref="intactComplexDataSource"/>-->
+        <!--<property name="jpaProperties">-->
+            <!--<props>-->
+                <!--<prop key="hibernate.generate_statistics">true</prop>-->
+                <!--<prop key="hibernate.format_sql">false</prop>-->
+                <!--<prop key="hibernate.hbm2ddl.auto">${intact.db.hbm2ddl}</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+
+        <!--<property name="jpaVendorAdapter">-->
+            <!--<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">-->
+                <!--<property name="databasePlatform" value="${intact.db.dialect}"/>-->
+                <!--<property name="showSql" value="false"/>-->
+                <!--<property name="generateDdl" value="false"/>-->
+            <!--</bean>-->
+        <!--</property>-->
+    <!--</bean>-->
+
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
-    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
-        <property name="dataSource" ref="intactComplexDataSource"/>
+        <property name="dataSource" ref="intactCoreDataSource"/>
     </bean>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="intact-core-default"/>
-        <property name="dataSource" ref="intactComplexDataSource"/>
+        <property name="dataSource" ref="intactCoreDataSource"/>
+
         <property name="jpaProperties">
             <props>
                 <prop key="hibernate.generate_statistics">true</prop>
                 <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.hbm2ddl.auto">${intact.db.hbm2ddl}</prop>
+                <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
             </props>
         </property>
 
         <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="databasePlatform" value="${intact.db.dialect}"/>
+            <bean class="uk.ac.ebi.intact.core.config.hibernate.IntactHibernateJpaVendorAdapter">
+                <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
                 <property name="showSql" value="false"/>
                 <property name="generateDdl" value="false"/>
             </bean>
@@ -60,34 +92,34 @@
     </bean>
 
     <!-- IntAct config -->
-    <bean id="intactInitializer" class="uk.ac.ebi.intact.core.context.IntactInitializer" init-method="init">
-        <property name="autoPersist" value="false"/>
-    </bean>
+    <!--<bean id="intactInitializer" class="uk.ac.ebi.intact.core.context.IntactInitializer" init-method="init">-->
+        <!--<property name="autoPersist" value="false"/>-->
+    <!--</bean>-->
 
-    <bean id="schemaVersion" class="uk.ac.ebi.intact.core.config.SchemaVersion">
-        <constructor-arg value="2"/>
-        <constructor-arg value="5"/>
-        <constructor-arg value="0"/>
-    </bean>
+    <!--<bean id="schemaVersion" class="uk.ac.ebi.intact.core.config.SchemaVersion">-->
+        <!--<constructor-arg value="2"/>-->
+        <!--<constructor-arg value="5"/>-->
+        <!--<constructor-arg value="0"/>-->
+    <!--</bean>-->
 
-    <bean id="persisterHelper" class="uk.ac.ebi.intact.core.persister.PersisterHelperImpl" />
+    <!--<bean id="persisterHelper" class="uk.ac.ebi.intact.core.persister.PersisterHelperImpl" />-->
 
-    <bean id="corePersister" class="uk.ac.ebi.intact.core.persister.CorePersisterImpl" scope="prototype">
-        <constructor-arg ref="intactContext"/>
-        <constructor-arg ref="finder"/>
-    </bean>
+    <!--<bean id="corePersister" class="uk.ac.ebi.intact.core.persister.CorePersisterImpl" scope="prototype">-->
+        <!--<constructor-arg ref="intactContext"/>-->
+        <!--<constructor-arg ref="finder"/>-->
+    <!--</bean>-->
 
-    <bean id="coreDeleter" class="uk.ac.ebi.intact.core.persister.CoreDeleterImpl" scope="prototype">
-        <constructor-arg ref="intactContext"/>
-    </bean>
+    <!--<bean id="coreDeleter" class="uk.ac.ebi.intact.core.persister.CoreDeleterImpl" scope="prototype">-->
+        <!--<constructor-arg ref="intactContext"/>-->
+    <!--</bean>-->
 
-    <bean id="finder" class="uk.ac.ebi.intact.core.persister.finder.DefaultFinder" scope="prototype">
-        <constructor-arg ref="intactContext"/>
-    </bean>
-    <bean id="defaultApp" class="uk.ac.ebi.intact.model.meta.Application">
-        <property name="key" value="default"/>
-        <property name="description" value="Application generated automatically by intact-core"/>
-    </bean>
+    <!--<bean id="finder" class="uk.ac.ebi.intact.core.persister.finder.DefaultFinder" scope="prototype">-->
+        <!--<constructor-arg ref="intactContext"/>-->
+    <!--</bean>-->
+    <!--<bean id="defaultApp" class="uk.ac.ebi.intact.model.meta.Application">-->
+        <!--<property name="key" value="default"/>-->
+        <!--<property name="description" value="Application generated automatically by intact-core"/>-->
+    <!--</bean>-->
 
     <!-- Default institutions -->
     <bean id="institutionIntact" class="uk.ac.ebi.intact.model.util.InstitutionFactoryBean">
@@ -105,26 +137,13 @@
     </bean>
 
     <bean id="intactConfig" class="uk.ac.ebi.intact.core.config.IntactConfiguration">
-        <property name="acPrefix" value="EBI"/>
+        <property name="acPrefix" value="TEST"/>
         <property name="defaultInstitution" ref="institutionIntact"/>
         <property name="skipSchemaCheck" value="true"/>
     </bean>
 
     <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext">
         <property name="userId" value="INTACT_COMPLEX"/>
-    </bean>
-
-    <bean id="intactComplexDataSource" class="org.apache.commons.dbcp.BasicDataSource"
-          destroy-method="close">
-        <property name="driverClassName" value="${db.driver}"/>
-        <property name="url" value="${db.url}"/>
-        <property name="username" value="${db.username}"/>
-        <property name="password" value="${db.password}"/>
-        <property name="initialSize" value="5" />
-        <property name="maxActive" value="20" />
-        <property name="MaxIdle" value="10"/>
-        <property name="MinIdle" value="2"/>
-        <property name="maxWait" value="5000" />
     </bean>
 
     <!-- Base steps -->
