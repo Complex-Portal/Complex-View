@@ -1,149 +1,263 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <!--<groupId>uk.ac.ebi.intact.service</groupId>-->
+    <!--<artifactId>service-master</artifactId>-->
+    <!--<version>3.0.0-SNAPSHOT</version>-->
+          <groupId>uk.ac.ebi.intact.maven</groupId>
+          <artifactId>intact-hibernate-master</artifactId>
+          <version>42</version>
+  </parent>
 
-    <parent>
-        <groupId>uk.ac.ebi.intact.maven</groupId>
-        <artifactId>intact-hibernate-master</artifactId>
-        <version>42</version>
-    </parent>
+  <artifactId>complex-indexer</artifactId>
+  <version>1.0.1</version>
+  <name>complex-indexer</name>
 
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>uk.ac.ebi.intact.service</groupId>
-    <artifactId>service-master</artifactId>
-    <packaging>pom</packaging>
-    <version>3.0.0-SNAPSHOT</version>
-
-    <name>IntAct Services</name>
-    <description>Services Master POM</description>
-    <url>http://www.ebi.ac.uk/~intact/devsite/service</url>
-
-    <properties>
-        <currentVersion>1.6.0-SNAPSHOT</currentVersion>
-        <jetty.port>9090</jetty.port>
-        <jetty.context>${pom.artifactId}</jetty.context>
-        <tempH2>${project.build.directory}/db/intact-${artifactId}-${jetty.port}-h2</tempH2>
-
-        <user>${env.USERNAME}</user>
-        <appRoot>/intact</appRoot>
-
-        <core.version>2.6.5</core.version>
-    </properties>
-
-    <modules>
-     <module>cv-update-runner</module>
-      <module>protein-update-runner</module>
-    <module>dataset-update-runner</module>
-    <module>imex-assigner-runner</module>
-    <module>intact-publication-exporter</module>
-     <module>intact-view</module>
-     <module>validator-view</module>
-     <module>health-check</module>
-     <module>intact-widgets</module>
-    <module>complex-indexer</module>
-  </modules>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <db.url>${dbUrl}</db.url>
+    <db.user>${dbUser}</db.user>
+    <db.password>${dbPassword}</db.password>
+    <email.recipients>${recipients}</email.recipients>
+    <email.sender>${sender}</email.sender>
+    <email.smtpPort>${smtpPort}</email.smtpPort>
+    <email.smtpHost>${smtpHost}</email.smtpHost>
+    <complex.url>${complexUrl}</complex.url>
+    <ontology.url>${ontologyUrl}</ontology.url>
+  </properties>
 
     <scm>
-        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk</connection>
-        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk</developerConnection>
-        <url>http://code.google.com/p/intact/source/browse/repo/service/trunk</url>
+        <connection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/complex-indexer</connection>
+        <developerConnection>scm:svn:https://intact.googlecode.com/svn/repo/service/trunk/complex-indexer</developerConnection>
+        <url>http://code.google.com/p/intact/source/browse/repo/service/trunk/complex-indexer</url>
     </scm>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
 
-        <finalName>intact-${artifactId}-${db.alias}-${version}-${buildNumber}</finalName>
-
-        <pluginManagement>
-            <plugins>
-               <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>maven-buildnumber-plugin</artifactId>
-                <version>0.9.4</version>
+        <plugins>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>validate</phase>
+                        <id>attach-source</id>
                         <goals>
-                            <goal>create</goal>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--assembly-->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <doCheck>false</doCheck>
-                    <doUpdate>false</doUpdate>
+                    <!--<descriptors>
+                        <descriptor>src/main/assembly/descriptor.xml</descriptor>
+                    </descriptors> -->
                 </configuration>
             </plugin>
-
-            </plugins>
-        </pluginManagement>
+        </plugins>
     </build>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- IntAct dependencies -->
-            <dependency>
-                <groupId>uk.ac.ebi.intact.core</groupId>
-                <artifactId>intact-core</artifactId>
-                <version>${core.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>uk.ac.ebi.intact.core</groupId>
-                <artifactId>intact-annotations</artifactId>
-                <version>${core.version}</version>
-            </dependency>
+    <profiles>
+        <profile>
+            <id>index</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-Xmx2024m</argument>
+                                <argument>-Xms256m</argument>
 
-            <!-- Other third party dependencies -->
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.15</version>
-                <exclusions>
-                   <exclusion>
-                      <groupId>com.sun.jmx</groupId>
-                      <artifactId>jmxri</artifactId>
-                  </exclusion>
-                </exclusions>
-            </dependency>
+                                <argument>-classpath</argument>
+                                <classpath />
 
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.1.1</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>3.2</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.3</version>
-            </dependency>
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>1.0.20070429</version>
-            </dependency>
+                                <argument>psidev.psi.mi.jami.batch.MIBatchJobManager</argument>
+                                <argument>${spring.config}</argument>
+                                <argument>complexJob</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>restart-index</id>
 
-        </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-Xmx2024m</argument>
+                                <argument>-Xms256m</argument>
 
-    </dependencyManagement>
+                                <argument>-classpath</argument>
+                                <classpath />
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.3.1</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+                                <argument>psidev.psi.mi.jami.batch.MIBatchJobManager</argument>
+                                <argument>${spring.config}</argument>
+                                <argument>complexJob</argument>
+                                <argument>${job.id}</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+  <dependencies>
+      <dependency>
+          <groupId>uk.ac.ebi.intact.core</groupId>
+          <artifactId>intact-core</artifactId>
+          <version>2.6.5</version>
+      </dependency>
+
+      <!-- IntAct solr schema dependencies -->
+      <dependency>
+          <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
+          <artifactId>intact-solr-core</artifactId>
+          <version>2.1.9.2</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>uk.ac.ebi.intact.core</groupId>
+                  <artifactId>intact-core</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+
+      <!-- JAMI spring batch config -->
+      <dependency>
+          <groupId>psidev.psi.mi.jami</groupId>
+          <artifactId>jami-batch</artifactId>
+          <version>0.1-alpha</version>
+      </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aspects</artifactId>
+        <version>3.2.4.RELEASE</version>
+    </dependency>
+
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-orm</artifactId>
+          <version>3.2.4.RELEASE</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-oxm</artifactId>
+          <version>3.2.4.RELEASE</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-aop</artifactId>
+          <version>3.2.4.RELEASE</version>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-tx</artifactId>
+          <version>3.2.4.RELEASE</version>
+      </dependency>
+
+      <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <version>1.3.173</version>
+      </dependency>
+
+      <dependency>
+          <groupId>com.oracle</groupId>
+          <artifactId>ojdbc6</artifactId>
+          <version>11.2.0.3.0</version>
+      </dependency>
+      <!--<dependency>-->
+          <!--<groupId>org.apache.solr</groupId>-->
+          <!--<artifactId>solr-solrj</artifactId>-->
+          <!--<version>3.6.2</version>-->
+      <!--</dependency>-->
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-test</artifactId>
+          <version>3.2.4.RELEASE</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.batch</groupId>
+          <artifactId>spring-batch-test</artifactId>
+          <version>2.1.0.RELEASE</version>
+      </dependency>
+
+  </dependencies>
 
     <repositories>
-         <repository>
-             <id>intact.nexus</id>
-             <name>IntAct Nexus</name>
-             <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
-         </repository>
+        <repository>
+            <id>intact.nexus</id>
+            <name>IntAct Nexus</name>
+            <url>http://www.ebi.ac.uk/intact/maven/nexus/content/groups/public</url>
+        </repository>
     </repositories>
-
 </project>

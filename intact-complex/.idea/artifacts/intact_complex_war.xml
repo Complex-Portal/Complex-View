@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" build-on-make="true" name="intact-complex:war">
-    <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="intact-complex.war">
-      <element id="artifact" artifact-name="intact-complex:war exploded" />
-    </root>
-  </artifact>
-</component>
