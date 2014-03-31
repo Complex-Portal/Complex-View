@@ -12,7 +12,7 @@
   </parent>
 
   <artifactId>complex-indexer</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>complex-indexer</name>
 
   <properties>
@@ -20,10 +20,10 @@
     <db.url>${dbUrl}</db.url>
     <db.user>${dbUser}</db.user>
     <db.password>${dbPassword}</db.password>
-    <email.recipients>${notification.email.recipients}</email.recipients>
-    <email.sender>${notification.email.sender}</email.sender>
-    <email.smtpPort>${notification.email.smtpPort}</email.smtpPort>
-    <email.smtpHost>${notification.email.smtpHost}</email.smtpHost>
+    <email.recipients>${recipients}</email.recipients>
+    <email.sender>${sender}</email.sender>
+    <email.smtpPort>${smtpPort}</email.smtpPort>
+    <email.smtpHost>${smtpHost}</email.smtpHost>
     <complex.url>${complexUrl}</complex.url>
     <ontology.url>${ontologyUrl}</ontology.url>
   </properties>
