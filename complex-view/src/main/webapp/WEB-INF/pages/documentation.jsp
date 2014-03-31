@@ -30,6 +30,7 @@
         <%--<li><a href="${complex_advanced_search_url}">Advanced Search</a></li>--%>
         <%--<li><a href="${complex_downloads_url}">Downloads</a></li>--%>
         <li><a href="${complex_help_url}">Help</a></li>
+        <li><a href="${complex_download_url}">Download</a></li>
         <li class="last"><a href="${complex_contact_url}">Contact Us</a></li>
         <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
              add them here, and give them a class of "functional". Remember: you'll need a class of "last" for

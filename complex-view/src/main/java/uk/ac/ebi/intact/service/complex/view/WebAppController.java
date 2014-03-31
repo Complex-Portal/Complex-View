@@ -111,7 +111,7 @@ public class WebAppController {
             ComplexRestResult results = restConnection.query(q, pageInfo, filters, facets, type);
             session.setAttribute("pageInfo", pageInfo);
             session.setAttribute("results", results);
-            session.setAttribute("htmlOriginalQuery", HtmlUtils.htmlEscape(results.getOriginaQuery()));
+            if (results != null) session.setAttribute("htmlOriginalQuery", HtmlUtils.htmlEscape(results.getOriginaQuery()));
             if (pageInfo.getTotalNumberOfElements() != 0) {
                 if (results != null) {
                     Map<String, List<ComplexFacetResults>> facetResults = results.getFacets();
@@ -190,6 +190,16 @@ public class WebAppController {
         return "about";
     }
 
+    // ABOUT
+    @RequestMapping(value = "/download/", method = RequestMethod.GET)
+    public String goDownload(ModelMap model,
+                          HttpServletRequest request) {
+        setDefaultModelMapValues(model, request);
+        model.addAttribute("page_title", "Complex Download");
+        model.addAttribute("complex_search_form", request.getRequestURL().toString().split("download/")[0]);
+        return "download";
+    }
+
     /*****************************/
     /***   Private functions   ***/
     /*****************************/
@@ -197,6 +207,7 @@ public class WebAppController {
         model.addAttribute("complex_portal_name", "Complex Portal");
         model.addAttribute("complex_home_url", request.getContextPath());
         model.addAttribute("complex_search_url", request.getContextPath());
+        model.addAttribute("complex_download_url", request.getContextPath() + "/download/");
         model.addAttribute("complex_help_url", request.getContextPath() + "/help/");
         model.addAttribute("complex_documentation_url", request.getContextPath() + "/documentation/");
         model.addAttribute("complex_contact_url", "mailto:intact-help@ebi.ac.uk?Subject=Complex%20Portal");
