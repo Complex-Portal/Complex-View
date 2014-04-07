@@ -236,7 +236,7 @@ public class ValidatorFactory {
             ValidatorWebContent validatorContent = context.getValidatorWebContent();
 
             // We get the pre-instantiated ontologyManager and object rules
-            MiValidator validator = validatorContent.getPsiParValidators().get(ValidationScope.SYNTAX);
+            MiValidator validator = validatorContent.getPsiParValidators().get(scope);
             if (validator == null){
                 throw new IllegalStateException( "Unsupported validation scope: '"+ scope +"', the application is not correctly configured." );
             }
@@ -269,7 +269,7 @@ public class ValidatorFactory {
             ValidatorWebContent validatorContent = context.getValidatorWebContent();
 
             // We get the pre-instantiated ontologyManager and object rules
-            MiValidator validator = validatorContent.getPsiMiValidators().get(ValidationScope.SYNTAX);
+            MiValidator validator = validatorContent.getPsiMiValidators().get(scope);
             if (validator == null){
                 throw new IllegalArgumentException( "Unsupported validation scope: '"+ scope +"', the application is not correctly configured." );
             }
