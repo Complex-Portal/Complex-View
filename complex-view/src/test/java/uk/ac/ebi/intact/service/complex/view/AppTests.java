@@ -87,4 +87,30 @@ public class AppTests {
         Assert.assertEquals(pageInfo.getNextPage(), -1);
     }
 
+    @Test
+    public void compareDetailsCrossReferences() throws Exception {
+        ComplexDetailsCrossReferences xref1, xref2;
+        xref1 = new ComplexDetailsCrossReferences();
+        xref2 = new ComplexDetailsCrossReferences();
+        Assert.assertEquals(xref1.compareTo(xref2), 0); //Equals
+        xref1.setDatabase("A");
+        Assert.assertEquals(xref1.compareTo(xref2), 1); //xref1 is grater
+        Assert.assertEquals(xref2.compareTo(xref1), -1); //xref2 is smaller
+        xref2.setDatabase("A");
+        Assert.assertEquals(xref1.compareTo(xref2), 0); //Equals
+        xref2.setDatabase("B");
+        Assert.assertEquals(xref1.compareTo(xref2), -1); //xref2 is greater
+        xref1.setDatabase("C");
+        Assert.assertEquals(xref1.compareTo(xref2), 1); //xref1 is greater
+        xref1 = new ComplexDetailsCrossReferences();
+        xref2 = new ComplexDetailsCrossReferences();
+        xref1.setQualifier("A");
+        xref2.setQualifier("B");
+        Assert.assertEquals(xref1.compareTo(xref2), -1); //xref2 is greater
+        xref1.setQualifier("C");
+        Assert.assertEquals(xref1.compareTo(xref2), 1); //xref1 is greater
+        xref1.setQualifier(null);
+        Assert.assertEquals(xref1.compareTo(xref2), -1); //xref2 is greater
+    }
+
 }

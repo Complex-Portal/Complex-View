@@ -105,17 +105,58 @@ public class ComplexDetailsCrossReferences implements Comparable<ComplexDetailsC
     }
 
     @Override
-    public int compareTo(ComplexDetailsCrossReferences complexDetailsCrossReferences) {
+    public int compareTo(ComplexDetailsCrossReferences cross) {
         //Compare Database
-        int state = this.database.compareTo(complexDetailsCrossReferences.database);
-        if (state == 0){
-            //Compare Type
-            state = this.qualifier.compareTo(complexDetailsCrossReferences.qualifier);
-            if(state == 0) {
-                //Compare Identifier
-                state = this.identifier.compareTo(complexDetailsCrossReferences.identifier);
+        int state = compareDatabase(cross);
+        if (state != 0) return state;
+        state = compareQualifier(cross);
+        if (state != 0) return state;
+        return compareIdentifier(cross);
+    }
+
+
+    private int compareDatabase(ComplexDetailsCrossReferences xref) {
+        if (this.database != null && xref.database != null) return this.database.compareTo(xref.database);
+        if (this.database == null){
+            if (xref.database == null){
+                return 0;
+            }
+            else {
+                return -1;
             }
         }
-        return state;
+        else {
+            return 1;
+        }
+    }
+
+    private int compareQualifier(ComplexDetailsCrossReferences xref) {
+        if (this.qualifier != null && xref.qualifier != null) return this.qualifier.compareTo(xref.qualifier);
+        if (this.qualifier == null){
+            if (xref.qualifier == null){
+                return 0;
+            }
+            else {
+                return -1;
+            }
+        }
+        else {
+            return 1;
+        }
+    }
+
+    private int compareIdentifier(ComplexDetailsCrossReferences xref) {
+        if (this.identifier != null && xref.identifier != null) return this.identifier.compareTo(xref.identifier);
+        if (this.identifier == null){
+            if (xref.identifier == null){
+                return 0;
+            }
+            else {
+                return -1;
+            }
+        }
+        else {
+            return 1;
+        }
     }
 }
