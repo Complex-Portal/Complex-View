@@ -310,12 +310,14 @@ public class ValidatorWebContent {
      */
     private void setUpPsiMiValidatorEnvironments(ValidatorFactory factory) throws ValidatorWebContextException {
         MiValidator validator1 = factory.getReInitialisedValidator(ValidationScope.SYNTAX, DataModel.PSI_MI);
+        MiValidator validatorCv = factory.getReInitialisedValidator(ValidationScope.CV_ONLY, DataModel.PSI_MI);
         MiValidator validator2 = factory.getReInitialisedValidator(ValidationScope.PSI_MI, DataModel.PSI_MI);
         MiValidator validator3 = factory.getReInitialisedValidator(ValidationScope.MIMIX, DataModel.PSI_MI);
         MiValidator validator4 = factory.getReInitialisedValidator(ValidationScope.IMEX, DataModel.PSI_MI);
         setPsiMiOntologyManager(validator2.getOntologyMngr());
 
         this.psiMiValidators.put(ValidationScope.SYNTAX, validator1);
+        this.psiMiValidators.put(ValidationScope.CV_ONLY, validatorCv);
         this.psiMiValidators.put(ValidationScope.MIMIX, validator3);
         this.psiMiValidators.put(ValidationScope.IMEX, validator4);
         this.psiMiValidators.put(ValidationScope.PSI_MI, validator2);
