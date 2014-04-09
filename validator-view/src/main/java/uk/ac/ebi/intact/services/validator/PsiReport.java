@@ -83,7 +83,7 @@ public class PsiReport {
     }
 
     public boolean isSyntaxValid() {
-        return VALID.equals(syntaxStatus);
+        return VALID.equals(syntaxStatus) || WARNINGS.equals(syntaxStatus);
     }
 
     public boolean isSyntaxWarning() {
