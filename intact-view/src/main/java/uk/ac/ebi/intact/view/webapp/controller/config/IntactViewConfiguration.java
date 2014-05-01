@@ -62,6 +62,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private static final String INTACT_NEWS_URL = "intact.news.url";
     private static final String INTACT_DOTM_URL = "intact.dotm.url";
     private static final String INTACT_FTP_URL = "intact.ftp.url";
+    private static final String COMPLEX_FTP_URL = "complex.ftp.url";
     private static final String INTACT_FAQ_URL = "intact.faq.url";
     private static final String INTACT_NEWS_MAXINBOX = "intact.news.maxinbox";
     private static final String INTACT_WARNING_MSG = "intact.warning.msg";
@@ -99,6 +100,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
     private String newsUrl;
     private String dotmUrl;
     private String ftpUrl;
+    private String complexFtpUrl;
     private String faqUrl;
     private int maxNewsInBox;
     private String warningMessage;
@@ -233,6 +235,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         newsUrl = properties.getProperty(INTACT_NEWS_URL, newsUrl);
         dotmUrl = properties.getProperty(INTACT_DOTM_URL, dotmUrl);
         ftpUrl = properties.getProperty(INTACT_FTP_URL, ftpUrl);
+        complexFtpUrl = properties.getProperty(COMPLEX_FTP_URL, complexFtpUrl);
         faqUrl = properties.getProperty(INTACT_FAQ_URL, faqUrl);
         maxNewsInBox = Integer.parseInt(properties.getProperty(INTACT_NEWS_MAXINBOX, String.valueOf(maxNewsInBox)));
         warningMessage = properties.getProperty(INTACT_WARNING_MSG, warningMessage);
@@ -272,6 +275,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         addProperty(properties, INTACT_NEWS_URL, newsUrl);
         addProperty(properties, INTACT_DOTM_URL, dotmUrl);
         addProperty(properties, INTACT_FTP_URL, ftpUrl);
+        addProperty(properties, COMPLEX_FTP_URL, complexFtpUrl);
         addProperty(properties, INTACT_FAQ_URL, faqUrl);
         addProperty(properties, INTACT_NEWS_MAXINBOX, String.valueOf(maxNewsInBox));
         addProperty(properties, INTACT_WARNING_MSG, warningMessage);
@@ -371,6 +375,14 @@ public class IntactViewConfiguration extends BaseController implements Initializ
 
     public void setFtpUrl( String ftpUrl ) {
         this.ftpUrl = ftpUrl;
+    }
+
+    public String getComplexFtpUrl() {
+        return complexFtpUrl;
+    }
+
+    public void setComplexFtpUrl( String ftpUrl ) {
+        this.complexFtpUrl = ftpUrl;
     }
 
     public String getFaqUrl() {

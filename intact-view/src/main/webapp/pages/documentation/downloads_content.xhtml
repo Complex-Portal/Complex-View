@@ -14,7 +14,7 @@
         <h1>Downloads</h1>
 
         <ui:param name="ftp" value="#{intactViewConfiguration.ftpUrl}"/>
-
+        <ui:param name="complexFtp" value="#{intactViewConfiguration.complexFtpUrl}"/>
         <ul>
             <li>
                 IntAct is released monthly. All IntAct data and software is freely available to all users,
@@ -47,7 +47,7 @@
             </li>
             <li>Contents of the IntAct Biological Complexes FTP directory:
                 <ul>
-                    <li><a href="#{ftp}/complex/current/psi25" target="_blank">psi25</a>: IntAct complexes in PSI-MI 2.5 format.
+                    <li><a href="#{complexFtp}/psi25" target="_blank">psi25</a>: IntAct complexes in PSI-MI 2.5 format.
                         See the <a href="http://psidev.sourceforge.net/mi/rel25" target="_blank">PSI website</a> for a
                         detailed format description.
                     </li>
@@ -57,5 +57,5 @@
         </ul>
     </div>
 
-    </ui:composition>
+</ui:composition>
 
