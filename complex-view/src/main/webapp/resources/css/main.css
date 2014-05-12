@@ -172,3 +172,12 @@ div.detailsTable
     overflow: hidden;
     max-height: 110px;
 }
+
+table.synosymsTable
+{
+    border: none;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}

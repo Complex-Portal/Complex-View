@@ -100,12 +100,26 @@
                     <p style="text-align: justify;"><c:out value="${sessionScope.details.systematicName}"/></p>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.synonyms}">
+                    <%--  OLD WAY  --%>
+                    <%--<h5>Synonyms:</h5>--%>
+                    <%--<p style="text-align: justify;">--%>
+                    <%--<c:forEach var="synonym" items="${sessionScope.details.synonyms}">--%>
+                        <%--<c:out value="${synonym}"/><br>--%>
+                    <%--</c:forEach>--%>
+                    <%--</p>--%>
+
+                    <%--  NEW WAY  --%>
                     <h5>Synonyms:</h5>
-                    <p style="text-align: justify;">
-                    <c:forEach var="synonym" items="${sessionScope.details.synonyms}">
-                        <c:out value="${synonym}"/><br>
-                    </c:forEach>
-                    </p>
+                    <table id="synosyms" class="synosymsTable">
+                        <tbody>
+                            <c:forEach var="synonym" items="${sessionScope.details.synonyms}" varStatus="status">
+                                <td><c:out value="${synonym}"/></td>
+                                <c:if test="${status.count % 3 == 0}">
+                                    </tr>
+                                </c:if>
+                            </c:forEach>
+                        </tbody>
+                    </table>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.function}">
                     <h5>Function:</h5>

@@ -21,6 +21,8 @@ public class Page {
         this.nextPage = this.page;
         this.nextPage = ++this.nextPage * num >= max ? -1 : this.nextPage;
         this.lastPage = this.totalNumberOfElements / this.numberOfElementsPerPage;
+        if(max%num==0) this.lastPage--;
+        if(this.page > this.lastPage) this.page = this.lastPage;
     }
 
     private int setPage( String p, int num, int max ) {
