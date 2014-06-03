@@ -34,6 +34,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
+import javax.persistence.Query;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -161,7 +162,14 @@ public class CvObjectService extends JpaAwareController {
 
         publicationTopicSelectItems = new ArrayList<SelectItem>();
 
-        allCvObjects = getDaoFactory().getCvObjectDao().getAll(false, true);
+        String cvQuery = "select c from CvObject c " +
+                "where c.ac not in (" +
+                " select c2.ac from CvObject c2 join c2.annotations as a join a.cvTopic as t " +
+                "where t.shortLabel = :hidden)";
+        Query query = getCoreEntityManager().createQuery(cvQuery);
+        query.setParameter("hidden",CvTopic.HIDDEN);
+
+        allCvObjects = query.getResultList();
 
         allCvObjectMap = new HashMap<CvKey, CvObject>( allCvObjects.size() * 2 );
         acCvObjectMap = new HashMap<String, CvObject>( allCvObjects.size() );
