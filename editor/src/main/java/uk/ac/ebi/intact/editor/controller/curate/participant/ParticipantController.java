@@ -663,7 +663,24 @@ public class ParticipantController extends ParameterizableObjectController {
 
     @Override
     public void modifyClone(AnnotatedObject clone) {
+
+        updateParametersExperiment((Component)clone);
+
         refreshTabs();
+    }
+
+    private void updateParametersExperiment(Component component) {
+        if (component.getInteraction() != null){
+           if (!component.getInteraction().getExperiments().isEmpty()){
+               Experiment exp = component.getInteraction().getExperiments().iterator().next();
+               // update component parameters if any
+               if (!component.getParameters().isEmpty()){
+                   for (ComponentParameter param : component.getParameters()){
+                       param.setExperiment(exp);
+                   }
+               }
+           }
+        }
     }
 
     public void onTabChanged(TabChangeEvent e) {

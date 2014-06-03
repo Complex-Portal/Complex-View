@@ -467,13 +467,13 @@
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab</artifactId>
-            <version>${psimi.version}</version>
+            <version>1.8.4.1</version>
         </dependency>
 
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimitab-search</artifactId>
-            <version>1.8.4.1</version>
+            <version>${psimi.version}</version>
         </dependency>
 
         <!-- Logging -->

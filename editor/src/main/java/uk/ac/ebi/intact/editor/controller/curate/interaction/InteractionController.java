@@ -468,6 +468,10 @@ public class InteractionController extends ParameterizableObjectController {
     public void modifyClone(AnnotatedObject clone) {
         Interaction clonedInteraction = (Interaction) clone;
 
+        if (!clonedInteraction.getExperiments().isEmpty()){
+            updateParametersExperiment(clonedInteraction, clonedInteraction.getExperiments().iterator().next());
+        }
+
         refreshTabs();
 
         try {

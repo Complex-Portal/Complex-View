@@ -161,7 +161,7 @@ public class CvObjectService extends JpaAwareController {
 
         publicationTopicSelectItems = new ArrayList<SelectItem>();
 
-        allCvObjects = getDaoFactory().getCvObjectDao().getAll();
+        allCvObjects = getDaoFactory().getCvObjectDao().getAll(false, true);
 
         allCvObjectMap = new HashMap<CvKey, CvObject>( allCvObjects.size() * 2 );
         acCvObjectMap = new HashMap<String, CvObject>( allCvObjects.size() );
