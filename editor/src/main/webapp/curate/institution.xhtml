@@ -58,20 +58,20 @@
                     <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                     <p:inputText id="shortlabelTxt" value="#{institutionController.institution.shortLabel}" size="30" converter="trimmingConverter"
                                  validator="#{annotatedObjectController.validateAnnotatedObject}"
-                                 valueChangeListener="#{publicationController.unsavedValueChange}"
+                                 valueChangeListener="#{institutionController.unsavedValueChange}"
                                  required="true" requiredMessage="Shortlabel is required">
                             <ed:curation/>
                     </p:inputText>
 
                     <h:outputLabel value="Fullname: " for="fullnameTxt"/>
                     <p:inputText id="fullnameTxt" value="#{institutionController.institution.fullName}" size="50" converter="trimmingConverter"
-                            valueChangeListener="#{publicationController.unsavedValueChange}">
+                            valueChangeListener="#{institutionController.unsavedValueChange}">
                             <ed:curation/>
                     </p:inputText>
 
                     <h:outputLabel value="Address: " for="postalTxt"/>
-                    <p:inputText id="postalTxt" value="#{institutionController.institution.postalAddress}" size="50" converter="trimmingConverter"
-                            valueChangeListener="#{publicationController.unsavedValueChange}">
+                    <p:inputText id="postalTxt" value="#{institutionController.postalAddress}" size="50" converter="trimmingConverter"
+                            valueChangeListener="#{institutionController.unsavedValueChange}">
                             <ed:curation/>
                     </p:inputText>
 

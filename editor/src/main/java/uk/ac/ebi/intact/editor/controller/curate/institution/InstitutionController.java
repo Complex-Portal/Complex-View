@@ -88,5 +88,11 @@ public class InstitutionController extends AnnotatedObjectController {
         this.ac = institution.getAc();
     }
 
+    public String getPostalAddress() {
+        return findAnnotationText("postaladdress");
+    }
 
+    public void setPostalAddress(String address) {
+        setAnnotation("postaladdress", address);
+    }
 }
