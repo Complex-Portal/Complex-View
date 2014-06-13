@@ -9,43 +9,19 @@
                 xmlns:ia="http://java.sun.com/jsf/composite/intact-components"
                 xmlns:ed="http://ebi.ac.uk/intact/editor/ui">
 
-    <p:tab id="xrefsTab" title="Xrefs (#{annotatedObjectController.annotatedObject.xrefs.size()})">
-        <p:outputPanel id="xrefsPanel" autoUpdate="true">
-            <ui:decorate template="xrefs_table.xhtml">
+    <ui:decorate template="basicPropertiesTabs.xhtml">
+        <ui:param name="annotatedObjectSelectItems" value="#{annotatedObjectSelectItems}"/>
+        <ui:param name="updateOnChange" value="#{updateOnChange}"/>
 
-                <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
-                 <ui:param name="databaseSelectItems" value="#{cvObjectService.databaseSelectItems}"/>
-                 <ui:param name="qualifierSelectItems" value="#{cvObjectService.qualifierSelectItems}"/>
-                 <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,#{updateOnChange}"/>
-                 <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
-                 <ui:param name="valueChangeAwareObject" value="#{annotatedObjectController}"/>
+        <ui:define name="syncValues">
+            <ui:insert name="xrefSyncValues"/>
+        </ui:define>
 
-            <ui:define name="syncValues">
-                <ui:insert name="xrefSyncValues"/>
-            </ui:define>
+        <ui:define name="syncValues">
+            <ui:insert name="annotationSyncValues"/>
+        </ui:define>
 
-        </ui:decorate>
-        </p:outputPanel>
-
-    </p:tab>
-
-    <p:tab id="annotationsTab" title="Annotations (#{annotatedObjectController.annotatedObject.annotations.size()})">
-         <p:outputPanel id="annotationsPanel" autoUpdate="true">
-             <ui:decorate template="annotations_table.xhtml">
-                 <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
-                 <ui:param name="topicSelectItems" value="#{annotatedObjectSelectItems}"/>
-                 <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,#{updateOnChange}"/>
-                 <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
-                 <ui:param name="valueChangeAwareObject" value="#{annotatedObjectController}"/>
-
-                 <ui:define name="syncValues">
-                     <ui:insert name="annotationSyncValues"/>
-                 </ui:define>
-
-             </ui:decorate>
-         </p:outputPanel>
-
-    </p:tab>
+    </ui:decorate>
 
     <p:tab id="aliasesTab" title="Aliases (#{annotatedObjectController.annotatedObject.aliases.size()})">
          <p:outputPanel id="aliasesPanel" autoUpdate="true">

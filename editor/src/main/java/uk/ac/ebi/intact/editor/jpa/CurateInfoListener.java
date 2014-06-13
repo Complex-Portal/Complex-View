@@ -2,7 +2,7 @@ package uk.ac.ebi.intact.editor.jpa;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.event.*;
+import org.hibernate.event.spi.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import uk.ac.ebi.intact.core.context.IntactContext;

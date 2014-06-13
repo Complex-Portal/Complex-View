@@ -10,7 +10,6 @@ import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.BiosourceIntactCloner;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.BioSource;
-import uk.ac.ebi.intact.model.CvXrefQualifier;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -146,7 +145,6 @@ public class BioSourceController extends AnnotatedObjectController {
 
     public void setTaxId(String taxId, String organismName) {
         bioSource.setTaxId(taxId);
-        newAnnotatedObjectHelper(bioSource).replaceOrCreateXref("MI:0942", CvXrefQualifier.IDENTITY, taxId, organismName);
     }
 
     public String getTaxId() {

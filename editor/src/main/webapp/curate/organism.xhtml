@@ -101,9 +101,16 @@
 
             <p:tabView id="organismTabs" dynamic="true">
                 <p:ajax event="tabChange" listener="#{bioSourceController.onTabChanged}" />
-                <ui:decorate template="propertiesTabs.xhtml">
-                    <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.bioSourceTopicSelectItems}"/>
-                </ui:decorate>
+                <p:tab id="aliasesTab" title="Aliases (#{bioSourceController.annotatedObject.aliases.size()})">
+                    <p:outputPanel id="aliasesPanel" autoUpdate="true">
+                        <ui:decorate template="aliases_table.xhtml">
+                            <ui:param name="annotatedObjectController" value="#{bioSourceController}"/>
+                            <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent #{updateOnChange}"/>
+                            <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
+                        </ui:decorate>
+
+                    </p:outputPanel>
+                </p:tab>
 
             </p:tabView>
 
