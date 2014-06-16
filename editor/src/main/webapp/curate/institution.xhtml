@@ -69,6 +69,12 @@
                             <ed:curation/>
                     </p:inputText>
 
+                    <h:outputLabel value="URL: " for="urlTxt"/>
+                    <p:inputText id="urlTxt" value="#{institutionController.url}" size="50" converter="trimmingConverter"
+                                 valueChangeListener="#{institutionController.url}">
+                        <ed:curation/>
+                    </p:inputText>
+
                     <h:outputLabel value="Address: " for="postalTxt"/>
                     <p:inputText id="postalTxt" value="#{institutionController.postalAddress}" size="50" converter="trimmingConverter"
                             valueChangeListener="#{institutionController.unsavedValueChange}">

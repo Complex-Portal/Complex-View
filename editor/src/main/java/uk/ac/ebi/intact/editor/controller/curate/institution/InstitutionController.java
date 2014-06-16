@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.model.AnnotatedObject;
+import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Institution;
 
 import javax.faces.context.FacesContext;
@@ -94,5 +95,13 @@ public class InstitutionController extends AnnotatedObjectController {
 
     public void setPostalAddress(String address) {
         setAnnotation("postaladdress", address);
+    }
+
+    public String getUrl() {
+        return findAnnotationText(CvTopic.URL_MI_REF);
+    }
+
+    public void setUrl(String address) {
+        setAnnotation(CvTopic.URL_MI_REF, address);
     }
 }
