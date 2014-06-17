@@ -41,6 +41,7 @@
      <module>health-check</module>
      <module>intact-widgets</module>
     <module>complex-indexer</module>
+<module>complex-view</module>
   </modules>
 
     <scm>
