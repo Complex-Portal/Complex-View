@@ -170,9 +170,6 @@
     <orderEntry type="library" name="Maven: com.oracle:ojdbc6:11.2.0.3.0" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-test:3.2.4.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.batch:spring-batch-test:2.1.0.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: com.oracle:oracle-thin:10.2.0.4" level="project" />
-    <orderEntry type="library" name="Maven: postgresql:postgresql:8.2-504.jdbc3" level="project" />
-    <orderEntry type="library" name="Maven: org.h2:h2:2006-07-14-beta" level="project" />
   </component>
 </module>
 
