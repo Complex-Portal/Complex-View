@@ -62,10 +62,12 @@ public class HqlLazyDataModel<T extends IntactObject> extends LazyDataModel<T> {
 
         String queryToRun = hqlQuery;
 
-        if (sortField != null) {
-            queryToRun = queryToRun+" order by "+var+"."+sortField+" "+(sortOrder == SortOrder.DESCENDING? "desc" : "asc");
-        } else if (initialSortField != null) {
-            queryToRun = queryToRun+" order by "+var+"."+initialSortField+" "+(initialSortOrder? "asc" : "desc");
+        if (var != null){
+            if (sortField != null) {
+                queryToRun = queryToRun+" order by "+var+"."+sortField+" "+(sortOrder == SortOrder.DESCENDING? "desc" : "asc");
+            } else if (initialSortField != null) {
+                queryToRun = queryToRun+" order by "+var+"."+initialSortField+" "+(initialSortOrder? "asc" : "desc");
+            }
         }
 
         log.debug("HQL: " + queryToRun);

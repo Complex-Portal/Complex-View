@@ -71,7 +71,7 @@
 
                     <h:outputLabel value="URL: " for="urlTxt"/>
                     <p:inputText id="urlTxt" value="#{institutionController.url}" size="50" converter="trimmingConverter"
-                                 valueChangeListener="#{institutionController.url}">
+                                 valueChangeListener="#{institutionController.unsavedValueChange}">
                         <ed:curation/>
                     </p:inputText>
 
