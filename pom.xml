@@ -4,7 +4,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.maven</groupId>
         <artifactId>intact-hibernate-master</artifactId>
-        <version>42</version>
+        <version>43-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -27,7 +27,7 @@
         <user>${env.USERNAME}</user>
         <appRoot>/intact</appRoot>
 
-        <core.version>2.6.5</core.version>
+        <core.version>2.6.6-SNAPSHOT</core.version>
     </properties>
 
     <modules>
