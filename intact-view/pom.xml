@@ -11,7 +11,7 @@
     <parent>
         <groupId>uk.ac.ebi.intact.maven</groupId>
         <artifactId>intact-hibernate-master</artifactId>
-        <version>42</version>
+        <version>43-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -30,8 +30,8 @@
     </scm>
 
     <properties>
-        <core.version>2.6.5</core.version>
-        <dataexchange.version>2.1.9</dataexchange.version>
+        <core.version>2.6.6-SNAPSHOT</core.version>
+        <dataexchange.version>2.1.10-SNAPSHOT</dataexchange.version>
         <spring.version>3.1.2.RELEASE</spring.version>
 
         <debug>false</debug>
@@ -446,14 +446,14 @@
         <!-- Intact -->
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
-            <artifactId>intact-core-readonly</artifactId>
+            <artifactId>intact-core</artifactId>
             <version>${core.version}</version>
         </dependency>
 
         <dependency>
             <groupId>uk.ac.ebi.intact.commons</groupId>
             <artifactId>intact-commons</artifactId>
-            <version>2.1.9</version>
+            <version>2.1.10-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>uk.ac.ebi.intact.core</groupId>
@@ -465,7 +465,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange</groupId>
             <artifactId>intact-cvutils</artifactId>
-            <version>2.1.9</version>
+            <version>2.1.10-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>lucene</groupId>
@@ -481,7 +481,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-psixml-exchange</artifactId>
-            <version>2.1.9</version>
+            <version>2.1.10-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>cpdetector</groupId>
@@ -526,7 +526,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-solr-core</artifactId>
-            <version>2.1.9.1</version>
+            <version>2.1.10-SNAPSHOT</version>
             <exclusions>
                 <exclusion>
                     <groupId>woodstox</groupId>
