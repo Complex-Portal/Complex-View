@@ -42,6 +42,7 @@
      <module>intact-widgets</module>
     <module>complex-indexer</module>
 <module>complex-view</module>
+<module>complex-ws</module>
   </modules>
 
     <scm>
