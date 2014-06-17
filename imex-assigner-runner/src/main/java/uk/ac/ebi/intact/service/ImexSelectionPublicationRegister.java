@@ -4,7 +4,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import uk.ac.ebi.intact.bridges.imexcentral.ImexCentralException;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.ImexCentralManager;
-import uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.PublicationImexUpdaterException;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.listener.ReportWriterListener;
 
 import java.io.BufferedReader;
@@ -78,8 +77,6 @@ public class ImexSelectionPublicationRegister {
                     System.out.println("Register publication " + ac);
 
                     ia.registerAndUpdatePublication(ac);
-                } catch (PublicationImexUpdaterException e) {
-                    e.printStackTrace();
                 } catch (ImexCentralException e) {
                     e.printStackTrace();
                 } catch (Exception e){
