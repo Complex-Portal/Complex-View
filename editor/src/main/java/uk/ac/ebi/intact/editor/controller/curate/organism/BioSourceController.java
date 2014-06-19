@@ -10,6 +10,8 @@ import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.BiosourceIntactCloner;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.BioSource;
+import uk.ac.ebi.intact.model.BioSourceAlias;
+import uk.ac.ebi.intact.model.CvAliasType;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -106,6 +108,13 @@ public class BioSourceController extends AnnotatedObjectController {
             }
 
             bioSource.setFullName(term.getScientificName());
+
+            if (!term.getSynonyms().isEmpty()){
+                CvAliasType synType = IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(CvAliasType.class).getByPsiMiRef(CvAliasType.SYNONYM_MI_REF);
+                for (String syn : term.getSynonyms()){
+                    bioSource.getAliases().add(new BioSourceAlias(IntactContext.getCurrentInstance().getInstitution(), bioSource, synType, syn));
+                }
+            }
 
             setTaxId(taxIdStr, commonName);
         } catch (Throwable e) {
