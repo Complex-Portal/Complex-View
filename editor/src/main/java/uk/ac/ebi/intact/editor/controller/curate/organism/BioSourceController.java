@@ -151,5 +151,8 @@ public class BioSourceController extends AnnotatedObjectController {
         return bioSource.getTaxId();
     }
 
-
+    @Override
+    public boolean isAliasDisabled() {
+        return false;
+    }
 }

@@ -101,7 +101,8 @@
 
             <p:tabView id="organismTabs" dynamic="true">
                 <p:ajax event="tabChange" listener="#{bioSourceController.onTabChanged}" />
-                <p:tab id="aliasesTab" title="Aliases (#{bioSourceController.annotatedObject.aliases.size()})">
+
+                <p:tab id="aliasesTab" title="Aliases (#{bioSourceController.bioSource.aliases.size()})">
                     <p:outputPanel id="aliasesPanel" autoUpdate="true">
                         <ui:decorate template="aliases_table.xhtml">
                             <ui:param name="annotatedObjectController" value="#{bioSourceController}"/>
