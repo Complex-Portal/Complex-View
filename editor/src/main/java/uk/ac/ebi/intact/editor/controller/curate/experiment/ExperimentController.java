@@ -31,6 +31,7 @@ import uk.ac.ebi.intact.editor.controller.curate.cloner.ExperimentIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
+import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
 
@@ -81,6 +82,16 @@ public class ExperimentController extends AnnotatedObjectController {
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
         setExperiment((Experiment) annotatedObject);
+    }
+
+    @Override
+    public IntactPrimaryObject getJamiObject() {
+        return null;
+    }
+
+    @Override
+    public void setJamiObject(IntactPrimaryObject annotatedObject) {
+        // nothing to do
     }
 
     @Override

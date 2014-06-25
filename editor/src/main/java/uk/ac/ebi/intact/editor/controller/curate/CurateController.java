@@ -4,20 +4,36 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import psidev.psi.mi.jami.model.Complex;
+import psidev.psi.mi.jami.model.ModelledFeature;
+import psidev.psi.mi.jami.model.ModelledParticipant;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.editor.controller.curate.institution.InstitutionController;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.controller.curate.feature.FeatureController;
+import uk.ac.ebi.intact.editor.controller.curate.feature.ModelledFeatureController;
+import uk.ac.ebi.intact.editor.controller.curate.institution.InstitutionController;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ComplexController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
 import uk.ac.ebi.intact.editor.controller.curate.interactor.InteractorController;
+import uk.ac.ebi.intact.editor.controller.curate.interactor.InteractorJamiController;
 import uk.ac.ebi.intact.editor.controller.curate.organism.BioSourceController;
+import uk.ac.ebi.intact.editor.controller.curate.participant.ModelledParticipantController;
 import uk.ac.ebi.intact.editor.controller.curate.participant.ParticipantController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.dao.IntactDao;
+import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
+import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
+import uk.ac.ebi.intact.jami.model.extension.IntactModelledFeature;
+import uk.ac.ebi.intact.jami.model.extension.IntactModelledParticipant;
+import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.model.*;
 
 import javax.faces.context.FacesContext;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Helper controller on conversation scope, that helps to load/save objects within the same transaction as the other AnnotatedObjectControllers.
@@ -37,14 +53,27 @@ public class CurateController extends JpaAwareController {
 
     private AnnotatedObjectController currentAnnotatedObjectController;
 
-    public String edit(IntactObject intactObject) {
-        String suffix = (intactObject.getAc() != null)? "?faces-redirect=true&includeViewParams=true" : "";
+    public String edit(Object object) {
+        if (object instanceof IntactObject){
+            IntactObject intactObject = (IntactObject)object;
+            String suffix = (intactObject.getAc() != null)? "?faces-redirect=true&includeViewParams=true" : "";
 
-        CurateObjectMetadata metadata = getMetadata(intactObject);
-        setCurrentAnnotatedObjectController(metadata.getAnnotatedObjectController());
+            CurateObjectMetadata metadata = getMetadata(intactObject);
+            setCurrentAnnotatedObjectController(metadata.getAnnotatedObjectController());
 
-        getCurrentAnnotatedObjectController().refreshTabsAndFocusXref();
-        return "/curate/"+metadata.getSlug()+suffix;
+            getCurrentAnnotatedObjectController().refreshTabsAndFocusXref();
+            return "/curate/"+metadata.getSlug()+suffix;
+        }
+        else{
+            IntactPrimaryObject intactObject = (IntactPrimaryObject)object;
+            String suffix = (intactObject.getAc() != null)? "?faces-redirect=true&includeViewParams=true" : "";
+
+            CurateJamiMetadata metadata = getJamiMetadata(intactObject);
+            setCurrentAnnotatedObjectController(metadata.getObjController());
+
+            getCurrentAnnotatedObjectController().refreshTabsAndFocusXref();
+            return "/curate/"+metadata.getSlug()+suffix;
+        }
     }
 
     public String editByAc(String ac) {
@@ -56,59 +85,106 @@ public class CurateController extends JpaAwareController {
 
         ac = ac.trim();
 
-        try {
-            Class<? extends AnnotatedObject> aoClass = IntactCore.classForAc(getIntactContext(), ac);
+        IntactPrimaryObject primary = getJamiEntityManager().find(IntactComplex.class, ac);
+        if (primary == null){
+            primary = getJamiEntityManager().find(IntactModelledParticipant.class, ac);
+            if (primary == null){
+                primary = getJamiEntityManager().find(IntactModelledFeature.class, ac);
 
-            if (aoClass == null) {
-                addErrorMessage("Illegal AC", "No annotated object found with this AC: "+ac);
-                FacesContext.getCurrentInstance().renderResponse();
+                if (primary == null){
+                    try {
+                        Class<? extends AnnotatedObject> aoClass = IntactCore.classForAc(getIntactContext(), ac);
+
+                        if (aoClass == null) {
+                            addErrorMessage("Illegal AC", "No annotated object found with this AC: "+ac);
+                            FacesContext.getCurrentInstance().renderResponse();
+                        }
+
+                        AnnotatedObject ao = getDaoFactory().getAnnotatedObjectDao(aoClass).getByAc(ac);
+
+                        if ( ao == null ) {
+                            addErrorMessage( "AC not found", "There is no IntAct object with ac '" + ac + "'" );
+                            return "";
+                        } else {
+                            return edit(ao);
+                        }
+                    } catch (IllegalArgumentException e){
+                        addErrorMessage( "AC not found", "There is no IntAct object with ac '" + ac + "'" );
+                        return "";
+                    }
+                }
+                else{
+                    return edit(primary);
+                }
             }
-
-            AnnotatedObject ao = getDaoFactory().getAnnotatedObjectDao(aoClass).getByAc(ac);
-
-            if ( ao == null ) {
-                addErrorMessage( "AC not found", "There is no IntAct object with ac '" + ac + "'" );
-                return "";
-            } else {
-                return edit(ao);
+            else{
+                return edit(primary);
             }
-        } catch (IllegalArgumentException e){
-            addErrorMessage( "AC not found", "There is no IntAct object with ac '" + ac + "'" );
-            return "";
         }
-
+        else{
+            return edit(primary);
+        }
     }
 
-    public void save(IntactObject intactObject) {
-        save(intactObject, true);
+    public void save(Object o) {
+        save(o, true);
     }
 
-    public void save(IntactObject intactObject, boolean refreshCurrentView) {
-        AnnotatedObjectController annotatedObjectController = getMetadata(intactObject).getAnnotatedObjectController();
+    public void save(Object object, boolean refreshCurrentView) {
+        AnnotatedObjectController annotatedObjectController;
+        if (object instanceof IntactObject){
+            annotatedObjectController = getMetadata((IntactObject)object).getAnnotatedObjectController();
+        }
+        else{
+            annotatedObjectController = getJamiMetadata(((IntactPrimaryObject)object)).getObjController();
+        }
         annotatedObjectController.doSave(refreshCurrentView);
     }
 
-    public void discard(IntactObject intactObject) {
+    public void discard(Object object) {
 
-        AnnotatedObjectController annotatedObjectController = getMetadata(intactObject).getAnnotatedObjectController();
+        AnnotatedObjectController annotatedObjectController;
+        if (object instanceof IntactObject){
+            annotatedObjectController = getMetadata((IntactObject)object).getAnnotatedObjectController();
+        }
+        else{
+            annotatedObjectController = getJamiMetadata(((IntactPrimaryObject)object)).getObjController();
+        }
 
         annotatedObjectController.doRevertChanges(null);
     }
 
-    public String cancelEdition(IntactObject intactObject) {
+    public String cancelEdition(Object object) {
 
-        AnnotatedObjectController annotatedObjectController = getMetadata(intactObject).getAnnotatedObjectController();
+        AnnotatedObjectController annotatedObjectController;
+        if (object instanceof IntactObject){
+            annotatedObjectController = getMetadata((IntactObject)object).getAnnotatedObjectController();
+        }
+        else{
+            annotatedObjectController = getJamiMetadata(((IntactPrimaryObject)object)).getObjController();
+        }
 
         return annotatedObjectController.doCancelEdition();
     }
 
-    public String newIntactObject(IntactObject intactObject) {
-        final CurateObjectMetadata metadata = getMetadata(intactObject);
-        setCurrentAnnotatedObjectController(metadata.getAnnotatedObjectController());
+    public String newIntactObject(Object object) {
+        AnnotatedObjectController annotatedObjectController;
+        String slug;
+        if (object instanceof IntactObject){
+            CurateObjectMetadata meta = getMetadata((IntactObject)object);
+            annotatedObjectController = meta.getAnnotatedObjectController();
+            slug = meta.getSlug();
+        }
+        else{
+            CurateJamiMetadata meta = getJamiMetadata(((IntactPrimaryObject)object));
+            annotatedObjectController = meta.getObjController();
+            slug = meta.getSlug();
+        }
+        setCurrentAnnotatedObjectController(annotatedObjectController);
 
         getCurrentAnnotatedObjectController().refreshTabsAndFocusXref();
 
-        return "/curate/"+metadata.getSlug();
+        return "/curate/"+slug;
     }
 
     public CurateObjectMetadata getMetadata(IntactObject intactObject) {
@@ -157,16 +233,56 @@ public class CurateController extends JpaAwareController {
         }
     }
 
+    public CurateJamiMetadata getJamiMetadata(IntactPrimaryObject intactObject) {
+        Class<?> iaClass = intactObject.getClass();
+
+        IntactDao daoBean = ApplicationContextProvider.getBean("intactDao");
+
+        if (Complex.class.isAssignableFrom(iaClass)) {
+            return new CurateJamiMetadata(daoBean.getSynchronizerContext().getComplexSynchronizer(), "complex",
+                    (ComplexController) getSpringContext().getBean("complexController"));
+        } else if (psidev.psi.mi.jami.model.Interactor.class.isAssignableFrom(iaClass)) {
+            return new CurateJamiMetadata(daoBean.getSynchronizerContext().getInteractorSynchronizer(), "jinteractor",
+                    (InteractorJamiController) getSpringContext().getBean("interactorJamiController"));
+        } else if (ModelledParticipant.class.isAssignableFrom(iaClass)) {
+            CurateJamiMetadata meta = new CurateJamiMetadata(daoBean.getSynchronizerContext().getModelledParticipantSynchronizer(), "cparticipant",
+                    (ModelledParticipantController) getSpringContext().getBean("modelledParticipantController"));
+            ModelledParticipant part = (ModelledParticipant)intactObject;
+            if (part.getInteraction() instanceof IntactComplex){
+                IntactComplex parent = (IntactComplex)part.getInteraction();
+                if (parent.getAc() != null){
+                    meta.getParents().add(parent.getAc());
+                }
+            }
+            return meta;
+        } else if (ModelledFeature.class.isAssignableFrom(iaClass)) {
+            CurateJamiMetadata meta = new CurateJamiMetadata(daoBean.getSynchronizerContext().getModelledFeatureSynchronizer(), "cfeature",
+                    (ModelledFeatureController) getSpringContext().getBean("modelledFeatureController"));
+            ModelledFeature feat = (ModelledFeature)intactObject;
+            if (feat.getParticipant() instanceof IntactModelledParticipant){
+                IntactModelledParticipant part = (IntactModelledParticipant)intactObject;
+                if (part.getAc() != null){
+                    meta.getParents().add(part.getAc());
+                }
+                if (part.getInteraction() instanceof IntactComplex){
+                    IntactComplex parent = (IntactComplex)part.getInteraction();
+                    if (parent.getAc() != null){
+                        meta.getParents().add(parent.getAc());
+                    }
+                }
+            }
+            return meta;
+        } else {
+            throw new IllegalArgumentException("No view defined for object with type: "+iaClass);
+        }
+    }
+
     public String openByAc() {
         return editByAc(acToOpen);
     }
 
     public boolean isAnnotatedObject(Object obj) {
-        return (obj instanceof AnnotatedObject);
-    }
-
-    public boolean isIntactObject(Object obj) {
-        return (obj instanceof IntactObject);
+        return (obj instanceof AnnotatedObject) || (obj instanceof IntactPrimaryObject);
     }
 
     public class CurateObjectMetadata {
@@ -184,6 +300,35 @@ public class CurateController extends JpaAwareController {
 
         public AnnotatedObjectController getAnnotatedObjectController() {
             return annotatedObjectController;
+        }
+    }
+
+    public class CurateJamiMetadata {
+        private String slug;
+        private IntactDbSynchronizer dbSynchronizer;
+        private Collection<String> parents = new ArrayList<String>();
+        private AnnotatedObjectController objController;
+
+        private CurateJamiMetadata(IntactDbSynchronizer dbSynchronizer, String slug, AnnotatedObjectController objController) {
+            this.dbSynchronizer = dbSynchronizer;
+            this.slug = slug;
+            this.objController = objController;
+        }
+
+        public String getSlug() {
+            return slug;
+        }
+
+        public IntactDbSynchronizer getDbSynchronizer() {
+            return dbSynchronizer;
+        }
+
+        public Collection<String> getParents() {
+            return parents;
+        }
+
+        public AnnotatedObjectController getObjController() {
+            return objController;
         }
     }
 

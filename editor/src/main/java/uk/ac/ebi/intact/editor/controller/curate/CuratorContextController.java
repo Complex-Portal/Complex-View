@@ -18,8 +18,12 @@ package uk.ac.ebi.intact.editor.controller.curate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import psidev.psi.mi.jami.model.Complex;
+import psidev.psi.mi.jami.model.ModelledFeature;
+import psidev.psi.mi.jami.model.ModelledParticipant;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.BaseController;
+import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.IntactObject;
 
@@ -48,6 +52,20 @@ public class CuratorContextController extends BaseController {
 
     public String annotatedObjectToString(AnnotatedObject ao) {
         return DebugUtil.annotatedObjectToString(ao, false);
+    }
+
+    public String jamiObjectSimpleName(IntactPrimaryObject io) {
+        if (io == null) return null;
+        if (io instanceof Complex){
+            return "Complex";
+        }
+        else if (io instanceof ModelledParticipant){
+            return "Complex Participant";
+        }
+        else if (io instanceof ModelledFeature){
+            return "Complex Feature";
+        }
+        return null;
     }
 
     public String acList(Collection<? extends IntactObject> aos) {

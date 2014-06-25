@@ -54,9 +54,29 @@
         <view-id value="/curate/interaction.xhtml"/>
     </url-mapping>
 
+    <url-mapping id="complex">
+        <pattern value="/complex/#{ac}"/>
+        <view-id value="/curate/complex.xhtml"/>
+    </url-mapping>
+
+    <url-mapping id="cparticipant">
+        <pattern value="/cparticipant/#{ac}"/>
+        <view-id value="/curate/cparticipant.xhtml"/>
+    </url-mapping>
+
+    <url-mapping id="cfeature">
+        <pattern value="/cfeature/#{ac}"/>
+        <view-id value="/curate/cfeature.xhtml"/>
+    </url-mapping>
+
     <url-mapping id="interactor">
         <pattern value="/interactor/#{ac}"/>
         <view-id value="/curate/interactor.xhtml"/>
+    </url-mapping>
+
+    <url-mapping id="cinteractor">
+        <pattern value="/cinteractor/#{ac}"/>
+        <view-id value="/curate/jinteractor.xhtml"/>
     </url-mapping>
 
     <url-mapping id="participant">

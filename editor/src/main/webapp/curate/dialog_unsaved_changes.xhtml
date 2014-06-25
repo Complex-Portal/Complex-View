@@ -44,6 +44,40 @@
 
 
         </p:dataTable>
+        <p:dataTable id="unsavedJamiTable" var="change" value="#{changesController.unsavedJamiChangesForCurrentUser}" paginator="true" rows="10"
+                     paginatorAlwaysVisible="false">
+            <p:column>
+                <p:commandButton value="Edit" action="#{curateController.edit(change.unsavedObject)}" ajax="false"/>
+                <p:commandButton value="Save" actionListener="#{curateController.save(change.unsavedObject)}"
+                                 onstart="saveDlg.show()" onsuccess="saveDlg.hide()"
+                                 update=":editorForm"/>
+                <p:commandButton value="Discard" actionListener="#{curateController.discard(change.unsavedObject)}"
+                                 update=":editorForm"
+                                 onclick="revertDlg.show()" oncomplete="revertDlg.hide()" immediate="true"
+                                 rendered="#{change.unsavedObject.ac != null}"/>
+                <p:commandButton value="Cancel" action="#{curateController.cancelEdition(change.unsavedObject)}"
+                                 update=":editorForm"
+                                 onclick="revertDlg.show()" oncomplete="revertDlg.hide()" immediate="true" rendered="#{change.unsavedObject.ac == null}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header"><h:outputText value="Modification"/></f:facet>
+                <h:outputText value="#{change.action}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header"><h:outputText value="Class"/></f:facet>
+                <h:outputText value="#{change.unsavedObject['class'].simpleName}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header"><h:outputText value="AC"/></f:facet>
+                <h:outputText value="#{change.unsavedObject.ac}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header"><h:outputText value="Description"/></f:facet>
+                <h:outputText value="#{change.getDescription(change.unsavedObject)}"/>
+            </p:column>
+
+
+        </p:dataTable>
 
             <br/>
 

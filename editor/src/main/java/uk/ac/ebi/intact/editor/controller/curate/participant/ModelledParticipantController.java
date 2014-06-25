@@ -62,9 +62,9 @@ import java.util.List;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-public class ParticipantController extends ParameterizableObjectController {
+public class ModelledParticipantController extends ParameterizableObjectController {
 
-    private static final Log log = LogFactory.getLog( ParticipantController.class );
+    private static final Log log = LogFactory.getLog( ModelledParticipantController.class );
 
     private Component participant;
 
@@ -100,17 +100,12 @@ public class ParticipantController extends ParameterizableObjectController {
     private boolean isParameterDisabled;
     private boolean isConfidenceDisabled;
 
-    public ParticipantController() {
+    public ModelledParticipantController() {
     }
 
     @Override
     public AnnotatedObject getAnnotatedObject() {
         return getParticipant();
-    }
-
-    @Override
-    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-        setParticipant((Component)annotatedObject);
     }
 
     @Override
@@ -121,6 +116,11 @@ public class ParticipantController extends ParameterizableObjectController {
     @Override
     public void setJamiObject(IntactPrimaryObject annotatedObject) {
         // nothing to do
+    }
+
+    @Override
+    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
+        setParticipant((Component)annotatedObject);
     }
 
     @Override

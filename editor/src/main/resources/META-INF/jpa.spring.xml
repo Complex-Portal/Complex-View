@@ -14,7 +14,7 @@
            http://www.springframework.org/schema/jee
            http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
-    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+    <tx:annotation-driven  transaction-manager="transactionManager" proxy-target-class="true"/>
 
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
@@ -55,5 +55,49 @@
     </bean>
 
     <jee:jndi-lookup id="coreDataSource" jndi-name="${db.jndi}"/>
+
+    <!-- only scan annotations in this package -->
+    <context:component-scan base-package="uk.ac.ebi.intact.jami"/>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath*:/META-INF/intact-jami.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- JPATransactionManager is not dependent on hibernate. It is a more global platform -->
+    <!-- We use entity manager because it is JPA and not just specific to hibernate -->
+    <bean id="jamiTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="intactEntityManagerFactory"/>
+        <property name="dataSource" ref="coreDataSource"/>
+    </bean>
+
+
+    <!-- The LocalContainerEntityManagerFactoryBean gives full control over EntityManagerFactory configuration
+    and is appropriate for environments where fine-grained customization is required-->
+    <bean id="intactEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="intact-jami"/>
+        <property name="persistenceXmlLocation" value="classpath*:/META-INF/jami-persistence.xml"/>
+        <property name="dataSource" ref="coreDataSource"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.generate_statistics">true</prop>
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl}</prop>
+                <!-- hibernate interceptor to clear the synchronizer caches after each transaction-->
+                <prop key="hibernate.ejb.interceptor.session_scoped">uk.ac.ebi.intact.jami.interceptor.IntactSynchronizerInterceptor</prop>
+            </props>
+        </property>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="databasePlatform" value="${db.platform}"/>
+                <property name="showSql" value="false"/>
+                <property name="generateDdl" value="false"/>
+            </bean>
+        </property>
+    </bean>
 
 </beans>

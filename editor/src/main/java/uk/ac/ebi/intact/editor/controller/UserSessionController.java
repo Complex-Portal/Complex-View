@@ -83,6 +83,17 @@ public class UserSessionController extends JpaAwareController implements Disposa
         return user.equals(currentUser);
     }
 
+    public boolean isItMe(uk.ac.ebi.intact.jami.model.user.User user) {
+        if (user == null) return false;
+
+        User coreUser = getDaoFactory().getUserDao().getByLogin(user.getLogin());
+        if (coreUser == null){
+            return false;
+        }
+
+        return coreUser.equals(currentUser);
+    }
+
     @Transactional
     public void notifyLastActivity() {
         DateTime dateTime = new DateTime();

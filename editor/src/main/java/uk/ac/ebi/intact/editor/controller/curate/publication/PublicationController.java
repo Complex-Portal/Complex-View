@@ -47,6 +47,7 @@ import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
+import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.user.Preference;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
@@ -128,6 +129,16 @@ public class PublicationController extends AnnotatedObjectController {
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
         setPublication((Publication) annotatedObject);
+    }
+
+    @Override
+    public IntactPrimaryObject getJamiObject() {
+        return null;
+    }
+
+    @Override
+    public void setJamiObject(IntactPrimaryObject annotatedObject) {
+        // nothing to do
     }
 
     public void loadData(ComponentSystemEvent event) {

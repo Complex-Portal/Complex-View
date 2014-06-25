@@ -30,7 +30,7 @@ import javax.faces.validator.ValidatorException;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-public class InteractorController extends AnnotatedObjectController {
+public class InteractorJamiController extends AnnotatedObjectController {
 
     private Interactor interactor;
 
@@ -41,7 +41,7 @@ public class InteractorController extends AnnotatedObjectController {
     @Autowired
     private UserSessionController userSessionController;
 
-    public InteractorController() {
+    public InteractorJamiController() {
     }
 
     @Override

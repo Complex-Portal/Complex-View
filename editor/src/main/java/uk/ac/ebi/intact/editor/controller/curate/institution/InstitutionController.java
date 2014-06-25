@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Institution;
@@ -36,6 +37,16 @@ public class InstitutionController extends AnnotatedObjectController {
         if (institution != null){
             this.ac = annotatedObject.getAc();
         }
+    }
+
+    @Override
+    public IntactPrimaryObject getJamiObject() {
+        return null;
+    }
+
+    @Override
+    public void setJamiObject(IntactPrimaryObject annotatedObject) {
+        // nothing to do
     }
 
     public void loadData(ComponentSystemEvent evt) {

@@ -47,17 +47,15 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Feature controller.
+ * Modelled Feature controller.
  *
- * @author Samuel Kerrien (skerrien@ebi.ac.uk)
- * @version $Id: ParticipantController.java 14281 2010-04-12 21:48:43Z samuel.kerrien $
  */
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-public class FeatureController extends AnnotatedObjectController {
+public class ModelledFeatureController extends AnnotatedObjectController {
 
-    private static final Log log = LogFactory.getLog( FeatureController.class );
+    private static final Log log = LogFactory.getLog( ModelledFeatureController.class );
 
     private Feature feature;
     private List<RangeWrapper> rangeWrappers;
@@ -84,7 +82,7 @@ public class FeatureController extends AnnotatedObjectController {
 
     private boolean isRangeDisabled;
 
-    public FeatureController() {
+    public ModelledFeatureController() {
     }
 
     @Override
@@ -97,6 +95,16 @@ public class FeatureController extends AnnotatedObjectController {
     }
 
     @Override
+    public AnnotatedObject getAnnotatedObject() {
+        return getFeature();
+    }
+
+    @Override
+    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
+        setFeature((Feature)annotatedObject);
+    }
+
+    @Override
     public IntactPrimaryObject getJamiObject() {
         return null;
     }
@@ -106,14 +114,12 @@ public class FeatureController extends AnnotatedObjectController {
         // nothing to do
     }
 
-    @Override
-    public AnnotatedObject getAnnotatedObject() {
-        return getFeature();
+    public CvFeatureType getType(){
+        return null;
     }
 
-    @Override
-    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-        setFeature((Feature)annotatedObject);
+    public void setType(CvFeatureType cvType){
+
     }
 
     @Override

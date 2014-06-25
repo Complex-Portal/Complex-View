@@ -38,6 +38,7 @@ import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationControll
 import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
 import uk.ac.ebi.intact.editor.controller.curate.util.ParticipantWrapperExperimentalRoleComparator;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
+import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
@@ -59,12 +60,13 @@ import java.util.*;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-public class InteractionController extends ParameterizableObjectController {
+public class ComplexController extends ParameterizableObjectController {
 
-    private static final Log log = LogFactory.getLog( InteractionController.class );
+    private static final Log log = LogFactory.getLog( ComplexController.class );
 
     private static final String FIG_LEGEND = "MI:0599";
 
+    private IntactComplex complex;
     private Interaction interaction;
     private String ac;
 
@@ -93,28 +95,36 @@ public class InteractionController extends ParameterizableObjectController {
     private boolean isConfidenceDisabled;
     private boolean isAdvancedDisabled;
 
-    public InteractionController() {
+    public ComplexController() {
         experimentsToUpdate = new ArrayList<Experiment>();
     }
 
     @Override
     public AnnotatedObject getAnnotatedObject() {
-        return getInteraction();
-    }
-
-    @Override
-    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-        setInteraction((Interaction)annotatedObject);
-    }
-
-    @Override
-    public IntactPrimaryObject getJamiObject() {
         return null;
     }
 
     @Override
-    public void setJamiObject(IntactPrimaryObject annotatedObject) {
+    public void setAnnotatedObject(AnnotatedObject annotatedObject) {
         // nothing to do
+    }
+
+    @Override
+    public IntactPrimaryObject getJamiObject() {
+        return this.complex;
+    }
+
+    @Override
+    public void setJamiObject(IntactPrimaryObject annotatedObject) {
+        setInteraction((Interaction)annotatedObject);
+    }
+
+    public String getName(){
+        return null;
+    }
+
+    public String getOrganism(){
+        return null;
     }
 
     @Override
@@ -133,7 +143,6 @@ public class InteractionController extends ParameterizableObjectController {
     @Override
     public String clone() {
         String value = clone(getAnnotatedObject(), newClonerInstance());
-
         refreshParticipants();
         refreshExperimentLists();
         refreshParentControllers();
@@ -154,6 +163,10 @@ public class InteractionController extends ParameterizableObjectController {
         isParameterDisabled = true;
         isConfidenceDisabled = true;
         isAdvancedDisabled = true;
+    }
+
+    public String getOnHold(){
+        return null;
     }
 
 //  @Transactional(readOnly = true)
@@ -442,7 +455,7 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     @Transactional(readOnly = true)
-    public String newInteraction(Publication publication, Experiment exp) {
+    public String newComplex(Publication publication, Experiment exp) {
         Interaction interaction = new InteractionImpl();
         interaction.setOwner(userSessionController.getUserInstitution());
 
@@ -503,7 +516,7 @@ public class InteractionController extends ParameterizableObjectController {
         final Collection<Component> components = interaction.getComponents();
 
         for ( Component component : components ) {
-            participantWrappers.add( new ParticipantWrapper( component, getChangesController(), this ) );
+            participantWrappers.add( new ParticipantWrapper( component, getChangesController(), null ) );
         }
 
         if (participantWrappers.size() > 0) {
@@ -517,7 +530,7 @@ public class InteractionController extends ParameterizableObjectController {
         interaction.addComponent(component);
 
 //        participantWrappers.addFirst(new ParticipantWrapper(component, getChangesController(), this));
-        participantWrappers.add(new ParticipantWrapper(component, getChangesController(), this));
+        participantWrappers.add(new ParticipantWrapper(component, getChangesController(), null));
 
         if (participantWrappers.size() > 0) {
             try {
@@ -748,7 +761,7 @@ public class InteractionController extends ParameterizableObjectController {
 
     public void updateShortLabel() {
         try {
-            updateShortLabel(getInteraction());
+            updateShortLabel(interaction);
         } catch (IllegalLabelFormatException e) {
             addErrorMessage("Couldn't auto-create label", e.getMessage());
         }
@@ -893,8 +906,8 @@ public class InteractionController extends ParameterizableObjectController {
         return experimentSelectItems;
     }
 
-    public Interaction getInteraction() {
-        return interaction;
+    public IntactComplex getComplex() {
+        return complex;
     }
 
     public Experiment getExperiment() {
@@ -975,7 +988,7 @@ public class InteractionController extends ParameterizableObjectController {
 
     public boolean isFeaturesAvailable(){
         boolean featuresAvailable = false;
-        Interaction interaction = getInteraction();
+        Interaction interaction = this.interaction;
         for(Component component : interaction.getComponents()){
             featuresAvailable = featuresAvailable || (component.getBindingDomains().size() > 0);
             if(featuresAvailable){

@@ -8,6 +8,7 @@ import uk.ac.ebi.intact.bridges.taxonomy.UniprotTaxonomyService;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.BiosourceIntactCloner;
+import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.BioSource;
 import uk.ac.ebi.intact.model.BioSourceAlias;
@@ -32,6 +33,16 @@ public class BioSourceController extends AnnotatedObjectController {
     @Override
     public AnnotatedObject getAnnotatedObject() {
         return bioSource;
+    }
+
+    @Override
+    public IntactPrimaryObject getJamiObject() {
+        return null;
+    }
+
+    @Override
+    public void setJamiObject(IntactPrimaryObject annotatedObject) {
+        // nothing to do
     }
 
     @Override

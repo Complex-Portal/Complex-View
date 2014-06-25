@@ -30,6 +30,8 @@ import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantImportController;
+import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
+import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.model.*;
 
 import javax.faces.context.FacesContext;
@@ -80,20 +82,51 @@ public class PersistenceController extends JpaAwareController {
         }
     }
 
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRES_NEW)
+    public boolean doSave( IntactPrimaryObject object, IntactDbSynchronizer dbSynchronizer) {
+        if ( object == null ) {
+            addErrorMessage( "No annotated object to save", "How did I get here?" );
+            return false;
+        }
+
+        try {
+            dbSynchronizer.synchronize(object, true);
+
+            return true;
+
+        } catch ( Throwable e ) {
+            addErrorMessage("Problem persisting object", "AC: " + object.getAc());
+            handleException(e);
+
+            return false;
+        }
+    }
+
     @Transactional(propagation = Propagation.SUPPORTS)
     public IntactObject doRevert(IntactObject intactObject) {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Reverting: " + DebugUtil.intactObjectToString(intactObject, false));
-
-            //final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction(getClass().getSimpleName());
 
             if (getDaoFactory().getEntityManager().contains(intactObject)) {
                 getDaoFactory().getEntityManager().detach(intactObject);
             }
 
             intactObject = getDaoFactory().getEntityManager().find(intactObject.getClass(), intactObject.getAc());
+        }
 
-            //IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus);
+        return intactObject;
+    }
+
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRES_NEW)
+    public IntactPrimaryObject doRevert(IntactPrimaryObject intactObject) {
+        if (intactObject.getAc() != null) {
+            if (log.isDebugEnabled()) log.debug("Reverting: " + intactObject.getAc());
+
+            if (getJamiEntityManager().contains(intactObject)) {
+                getJamiEntityManager().detach(intactObject);
+            }
+
+            intactObject = getJamiEntityManager().find(intactObject.getClass(), intactObject.getAc());
         }
 
         return intactObject;
@@ -126,6 +159,30 @@ public class PersistenceController extends JpaAwareController {
         return false;
     }
 
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRES_NEW)
+    public boolean doDelete(IntactPrimaryObject intactObject, IntactDbSynchronizer dbSynchronizer) {
+        if (intactObject.getAc() != null) {
+            if (log.isDebugEnabled()) log.debug("Deleting: " + intactObject.getAc());
+
+            try{
+                dbSynchronizer.delete(intactObject);
+
+                changesController.removeFromDeleted(intactObject, null);
+
+                addInfoMessage("Deleted object", intactObject.getAc());
+
+                return true;
+            }
+            catch (IntactObjectDeleteException e){
+                addErrorMessage("Deletion not allowed", e.getMessage());
+                FacesContext.getCurrentInstance().renderResponse();
+            }
+        }
+
+        addErrorMessage("Object not deleted", "Object is not saved so it cannot be deleted");
+        return false;
+    }
+
     public void saveAll(ActionEvent actionEvent) {
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
@@ -138,6 +195,17 @@ public class PersistenceController extends JpaAwareController {
             if (changesController.getUnsavedChangesForCurrentUser().contains(unsaved)){
                 curateController.save(object, false);
 
+            }
+        }
+
+        Collection<UnsavedJamiChange> jamiChanges = new ArrayList(changesController.getUnsavedJamiChangesForCurrentUser());
+
+        for (UnsavedJamiChange unsaved : jamiChanges){
+            IntactPrimaryObject object = unsaved.getUnsavedObject();
+
+            // checks that the current unsaved change is not obsolete because of a previous change (when saving/deleting, some unsaved change became obsolete and have been removed from the unsaved changes)
+            if (changesController.getUnsavedJamiChangesForCurrentUser().contains(unsaved)){
+                curateController.save(object, false);
             }
         }
 
@@ -183,7 +251,6 @@ public class PersistenceController extends JpaAwareController {
         }
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void revertAll(ActionEvent actionEvent) {
 
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
@@ -194,6 +261,17 @@ public class PersistenceController extends JpaAwareController {
 
             // checks that the current unsaved change is not obsolete because of a previous change (when saving/deleting, some unsaved change became obsolete and have been removed from the unsaved changes)
             if (changesController.getUnsavedChangesForCurrentUser().contains(unsaved)){
+                curateController.discard(object);
+            }
+        }
+
+        Collection<UnsavedJamiChange> jamiChanges = new ArrayList(changesController.getUnsavedJamiChangesForCurrentUser());
+
+        for (UnsavedJamiChange unsaved : jamiChanges){
+            IntactPrimaryObject object = unsaved.getUnsavedObject();
+
+            // checks that the current unsaved change is not obsolete because of a previous change (when saving/deleting, some unsaved change became obsolete and have been removed from the unsaved changes)
+            if (changesController.getUnsavedJamiChangesForCurrentUser().contains(unsaved)){
                 curateController.discard(object);
             }
         }

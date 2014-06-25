@@ -19,6 +19,8 @@ import org.primefaces.event.TabChangeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import psidev.psi.mi.jami.model.*;
+import psidev.psi.mi.jami.utils.AnnotationUtils;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
@@ -29,8 +31,25 @@ import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.EditorIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ComplexController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.dao.CvTermDao;
+import uk.ac.ebi.intact.jami.dao.IntactDao;
+import uk.ac.ebi.intact.jami.lifecycle.LifeCycleManager;
+import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
+import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
+import uk.ac.ebi.intact.jami.model.extension.IntactCvTerm;
+import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEvent;
+import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEventType;
+import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleStatus;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.Alias;
+import uk.ac.ebi.intact.model.Annotation;
+import uk.ac.ebi.intact.model.Experiment;
+import uk.ac.ebi.intact.model.Interactor;
+import uk.ac.ebi.intact.model.Publication;
+import uk.ac.ebi.intact.model.Xref;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
@@ -77,6 +96,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     public abstract void setAnnotatedObject(AnnotatedObject annotatedObject);
 
+    public abstract IntactPrimaryObject getJamiObject();
+
+    public abstract void setJamiObject(IntactPrimaryObject annotatedObject);
+
     public void refreshTabsAndFocusXref() {
         isXrefDisabled = false;
         isAliasDisabled = true;
@@ -90,13 +113,28 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public String goToParent() {
-        PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
+        if (isPublicationParent()){
+            PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
 
-        if (publicationController.getPublication() == null) {
-            return "/curate/curate?faces-redirect=true";
+            if (publicationController.getPublication() == null) {
+                return "/curate/curate?faces-redirect=true";
+            }
+
+            return "/curate/publication?faces-redirect=true&includeViewParams=true";
         }
+        else{
+            ComplexController complexController = (ComplexController) getSpringContext().getBean("complexController");
 
-        return "/curate/publication?faces-redirect=true&includeViewParams=true";
+            if (complexController.getComplex() == null) {
+                return "/curate/curate?faces-redirect=true";
+            }
+
+            return "/curate/complex?faces-redirect=true&includeViewParams=true";
+        }
+    }
+
+    protected boolean isPublicationParent() {
+        return true;
     }
 
     public AnnotatedObjectHelper getAnnotatedObjectHelper() {
@@ -154,6 +192,49 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
             }
         }
+        else if (getJamiObject() != null) {
+            ChangesController generalChangesController = (ChangesController) getSpringContext().getBean("changesController");
+            if (generalChangesController.isObjectBeingEdited(getJamiObject(), false)) {
+                String who = generalChangesController.whoIsEditingObject(getJamiObject());
+
+                addWarningMessage("This object is already being edited by: " + who, "Modifications may be lost or affect current work by the other curator");
+            }
+
+            ComplexController complexController = (ComplexController) getSpringContext().getBean("complexController");
+
+            if (complexController.getComplex() != null) {
+                IntactComplex complex = complexController.getComplex();
+
+                if (complex.getStatus() == null) {
+                    // we assume for now that null status means that the publication has been created using an external process (ie. XML import)
+                    LifeCycleManager lifecycleManager = ApplicationContextProvider.getBean("jamiLifeCycleManager", LifeCycleManager.class);
+                    lifecycleManager.getStartStatus().create(complex, "Imported from external source");
+
+                    addWarningMessage("Complex without status", "Assuming that it has been imported. Save it if you are happy with this assumption");
+                    setUnsavedChanges(true);
+                } else if (LifeCycleStatus.CURATION_IN_PROGRESS.equals(complex.getStatus())) {
+                    if (!getUserSessionController().isItMe(complex.getCurrentOwner())) {
+                        addWarningMessage("Complex being curated by '" + complex.getCurrentOwner().getLogin() + "'", "Please do not modify it without permission");
+                    }
+                } else if (LifeCycleStatus.READY_FOR_CHECKING.equals(complex.getStatus())) {
+                    if (!getUserSessionController().isItMe(complex.getCurrentReviewer())) {
+                        addWarningMessage("Complex under review", "This complex is being reviewed by '" + complex.getCurrentReviewer().getLogin() + "'");
+                    }
+                } else if (LifeCycleStatus.ACCEPTED_ON_HOLD.equals(complex.getStatus())) {
+                    addWarningMessage("Complex on-hold", "Reason: " + complexController.getOnHold());
+                } else if (LifeCycleStatus.RELEASED.equals(complex.getStatus())) {
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
+                    Date releasedDate=null;
+                    for (LifeCycleEvent evt : complex.getLifecycleEvents()){
+                        if (LifeCycleEventType.RELEASED.equals(evt.getEvent())){
+                            releasedDate = evt.getWhen();
+                        }
+                    }
+                    addInfoMessage("Publication already released", "This publication was released on " + (releasedDate != null ? sdf.format(releasedDate) : ""));
+                }
+            }
+        }
     }
 
     protected <T extends AnnotatedObject> T loadByAc(IntactObjectDao<T> dao, String ac) {
@@ -161,6 +242,16 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         if (ao == null) {
             ao = dao.getByAc(ac);
+        }
+
+        return ao;
+    }
+
+    protected <T extends IntactPrimaryObject> T loadJamiByAc(Class<T> cl, String ac) {
+        T ao = (T) changesController.findJamiByAc(ac);
+
+        if (ao == null) {
+            ao = getJamiEntityManager().find(cl, ac);
         }
 
         return ao;
@@ -200,43 +291,145 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
      */
     public void doSave(boolean refreshCurrentView) {
         ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+        PersistenceController persistenceController = getPersistenceController();
 
-        // adjust any xref, just if the curator introduced a value in the primaryId of the xref
-        // and clicked on save without focusing on another field first (which would trigger
-        // a change event and field the values with ajax)
-        if (IntactCore.isInitialized(getAnnotatedObject().getXrefs())) {
-            xrefChanged(null);
-        }
+        if (getAnnotatedObject() != null){
+            // adjust any xref, just if the curator introduced a value in the primaryId of the xref
+            // and clicked on save without focusing on another field first (which would trigger
+            // a change event and field the values with ajax)
+            if (IntactCore.isInitialized(getAnnotatedObject().getXrefs())) {
+                xrefChanged(null);
+            }
 
-        // check if object already exists in the database before creating a new one
-        try {
-            // if the annotated object does not have an ac, check if another one similar exists in the db
-            if (getAnnotatedObject().getAc() == null) {
-                Finder finder = (Finder) getSpringContext().getBean("finder");
+            // check if object already exists in the database before creating a new one
+            try {
+                // if the annotated object does not have an ac, check if another one similar exists in the db
+                if (getAnnotatedObject().getAc() == null) {
+                    Finder finder = (Finder) getSpringContext().getBean("finder");
 
-                final String ac = finder.findAc(getAnnotatedObject());
+                    final String ac = finder.findAc(getAnnotatedObject());
 
-                if (ac != null) {
-                    AnnotatedObject existingAo = getDaoFactory().getEntityManager().find(getAnnotatedObject().getClass(), ac);
-                    addErrorMessage("An identical object exists: " + DebugUtil.annotatedObjectToString(existingAo, false), "Cannot save identical objects");
-                    FacesContext.getCurrentInstance().renderResponse();
-                    return;
+                    if (ac != null) {
+                        AnnotatedObject existingAo = getDaoFactory().getEntityManager().find(getAnnotatedObject().getClass(), ac);
+                        addErrorMessage("An identical object exists: " + DebugUtil.annotatedObjectToString(existingAo, false), "Cannot save identical objects");
+                        FacesContext.getCurrentInstance().renderResponse();
+                        return;
+                    }
+                }
+            } catch (Throwable t) {
+                handleException(t);
+            }
+
+            String currentAc = getAnnotatedObject() != null ? getAnnotatedObject().getAc() : null;
+            boolean currentAnnotatedObjectDeleted = false;
+
+            // annotated objects specific tasks to prepare the save/delete
+            doPreSave();
+
+            boolean saved = false;
+
+            // delete from the unsaved manager
+            currentAnnotatedObjectDeleted = processDeleteEvents(currentAc);
+            if (currentAnnotatedObjectDeleted){
+                saved = true;
+            }
+
+            AnnotatedObject annotatedObject = getAnnotatedObject();
+
+            if (!currentAnnotatedObjectDeleted) {
+                saved = persistenceController.doSave(annotatedObject);
+
+                if (saved) {
+                    // saves specific elements for each annotated object (e.g. components in interactions)
+                    boolean detailsSaved = doSaveDetails();
+
+                    if (detailsSaved) saved = true;
                 }
             }
-        } catch (Throwable t) {
-            handleException(t);
+
+            if (saved) {
+                lastSaved = new Date();
+                changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject());
+            }
+
+            // we refresh the object if it has been saved
+            if (annotatedObject.getAc() != null && saved) {
+
+                annotatedObject = refresh(annotatedObject);
+            }
+
+            setAnnotatedObject(annotatedObject);
+
+            if (annotatedObject != null) {
+                addInfoMessage("Saved", DebugUtil.annotatedObjectToString(getAnnotatedObject(), false));
+            }
+
+            if (refreshCurrentView) {
+                refreshCurrentViewObject();
+            }
+            doPostSave();
         }
+        else{
 
-        String currentAc = getAnnotatedObject() != null ? getAnnotatedObject().getAc() : null;
-        boolean currentAnnotatedObjectDeleted = false;
+            String currentAc = getJamiObject() != null ? getJamiObject().getAc() : null;
+            boolean currentAnnotatedObjectDeleted = false;
 
-        // annotated objects specific tasks to prepare the save/delete
-        doPreSave();
+            // annotated objects specific tasks to prepare the save/delete
+            doPreSave();
 
-        boolean saved = false;
+            boolean saved = false;
 
+            // delete from the unsaved manager
+            // delete from the unsaved manager
+            currentAnnotatedObjectDeleted = processDeleteEvents(currentAc);
+            if (currentAnnotatedObjectDeleted){
+                saved = true;
+            }
+
+            IntactPrimaryObject annotatedObject = getJamiObject();
+
+            if (!currentAnnotatedObjectDeleted) {
+                CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+
+                saved = persistenceController.doSave(annotatedObject, curateController.getJamiMetadata(annotatedObject).getDbSynchronizer());
+
+                if (saved) {
+                    // saves specific elements for each annotated object (e.g. components in interactions)
+                    boolean detailsSaved = doSaveDetails();
+
+                    if (detailsSaved) saved = true;
+                }
+            }
+
+            if (saved) {
+                lastSaved = new Date();
+                changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject());
+            }
+
+            // we refresh the object if it has been saved
+            if (annotatedObject.getAc() != null && saved) {
+
+                annotatedObject = refresh(annotatedObject);
+            }
+
+            setJamiObject(annotatedObject);
+
+            if (annotatedObject != null) {
+                addInfoMessage("Saved", annotatedObject.getAc());
+            }
+
+            if (refreshCurrentView) {
+                refreshCurrentViewObject();
+            }
+            doPostSave();
+        }
+    }
+
+    private boolean processDeleteEvents(String currentAc){
+        boolean delete = false;
         // delete from the unsaved manager
         final List<UnsavedChange> deletedObjects = new ArrayList(changesController.getAllUnsavedDeleted());
+        final List<UnsavedJamiChange> deletedJamiObjects = new ArrayList(changesController.getAllUnsavedJamiDeleted());
 
         PersistenceController persistenceController = getPersistenceController();
 
@@ -248,11 +441,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             if (changesController.getAllUnsavedDeleted().contains(unsaved)) {
                 // the object to delete is the current object itself. Should delete it now
                 if (unsavedObject.getAc() != null && unsavedObject.getAc().equals(currentAc)) {
-                    currentAnnotatedObjectDeleted = true;
 
                     // remove the object to delete from its parent. If it is successful and the current object has been deleted, we can say that the save is successful
                     if (persistenceController.doDelete(unsavedObject)) {
-                        saved = true;
+                        delete = true;
                     }
 
                 }
@@ -266,44 +458,35 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             }
         }
 
-        AnnotatedObject annotatedObject = getAnnotatedObject();
+        for (UnsavedJamiChange unsaved : deletedJamiObjects) {
 
-        if (!currentAnnotatedObjectDeleted) {
-            saved = persistenceController.doSave(annotatedObject);
+            IntactPrimaryObject unsavedObject = unsaved.getUnsavedObject();
 
-            if (saved) {
-                // saves specific elements for each annotated object (e.g. components in interactions)
-                boolean detailsSaved = doSaveDetails();
+            // when an object is deleted, other deleted events can become obsolete and could have been removed from the deleted change events
+            if (changesController.getAllUnsavedDeleted().contains(unsaved)) {
+                // the object to delete is the current object itself. Should delete it now
+                if (unsavedObject.getAc() != null && unsavedObject.getAc().equals(currentAc)) {
 
-                if (detailsSaved) saved = true;
+                    // remove the object to delete from its parent. If it is successful and the current object has been deleted, we can say that the save is successful
+                    if (persistenceController.doDelete(unsavedObject, unsaved.getDbSynchronizer())) {
+                        delete = true;
+                    }
+
+                }
+                // the object to delete is different from the current object. Checks that the scope of this object to delete is the ac of the current object being saved
+                // if the scope is null or different, the object should not be deleted at this stage because we only save the current object and changes associated with it
+                // if current ac is null, no deleted event should be associated with it as this object has not been saved yet
+                else if (unsaved.getScope() != null && unsaved.getScope().equals(currentAc)) {
+                    // remove the object to delete from its parent
+                    persistenceController.doDelete(unsavedObject, unsaved.getDbSynchronizer());
+                }
             }
         }
 
-        if (saved) {
-            lastSaved = new Date();
-            changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject());
-        }
-
-        // we refresh the object if it has been saved
-        if (annotatedObject.getAc() != null && saved) {
-
-            annotatedObject = refresh(annotatedObject);
-        }
-
-        setAnnotatedObject(annotatedObject);
-
-        if (annotatedObject != null) {
-            addInfoMessage("Saved", DebugUtil.annotatedObjectToString(getAnnotatedObject(), false));
-        }
-
-        if (refreshCurrentView) {
-            refreshCurrentViewObject();
-        }
-        doPostSave();
+        return delete;
     }
 
     private AnnotatedObject refresh(AnnotatedObject annotatedObject) {
-        //final TransactionStatus transactionStatus2 = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
         if (annotatedObject != null) {
             boolean isNew = false;
@@ -322,7 +505,28 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             }
         }
 
-        //IntactContext.getCurrentInstance().getDataContext().commitTransaction(transactionStatus2);
+        return annotatedObject;
+    }
+
+    private IntactPrimaryObject refresh(IntactPrimaryObject annotatedObject) {
+
+        if (annotatedObject != null) {
+            boolean isNew = false;
+
+            if (getJamiObject() != null) {
+                isNew = (getJamiObject().getAc() == null);
+            }
+
+            if (!isNew && getJamiEntityManager().contains(annotatedObject)) {
+                // the following line is commented because it seems to cause problems when deleting an xref - it is not deleted.
+                // I should write some comments so I could remember why I did add it in the first place...
+
+                getJamiEntityManager().refresh(annotatedObject);
+            } else {
+                annotatedObject = getJamiEntityManager().find(annotatedObject.getClass(), annotatedObject.getAc());
+            }
+        }
+
         return annotatedObject;
     }
 
@@ -330,6 +534,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
         final AnnotatedObject currentAo = curateController.getCurrentAnnotatedObjectController().getAnnotatedObject();
+        final IntactPrimaryObject currentJami = curateController.getCurrentAnnotatedObjectController().getJamiObject();
 
         if (currentAo != null && currentAo.getAc() != null) {
 
@@ -348,12 +553,30 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                 curateController.getCurrentAnnotatedObjectController().setAnnotatedObject(refreshedAo);
             }
         }
+        else if (currentJami != null && currentJami.getAc() != null) {
+
+            // we have to refresh because the current annotated object is different from the annotated object of this controller
+            if (getJamiObject() != null && !currentJami.getAc().equals(getJamiObject().getAc())) {
+                if (log.isDebugEnabled())
+                    log.debug("Refreshing object in view: " + currentJami.getAc());
+
+                IntactPrimaryObject refreshedAo = refresh(currentJami);
+                curateController.getCurrentAnnotatedObjectController().setJamiObject(refreshedAo);
+            } else if (getJamiObject() == null && currentJami != null) {
+                if (log.isDebugEnabled())
+                    log.debug("Refreshing object in view: " + currentJami.getAc());
+
+                IntactPrimaryObject refreshedAo = refresh(currentJami);
+                curateController.getCurrentAnnotatedObjectController().setJamiObject(refreshedAo);
+            }
+        }
     }
 
     public void forceRefreshCurrentViewObject() {
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
         final AnnotatedObject currentAo = curateController.getCurrentAnnotatedObjectController().getAnnotatedObject();
+        final IntactPrimaryObject currentJami = curateController.getCurrentAnnotatedObjectController().getJamiObject();
 
         if (currentAo != null && currentAo.getAc() != null) {
 
@@ -363,10 +586,21 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             AnnotatedObject refreshedAo = refresh(currentAo);
             curateController.getCurrentAnnotatedObjectController().setAnnotatedObject(refreshedAo);
         }
+        else if (currentJami != null && currentJami.getAc() != null) {
+
+            if (log.isDebugEnabled())
+                log.debug("Refreshing object in view: " + currentJami.getAc());
+
+            IntactPrimaryObject refreshedAo = refresh(currentJami);
+            curateController.getCurrentAnnotatedObjectController().setJamiObject(refreshedAo);
+        }
     }
 
     public void doSaveIfNecessary(ActionEvent evt) {
-        if (getAnnotatedObject().getAc() == null) {
+        if (getAnnotatedObject() != null && getAnnotatedObject().getAc() == null) {
+            doSave(null);
+        }
+        else if (getJamiObject() != null && getJamiObject().getAc() == null){
             doSave(null);
         }
     }
@@ -386,7 +620,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public void doRevertChanges(ActionEvent evt) {
-        if (getAnnotatedObject().getAc() == null) {
+        if (getAnnotatedObject() != null && getAnnotatedObject().getAc() == null) {
+            doCancelEdition();
+        }else if (getJamiObject() != null && getJamiObject().getAc() == null) {
             doCancelEdition();
         } else {
             // revert first all unsaved events attached to any children of this object (will avoid to persist new annotations on children eg. copy publication annotations to experiments
@@ -394,7 +630,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             refreshUnsavedChangesBeforeRevert();
 
             PersistenceController persistenceController = getPersistenceController();
-            setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
+            if (getAnnotatedObject() != null){
+                setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
+            }
+            else{
+                setJamiObject(persistenceController.doRevert(getJamiObject()));
+            }
 
             postRevert();
 
@@ -416,7 +657,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     protected void refreshUnsavedChangesBeforeRevert() {
-        changesController.revert(getAnnotatedObject());
+        if (getAnnotatedObject() != null){
+            changesController.revert(getAnnotatedObject());
+        }
+        else{
+            changesController.revert(getJamiObject());
+        }
     }
 
     public void changed() {
@@ -433,7 +679,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public String clone() {
-        return clone(getAnnotatedObject(), newClonerInstance());
+        if (getAnnotatedObject() != null){
+            return clone(getAnnotatedObject(), newClonerInstance());
+        }
+        else{
+            return clone(getJamiObject());
+        }
     }
 
     protected String clone(AnnotatedObject ao, IntactCloner cloner) {
@@ -445,6 +696,18 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         setAnnotatedObject(clone);
 
+        setUnsavedChanges(true);
+
+        return getCurateController().edit(clone);
+    }
+
+    protected String clone(IntactPrimaryObject ao) {
+        IntactPrimaryObject clone = cloneAnnotatedObject(ao);
+
+        if (clone == null) return null;
+
+        addInfoMessage("Cloned annotated object", null);
+        setJamiObject(clone);
         setUnsavedChanges(true);
 
         return getCurateController().edit(clone);
@@ -466,6 +729,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return clone;
     }
 
+    protected <T extends IntactPrimaryObject> T cloneAnnotatedObject(T ao) {
+        // to be overrided
+        return null;
+    }
+
     public void modifyClone(AnnotatedObject clone) {
         refreshTabsAndFocusXref();
     }
@@ -477,14 +745,16 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public String doDelete() {
         PersistenceController persistenceController = getPersistenceController();
 
-        if (persistenceController.doDelete(getAnnotatedObject())) {
+        if (getAnnotatedObject() != null && persistenceController.doDelete(getAnnotatedObject())) {
             setAnnotatedObject(null);
             return goToParent();
         }
-
+        else if (getJamiObject() != null && persistenceController.doDelete(getJamiObject(),
+                curateController.getJamiMetadata(getJamiObject()).getDbSynchronizer())){
+        }
         // if delete not successfull, just display the message and don't go to the parent because the message will be lost
         // keep editing this object
-        return curateController.edit(getAnnotatedObject());
+        return curateController.edit(getAnnotatedObject() != null ? getAnnotatedObject() : getJamiObject());
     }
 
     // XREFS
@@ -500,7 +770,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         CvDatabase goDb = null;
 
-        for (Xref xref : getXrefs()) {
+        for (Object obj : getXrefs()) {
+            Xref xref = (Xref)obj;
             if (xref.getPrimaryId() != null &&
                     (xref.getPrimaryId().startsWith("go:") ||
                             xref.getPrimaryId().startsWith("GO:"))) {
@@ -555,12 +826,37 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return null;
     }
 
+    protected CvTerm calculateCvQualifier(GoTerm category) {
+        if (category == null) return null;
+
+        String goId = category.getId();
+
+        IntactDao dao = ApplicationContextProvider.getBean("intactDao");
+        CvTermDao cvObjectDao = dao.getCvTermDao();
+        Collection<IntactCvTerm> terms = Collections.EMPTY_LIST;
+
+        if ("GO:0008150".equals(goId)) {
+            terms = cvObjectDao.getByMIIdentifier(CvXrefQualifier.PROCESS_MI_REF);
+        } else if ("GO:0003674".equals(goId)) { // GO:0005554 was an alternative id for molecular function
+            terms = cvObjectDao.getByMIIdentifier(CvXrefQualifier.FUNCTION_MI_REF);
+        } else if ("GO:0005575".equals(goId)) {
+            terms = cvObjectDao.getByMIIdentifier(CvXrefQualifier.COMPONENT_MI_REF);
+        }
+        if (!terms.isEmpty()){
+            return terms.iterator().next();
+        }
+
+        if (log.isWarnEnabled()) log.warn("No qualifier found for category: " + goId);
+
+        return null;
+    }
+
     public void newXref(ActionEvent evt) {
         getAnnotatedObjectHelper().newXref();
         setUnsavedChanges(true);
     }
 
-    public List<Xref> getXrefs() {
+    public List getXrefs() {
         return getAnnotatedObjectHelper().getXrefs();
     }
 
@@ -596,56 +892,111 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return getAnnotatedObjectHelper().findXrefPrimaryId(databaseId, qualifierId);
     }
 
-    public boolean isXrefValid(Xref xref) {
-        if (xref == null) return false;
-        if (xref.getPrimaryId() == null) return false;
-        if (xref.getCvDatabase() == null) return true;
+    public boolean isXrefValid(Object obj) {
+        if (obj == null) return false;
+        else if (obj instanceof Xref){
+            Xref xref = (Xref)obj;
+            if (xref.getPrimaryId() == null) return false;
+            if (xref.getCvDatabase() == null) return true;
 
-        AnnotatedObject ao = xref.getCvDatabase();
+            AnnotatedObject ao = xref.getCvDatabase();
 
-        if (!IntactCore.isInitialized(ao.getAnnotations())) {
-            ao = IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(ao.getClass())
-                    .getByAc(getAnnotatedObject().getAc());
+            if (!IntactCore.isInitialized(ao.getAnnotations())) {
+                ao = IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(ao.getClass())
+                        .getByAc(getAnnotatedObject().getAc());
+            }
+
+            if (ao == null) { // this can happen if the object has been removed in the same request just before
+                return true;
+            }
+
+            final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( ao, CvTopic.XREF_VALIDATION_REGEXP_MI_REF);
+
+            if (annotation == null) return true;
+            return xref.getPrimaryId().matches(annotation.getAnnotationText());
         }
+        else{
+            psidev.psi.mi.jami.model.Xref ref = (psidev.psi.mi.jami.model.Xref)obj;
+            if (ref.getId() == null) return false;
+            if (ref.getDatabase() == null) return true;
 
-        if (ao == null) { // this can happen if the object has been removed in the same request just before
-            return true;
+            IntactCvTerm ao = (IntactCvTerm)ref.getDatabase();
+
+            if (!ao.areAnnotationsInitialized()) {
+                ao = getJamiEntityManager().find(IntactCvTerm.class, ao.getAc());
+            }
+
+            if (ao == null) { // this can happen if the object has been removed in the same request just before
+                return true;
+            }
+
+            final psidev.psi.mi.jami.model.Annotation annotation = AnnotationUtils.collectFirstAnnotationWithTopic(ao.getAnnotations(),
+                    psidev.psi.mi.jami.model.Annotation.VALIDATION_REGEXP_MI, psidev.psi.mi.jami.model.Annotation.VALIDATION_REGEXP);
+
+            if (annotation == null) return true;
+            return ref.getId().matches(annotation.getValue());
         }
-
-        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( ao, CvTopic.XREF_VALIDATION_REGEXP_MI_REF);
-
-        if (annotation == null) return true;
-        return xref.getPrimaryId().matches(annotation.getAnnotationText());
     }
 
-    public String externalLink(Xref xref) {
-        if (xref == null) return null;
-        if (xref.getPrimaryId() == null) return null;
-        if (xref.getCvDatabase() == null) return null;
+    public String externalLink(Object obj) {
+        if (obj == null) return null;
+        else if (obj instanceof Xref){
+            Xref xref = (Xref)obj;
+            if (xref.getPrimaryId() == null) return null;
+            if (xref.getCvDatabase() == null) return null;
 
-        AnnotatedObject ao = xref.getCvDatabase();
+            AnnotatedObject ao = xref.getCvDatabase();
 
-        if (!IntactCore.isInitialized(ao.getAnnotations())) {
-            ao = IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(ao.getClass())
-                    .getByAc(getAnnotatedObject().getAc());
+            if (!IntactCore.isInitialized(ao.getAnnotations())) {
+                ao = IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(ao.getClass())
+                        .getByAc(getAnnotatedObject().getAc());
+            }
+
+            if (ao == null) { // this can happen if the object has been removed in the same request just before
+                return null;
+            }
+
+            final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(ao, CvTopic.SEARCH_URL_MI_REF);
+            if (annotation == null) return null;
+
+
+            String extUrl = annotation.getAnnotationText();
+            return extUrl.replaceAll("\\$\\{ac\\}", xref.getPrimaryId());
         }
+        else{
+            psidev.psi.mi.jami.model.Xref ref = (psidev.psi.mi.jami.model.Xref)obj;
+            if (ref.getId() == null) return null;
+            if (ref.getDatabase() == null) return null;
 
-        if (ao == null) { // this can happen if the object has been removed in the same request just before
-            return null;
+            IntactCvTerm ao = (IntactCvTerm)ref.getDatabase();
+
+            if (!ao.areAnnotationsInitialized()) {
+                ao = getJamiEntityManager().find(IntactCvTerm.class, ao.getAc());
+            }
+
+            if (ao == null) { // this can happen if the object has been removed in the same request just before
+                return null;
+            }
+
+            final psidev.psi.mi.jami.model.Annotation annotation = AnnotationUtils.collectFirstAnnotationWithTopic(ao.getAnnotations(),
+                    psidev.psi.mi.jami.model.Annotation.SEARCH_URL_MI, psidev.psi.mi.jami.model.Annotation.SEARCH_URL);
+            if (annotation == null) return null;
+
+            String extUrl = annotation.getValue();
+            return extUrl.replaceAll("\\$\\{ac\\}", ref.getId());
         }
-
-        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(ao, CvTopic.SEARCH_URL_MI_REF);
-        if (annotation == null) return null;
-
-
-        String extUrl = annotation.getAnnotationText();
-        return extUrl.replaceAll("\\$\\{ac\\}", xref.getPrimaryId());
 
     }
 
-    protected String navigateToObject(AnnotatedObject annotatedObject) {
+    protected String navigateToObject(Object annotatedObject) {
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
-        setAnnotatedObject(annotatedObject);
+
+        if (annotatedObject instanceof AnnotatedObject){
+            setAnnotatedObject((AnnotatedObject)annotatedObject);
+        }
+        else{
+            setJamiObject((IntactPrimaryObject)annotatedObject);
+        }
         return curateController.newIntactObject(annotatedObject);
     }
 
@@ -689,7 +1040,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return getAnnotatedObjectHelper().findAnnotationText(topicId);
     }
 
-    public List<Annotation> getAnnotations() {
+    public List getAnnotations() {
         return getAnnotatedObjectHelper().getAnnotations();
     }
 
@@ -722,7 +1073,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         setUnsavedChanges(true);
     }
 
-    public List<Alias> getAliases() {
+    public List getAliases() {
         return getAnnotatedObjectHelper().getAliases();
     }
 
@@ -768,7 +1119,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public boolean isUnsavedChanges() {
-        return changesController.isUnsaved(getAnnotatedObject());
+        if (getAnnotatedObject() != null){
+            return changesController.isUnsaved(getAnnotatedObject());
+        }
+        else{
+            return changesController.isUnsaved(getJamiObject());
+        }
     }
 
     public void setUnsavedChanges(boolean unsavedChanges) {
@@ -776,11 +1132,21 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         // we want to add a new change event for this annotated object
         if (unsavedChanges) {
-            changesController.markAsUnsaved(getAnnotatedObject(), parentAcs);
+            if (getAnnotatedObject() != null){
+                changesController.markAsUnsaved(getAnnotatedObject(), parentAcs);
+            }
+            else{
+                changesController.markAsUnsaved(getJamiObject(), parentAcs);
+            }
         }
         // we want to remove any change event concerning this object (or affecting parent and children)
         else {
-            changesController.removeFromUnsaved(getAnnotatedObject(), parentAcs);
+            if (getAnnotatedObject() != null){
+                changesController.removeFromUnsaved(getAnnotatedObject(), parentAcs);
+            }
+            else{
+                changesController.removeFromUnsaved(getJamiObject(), parentAcs);
+            }
         }
     }
 
@@ -805,15 +1171,28 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     public boolean canIEditIt() {
-        PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
+        if (isPublicationParent()){
+            PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
 
-        if (publicationController.getPublication() == null) {
+            if (publicationController.getPublication() == null) {
+                return true;
+            } else if (publicationController.getPublication().getCurrentOwner() != null) {
+                return getUserSessionController().isItMe(publicationController.getPublication().getCurrentOwner());
+            }
+
             return true;
-        } else if (publicationController.getPublication().getCurrentOwner() != null) {
-            return getUserSessionController().isItMe(publicationController.getPublication().getCurrentOwner());
         }
+        else{
+            ComplexController complexController = (ComplexController) getSpringContext().getBean("complexController");
 
-        return true;
+            if (complexController.getComplex() == null) {
+                return true;
+            } else if (complexController.getComplex().getCurrentOwner() != null) {
+                return getUserSessionController().isItMe(complexController.getComplex().getCurrentOwner());
+            }
+
+            return true;
+        }
     }
 
     public ChangesController getChangesController() {
