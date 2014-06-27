@@ -1104,6 +1104,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return newAnnotatedObjectHelper(ao).findAnnotationText(CvTopic.CAUTION_MI_REF);
     }
 
+    public String getCautionMessage(IntactPrimaryObject ao) {
+        return null;
+    }
+
     public String getInternalRemarkMessage() {
         return findAnnotationText(CvTopic.INTERNAL_REMARK);
     }
@@ -1112,6 +1116,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         if (interactor == null) return false;
 
         return newAnnotatedObjectHelper(interactor).findAnnotationText(CvTopic.NON_UNIPROT) != null;
+    }
+
+    public boolean isNoUniprotUpdate(psidev.psi.mi.jami.model.Interactor interactor) {
+        if (interactor == null) return false;
+
+        return AnnotationUtils.collectFirstAnnotationWithTopic(interactor.getAnnotations(), null, CvTopic.NON_UNIPROT) != null;
     }
 
     protected PersistenceController getPersistenceController() {

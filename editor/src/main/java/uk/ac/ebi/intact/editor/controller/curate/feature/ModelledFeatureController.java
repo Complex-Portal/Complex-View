@@ -140,7 +140,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         IntactCvTerm roleParent = cvDao.getByMIIdentifier("MI:0925", IntactUtils.TOPIC_OBJCLASS);
         SelectItem item = createSelectItem(roleParent);
         if (item != null){
-           roleSelectItems.add(item);
+            roleSelectItems.add(item);
         }
         loadChildren(roleParent, roleSelectItems);
 
@@ -161,16 +161,16 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     }
 
     private void loadChildren(IntactCvTerm parent, List<SelectItem> selectItems){
-         for (OntologyTerm child : parent.getChildren()){
-              IntactCvTerm cv = (IntactCvTerm)child;
-             SelectItem item = createSelectItem(cv);
-             if (item != null){
-                 selectItems.add(item);
-             }
-             if (!cv.getChildren().isEmpty()){
-                 loadChildren(cv, selectItems);
-             }
-         }
+        for (OntologyTerm child : parent.getChildren()){
+            IntactCvTerm cv = (IntactCvTerm)child;
+            SelectItem item = createSelectItem(cv);
+            if (item != null){
+                selectItems.add(item);
+            }
+            if (!cv.getChildren().isEmpty()){
+                loadChildren(cv, selectItems);
+            }
+        }
     }
 
     private SelectItem createSelectItem( IntactCvTerm cv ) {
@@ -606,6 +606,14 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Override
     public String getCautionMessage() {
         psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.feature.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
+                psidev.psi.mi.jami.model.Annotation.CAUTION);
+        return caution != null ? caution.getValue() : null;
+    }
+
+    @Override
+    public String getCautionMessage(IntactPrimaryObject ao) {
+        IntactModelledFeature feature = (IntactModelledFeature)ao;
+        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(feature.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
                 psidev.psi.mi.jami.model.Annotation.CAUTION);
         return caution != null ? caution.getValue() : null;
     }
