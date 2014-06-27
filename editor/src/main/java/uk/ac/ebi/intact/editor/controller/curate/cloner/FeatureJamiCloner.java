@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
 import psidev.psi.mi.jami.model.*;
 import uk.ac.ebi.intact.jami.model.extension.*;
-import uk.ac.ebi.intact.model.clone.IntactClonerException;
 
 /**
  * Editor specific cloning routine for complex features.
@@ -29,7 +28,7 @@ import uk.ac.ebi.intact.model.clone.IntactClonerException;
 public class FeatureJamiCloner {
 
 
-    public static ModelledFeature cloneFeature(Feature feature) throws IntactClonerException {
+    public static ModelledFeature cloneFeature(Feature feature) {
         ModelledFeature clone = new IntactModelledFeature();
 
         clone.setShortName(feature.getShortName());

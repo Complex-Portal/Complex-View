@@ -59,14 +59,14 @@
         <view-id value="/curate/complex.xhtml"/>
     </url-mapping>
 
-    <url-mapping id="cparticipant">
-        <pattern value="/cparticipant/#{ac}"/>
-        <view-id value="/curate/cparticipant.xhtml"/>
+    <url-mapping id="jparticipant">
+        <pattern value="/jparticipant/#{ac}"/>
+        <view-id value="/curate/jparticipant.xhtml"/>
     </url-mapping>
 
-    <url-mapping id="cfeature">
-        <pattern value="/cfeature/#{ac}"/>
-        <view-id value="/curate/cfeature.xhtml"/>
+    <url-mapping id="jfeature">
+        <pattern value="/jfeature/#{ac}"/>
+        <view-id value="/curate/jfeature.xhtml"/>
     </url-mapping>
 
     <url-mapping id="interactor">

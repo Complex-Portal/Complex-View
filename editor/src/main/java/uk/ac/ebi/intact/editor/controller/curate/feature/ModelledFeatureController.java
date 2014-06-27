@@ -22,25 +22,47 @@ import org.primefaces.event.TabChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.core.context.IntactContext;
+import org.springframework.transaction.annotation.Transactional;
+import psidev.psi.mi.jami.exception.*;
+import psidev.psi.mi.jami.exception.IllegalRangeException;
+import psidev.psi.mi.jami.model.*;
+import psidev.psi.mi.jami.model.Complex;
+import psidev.psi.mi.jami.model.Interactor;
+import psidev.psi.mi.jami.model.Polymer;
+import psidev.psi.mi.jami.model.Range;
+import psidev.psi.mi.jami.utils.AnnotationUtils;
+import psidev.psi.mi.jami.utils.RangeUtils;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureIntactCloner;
+import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureJamiCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
-import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
-import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
-import uk.ac.ebi.intact.editor.controller.curate.participant.ParticipantController;
-import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ComplexController;
+import uk.ac.ebi.intact.editor.controller.curate.participant.ModelledParticipantController;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.dao.CvTermDao;
+import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
+import uk.ac.ebi.intact.jami.model.extension.*;
+import uk.ac.ebi.intact.jami.synchronizer.FinderException;
+import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
+import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
+import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.Annotation;
+import uk.ac.ebi.intact.model.Xref;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.util.FeatureUtils;
+import uk.ac.ebi.intact.protein.mapping.model.actionReport.IntactReport;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.model.SelectItem;
 import javax.faces.validator.ValidatorException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,8 +79,8 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     private static final Log log = LogFactory.getLog( ModelledFeatureController.class );
 
-    private Feature feature;
-    private List<RangeWrapper> rangeWrappers;
+    private IntactModelledFeature feature;
+    private List<ModelledRangeWrapper> rangeWrappers;
     private boolean containsInvalidRanges;
 
     /**
@@ -67,64 +89,189 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     private String ac;
 
     @Autowired
-    private PublicationController publicationController;
+    private ComplexController complexController;
 
     @Autowired
-    private ExperimentController experimentController;
-
-    @Autowired
-    private InteractionController interactionController;
-
-    @Autowired
-    private ParticipantController participantController;
+    private ModelledParticipantController modelledParticipantController;
 
     private String newRangeValue;
 
     private boolean isRangeDisabled;
 
+    private List<SelectItem> typeSelectItems;
+    private List<SelectItem> roleSelectItems;
+    private List<SelectItem> participantSelectItems;
+    private List<SelectItem> aliasTypeSelectItems;
+    private List<SelectItem> featureTopicSelectItems;
+    private List<SelectItem> databaseSelectItems;
+    private List<SelectItem> qualifierSelectItems;
+    private List<SelectItem> fuzzyTypeSelectItems;
+    private boolean isComplexFeature=false;
+
     public ModelledFeatureController() {
     }
 
+    @PostConstruct
+    @Transactional(value = "jamiTransactionManager")
+    public void loadData() {
+        typeSelectItems = new ArrayList<SelectItem>();
+        typeSelectItems.add(new SelectItem( null, "select type", "select type", false, false, true ));
+        roleSelectItems = new ArrayList<SelectItem>();
+        roleSelectItems.add(new SelectItem( null, "select role", "select role", false, false, true ));
+        participantSelectItems = new ArrayList<SelectItem>();
+        participantSelectItems.add(new SelectItem( null, "select participant", "select participant", false, false, true ));
+        aliasTypeSelectItems = new ArrayList<SelectItem>();
+        aliasTypeSelectItems.add(new SelectItem( null, "select type", "select type", false, false, true ));
+        featureTopicSelectItems = new ArrayList<SelectItem>();
+        featureTopicSelectItems.add(new SelectItem( null, "select topic", "select topic", false, false, true ));
+        databaseSelectItems = new ArrayList<SelectItem>();
+        databaseSelectItems.add(new SelectItem( null, "select database", "select database", false, false, true ));
+        qualifierSelectItems = new ArrayList<SelectItem>();
+        qualifierSelectItems.add(new SelectItem( null, "select qualifier", "select qualifier", false, false, true ));
+        fuzzyTypeSelectItems = new ArrayList<SelectItem>();
+        fuzzyTypeSelectItems.add(new SelectItem(null, "select status", "select status", false, false, true));
+
+        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        CvTermDao cvDao = intactDao.getCvTermDao();
+
+        IntactCvTerm typeParent = cvDao.getByMIIdentifier("MI:0116", IntactUtils.FEATURE_TYPE_OBJCLASS);
+        loadChildren(typeParent, typeSelectItems);
+
+        IntactCvTerm roleParent = cvDao.getByMIIdentifier("MI:0925", IntactUtils.TOPIC_OBJCLASS);
+        SelectItem item = createSelectItem(roleParent);
+        if (item != null){
+           roleSelectItems.add(item);
+        }
+        loadChildren(roleParent, roleSelectItems);
+
+        IntactCvTerm aliasTypeParent = cvDao.getByMIIdentifier("MI:0300", IntactUtils.ALIAS_TYPE_OBJCLASS);
+        loadChildren(aliasTypeParent, aliasTypeSelectItems);
+
+        IntactCvTerm featureTopicParent = cvDao.getByMIIdentifier("MI:0668", IntactUtils.TOPIC_OBJCLASS);
+        loadChildren(featureTopicParent, featureTopicSelectItems);
+
+        IntactCvTerm databaseParent = cvDao.getByMIIdentifier("MI:0447", IntactUtils.DATABASE_OBJCLASS);
+        loadChildren(databaseParent, databaseSelectItems);
+
+        IntactCvTerm qualifierParent = cvDao.getByMIIdentifier("MI:0353", IntactUtils.QUALIFIER_OBJCLASS);
+        loadChildren(qualifierParent, qualifierSelectItems);
+
+        IntactCvTerm statusParent = cvDao.getByMIIdentifier("MI:0333", IntactUtils.RANGE_STATUS_OBJCLASS);
+        loadChildren(statusParent, fuzzyTypeSelectItems);
+    }
+
+    private void loadChildren(IntactCvTerm parent, List<SelectItem> selectItems){
+         for (OntologyTerm child : parent.getChildren()){
+              IntactCvTerm cv = (IntactCvTerm)child;
+             SelectItem item = createSelectItem(cv);
+             if (item != null){
+                 selectItems.add(item);
+             }
+             if (!cv.getChildren().isEmpty()){
+                 loadChildren(cv, selectItems);
+             }
+         }
+    }
+
+    private SelectItem createSelectItem( IntactCvTerm cv ) {
+        if (!AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
+            boolean obsolete = AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), CvTopic.OBSOLETE_MI_REF, CvTopic.OBSOLETE).isEmpty();
+            return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")), cv.getFullName());
+        }
+        return null;
+    }
+
+    public List<SelectItem> getTypeSelectItems() {
+        return typeSelectItems;
+    }
+
+    public List<SelectItem> getRoleSelectItems() {
+        return roleSelectItems;
+    }
+
+    public List<SelectItem> getParticipantSelectItems() {
+        return participantSelectItems;
+    }
+
+    public List<SelectItem> getAliasTypeSelectItems() {
+        return aliasTypeSelectItems;
+    }
+
+    public List<SelectItem> getFeatureTopicSelectItems() {
+        return featureTopicSelectItems;
+    }
+
+    public List<SelectItem> getDatabaseSelectItems() {
+        return databaseSelectItems;
+    }
+
+    public List<SelectItem> getQualifierSelectItems() {
+        return qualifierSelectItems;
+    }
+
+    public List<SelectItem> getFuzzyTypeSelectItems() {
+        return fuzzyTypeSelectItems;
+    }
+
     @Override
-    public String clone() {
-        String value = clone(getAnnotatedObject(), newClonerInstance());
-
-        refreshRangeWrappers();
-
-        return value;
+    protected IntactModelledFeature cloneAnnotatedObject(IntactPrimaryObject ao) {
+        // to be overrided
+        return (IntactModelledFeature) FeatureJamiCloner.cloneFeature((IntactModelledFeature)ao);
     }
 
     @Override
     public AnnotatedObject getAnnotatedObject() {
-        return getFeature();
+        return null;
     }
 
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-        setFeature((Feature)annotatedObject);
+        // does nothing
     }
 
     @Override
     public IntactPrimaryObject getJamiObject() {
-        return null;
+        return this.feature;
     }
 
     @Override
     public void setJamiObject(IntactPrimaryObject annotatedObject) {
-        // nothing to do
+        this.feature = (IntactModelledFeature)annotatedObject;
+
+        refreshParticipantSelectItems();
     }
 
-    public CvFeatureType getType(){
-        return null;
+    private void refreshParticipantSelectItems() {
+        this.participantSelectItems.clear();
+
+        if (this.feature.getParticipant() != null){
+            ModelledParticipant modelledParticipant = this.feature.getParticipant();
+            if (modelledParticipant.getInteractor() instanceof psidev.psi.mi.jami.model.Complex){
+                isComplexFeature = true;
+                loadParticipants((Complex)modelledParticipant.getInteractor(), this.participantSelectItems);
+            }
+            else{
+                isComplexFeature = false;
+            }
+        }
     }
 
-    public void setType(CvFeatureType cvType){
-
+    private void loadParticipants(Complex parent, List<SelectItem> selectItems){
+        for (ModelledParticipant child : parent.getParticipants()){
+            IntactModelledParticipant part = (IntactModelledParticipant)child;
+            if (part.getInteractor() instanceof Complex){
+                loadParticipants((Complex)part.getInteractor(), selectItems);
+            }
+            else{
+                SelectItem item = new SelectItem( part, part.getInteractor().getShortName()+", "+part.getAc(), part.getInteractor().getFullName());
+                selectItems.add(item);
+            }
+        }
     }
 
     @Override
     public String goToParent() {
-        return "/curate/participant?faces-redirect=true&includeViewParams=true";
+        return "/curate/jparticipant?faces-redirect=true&includeViewParams=true";
     }
 
     public void loadData( ComponentSystemEvent event ) {
@@ -132,7 +279,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
             if ( ac != null ) {
                 if ( feature == null || !ac.equals( feature.getAc() ) ) {
-                    feature = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getFeatureDao(), ac);
+                    feature = loadJamiByAc(IntactModelledFeature.class, ac);
                 }
             } else {
                 if ( feature != null ) ac = feature.getAc();
@@ -143,24 +290,15 @@ public class ModelledFeatureController extends AnnotatedObjectController {
                 return;
             }
 
-            final Component participant = feature.getComponent();
+            final ModelledParticipant participant = feature.getParticipant();
 
-            if (participantController.getParticipant() == null) {
-                participantController.setParticipant(participant);
+            if (modelledParticipantController.getParticipant() == null) {
+                modelledParticipantController.setParticipant((IntactModelledParticipant)participant);
             }
 
-            if( interactionController.getInteraction() == null ) {
-                final Interaction interaction = participant.getInteraction();
-                interactionController.setInteraction( interaction );
-            }
-
-            if ( publicationController.getPublication() == null ) {
-                Publication publication = participant.getInteraction().getExperiments().iterator().next().getPublication();
-                publicationController.setPublication( publication );
-            }
-
-            if ( experimentController.getExperiment() == null ) {
-                experimentController.setExperiment( participant.getInteraction().getExperiments().iterator().next() );
+            if( complexController.getComplex() == null ) {
+                final Complex interaction = (Complex)participant.getInteraction();
+                complexController.setInteraction((IntactComplex) interaction);
             }
 
             refreshTabsAndFocusXref();
@@ -176,16 +314,16 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     }
 
     public void refreshRangeWrappers() {
-        this.rangeWrappers = new ArrayList<RangeWrapper>(feature.getRanges().size());
+        this.rangeWrappers = new ArrayList<ModelledRangeWrapper>(feature.getRanges().size());
 
         String sequence = getSequence();
 
         containsInvalidRanges = false;
 
-        for (Range range : feature.getRanges()) {
-            rangeWrappers.add(new RangeWrapper(range, sequence));
+        for (psidev.psi.mi.jami.model.Range range : feature.getRanges()) {
+            rangeWrappers.add(new ModelledRangeWrapper((ModelledRange)range, sequence));
 
-            if (!containsInvalidRanges && FeatureUtils.isABadRange(range, sequence)) {
+            if (!containsInvalidRanges && !RangeUtils.validateRange(range, sequence).isEmpty()) {
                 containsInvalidRanges = true;
             }
         }
@@ -196,22 +334,20 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         return new FeatureIntactCloner();
     }
 
-    public String newFeature(Component participant) {
-        Feature feature = new Feature("feature", participant, new CvFeatureType());
-        feature.setShortLabel(null);
-        feature.setCvFeatureType(null);
+    public String newFeature(ModelledParticipant participant) {
+        IntactModelledFeature feature = new IntactModelledFeature();
+        feature.setParticipant(participant);
+        feature.setShortName(null);
 
         setFeature(feature);
 
-        //participant.addBindingDomain(feature);
-
         refreshRangeWrappers();
         changed();
-        //getUnsavedChangeManager().markAsUnsaved(feature);
 
         return navigateToObject(feature);
     }
 
+    @Transactional(value = "jamiTransactionManager")
     public void newRange(ActionEvent evt) {
         if (newRangeValue == null || newRangeValue.isEmpty()) {
             addErrorMessage("Range value field is empty", "Please provide a range value before clicking on the New Range button");
@@ -226,26 +362,34 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         }
 
         String sequence = getSequence();
-
-        if (FeatureUtils.isABadRange(newRangeValue, sequence)) {
-            String problemMsg = FeatureUtils.getBadRangeInfo(newRangeValue, sequence);
-            addErrorMessage("Range is not valid", problemMsg);
-            return;
+        psidev.psi.mi.jami.model.Range range = null;
+        try {
+            range = RangeUtils.createRangeFromString(newRangeValue);
+            List<String> messages = RangeUtils.validateRange(range, sequence);
+            if (!messages.isEmpty()) {
+                for (String msg : messages){
+                    addErrorMessage("Range is not valid", msg);
+                }
+                return;
+            }
+        } catch (psidev.psi.mi.jami.exception.IllegalRangeException e) {
+            addErrorMessage("Range is not valid", e.getMessage());
         }
 
-        Range newRange = FeatureUtils.createRangeFromString(newRangeValue, sequence);
-        newRange.setLinked(false);
+        range.setLink(false);
+        range.setResultingSequence(new ModelledResultingSequence(RangeUtils.extractRangeSequence(range, sequence), null));
+        IntactDao dao = ApplicationContextProvider.getBean("intactDao");
+        try {
+            range = dao.getSynchronizerContext().getModelledRangeSynchronizer().synchronize(range, false);
+        } catch (FinderException e) {
+            addErrorMessage("Cannot create new Range", e.getMessage());
+        } catch (PersisterException e) {
+            addErrorMessage("Cannot create new Range", e.getMessage());
+        } catch (SynchronizerException e) {
+            addErrorMessage("Cannot create new Range", e.getMessage());
+        }
 
-        // replace CVs by ones with ACs
-
-        CvObjectService cvObjectService = (CvObjectService) getSpringContext().getBean("cvObjectService");
-        CvFuzzyType fromFuzzyType = cvObjectService.findCvObjectByIdentifier(CvFuzzyType.class, newRange.getFromCvFuzzyType().getIdentifier());
-        CvFuzzyType toFuzzyType = cvObjectService.findCvObjectByIdentifier(CvFuzzyType.class, newRange.getToCvFuzzyType().getIdentifier());
-
-        newRange.setFromCvFuzzyType(fromFuzzyType);
-        newRange.setToCvFuzzyType(toFuzzyType);
-
-        feature.addRange(newRange);
+        feature.getRanges().add(range);
 
         refreshRangeWrappers();
 
@@ -263,29 +407,25 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     }
 
     private String getSequence() {
-        Interactor interactor = feature.getComponent().getInteractor();
+        psidev.psi.mi.jami.model.Interactor interactor = feature.getParticipant().getInteractor();
 
         String sequence = null;
 
-        if (interactor instanceof Polymer) {
-            Polymer polymer = (Polymer) interactor;
+        if (interactor instanceof psidev.psi.mi.jami.model.Polymer) {
+            psidev.psi.mi.jami.model.Polymer polymer = (psidev.psi.mi.jami.model.Polymer) interactor;
             sequence = polymer.getSequence();
         }
         return sequence;
     }
 
-    public void markRangeToDelete(Range range) {
+    public void markRangeToDelete(ModelledRange range) {
         if (range == null) return;
 
-        if (range.getAc() == null) {
-            feature.removeRange(range);
-            refreshRangeWrappers();
-        } else {
-            getChangesController().markToDeleteRange(range, range.getFeature());
-        }
+        feature.getRanges().remove(range);
+        refreshRangeWrappers();
     }
 
-    public List<RangeWrapper> getWrappedRanges() {
+    public List<ModelledRangeWrapper> getWrappedRanges() {
         return rangeWrappers;
     }
 
@@ -300,7 +440,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         this.ac = ac;
     }
 
-    public Feature getFeature() {
+    public IntactModelledFeature getFeature() {
         return feature;
     }
 
@@ -316,40 +456,21 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         this.isRangeDisabled = false;
     }
 
-    public void setFeature( Feature feature ) {
+    public void setFeature( IntactModelledFeature feature ) {
         this.feature = feature;
 
         if (feature != null){
             this.ac = feature.getAc();
         }
+        refreshParticipantSelectItems();
     }
 
     @Override
     public void doPreSave() {
         // the feature was just created, add it to the list of features of the participant
         if (feature.getAc() == null){
-            participantController.getParticipant().addFeature(feature);
+            modelledParticipantController.getParticipant().addFeature(feature);
         }
-    }
-
-    @Override
-    public String doDelete(){
-        if (feature.getBoundDomain() != null){
-            Feature bound = feature.getBoundDomain();
-
-            if (bound.getBoundDomain() != null && feature.getAc() != null && feature.getAc().equalsIgnoreCase(bound.getBoundDomain().getAc())){
-                bound.setBoundDomain(null);
-                getPersistenceController().doSave(bound);
-            }
-            else if (bound.getBoundDomain() != null && feature.getAc() == null && feature.equals(bound.getBoundDomain())){
-                bound.setBoundDomain(null);
-                getPersistenceController().doSave(bound);
-            }
-
-            feature.setBoundDomain(null);
-        }
-
-        return super.doDelete();
     }
 
     public String getNewRangeValue() {
@@ -372,8 +493,8 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     public Collection<String> collectParentAcsOfCurrentAnnotatedObject(){
         Collection<String> parentAcs = new ArrayList<String>();
 
-        if (feature.getComponent() != null){
-            Component comp = feature.getComponent();
+        if (feature.getParticipant() != null){
+            IntactModelledParticipant comp = (IntactModelledParticipant)feature.getParticipant();
             if (comp.getAc() != null){
                 parentAcs.add(comp.getAc());
             }
@@ -388,8 +509,8 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     protected void refreshUnsavedChangesBeforeRevert(){
         Collection<String> parentAcs = new ArrayList<String>();
 
-        if (feature.getComponent() != null){
-            Component comp = feature.getComponent();
+        if (feature.getParticipant() != null){
+            IntactModelledParticipant comp = (IntactModelledParticipant)feature.getParticipant();
             if (comp.getAc() != null){
                 parentAcs.add(comp.getAc());
             }
@@ -405,9 +526,9 @@ public class ModelledFeatureController extends AnnotatedObjectController {
      * @param parentAcs
      * @param comp
      */
-    private void addParentAcsTo(Collection<String> parentAcs, Component comp) {
+    private void addParentAcsTo(Collection<String> parentAcs, IntactModelledParticipant comp) {
         if (comp.getInteraction() != null){
-            Interaction inter = comp.getInteraction();
+            IntactComplex inter = (IntactComplex)comp.getInteraction();
             addParentAcsTo(parentAcs, inter);
         }
     }
@@ -417,26 +538,9 @@ public class ModelledFeatureController extends AnnotatedObjectController {
      * @param parentAcs
      * @param inter
      */
-    protected void addParentAcsTo(Collection<String> parentAcs, Interaction inter) {
+    protected void addParentAcsTo(Collection<String> parentAcs, IntactComplex inter) {
         if (inter.getAc() != null){
             parentAcs.add(inter.getAc());
-        }
-
-        if (IntactCore.isInitialized(inter.getExperiments()) && !inter.getExperiments().isEmpty()){
-            for (Experiment exp : inter.getExperiments()){
-                addParentAcsTo(parentAcs, exp);
-            }
-        }
-        else if (interactionController.getExperiment() != null){
-            Experiment exp = interactionController.getExperiment();
-            addParentAcsTo(parentAcs, exp);
-        }
-        else if (!IntactCore.isInitialized(inter.getExperiments())){
-            Collection<Experiment> experiments = IntactCore.ensureInitializedExperiments(inter);
-
-            for (Experiment exp : experiments){
-                addParentAcsTo(parentAcs, exp);
-            }
         }
     }
 
@@ -470,5 +574,56 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         else {
             isRangeDisabled = true;
         }
+    }
+
+    public boolean isComplexFeature(){
+        return this.isComplexFeature;
+    }
+
+    @Override
+    protected boolean isPublicationParent() {
+        return false;
+    }
+
+    @Override
+    public void newXref(ActionEvent evt) {
+        this.feature.getDbXrefs().add(new ModelledFeatureXref());
+        setUnsavedChanges(true);
+    }
+
+    @Override
+    public void newAnnotation(ActionEvent evt) {
+        this.feature.getAnnotations().add(new ModelledFeatureAnnotation());
+        setUnsavedChanges(true);
+    }
+
+    @Override
+    public void newAlias(ActionEvent evt) {
+        this.feature.getAliases().add(new ModelledFeatureAlias());
+        setUnsavedChanges(true);
+    }
+
+    @Override
+    public String getCautionMessage() {
+        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.feature.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
+                psidev.psi.mi.jami.model.Annotation.CAUTION);
+        return caution != null ? caution.getValue() : null;
+    }
+
+    @Override
+    public String getInternalRemarkMessage() {
+        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.feature.getAnnotations(), null,
+                "remark-internal");
+        return caution != null ? caution.getValue() : null;
+    }
+
+    @Override
+    public List getAnnotations() {
+        return super.getAnnotations();
+    }
+
+    @Override
+    public List getAliases() {
+        return super.getAliases();
     }
 }

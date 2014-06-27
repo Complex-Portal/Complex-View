@@ -910,6 +910,10 @@ public class ComplexController extends ParameterizableObjectController {
         return complex;
     }
 
+    public void setComplex(IntactComplex complex) {
+        this.complex = complex;
+    }
+
     public Experiment getExperiment() {
         return experiment;
     }

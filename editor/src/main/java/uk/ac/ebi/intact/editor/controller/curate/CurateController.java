@@ -245,7 +245,7 @@ public class CurateController extends JpaAwareController {
             return new CurateJamiMetadata(daoBean.getSynchronizerContext().getInteractorSynchronizer(), "jinteractor",
                     (InteractorJamiController) getSpringContext().getBean("interactorJamiController"));
         } else if (ModelledParticipant.class.isAssignableFrom(iaClass)) {
-            CurateJamiMetadata meta = new CurateJamiMetadata(daoBean.getSynchronizerContext().getModelledParticipantSynchronizer(), "cparticipant",
+            CurateJamiMetadata meta = new CurateJamiMetadata(daoBean.getSynchronizerContext().getModelledParticipantSynchronizer(), "jparticipant",
                     (ModelledParticipantController) getSpringContext().getBean("modelledParticipantController"));
             ModelledParticipant part = (ModelledParticipant)intactObject;
             if (part.getInteraction() instanceof IntactComplex){
@@ -256,7 +256,7 @@ public class CurateController extends JpaAwareController {
             }
             return meta;
         } else if (ModelledFeature.class.isAssignableFrom(iaClass)) {
-            CurateJamiMetadata meta = new CurateJamiMetadata(daoBean.getSynchronizerContext().getModelledFeatureSynchronizer(), "cfeature",
+            CurateJamiMetadata meta = new CurateJamiMetadata(daoBean.getSynchronizerContext().getModelledFeatureSynchronizer(), "jfeature",
                     (ModelledFeatureController) getSpringContext().getBean("modelledFeatureController"));
             ModelledFeature feat = (ModelledFeature)intactObject;
             if (feat.getParticipant() instanceof IntactModelledParticipant){

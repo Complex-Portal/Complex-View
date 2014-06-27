@@ -11,14 +11,16 @@
 
     <p:tab id="xrefsTab" title="Xrefs (#{annotatedObjectController.jamiObject.dbXrefs.size()})">
         <p:outputPanel id="xrefsPanel" autoUpdate="true">
-            <ui:decorate template="xrefs_table.xhtml">
+            <ui:decorate template="jxrefs_table.xhtml">
 
                 <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
                  <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,#{updateOnChange}"/>
                  <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
                  <ui:param name="valueChangeAwareObject" value="#{annotatedObjectController}"/>
+                <ui:param name="databaseSelectItems" value="#{databaseSelectItems}"/>
+                <ui:param name="qualifierSelectItems" value="#{qualifierSelectItems}"/>
 
-            <ui:define name="syncValues">
+                <ui:define name="syncValues">
                 <ui:insert name="xrefSyncValues"/>
             </ui:define>
 
@@ -29,11 +31,12 @@
 
     <p:tab id="annotationsTab" title="Annotations (#{annotatedObjectController.jamiObject.annotations.size()})">
          <p:outputPanel id="annotationsPanel" autoUpdate="true">
-             <ui:decorate template="annotations_table.xhtml">
+             <ui:decorate template="jannotations_table.xhtml">
                  <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
                  <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,#{updateOnChange}"/>
                  <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
                  <ui:param name="valueChangeAwareObject" value="#{annotatedObjectController}"/>
+                 <ui:param name="annotatedObjectSelectItems" value="#{annotatedObjectSelectItems}"/>
 
                  <ui:define name="syncValues">
                      <ui:insert name="annotationSyncValues"/>

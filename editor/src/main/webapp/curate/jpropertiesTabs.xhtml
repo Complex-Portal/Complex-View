@@ -11,6 +11,8 @@
 
     <ui:decorate template="jbasicPropertiesTabs.xhtml">
         <ui:param name="annotatedObjectSelectItems" value="#{annotatedObjectSelectItems}"/>
+        <ui:param name="databaseSelectItems" value="#{databaseSelectItems}"/>
+        <ui:param name="qualifierSelectItems" value="#{qualifierSelectItems}"/>
         <ui:param name="updateOnChange" value="#{updateOnChange}"/>
 
         <ui:define name="syncValues">
@@ -29,6 +31,7 @@
                 <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
                 <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent #{updateOnChange}"/>
                 <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
+                <ui:param name="aliasTypeSelectItems" value="#{aliasTypeSelectItems}"/>
             </ui:decorate>
 
         </p:outputPanel>

@@ -27,7 +27,7 @@
                             <f:facet name="header">
                                 <h:outputText value="Database"/>
                             </f:facet>
-                            <h:selectOneMenu id="databaseSel" value="#{xref.cvDatabase}" required="true"
+                            <h:selectOneMenu id="databaseSel" value="#{xref.database}" required="true"
                                              requiredMessage="Database for xref is required" disabled="#{annotatedObjectController.isXrefDisabled()}">
                                 <f:selectItems value="#{databaseSelectItems}"/>
                             </h:selectOneMenu>
@@ -42,7 +42,7 @@
                                 <h:outputText value="Identifier"/>
                             </f:facet>
                             <h:panelGroup style="display:block; white-space:nowrap;">
-                            <p:inputText id="primaryIdTxt" value="#{xref.primaryId}" widgetVar="primaryTxt_#{xrefIndex}"
+                            <p:inputText id="primaryIdTxt" value="#{xref.id}" widgetVar="primaryTxt_#{xrefIndex}"
                                          size="15" converter="trimmingConverter"
                                          onchange="jsXref_#{xrefIndex}.markSecondaryAsReadOnlyIfNecessary()"
                                          required="true" requiredMessage="Primary identifier for xref is required">

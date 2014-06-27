@@ -52,16 +52,16 @@
                 </p:outputPanel>
 
                 <div id="auditInfo" class="intact-auditPanel">
-                    <ia:creatorUpdator annotatedObject="#{feature}" />
+                    <ia:jcreatorUpdator annotatedObject="#{feature}" />
                 </div>
 
                 <table class="intact-tableBasicForm" cellpadding="0" cellspacing="0">
                     <tr>
                         <td class="firstCell">
-                            <h:outputLabel value="Shortname: " for="shortnameTxt"/>
+                            <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
                         </td>
                         <td>
-                            <p:inputText id="shortnameTxt" value="#{feature.shortName}" size="30"
+                            <p:inputText id="shortlabelTxt" value="#{feature.shortName}" size="30"
                                          converter="trimmingConverter" validator="#{modelledFeatureController.validateFeature}"
                                          required="true" requiredMessage="Shortlabel is required" valueChangeListener="#{annotatedObjectController.changed}">
                                 <ed:curation/>
@@ -78,11 +78,22 @@
                             <h:outputLabel value="Feature type: " for="featureTypeTxt"/>
                         </td>
                         <td colspan="2">
-                            <ia:inputCvObject id="featureTypeTxt" cvIdentifier="MI:0925" value="#{modelledFeatureController.type}"
-                                    selectItems="#{cvObjectService.featureTypeSelectItems}"
+                            <ia:inputCvTerm id="featureTypeTxt" cvIdentifier="MI:0116" value="#{feature.type}"
+                                    selectItems="#{modelledFeatureController.featureTypeSelectItems}"
                                     required="true" requiredMessage="Feature type is required"
                                            update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
+                            <h:outputLabel value="Feature role: " for="featureRoleTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <ia:inputCvTerm id="featureRoleTxt" cvIdentifier="MI:0925" value="#{feature.role}"
+                                            selectItems="#{modelledFeatureController.featureRoleSelectItems}"
+                                            update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                         </td>
                     </tr>
                 </table>
@@ -94,7 +105,7 @@
              <p:tabView id="featureTabs" dynamic="true">
                  <p:ajax event="tabChange" listener="#{modelledFeatureController.onTabChanged}" />
 
-                <p:tab id="rangesTab" title="Ranges (#{feature.ranges.size()})">
+                <p:tab id="rangesTab" title="Ranges (#{modelledFeature.ranges.size()})">
 
                     <p:outputPanel id="rangesPanel" autoUpdate="true">
 
@@ -109,16 +120,32 @@
                         </p:commandButton>
                      </div>
 
-                        <ui:include src="ranges_wrapped_table.xhtml">
+
+
+                        <ui:param name="rangeToDeleteCount"
+                                  value="#{changesController.getDeletedAcsByClassName('uk.ac.ebi.intact.jami.model.extension.ModelledRange', modelledFeatureController.ac).size()}"/>
+
+                        <h:panelGroup rendered="#{rangeToDeleteCount gt 0}">
+                            <ia:panelMessage level="info">
+                                <h:outputText value="#{rangeToDeleteCount} ranges will be deleted on save."/>
+                            </ia:panelMessage>
+                        </h:panelGroup>
+
+                        <ui:include src="jranges_wrapped_table.xhtml">
                             <ui:param name="value" value="#{modelledFeatureController.wrappedRanges}"/>
+                            <ui:param name="fuzzyTypeSelectItems" value="#{modelledFeatureController.fuzzyTypeSelectItems}"/>
+                            <ui:param name="participantSelectItems" value="#{modelledFeatureController.participantSelectItems}"/>
                         </ui:include>
 
                     </p:outputPanel>
 
                 </p:tab>
 
-                    <ui:decorate template="propertiesTabs.xhtml">
-                            <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.featureTopicSelectItems}"/>
+                    <ui:decorate template="jpropertiesTabs.xhtml">
+                            <ui:param name="annotatedObjectSelectItems" value="#{modelledFeatureController.featureTopicSelectItems}"/>
+                        <ui:param name="aliasTypeSelectItems" value="#{modelledFeatureController.aliasTypeSelectItems}"/>
+                        <ui:param name="databaseSelectItems" value="#{modelledFeatureController.databaseSelectItems}"/>
+                        <ui:param name="qualifierSelectItems" value="#{modelledFeatureController.qualifierSelectItems}"/>
                     </ui:decorate>
 
             </p:tabView>
