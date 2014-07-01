@@ -132,9 +132,16 @@ public class ComplexSearchManager {
                 }
                 runningTasks.remove(f);
             } catch (TimeoutException e) {
-                log.error("Service task stopped because of time out " + threadTimeOut + "seconds.", e);
+                log.error("Service task stopped because of time out " + threadTimeOut + "seconds.");
                 this.isComplexServiceResponding = false;
 
+                if (!f.isCancelled()){
+                    f.cancel(true);
+                }
+                runningTasks.remove(f);
+            }
+            catch (Throwable e) {
+                log.error("The complex search task could not be executed, we cancel the task.", e);
                 if (!f.isCancelled()){
                     f.cancel(true);
                 }

@@ -287,6 +287,12 @@ public class SearchController extends JpaBaseController {
                 intactFuture.cancel(true);
             }
         }
+        catch (Throwable e) {
+            log.error("The intact search could not be executed, we cancel the task.", e);
+            if (!intactFuture.isCancelled()){
+                intactFuture.cancel(true);
+            }
+        }
     }
 
     private Callable<Integer> createIntactSearchRunnable(final SolrQuery solrQueryCopy, final SolrServer solrServer,
@@ -451,6 +457,12 @@ public class SearchController extends JpaBaseController {
                     proteinFuture.cancel(true);
                 }
             }
+            catch (Throwable e) {
+                log.error("The intact protein interactor could not be executed, we cancel the task.", e);
+                if (!proteinFuture.isCancelled()){
+                    proteinFuture.cancel(true);
+                }
+            }
         }
 
         if (compoundFuture != null){
@@ -465,6 +477,12 @@ public class SearchController extends JpaBaseController {
                 }
             } catch (ExecutionException e) {
                 log.error("The intact compound search could not be executed, we cancel the task.", e);
+                if (!compoundFuture.isCancelled()){
+                    compoundFuture.cancel(true);
+                }
+            }
+            catch (Throwable e) {
+                log.error("The intact compound interactor could not be executed, we cancel the task.", e);
                 if (!compoundFuture.isCancelled()){
                     compoundFuture.cancel(true);
                 }
@@ -487,6 +505,12 @@ public class SearchController extends JpaBaseController {
                     nucleicAcidFuture.cancel(true);
                 }
             }
+            catch (Throwable e) {
+                log.error("The intact nucleic acid interactor could not be executed, we cancel the task.", e);
+                if (!nucleicAcidFuture.isCancelled()){
+                    nucleicAcidFuture.cancel(true);
+                }
+            }
         }
 
         if (geneFuture != null){
@@ -496,13 +520,19 @@ public class SearchController extends JpaBaseController {
 
             } catch (InterruptedException e) {
                 log.error("The intact gene interactor was interrupted, we cancel the task.", e);
-                if (!nucleicAcidFuture.isCancelled()){
-                    nucleicAcidFuture.cancel(true);
+                if (!geneFuture.isCancelled()){
+                    geneFuture.cancel(true);
                 }
             } catch (ExecutionException e) {
                 log.error("The intact gene interactor could not be executed, we cancel the task.", e);
-                if (!nucleicAcidFuture.isCancelled()){
-                    nucleicAcidFuture.cancel(true);
+                if (!geneFuture.isCancelled()){
+                    geneFuture.cancel(true);
+                }
+            }
+            catch (Throwable e) {
+                log.error("The intact gene interactor could not be executed, we cancel the task.", e);
+                if (!geneFuture.isCancelled()){
+                    geneFuture.cancel(true);
                 }
             }
         }

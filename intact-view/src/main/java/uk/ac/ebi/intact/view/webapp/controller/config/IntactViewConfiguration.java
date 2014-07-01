@@ -19,14 +19,9 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpHost;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.hupo.psi.mi.psicquic.wsclient.PsicquicSimpleClient;
 import org.springframework.beans.factory.DisposableBean;
@@ -38,10 +33,8 @@ import uk.ac.ebi.intact.view.webapp.controller.BaseController;
 import javax.faces.bean.ApplicationScoped;
 import javax.persistence.EntityManagerFactory;
 import java.io.*;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Proxy;
-import java.net.SocketAddress;
 import java.util.*;
 
 /**
@@ -554,41 +547,23 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         org.apache.http.client.HttpClient httpClient = getHttpClientBasedOnUrl(solrUrl);
 
         HttpSolrServer solrServer = new HttpSolrServer(solrUrl, httpClient);
-        solrServer.setAllowCompression(true);
-        solrServer.setConnectionTimeout(5000);
-        solrServer.setConnectionTimeout(5000);
 
         return solrServer;
     }
 
     private org.apache.http.client.HttpClient getHttpClientBasedOnUrl(String url) {
-        SchemeRegistry schemeRegistry = new SchemeRegistry();
-        schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory
-                .getSocketFactory()));
-        schemeRegistry.register(new Scheme("https", 443, SSLSocketFactory
-                .getSocketFactory()));
-
-        PoolingClientConnectionManager cm = new PoolingClientConnectionManager(schemeRegistry);
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         cm.setMaxTotal(128);
         cm.setDefaultMaxPerRoute(32);
+        RequestConfig.Builder requestBuilder = RequestConfig.custom();
+        requestBuilder = requestBuilder.setConnectTimeout(5000);
+        requestBuilder = requestBuilder.setSocketTimeout(5000);
 
-        org.apache.http.client.HttpClient httpClient = new DefaultHttpClient(cm);
+        HttpClientBuilder builder = HttpClientBuilder.create();
+        builder.setDefaultRequestConfig(requestBuilder.build());
+        builder.setConnectionManager(cm);
 
-        if (url.contains("localhost") || url.contains("127.0.0.1")) {
-            return httpClient;
-        }
-
-        if (isValueSet(proxyHost) && proxyHost.trim().length() > 0 &&
-                isValueSet(proxyPort) && proxyPort.trim().length() > 0) {
-            try{
-                HttpHost proxy = new HttpHost(proxyHost, Integer.parseInt(proxyPort));
-                httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-            }
-            catch (Exception e){
-                log.error("Impossible to create proxy host:"+proxyHost+", port:"+proxyPort,e);
-            }
-        }
-        return httpClient;
+        return builder.build();
     }
 
     public synchronized HttpClient getCommonsHttpClientBasedOnUrl(String url) {
@@ -626,26 +601,7 @@ public class IntactViewConfiguration extends BaseController implements Initializ
             return this.psicquicClientMap.get(rest);
         }
 
-        PsicquicSimpleClient simpleClient;
-
-        if (proxyPort != null && proxyPort.length() > 0){
-            try{
-                int port = Integer.parseInt(proxyPort);
-                SocketAddress address = new InetSocketAddress(proxyHost, port);
-                this.proxy = new Proxy(Proxy.Type.HTTP, address);
-            }
-            catch(Exception e){
-                log.error("Cannot create proxy using port " + proxyPort);
-            }
-        }
-
-        if (proxy != null) {
-            simpleClient = new PsicquicSimpleClient(rest, proxy);
-
-        } else {
-            log.info("Setting PSICQUIC httpClient using proxy with NO PROXY");
-            simpleClient = new PsicquicSimpleClient(rest);
-        }
+        PsicquicSimpleClient simpleClient = new PsicquicSimpleClient(rest);
 
         this.psicquicClientMap.put(rest, simpleClient);
 

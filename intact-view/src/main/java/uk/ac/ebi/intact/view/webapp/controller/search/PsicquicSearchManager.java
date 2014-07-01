@@ -85,12 +85,18 @@ public class PsicquicSearchManager {
             return;
         }
 
-        if (services == null) {
-            PsicquicRegistryClient registryClient = new DefaultPsicquicRegistryClient(psicquicRegistryUrl);
-            services = registryClient.listActiveServices();
+        if (services == null || services.isEmpty()) {
+            try{
+                PsicquicRegistryClient registryClient = new DefaultPsicquicRegistryClient(psicquicRegistryUrl);
+                services = registryClient.listActiveServices();
+            }
+            catch (Throwable e){
+                log.error("PSICQUIC registry not available", e);
+                services = new ArrayList<ServiceType>();
+            }
         }
 
-        if (imexServices == null){
+        if (imexServices == null || imexServices.isEmpty()){
             imexServices = new ArrayList<ServiceType>(services.size());
 
             for (final ServiceType service : services) {
@@ -207,10 +213,17 @@ public class PsicquicSearchManager {
                 }
                 runningTasks.remove(f);
             } catch (TimeoutException e) {
-                log.error("Service task stopped because of time out " + threadTimeOut + "seconds.", e);
+                log.error("Service task stopped because of time out " + threadTimeOut + "seconds.");
                 this.nonRespondingDatabases ++;
                 this.nonRespondingImexDatabases ++;
 
+                if (!f.isCancelled()){
+                    f.cancel(true);
+                }
+                runningTasks.remove(f);
+            }
+            catch (Throwable e) {
+                log.error("The psicquic task could not be executed, we cancel the task.", e);
                 if (!f.isCancelled()){
                     f.cancel(true);
                 }
