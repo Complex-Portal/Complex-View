@@ -19,7 +19,7 @@
     <groupId>uk.ac.ebi.intact.service.sandbox</groupId>
     <artifactId>intact-view</artifactId>
     <packaging>war</packaging>
-    <version>4.1.3-SNAPSHOT</version>
+    <version>4.1.3</version>
 
     <name>IntAct Services :: View</name>
 
@@ -31,7 +31,7 @@
 
     <properties>
         <core.version>2.6.4</core.version>
-        <dataexchange.version>2.1.10-SNAPSHOT</dataexchange.version>
+        <dataexchange.version>2.1.9</dataexchange.version>
         <spring.version>3.1.2.RELEASE</spring.version>
 
         <debug>false</debug>
