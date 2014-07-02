@@ -177,7 +177,7 @@ public class PsicquicSearchManager {
 
         for (Future<PsicquicCountResults> f : currentRunningTasks){
             try {
-                PsicquicCountResults results = f.get();
+                PsicquicCountResults results = f.get(threadTimeOut, TimeUnit.SECONDS);
 
                 if (results.isImex()){
                     if (results.isImexResponding() && results.getImexCount() > 0){
@@ -208,6 +208,15 @@ public class PsicquicSearchManager {
                 runningTasks.remove(f);
             } catch (ExecutionException e) {
                 log.error("The psicquic task could not be executed, we cancel the task.", e);
+                if (!f.isCancelled()){
+                    f.cancel(false);
+                }
+                runningTasks.remove(f);
+            } catch (TimeoutException e) {
+                log.error("Service task stopped because of time out " + threadTimeOut + "seconds.");
+                this.nonRespondingDatabases ++;
+                this.nonRespondingImexDatabases ++;
+
                 if (!f.isCancelled()){
                     f.cancel(false);
                 }
