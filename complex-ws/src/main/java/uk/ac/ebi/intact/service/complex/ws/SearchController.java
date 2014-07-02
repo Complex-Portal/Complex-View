@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexFieldNames;
@@ -19,6 +20,7 @@ import uk.ac.ebi.intact.model.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -82,7 +84,7 @@ public class SearchController {
         return "details";
     }
     @RequestMapping(value = "/count/{query}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
-    public String count(@PathVariable String query, ModelMap model) {
+    public String count(@PathVariable String query, ModelMap model) throws SolrServerException {
         long total = query(query, null, null, null, null).getTotalNumberOfResults();
         model.addAttribute("count", total);
         return "count";
@@ -96,12 +98,12 @@ public class SearchController {
      - Only listen request via GET never via POST.
      - Does not change the query.
      */
-    @RequestMapping(value = "/search/{query}", method = RequestMethod.GET)
-	public ComplexRestResult search(@PathVariable String query,
+    @RequestMapping(value = "/search/{query}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ComplexRestResult search(@PathVariable String query,
                                     @RequestParam (required = false) String first,
                                     @RequestParam (required = false) String number,
                                     @RequestParam (required = false) String filters,
-                                    @RequestParam (required = false) String facets) {
+                                    @RequestParam (required = false) String facets) throws SolrServerException {
         return query(query, first, number, filters, facets);
 	}
 
@@ -114,10 +116,10 @@ public class SearchController {
      - Only listen request via GET never via POST.
      - Force to query only in the id, alias and pxref fields.
      */
-    @RequestMapping(value = "/interactor/{query}", method = RequestMethod.GET)
-    public ComplexRestResult searchInteractor(@PathVariable String query,
+    @RequestMapping(value = "/interactor/{query}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody ComplexRestResult searchInteractor(@PathVariable String query,
                                               @RequestParam (required = false) String first,
-                                              @RequestParam (required = false) String number) {
+                                              @RequestParam (required = false) String number) throws SolrServerException {
 
         // Query improvement. Force to query only in the id, alias and pxref
         // fields.
@@ -139,10 +141,10 @@ public class SearchController {
      - Force to query only in the complex_id, complex_alias and complex_xref
        fields.
      */
-    @RequestMapping(value = "/complex/{query}", method = RequestMethod.GET)
-    public ComplexRestResult searchInteraction(@PathVariable String query,
+    @RequestMapping(value = "/complex/{query}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody ComplexRestResult searchInteraction(@PathVariable String query,
                                                @RequestParam (required = false) String first,
-                                               @RequestParam (required = false) String number) {
+                                               @RequestParam (required = false) String number) throws SolrServerException {
 
         // Query improvement. Force to query only in the complex_id,
         // complex_alias and complex_xref fields.
@@ -163,10 +165,10 @@ public class SearchController {
      - Only listen request via GET never via POST.
      - Force to query only in the organism_name and species fields.
      */
-    @RequestMapping(value = "/organism/{query}", method = RequestMethod.GET)
-    public ComplexRestResult searchOrganism(@PathVariable String query,
+    @RequestMapping(value = "/organism/{query}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody ComplexRestResult searchOrganism(@PathVariable String query,
                                             @RequestParam (required = false) String first,
-                                            @RequestParam (required = false) String number) {
+                                            @RequestParam (required = false) String number) throws SolrServerException {
 
         // Query improvement. Force to query only in the organism_name and
         // species (complex_organism) fields.
@@ -186,9 +188,9 @@ public class SearchController {
      - Only listen request via GET never via POST.
      - Query the information in our database about the ac of the complex.
      */
-    @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET)
+    @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public ComplexDetails retrieveComplex(@PathVariable String ac) {
+    public @ResponseBody ComplexDetails retrieveComplex(@PathVariable String ac) {
         InteractionDao interactionDao = daoFactory.getInteractionDao();
         InteractionImpl complex = interactionDao.getByAc(ac);
         ComplexDetails details = null;
@@ -201,8 +203,8 @@ public class SearchController {
             details.setDisease          ( ComplexUtils.getDisease           ( complex ) );
             details.setLigand           ( ComplexUtils.getLigand            ( complex ) );
             details.setComplexAssembly  ( ComplexUtils.getComplexAssembly   ( complex ) );
-            details.setName             ( getName /*DEPRECATED. USE COMPLEXUTILS*/ ( complex ) );
-            details.setSynonyms         ( getSynonyms /*DEPRECATED, USE COMPLEXUTILS*/ ( complex ) );
+            details.setName             ( ComplexUtils.getName              ( complex ) );
+            details.setSynonyms         ( ComplexUtils.getSynonyms          ( complex ) );
             details.setSystematicName   ( ComplexUtils.getSystematicName    ( complex ) );
             details.setSpecies          ( ComplexUtils.getSpeciesName       ( complex ) + "; " +
                                           ComplexUtils.getSpeciesTaxId      ( complex ) );
@@ -218,7 +220,7 @@ public class SearchController {
     /*      Protected methods      */
     /*******************************/
     // This method controls the first and number parameters and retrieve data
-    protected ComplexRestResult query(String query, String first, String number, String filters, String facets) {
+    protected ComplexRestResult query(String query, String first, String number, String filters, String facets) throws SolrServerException {
         // Get parameters (if we have them)
         int f, n;
         // If we have first parameter parse it to integer
@@ -229,15 +231,8 @@ public class SearchController {
         if ( number != null ) n = Integer.parseInt(number);
             // else set number parameter to max integer - first (to avoid problems)
         else n = Integer.MAX_VALUE - f;
-        try{
-            // Retrieve data using that parameters and return it
-            return this.dataProvider.getData( query, f, n, filters , facets);
-        }
-        catch (SolrServerException e){
-            if ( log.isInfoEnabled() )
-                log.info( "DataProvider error, it could not connect to Solr Server", e);
-            return null;
-        }
+        // Retrieve data using that parameters and return it
+        return this.dataProvider.getData( query, f, n, filters , facets);
     }
 
     // This method is to force to query only for a list of fields
@@ -250,28 +245,6 @@ public class SearchController {
                     .append(")");
         }
         return improvedQuery.toString();
-    }
-
-    public static String getName(InteractionImpl complex) {
-        String name = ComplexUtils.getRecommendedName(complex);
-        if (name != null) return name;
-        name = ComplexUtils.getSystematicName(complex);
-        if (name != null) return name;
-        List<String> synonyms = getSynonyms(complex);
-        if (! synonyms.isEmpty()) return synonyms.get(0);
-        name = ComplexUtils.getFirstAlias(complex);
-        if (name != null) return name;
-        return complex.getShortLabel();
-    }
-
-    public static List<String> getSynonyms(InteractionImpl complex) {
-        List<String> synosyms = new ArrayList<String>();
-        for (Alias alias : complex.getAliases()) {
-            if (alias.getName() != null && alias.getCvAliasType() != null && alias.getCvAliasType().getIdentifier().equals(CvAliasType.COMPLEX_SYNONYM_NAME_MI_REF)) {
-                synosyms.add(alias.getName());
-            }
-        }
-        return synosyms;
     }
 
     // This method fills the cross references table for the view
@@ -447,6 +420,20 @@ public class SearchController {
         if (annotation != null) {
             cross.setQualifierDefinition(annotation);
         }
+    }
+
+    @ExceptionHandler(SolrServerException.class)
+    public ModelAndView handleSolrServerException(SolrServerException e, HttpServletResponse response){
+        ModelAndView model = new ModelAndView("error/503");
+        response.setStatus(503);
+        return model;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ModelAndView handleAllExceptions(Exception e, HttpServletResponse response){
+        ModelAndView model = new ModelAndView("error/404");
+        response.setStatus(404);
+        return model;
     }
 
 }

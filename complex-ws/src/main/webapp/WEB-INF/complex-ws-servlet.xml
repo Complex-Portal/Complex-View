@@ -22,42 +22,42 @@
 
     <mvc:annotation-driven />
 
-    <bean id="contentManager"
-          class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-        <property name="favorParameter" value="true" />
-        <property name="defaultContentType" value="application/json" />
-        <!--<property name="ignoreAcceptHeader" value="true"/>-->
-        <property name="mediaTypes">
-            <map>
-                <entry key="json"  value="application/json" />
-                <entry key="xml"   value="application/xml"  />
-            </map>
-        </property>
-    </bean>
+    <!--<bean id="contentManager"-->
+          <!--class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">-->
+        <!--<property name="favorParameter" value="true" />-->
+        <!--<property name="defaultContentType" value="application/json" />-->
+        <!--&lt;!&ndash;<property name="ignoreAcceptHeader" value="true"/>&ndash;&gt;-->
+        <!--<property name="mediaTypes">-->
+            <!--<map>-->
+                <!--<entry key="json"  value="application/json" />-->
+                <!--<entry key="xml"   value="application/xml"  />-->
+            <!--</map>-->
+        <!--</property>-->
+    <!--</bean>-->
 
-    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-        <property name="order" value="1" />
-        <property name="contentNegotiationManager" ref="contentManager"/>
-        <property name="defaultViews">
-            <list>
-                <!-- JSON View -->
-                <bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
-                </bean>
+    <!--<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">-->
+        <!--<property name="order" value="1" />-->
+        <!--<property name="contentNegotiationManager" ref="contentManager"/>-->
+        <!--<property name="defaultViews">-->
+            <!--<list>-->
+                <!--&lt;!&ndash; JSON View &ndash;&gt;-->
+                <!--<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">-->
+                <!--</bean>-->
 
-                <!--  XML view -->
-                <bean class="org.springframework.web.servlet.view.xml.MarshallingView">
-                    <constructor-arg>
-                        <bean class="org.springframework.oxm.castor.CastorMarshaller">
-                        </bean>
-                    </constructor-arg>
-                </bean>
-            </list>
-        </property>
-    </bean>
+                <!--&lt;!&ndash;  XML view &ndash;&gt;-->
+                <!--<bean class="org.springframework.web.servlet.view.xml.MarshallingView">-->
+                    <!--<constructor-arg>-->
+                        <!--<bean class="org.springframework.oxm.castor.CastorMarshaller">-->
+                        <!--</bean>-->
+                    <!--</constructor-arg>-->
+                <!--</bean>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
 
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="order"  value="2"/>
+        <property name="order"  value="1"/>
         <property name="prefix" value="/WEB-INF/pages/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
@@ -199,11 +199,11 @@
 
     <!-- solr configuration-->
     <bean id="searcher" class="uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSolrSearcher">
-        <constructor-arg index="0" name="solrUrl"      value="${solr.url}"          />
-        <constructor-arg index="1" name="maxConnHost"  value="${solr.maxConnHost}"  />
-        <constructor-arg index="2" name="maxConnTotal" value="${solr.maxConnTotal}" />
-        <constructor-arg index="3" name="maxRetries"   value="${solr.maxRetries}"   />
-        <constructor-arg index="4" name="compresion"   value="${solr.compression}"  />
+        <constructor-arg index="0" name="solrUrl"           value="${solr.url}"           type="java.lang.String"/>
+        <constructor-arg index="1" name="maxConnHost"       value="${solr.maxConnHost}"   type="int"/>
+        <constructor-arg index="2" name="maxConnTotal"      value="${solr.maxConnTotal}"  type="int"/>
+        <constructor-arg index="3" name="connectionTimeOut" value="${solr.connectionTimeOut}" type="int"/>
+        <constructor-arg index="4" name="socketTimeOut"     value="${solr.socketTimeOut}"     type="int"/>
     </bean>
 
     <!-- Data provider -->

@@ -1,10 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!--<parent>-->
+        <!--<groupId>uk.ac.ebi.intact.service</groupId>-->
+        <!--<artifactId>service-master</artifactId>-->
+        <!--&lt;!&ndash;<version>3.0.1-SNAPSHOT</version>&ndash;&gt;-->
+    <!--</parent>-->
     <parent>
-        <groupId>uk.ac.ebi.intact.service</groupId>
-        <artifactId>service-master</artifactId>
-        <version>3.0.1-SNAPSHOT</version>
+        <groupId>uk.ac.ebi.intact.maven</groupId>
+        <artifactId>intact-hibernate-master</artifactId>
+        <version>42</version>
     </parent>
     <artifactId>complex-ws</artifactId>
     <packaging>war</packaging>
@@ -20,15 +25,15 @@
         <!-- IntAct Solr Home -->
         <dependency>
             <groupId>uk.ac.ebi.intact.core</groupId>
-            <artifactId>intact-core</artifactId>
-            <version>2.6.6-SNAPSHOT</version>
+            <artifactId>intact-core-readonly</artifactId>
+            <version>2.6.5</version>
         </dependency>
 
         <!-- IntAct solr schema dependencies -->
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-solr-core</artifactId>
-            <version>2.1.10-SNAPSHOT</version>
+            <version>2.1.9.3</version>
             <exclusions>
                 <exclusion>
                     <groupId>uk.ac.ebi.intact.core</groupId>
