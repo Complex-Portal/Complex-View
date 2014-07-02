@@ -106,7 +106,7 @@ public class ComplexSearchManager {
 
         for (Future<Long> f : currentRunningTasks){
             try {
-                Long results = f.get(threadTimeOut, TimeUnit.SECONDS);
+                Long results = f.get();
 
                 if (results == null){
                     isComplexServiceResponding = false;
@@ -122,28 +122,20 @@ public class ComplexSearchManager {
                 log.error("The complex search task was interrupted, we cancel the task.", e);
                 this.isComplexServiceResponding = false;
                 if (!f.isCancelled()){
-                    f.cancel(true);
+                    f.cancel(false);
                 }
                 runningTasks.remove(f);
             } catch (ExecutionException e) {
                 log.error("The complex search task could not be executed, we cancel the task.", e);
                 if (!f.isCancelled()){
-                    f.cancel(true);
-                }
-                runningTasks.remove(f);
-            } catch (TimeoutException e) {
-                log.error("Service task stopped because of time out " + threadTimeOut + "seconds.");
-                this.isComplexServiceResponding = false;
-
-                if (!f.isCancelled()){
-                    f.cancel(true);
+                    f.cancel(false);
                 }
                 runningTasks.remove(f);
             }
             catch (Throwable e) {
                 log.error("The complex search task could not be executed, we cancel the task.", e);
                 if (!f.isCancelled()){
-                    f.cancel(true);
+                    f.cancel(false);
                 }
                 runningTasks.remove(f);
             }

@@ -279,18 +279,18 @@ public class SearchController extends JpaBaseController {
         } catch (InterruptedException e) {
             log.error("The intact search was interrupted, we cancel the task.", e);
             if (!intactFuture.isCancelled()){
-                intactFuture.cancel(true);
+                intactFuture.cancel(false);
             }
         } catch (ExecutionException e) {
             log.error("The intact search could not be executed, we cancel the task.", e);
             if (!intactFuture.isCancelled()){
-                intactFuture.cancel(true);
+                intactFuture.cancel(false);
             }
         }
         catch (Throwable e) {
             log.error("The intact search could not be executed, we cancel the task.", e);
             if (!intactFuture.isCancelled()){
-                intactFuture.cancel(true);
+                intactFuture.cancel(false);
             }
         }
     }
