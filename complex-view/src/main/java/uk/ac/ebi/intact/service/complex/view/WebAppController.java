@@ -1,19 +1,20 @@
 package uk.ac.ebi.intact.service.complex.view;
 
+import org.apache.solr.client.solrj.SolrServerException;
 import org.jsoup.Jsoup;
 import org.jsoup.examples.HtmlToPlainText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.HtmlUtils;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexFieldNames;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,8 +43,7 @@ public class WebAppController {
                                    @RequestParam ( required = false ) String type,
                                    ModelMap model,
                                    HttpSession session,
-                                   HttpServletRequest request)
-    {
+                                   HttpServletRequest request) throws ComplexPortalException, IOException {
         model.addAttribute("complex_search_form", request.getRequestURL().toString());
         model.addAttribute("page_title", "Complex Search");
         setDefaultModelMapValues(model, request);
@@ -51,10 +51,10 @@ public class WebAppController {
         if ( !query.equals("") && query.length()> 0 ) {
             String filters = buildFilters(species, types, bioroles);
             Page pageInfo = restConnection.getPage(page, query, filters, this.facets);
-            ComplexRestResult results = restConnection.query(query, pageInfo, filters, this.facets, type);
-            session.setAttribute("pageInfo", pageInfo);
-            session.setAttribute("results", results);
             if (pageInfo.getTotalNumberOfElements() != 0) {
+                ComplexRestResult results = restConnection.query(query, pageInfo, filters, this.facets, type);
+                session.setAttribute("pageInfo", pageInfo);
+                session.setAttribute("results", results);
                 if (results != null) {
                     Map<String, List<ComplexFacetResults>> facetResults = results.getFacets();
                     session.setAttribute("species", facetResults.get(ComplexFieldNames.COMPLEX_ORGANISM_F));
@@ -97,7 +97,7 @@ public class WebAppController {
                          @RequestParam ( required = false ) String type,
                          ModelMap model,
                          HttpSession session,
-                         HttpServletRequest request){
+                         HttpServletRequest request) throws ComplexPortalException, IOException {
         model.addAttribute("complex_search_form", request.getRequestURL().toString());
         setDefaultModelMapValues(model, request);
         if ( q !=null && !q.equals("") && q.length()> 0 ) {
@@ -108,12 +108,12 @@ public class WebAppController {
 //            String[] biorolesFilter = bioroles != null ? bioroles.split(",") : null;
             String filters = buildFilters(species, types, bioroles);
             Page pageInfo = restConnection.getPage(page, q, filters, facets);
-            ComplexRestResult results = restConnection.query(q, pageInfo, filters, facets, type);
-            session.setAttribute("pageInfo", pageInfo);
-            session.setAttribute("results", results);
-            if (results != null) session.setAttribute("htmlOriginalQuery", HtmlUtils.htmlEscape(results.getOriginaQuery()));
             if (pageInfo.getTotalNumberOfElements() != 0) {
+                ComplexRestResult results = restConnection.query(q, pageInfo, filters, facets, type);
+                session.setAttribute("pageInfo", pageInfo);
+                session.setAttribute("results", results);
                 if (results != null) {
+                    session.setAttribute("htmlOriginalQuery", HtmlUtils.htmlEscape(results.getOriginaQuery()));
                     Map<String, List<ComplexFacetResults>> facetResults = results.getFacets();
                     session.setAttribute("species", facetResults.get(ComplexFieldNames.COMPLEX_ORGANISM_F));
                     session.setAttribute("types", facetResults.get(ComplexFieldNames.INTERACTOR_TYPE_F));
@@ -151,7 +151,7 @@ public class WebAppController {
     public String showDetails(@PathVariable String ac,
                                     ModelMap model,
                                     HttpSession session,
-                                    HttpServletRequest request) {
+                                    HttpServletRequest request) throws ComplexPortalException, IOException {
         ComplexDetails details = restConnection.getDetails(cleanQuery(ac), QueryTypes.DETAILS.value);
         session.setAttribute("details", details);
         setDefaultModelMapValues(model, request);
@@ -190,7 +190,7 @@ public class WebAppController {
         return "about";
     }
 
-    // ABOUT
+    // DOWNLOAD
     @RequestMapping(value = "/download/", method = RequestMethod.GET)
     public String goDownload(ModelMap model,
                           HttpServletRequest request) {
@@ -251,5 +251,11 @@ public class WebAppController {
         return null;
     }
 
+    @ExceptionHandler(ComplexPortalException.class)
+    public ModelAndView handleComplexPortalException(ComplexPortalException e, HttpServletResponse response, HttpServletRequest request){
+        ModelAndView model = new ModelAndView("error/503");
+        setDefaultModelMapValues(model.getModelMap(), request);
+        return model;
+    }
 
 }

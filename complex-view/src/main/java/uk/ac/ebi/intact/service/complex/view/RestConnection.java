@@ -2,6 +2,12 @@ package uk.ac.ebi.intact.service.complex.view;
 
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -47,7 +53,7 @@ public class RestConnection {
     /*******************************/
     /*      Protected methods      */
     /*******************************/
-    protected int getNumberOfComplexes(String q, String filters, String facets) {
+    protected int getNumberOfComplexes(String q, String filters, String facets) throws ComplexPortalException, IOException {
         int result = 0;
         Object o = null;
         StringBuilder queryBuilder = new StringBuilder()
@@ -64,8 +70,8 @@ public class RestConnection {
             e.printStackTrace();
         }
         if ( o != null) {
-            JSONObject jo = (JSONObject) ((JSONObject) o).get("complexRestResult");
-            result = ((Long)jo.get("size")).intValue();
+            //JSONObject jo = (JSONObject) ((JSONObject) o).get("complexRestResult");
+            result = ((Long)((JSONObject)o).get("size")).intValue();
         }
         return result;
     }
@@ -125,44 +131,55 @@ public class RestConnection {
         return query.toString();
     }
 
-    protected JSONObject getDataFromWS( String query ) {
-        JSONObject response = null;
-        StringBuilder info = new StringBuilder();
-        String aux = null;
+//    protected JSONObject getDataFromWS( String query ) throws ComplexPortalException {
+//        JSONObject response = null;
+//        StringBuilder info = new StringBuilder();
+//        String aux = null;
+//        BufferedReader reader = null;
+//        try{
+//            reader = new BufferedReader(
+//                    new InputStreamReader(
+//                            new URL(query)
+//                                    .openConnection()
+//                                    .getInputStream()
+//                    )
+//            );
+//            while ( ( aux = reader.readLine()) != null )
+//                info.append(aux);
+//            response = (JSONObject) JSONValue.parse(info.toString());
+//        }
+//        catch (IOException e){
+//            if ( log.isInfoEnabled() )
+//                log.info("RestConnection error, it could not retrieve information from the web service", e);
+//            e.printStackTrace();
+//        }
+//        finally {
+//            if( reader != null ){
+//                try {
+//                    reader.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return response;
+//    }
+
+    protected JSONObject getDataFromWS( String query ) throws ComplexPortalException, IOException {
+        JSONObject result = null;
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpGet request = new HttpGet(query);
+        HttpResponse response = client.execute(request);
+        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) throw new ComplexPortalException();
         BufferedReader reader = null;
-        try{
-            reader = new BufferedReader(
-                    new InputStreamReader(
-                            new URL(query)
-                                    .openConnection()
-                                    .getInputStream()
-                    )
-            );
-            while ( ( aux = reader.readLine()) != null )
-                info.append(aux);
-            response = (JSONObject) JSONValue.parse(info.toString());
-        }
-        catch (IOException e){
-            if ( log.isInfoEnabled() )
-                log.info("RestConnection error, it could not retrieve information from the web service", e);
-            e.printStackTrace();
-        }
-        finally {
-            if( reader != null ){
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return response;
+        reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+        return (JSONObject) JSONValue.parse(reader);
     }
 
     protected ComplexRestResult JSONToComplexRestResult( JSONObject json ) {
         ComplexRestResult result = null;
         if (json != null && json.size() > 0) {
-            JSONObject complexRestResults = (JSONObject) json.get("complexRestResult");
+            JSONObject complexRestResults = json;
             JSONArray elements = (JSONArray) complexRestResults.get("elements");
             result = new ComplexRestResult();
             ComplexSearchResults res = null;
@@ -200,7 +217,7 @@ public class RestConnection {
     protected ComplexDetails JSONToComplexDetails(JSONObject json) {
         ComplexDetails details = new ComplexDetails();
         if ( json != null ) {
-            JSONObject j = (JSONObject) json.get("complexDetails");
+            JSONObject j = json;
             if ( j != null) {
                 details.setSystematicName( (String) j.get("systematicName") );
                 details.setFunction( (String) j.get("function") );
@@ -297,7 +314,7 @@ public class RestConnection {
     /*      Public methods      */
     /****************************/
 
-    public Page getPage(String page, String query, String filters, String facets) {
+    public Page getPage(String page, String query, String filters, String facets) throws ComplexPortalException, IOException {
         int max_elements = getNumberOfComplexes(query, filters, facets);
         return new Page(page, this.number, max_elements);
     }
@@ -306,8 +323,7 @@ public class RestConnection {
                                     Page page,
                                     String filters,
                                     String facets,
-                                    String queryType)
-    {
+                                    String queryType) throws ComplexPortalException, IOException {
         String q = createQuery(query, page, filters, facets, queryType);
         ComplexRestResult result = JSONToComplexRestResult(getDataFromWS(q));
         if (result != null) {
@@ -316,7 +332,7 @@ public class RestConnection {
         return result;
     }
 
-    public ComplexDetails getDetails( String ac, String queryType ) {
+    public ComplexDetails getDetails( String ac, String queryType ) throws ComplexPortalException, IOException {
         String q = createDetailsQuery(ac, queryType);
         return JSONToComplexDetails(getDataFromWS(q));
     }
