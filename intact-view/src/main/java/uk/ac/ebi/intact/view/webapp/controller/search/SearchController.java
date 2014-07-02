@@ -449,18 +449,18 @@ public class SearchController extends JpaBaseController {
             } catch (InterruptedException e) {
                 log.error("The intact protein search was interrupted, we cancel the task.", e);
                 if (!proteinFuture.isCancelled()){
-                    proteinFuture.cancel(true);
+                    proteinFuture.cancel(false);
                 }
             } catch (ExecutionException e) {
                 log.error("The intact protein search could not be executed, we cancel the task.", e);
                 if (!proteinFuture.isCancelled()){
-                    proteinFuture.cancel(true);
+                    proteinFuture.cancel(false);
                 }
             }
             catch (Throwable e) {
                 log.error("The intact protein interactor could not be executed, we cancel the task.", e);
                 if (!proteinFuture.isCancelled()){
-                    proteinFuture.cancel(true);
+                    proteinFuture.cancel(false);
                 }
             }
         }
@@ -473,18 +473,18 @@ public class SearchController extends JpaBaseController {
             } catch (InterruptedException e) {
                 log.error("The intact compound search was interrupted, we cancel the task.", e);
                 if (!compoundFuture.isCancelled()){
-                    compoundFuture.cancel(true);
+                    compoundFuture.cancel(false);
                 }
             } catch (ExecutionException e) {
                 log.error("The intact compound search could not be executed, we cancel the task.", e);
                 if (!compoundFuture.isCancelled()){
-                    compoundFuture.cancel(true);
+                    compoundFuture.cancel(false);
                 }
             }
             catch (Throwable e) {
                 log.error("The intact compound interactor could not be executed, we cancel the task.", e);
                 if (!compoundFuture.isCancelled()){
-                    compoundFuture.cancel(true);
+                    compoundFuture.cancel(false);
                 }
             }
         }
@@ -497,18 +497,18 @@ public class SearchController extends JpaBaseController {
             } catch (InterruptedException e) {
                 log.error("The intact nucleic acid search was interrupted, we cancel the task.", e);
                 if (!nucleicAcidFuture.isCancelled()){
-                    nucleicAcidFuture.cancel(true);
+                    nucleicAcidFuture.cancel(false);
                 }
             } catch (ExecutionException e) {
                 log.error("The intact nucleic acid search could not be executed, we cancel the task.", e);
                 if (!nucleicAcidFuture.isCancelled()){
-                    nucleicAcidFuture.cancel(true);
+                    nucleicAcidFuture.cancel(false);
                 }
             }
             catch (Throwable e) {
                 log.error("The intact nucleic acid interactor could not be executed, we cancel the task.", e);
                 if (!nucleicAcidFuture.isCancelled()){
-                    nucleicAcidFuture.cancel(true);
+                    nucleicAcidFuture.cancel(false);
                 }
             }
         }
@@ -521,18 +521,18 @@ public class SearchController extends JpaBaseController {
             } catch (InterruptedException e) {
                 log.error("The intact gene interactor was interrupted, we cancel the task.", e);
                 if (!geneFuture.isCancelled()){
-                    geneFuture.cancel(true);
+                    geneFuture.cancel(false);
                 }
             } catch (ExecutionException e) {
                 log.error("The intact gene interactor could not be executed, we cancel the task.", e);
                 if (!geneFuture.isCancelled()){
-                    geneFuture.cancel(true);
+                    geneFuture.cancel(false);
                 }
             }
             catch (Throwable e) {
                 log.error("The intact gene interactor could not be executed, we cancel the task.", e);
                 if (!geneFuture.isCancelled()){
-                    geneFuture.cancel(true);
+                    geneFuture.cancel(false);
                 }
             }
         }
