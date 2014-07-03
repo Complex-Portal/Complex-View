@@ -1364,6 +1364,18 @@ public class ChangesController extends JpaAwareController implements UserListene
         return unsaved;
     }
 
+    public List<UnsavedJamiChange> getAllUnsavedJamiProteinTranscripts() {
+        List<UnsavedJamiChange> unsaved = new ArrayList<UnsavedJamiChange>();
+
+        for (UnsavedJamiChange change : getHiddenUnsavedJamiChangesForCurrentUser()) {
+            if (UnsavedChange.CREATED_TRANSCRIPT.equals(change.getAction())) {
+                unsaved.add(change);
+            }
+        }
+
+        return unsaved;
+    }
+
     public List<IntactObject> getAllCreatedProteinTranscripts() {
         List<IntactObject> ios = new ArrayList<IntactObject>();
 

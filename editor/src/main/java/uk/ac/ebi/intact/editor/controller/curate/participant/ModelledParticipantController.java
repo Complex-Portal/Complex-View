@@ -19,42 +19,40 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.SelectableDataModelWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.persister.IntactCore;
-import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
-import uk.ac.ebi.intact.editor.controller.curate.UnsavedChange;
-import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantIntactCloner;
-import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
-import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
-import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
-import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
-import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantImportController;
-import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantWrapper;
-import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
-import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
+import org.springframework.transaction.annotation.Transactional;
+import psidev.psi.mi.jami.model.*;
+import psidev.psi.mi.jami.model.impl.DefaultStoichiometry;
+import psidev.psi.mi.jami.utils.AliasUtils;
+import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.UnsavedJamiChange;
+import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantJamiCloner;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ComplexController;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportJamiCandidate;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ModelledParticipantImportController;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ModelledParticipantWrapper;
 import uk.ac.ebi.intact.editor.util.SelectableCollectionDataModel;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.dao.CvTermDao;
+import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.clone.IntactCloner;
-import uk.ac.ebi.intact.model.util.XrefUtils;
+import uk.ac.ebi.intact.jami.model.extension.*;
+import uk.ac.ebi.intact.jami.utils.IntactUtils;
+import uk.ac.ebi.intact.model.AnnotatedObject;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.DataModel;
-import javax.faces.model.SelectItem;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
- * Participant controller.
+ * Modelled Participant controller.
  *
  * @author Samuel Kerrien (skerrien@ebi.ac.uk)
  * @version $Id$
@@ -62,26 +60,17 @@ import java.util.List;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-public class ModelledParticipantController extends ParameterizableObjectController {
+public class ModelledParticipantController extends AnnotatedObjectController {
 
     private static final Log log = LogFactory.getLog( ModelledParticipantController.class );
 
-    private Component participant;
+    private IntactModelledParticipant participant;
 
     private String interactor;
-    private List<ImportCandidate> interactorCandidates;
+    private List<ImportJamiCandidate> interactorCandidates;
 
-    private DataModel<Feature> featuresDataModel;
-    private Feature[] selectedFeatures;
-    private Feature featureToLink1;
-    private Feature featureToLink2;
-    private Range rangeFeatureLinked1;
-    private Range rangeFeatureLinked2;
-    private List<SelectItem> featureToLink1RangeSelectItems;
-    private List<SelectItem> featureToLink2RangeSelectItems;
-
-    private CvExperimentalPreparation preparationToAdd;
-    private CvIdentification identificationToAdd;
+    private DataModel<IntactModelledFeature> featuresDataModel;
+    private IntactModelledFeature[] selectedFeatures;
 
     /**
      * The AC of the participant to be loaded.
@@ -89,51 +78,39 @@ public class ModelledParticipantController extends ParameterizableObjectControll
     private String ac;
 
     @Autowired
-    private PublicationController publicationController;
-
-    @Autowired
-    private ExperimentController experimentController;
-
-    @Autowired
-    private InteractionController interactionController;
-
-    private boolean isParameterDisabled;
-    private boolean isConfidenceDisabled;
+    private ComplexController interactionController;
 
     public ModelledParticipantController() {
     }
 
     @Override
     public AnnotatedObject getAnnotatedObject() {
-        return getParticipant();
-    }
-
-    @Override
-    public IntactPrimaryObject getJamiObject() {
         return null;
     }
 
     @Override
+    public IntactPrimaryObject getJamiObject() {
+        return this.participant;
+    }
+
+    @Override
     public void setJamiObject(IntactPrimaryObject annotatedObject) {
-        // nothing to do
+        this.participant = (IntactModelledParticipant)annotatedObject;
     }
 
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-        setParticipant((Component)annotatedObject);
+        // do nothing
     }
 
-    @Override
-    public String goToParent() {
-        return "/curate/interaction?faces-redirect=true&includeViewParams=true";
-    }
-
+    @Transactional(value = "jamiTransactionManager")
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             if ( ac != null ) {
                 if ( participant == null || !ac.equals( participant.getAc() ) ) {
-                    participant = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getComponentDao(), ac);
+                    IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+                    participant = loadJamiByAc(IntactModelledParticipant.class, ac);
                 }
             } else {
                 if ( participant != null ) ac = participant.getAc();
@@ -144,53 +121,18 @@ public class ModelledParticipantController extends ParameterizableObjectControll
                 return;
             }
 
-            if (!IntactCore.isInitialized(participant.getFeatures())){
-                IntactCore.initialize(participant.getFeatures());
-            }
-            featuresDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<Feature>(participant.getFeatures()), participant.getFeatures());
+            featuresDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<ModelledFeature>(participant.getFeatures()), participant.getFeatures());
 
-            // check if the publication, experiment and interaction are null in their controllers (this happens when the
-            // participant page is loaded directly using a URL)
-
-            if (!IntactCore.isInitialized(participant.getExperimentalPreparations())){
-                IntactCore.initialize(participant.getExperimentalPreparations());
-            }
-            if (!IntactCore.isInitialized(participant.getParticipantDetectionMethods())){
-                IntactCore.initialize(participant.getParticipantDetectionMethods());
-            }
             if (participant.getInteraction() != null){
-                if (interactionController.getInteraction() == null || !interactionController.getInteraction().getAc().equalsIgnoreCase(participant.getInteraction().getAc())){
-                    if( interactionController.getInteraction() == null ) {
-                        interactionController.setInteraction( participant.getInteraction() );
-                    }
-
-                    Collection<Experiment> experiments = participant.getInteraction().getExperiments();
-
-                    if (!IntactCore.isInitialized(experiments)){
-                        experiments = getDaoFactory().getExperimentDao().getByInteractionAc(participant.getInteraction().getAc());
-                    }
-                    if (!IntactCore.isInitialized(participant.getInteraction().getComponents())){
-                        IntactCore.initialize(participant.getInteraction().getComponents());
-                    }
-                    if( experiments.isEmpty()) {
-                        addWarningMessage( "The parent interaction of this participant isn't attached to an experiment",
-                                "Abort experiment loading." );
-                        return;
-                    }
-                    else{
-                        if ( publicationController.getPublication() == null ) {
-                            Publication publication = experiments.iterator().next().getPublication();
-                            publicationController.setPublication( publication );
-                        }
-                        if ( experimentController.getExperiment() == null ) {
-                            experimentController.setExperiment( experiments.iterator().next() );
-                        }
+                if (interactionController.getComplex() == null || !interactionController.getComplex().getAc().equalsIgnoreCase(((IntactComplex) participant.getInteraction()).getAc())){
+                    if( interactionController.getComplex() == null ) {
+                        interactionController.setComplex((IntactComplex) participant.getInteraction());
                     }
                 }
             }
 
             if (participant.getInteractor() != null) {
-                interactor = participant.getInteractor().getShortLabel();
+                interactor = participant.getInteractor().getShortName();
             }
 
             refreshTabsAndFocusXref();
@@ -200,18 +142,12 @@ public class ModelledParticipantController extends ParameterizableObjectControll
     }
 
     @Override
-    public boolean doSaveDetails(){
-
-        return super.doSaveDetails();
-    }
-
-    @Override
     public void doPreSave() {
         // create master proteins from the unsaved manager
-        final List<UnsavedChange> transcriptCreated = getChangesController().getAllUnsavedProteinTranscripts();
+        final List<UnsavedJamiChange> transcriptCreated = getChangesController().getAllUnsavedJamiProteinTranscripts();
 
-        for (UnsavedChange unsaved : transcriptCreated) {
-            IntactObject transcript = unsaved.getUnsavedObject();
+        for (UnsavedJamiChange unsaved : transcriptCreated) {
+            IntactPrimaryObject transcript = unsaved.getUnsavedObject();
 
             String currentAc = participant != null ? participant.getAc() : null;
 
@@ -219,23 +155,18 @@ public class ModelledParticipantController extends ParameterizableObjectControll
             // if the scope is null or different, the object should not be saved at this stage because we only save the current object and changes associated with it
             // if current ac is null, no unsaved event should be associated with it as this object has not been saved yet
             if (unsaved.getScope() != null && unsaved.getScope().equals(currentAc)){
-                getPersistenceController().doSaveMasterProteins(transcript);
+                getPersistenceController().doSaveJamiMasterProteins(transcript);
                 getChangesController().removeFromHiddenChanges(unsaved);
             }
             else if (unsaved.getScope() == null && currentAc == null){
-                getPersistenceController().doSaveMasterProteins(transcript);
+                getPersistenceController().doSaveJamiMasterProteins(transcript);
                 getChangesController().removeFromHiddenChanges(unsaved);
             }
-        }
-
-        // save the interactor, if it didn't exist and the participant is just being updated
-        if (participant.getAc() != null && participant.getInteractor().getAc() == null) {
-            getCorePersister().saveOrUpdate(participant.getInteractor());
         }
 
         // the participant is not persisted, we can add it to the list of components in the interaction
         if (participant.getAc() == null){
-            interactionController.getInteraction().addComponent(participant);
+            interactionController.getComplex().getParticipants().add(participant);
         }
     }
 
@@ -244,7 +175,7 @@ public class ModelledParticipantController extends ParameterizableObjectControll
         Collection<String> parentAcs = new ArrayList<String>();
 
         if (participant.getInteraction() != null){
-            addParentAcsTo(parentAcs, participant.getInteraction());
+            addParentAcsTo(parentAcs, (IntactComplex)participant.getInteraction());
         }
 
         return parentAcs;
@@ -255,10 +186,10 @@ public class ModelledParticipantController extends ParameterizableObjectControll
         Collection<String> parentAcs = new ArrayList<String>();
 
         if (participant.getInteraction() != null){
-            addParentAcsTo(parentAcs, participant.getInteraction());
+            addParentAcsTo(parentAcs, (IntactComplex)participant.getInteraction());
         }
 
-        getChangesController().revertComponent(participant, parentAcs);
+        getChangesController().revertModelledParticipant(participant, parentAcs);
     }
 
 
@@ -267,72 +198,9 @@ public class ModelledParticipantController extends ParameterizableObjectControll
      * @param parentAcs
      * @param inter
      */
-    protected void addParentAcsTo(Collection<String> parentAcs, Interaction inter) {
+    protected void addParentAcsTo(Collection<String> parentAcs, IntactComplex inter) {
         if (inter.getAc() != null){
             parentAcs.add(inter.getAc());
-        }
-
-        if (IntactCore.isInitialized(inter.getExperiments()) && !inter.getExperiments().isEmpty()){
-            for (Experiment exp : inter.getExperiments()){
-                addParentAcsTo(parentAcs, exp);
-            }
-        }
-        else if (interactionController.getExperiment() != null){
-            Experiment exp = interactionController.getExperiment();
-            addParentAcsTo(parentAcs, exp);
-        }
-        else if (!IntactCore.isInitialized(inter.getExperiments())){
-            Collection<Experiment> experiments = IntactCore.ensureInitializedExperiments(inter);
-
-            for (Experiment exp : experiments){
-                addParentAcsTo(parentAcs, exp);
-            }
-        }
-    }
-
-    public void removeExperimentalPreparation(CvExperimentalPreparation prep){
-        if (prep != null){
-            if (participant.getExperimentalPreparations().remove(prep)){
-                changed();
-            }
-            else{
-                addWarningMessage("The experimental preparation " + prep.getFullName()+" has not been removed.","The experimental preparation " + prep.getFullName()+" has not been removed because was not attached to this participant.");
-            }
-        }
-    }
-
-    public void addExperimentalPreparation(){
-        if (this.preparationToAdd != null){
-            if (!participant.getExperimentalPreparations().contains(this.preparationToAdd)){
-                participant.getExperimentalPreparations().add(this.preparationToAdd);
-                changed();
-            }
-            else{
-                addWarningMessage("The experimental preparation " + preparationToAdd.getFullName()+" was already attached to this participant.","The experimental preparation " + preparationToAdd.getFullName()+" was already attached to this participant.");
-            }
-        }
-    }
-
-    public void removeIdentificationMethod(CvIdentification prep){
-        if (prep != null){
-            if(participant.getParticipantDetectionMethods().remove(prep)){
-            changed();
-            }
-            else{
-                addWarningMessage("The identification method " + prep.getFullName() + " has not been removed.", "The identification method " + prep.getFullName() + " has not been removed because was not attached to this participant.");
-            }
-        }
-    }
-
-    public void addIdentificationMethod(){
-        if (this.identificationToAdd != null){
-            if (!participant.getParticipantDetectionMethods().contains(this.identificationToAdd)){
-                participant.getParticipantDetectionMethods().add(this.identificationToAdd);
-                changed();
-            }
-            else{
-                addWarningMessage("The identification method " + identificationToAdd.getFullName()+" was already attached to this participant.","The identification method " + identificationToAdd.getFullName()+" was already attached to this participant.");
-            }
         }
     }
 
@@ -342,21 +210,22 @@ public class ModelledParticipantController extends ParameterizableObjectControll
     }
 
     @Override
-    protected IntactCloner newClonerInstance() {
-        return new ParticipantIntactCloner();
+    protected IntactModelledParticipant cloneAnnotatedObject(IntactPrimaryObject ao) {
+        // to be overrided
+        return (IntactModelledParticipant) ParticipantJamiCloner.cloneParticipant((IntactModelledParticipant) ao);
     }
 
-    public String newParticipant(Interaction interaction) {
+    public String newParticipant(IntactComplex interaction) {
         this.interactor = null;
 
-        CvObjectService cvObjectService = (CvObjectService) getSpringContext().getBean("cvObjectService");
+        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        CvTermDao cvObjectService = intactDao.getCvTermDao();
 
-        CvExperimentalRole defaultExperimentalRole = cvObjectService.getDefaultExperimentalRole();
-        CvBiologicalRole defaultBiologicalRole = cvObjectService.getDefaultBiologicalRole();
+        CvTerm defaultBiologicalRole = cvObjectService.getByMIIdentifier(Participant.UNSPECIFIED_ROLE_MI, IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
 
-        Component participant = new Component("N/A", interaction, new InteractorImpl(), defaultExperimentalRole, defaultBiologicalRole);
-        participant.setInteractor(null);
-        participant.setStoichiometry(getEditorConfig().getDefaultStoichiometry());
+        IntactModelledParticipant participant = new IntactModelledParticipant(new IntactInteractor("unspecified"));
+        participant.setBiologicalRole(defaultBiologicalRole);
+        participant.setStoichiometry(new DefaultStoichiometry((int)getEditorConfig().getDefaultStoichiometry()));
 
         // by setting the interaction of a participant, we don't add the participant to the collection of participants for this interaction so if we revert, it will not affect anything.
         // when saving, it will be added to the list of participants for this interaction. we just have to refresh the list of participants
@@ -364,17 +233,14 @@ public class ModelledParticipantController extends ParameterizableObjectControll
 
         setParticipant(participant);
 
-        //interaction.addComponent(participant);
-
-        //getUnsavedChangeManager().markAsUnsaved(participant);
         changed();
 
         return navigateToObject(participant);
     }
 
     public void importInteractor(ActionEvent evt) {
-        ParticipantImportController participantImportController = (ParticipantImportController) getSpringContext().getBean("participantImportController");
-        interactorCandidates = new ArrayList<ImportCandidate>(participantImportController.importParticipant(interactor));
+        ModelledParticipantImportController participantImportController = (ModelledParticipantImportController) getSpringContext().getBean("modelledParticipantImportController");
+        interactorCandidates = new ArrayList<ImportJamiCandidate>(participantImportController.importParticipant(interactor));
 
         if (interactorCandidates.size() == 1) {
             interactorCandidates.get(0).setSelected(true);
@@ -382,17 +248,15 @@ public class ModelledParticipantController extends ParameterizableObjectControll
     }
 
     public void addInteractorToParticipant(ActionEvent evt) {
-        for (ImportCandidate importCandidate : interactorCandidates) {
+        for (ImportJamiCandidate importCandidate : interactorCandidates) {
             if (importCandidate.isSelected()) {
                 // chain or isoform, we may have to update it later
                 if (importCandidate.isChain() || importCandidate.isIsoform()){
                     Collection<String> parentAcs = new ArrayList<String>();
 
                     if (participant.getInteraction() != null){
-                        addParentAcsTo(parentAcs, participant.getInteraction());
+                        addParentAcsTo(parentAcs, (IntactComplex)participant.getInteraction());
                     }
-
-                    getChangesController().markAsHiddenChange(importCandidate.getInteractor(), participant, parentAcs);
                 }
                 participant.setInteractor(importCandidate.getInteractor());
 
@@ -404,61 +268,18 @@ public class ModelledParticipantController extends ParameterizableObjectControll
         }
     }
 
-    @Override
-    public String doDelete(){
-        if (!participant.getFeatures().isEmpty()){
-            for (Feature f : participant.getFeatures()){
-                if (f.getBoundDomain() != null){
-                    Feature bound = f.getBoundDomain();
-
-                    if (bound.getBoundDomain() != null && f.getAc() != null && f.getAc().equalsIgnoreCase(bound.getBoundDomain().getAc())){
-                        bound.setBoundDomain(null);
-                        getPersistenceController().doSave(bound);
-                    }
-                    else if (bound.getBoundDomain() != null && f.getAc() == null && f.equals(bound.getBoundDomain())){
-                        bound.setBoundDomain(null);
-                        getPersistenceController().doSave(bound);
-                    }
-
-                    f.setBoundDomain(null);
-                }
-            }
-        }
-
-        return super.doDelete();
-    }
-
-    public void markFeatureToDelete(Feature feature) {
-
+    public void markFeatureToDelete(ModelledFeature feature) {
+        IntactModelledFeature intactFeature = (IntactModelledFeature)feature;
         // don't forget to unlink features first
-        if (feature.getAc() == null) {
-            if (feature.getBoundDomain() != null){
-                Feature bound = feature.getBoundDomain();
-
-                if (bound.getBoundDomain() != null && bound.getBoundDomain().equals(feature)){
-                    bound.setBoundDomain(null);
-                    getChangesController().markAsUnsaved(bound);
-                }
-                feature.setBoundDomain(null);
-            }
+        if (intactFeature.getAc() == null) {
             participant.removeFeature(feature);
         } else {
-            if (feature.getBoundDomain() != null){
-                Feature bound = feature.getBoundDomain();
-
-                if (bound.getBoundDomain() != null && feature.getAc().equalsIgnoreCase(bound.getBoundDomain().getAc())){
-                    bound.setBoundDomain(null);
-                    getChangesController().markAsUnsaved(bound);
-                }
-                feature.setBoundDomain(null);
-            }
-
-            getChangesController().markToDelete(feature, feature.getComponent());
+            getChangesController().markToDelete(intactFeature, participant);
         }
     }
 
     public void deleteSelectedFeatures(ActionEvent evt) {
-        for (Feature feature : selectedFeatures) {
+        for (IntactModelledFeature feature : selectedFeatures) {
             markFeatureToDelete(feature);
         }
 
@@ -476,12 +297,40 @@ public class ModelledParticipantController extends ParameterizableObjectControll
         this.ac = ac;
     }
 
-    public Component getParticipant() {
+    public int getMinStoichiometry(){
+        return this.participant.getStoichiometry() != null ? this.participant.getStoichiometry().getMinValue() : 0;
+    }
+
+    public int getMaxStoichiometry(){
+        return this.participant.getStoichiometry() != null ? this.participant.getStoichiometry().getMaxValue() : 0;
+    }
+
+    public void setMinStoichiometry(int stc){
+        if (this.participant.getStoichiometry() == null){
+            this.participant.setStoichiometry(new IntactStoichiometry(stc));
+        }
+        else {
+            IntactStoichiometry stoichiometry = (IntactStoichiometry)participant.getStoichiometry();
+            this.participant.setStoichiometry(new IntactStoichiometry(stc, stoichiometry.getMaxValue()));
+        }
+    }
+
+    public void setMaxStoichiometry(int stc){
+        if (this.participant.getStoichiometry() == null){
+            this.participant.setStoichiometry(new IntactStoichiometry(stc));
+        }
+        else {
+            IntactStoichiometry stoichiometry = (IntactStoichiometry)participant.getStoichiometry();
+            this.participant.setStoichiometry(new IntactStoichiometry(stoichiometry.getMinValue(), stc));
+        }
+    }
+
+    public IntactModelledParticipant getParticipant() {
         return participant;
     }
 
-    public ParticipantWrapper getParticipantWrapper() {
-        return new ParticipantWrapper( participant, getChangesController(), interactionController );
+    public ModelledParticipantWrapper getModelledParticipantWrapper() {
+        return new ModelledParticipantWrapper( participant, getChangesController(), interactionController );
     }
 
     @Override
@@ -492,11 +341,9 @@ public class ModelledParticipantController extends ParameterizableObjectControll
     @Override
     public void refreshTabs(){
         super.refreshTabsAndFocusXref();
-        this.isConfidenceDisabled = true;
-        this.isParameterDisabled = true;
     }
 
-    public void setParticipant( Component participant ) {
+    public void setParticipant( IntactModelledParticipant participant ) {
         this.participant = participant;
 
         if (participant != null){
@@ -505,41 +352,52 @@ public class ModelledParticipantController extends ParameterizableObjectControll
     }
 
     public String getAuthorGivenName() {
-        return findAliasName( CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF );
+        psidev.psi.mi.jami.model.Alias author = AliasUtils.collectFirstAliasWithType(this.participant.getAliases(), Alias.AUTHOR_ASSIGNED_NAME_MI, Alias.AUTHOR_ASSIGNED_NAME);
+        return author != null ? author.getName() : null;
     }
 
     public void setAuthorGivenName( String name ) {
-        addOrReplace(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF, name  );
-    }
-
-    public CvExperimentalPreparation getFirstExperimentalPreparation( Component participant ) {
-        if( participant.getInteractor() != null ) {
-            if( ! participant.getExperimentalPreparations().isEmpty() ) {
-                return participant.getExperimentalPreparations().iterator().next();
+        if (name == null){
+            psidev.psi.mi.jami.utils.AliasUtils.removeAllAliasesWithType(this.participant.getAliases(), psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI,
+                    psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME);
+        }
+        else{
+            psidev.psi.mi.jami.model.Alias alias = psidev.psi.mi.jami.utils.AliasUtils.collectFirstAliasWithType(this.participant.getAliases(), psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI,
+                    psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME);
+            if (alias != null && alias.getName().equals(name)){
+                ((AbstractIntactAlias)alias).setName(name);
+                getChangesController().markAsUnsaved(participant);
+            }
+            else {
+                this.participant.getAliases().add(new ModelledFeatureAlias(IntactUtils.createMIAliasType(psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME,
+                        psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI), name));
+                getChangesController().markAsUnsaved(participant);
             }
         }
-
-        return null;
     }
-    
-    public String participantPrimaryId(Component component) {
+
+    public String participantPrimaryId(IntactModelledParticipant component) {
         if (component == null) return null;
         if (component.getInteractor() == null) return null;
 
-        final Collection<InteractorXref> xrefs = XrefUtils.getIdentityXrefs(component.getInteractor());
+        final Xref xrefs = component.getInteractor().getPreferredIdentifier();
 
-        if (xrefs.isEmpty()) {
-            return component.getInteractor().getAc();
+        if (xrefs == null && component.getInteractor() instanceof IntactInteractor) {
+            String ac = ((IntactInteractor)component.getInteractor()).getAc();
+            return ac != null ? ac : component.getInteractor().getShortName();
+        }
+        else if (xrefs == null){
+            return component.getInteractor().getShortName();
         }
 
-        return joinIds(xrefs);
+        return xrefs.getId();
     }
 
-    private String joinIds(Collection<InteractorXref> xrefs) {
+    private String joinIds(Collection<Xref> xrefs) {
         Collection<String> ids = new ArrayList<String>(xrefs.size());
 
-        for (InteractorXref xref : xrefs) {
-            ids.add(xref.getPrimaryId());
+        for (Xref xref : xrefs) {
+            ids.add(xref.getId());
         }
 
         return StringUtils.join(ids, ", ");
@@ -553,186 +411,28 @@ public class ModelledParticipantController extends ParameterizableObjectControll
         this.interactor = interactor;
     }
 
-    public List<ImportCandidate> getInteractorCandidates() {
+    public List<ImportJamiCandidate> getInteractorCandidates() {
         return interactorCandidates;
     }
 
-    public void setInteractorCandidates(List<ImportCandidate> interactorCandidates) {
+    public void setInteractorCandidates(List<ImportJamiCandidate> interactorCandidates) {
         this.interactorCandidates = interactorCandidates;
     }
 
-    public Feature[] getSelectedFeatures() {
+    public IntactModelledFeature[] getSelectedFeatures() {
         return selectedFeatures;
     }
 
-    public void setSelectedFeatures(Feature[] selectedFeatures) {
+    public void setSelectedFeatures(IntactModelledFeature[] selectedFeatures) {
         this.selectedFeatures = selectedFeatures;
     }
 
-    public Feature getFeatureToLink1() {
-        return featureToLink1;
-    }
-
-    public void setFeatureToLink1(Feature featureToLink1) {
-        this.featureToLink1 = featureToLink1;
-    }
-
-    public Feature getFeatureToLink2() {
-        return featureToLink2;
-    }
-
-    public void setFeatureToLink2(Feature featureToLink2) {
-        this.featureToLink2 = featureToLink2;
-    }
-
-    public Range getRangeFeatureLinked1() {
-        return rangeFeatureLinked1;
-    }
-
-    public void setRangeFeatureLinked1(Range rangeFeatureLinked1) {
-        this.rangeFeatureLinked1 = rangeFeatureLinked1;
-    }
-
-    public Range getRangeFeatureLinked2() {
-        return rangeFeatureLinked2;
-    }
-
-    public void setRangeFeatureLinked2(Range rangeFeatureLinked2) {
-        this.rangeFeatureLinked2 = rangeFeatureLinked2;
-    }
-
-    public List<SelectItem> getFeatureToLink1RangeSelectItems() {
-        return featureToLink1RangeSelectItems;
-    }
-
-    public void setFeatureToLink1RangeSelectItems(List<SelectItem> featureToLink1RangeSelectItems) {
-        this.featureToLink1RangeSelectItems = featureToLink1RangeSelectItems;
-    }
-
-    public List<SelectItem> getFeatureToLink2RangeSelectItems() {
-        return featureToLink2RangeSelectItems;
-    }
-
-    public void setFeatureToLink2RangeSelectItems(List<SelectItem> featureToLink2RangeSelectItems) {
-        this.featureToLink2RangeSelectItems = featureToLink2RangeSelectItems;
-    }
-
-    // Confidence
-    ///////////////////////////////////////////////
-
-    public void newConfidence() {
-        ComponentConfidence confidence = new ComponentConfidence();
-        participant.addConfidence(confidence);
-    }
-
-    public List<ComponentConfidence> getConfidences() {
-        if (participant == null) return Collections.EMPTY_LIST;
-
-        final List<ComponentConfidence> confidences = new ArrayList<ComponentConfidence>( participant.getConfidences() );
-        Collections.sort( confidences, new IntactObjectComparator() );
-        return confidences;
-    }
-
-    @Override
-    public List<Parameter> getParameters() {
-        return super.getParameters();
-    }
-
-    public DataModel<Feature> getFeaturesDataModel() {
+    public DataModel<IntactModelledFeature> getFeaturesDataModel() {
         return featuresDataModel;
-    }
-
-    public CvExperimentalRole getFirstExperimentalRole() {
-        if( ! participant.getExperimentalRoles().isEmpty() ) {
-            return participant.getExperimentalRoles().iterator().next();
-        }
-        return null;
-    }
-
-    public void setFirstExperimentalRole(CvExperimentalRole role) {
-        if( ! participant.getExperimentalRoles().contains(role) && role != null) {
-            participant.getExperimentalRoles().clear();
-            participant.getExperimentalRoles().add( role );
-        }
-    }
-
-    public boolean isParameterDisabled() {
-        return isParameterDisabled;
-    }
-
-    public void setParameterDisabled(boolean parameterDisabled) {
-        isParameterDisabled = parameterDisabled;
-    }
-
-    public boolean isConfidenceDisabled() {
-        return isConfidenceDisabled;
-    }
-
-    public void setConfidenceDisabled(boolean confidenceDisabled) {
-        isConfidenceDisabled = confidenceDisabled;
     }
 
     @Override
     public void modifyClone(AnnotatedObject clone) {
-
-        updateParametersExperiment((Component)clone);
-
         refreshTabs();
-    }
-
-    private void updateParametersExperiment(Component component) {
-        if (component.getInteraction() != null){
-           if (!component.getInteraction().getExperiments().isEmpty()){
-               Experiment exp = component.getInteraction().getExperiments().iterator().next();
-               // update component parameters if any
-               if (!component.getParameters().isEmpty()){
-                   for (ComponentParameter param : component.getParameters()){
-                       param.setExperiment(exp);
-                   }
-               }
-           }
-        }
-    }
-
-    public void onTabChanged(TabChangeEvent e) {
-
-        // the xref tab is active
-        super.onTabChanged(e);
-
-        // all the tabs selectOneMenu are disabled, we can process the tabs specific to interaction
-        if (isAliasDisabled() && isXrefDisabled() && isAnnotationTopicDisabled()){
-            if (e.getTab().getId().equals("parametersTab")){
-                isParameterDisabled = false;
-                isConfidenceDisabled = true;
-            }
-            else if (e.getTab().getId().equals("confidencesTab")){
-                isParameterDisabled = true;
-                isConfidenceDisabled = false;
-            }
-            else {
-                isParameterDisabled = true;
-                isConfidenceDisabled = true;
-            }
-        }
-        else {
-            isParameterDisabled = true;
-            isConfidenceDisabled = true;
-        }
-    }
-
-    public CvExperimentalPreparation getPreparationToAdd() {
-        return preparationToAdd;
-    }
-
-    public void setPreparationToAdd(CvExperimentalPreparation preparationToAdd) {
-        this.preparationToAdd = preparationToAdd;
-    }
-
-    public CvIdentification getIdentificationToAdd() {
-        return identificationToAdd;
-    }
-
-    public void setIdentificationToAdd(CvIdentification identificationToAdd) {
-        this.identificationToAdd = identificationToAdd;
     }
 }

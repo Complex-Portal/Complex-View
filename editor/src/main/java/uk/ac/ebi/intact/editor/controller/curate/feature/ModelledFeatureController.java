@@ -23,20 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import psidev.psi.mi.jami.exception.*;
-import psidev.psi.mi.jami.exception.IllegalRangeException;
-import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.model.Complex;
-import psidev.psi.mi.jami.model.Interactor;
-import psidev.psi.mi.jami.model.Polymer;
-import psidev.psi.mi.jami.model.Range;
+import psidev.psi.mi.jami.model.ModelledParticipant;
+import psidev.psi.mi.jami.model.OntologyTerm;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import psidev.psi.mi.jami.utils.RangeUtils;
-import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureJamiCloner;
-import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ComplexController;
 import uk.ac.ebi.intact.editor.controller.curate.participant.ModelledParticipantController;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
@@ -48,16 +42,12 @@ import uk.ac.ebi.intact.jami.synchronizer.FinderException;
 import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
 import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.Annotation;
-import uk.ac.ebi.intact.model.Xref;
+import uk.ac.ebi.intact.model.AnnotatedObject;
+import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
-import uk.ac.ebi.intact.model.util.FeatureUtils;
-import uk.ac.ebi.intact.protein.mapping.model.actionReport.IntactReport;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -274,6 +264,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         return "/curate/jparticipant?faces-redirect=true&includeViewParams=true";
     }
 
+    @Transactional(value = "jamiTransactionManager")
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
@@ -298,7 +289,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
             if( complexController.getComplex() == null ) {
                 final Complex interaction = (Complex)participant.getInteraction();
-                complexController.setInteraction((IntactComplex) interaction);
+                complexController.setComplex((IntactComplex) interaction);
             }
 
             refreshTabsAndFocusXref();

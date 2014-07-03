@@ -24,13 +24,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.IllegalTransactionStateException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import psidev.psi.mi.jami.model.CvTerm;
 import uk.ac.ebi.intact.core.persister.CoreDeleter;
 import uk.ac.ebi.intact.core.persister.IntactObjectDeleteException;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportJamiCandidate;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.ModelledParticipantImportController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantImportController;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
+import uk.ac.ebi.intact.jami.model.audit.Auditable;
+import uk.ac.ebi.intact.jami.model.extension.*;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.model.*;
 
@@ -95,10 +102,28 @@ public class PersistenceController extends JpaAwareController {
             return true;
 
         } catch ( Throwable e ) {
-            addErrorMessage("Problem persisting object", "AC: " + object.getAc());
+            addErrorMessage("Problem persisting object", object.toString());
             handleException(e);
 
             return false;
+        }
+    }
+
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRES_NEW)
+    public uk.ac.ebi.intact.jami.model.audit.Auditable doSynchronize( Object object, IntactDbSynchronizer dbSynchronizer) {
+        if ( object == null ) {
+            addErrorMessage( "No annotated object to save", "How did I get here?" );
+            return null;
+        }
+
+        try {
+            return dbSynchronizer.synchronize(object, true);
+
+        } catch ( Throwable e ) {
+            addErrorMessage("Problem persisting object", object.toString());
+            handleException(e);
+
+            return null;
         }
     }
 
@@ -248,6 +273,55 @@ public class PersistenceController extends JpaAwareController {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Save a master protein and update the cross reference of a protein transcript which will be created later
+     * @param intactObject
+     */
+    public void doSaveJamiMasterProteins(IntactPrimaryObject intactObject) {
+        if (intactObject instanceof psidev.psi.mi.jami.model.Protein){
+            psidev.psi.mi.jami.model.Protein proteinTranscript = (psidev.psi.mi.jami.model.Protein) intactObject;
+
+            Collection<psidev.psi.mi.jami.model.Xref> xrefsToDelete = new ArrayList<psidev.psi.mi.jami.model.Xref>(proteinTranscript.getXrefs().size());
+            Collection<psidev.psi.mi.jami.model.Xref> xrefsToAdd = new ArrayList<psidev.psi.mi.jami.model.Xref>(proteinTranscript.getXrefs().size());
+
+            for (psidev.psi.mi.jami.model.Xref xref : proteinTranscript.getXrefs()) {
+                CvTerm qualifier = xref.getQualifier();
+
+                if (qualifier != null){
+                    if (qualifier.getMIIdentifier().equals(CvXrefQualifier.CHAIN_PARENT_MI_REF) ||
+                            qualifier.getMIIdentifier().equals(CvXrefQualifier.ISOFORM_PARENT_MI_REF)) {
+                        String primaryId = xref.getId();
+
+                        if (!(intactObject instanceof IntactInteractor)){
+                            ModelledParticipantImportController participantImportController = (ModelledParticipantImportController) getSpringContext().getBean("modelledParticipantImportController");
+                            Set<ImportJamiCandidate> importCandidates = participantImportController.importParticipant(primaryId);
+
+                            if (!importCandidates.isEmpty()) {
+                                ImportJamiCandidate candidate = importCandidates.iterator().next();
+                                psidev.psi.mi.jami.model.Interactor interactor = candidate.getInteractor();
+
+                                if (!(interactor instanceof IntactInteractor)) {
+                                    IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+                                    Auditable persistedInteractor = doSynchronize(interactor, intactDao.getSynchronizerContext().getInteractorSynchronizer());
+
+                                    if (persistedInteractor != null){
+                                        xrefsToDelete.add(xref);
+                                        xrefsToAdd.add(new uk.ac.ebi.intact.jami.model.extension.InteractorXref(xref.getDatabase(),
+                                                ((IntactPrimaryObject)persistedInteractor).getAc(),
+                                                xref.getQualifier()));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            proteinTranscript.getXrefs().removeAll(xrefsToDelete);
+            proteinTranscript.getXrefs().addAll(xrefsToAdd);
         }
     }
 

@@ -36,7 +36,7 @@ public class ModelledParticipantConverter implements Converter {
     public Object getAsObject( FacesContext facesContext, UIComponent uiComponent, String ac ) throws ConverterException {
         if ( ac == null ) return null;
         IntactDao dao = ApplicationContextProvider.getBean("intactDao");
-        ModelledParticipantDao<IntactModelledParticipant> pDao = dao.getModelledParticipantDao();
+        ModelledParticipantDao pDao = dao.getModelledParticipantDao();
         return pDao.getByAc( ac );
     }
 

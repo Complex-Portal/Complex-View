@@ -70,43 +70,46 @@
             <p:column headerText="Role">
                 <h:outputText value="#{feature.role == null ? '-' : feature.role.shortName}"/>
             </p:column>
-            <p:column headerText="Linked feature">
-                <h:outputText value="-" rendered="#{feature.binds == null}"/>
+            <p:column headerText="Linked feature(s)">
+                <h:outputText value="-" rendered="#{empty feature.linkedFeatures}"/>
 
-                <h:panelGroup rendered="#{feature.binds != null and feature.binds.ac != null and not changesController.isDeletedAc(feature.ac)}">
-                    <p:commandLink onclick="load_feature.show()" action="#{curateController.edit(feature.boundDomain)}"
-                                   style="#{feature.ac == null? 'color:blue' :''}"
-                                   value="#{feature.binds.shortName}" ajax="false"/>
-                </h:panelGroup>
+                <ui:repeat value="#{feature.linkedFeatures}" var="linked" varStatus="status">
+                    <h:panelGroup rendered="#{linked.ac != null}">
+                        <p:commandLink onclick="load_feature.show()" action="#{curateController.edit(linked)}"
+                                       style="#{feature.ac == null? 'color:blue' :''}"
+                                       value="#{linked.shortName}" ajax="false"/>
+                    </h:panelGroup>
 
-                <h:panelGroup rendered="#{feature.binds != null and feature.binds.ac == null}">
-                    <h:outputText value="#{feature.binds.shortName}"/>
-                </h:panelGroup>
-
-
-                <h:panelGroup rendered="#{feature.binds != null}">
-                    <p:commandLink type="button"
-                                   onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(feature.ac)}.show()"
-                                   styleClass="ui-icon ui-icon-link" style="display:inline-block"
-                                   title="Linked to #{feature.binds.shortNames}">
-                    </p:commandLink>
-
-                    <p:confirmDialog
-                            widgetVar="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(feature.ac)}"
-                            message="Do you want to unlink this feature?" modal="true">
-                        <p:commandButton value="Yes Sure"
-                                         actionListener="#{complexController.unlinkFeature(feature)}"
-                                         ajax="false"/>
-                        <p:commandButton value="Not Yet"
-                                       onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(feature.ac)}.hide()"
-                                       />
-                    </p:confirmDialog>
-                </h:panelGroup>
+                    <h:panelGroup rendered="#{linked.ac == null}">
+                        <h:outputText value="#{linked.shortName}"/>
+                    </h:panelGroup>
 
 
+                    <h:panelGroup>
+                        <p:commandLink type="button"
+                                       onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(feature.ac)}.show()"
+                                       styleClass="ui-icon ui-icon-link" style="display:inline-block"
+                                       title="Linked to #{linked.shortName}">
+                        </p:commandLink>
+
+                        <p:confirmDialog
+                                widgetVar="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(feature.ac)}"
+                                message="Do you want to unlink this feature?" modal="true">
+                            <p:commandButton value="Yes Sure"
+                                             actionListener="#{complexController.unlinkFeature(feature, linked)}"
+                                             ajax="false"/>
+                            <p:commandButton value="Not Yet"
+                                             onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(feature.ac)}.hide()"
+                                    />
+                        </p:confirmDialog>
+                    </h:panelGroup>
+                    <p:outputPanel rendered="#{status.index lt (status.end - 1)}">
+                        <br/>
+                    </p:outputPanel>
+                </ui:repeat>
             </p:column>
             <p:column headerText="Range(s)">
-                <ui:repeat value="#{modelledFeature.ranges}" var="range" varStatus="status">
+                <ui:repeat value="#{feature.ranges}" var="range" varStatus="status">
                     <h:outputText value="#{rangeUtils.convertRangeToString(range)}"/>
                     <p:outputPanel rendered="#{status.index lt (status.end - 1)}">
                         <br/>

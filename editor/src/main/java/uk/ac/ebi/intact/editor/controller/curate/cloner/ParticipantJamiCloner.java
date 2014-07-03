@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
 import psidev.psi.mi.jami.model.*;
 import uk.ac.ebi.intact.jami.model.extension.*;
-import uk.ac.ebi.intact.model.clone.IntactClonerException;
 
 /**
  * Editor specific cloning routine for biological complexes.
@@ -29,7 +28,7 @@ import uk.ac.ebi.intact.model.clone.IntactClonerException;
 public class ParticipantJamiCloner {
 
 
-    public static ModelledParticipant cloneParticipant(Participant participant) throws IntactClonerException {
+    public static ModelledParticipant cloneParticipant(Participant participant) {
         ModelledParticipant clone = new IntactModelledParticipant(participant.getInteractor());
 
         clone.setBiologicalRole(participant.getBiologicalRole());
