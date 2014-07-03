@@ -87,19 +87,19 @@
 
                     <h:panelGroup>
                         <p:commandLink type="button"
-                                       onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(feature.ac)}.show()"
+                                       onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(linked.ac)}.show()"
                                        styleClass="ui-icon ui-icon-link" style="display:inline-block"
                                        title="Linked to #{linked.shortName}">
                         </p:commandLink>
 
                         <p:confirmDialog
-                                widgetVar="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(feature.ac)}"
+                                widgetVar="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(linked.ac)}"
                                 message="Do you want to unlink this feature?" modal="true">
                             <p:commandButton value="Yes Sure"
                                              actionListener="#{complexController.unlinkFeature(feature, linked)}"
                                              ajax="false"/>
                             <p:commandButton value="Not Yet"
-                                             onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(feature.ac)}.hide()"
+                                             onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(linked.ac)}.hide()"
                                     />
                         </p:confirmDialog>
                     </h:panelGroup>

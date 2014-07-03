@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.model.impl.DefaultStoichiometry;
 import psidev.psi.mi.jami.utils.AliasUtils;
+import psidev.psi.mi.jami.utils.AnnotationUtils;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedJamiChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantJamiCloner;
@@ -42,11 +43,14 @@ import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.*;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
+import uk.ac.ebi.intact.model.CvTopic;
 
+import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.DataModel;
+import javax.faces.model.SelectItem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -80,7 +84,67 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Autowired
     private ComplexController interactionController;
 
+    private List<SelectItem> aliasTypeSelectItems;
+    private List<SelectItem> participantTopicSelectItems;
+    private List<SelectItem> databaseSelectItems;
+    private List<SelectItem> qualifierSelectItems;
+    private List<SelectItem> biologicalRoleSelectItems;
+
     public ModelledParticipantController() {
+    }
+
+    @PostConstruct
+    @Transactional(value = "jamiTransactionManager")
+    public void loadData() {
+        aliasTypeSelectItems = new ArrayList<SelectItem>();
+        aliasTypeSelectItems.add(new SelectItem( null, "select type", "select type", false, false, true ));
+        participantTopicSelectItems = new ArrayList<SelectItem>();
+        participantTopicSelectItems.add(new SelectItem(null, "select topic", "select topic", false, false, true));
+        databaseSelectItems = new ArrayList<SelectItem>();
+        databaseSelectItems.add(new SelectItem( null, "select database", "select database", false, false, true ));
+        qualifierSelectItems = new ArrayList<SelectItem>();
+        qualifierSelectItems.add(new SelectItem( null, "select qualifier", "select qualifier", false, false, true ));
+        biologicalRoleSelectItems = new ArrayList<SelectItem>();
+        biologicalRoleSelectItems.add(new SelectItem(null, "select biological role", "select biological role", false, false, true));
+
+        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        CvTermDao cvDao = intactDao.getCvTermDao();
+
+        IntactCvTerm aliasTypeParent = cvDao.getByMIIdentifier("MI:0300", IntactUtils.ALIAS_TYPE_OBJCLASS);
+        loadChildren(aliasTypeParent, aliasTypeSelectItems);
+
+        IntactCvTerm participantTopicParent = cvDao.getByMIIdentifier("MI:0666", IntactUtils.TOPIC_OBJCLASS);
+        loadChildren(participantTopicParent, participantTopicSelectItems);
+
+        IntactCvTerm databaseParent = cvDao.getByMIIdentifier("MI:0473", IntactUtils.DATABASE_OBJCLASS);
+        loadChildren(databaseParent, databaseSelectItems);
+
+        IntactCvTerm qualifierParent = cvDao.getByMIIdentifier("MI:0353", IntactUtils.QUALIFIER_OBJCLASS);
+        loadChildren(qualifierParent, qualifierSelectItems);
+
+        IntactCvTerm bioRoleParent = cvDao.getByMIIdentifier("MI:0500", IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
+        loadChildren(bioRoleParent, biologicalRoleSelectItems);
+    }
+
+    private void loadChildren(IntactCvTerm parent, List<SelectItem> selectItems){
+        for (OntologyTerm child : parent.getChildren()){
+            IntactCvTerm cv = (IntactCvTerm)child;
+            SelectItem item = createSelectItem(cv);
+            if (item != null){
+                selectItems.add(item);
+            }
+            if (!cv.getChildren().isEmpty()){
+                loadChildren(cv, selectItems);
+            }
+        }
+    }
+
+    private SelectItem createSelectItem( IntactCvTerm cv ) {
+        if (!AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
+            boolean obsolete = AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), CvTopic.OBSOLETE_MI_REF, CvTopic.OBSOLETE).isEmpty();
+            return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")), cv.getFullName());
+        }
+        return null;
     }
 
     @Override
@@ -101,6 +165,46 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
         // do nothing
+    }
+
+    public List<SelectItem> getAliasTypeSelectItems() {
+        return aliasTypeSelectItems;
+    }
+
+    public void setAliasTypeSelectItems(List<SelectItem> aliasTypeSelectItems) {
+        this.aliasTypeSelectItems = aliasTypeSelectItems;
+    }
+
+    public List<SelectItem> getParticipantTopicSelectItems() {
+        return participantTopicSelectItems;
+    }
+
+    public void setParticipantTopicSelectItems(List<SelectItem> participantTopicSelectItems) {
+        this.participantTopicSelectItems = participantTopicSelectItems;
+    }
+
+    public List<SelectItem> getDatabaseSelectItems() {
+        return databaseSelectItems;
+    }
+
+    public void setDatabaseSelectItems(List<SelectItem> databaseSelectItems) {
+        this.databaseSelectItems = databaseSelectItems;
+    }
+
+    public List<SelectItem> getQualifierSelectItems() {
+        return qualifierSelectItems;
+    }
+
+    public void setQualifierSelectItems(List<SelectItem> qualifierSelectItems) {
+        this.qualifierSelectItems = qualifierSelectItems;
+    }
+
+    public List<SelectItem> getBiologicalRoleSelectItems() {
+        return biologicalRoleSelectItems;
+    }
+
+    public void setBiologicalRoleSelectItems(List<SelectItem> biologicalRoleSelectItems) {
+        this.biologicalRoleSelectItems = biologicalRoleSelectItems;
     }
 
     @Transactional(value = "jamiTransactionManager")
@@ -213,6 +317,10 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     protected IntactModelledParticipant cloneAnnotatedObject(IntactPrimaryObject ao) {
         // to be overrided
         return (IntactModelledParticipant) ParticipantJamiCloner.cloneParticipant((IntactModelledParticipant) ao);
+    }
+
+    public boolean isInteractorSet(IntactModelledParticipant p){
+        return !p.getInteractor().getShortName().equals("unspecified");
     }
 
     public String newParticipant(IntactComplex interaction) {
@@ -434,5 +542,55 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Override
     public void modifyClone(AnnotatedObject clone) {
         refreshTabs();
+    }
+
+    @Override
+    public void newXref(ActionEvent evt) {
+        this.participant.getXrefs().add(new ModelledParticipantXref());
+        setUnsavedChanges(true);
+    }
+
+    @Override
+    public void newAnnotation(ActionEvent evt) {
+        this.participant.getAnnotations().add(new ModelledParticipantAnnotation());
+        setUnsavedChanges(true);
+    }
+
+    @Override
+    public void newAlias(ActionEvent evt) {
+        this.participant.getAliases().add(new ModelledParticipantAlias());
+        setUnsavedChanges(true);
+    }
+
+    @Override
+    public String getCautionMessage() {
+        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.participant.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
+                psidev.psi.mi.jami.model.Annotation.CAUTION);
+        return caution != null ? caution.getValue() : null;
+    }
+
+    @Override
+    public String getCautionMessage(IntactPrimaryObject ao) {
+        IntactModelledParticipant participant = (IntactModelledParticipant)ao;
+        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(participant.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
+                psidev.psi.mi.jami.model.Annotation.CAUTION);
+        return caution != null ? caution.getValue() : null;
+    }
+
+    @Override
+    public String getInternalRemarkMessage() {
+        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.participant.getAnnotations(), null,
+                "remark-internal");
+        return caution != null ? caution.getValue() : null;
+    }
+
+    @Override
+    public List getAnnotations() {
+        return new ArrayList(this.participant.getAnnotations());
+    }
+
+    @Override
+    public List getAliases() {
+        return new ArrayList(this.participant.getAliases());
     }
 }

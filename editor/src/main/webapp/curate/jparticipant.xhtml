@@ -144,13 +144,54 @@
             </ui:include>
         </p:outputPanel>
     </p:tab>
+    <p:tab id="xrefsTab" title="Xrefs (#{modelledParticipantController.participant.dbXrefs.size()})">
+        <p:outputPanel id="xrefsPanel" autoUpdate="true">
+            <ui:decorate template="jxrefs_table.xhtml">
 
-    <ui:decorate template="jpropertiesTabs.xhtml">
-        <ui:param name="annotatedObjectSelectItems" value="#{modelledParticipantController.participantTopicSelectItems}"/>
-        <ui:param name="aliasTypeSelectItems" value="#{modelledParticipantController.aliasTypeSelectItems}"/>
-        <ui:param name="databaseSelectItems" value="#{modelledParticipantController.databaseSelectItems}"/>
-        <ui:param name="qualifierSelectItems" value="#{modelledParticipantController.qualifierSelectItems}"/>
-    </ui:decorate>
+                <ui:param name="annotatedObjectController" value="#{modelledParticipantController}"/>
+                <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,#{updateOnChange}"/>
+                <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
+                <ui:param name="valueChangeAwareObject" value="#{modelledParticipantController}"/>
+                <ui:param name="databaseSelectItems" value="#{modelledParticipantController.databaseSelectItems}"/>
+                <ui:param name="qualifierSelectItems" value="#{modelledParticipantController.qualifierSelectItems}"/>
+
+                <ui:define name="syncValues">
+                    <ui:insert name="xrefSyncValues"/>
+                </ui:define>
+
+            </ui:decorate>
+        </p:outputPanel>
+
+    </p:tab>
+
+    <p:tab id="annotationsTab" title="Annotations (#{modelledParticipantController.participant.annotations.size()})">
+        <p:outputPanel id="annotationsPanel" autoUpdate="true">
+            <ui:decorate template="jannotations_table.xhtml">
+                <ui:param name="annotatedObjectController" value="#{modelledParticipantController}"/>
+                <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,#{updateOnChange}"/>
+                <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
+                <ui:param name="valueChangeAwareObject" value="#{modelledParticipantController}"/>
+                <ui:param name="annotatedObjectSelectItems" value="#{modelledParticipantController.participantTopicSelectItems}"/>
+
+                <ui:define name="syncValues">
+                    <ui:insert name="annotationSyncValues"/>
+                </ui:define>
+
+            </ui:decorate>
+        </p:outputPanel>
+
+    </p:tab>
+    <p:tab id="aliasesTab" title="Aliases (#{modelledParticipantController.participant.aliases.size()})">
+        <p:outputPanel id="aliasesPanel" autoUpdate="true">
+            <ui:decorate template="jaliases_table.xhtml">
+                <ui:param name="annotatedObjectController" value="#{modelledParticipantController}"/>
+                <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent #{updateOnChange}"/>
+                <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
+                <ui:param name="aliasTypeSelectItems" value="#{modelledParticipantController.aliasTypeSelectItems}"/>
+            </ui:decorate>
+
+        </p:outputPanel>
+    </p:tab>
 
 </p:tabView>
 

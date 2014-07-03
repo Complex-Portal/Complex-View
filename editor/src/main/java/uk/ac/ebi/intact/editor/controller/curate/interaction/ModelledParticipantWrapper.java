@@ -93,4 +93,32 @@ public class ModelledParticipantWrapper {
     public List<ModelledFeatureWrapper> getFeatures() {
         return features;
     }
+
+    public int getMinStoichiometry(){
+        return this.participant.getStoichiometry() != null ? this.participant.getStoichiometry().getMinValue() : 0;
+    }
+
+    public int getMaxStoichiometry(){
+        return this.participant.getStoichiometry() != null ? this.participant.getStoichiometry().getMaxValue() : 0;
+    }
+
+    public void setMinStoichiometry(int stc){
+        if (this.participant.getStoichiometry() == null){
+            this.participant.setStoichiometry(new IntactStoichiometry(stc));
+        }
+        else {
+            IntactStoichiometry stoichiometry = (IntactStoichiometry)participant.getStoichiometry();
+            this.participant.setStoichiometry(new IntactStoichiometry(stc, stoichiometry.getMaxValue()));
+        }
+    }
+
+    public void setMaxStoichiometry(int stc){
+        if (this.participant.getStoichiometry() == null){
+            this.participant.setStoichiometry(new IntactStoichiometry(stc));
+        }
+        else {
+            IntactStoichiometry stoichiometry = (IntactStoichiometry)participant.getStoichiometry();
+            this.participant.setStoichiometry(new IntactStoichiometry(stoichiometry.getMinValue(), stc));
+        }
+    }
 }

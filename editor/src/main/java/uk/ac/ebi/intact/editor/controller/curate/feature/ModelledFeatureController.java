@@ -618,11 +618,11 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     @Override
     public List getAnnotations() {
-        return super.getAnnotations();
+        return new ArrayList(this.feature.getAnnotations());
     }
 
     @Override
     public List getAliases() {
-        return super.getAliases();
+        return new ArrayList(this.feature.getAliases());
     }
 }
