@@ -113,7 +113,7 @@
                 <h:outputLabel value="Biological role: " for="bioRoleTxt"/>
             </td>
             <td colspan="2">
-                <ia:inputCvObject id="bioRoleTxt" cvIdentifier="MI:0500"
+                <ia:inputCvTerm id="bioRoleTxt" cvIdentifier="MI:0500"
                                   value="#{participant.biologicalRole}"
                                   selectItems="#{modelledParticipantContoller.biologicalRoleSelectItems}"
                                   required="true" requiredMessage="Biological role is required"

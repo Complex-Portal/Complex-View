@@ -38,7 +38,7 @@
 
         <script type="text/javascript">
             var #{dialogWidgetId}_icv = new InputCvObject('#{cc.clientId}');
-            #{dialogWidgetId}_icv.setUrl('#{facesContext.externalContext.requestContextPath}/comp/inputcvobject_inner.xhtml?identifier=#{cc.attrs.cvIdentifier}&amp;dialogId=#{dialogWidgetId}&amp;clientId=#{cc.clientId}&amp;visible=true');
+            #{dialogWidgetId}_icv.setUrl('#{facesContext.externalContext.requestContextPath}/comp/inputcvterm_inner.xhtml?identifier=#{cc.attrs.cvIdentifier}&amp;dialogId=#{dialogWidgetId}&amp;clientId=#{cc.clientId}&amp;visible=true');
         </script>
 
          <h:panelGrid columns="2" id="inputPanel" onmouseover="document.getElementById('#{cc.clientId}:cvButtons').style.visibility = 'visible';"

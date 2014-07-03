@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.editor.controller.curate.cloner;
 import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.utils.XrefUtils;
 import uk.ac.ebi.intact.jami.model.extension.*;
-import uk.ac.ebi.intact.model.clone.IntactClonerException;
 
 /**
  * Editor specific cloning routine for complex participants.
@@ -29,7 +28,7 @@ import uk.ac.ebi.intact.model.clone.IntactClonerException;
  */
 public class ComplexJamiCloner {
 
-    public static Complex cloneInteraction(InteractionEvidence evidence) throws IntactClonerException {
+    public static Complex cloneInteraction(InteractionEvidence evidence) {
         Complex clone = new IntactComplex(evidence.getShortName());
 
         clone.setInteractionType(evidence.getInteractionType());
@@ -81,7 +80,7 @@ public class ComplexJamiCloner {
         return clone;
     }
 
-    public static Complex cloneComplex(Complex complex) throws IntactClonerException {
+    public static Complex cloneComplex(Complex complex) {
         Complex clone = new IntactComplex(complex.getShortName());
 
         clone.setOrganism(complex.getOrganism());

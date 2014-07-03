@@ -16,10 +16,12 @@
 package uk.ac.ebi.intact.editor.controller;
 
 
-import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.model.user.User;
 
 import javax.faces.application.FacesMessage;
@@ -74,6 +76,15 @@ public abstract class BaseController implements Serializable {
     public User getCurrentUser() {
         UserSessionController userSessionController = getUserSessionController();
         return userSessionController.getCurrentUser();
+    }
+
+    @Transactional(value = "jamiTransactionManager")
+    public uk.ac.ebi.intact.jami.model.user.User getCurrentJamiUser() {
+        UserSessionController userSessionController = getUserSessionController();
+        User intactUser = userSessionController.getCurrentUser();
+
+        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        return intactDao.getUserDao().getByAc(intactUser.getAc());
     }
 
     protected void handleException(Throwable e) {

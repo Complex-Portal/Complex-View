@@ -709,7 +709,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         addInfoMessage("Cloned annotated object", null);
         setJamiObject(clone);
         setUnsavedChanges(true);
-
+        refreshTabsAndFocusXref();
         return getCurateController().edit(clone);
     }
 
