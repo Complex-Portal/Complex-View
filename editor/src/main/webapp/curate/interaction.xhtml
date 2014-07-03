@@ -42,6 +42,8 @@
                 onclick="copyToExperimentDialog.show()" />
     <p:menuitem value="Move to Experiment" ajax="true"
                 onclick="moveToExperimentDialog.show()" />
+    <p:menuitem ajax="false" onclick="loadDialog.show()" value="Clone as a biological complex"
+                action="#{complexController.newComplex(interaction)}" process="@this"/>
 
     <p:submenu label="Export">
         <ui:include src="export_submenu.xhtml">

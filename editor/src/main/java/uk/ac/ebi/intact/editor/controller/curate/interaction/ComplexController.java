@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,6 +31,7 @@ import psidev.psi.mi.jami.model.Annotation;
 import psidev.psi.mi.jami.model.Complex;
 import psidev.psi.mi.jami.model.Xref;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
+import uk.ac.ebi.intact.bridges.imexcentral.ImexCentralException;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
@@ -50,6 +52,7 @@ import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleStatus;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.Experiment;
+import uk.ac.ebi.intact.model.Interaction;
 import uk.ac.ebi.intact.model.Publication;
 import uk.ac.ebi.intact.model.util.*;
 
@@ -986,5 +989,17 @@ public class ComplexController extends AnnotatedObjectController {
 
     public void setReasonForOnHoldFromDialog(String reasonForOnHoldFromDialog) {
         this.reasonForOnHoldFromDialog = reasonForOnHoldFromDialog;
+    }
+
+    public String newComplex(Interaction interactionEvidence) {
+        if (interactionEvidence == null || interactionEvidence.getAc() == null) {
+            addErrorMessage("Cannot create biological complex", "Interaction evidence is empty or not saved");
+            return null;
+        }
+
+        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        setComplex((IntactComplex)ComplexJamiCloner.cloneInteraction(intactDao.getInteractionDao().getByAc(interactionEvidence.getAc())));
+
+        return "/curate/complex?faces-redirect=true";
     }
 }
