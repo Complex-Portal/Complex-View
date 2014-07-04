@@ -306,6 +306,20 @@ public class ComplexController extends AnnotatedObjectController {
         return name;
     }
 
+    public String getName(IntactComplex complex){
+        String name = complex.getShortName();
+        if (complex.getRecommendedName() != null){
+            name = complex.getRecommendedName();
+        }
+        else if (complex.getSystematicName() != null){
+            name = complex.getSystematicName();
+        }
+        else if (!complex.getAliases().isEmpty()){
+            name = complex.getAliases().iterator().next().getName();
+        }
+        return name;
+    }
+
     public String getOrganism(){
         return this.complex.getOrganism() != null ? this.complex.getOrganism().getCommonName():"organism unknown";
     }

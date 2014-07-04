@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
+import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
 import uk.ac.ebi.intact.model.Publication;
 
 import javax.faces.context.FacesContext;
@@ -38,6 +39,10 @@ public class DashboardController extends JpaAwareController {
     private LazyDataModel<Publication> allPublications;
     private LazyDataModel<Publication> ownedByUser;
     private LazyDataModel<Publication> reviewedByUser;
+
+    private LazyDataModel<IntactComplex> allComplexes;
+    private LazyDataModel<IntactComplex> complexesOwnedByUser;
+    private LazyDataModel<IntactComplex> complexesReviewedByUser;
 
     private boolean hideAcceptedAndReleased;
     private String[] statusToShow;
@@ -85,6 +90,17 @@ public class DashboardController extends JpaAwareController {
         reviewedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
                                                                     "select p from Publication p where upper(p.currentReviewer.login) = '"+userId+"'"+
                                                                     " and ("+additionalSql+")", "p", "updated", false);
+
+        allComplexes = LazyDataModelFactory.createLazyDataModel(getJamiEntityManager(),
+                "select p from IntactComplex p where " + additionalSql, "p", "updated", false);
+
+        complexesOwnedByUser = LazyDataModelFactory.createLazyDataModel( getJamiEntityManager(),
+                "select p from IntactComplex p where upper(p.currentOwner.login) = '"+userId+"'"+
+                        " and ("+additionalSql+")", "p", "updated", false);
+
+        complexesReviewedByUser = LazyDataModelFactory.createLazyDataModel( getJamiEntityManager(),
+                "select p from IntactComplex p where upper(p.currentReviewer.login) = '"+userId+"'"+
+                        " and ("+additionalSql+")", "p", "updated", false);
     }
 
     public LazyDataModel<Publication> getAllPublications() {
@@ -113,5 +129,17 @@ public class DashboardController extends JpaAwareController {
 
     public void setStatusToShow(String[] statusToShow) {
         this.statusToShow = statusToShow;
+    }
+
+    public LazyDataModel<IntactComplex> getAllComplexes() {
+        return allComplexes;
+    }
+
+    public LazyDataModel<IntactComplex> getComplexesOwnedByUser() {
+        return complexesOwnedByUser;
+    }
+
+    public LazyDataModel<IntactComplex> getComplexesReviewedByUser() {
+        return complexesReviewedByUser;
     }
 }

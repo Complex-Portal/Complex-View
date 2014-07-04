@@ -26,7 +26,7 @@
 
         <h:panelGroup>
             <p>
-                To create new publications go to the&#160;
+                To create new publications/biological complexes go to the&#160;
                 <p:commandLink value="Curate" action="/curate/curate?faces-redirect=true&amp;includeViewParams=true"
                            rendered="#{userSessionController.hasRole('CURATOR')}"
                            ajax="false"
@@ -76,6 +76,33 @@
                 <p:tab title="All the publications (#{dashboardController.allPublications.rowCount})">
                     <ui:include src="publications_table.xhtml">
                         <ui:param name="publicationsDataModel" value="#{dashboardController.allPublications}"/>
+                    </ui:include>
+                </p:tab>
+            </p:tabView>
+
+            <p:tabView id="complexesDashboard" dynamic="true">
+                <p:tab title="Biological Complexes owned by you (#{dashboardController.complexesOwnedByUser.rowCount})">
+                    <h:panelGroup rendered="#{dashboardController.ownedByUser.rowCount gt 0}">
+                        <ui:include src="complexes_table.xhtml">
+                            <ui:param name="complexesDataModel" value="#{dashboardController.complexesOwnedByUser}"/>
+                        </ui:include>
+                    </h:panelGroup>
+                    <h:outputText value="You don't own any publication at the moment" rendered="#{dashboardController.complexesOwnedByUser.rowCount == 0}"/>
+                </p:tab>
+
+                <p:tab title="Biological Complexes reviewed by you (#{dashboardController.complexesReviewedByUser.rowCount})"
+                       rendered="#{userSessionController.hasRole('REVIEWER')}">
+                    <h:panelGroup rendered="#{dashboardController.complexesReviewedByUser.rowCount gt 0}">
+                        <ui:include src="complexes_table.xhtml">
+                            <ui:param name="complexesDataModel" value="#{dashboardController.complexesReviewedByUser}"/>
+                        </ui:include>
+                    </h:panelGroup>
+                    <h:outputText value="Yay! Nothing to review at this time" rendered="#{dashboardController.complexesReviewedByUser.rowCount == 0}"/>
+                </p:tab>
+
+                <p:tab title="All the Biological Complexes (#{dashboardController.allComplexes.rowCount})">
+                    <ui:include src="complexes_table.xhtml">
+                        <ui:param name="complexesDataModel" value="#{dashboardController.allComplexes}"/>
                     </ui:include>
                 </p:tab>
             </p:tabView>
