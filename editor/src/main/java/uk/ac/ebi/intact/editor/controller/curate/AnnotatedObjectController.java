@@ -213,11 +213,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                     addWarningMessage("Complex without status", "Assuming that it has been imported. Save it if you are happy with this assumption");
                     setUnsavedChanges(true);
                 } else if (LifeCycleStatus.CURATION_IN_PROGRESS.equals(complex.getStatus())) {
-                    if (!getUserSessionController().isItMe(complex.getCurrentOwner())) {
+                    if (!getUserSessionController().isJamiUserMe(complex.getCurrentOwner())) {
                         addWarningMessage("Complex being curated by '" + complex.getCurrentOwner().getLogin() + "'", "Please do not modify it without permission");
                     }
                 } else if (LifeCycleStatus.READY_FOR_CHECKING.equals(complex.getStatus())) {
-                    if (!getUserSessionController().isItMe(complex.getCurrentReviewer())) {
+                    if (!getUserSessionController().isJamiUserMe(complex.getCurrentReviewer())) {
                         addWarningMessage("Complex under review", "This complex is being reviewed by '" + complex.getCurrentReviewer().getLogin() + "'");
                     }
                 } else if (LifeCycleStatus.ACCEPTED_ON_HOLD.equals(complex.getStatus())) {
@@ -1198,7 +1198,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             if (complexController.getComplex() == null) {
                 return true;
             } else if (complexController.getComplex().getCurrentOwner() != null) {
-                return getUserSessionController().isItMe(complexController.getComplex().getCurrentOwner());
+                return getUserSessionController().isJamiUserMe(complexController.getComplex().getCurrentOwner());
             }
 
             return true;

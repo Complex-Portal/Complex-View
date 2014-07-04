@@ -26,17 +26,17 @@
         </p:column>
         <p:column>
             <ui:include src="/curate/common_column_notifications.xhtml">
-                <ui:param name="annotatedObjectController" value="#{publicationController}"/>
-                <ui:param name="ao" value="#{publication}"/>
+                <ui:param name="annotatedObjectController" value="#{complexController}"/>
+                <ui:param name="ao" value="#{complex}"/>
             </ui:include>
         </p:column>
         <p:column id="ac" headerText="AC" sortBy="#{complex.ac}">
             <h:outputText value="#{complex.ac}"/>
         </p:column>
-        <p:column id="complex type" headerText="Type">
+        <p:column id="complex_type" headerText="Type">
             <h:outputText value="#{complex.interactorType.shortName}" rendered="#{complex.interactorType != null}"/>
         </p:column>
-        <p:column id="interaction type" headerText="Type">
+        <p:column id="interaction_type" headerText="Type">
             <h:outputText value="#{complex.interactorType.shortName}"/>
         </p:column>
         <p:column id="organism" headerText="Type">
@@ -55,13 +55,5 @@
             <h:outputText value="#{complex.status.shortLabel}" rendered="#{complex.status != null}"/>
         </p:column>
     </p:dataTable>
-
-    <div class="legend" style="margin-top: 5px; margin-left: 15px">
-        <b>Legend:</b>
-        <div class="ia-accepted" style="display: inline; border: 1px solid gray;">&#160;&#160;&#160;</div>&#160;Accepted
-        <div class="ia-rejected" style="display: inline; border: 1px solid gray;">&#160;&#160;&#160;</div>&#160;Rejected
-        <div class="ia-corrected" style="display: inline; border: 1px solid gray;">&#160;&#160;&#160;</div>&#160;Rejections addressed
-        <div class="ia-not-accepted" style="display: inline; border: 1px solid gray;">&#160;&#160;&#160;</div>&#160;No Action
-    </div>
 
 </ui:composition>

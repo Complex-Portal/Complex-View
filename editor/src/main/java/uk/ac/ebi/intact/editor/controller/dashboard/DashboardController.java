@@ -18,6 +18,8 @@ package uk.ac.ebi.intact.editor.controller.dashboard;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
@@ -54,12 +56,22 @@ public class DashboardController extends JpaAwareController {
     }
 
     @SuppressWarnings("unchecked")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             refreshTables();
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public void loadJamiData( ComponentSystemEvent event ) {
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            refreshJamiTables();
+        }
+    }
+
+    @Transactional(value = "transactionManager", propagation = Propagation.SUPPORTS, readOnly = true)
     public void refreshTables() {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         final String userId = userSessionController.getCurrentUser().getLogin().toUpperCase();
@@ -70,19 +82,15 @@ public class DashboardController extends JpaAwareController {
         }
 
         StringBuilder statusToShowSql = new StringBuilder();
-        StringBuilder statusToShowSql2 = new StringBuilder();
 
         for (int i=0; i<statusToShow.length; i++) {
             if (i>0) {
                 statusToShowSql.append(" or");
-                statusToShowSql2.append(" or");
             }
             statusToShowSql.append(" p.status.identifier = '").append(statusToShow[i]).append("'");
-            statusToShowSql2.append(" p.cvStatus.identifier = '").append(statusToShow[i]).append("'");
         }
 
         String additionalSql = statusToShowSql.toString();
-        String additionalSql2 = statusToShowSql2.toString();
 
         allPublications = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
                 "select p from Publication p where " + additionalSql, "p", "updated", false);
@@ -94,6 +102,28 @@ public class DashboardController extends JpaAwareController {
         reviewedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
                                                                     "select p from Publication p where upper(p.currentReviewer.login) = '"+userId+"'"+
                                                                     " and ("+additionalSql+")", "p", "updated", false);
+    }
+
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.SUPPORTS, readOnly = true)
+    public void refreshJamiTables() {
+        UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
+        final String userId = userSessionController.getCurrentUser().getLogin().toUpperCase();
+
+        if (statusToShow.length == 0) {
+            addWarningMessage("No statuses selected", "Using default status selection");
+            statusToShow = DEFAULT_STATUS_SHOWN;
+        }
+
+        StringBuilder statusToShowSql2 = new StringBuilder();
+
+        for (int i=0; i<statusToShow.length; i++) {
+            if (i>0) {
+                statusToShowSql2.append(" or");
+            }
+            statusToShowSql2.append(" p.cvStatus.identifier = '").append(statusToShow[i]).append("'");
+        }
+
+        String additionalSql2 = statusToShowSql2.toString();
 
         allComplexes = LazyDataModelFactory.createLazyDataModel(getJamiEntityManager(),
                 "select p from IntactComplex p where " + additionalSql2, "p", "updated", false);

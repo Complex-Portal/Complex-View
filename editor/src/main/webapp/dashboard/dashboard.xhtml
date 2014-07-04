@@ -15,6 +15,7 @@
     <ui:define name="metadata">
          <f:metadata>
           <f:event type="preRenderView" listener="#{dashboardController.loadData}"/>
+             <f:event type="preRenderView" listener="#{dashboardController.loadJamiData}"/>
         </f:metadata>
     </ui:define>
 
@@ -83,9 +84,9 @@
             <p:tabView id="complexesDashboard" dynamic="true">
                 <p:tab title="Biological Complexes owned by you (#{dashboardController.complexesOwnedByUser.rowCount})">
                     <h:panelGroup rendered="#{dashboardController.ownedByUser.rowCount gt 0}">
-                        <!--<ui:include src="complexes_table.xhtml">
+                        <ui:include src="complexes_table.xhtml">
                             <ui:param name="complexesDataModel" value="#{dashboardController.complexesOwnedByUser}"/>
-                        </ui:include> -->
+                        </ui:include>
                     </h:panelGroup>
                     <h:outputText value="You don't own any Biological Complexes at the moment" rendered="#{dashboardController.complexesOwnedByUser.rowCount == 0}"/>
                 </p:tab>
@@ -93,17 +94,17 @@
                 <p:tab title="Biological Complexes reviewed by you (#{dashboardController.complexesReviewedByUser.rowCount})"
                        rendered="#{userSessionController.hasRole('REVIEWER')}">
                     <h:panelGroup rendered="#{dashboardController.complexesReviewedByUser.rowCount gt 0}">
-                        <!--<ui:include src="complexes_table.xhtml">
+                        <ui:include src="complexes_table.xhtml">
                             <ui:param name="complexesDataModel" value="#{dashboardController.complexesReviewedByUser}"/>
-                        </ui:include> -->
+                        </ui:include>
                     </h:panelGroup>
                     <h:outputText value="Yay! Nothing to review at this time" rendered="#{dashboardController.complexesReviewedByUser.rowCount == 0}"/>
                 </p:tab>
 
                 <p:tab title="All the Biological Complexes (#{dashboardController.allComplexes.rowCount})">
-                    <!--<ui:include src="complexes_table.xhtml">
+                    <ui:include src="complexes_table.xhtml">
                         <ui:param name="complexesDataModel" value="#{dashboardController.allComplexes}"/>
-                    </ui:include> -->
+                    </ui:include>
                 </p:tab>
             </p:tabView>
 
