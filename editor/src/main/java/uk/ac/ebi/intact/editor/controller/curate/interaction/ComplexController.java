@@ -1016,4 +1016,23 @@ public class ComplexController extends AnnotatedObjectController {
 
         return "/curate/complex?faces-redirect=true";
     }
+
+    @Transactional(value = "jamiTransactionManager")
+    public String newComplex() {
+
+        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        CvTermDao dao = intactDao.getCvTermDao();
+        CvTerm type = dao.getByMIIdentifier(Complex.COMPLEX_MI, IntactUtils.INTERACTOR_TYPE_OBJCLASS);
+
+        setComplex(new IntactComplex("name to specify"));
+        this.complex.setInteractorType(type);
+        lifecycleManager.getStartStatus().create(this.complex, "Created in Editor");
+
+        if (assignToMe) {
+            lifecycleManager.getNewStatus().claimOwnership(this.complex);
+            lifecycleManager.getAssignedStatus().startCuration(this.complex);
+        }
+
+        return "/curate/complex?faces-redirect=true";
+    }
 }

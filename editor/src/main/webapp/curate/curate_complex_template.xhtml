@@ -70,6 +70,7 @@
         <p:submenu id="mainMenu" label="Main">
             <p:submenu id="newMenu" label="New" icon="/resources/images/new.png">
                 <p:menuitem id="newPublicationItem" value="Publication" onclick="newPublicationDlg.show();"/>
+                <p:menuitem id="newBiologicalComplexItem" value="Biological Complex" action="#{complexController.newComplex}" ajax="false"/>
                 <p:menuitem id="newInteractorItem" value="Interactor..." onclick="newInteractorDialog.show(); "/>
                 <p:menuitem id="newCvObjectItem" value="CV Object..." onclick="newCvObjectDialog.show(); "/>
                 <p:menuitem id="newOrganismItem" value="Organism" action="#{bioSourceController.newOrganism}" ajax="false"/>
