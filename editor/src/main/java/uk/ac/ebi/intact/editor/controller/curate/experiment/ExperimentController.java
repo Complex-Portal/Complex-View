@@ -454,7 +454,7 @@ public class ExperimentController extends AnnotatedObjectController {
         return e;
     }
 
-    @Transactional
+    @Transactional(value = "transactionManager")
     public void copyPublicationAnnotations(ActionEvent evt) {
         CurateUtils.copyPublicationAnnotationsToExperiment(experiment);
 

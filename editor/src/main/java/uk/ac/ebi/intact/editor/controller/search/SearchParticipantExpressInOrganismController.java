@@ -41,7 +41,7 @@ public class SearchParticipantExpressInOrganismController extends JpaAwareContro
 		this.ac = ac;
 	}
 
-	@Transactional(readOnly = true)
+    @Transactional(value = "transactionManager", readOnly = true)
 	public void loadData(ComponentSystemEvent evt) {
 		if (!FacesContext.getCurrentInstance().isPostback()) {
 

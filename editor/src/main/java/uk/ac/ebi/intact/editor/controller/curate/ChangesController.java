@@ -420,7 +420,7 @@ public class ChangesController extends JpaAwareController implements UserListene
         addUnsavedHiddenJamiChange(change);
     }
 
-    @Transactional
+    @Transactional(value = "transactionManager")
     public void markToDeleteInteraction(Interaction interaction, Collection<Experiment> experiments) {
         Collection<Experiment> parents;
 

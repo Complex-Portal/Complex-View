@@ -127,7 +127,7 @@ public class PersistenceController extends JpaAwareController {
         }
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional(value = "transactionManager", propagation = Propagation.SUPPORTS)
     public IntactObject doRevert(IntactObject intactObject) {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Reverting: " + DebugUtil.intactObjectToString(intactObject, false));

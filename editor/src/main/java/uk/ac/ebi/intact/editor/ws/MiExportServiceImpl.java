@@ -49,7 +49,7 @@ import java.util.*;
 public class MiExportServiceImpl implements MiExportService {
     private final static String RELEASED_EVT_ID = "PL:0028";
 
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public Object exportPublication(final String ac, final String format) {
         Response response = null;
         try {
@@ -90,7 +90,7 @@ public class MiExportServiceImpl implements MiExportService {
         return response;
     }
 
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public Object exportExperiment(final String ac, final String format) {
         Response response = null;
         try {
@@ -131,7 +131,7 @@ public class MiExportServiceImpl implements MiExportService {
         return response;
     }
 
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRES_NEW)
     public Object exportInteraction(final String ac, final String format) {
         Response response = null;
         try {

@@ -18,17 +18,11 @@ package uk.ac.ebi.intact.editor.controller.curate.interaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyService;
-import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyServiceException;
-import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyTerm;
 import uk.ac.ebi.intact.bridges.taxonomy.UniprotTaxonomyService;
 import uk.ac.ebi.intact.core.persistence.dao.BioSourceDao;
-import uk.ac.ebi.intact.editor.controller.curate.organism.BioSourceService;
 import uk.ac.ebi.intact.model.BioSource;
-import uk.ac.ebi.intact.model.Institution;
 import uk.ac.ebi.intact.util.biosource.BioSourceServiceException;
 import uk.ac.ebi.intact.util.biosource.BioSourceServiceImpl;
-
-import java.util.List;
 
 /**
  * Checks if the biosource exist in IntAct first.
@@ -50,7 +44,7 @@ public class EditorBioSourceService extends BioSourceServiceImpl {
     }
 
     @Override
-    @Transactional
+    @Transactional(value = "transactionManager")
     public BioSource getBiosourceByTaxid(String taxid) throws BioSourceServiceException {
         BioSource biosource = bioSourceDao.getByTaxonIdUnique(taxid);
 

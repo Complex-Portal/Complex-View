@@ -51,7 +51,7 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private UserManagerController userManagerController;
 
-    @Transactional( readOnly = true )
+    @Transactional(value = "transactionManager", readOnly = true )
     public Authentication authenticate( Authentication authentication ) throws AuthenticationException {
 
         log.debug( "======================= AUTHENTICATE ======================" );

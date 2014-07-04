@@ -154,7 +154,7 @@ public class CvObjectService extends JpaAwareController {
          createCvTopicIfNecessary(CvTopic.TO_BE_REVIEWED);
     }
 
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public synchronized void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading Controlled Vocabularies" );
 

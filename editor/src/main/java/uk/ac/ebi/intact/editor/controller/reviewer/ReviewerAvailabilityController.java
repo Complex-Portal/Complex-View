@@ -27,7 +27,6 @@ import uk.ac.ebi.intact.model.util.UserUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,12 +43,12 @@ public class ReviewerAvailabilityController extends JpaAwareController {
     public ReviewerAvailabilityController() {
     }
 
-    @Transactional
+    @Transactional(value = "transactionManager")
     public void loadData(ComponentSystemEvent evt) {
         reviewers = getDaoFactory().getUserDao().getReviewers();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRES_NEW)
     public void save(ActionEvent evt) {
         for (User reviewer : reviewers) {
 

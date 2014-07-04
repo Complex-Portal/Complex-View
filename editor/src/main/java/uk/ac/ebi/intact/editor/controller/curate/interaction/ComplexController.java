@@ -114,7 +114,7 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     @PostConstruct
-    @Transactional(value = "jamiTransactionManager")
+    @Transactional(value = "jamiTransactionManager", readOnly = true)
     public void loadData() {
         aliasTypeSelectItems = new ArrayList<SelectItem>();
         aliasTypeSelectItems.add(new SelectItem( null, "select type", "select type", false, false, true ));

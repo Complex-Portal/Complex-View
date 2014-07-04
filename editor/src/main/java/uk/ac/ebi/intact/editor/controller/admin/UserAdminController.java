@@ -126,7 +126,7 @@ public class UserAdminController extends AbstractUserController {
     }
 
 
-    @Transactional
+    @Transactional(value = "transactionManager")
     public String saveUser() {
         final UserDao userDao = getDaoFactory().getUserDao();
 

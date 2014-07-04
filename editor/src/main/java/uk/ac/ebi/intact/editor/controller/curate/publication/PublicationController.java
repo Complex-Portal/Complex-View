@@ -607,7 +607,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional
+    @Transactional(value = "transactionManager")
     public void revertReadyForChecking(ActionEvent evt) {
         LifecycleEvent event = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.READY_FOR_CHECKING.identifier());
         publication.removeLifecycleEvent(event);
@@ -623,7 +623,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional
+    @Transactional(value = "transactionManager")
     public void revertAccepted(ActionEvent evt) {
         LifecycleEvent readyForReleaseEvt = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.READY_FOR_RELEASE.identifier());
         LifecycleEvent acceptedEvt = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.ACCEPTED.identifier());
@@ -647,7 +647,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional
+    @Transactional(value = "transactionManager")
     public void putOnHold(ActionEvent evt) {
         setOnHold(reasonForOnHoldFromDialog);
 
@@ -670,7 +670,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional
+    @Transactional(value = "transactionManager")
     public void readyForReleaseFromOnHold(ActionEvent evt) {
         removeAnnotation(CvTopic.ON_HOLD);
 
@@ -1146,7 +1146,7 @@ public class PublicationController extends AnnotatedObjectController {
         setAnnotation(CURATION_DEPTH, curationDepth);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(value = "transactionManager", readOnly = true)
     public boolean isAccepted() {
         if (isAcceptedOrBeyond(publication)) return true;
 
@@ -1170,7 +1170,7 @@ public class PublicationController extends AnnotatedObjectController {
                 pub.getStatus().getIdentifier().equals(CvPublicationStatusType.RELEASED.identifier());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(value = "transactionManager", readOnly = true)
     public boolean isAccepted(Publication pub) {
         if (isAcceptedOrBeyond(pub)) return true;
 

@@ -14,7 +14,10 @@
            http://www.springframework.org/schema/jee
            http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
-    <tx:annotation-driven  transaction-manager="transactionManager" proxy-target-class="true"/>
+    <tx:annotation-driven  proxy-target-class="true"/>
+
+    <!-- only scan annotations in this package -->
+    <context:component-scan base-package="uk.ac.ebi.intact"/>
 
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
@@ -56,18 +59,6 @@
 
     <jee:jndi-lookup id="coreDataSource" jndi-name="${db.jndi}"/>
 
-    <!-- only scan annotations in this package -->
-    <context:component-scan base-package="uk.ac.ebi.intact.jami"/>
-
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="ignoreUnresolvablePlaceholders" value="true"/>
-        <property name="locations">
-            <list>
-                <value>classpath*:/META-INF/intact-jami.properties</value>
-            </list>
-        </property>
-    </bean>
-
     <!-- JPATransactionManager is not dependent on hibernate. It is a more global platform -->
     <!-- We use entity manager because it is JPA and not just specific to hibernate -->
     <bean id="jamiTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
@@ -93,7 +84,7 @@
         </property>
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="databasePlatform" value="${db.platform}"/>
+                <property name="databasePlatform" value="${db.dialect}"/>
                 <property name="showSql" value="false"/>
                 <property name="generateDdl" value="false"/>
             </bean>

@@ -40,7 +40,7 @@ public class SearchExperimentHostOrganismController extends JpaAwareController {
 		this.ac = ac;
 	}
 
-	@Transactional(readOnly = true)
+    @Transactional(value = "transactionManager", readOnly = true)
 	public void loadData(ComponentSystemEvent evt) {
 		if (!FacesContext.getCurrentInstance().isPostback()) {
 

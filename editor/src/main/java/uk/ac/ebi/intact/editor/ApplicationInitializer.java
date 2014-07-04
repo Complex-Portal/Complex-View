@@ -35,7 +35,7 @@ public class ApplicationInitializer extends JpaAwareController implements Initia
     private ApplicationContext applicationContext;
 
     @Override
-    @Transactional
+    @Transactional(value = "transactionManager")
     public void afterPropertiesSet() throws Exception {
         createDefaultRoles();
         createDefaultUsers();

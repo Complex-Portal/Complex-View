@@ -441,7 +441,7 @@ public class InteractionController extends ParameterizableObjectController {
         return oldExp;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(value = "transactionManager", readOnly = true)
     public String newInteraction(Publication publication, Experiment exp) {
         Interaction interaction = new InteractionImpl();
         interaction.setOwner(userSessionController.getUserInstitution());

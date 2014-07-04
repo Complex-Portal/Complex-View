@@ -36,11 +36,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.DataModel;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,7 +75,7 @@ public class MyNotesController extends JpaAwareController {
                request.getContextPath();
     }
 
-    @Transactional
+    @Transactional(value = "transactionManager")
     public void loadPage(ComponentSystemEvent evt) {
         User user = userSessionController.getCurrentUser(true);
 
@@ -103,7 +100,7 @@ public class MyNotesController extends JpaAwareController {
         processNotes();
     }
 
-    @Transactional
+    @Transactional(value = "transactionManager")
     public void saveNotes(ActionEvent evt) {
         User user = userSessionController.getCurrentUser();
 

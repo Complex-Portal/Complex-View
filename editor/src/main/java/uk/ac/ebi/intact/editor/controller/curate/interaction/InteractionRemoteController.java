@@ -61,7 +61,7 @@ public class InteractionRemoteController extends JpaAwareController {
     public InteractionRemoteController() {
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(value = "transactionManager", readOnly = true)
     public void loadData( ComponentSystemEvent event ) {
         interactions = getDaoFactory().getInteractionDao().getByInteractorsPrimaryId(true, proteins);
 
