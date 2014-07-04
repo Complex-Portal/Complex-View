@@ -51,7 +51,7 @@ public class InputOrganismController extends BaseController {
     public InputOrganismController() {
     }
 
-    @Transactional(value = "jamiTransactionManager")
+    @Transactional("jamiTransactionManager")
     public void loadBioSources( ComponentSystemEvent evt) {
         if (log.isTraceEnabled()) log.trace("Load Biosources");
 //        setQuery(null);
@@ -72,7 +72,7 @@ public class InputOrganismController extends BaseController {
     }
 
     @SuppressWarnings({"JpaQlInspection", "unchecked"})
-    @Transactional(value = "jamiTransactionManager")
+    @Transactional("jamiTransactionManager")
     public void search(ActionEvent evt) {
         String query = getQuery();
 

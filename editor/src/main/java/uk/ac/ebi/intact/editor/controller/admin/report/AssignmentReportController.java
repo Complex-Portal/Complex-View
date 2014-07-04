@@ -49,7 +49,7 @@ public class AssignmentReportController extends JpaAwareController {
         toDate = new DateTime().toDate();
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional("transactionManager")
     public void calculate(ActionEvent evt) {
         assignmentInfos = new ArrayList<AssignmentInfo>();
 

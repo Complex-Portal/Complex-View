@@ -46,7 +46,6 @@ import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -101,7 +100,6 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     public ModelledFeatureController() {
     }
 
-    @PostConstruct
     @Transactional(value = "jamiTransactionManager")
     public void loadData() {
         typeSelectItems = new ArrayList<SelectItem>();
@@ -267,7 +265,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Transactional(value = "jamiTransactionManager")
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-
+            loadData();
             if ( ac != null ) {
                 if ( feature == null || !ac.equals( feature.getAc() ) ) {
                     feature = loadJamiByAc(IntactModelledFeature.class, ac);

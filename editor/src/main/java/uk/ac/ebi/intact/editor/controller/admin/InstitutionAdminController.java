@@ -76,7 +76,7 @@ public class InstitutionAdminController extends JpaAwareController {
 
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional("transactionManager")
     public void mergeSelected(ActionEvent evt) {
         if (mergeDestinationInstitution == null) {
             addErrorMessage("Destination institution not selected", "Select one in the drop down list");
@@ -91,14 +91,14 @@ public class InstitutionAdminController extends JpaAwareController {
         institutionService.refresh(null);
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional("transactionManager")
     public void deleteSelected(ActionEvent evt) {
         for (Institution selectedInstitution : selectedInstitutions) {
             getDaoFactory().getInstitutionDao().deleteByAc(selectedInstitution.getAc());
         }
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional("transactionManager")
     public void fixAnnotatedObjectOwners(ActionEvent evt) {
         if (usersDualListModel.getTarget().isEmpty()) {
             addErrorMessage("No users selected", "Add some users to fix using the picklist");

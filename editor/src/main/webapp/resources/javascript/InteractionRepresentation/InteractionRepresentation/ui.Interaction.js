@@ -189,7 +189,7 @@
             this._tooltipOpacity = 0.7;
         },
 
-		// init function called by widget framework
+		// loadData function called by widget framework
         _init: function(){
 		   // prepare data
             this._load();

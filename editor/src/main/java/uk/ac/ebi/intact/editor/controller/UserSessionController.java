@@ -94,7 +94,7 @@ public class UserSessionController extends JpaAwareController implements Disposa
         return coreUser.equals(currentUser);
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional("transactionManager")
     public void notifyLastActivity() {
         DateTime dateTime = new DateTime();
         String dateTimeStr = dateTime.toString("dd/MM/yyyy HH:mm");

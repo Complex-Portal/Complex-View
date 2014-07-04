@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
@@ -23,7 +23,7 @@ import java.util.List;
  * @version $Id$
  * @since 2.0
  */
-@Controller
+@Service
 public class ApplicationInitializer extends JpaAwareController implements InitializingBean {
 
     private static final Log log = LogFactory.getLog( ApplicationInitializer.class );
@@ -35,7 +35,7 @@ public class ApplicationInitializer extends JpaAwareController implements Initia
     private ApplicationContext applicationContext;
 
     @Override
-    @Transactional(value = "transactionManager")
+    @Transactional("transactionManager")
     public void afterPropertiesSet() throws Exception {
         createDefaultRoles();
         createDefaultUsers();
@@ -71,7 +71,7 @@ public class ApplicationInitializer extends JpaAwareController implements Initia
         addMissingRole( allRoles, "CURATOR" );
         addMissingRole( allRoles, "REVIEWER" );
 
-        log.info( "After init: found " + daoFactory.getRoleDao().getAll().size() + " role(s) in the database." );
+        log.info( "After loadData: found " + daoFactory.getRoleDao().getAll().size() + " role(s) in the database." );
     }
 
     private void addMissingRole( List<Role> allRoles, String roleName ) {

@@ -54,7 +54,7 @@ public class InputCvTermController extends BaseController{
     public InputCvTermController() {
     }
 
-    @Transactional(value = "jamiTransactionManager")
+    @Transactional("jamiTransactionManager")
     public void load( ComponentSystemEvent evt) {
         log.trace( "Loading CvObject with id '"+id+"'" );
 
@@ -70,7 +70,7 @@ public class InputCvTermController extends BaseController{
             throw new IllegalArgumentException("Root does not exist: " + id);
         }
 
-        // init collections needed
+        // loadData collections needed
         Hibernate.initialize(rootCv.getDbAnnotations());
         Hibernate.initialize(rootCv.getDbXrefs());
 
@@ -92,7 +92,7 @@ public class InputCvTermController extends BaseController{
     }
 
     @SuppressWarnings({"JpaQlInspection"})
-    @Transactional(value = "jamiTransactionManager")
+    @Transactional("jamiTransactionManager")
     public String getDescription(IntactCvTerm cvObject) {
         if (cvObject == null) return null;
 

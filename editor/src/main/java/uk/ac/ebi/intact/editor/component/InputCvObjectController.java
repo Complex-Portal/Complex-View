@@ -56,7 +56,7 @@ public class InputCvObjectController extends BaseController{
     public InputCvObjectController() {
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional("transactionManager")
     public void load( ComponentSystemEvent evt) {
         log.trace( "Loading CvObject with id '"+id+"'" );
 
@@ -93,7 +93,7 @@ public class InputCvObjectController extends BaseController{
     }
 
     @SuppressWarnings({"JpaQlInspection"})
-    @Transactional(value = "transactionManager")
+    @Transactional("transactionManager")
     public String getDescription(CvObject cvObject) {
         if (cvObject == null) return null;
         

@@ -45,7 +45,6 @@ import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.CvTopic;
 
-import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
@@ -93,7 +92,6 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     public ModelledParticipantController() {
     }
 
-    @PostConstruct
     @Transactional(value = "jamiTransactionManager")
     public void loadData() {
         aliasTypeSelectItems = new ArrayList<SelectItem>();
@@ -210,7 +208,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Transactional(value = "jamiTransactionManager")
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-
+            loadData();
             if ( ac != null ) {
                 if ( participant == null || !ac.equals( participant.getAc() ) ) {
                     IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");

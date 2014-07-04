@@ -113,7 +113,6 @@ public class ComplexController extends AnnotatedObjectController {
 
     }
 
-    @PostConstruct
     @Transactional(value = "jamiTransactionManager", readOnly = true)
     public void loadData() {
         aliasTypeSelectItems = new ArrayList<SelectItem>();
@@ -361,6 +360,7 @@ public class ComplexController extends AnnotatedObjectController {
     @Transactional(value = "jamiTransactionManager")
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
+            loadData();
 
             if ( ac != null ) {
                 if ( complex == null || !ac.equals( complex.getAc() )) {

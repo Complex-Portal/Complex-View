@@ -78,7 +78,7 @@ public abstract class BaseController implements Serializable {
         return userSessionController.getCurrentUser();
     }
 
-    @Transactional(value = "jamiTransactionManager")
+    @Transactional("jamiTransactionManager")
     public uk.ac.ebi.intact.jami.model.user.User getCurrentJamiUser() {
         UserSessionController userSessionController = getUserSessionController();
         User intactUser = userSessionController.getCurrentUser();
