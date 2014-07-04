@@ -12,26 +12,12 @@
 
 <ui:define name="metadata">
     <f:metadata>
-        <!--<f:event type="preRenderView" listener="#{searchController.searchIfQueryPresent}"/>-->
         <f:viewParam name="query" value="#{searchController.query}"/>
         <f:viewParam name="quickQuery" value="#{searchController.quickQuery}"/>
     </f:metadata>
 </ui:define>
 
 <ui:define name="content">
-
-
-<!--<p:focus for="mainQueryTxt"/>-->
-
-<!--<p:panel>-->
-<!--<h:panelGrid columns="4">-->
-<!--<h:outputLabel for="mainQueryTxt" value="Search: "/>-->
-<!--<p:inputText id="mainQueryTxt" value="#{searchController.query}"/>-->
-<!--<p:commandButton value="Search" action="#{searchController.doSearch}" ajax="false"-->
-<!--process="centralUnit"-->
-<!--onclick="searchDialog.show()"/>-->
-<!--</h:panelGrid>-->
-<!--</p:panel>-->
 
 <br/>
 
@@ -58,6 +44,10 @@
             <tr>
                 <td style="text-align: right; font-weight: bold;">Interaction</td>
                 <td>AC, shortLabel, Xref.primaryId</td>
+            </tr>
+            <tr>
+                <td style="text-align: right; font-weight: bold;">Biological complexes</td>
+                <td>AC, names, Xref.primaryId</td>
             </tr>
             <tr>
                 <td style="text-align: right; font-weight: bold;">Molecules</td>
@@ -127,6 +117,15 @@ Results for query: <b>#{searchController.query}</b>
     <ui:include src="/curate/interactions_table.xhtml">
         <ui:param name="value" value="#{searchController.interactions}"/>
         <ui:param name="readonly" value="#{true}"/>
+    </ui:include>
+
+</p:tab>
+
+<p:tab title="Biological Complexes (#{searchController.complexes.rowCount})"
+       rendered="#{searchController.complexes.rowCount != 0}">
+
+    <ui:include src="/dashboard/complexes_table.xhtml">
+        <ui:param name="complexesDataModel" value="#{searchController.complexes}"/>
     </ui:include>
 
 </p:tab>

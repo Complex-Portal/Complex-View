@@ -15,6 +15,9 @@ import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.application.SearchThreadConfig;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
+import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
+import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
+import uk.ac.ebi.intact.jami.model.extension.IntactModelledFeature;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
@@ -48,6 +51,7 @@ public class SearchController extends AnnotatedObjectController {
     private int threadTimeOut = 5;
 
     private AnnotatedObject annotatedObject;
+    private IntactPrimaryObject jamiObject;
 
     @Autowired
     private DaoFactory daoFactory;
@@ -68,6 +72,8 @@ public class SearchController extends AnnotatedObjectController {
 
     private LazyDataModel<Component> participants;
 
+    private LazyDataModel<IntactComplex> complexes;
+
     private List<Future> runningTasks;
 
     //////////////////
@@ -86,19 +92,31 @@ public class SearchController extends AnnotatedObjectController {
         this.annotatedObject = annotatedObject;
     }
 
+    @Override
+    public IntactPrimaryObject getJamiObject() {
+        return jamiObject;
+    }
+
+    @Override
+    public void setJamiObject(IntactPrimaryObject annotatedObject) {
+        this.jamiObject = annotatedObject;
+    }
+
     ///////////////
     // Actions
 
     public void searchIfQueryPresent(ComponentSystemEvent evt) {
         if (query != null && !query.isEmpty()) {
             doSearch();
+            doJamiSearch();
         }
     }
 
-    @Transactional( value = "transactionManager", readOnly = true )
     public String doQuickSearch() {
         this.query = quickQuery;
-        return doSearch();
+        String action = doSearch();
+        doJamiSearch();
+        return action;
     }
 
     public void clearQuickSearch(ActionEvent evt) {
@@ -220,6 +238,64 @@ public class SearchController extends AnnotatedObjectController {
         return "search.results";
     }
 
+    @Transactional( value = "jamiTransactionManager", readOnly = true )
+    public String doJamiSearch() {
+
+        log.info( "Searching for '" + query + "'..." );
+
+        if ( !StringUtils.isEmpty( query ) ) {
+            final String originalQuery = query;
+            query = query.toLowerCase().trim();
+
+            String q = query;
+
+            q = q.replaceAll( "\\*", "%" );
+            q = q.replaceAll( "\\?", "%" );
+            if ( !q.startsWith( "%" ) ) {
+                q = "%" + q;
+            }
+            if ( !q.endsWith( "%" ) ) {
+                q = q + "%";
+            }
+
+            if ( !query.equals( q ) ) {
+                log.info( "Updated query: '" + q + "'" );
+            }
+
+            // TODO implement simple prefix for the search query so that one can aim at an AC, shortlabel, PMID...
+
+            // Note: the search is NOT case sensitive !!!
+            // Note: the search includes wildcards automatically
+            final String finalQuery = q;
+
+            SearchThreadConfig threadConfig = (SearchThreadConfig) getSpringContext().getBean("searchThreadConfig");
+
+            ExecutorService executorService = threadConfig.getExecutorService();
+
+            if (runningTasks == null){
+                runningTasks = new ArrayList<Future>();
+            }
+            else {
+                runningTasks.clear();
+            }
+
+            Runnable runnableComp = new Runnable() {
+                @Override
+                public void run() {
+                    loadComplexes( finalQuery, originalQuery );
+                }
+            };
+
+            runningTasks.add(executorService.submit(runnableComp));
+
+            checkAndResumeTasks();
+        } else {
+            resetSearchResults();
+        }
+
+        return "search.results";
+    }
+
     private void checkAndResumeTasks() {
 
         for (Future f : runningTasks){
@@ -253,6 +329,7 @@ public class SearchController extends AnnotatedObjectController {
         interactions = null;
         molecules = null;
         cvobjects = null;
+        complexes = null;
     }
 
     public boolean isEmptyQuery() {
@@ -267,7 +344,8 @@ public class SearchController extends AnnotatedObjectController {
                 && (cvobjects != null && cvobjects.getRowCount() == 0)
                 && (features != null && features.getRowCount() == 0)
                 && (organisms != null && organisms.getRowCount() == 0)
-                && (participants != null && participants.getRowCount() == 0);
+                && (participants != null && participants.getRowCount() == 0)
+                && (complexes != null && complexes.getRowCount() == 0);
 
     }
 
@@ -282,6 +360,7 @@ public class SearchController extends AnnotatedObjectController {
         if ( features != null && features.getRowCount() > 0 ) matches++;
         if ( organisms != null && organisms.getRowCount() > 0 ) matches++;
         if ( participants != null && participants.getRowCount() > 0 ) matches++;
+        if ( complexes != null && complexes.getRowCount() > 0 ) matches++;
 
         return matches == 1;
     }
@@ -405,19 +484,51 @@ public class SearchController extends AnnotatedObjectController {
 
                                                                  "select distinct i " +
                                                                  "from InteractionImpl i left join i.xrefs as x " +
-                                                                 "where    i.ac = :ac " +
+                                                                 "where    (i.ac = :ac " +
                                                                  "      or lower(i.shortLabel) like :query " +
-                                                                 "      or lower(x.primaryId) like :query ",
+                                                                 "      or lower(x.primaryId) like :query )" +
+                                                                 "      and i.category = 'interaction_evidence' ",
 
                                                                  "select count(distinct i.ac) " +
                                                                  "from InteractionImpl i left join i.xrefs as x " +
-                                                                 "where    i.ac = :ac " +
+                                                                 "where    (i.ac = :ac " +
                                                                  "      or lower(i.shortLabel) like :query " +
-                                                                 "      or lower(x.primaryId) like :query ",
+                                                                 "      or lower(x.primaryId) like :query )"+
+                                                                  "      and i.category = 'interaction_evidence' ",
 
                                                                  params, "i", "updated", false );
 
         log.info( "Interactions found: " + interactions.getRowCount() );
+    }
+
+    private void loadComplexes( String query, String originalQuery ) {
+
+        log.info( "Searching for Complexes matching '" + query + "'..." );
+
+        final HashMap<String, String> params = Maps.<String, String>newHashMap();
+        params.put( "query", query );
+        params.put( "ac", originalQuery );
+
+        // Load experiment eagerly to avoid LazyInitializationException when rendering the view
+        complexes = LazyDataModelFactory.createLazyDataModel( getJamiEntityManager(),
+
+                "select distinct i " +
+                        "from IntactComplex i left join i.dbXrefs as x left join i.dbAliases as a " +
+                        "where    i.ac = :ac " +
+                        "      or lower(i.shortName) like :query " +
+                        "      or lower(x.id) like :query "+
+                        "      or lower(a.name) like :query ",
+
+                "select count(distinct i.ac) " +
+                        "from IntactComplex i left join i.dbXrefs as x left join i.dbAliases as a " +
+                        "where    i.ac = :ac " +
+                        "      or lower(i.shortName) like :query " +
+                        "      or lower(x.id) like :query "+
+                        "      or lower(a.name) like :query ",
+
+                params, "i", "updated", false );
+
+        log.info( "Complexes found: " + complexes.getRowCount() );
     }
 
     public Experiment getFirstExperiment( Interaction interaction ) {
@@ -629,6 +740,10 @@ public class SearchController extends AnnotatedObjectController {
 
     public LazyDataModel<Component> getParticipants() {
         return participants;
+    }
+
+    public LazyDataModel<IntactComplex> getComplexes() {
+        return complexes;
     }
 
     public String getQuickQuery() {

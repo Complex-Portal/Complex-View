@@ -37,6 +37,7 @@ import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.util.CheckIdentifier;
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 import uk.ac.ebi.intact.model.util.XrefUtils;
 import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
 import uk.ac.ebi.intact.uniprot.model.UniprotProteinLike;
@@ -245,7 +246,9 @@ public class ParticipantImportController extends BaseController {
             Interactor interactor = interactorDao.getByAc(participantToImport);
 
             if (interactor != null) {
-                candidates.add(toImportCandidate(participantToImport, interactor));
+                if (!(interactor instanceof InteractionImpl && AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(interactor, "curated-complex") == null)){
+                    candidates.add(toImportCandidate(participantToImport, interactor));
+                }
             } else {
                 Component component = componentDao.getByAc(participantToImport);
 
@@ -266,7 +269,7 @@ public class ParticipantImportController extends BaseController {
                 final Collection<InteractorImpl> interactorsByLabel = interactorDao.getByShortLabelLike(participantToImport);
 
                 for (Interactor interactor : interactorsByLabel) {
-                    if (!(interactor instanceof Interaction)) {
+                    if (!(interactor instanceof InteractionImpl && AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(interactor, "curated-complex") == null)){
                         candidates.add(toImportCandidate(participantToImport, interactor));
                     }
                 }
