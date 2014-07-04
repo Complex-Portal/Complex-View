@@ -70,15 +70,19 @@ public class DashboardController extends JpaAwareController {
         }
 
         StringBuilder statusToShowSql = new StringBuilder();
+        StringBuilder statusToShowSql2 = new StringBuilder();
 
         for (int i=0; i<statusToShow.length; i++) {
             if (i>0) {
                 statusToShowSql.append(" or");
+                statusToShowSql2.append(" or");
             }
             statusToShowSql.append(" p.status.identifier = '").append(statusToShow[i]).append("'");
+            statusToShowSql2.append(" p.cvStatus.identifier = '").append(statusToShow[i]).append("'");
         }
 
         String additionalSql = statusToShowSql.toString();
+        String additionalSql2 = statusToShowSql2.toString();
 
         allPublications = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
                 "select p from Publication p where " + additionalSql, "p", "updated", false);
@@ -92,15 +96,15 @@ public class DashboardController extends JpaAwareController {
                                                                     " and ("+additionalSql+")", "p", "updated", false);
 
         allComplexes = LazyDataModelFactory.createLazyDataModel(getJamiEntityManager(),
-                "select p from IntactComplex p where " + additionalSql, "p", "updated", false);
+                "select p from IntactComplex p where " + additionalSql2, "p", "updated", false);
 
         complexesOwnedByUser = LazyDataModelFactory.createLazyDataModel( getJamiEntityManager(),
                 "select p from IntactComplex p where upper(p.currentOwner.login) = '"+userId+"'"+
-                        " and ("+additionalSql+")", "p", "updated", false);
+                        " and ("+additionalSql2+")", "p", "updated", false);
 
         complexesReviewedByUser = LazyDataModelFactory.createLazyDataModel( getJamiEntityManager(),
                 "select p from IntactComplex p where upper(p.currentReviewer.login) = '"+userId+"'"+
-                        " and ("+additionalSql+")", "p", "updated", false);
+                        " and ("+additionalSql2+")", "p", "updated", false);
     }
 
     public LazyDataModel<Publication> getAllPublications() {

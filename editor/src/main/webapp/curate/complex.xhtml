@@ -31,46 +31,46 @@
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Start curation"
                      styleClass="important-button-alt"
-                     rendered="#{complexController.assigned and userSessionController.isItMe(complexController.complex.currentOwner)}"
+                     rendered="#{complexController.assigned and userSessionController.isJamiUserMe(complexController.complex.currentOwner)}"
                      actionListener="#{complexController.markAsCurationInProgress}"
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Ready for checking"
                      styleClass="important-button-alt"
-                     rendered="#{complexController.curationInProgress and not complexController.beenRejectedBefore and userSessionController.isItMe(complexController.complex.currentOwner)}"
+                     rendered="#{complexController.curationInProgress and not complexController.beenRejectedBefore and userSessionController.isJamiUserMe(complexController.complex.currentOwner)}"
                      actionListener="#{complexController.markAsReadyForChecking}"
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Ready for checking (Again)"
                      styleClass="important-button-alt"
-                     rendered="#{complexController.curationInProgress and complexController.beenRejectedBefore and userSessionController.isItMe(complexController.complex.currentOwner)}"
+                     rendered="#{complexController.curationInProgress and complexController.beenRejectedBefore and userSessionController.isJamiUserMe(complexController.complex.currentOwner)}"
                      actionListener="#{complexController.markAsReadyForChecking}"
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Accept Complex"
                      styleClass="important-button-good"
-                     rendered="#{complexController.readyForChecking and userSessionController.isItMe(complexController.complex.currentReviewer)"
+                     rendered="#{complexController.readyForChecking and userSessionController.isJamiUserMe(complexController.complex.currentReviewer)"
                      actionListener="#{complexController.acceptComplex}"
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Back to Curation in Progress"
                      styleClass="important-button-alt"
-                     rendered="#{complexController.readyForChecking and userSessionController.isItMe(complexController.complex.currentOwner) and complexController.backToCurationButtonRendered}"
+                     rendered="#{complexController.readyForChecking and userSessionController.isJamiUserMe(complexController.complex.currentOwner) and complexController.backToCurationButtonRendered}"
                      actionListener="#{complexController.revertReadyForChecking}"
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Send Back to Curation"
                      styleClass="important-button-alt"
-                     rendered="#{complexController.readyForChecking and userSessionController.isItMe(complexController.complex.currentReviewer)}"
+                     rendered="#{complexController.readyForChecking and userSessionController.isJamiUserMe(complexController.complex.currentReviewer)}"
                      actionListener="#{complexController.rejectComplex}"
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Revert Accepted"
                      styleClass="important-button-alt"
-                     rendered="#{complexController.readyForRelease and !complexController.released and userSessionController.isItMe(complexController.complex.currentReviewer)}"
+                     rendered="#{complexController.readyForRelease and !complexController.released and userSessionController.isJamiUserMe(complexController.complex.currentReviewer)}"
                      actionListener="#{complexController.revertAccepted}"
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Put on hold" type="button"
                      styleClass="important-button-bad"
-                     rendered="#{(complexController.readyForRelease or complexController.released) and (userSessionController.isItMe(complexController.complex.currentOwner) or userSessionController.isItMe(complexController.complex.currentReviewer))}"
+                     rendered="#{(complexController.readyForRelease or complexController.released) and (userSessionController.isJamiUserMe(complexController.complex.currentOwner) or userSessionController.isJamiUserMe(complexController.complex.currentReviewer))}"
                      onclick="putOnHoldDialog.show()"/>
     <p:commandButton value="Ready for Release (removes on-hold)"
                      styleClass="important-button-alt"
-                     rendered="#{complexController.acceptedOnHold and (userSessionController.isItMe(complexController.complex.currentReviewer) or userSessionController.isItMe(complexController.complex.currentOwner))}"
+                     rendered="#{complexController.acceptedOnHold and (userSessionController.isJamiUserMe(complexController.complex.currentReviewer) or userSessionController.isJamiUserMe(complexController.complex.currentOwner))}"
                      actionListener="#{complexController.readyForReleaseFromOnHold}"
                      action="#{complexController.doSave}" ajax="false"/>
 </ui:define>
