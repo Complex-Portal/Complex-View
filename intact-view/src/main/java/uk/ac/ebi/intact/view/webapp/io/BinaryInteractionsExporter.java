@@ -335,9 +335,10 @@ public class BinaryInteractionsExporter {
     private EntrySet createEntrySet(SolrQuery solrQuery) {
         IntactSolrSearchResult result1 = null;
         try {
+            solrQuery.setRows(500);
             result1 = solrSearcher.search(solrQuery, PsicquicSolrServer.RETURN_TYPE_XML25);
-            if (result1.getNumberResults() > 5000) {
-                throw new IntactViewException("Too many interactions to export to XML. Maximum is 5000");
+            if (result1.getNumberResults() > 500) {
+                throw new IntactViewException("Too many interactions to export to XML. Maximum is 500");
             }
 
             EntrySet entrySet = result1.createEntrySet();
