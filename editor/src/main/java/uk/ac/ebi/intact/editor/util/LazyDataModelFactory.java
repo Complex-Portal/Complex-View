@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import uk.ac.ebi.intact.jami.service.IntactService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -56,6 +57,14 @@ public class LazyDataModelFactory {
 
     public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query, String var, String sortField, boolean sortOrder) {
         return createLazyDataModel( entityManager, query, Maps.<String, String>newHashMap(), var, sortField, sortOrder );
+    }
+
+    public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query, String countQuery, String var, String sortField, boolean sortOrder) {
+        return createLazyDataModel( entityManager, query, countQuery, Maps.<String, String>newHashMap(), var, sortField, sortOrder );
+    }
+
+    public static LazyDataModel createLazyDataModel( IntactService service, String query, String countQuery, String var, String sortField, boolean sortOrder) {
+        return createLazyDataModel( service, query, countQuery, Maps.<String, String>newHashMap(), var, sortField, sortOrder );
     }
 
     public static LazyDataModel createLazyDataModel( EntityManager entityManager, String query, Map<String, String> params, String var, String sortField, boolean sortOrder) {
@@ -101,6 +110,29 @@ public class LazyDataModelFactory {
         return createLazyDataModel( entityManager, query, totalNumRows, params, var, sortField, sortOrder );
     }
 
+    public static LazyDataModel createLazyDataModel( IntactService service,
+                                                     String query,
+                                                     String countQuery,
+                                                     Map<String, String> params,
+                                                     String var,
+                                                     String sortField,
+                                                     boolean sortOrder) {
+
+        log.debug( "HQL Count Query: " + countQuery );
+
+        int totalNumRows = 0;
+        try {
+            totalNumRows = ((Long)service.countAll(countQuery, params)).intValue();
+
+            log.debug( "HQL Count: " + totalNumRows );
+
+        } catch (Throwable e) {
+            throw new IllegalArgumentException("Problem running query: "+query, e);
+        }
+
+        return createLazyDataModel( service, query, totalNumRows, params, var, sortField, sortOrder );
+    }
+
     public static LazyDataModel createLazyDataModel( EntityManager entityManager,
                                                      String query,
                                                      int totalNumRows,
@@ -109,6 +141,20 @@ public class LazyDataModelFactory {
                                                      String sortField,
                                                      boolean sortOrder) {
         LazyDataModel lazyDataModel = new HqlLazyDataModel( entityManager, query, params, sortField, sortOrder, var );
+        lazyDataModel.setPageSize(10);
+        lazyDataModel.setRowCount(totalNumRows);
+
+        return lazyDataModel;
+    }
+
+    public static LazyDataModel createLazyDataModel( IntactService service,
+                                                     String query,
+                                                     int totalNumRows,
+                                                     Map<String, String> params,
+                                                     String var,
+                                                     String sortField,
+                                                     boolean sortOrder) {
+        LazyDataModel lazyDataModel = new HqlServiceLazyDataModel( service, query, params, sortField, sortOrder, var );
         lazyDataModel.setPageSize(10);
         lazyDataModel.setRowCount(totalNumRows);
 

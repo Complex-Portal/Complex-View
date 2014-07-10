@@ -568,7 +568,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     }
 
     @Override
-    public String getCautionMessage(IntactPrimaryObject ao) {
+    public String getJamiCautionMessage(IntactPrimaryObject ao) {
         IntactModelledParticipant participant = (IntactModelledParticipant)ao;
         psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(participant.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
                 psidev.psi.mi.jami.model.Annotation.CAUTION);

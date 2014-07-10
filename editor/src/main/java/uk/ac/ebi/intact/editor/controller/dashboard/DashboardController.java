@@ -18,12 +18,11 @@ package uk.ac.ebi.intact.editor.controller.dashboard;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
+import uk.ac.ebi.intact.jami.service.ComplexService;
 import uk.ac.ebi.intact.model.Publication;
 
 import javax.faces.context.FacesContext;
@@ -56,7 +55,6 @@ public class DashboardController extends JpaAwareController {
     }
 
     @SuppressWarnings("unchecked")
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             refreshTables();
@@ -64,14 +62,12 @@ public class DashboardController extends JpaAwareController {
     }
 
     @SuppressWarnings("unchecked")
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public void loadJamiData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             refreshJamiTables();
         }
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.SUPPORTS, readOnly = true)
     public void refreshTables() {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         final String userId = userSessionController.getCurrentUser().getLogin().toUpperCase();
@@ -93,18 +89,22 @@ public class DashboardController extends JpaAwareController {
         String additionalSql = statusToShowSql.toString();
 
         allPublications = LazyDataModelFactory.createLazyDataModel(getCoreEntityManager(),
-                "select p from Publication p where " + additionalSql, "p", "updated", false);
+                "select p from Publication p left join fetch p.xrefs as x where " + additionalSql,
+                "select count(distinct p.ac) from Publication p where " + additionalSql,"p", "updated", false);
 
         ownedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                    "select p from Publication p where upper(p.currentOwner.login) = '"+userId+"'"+
-                                                                    " and ("+additionalSql+")", "p", "updated", false);
+                                                                    "select p from Publication p left join fetch p.xrefs as x where upper(p.currentOwner.login) = '"+userId+"'"+
+                                                                    " and ("+additionalSql+")",
+                "select count(distinct p.ac) from Publication p where upper(p.currentOwner.login) = '"+userId+"'"+
+                        " and ("+additionalSql+")","p", "updated", false);
 
         reviewedByUser = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
-                                                                    "select p from Publication p where upper(p.currentReviewer.login) = '"+userId+"'"+
-                                                                    " and ("+additionalSql+")", "p", "updated", false);
+                                                                    "select p from Publication p left join fetch p.xrefs as x where upper(p.currentReviewer.login) = '"+userId+"'"+
+                                                                    " and ("+additionalSql+")",
+                "select count(distinct p.ac) from Publication p where upper(p.currentReviewer.login) = '"+userId+"'"+
+                        " and ("+additionalSql+")","p", "updated", false);
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.SUPPORTS, readOnly = true)
     public void refreshJamiTables() {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         final String userId = userSessionController.getCurrentUser().getLogin().toUpperCase();
@@ -113,7 +113,6 @@ public class DashboardController extends JpaAwareController {
             addWarningMessage("No statuses selected", "Using default status selection");
             statusToShow = DEFAULT_STATUS_SHOWN;
         }
-
         StringBuilder statusToShowSql2 = new StringBuilder();
 
         for (int i=0; i<statusToShow.length; i++) {
@@ -124,16 +123,22 @@ public class DashboardController extends JpaAwareController {
         }
 
         String additionalSql2 = statusToShowSql2.toString();
+        ComplexService complexService = getComplexService();
 
-        allComplexes = LazyDataModelFactory.createLazyDataModel(getJamiEntityManager(),
-                "select p from IntactComplex p where " + additionalSql2, "p", "updated", false);
+        allComplexes = LazyDataModelFactory.createLazyDataModel(complexService,
+                "select p from IntactComplex p where " + additionalSql2,
+                "select count(distinct p.ac) from IntactComplex p where " + additionalSql2, "p", "updated", false);
 
-        complexesOwnedByUser = LazyDataModelFactory.createLazyDataModel( getJamiEntityManager(),
+        complexesOwnedByUser = LazyDataModelFactory.createLazyDataModel( complexService,
                 "select p from IntactComplex p where upper(p.currentOwner.login) = '"+userId+"'"+
+                        " and ("+additionalSql2+")",
+                "select count(distinct p.ac) from IntactComplex p where upper(p.currentOwner.login) = '"+userId+"'"+
                         " and ("+additionalSql2+")", "p", "updated", false);
 
-        complexesReviewedByUser = LazyDataModelFactory.createLazyDataModel( getJamiEntityManager(),
+        complexesReviewedByUser = LazyDataModelFactory.createLazyDataModel( complexService,
                 "select p from IntactComplex p where upper(p.currentReviewer.login) = '"+userId+"'"+
+                        " and ("+additionalSql2+")",
+                "select count(distinct p.ac) from IntactComplex p where upper(p.currentReviewer.login) = '"+userId+"'"+
                         " and ("+additionalSql2+")", "p", "updated", false);
     }
 

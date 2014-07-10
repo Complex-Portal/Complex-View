@@ -48,12 +48,6 @@
         <p:column headerText="Status" sortBy="#{publication.status}">
             <h:outputText value="#{publication.status.shortLabel}" rendered="#{publication.status != null}"/>
         </p:column>
-        <!--<p:column headerText="Comment">-->
-            <!--<h:panelGroup rendered="#{publicationController.isRejected(publication)}">-->
-                <!--<h:outputText value="Rejected " style="font-weight: bold" />-->
-                <!--<h:outputText value="#{publicationController.getReasonForRejection(publication)}"/>-->
-            <!--</h:panelGroup>-->
-        <!--</p:column>-->
     </p:dataTable>
 
     <div class="legend" style="margin-top: 5px; margin-left: 15px">

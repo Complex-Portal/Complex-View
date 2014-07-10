@@ -1104,7 +1104,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return newAnnotatedObjectHelper(ao).findAnnotationText(CvTopic.CAUTION_MI_REF);
     }
 
-    public String getCautionMessage(IntactPrimaryObject ao) {
+    public String getJamiCautionMessage(IntactPrimaryObject ao) {
         return null;
     }
 

@@ -600,7 +600,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     }
 
     @Override
-    public String getCautionMessage(IntactPrimaryObject ao) {
+    public String getJamiCautionMessage(IntactPrimaryObject ao) {
         IntactModelledFeature feature = (IntactModelledFeature)ao;
         psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(feature.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
                 psidev.psi.mi.jami.model.Annotation.CAUTION);

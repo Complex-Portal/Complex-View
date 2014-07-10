@@ -60,7 +60,7 @@
 
     <!-- JPATransactionManager is not dependent on hibernate. It is a more global platform -->
     <!-- We use entity manager because it is JPA and not just specific to hibernate -->
-    <bean id="jamiTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <bean id="jTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="intactEntityManagerFactory"/>
         <property name="dataSource" ref="coreDataSource"/>
         <qualifier value="jamiTransactionManager"/>

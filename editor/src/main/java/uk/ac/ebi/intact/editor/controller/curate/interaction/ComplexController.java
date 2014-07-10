@@ -19,20 +19,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.*;
-import psidev.psi.mi.jami.model.Annotation;
-import psidev.psi.mi.jami.model.Complex;
-import psidev.psi.mi.jami.model.Xref;
+import psidev.psi.mi.jami.utils.AliasUtils;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
-import uk.ac.ebi.intact.bridges.imexcentral.ImexCentralException;
-import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedJamiChange;
@@ -44,19 +42,14 @@ import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.lifecycle.LifeCycleManager;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.*;
-import uk.ac.ebi.intact.jami.model.extension.InteractorAlias;
-import uk.ac.ebi.intact.jami.model.extension.InteractorXref;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEvent;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEventType;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleStatus;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.Experiment;
+import uk.ac.ebi.intact.model.AnnotatedObject;
+import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Interaction;
-import uk.ac.ebi.intact.model.Publication;
-import uk.ac.ebi.intact.model.util.*;
 
-import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
@@ -72,6 +65,8 @@ import java.util.*;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
+@EnableTransactionManagement
+@Configuration
 public class ComplexController extends AnnotatedObjectController {
 
     private static final Log log = LogFactory.getLog( ComplexController.class );
@@ -305,16 +300,35 @@ public class ComplexController extends AnnotatedObjectController {
         return name;
     }
 
-    public String getName(IntactComplex complex){
+    @Transactional(value = "jamiTransactionManager", readOnly = true)
+    public String extractName(IntactComplex complex){
         String name = complex.getShortName();
-        if (complex.getRecommendedName() != null){
-            name = complex.getRecommendedName();
+        if (complex.areAliasesInitialized()){
+            if (complex.getRecommendedName() != null){
+                name = complex.getRecommendedName();
+            }
+            else if (complex.getSystematicName() != null){
+                name = complex.getSystematicName();
+            }
+            else if (!complex.getAliases().isEmpty()){
+                name = complex.getAliases().iterator().next().getName();
+            }
         }
-        else if (complex.getSystematicName() != null){
-            name = complex.getSystematicName();
-        }
-        else if (!complex.getAliases().isEmpty()){
-            name = complex.getAliases().iterator().next().getName();
+        else{
+            Collection<Alias> aliases = getIntactDao().getComplexDao().getAliasesForInteractor(complex.getAc());
+            Alias recName = AliasUtils.collectFirstAliasWithType(aliases, Alias.COMPLEX_RECOMMENDED_NAME_MI, Alias.COMPLEX_RECOMMENDED_NAME);
+            if (recName != null){
+                name = recName.getName();
+            }
+            else{
+                recName = AliasUtils.collectFirstAliasWithType(aliases, Alias.COMPLEX_SYSTEMATIC_NAME_MI, Alias.COMPLEX_SYSTEMATIC_NAME);
+                if (recName != null){
+                    name = recName.getName();
+                }
+                else if (!aliases.isEmpty()){
+                    name = aliases.iterator().next().getName();
+                }
+            }
         }
         return name;
     }
@@ -357,7 +371,7 @@ public class ComplexController extends AnnotatedObjectController {
         return onHold != null ? onHold.getValue() : null;
     }
 
-    @Transactional(value = "jamiTransactionManager")
+    @Transactional(value = "jamiTransactionManager", readOnly = true)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             loadData();
@@ -473,9 +487,10 @@ public class ComplexController extends AnnotatedObjectController {
         return ac;
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true)
     public int countParticipantsByInteractionAc( String ac ) {
         String sql = "select size(c.participants) from IntactComplex c where c.ac = '"+ac+"'";
-        return ((Long)getJamiEntityManager().createQuery(sql).getSingleResult()).intValue();
+        return getIntactDao().getComplexDao().countParticipantsForComplex(ac);
     }
 
     public int countParticipantsByInteraction( IntactComplex interaction) {
@@ -734,11 +749,20 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     @Override
-    public String getCautionMessage(IntactPrimaryObject ao) {
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String getJamiCautionMessage(IntactPrimaryObject ao) {
         IntactComplex complex = (IntactComplex)ao;
-        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(complex.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
-                psidev.psi.mi.jami.model.Annotation.CAUTION);
-        return caution != null ? caution.getValue() : null;
+        if (complex.areAnnotationsInitialized()){
+            psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(complex.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
+                    psidev.psi.mi.jami.model.Annotation.CAUTION);
+            return caution != null ? caution.getValue() : null;
+        }
+        else{
+            Collection<Annotation> annots = getIntactDao().getComplexDao().getAnnotationsForInteractor(ao.getAc());
+            psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(annots, psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
+                    psidev.psi.mi.jami.model.Annotation.CAUTION);
+            return caution != null ? caution.getValue() : null;
+        }
     }
 
     @Override
@@ -806,7 +830,7 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     public void markAsCurationInProgress(ActionEvent evt) {
-        if (!userSessionController.isItMe(complex.getCurrentOwner())) {
+        if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
             addErrorMessage("Cannot mark as curation in progress", "You are not the owner of this publication");
             return;
         }
@@ -817,7 +841,7 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     public void markAsReadyForChecking(ActionEvent evt) {
-        if (!userSessionController.isItMe(complex.getCurrentOwner())) {
+        if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
             addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this complex");
             return;
         }
@@ -937,6 +961,7 @@ public class ComplexController extends AnnotatedObjectController {
         return complex.isToBeReviewed();
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true)
     public String calculateStatusStyle(IntactComplex complex) {
         if (isAccepted(complex)) {
             return "ia-accepted";
@@ -945,7 +970,10 @@ public class ComplexController extends AnnotatedObjectController {
         int timesRejected = 0;
         int timesReadyForChecking = 0;
 
-        for (LifeCycleEvent evt : complex.getLifecycleEvents()) {
+        Collection<LifeCycleEvent> events = complex.areLifeCycleEventsInitialized() ? complex.getLifecycleEvents() :
+                getIntactDao().getComplexDao().getLifeCycleEventsForComplex(complex.getAc());
+
+        for (LifeCycleEvent evt : events) {
             if (LifeCycleEventType.REJECTED.equals(evt.getEvent())) {
                 timesRejected++;
             } else if (LifeCycleEventType.READY_FOR_CHECKING.equals(evt.getEvent())) {
@@ -1017,7 +1045,7 @@ public class ComplexController extends AnnotatedObjectController {
         return "/curate/complex?faces-redirect=true";
     }
 
-    @Transactional(value = "jamiTransactionManager")
+    @Transactional(value = "jamiTransactionManager", readOnly = true)
     public String newComplex() {
 
         IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
