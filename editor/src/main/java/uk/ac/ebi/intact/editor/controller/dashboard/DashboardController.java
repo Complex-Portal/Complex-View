@@ -61,13 +61,6 @@ public class DashboardController extends JpaAwareController {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public void loadJamiData( ComponentSystemEvent event ) {
-        if (!FacesContext.getCurrentInstance().isPostback()) {
-            refreshJamiTables();
-        }
-    }
-
     public void refreshTables() {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         final String userId = userSessionController.getCurrentUser().getLogin().toUpperCase();
@@ -103,6 +96,8 @@ public class DashboardController extends JpaAwareController {
                                                                     " and ("+additionalSql+")",
                 "select count(distinct p.ac) from Publication p where upper(p.currentReviewer.login) = '"+userId+"'"+
                         " and ("+additionalSql+")","p", "updated", false);
+
+        refreshJamiTables();
     }
 
     public void refreshJamiTables() {
