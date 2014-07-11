@@ -39,6 +39,7 @@ import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.*;
 import uk.ac.ebi.intact.jami.synchronizer.FinderException;
+import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
 import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
@@ -622,5 +623,10 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Override
     public List getAliases() {
         return new ArrayList(this.feature.getAliases());
+    }
+
+    @Override
+    public IntactDbSynchronizer getDbSynchronizer() {
+        return getIntactDao().getSynchronizerContext().getModelledFeatureSynchronizer();
     }
 }

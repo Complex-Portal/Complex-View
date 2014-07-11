@@ -41,6 +41,7 @@ import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.*;
+import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.CvTopic;
@@ -380,7 +381,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         if (intactFeature.getAc() == null) {
             participant.removeFeature(feature);
         } else {
-            getChangesController().markToDelete(intactFeature, participant);
+            getChangesController().markJamiToDelete(intactFeature, participant, getIntactDao().getSynchronizerContext().getModelledFeatureSynchronizer());
         }
     }
 
@@ -472,12 +473,12 @@ public class ModelledParticipantController extends AnnotatedObjectController {
                     psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME);
             if (alias != null && alias.getName().equals(name)){
                 ((AbstractIntactAlias)alias).setName(name);
-                getChangesController().markAsUnsaved(participant);
+                getChangesController().markAsJamiUnsaved(participant, getDbSynchronizer());
             }
             else {
                 this.participant.getAliases().add(new ModelledFeatureAlias(IntactUtils.createMIAliasType(psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME,
                         psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI), name));
-                getChangesController().markAsUnsaved(participant);
+                getChangesController().markAsJamiUnsaved(participant, getDbSynchronizer());
             }
         }
     }
@@ -590,5 +591,10 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Override
     public List getAliases() {
         return new ArrayList(this.participant.getAliases());
+    }
+
+    @Override
+    public IntactDbSynchronizer getDbSynchronizer() {
+        return getIntactDao().getSynchronizerContext().getModelledParticipantSynchronizer();
     }
 }

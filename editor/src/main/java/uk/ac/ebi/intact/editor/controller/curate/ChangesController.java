@@ -17,7 +17,9 @@ package uk.ac.ebi.intact.editor.controller.curate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.*;
 import uk.ac.ebi.intact.core.persister.IntactCore;
@@ -48,6 +50,8 @@ import java.util.*;
  * @version $Id$
  */
 @Component
+@EnableTransactionManagement
+@Configuration
 public class ChangesController extends JpaAwareController implements UserListener {
 
     private static final Log log = LogFactory.getLog(ChangesController.class);
@@ -139,12 +143,11 @@ public class ChangesController extends JpaAwareController implements UserListene
         addUnsavedChange(change);
     }
 
-    public void markAsUnsaved(IntactPrimaryObject io) {
+    public void markAsJamiUnsaved(IntactPrimaryObject io, IntactDbSynchronizer dbSynchronizer) {
         if (io == null) return;
 
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
         CurateController.CurateJamiMetadata meta = curateController.getJamiMetadata(io);
-        IntactDbSynchronizer dbSynchronizer = meta.getDbSynchronizer();
         Collection<String> parentAcs = meta.getParents();
 
         UnsavedJamiChange change;
@@ -172,13 +175,12 @@ public class ChangesController extends JpaAwareController implements UserListene
         addUnsavedChange(change);
     }
 
-    public void markAsUnsaved(IntactPrimaryObject io, Collection<String> parentAcs) {
+    public void markAsJamiUnsaved(IntactPrimaryObject io, Collection<String> parentAcs, IntactDbSynchronizer dbSynchronizer) {
         if (io == null) return;
 
         UnsavedJamiChange change;
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
         CurateController.CurateJamiMetadata meta = curateController.getJamiMetadata(io);
-        IntactDbSynchronizer dbSynchronizer = meta.getDbSynchronizer();
 
         if (io.getAc() != null) {
             change = new UnsavedJamiChange(io, UnsavedChange.UPDATED, null, dbSynchronizer);
@@ -223,7 +225,7 @@ public class ChangesController extends JpaAwareController implements UserListene
         }
     }
 
-    public void markToDelete(IntactPrimaryObject object, IntactPrimaryObject parent) {
+    public void markJamiToDelete(IntactPrimaryObject object, IntactPrimaryObject parent, IntactDbSynchronizer dbSynchronizer) {
         if (object.getAc() != null) {
 
             String scope;
@@ -241,7 +243,6 @@ public class ChangesController extends JpaAwareController implements UserListene
             // collect parent acs for this intact object if possible
             CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
             CurateController.CurateJamiMetadata meta = curateController.getJamiMetadata(object);
-            IntactDbSynchronizer dbSynchronizer = meta.getDbSynchronizer();
             Collection<String> parentAcs = meta.getParents();
 
             UnsavedJamiChange change = new UnsavedJamiChange(object, UnsavedChange.DELETED, scope, dbSynchronizer);
@@ -367,7 +368,7 @@ public class ChangesController extends JpaAwareController implements UserListene
      *
      * @param object
      */
-    public void removeObsoleteChangesOnSave(IntactPrimaryObject object, Collection<String> parentAcs){
+    public void removeObsoleteJamiChangesOnSave(IntactPrimaryObject object, Collection<String> parentAcs){
         if (object.getAc() != null){
 
             List<UnsavedJamiChange> changes = new ArrayList(getUnsavedJamiChangesForCurrentUser());
@@ -403,24 +404,7 @@ public class ChangesController extends JpaAwareController implements UserListene
         addUnsavedHiddenChange(change);
     }
 
-    public void markAsHiddenChange(IntactPrimaryObject object, IntactPrimaryObject parent, Collection<String> contextAcs) {
-        String scope;
-
-        if (parent != null && parent.getAc() != null){
-            scope = parent.getAc();
-        }
-        else {
-            scope = null;
-        }
-        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
-        CurateController.CurateJamiMetadata meta = curateController.getJamiMetadata(object);
-        IntactDbSynchronizer dbSynchronizer = meta.getDbSynchronizer();
-        UnsavedJamiChange change = new UnsavedJamiChange(object, UnsavedChange.CREATED_TRANSCRIPT, scope, dbSynchronizer);
-        change.getAcsToDeleteOn().addAll(contextAcs);
-        addUnsavedHiddenJamiChange(change);
-    }
-
-    @Transactional("transactionManager")
+    @Transactional(value= "transactionManager")
     public void markToDeleteInteraction(Interaction interaction, Collection<Experiment> experiments) {
         Collection<Experiment> parents;
 
@@ -484,16 +468,15 @@ public class ChangesController extends JpaAwareController implements UserListene
      * When removing a save event from unsaved events, we have to refresh the unsaved events which have been saved while saving this specific change
      * @param io
      */
-    public void removeFromUnsaved(IntactPrimaryObject io, Collection<String> parentAcs) {
+    public void removeFromUnsaved(IntactPrimaryObject io, Collection<String> parentAcs, IntactDbSynchronizer dbSynchronizer) {
         List<UnsavedJamiChange> changes = getUnsavedJamiChangesForCurrentUser();
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
         CurateController.CurateJamiMetadata meta = curateController.getJamiMetadata(io);
-        IntactDbSynchronizer dbSynchronizer = meta.getDbSynchronizer();
 
         changes.remove(new UnsavedJamiChange(io, UnsavedChange.CREATED, null, dbSynchronizer));
         changes.remove(new UnsavedJamiChange(io, UnsavedChange.UPDATED, null, dbSynchronizer));
 
-        removeObsoleteChangesOnSave(io, parentAcs);
+        removeObsoleteJamiChangesOnSave(io, parentAcs);
     }
 
     public void removeFromHiddenChanges(UnsavedChange unsavedChange) {
@@ -528,7 +511,7 @@ public class ChangesController extends JpaAwareController implements UserListene
         removeObsoleteChangesOnDelete(object);
     }
 
-    public void removeFromDeleted(IntactPrimaryObject object, IntactPrimaryObject parent) {
+    public void removeFromDeleted(IntactPrimaryObject object, IntactPrimaryObject parent, IntactDbSynchronizer dbSynchronizer) {
         String scope;
 
         if (parent != null && parent.getAc() != null){
@@ -539,7 +522,6 @@ public class ChangesController extends JpaAwareController implements UserListene
         }
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
         CurateController.CurateJamiMetadata meta = curateController.getJamiMetadata(parent);
-        IntactDbSynchronizer dbSynchronizer = meta.getDbSynchronizer();
 
         getUnsavedJamiChangesForCurrentUser().remove(new UnsavedJamiChange(object, UnsavedChange.DELETED, parent, scope, dbSynchronizer));
         removeObsoleteJamiChangesOnDelete(object);

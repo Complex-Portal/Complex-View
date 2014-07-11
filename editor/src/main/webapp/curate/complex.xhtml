@@ -46,7 +46,7 @@
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Accept Complex"
                      styleClass="important-button-good"
-                     rendered="#{complexController.readyForChecking and userSessionController.isJamiUserMe(complexController.complex.currentReviewer)"
+                     rendered="#{complexController.readyForChecking and userSessionController.isJamiUserMe(complexController.complex.currentReviewer)}"
                      actionListener="#{complexController.acceptComplex}"
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Back to Curation in Progress"
@@ -137,7 +137,7 @@
                 <p:inputText id="shortlabelTxt" value="#{interaction.shortName}" size="30"
                              validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
                              required="true" requiredMessage="Shortlabel is required">
-                    <p:ajax event="change" update=":editorForm:messagesComponent,:editorForm:changesPanel,:editorForm:unsavedChangesInfo" async="true" process="@this" oncomplete="markAsUnsaved()"/>
+                    <p:ajax event="change" update=":editorForm:messagesComponent,:editorForm:changesPanel,:editorForm:unsavedChangesInfo" async="true" process="@this" oncomplete="markAsJamiUnsaved()"/>
                 </p:inputText>
             </td>
             <td style="padding-left: 50px;">

@@ -2,6 +2,8 @@ package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
 import psidev.psi.mi.jami.model.ModelledFeature;
 import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.extension.*;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 
@@ -60,16 +62,17 @@ public class ModelledParticipantWrapper {
                     psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME);
         }
         else{
+            IntactDao dao = ApplicationContextProvider.getBean("intactDao");
             psidev.psi.mi.jami.model.Alias alias = psidev.psi.mi.jami.utils.AliasUtils.collectFirstAliasWithType(this.participant.getAliases(), psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI,
                     psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME);
             if (alias != null && alias.getName().equals(name)){
                 ((AbstractIntactAlias)alias).setName(name);
-                changesController.markAsUnsaved(participant);
+                changesController.markAsJamiUnsaved(participant, dao.getSynchronizerContext().getModelledParticipantSynchronizer());
             }
             else {
                 this.participant.getAliases().add(new ModelledFeatureAlias(IntactUtils.createMIAliasType(psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME,
                         psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI), name));
-                changesController.markAsUnsaved(participant);
+                changesController.markAsJamiUnsaved(participant, dao.getSynchronizerContext().getModelledParticipantSynchronizer());
             }
         }
     }
@@ -82,10 +85,13 @@ public class ModelledParticipantWrapper {
         this.deleted = deleted;
 
         if (participant.getAc() != null) {
+            IntactDao dao = ApplicationContextProvider.getBean("intactDao");
+
             if (deleted) {
-                changesController.markToDelete(participant, (IntactComplex)participant.getInteraction());
+
+                changesController.markJamiToDelete(participant, (IntactComplex)participant.getInteraction(), dao.getSynchronizerContext().getModelledParticipantSynchronizer());
             } else {
-                changesController.removeFromDeleted(participant, (IntactComplex)participant.getInteraction());
+                changesController.removeFromDeleted(participant, (IntactComplex)participant.getInteraction(), dao.getSynchronizerContext().getModelledParticipantSynchronizer());
             }
         }
     }

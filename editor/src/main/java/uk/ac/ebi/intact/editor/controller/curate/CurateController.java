@@ -17,18 +17,14 @@ import uk.ac.ebi.intact.editor.controller.curate.institution.InstitutionControll
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ComplexController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.InteractionController;
 import uk.ac.ebi.intact.editor.controller.curate.interactor.InteractorController;
-import uk.ac.ebi.intact.editor.controller.curate.interactor.InteractorJamiController;
 import uk.ac.ebi.intact.editor.controller.curate.organism.BioSourceController;
 import uk.ac.ebi.intact.editor.controller.curate.participant.ModelledParticipantController;
 import uk.ac.ebi.intact.editor.controller.curate.participant.ParticipantController;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
-import uk.ac.ebi.intact.jami.ApplicationContextProvider;
-import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
 import uk.ac.ebi.intact.jami.model.extension.IntactModelledFeature;
 import uk.ac.ebi.intact.jami.model.extension.IntactModelledParticipant;
-import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.model.*;
 
 import javax.faces.context.FacesContext;
@@ -236,16 +232,11 @@ public class CurateController extends JpaAwareController {
     public CurateJamiMetadata getJamiMetadata(IntactPrimaryObject intactObject) {
         Class<?> iaClass = intactObject.getClass();
 
-        IntactDao daoBean = ApplicationContextProvider.getBean("intactDao");
-
         if (Complex.class.isAssignableFrom(iaClass)) {
-            return new CurateJamiMetadata(daoBean.getSynchronizerContext().getComplexSynchronizer(), "complex",
+            return new CurateJamiMetadata("complex",
                     (ComplexController) getSpringContext().getBean("complexController"));
-        } else if (psidev.psi.mi.jami.model.Interactor.class.isAssignableFrom(iaClass)) {
-            return new CurateJamiMetadata(daoBean.getSynchronizerContext().getInteractorSynchronizer(), "jinteractor",
-                    (InteractorJamiController) getSpringContext().getBean("interactorJamiController"));
         } else if (ModelledParticipant.class.isAssignableFrom(iaClass)) {
-            CurateJamiMetadata meta = new CurateJamiMetadata(daoBean.getSynchronizerContext().getModelledParticipantSynchronizer(), "jparticipant",
+            CurateJamiMetadata meta = new CurateJamiMetadata("jparticipant",
                     (ModelledParticipantController) getSpringContext().getBean("modelledParticipantController"));
             ModelledParticipant part = (ModelledParticipant)intactObject;
             if (part.getInteraction() instanceof IntactComplex){
@@ -256,7 +247,7 @@ public class CurateController extends JpaAwareController {
             }
             return meta;
         } else if (ModelledFeature.class.isAssignableFrom(iaClass)) {
-            CurateJamiMetadata meta = new CurateJamiMetadata(daoBean.getSynchronizerContext().getModelledFeatureSynchronizer(), "jfeature",
+            CurateJamiMetadata meta = new CurateJamiMetadata("jfeature",
                     (ModelledFeatureController) getSpringContext().getBean("modelledFeatureController"));
             ModelledFeature feat = (ModelledFeature)intactObject;
             if (feat.getParticipant() instanceof IntactModelledParticipant){
@@ -305,22 +296,16 @@ public class CurateController extends JpaAwareController {
 
     public class CurateJamiMetadata {
         private String slug;
-        private IntactDbSynchronizer dbSynchronizer;
         private Collection<String> parents = new ArrayList<String>();
         private AnnotatedObjectController objController;
 
-        private CurateJamiMetadata(IntactDbSynchronizer dbSynchronizer, String slug, AnnotatedObjectController objController) {
-            this.dbSynchronizer = dbSynchronizer;
+        private CurateJamiMetadata(String slug, AnnotatedObjectController objController) {
             this.slug = slug;
             this.objController = objController;
         }
 
         public String getSlug() {
             return slug;
-        }
-
-        public IntactDbSynchronizer getDbSynchronizer() {
-            return dbSynchronizer;
         }
 
         public Collection<String> getParents() {

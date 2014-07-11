@@ -43,6 +43,7 @@ import uk.ac.ebi.intact.jami.model.extension.IntactCvTerm;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEvent;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEventType;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleStatus;
+import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.Alias;
 import uk.ac.ebi.intact.model.Annotation;
@@ -389,9 +390,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             IntactPrimaryObject annotatedObject = getJamiObject();
 
             if (!currentAnnotatedObjectDeleted) {
-                CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
-
-                saved = persistenceController.doSave(annotatedObject, curateController.getJamiMetadata(annotatedObject).getDbSynchronizer());
+                saved = persistenceController.doSave(annotatedObject, getDbSynchronizer());
 
                 if (saved) {
                     // saves specific elements for each annotated object (e.g. components in interactions)
@@ -403,7 +402,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
             if (saved) {
                 lastSaved = new Date();
-                changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject());
+                changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject(), getDbSynchronizer());
             }
 
             // we refresh the object if it has been saved
@@ -749,8 +748,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             setAnnotatedObject(null);
             return goToParent();
         }
-        else if (getJamiObject() != null && persistenceController.doDelete(getJamiObject(),
-                curateController.getJamiMetadata(getJamiObject()).getDbSynchronizer())){
+        else if (getJamiObject() != null && persistenceController.doDelete(getJamiObject(), getDbSynchronizer())){
+            setJamiObject(null);
+            return goToParent();
         }
         // if delete not successfull, just display the message and don't go to the parent because the message will be lost
         // keep editing this object
@@ -1146,7 +1146,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                 changesController.markAsUnsaved(getAnnotatedObject(), parentAcs);
             }
             else{
-                changesController.markAsUnsaved(getJamiObject(), parentAcs);
+                changesController.markAsJamiUnsaved(getJamiObject(), parentAcs, getDbSynchronizer());
             }
         }
         // we want to remove any change event concerning this object (or affecting parent and children)
@@ -1155,7 +1155,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                 changesController.removeFromUnsaved(getAnnotatedObject(), parentAcs);
             }
             else{
-                changesController.removeFromUnsaved(getJamiObject(), parentAcs);
+                changesController.removeFromUnsaved(getJamiObject(), parentAcs, getDbSynchronizer());
             }
         }
     }
@@ -1435,5 +1435,9 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             isAliasDisabled = true;
             isAnnotationTopicDisabled = true;
         }
+    }
+
+    public IntactDbSynchronizer getDbSynchronizer(){
+        return null;
     }
 }

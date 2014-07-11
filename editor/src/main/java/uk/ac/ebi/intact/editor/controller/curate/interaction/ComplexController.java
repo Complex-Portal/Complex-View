@@ -45,6 +45,7 @@ import uk.ac.ebi.intact.jami.model.extension.*;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEvent;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEventType;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleStatus;
+import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.CvTopic;
@@ -166,14 +167,16 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     private void loadChildren(IntactCvTerm parent, List<SelectItem> selectItems){
-        for (OntologyTerm child : parent.getChildren()){
-            IntactCvTerm cv = (IntactCvTerm)child;
-            SelectItem item = createSelectItem(cv);
-            if (item != null){
-                selectItems.add(item);
-            }
-            if (!cv.getChildren().isEmpty()){
-                loadChildren(cv, selectItems);
+        if (parent != null){
+            for (OntologyTerm child : parent.getChildren()){
+                IntactCvTerm cv = (IntactCvTerm)child;
+                SelectItem item = createSelectItem(cv);
+                if (item != null){
+                    selectItems.add(item);
+                }
+                if (!cv.getChildren().isEmpty()){
+                    loadChildren(cv, selectItems);
+                }
             }
         }
     }
@@ -379,6 +382,11 @@ public class ComplexController extends AnnotatedObjectController {
             if ( ac != null ) {
                 if ( complex == null || !ac.equals( complex.getAc() )) {
                     complex = loadJamiByAc(IntactComplex.class, ac);
+                    Hibernate.initialize(complex.getDbAliases());
+                    Hibernate.initialize(complex.getDbXrefs());
+                    Hibernate.initialize(complex.getDbAnnotations());
+                    Hibernate.initialize(complex.getModelledConfidences());
+                    Hibernate.initialize(complex.getModelledParameters());
                 }
             } else {
                 ac = complex.getAc();
@@ -443,7 +451,7 @@ public class ComplexController extends AnnotatedObjectController {
             complex.removeParticipant(component);
             refreshParticipants();
         } else {
-            getChangesController().markToDelete(component, (IntactComplex)component.getInteraction());
+            getChangesController().markJamiToDelete(component, (IntactComplex)component.getInteraction(), getIntactDao().getSynchronizerContext().getModelledParticipantSynchronizer());
         }
     }
 
@@ -1062,5 +1070,10 @@ public class ComplexController extends AnnotatedObjectController {
         }
 
         return "/curate/complex?faces-redirect=true";
+    }
+
+    @Override
+    public IntactDbSynchronizer getDbSynchronizer() {
+        return getIntactDao().getSynchronizerContext().getComplexSynchronizer();
     }
 }

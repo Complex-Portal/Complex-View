@@ -19,9 +19,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.IllegalTransactionStateException;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.CvTerm;
@@ -55,6 +57,8 @@ import java.util.Set;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
+@EnableTransactionManagement
+@Configuration
 public class PersistenceController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( PersistenceController.class );
@@ -192,7 +196,7 @@ public class PersistenceController extends JpaAwareController {
             try{
                 dbSynchronizer.delete(intactObject);
 
-                changesController.removeFromDeleted(intactObject, null);
+                changesController.removeFromDeleted(intactObject, null, dbSynchronizer);
 
                 addInfoMessage("Deleted object", intactObject.getAc());
 
@@ -330,22 +334,32 @@ public class PersistenceController extends JpaAwareController {
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
         Collection<UnsavedChange> changes = new ArrayList(changesController.getUnsavedChangesForCurrentUser());
 
-        for (UnsavedChange unsaved : changes){
-            IntactObject object = unsaved.getUnsavedObject();
-
-            // checks that the current unsaved change is not obsolete because of a previous change (when saving/deleting, some unsaved change became obsolete and have been removed from the unsaved changes)
-            if (changesController.getUnsavedChangesForCurrentUser().contains(unsaved)){
-                curateController.discard(object);
-            }
-        }
+        revertIntactCoreChanges(curateController, changes);
 
         Collection<UnsavedJamiChange> jamiChanges = new ArrayList(changesController.getUnsavedJamiChangesForCurrentUser());
 
+        revertJamiChanges(curateController, jamiChanges);
+    }
+
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.NEVER)
+    public void revertJamiChanges(CurateController curateController, Collection<UnsavedJamiChange> jamiChanges) {
         for (UnsavedJamiChange unsaved : jamiChanges){
             IntactPrimaryObject object = unsaved.getUnsavedObject();
 
             // checks that the current unsaved change is not obsolete because of a previous change (when saving/deleting, some unsaved change became obsolete and have been removed from the unsaved changes)
             if (changesController.getUnsavedJamiChangesForCurrentUser().contains(unsaved)){
+                curateController.discard(object);
+            }
+        }
+    }
+
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void revertIntactCoreChanges(CurateController curateController, Collection<UnsavedChange> changes) {
+        for (UnsavedChange unsaved : changes){
+            IntactObject object = unsaved.getUnsavedObject();
+
+            // checks that the current unsaved change is not obsolete because of a previous change (when saving/deleting, some unsaved change became obsolete and have been removed from the unsaved changes)
+            if (changesController.getUnsavedChangesForCurrentUser().contains(unsaved)){
                 curateController.discard(object);
             }
         }
