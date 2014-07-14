@@ -597,4 +597,9 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     public IntactDbSynchronizer getDbSynchronizer() {
         return getIntactDao().getSynchronizerContext().getModelledParticipantSynchronizer();
     }
+
+    @Override
+    public String getJamiObjectName() {
+        return getInteractor();
+    }
 }

@@ -56,13 +56,19 @@
 
     </bean>
 
-    <jee:jndi-lookup id="coreDataSource" jndi-name="${db.jndi}"/>
+    <bean id="coreDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/${db.jndi}"/>
+    </bean>
+
+    <bean id="jamiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/${db.jndi}"/>
+    </bean>
 
     <!-- JPATransactionManager is not dependent on hibernate. It is a more global platform -->
     <!-- We use entity manager because it is JPA and not just specific to hibernate -->
     <bean id="jTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="intactEntityManagerFactory"/>
-        <property name="dataSource" ref="coreDataSource"/>
+        <property name="dataSource" ref="jamiDataSource"/>
         <qualifier value="jamiTransactionManager"/>
     </bean>
 
@@ -72,7 +78,7 @@
     <bean id="intactEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="intact-jami"/>
         <property name="persistenceXmlLocation" value="classpath*:/META-INF/jami-persistence.xml"/>
-        <property name="dataSource" ref="coreDataSource"/>
+        <property name="dataSource" ref="jamiDataSource"/>
         <property name="jpaProperties">
             <props>
                 <prop key="hibernate.generate_statistics">true</prop>

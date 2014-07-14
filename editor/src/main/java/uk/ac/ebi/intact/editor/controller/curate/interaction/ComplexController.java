@@ -36,7 +36,6 @@ import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedJamiChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ComplexJamiCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantJamiCloner;
-import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.lifecycle.LifeCycleManager;
@@ -109,8 +108,7 @@ public class ComplexController extends AnnotatedObjectController {
 
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true)
-    public void loadData() {
+    private void loadCvs() {
         aliasTypeSelectItems = new ArrayList<SelectItem>();
         aliasTypeSelectItems.add(new SelectItem( null, "select type", "select type", false, false, true ));
         complexTopicSelectItems = new ArrayList<SelectItem>();
@@ -132,7 +130,7 @@ public class ComplexController extends AnnotatedObjectController {
         parameterUnitSelectItems = new ArrayList<SelectItem>();
         parameterUnitSelectItems.add(new SelectItem(null, "select parameter unit", "select parameter unit", false, false, true));
 
-        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        IntactDao intactDao = getIntactDao();
         CvTermDao cvDao = intactDao.getCvTermDao();
 
         IntactCvTerm aliasTypeParent = cvDao.getByMIIdentifier("MI:0300", IntactUtils.ALIAS_TYPE_OBJCLASS);
@@ -303,7 +301,7 @@ public class ComplexController extends AnnotatedObjectController {
         return name;
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String extractName(IntactComplex complex){
         String name = complex.getShortName();
         if (complex.areAliasesInitialized()){
@@ -374,10 +372,10 @@ public class ComplexController extends AnnotatedObjectController {
         return onHold != null ? onHold.getValue() : null;
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            loadData();
+            loadCvs();
 
             if ( ac != null ) {
                 if ( complex == null || !ac.equals( complex.getAc() )) {
@@ -495,7 +493,7 @@ public class ComplexController extends AnnotatedObjectController {
         return ac;
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public int countParticipantsByInteractionAc( String ac ) {
         String sql = "select size(c.participants) from IntactComplex c where c.ac = '"+ac+"'";
         return getIntactDao().getComplexDao().countParticipantsForComplex(ac);
@@ -969,7 +967,7 @@ public class ComplexController extends AnnotatedObjectController {
         return complex.isToBeReviewed();
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String calculateStatusStyle(IntactComplex complex) {
         if (isAccepted(complex)) {
             return "ia-accepted";
@@ -1041,23 +1039,27 @@ public class ComplexController extends AnnotatedObjectController {
         this.reasonForOnHoldFromDialog = reasonForOnHoldFromDialog;
     }
 
+    public boolean isNewComplex() {
+        return complex.getStatus().equals(LifeCycleStatus.NEW);
+    }
+
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String newComplex(Interaction interactionEvidence) {
         if (interactionEvidence == null || interactionEvidence.getAc() == null) {
             addErrorMessage("Cannot create biological complex", "Interaction evidence is empty or not saved");
             return null;
         }
 
-        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
-        setComplex((IntactComplex)ComplexJamiCloner.cloneInteraction(intactDao.getInteractionDao().getByAc(interactionEvidence.getAc())));
+        setComplex((IntactComplex)ComplexJamiCloner.cloneInteraction(getIntactDao().getInteractionDao().getByAc(interactionEvidence.getAc())));
 
         return "/curate/complex?faces-redirect=true";
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String newComplex() {
 
-        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
-        CvTermDao dao = intactDao.getCvTermDao();
+        CvTermDao dao = getIntactDao().getCvTermDao();
         CvTerm type = dao.getByMIIdentifier(Complex.COMPLEX_MI, IntactUtils.INTERACTOR_TYPE_OBJCLASS);
 
         setComplex(new IntactComplex("name to specify"));
@@ -1075,5 +1077,10 @@ public class ComplexController extends AnnotatedObjectController {
     @Override
     public IntactDbSynchronizer getDbSynchronizer() {
         return getIntactDao().getSynchronizerContext().getComplexSynchronizer();
+    }
+
+    @Override
+    public String getJamiObjectName() {
+        return getName();
     }
 }

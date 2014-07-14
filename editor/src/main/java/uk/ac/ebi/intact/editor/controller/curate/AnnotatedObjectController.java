@@ -1440,4 +1440,8 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public IntactDbSynchronizer getDbSynchronizer(){
         return null;
     }
+
+    public String getJamiObjectName(){
+        return "";
+    }
 }

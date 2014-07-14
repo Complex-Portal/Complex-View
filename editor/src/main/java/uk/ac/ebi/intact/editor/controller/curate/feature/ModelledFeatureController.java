@@ -629,4 +629,9 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     public IntactDbSynchronizer getDbSynchronizer() {
         return getIntactDao().getSynchronizerContext().getModelledFeatureSynchronizer();
     }
+
+    @Override
+    public String getJamiObjectName() {
+        return this.feature.getShortName();
+    }
 }

@@ -10,7 +10,7 @@
                 xmlns:ot="http://myfaces.apache.org/orchestra"
                 template="/main_template.xhtml">
 
-<ui:param name="title" value="#{annotatedObjectController.jamiObject != null? curatorContextController.jamiObjectSimpleName(annotatedObjectController.jamiObject) : ''}: #{annotatedObjectController.jamiObject != null? annotatedObjectController.jamiObject.shortLabel : ''} | Curate | Editor"/>
+<ui:param name="title" value="#{annotatedObjectController.jamiObject != null? curatorContextController.jamiObjectSimpleName(annotatedObjectController.jamiObject) : ''}: #{annotatedObjectController.jamiObject != null? annotatedObjectController.jamiObjectName : ''} | Curate | Editor"/>
 
 <ui:define name="topNavigation">
     <ui:include src="/shared/top_navigation_links.xhtml">
@@ -24,7 +24,7 @@
     </h:panelGroup>
 
     <br/>
-    <h:outputText styleClass="subTitle" value="#{complexController.complex.status.shortLabel}"/>,
+    <h:outputText styleClass="subTitle" value="#{complexController.complex.status}"/>,
     <h:outputText styleClass="subTitle-text" value=" owned by "
                   rendered="#{complexController.complex.currentOwner != null}"/>
     <h:outputText styleClass="subTitle" value="#{complexController.complex.currentOwner.login}"
@@ -46,7 +46,6 @@
                 <h:panelGroup id="topSavePanel" style="padding: 10px">
                     <p:commandButton type="button" id="topSaveButton" value="Save" styleClass="important-button"
                                      onclick="save(); return false"/>
-                    <!--<p:commandButton value="save 2" actionListener="#{annotatedObjectController.doSave}" ajax="false" />-->
 
                     <h:panelGroup rendered="#{annotatedObjectController.lastSaved != null}" style="color: #AAAAAA">
                         <h:outputText value=" Last Saved: "/>
@@ -75,7 +74,6 @@
                 <p:menuitem id="newCvObjectItem" value="CV Object..." onclick="newCvObjectDialog.show(); "/>
                 <p:menuitem id="newOrganismItem" value="Organism" action="#{bioSourceController.newOrganism}" ajax="false"/>
                 <p:menuitem id="newComplexItem" value="Biological Complex" action="#{complexController.newComplex}" ajax="false"/>
-                <!--<p:menuitem value="New" onclick="newPublicationDlg.show();"/>-->
             </p:submenu>
             <p:submenu id="openMenu" label="Open" icon="/resources/images/open.png">
                 <p:menuitem id="openByAcItem" value="by AC..." onclick="openByAcDlg.show(); "/>
@@ -83,8 +81,6 @@
             </p:submenu>
             <p:menuitem id="saveItem" value="Save" oncomplete="save()" icon="/resources/images/save.gif"
                         rendered="#{annotatedObjectController.jamiObject != null}"/>
-            <!--<p:menuitem value="Save &amp; Close" onclick="save()" ajax="false"-->
-            <!--rendered="#{annotatedObjectController.jamiObject != null}"/>-->
         </p:submenu>
 
         <p:submenu label="Tools" rendered="#{annotatedObjectController.jamiObject != null}">
@@ -95,10 +91,6 @@
                         immediate="true"
                         onclick="if (confirm('Are you sure you sure you want to delete this sucker?')) { deletingDialog.show() } else { return false }" oncomplete="deletingDialog.hide()" />
         </p:submenu>
-
-        <!--<p:submenu label="Reviewer" rendered="#{userSessionController.hasRole('REVIEWER') and annotatedObjectController.annotatedObject != null}">-->
-            <!--<ui:insert name="reviewerContextual"/>-->
-        <!--</p:submenu>-->
 
         <p:submenu label="Debug" rendered="#{facesContext.application.projectStage == 'Development' and annotatedObjectController.jamiObject != null}">
             <p:menuitem value="Changes" action="/curate/debug/changes" ajax="false"/>
@@ -124,10 +116,6 @@
         }
 
     </script>
-
-    <!--<p:hotkey bind="alt+n" oncomplete="newPublicationDlg.show()"/>-->
-    <!--<p:hotkey bind="alt+o" oncomplete="openByAcDlg.show()"/>-->
-    <!--<p:hotkey bind="alt+s" oncomplete="save(); return false" onerror="alert('lala')"/>-->
 
     <h:panelGroup rendered="#{annotatedObjectController.jamiObject == null}">
         <ui:insert name="emptyCurateContent"/>
@@ -236,8 +224,6 @@
                 <p:inputText id="newPmid" value="#{publicationController.identifierToImport}"
                              converter="trimmingConverter"
                              onkeyup="handleReturnKey(event, 'autoCompleteBtn')"/>
-                <!--<p:tooltip for="newPmid" value="Type a PMID and click on auto-complete" showDelay="2000"-->
-                           <!--showEvent="focus" hideEvent="blur"/>-->
 
                 <!-- WARNING : THIS BUTTON NEEDS TO BE AJAX = TRUE SO THE SECOND DIALOG APPEAR-->
                 <p:commandButton id="autoCompleteBtn"

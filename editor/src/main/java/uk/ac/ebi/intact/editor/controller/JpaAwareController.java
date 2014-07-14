@@ -38,9 +38,6 @@ public abstract class JpaAwareController extends BaseController {
     @PersistenceContext( unitName = "intact-core-default" )
     private EntityManager coreEntityManager;
 
-    @PersistenceContext( unitName = "intact-jami" )
-    private EntityManager jamiEntityManager;
-
     @Autowired
     private IntactContext intactContext;
 
@@ -72,7 +69,7 @@ public abstract class JpaAwareController extends BaseController {
     }
 
     protected EntityManager getJamiEntityManager() {
-        return jamiEntityManager;
+        return intactDao.getEntityManager();
     }
 
     public ComplexService getComplexService() {
