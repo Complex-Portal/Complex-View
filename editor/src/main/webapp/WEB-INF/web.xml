@@ -241,10 +241,10 @@
     <!--<filter>-->
     <!--<filter-name>GzipFilter</filter-name>-->
     <!--<filter-class>org.mortbay.servlet.GzipFilter</filter-class>-->
-    <!--<loadCvs-param>-->
+    <!--<loadParticipants-param>-->
     <!--<param-name>mimeTypes</param-name>-->
     <!--<param-value>text/html,text/plain,text/xml,application/xhtml+xml,text/css,application/javascript,image/svg+xml</param-value>-->
-    <!--</loadCvs-param>-->
+    <!--</loadParticipants-param>-->
     <!--</filter>-->
     <!--<filter-mapping>-->
     <!--<filter-name>GzipFilter</filter-name>-->
@@ -254,10 +254,10 @@
     <!--<filter>
         <filter-name>SetCharacterEncoding</filter-name>
         <filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
-        <loadCvs-param>
+        <loadParticipants-param>
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
-        </loadCvs-param>
+        </loadParticipants-param>
     </filter>
     <filter-mapping>
         <filter-name>SetCharacterEncoding</filter-name>

@@ -80,7 +80,7 @@
                         </td>
                         <td colspan="2">
                             <ia:inputCvTerm id="featureTypeTxt" cvIdentifier="MI:0116" value="#{feature.type}"
-                                    selectItems="#{modelledFeatureController.featureTypeSelectItems}"
+                                    selectItems="#{editorCvTermService.featureTypeSelectItems}"
                                     required="true" requiredMessage="Feature type is required"
                                            update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
@@ -92,7 +92,7 @@
                         </td>
                         <td colspan="2">
                             <ia:inputCvTerm id="featureRoleTxt" cvIdentifier="MI:0925" value="#{feature.role}"
-                                            selectItems="#{modelledFeatureController.featureRoleSelectItems}"
+                                            selectItems="#{editorCvTermService.featureRoleSelectItems}"
                                             update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                             valueChangeAwareObject="#{annotatedObjectController}"/>
                         </td>
@@ -134,7 +134,7 @@
 
                         <ui:include src="jranges_wrapped_table.xhtml">
                             <ui:param name="value" value="#{modelledFeatureController.wrappedRanges}"/>
-                            <ui:param name="fuzzyTypeSelectItems" value="#{modelledFeatureController.fuzzyTypeSelectItems}"/>
+                            <ui:param name="fuzzyTypeSelectItems" value="#{editorCvTermService.fuzzyTypeSelectItems}"/>
                             <ui:param name="participantSelectItems" value="#{modelledFeatureController.participantSelectItems}"/>
                         </ui:include>
 
@@ -143,10 +143,10 @@
                 </p:tab>
 
                     <ui:decorate template="jpropertiesTabs.xhtml">
-                            <ui:param name="annotatedObjectSelectItems" value="#{modelledFeatureController.featureTopicSelectItems}"/>
-                        <ui:param name="aliasTypeSelectItems" value="#{modelledFeatureController.aliasTypeSelectItems}"/>
-                        <ui:param name="databaseSelectItems" value="#{modelledFeatureController.databaseSelectItems}"/>
-                        <ui:param name="qualifierSelectItems" value="#{modelledFeatureController.qualifierSelectItems}"/>
+                            <ui:param name="annotatedObjectSelectItems" value="#{editorCvTermService.featureTopicSelectItems}"/>
+                        <ui:param name="aliasTypeSelectItems" value="#{editorCvTermService.aliasTypeSelectItems}"/>
+                        <ui:param name="databaseSelectItems" value="#{editorCvTermService.featureDatabaseSelectItems}"/>
+                        <ui:param name="qualifierSelectItems" value="#{editorCvTermService.qualifierSelectItems}"/>
                     </ui:decorate>
 
             </p:tabView>

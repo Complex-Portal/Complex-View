@@ -116,7 +116,7 @@
             <td colspan="2">
                 <ia:inputCvTerm id="bioRoleTxt" cvIdentifier="MI:0500"
                                   value="#{participant.biologicalRole}"
-                                  selectItems="#{modelledParticipantContoller.biologicalRoleSelectItems}"
+                                  selectItems="#{editorCvTermService.biologicalRoleSelectItems}"
                                   required="true" requiredMessage="Biological role is required"
                                   update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
                                   valueChangeAwareObject="#{annotatedObjectController}"/>
@@ -153,8 +153,8 @@
                 <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,#{updateOnChange}"/>
                 <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
                 <ui:param name="valueChangeAwareObject" value="#{modelledParticipantController}"/>
-                <ui:param name="databaseSelectItems" value="#{modelledParticipantController.databaseSelectItems}"/>
-                <ui:param name="qualifierSelectItems" value="#{modelledParticipantController.qualifierSelectItems}"/>
+                <ui:param name="databaseSelectItems" value="#{editorCvTermService.participantDatabaseSelectItems}"/>
+                <ui:param name="qualifierSelectItems" value="#{editorCvTermService.qualifierSelectItems}"/>
 
                 <ui:define name="syncValues">
                     <ui:insert name="xrefSyncValues"/>
@@ -172,7 +172,7 @@
                 <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,#{updateOnChange}"/>
                 <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
                 <ui:param name="valueChangeAwareObject" value="#{modelledParticipantController}"/>
-                <ui:param name="annotatedObjectSelectItems" value="#{modelledParticipantController.participantTopicSelectItems}"/>
+                <ui:param name="annotatedObjectSelectItems" value="#{editorCvTermService.participantTopicSelectItems}"/>
 
                 <ui:define name="syncValues">
                     <ui:insert name="annotationSyncValues"/>
@@ -188,7 +188,7 @@
                 <ui:param name="annotatedObjectController" value="#{modelledParticipantController}"/>
                 <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent #{updateOnChange}"/>
                 <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
-                <ui:param name="aliasTypeSelectItems" value="#{modelledParticipantController.aliasTypeSelectItems}"/>
+                <ui:param name="aliasTypeSelectItems" value="#{editorCvTermService.aliasTypeSelectItems}"/>
             </ui:decorate>
 
         </p:outputPanel>

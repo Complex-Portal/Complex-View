@@ -37,8 +37,6 @@ import uk.ac.ebi.intact.editor.controller.curate.UnsavedJamiChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ComplexJamiCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantJamiCloner;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
-import uk.ac.ebi.intact.jami.dao.IntactDao;
-import uk.ac.ebi.intact.jami.dao.OrganismDao;
 import uk.ac.ebi.intact.jami.lifecycle.LifeCycleManager;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.*;
@@ -55,7 +53,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.model.SelectItem;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -85,19 +82,6 @@ public class ComplexController extends AnnotatedObjectController {
     private boolean isConfidenceDisabled;
     private boolean isLifeCycleDisabled;
 
-    private List<SelectItem> aliasTypeSelectItems;
-    private List<SelectItem> complexTopicSelectItems;
-    private List<SelectItem> databaseSelectItems;
-    private List<SelectItem> qualifierSelectItems;
-    private List<SelectItem> interactionTypeSelectItems;
-    private List<SelectItem> interactorTypeSelectItems;
-    private List<SelectItem> evidenceTypeSelectItems;
-    private List<SelectItem> confidenceTypeSelectItems;
-    private List<SelectItem> parameterTypeSelectItems;
-    private List<SelectItem> parameterUnitSelectItems;
-
-    private List<SelectItem> organismSelectItems;
-
     private boolean assignToMe = true;
     private String reasonForReadyForChecking;
     private String reasonForRejection;
@@ -109,191 +93,6 @@ public class ComplexController extends AnnotatedObjectController {
 
     public ComplexController() {
 
-    }
-
-    private void loadCvs() {
-        aliasTypeSelectItems = new ArrayList<SelectItem>();
-        aliasTypeSelectItems.add(new SelectItem( null, "select type", "select type", false, false, true ));
-        complexTopicSelectItems = new ArrayList<SelectItem>();
-        complexTopicSelectItems.add(new SelectItem(null, "select topic", "select topic", false, false, true));
-        databaseSelectItems = new ArrayList<SelectItem>();
-        databaseSelectItems.add(new SelectItem( null, "select database", "select database", false, false, true ));
-        qualifierSelectItems = new ArrayList<SelectItem>();
-        qualifierSelectItems.add(new SelectItem( null, "select qualifier", "select qualifier", false, false, true ));
-        interactionTypeSelectItems = new ArrayList<SelectItem>();
-        interactionTypeSelectItems.add(new SelectItem(null, "select interaction type", "select interaction type", false, false, true));
-        interactorTypeSelectItems = new ArrayList<SelectItem>();
-        interactorTypeSelectItems.add(new SelectItem(null, "select complex type", "select complex type", false, false, true));
-        evidenceTypeSelectItems = new ArrayList<SelectItem>();
-        evidenceTypeSelectItems.add(new SelectItem(null, "select eco code", "select eco code", false, false, true));
-        confidenceTypeSelectItems = new ArrayList<SelectItem>();
-        confidenceTypeSelectItems.add(new SelectItem(null, "select confidence type", "select confidence type", false, false, true));
-        parameterTypeSelectItems = new ArrayList<SelectItem>();
-        parameterTypeSelectItems.add(new SelectItem(null, "select parameter type", "select parameter type", false, false, true));
-        parameterUnitSelectItems = new ArrayList<SelectItem>();
-        parameterUnitSelectItems.add(new SelectItem(null, "select parameter unit", "select parameter unit", false, false, true));
-
-        IntactDao intactDao = getIntactDao();
-        CvTermDao cvDao = intactDao.getCvTermDao();
-
-        IntactCvTerm aliasTypeParent = cvDao.getByMIIdentifier("MI:0300", IntactUtils.ALIAS_TYPE_OBJCLASS);
-        loadChildren(aliasTypeParent, aliasTypeSelectItems);
-
-        IntactCvTerm complexTopicParent = cvDao.getByMIIdentifier("MI:0664", IntactUtils.TOPIC_OBJCLASS);
-        loadChildren(complexTopicParent, complexTopicSelectItems);
-
-        IntactCvTerm databaseParent = cvDao.getByMIIdentifier("MI:0473", IntactUtils.DATABASE_OBJCLASS);
-        loadChildren(databaseParent, databaseSelectItems);
-
-        IntactCvTerm qualifierParent = cvDao.getByMIIdentifier("MI:0353", IntactUtils.QUALIFIER_OBJCLASS);
-        loadChildren(qualifierParent, qualifierSelectItems);
-
-        IntactCvTerm interactionTypeParent = cvDao.getByMIIdentifier("MI:0190", IntactUtils.INTERACTION_TYPE_OBJCLASS);
-        loadChildren(interactionTypeParent, interactionTypeSelectItems);
-
-        IntactCvTerm interactorTypeParent = cvDao.getByMIIdentifier("MI:0314", IntactUtils.INTERACTOR_TYPE_OBJCLASS);
-        loadChildren(interactorTypeParent, interactorTypeSelectItems);
-
-        IntactCvTerm evidenceTypeParent = cvDao.getByMIIdentifier("MI:1331", IntactUtils.DATABASE_OBJCLASS);
-        loadChildren(evidenceTypeParent, evidenceTypeSelectItems);
-
-        IntactCvTerm confidenceTypeParent = cvDao.getByMIIdentifier("MI:1064", IntactUtils.CONFIDENCE_TYPE_OBJCLASS);
-        loadChildren(confidenceTypeParent, confidenceTypeSelectItems);
-
-        IntactCvTerm parameterTypeParent = cvDao.getByMIIdentifier("MI:0640", IntactUtils.PARAMETER_TYPE_OBJCLASS);
-        loadChildren(parameterTypeParent, parameterTypeSelectItems);
-
-        IntactCvTerm parameterUnit = cvDao.getByMIIdentifier("MI:0647", IntactUtils.UNIT_OBJCLASS);
-        loadChildren(parameterUnit, parameterTypeSelectItems);
-    }
-
-    private void loadOrganisms() {
-        organismSelectItems = new ArrayList<SelectItem>();
-        organismSelectItems.add(new SelectItem( null, "select organism", "select organism", false, false, true ));
-
-        IntactDao intactDao = getIntactDao();
-        OrganismDao organismDao = getIntactDao().getOrganismDao();
-
-        Collection<IntactOrganism> loadedOrganisms = organismDao.getAllOrganisms(false, false);
-        for (IntactOrganism organism : loadedOrganisms){
-            organismSelectItems.add(createSelectItem(organism));
-        }
-
-    }
-
-    private void loadChildren(IntactCvTerm parent, List<SelectItem> selectItems){
-        if (parent != null){
-            for (OntologyTerm child : parent.getChildren()){
-                IntactCvTerm cv = (IntactCvTerm)child;
-                SelectItem item = createSelectItem(cv);
-                if (item != null){
-                    selectItems.add(item);
-                }
-                if (!cv.getChildren().isEmpty()){
-                    loadChildren(cv, selectItems);
-                }
-            }
-        }
-    }
-
-    private SelectItem createSelectItem( IntactCvTerm cv ) {
-        if (AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
-            boolean obsolete = AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), CvTopic.OBSOLETE_MI_REF, CvTopic.OBSOLETE).isEmpty();
-            return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")), cv.getFullName());
-        }
-        return null;
-    }
-
-    private SelectItem createSelectItem( IntactOrganism organism ) {
-        return new SelectItem( organism, organism.getCommonName(), organism.getScientificName());
-    }
-
-    public List<SelectItem> getAliasTypeSelectItems() {
-        return aliasTypeSelectItems;
-    }
-
-    public void setAliasTypeSelectItems(List<SelectItem> aliasTypeSelectItems) {
-        this.aliasTypeSelectItems = aliasTypeSelectItems;
-    }
-
-    public List<SelectItem> getComplexTopicSelectItems() {
-        return complexTopicSelectItems;
-    }
-
-    public void setComplexTopicSelectItems(List<SelectItem> complexTopicSelectItems) {
-        this.complexTopicSelectItems = complexTopicSelectItems;
-    }
-
-    public List<SelectItem> getDatabaseSelectItems() {
-        return databaseSelectItems;
-    }
-
-    public void setDatabaseSelectItems(List<SelectItem> databaseSelectItems) {
-        this.databaseSelectItems = databaseSelectItems;
-    }
-
-    public List<SelectItem> getQualifierSelectItems() {
-        return qualifierSelectItems;
-    }
-
-    public void setQualifierSelectItems(List<SelectItem> qualifierSelectItems) {
-        this.qualifierSelectItems = qualifierSelectItems;
-    }
-
-    public List<SelectItem> getInteractionTypeSelectItems() {
-        return interactionTypeSelectItems;
-    }
-
-    public void setInteractionTypeSelectItems(List<SelectItem> interactionTypeSelectItems) {
-        this.interactionTypeSelectItems = interactionTypeSelectItems;
-    }
-
-    public List<SelectItem> getInteractorTypeSelectItems() {
-        return interactorTypeSelectItems;
-    }
-
-    public void setInteractorTypeSelectItems(List<SelectItem> interactorTypeSelectItems) {
-        this.interactorTypeSelectItems = interactorTypeSelectItems;
-    }
-
-    public List<SelectItem> getEvidenceTypeSelectItems() {
-        return evidenceTypeSelectItems;
-    }
-
-    public void setEvidenceTypeSelectItems(List<SelectItem> evidenceTypeSelectItems) {
-        this.evidenceTypeSelectItems = evidenceTypeSelectItems;
-    }
-
-    public List<SelectItem> getConfidenceTypeSelectItems() {
-        return confidenceTypeSelectItems;
-    }
-
-    public void setConfidenceTypeSelectItems(List<SelectItem> confidenceTypeSelectItems) {
-        this.confidenceTypeSelectItems = confidenceTypeSelectItems;
-    }
-
-    public List<SelectItem> getParameterUnitSelectItems() {
-        return parameterUnitSelectItems;
-    }
-
-    public void setParameterUnitSelectItems(List<SelectItem> parameterUnitSelectItems) {
-        this.parameterUnitSelectItems = parameterUnitSelectItems;
-    }
-
-    public List<SelectItem> getParameterTypeSelectItems() {
-        return parameterTypeSelectItems;
-    }
-
-    public void setParameterTypeSelectItems(List<SelectItem> parameterTypeSelectItems) {
-        this.parameterTypeSelectItems = parameterTypeSelectItems;
-    }
-
-    public List<SelectItem> getOrganismSelectItems() {
-        return organismSelectItems;
-    }
-
-    public void setOrganismSelectItems(List<SelectItem> organismSelectItems) {
-        this.organismSelectItems = organismSelectItems;
     }
 
     @Override
@@ -404,8 +203,6 @@ public class ComplexController extends AnnotatedObjectController {
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            loadCvs();
-            loadOrganisms();
 
             if ( ac != null ) {
                 if ( complex == null || !ac.equals( complex.getAc() )) {

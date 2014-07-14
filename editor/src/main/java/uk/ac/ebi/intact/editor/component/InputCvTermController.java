@@ -70,7 +70,7 @@ public class InputCvTermController extends BaseController{
             throw new IllegalArgumentException("Root does not exist: " + id);
         }
 
-        // loadCvs collections needed
+        // loadParticipants collections needed
         Hibernate.initialize(rootCv.getDbAnnotations());
         Hibernate.initialize(rootCv.getDbXrefs());
 

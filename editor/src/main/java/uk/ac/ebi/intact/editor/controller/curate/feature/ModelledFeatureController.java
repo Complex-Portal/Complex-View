@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.curate.feature;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.primefaces.event.TabChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +37,6 @@ import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureJamiCloner;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ComplexController;
 import uk.ac.ebi.intact.editor.controller.curate.participant.ModelledParticipantController;
-import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.*;
@@ -44,7 +44,6 @@ import uk.ac.ebi.intact.jami.synchronizer.FinderException;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
 import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
-import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
@@ -92,64 +91,10 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     private boolean isRangeDisabled;
 
-    private List<SelectItem> typeSelectItems;
-    private List<SelectItem> roleSelectItems;
     private List<SelectItem> participantSelectItems;
-    private List<SelectItem> aliasTypeSelectItems;
-    private List<SelectItem> featureTopicSelectItems;
-    private List<SelectItem> databaseSelectItems;
-    private List<SelectItem> qualifierSelectItems;
-    private List<SelectItem> fuzzyTypeSelectItems;
     private boolean isComplexFeature=false;
 
     public ModelledFeatureController() {
-    }
-
-    public void loadCvs() {
-        typeSelectItems = new ArrayList<SelectItem>();
-        typeSelectItems.add(new SelectItem( null, "select type", "select type", false, false, true ));
-        roleSelectItems = new ArrayList<SelectItem>();
-        roleSelectItems.add(new SelectItem( null, "select role", "select role", false, false, true ));
-        participantSelectItems = new ArrayList<SelectItem>();
-        participantSelectItems.add(new SelectItem( null, "select participant", "select participant", false, false, true ));
-        aliasTypeSelectItems = new ArrayList<SelectItem>();
-        aliasTypeSelectItems.add(new SelectItem( null, "select type", "select type", false, false, true ));
-        featureTopicSelectItems = new ArrayList<SelectItem>();
-        featureTopicSelectItems.add(new SelectItem( null, "select topic", "select topic", false, false, true ));
-        databaseSelectItems = new ArrayList<SelectItem>();
-        databaseSelectItems.add(new SelectItem( null, "select database", "select database", false, false, true ));
-        qualifierSelectItems = new ArrayList<SelectItem>();
-        qualifierSelectItems.add(new SelectItem( null, "select qualifier", "select qualifier", false, false, true ));
-        fuzzyTypeSelectItems = new ArrayList<SelectItem>();
-        fuzzyTypeSelectItems.add(new SelectItem(null, "select status", "select status", false, false, true));
-
-        IntactDao intactDao = getIntactDao();
-        CvTermDao cvDao = intactDao.getCvTermDao();
-
-        IntactCvTerm typeParent = cvDao.getByMIIdentifier("MI:0116", IntactUtils.FEATURE_TYPE_OBJCLASS);
-        loadChildren(typeParent, typeSelectItems);
-
-        IntactCvTerm roleParent = cvDao.getByMIIdentifier("MI:0925", IntactUtils.TOPIC_OBJCLASS);
-        SelectItem item = createSelectItem(roleParent);
-        if (item != null){
-            roleSelectItems.add(item);
-        }
-        loadChildren(roleParent, roleSelectItems);
-
-        IntactCvTerm aliasTypeParent = cvDao.getByMIIdentifier("MI:0300", IntactUtils.ALIAS_TYPE_OBJCLASS);
-        loadChildren(aliasTypeParent, aliasTypeSelectItems);
-
-        IntactCvTerm featureTopicParent = cvDao.getByMIIdentifier("MI:0668", IntactUtils.TOPIC_OBJCLASS);
-        loadChildren(featureTopicParent, featureTopicSelectItems);
-
-        IntactCvTerm databaseParent = cvDao.getByMIIdentifier("MI:0447", IntactUtils.DATABASE_OBJCLASS);
-        loadChildren(databaseParent, databaseSelectItems);
-
-        IntactCvTerm qualifierParent = cvDao.getByMIIdentifier("MI:0353", IntactUtils.QUALIFIER_OBJCLASS);
-        loadChildren(qualifierParent, qualifierSelectItems);
-
-        IntactCvTerm statusParent = cvDao.getByMIIdentifier("MI:0333", IntactUtils.RANGE_STATUS_OBJCLASS);
-        loadChildren(statusParent, fuzzyTypeSelectItems);
     }
 
     private void loadChildren(IntactCvTerm parent, List<SelectItem> selectItems){
@@ -173,36 +118,8 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         return null;
     }
 
-    public List<SelectItem> getTypeSelectItems() {
-        return typeSelectItems;
-    }
-
-    public List<SelectItem> getRoleSelectItems() {
-        return roleSelectItems;
-    }
-
     public List<SelectItem> getParticipantSelectItems() {
         return participantSelectItems;
-    }
-
-    public List<SelectItem> getAliasTypeSelectItems() {
-        return aliasTypeSelectItems;
-    }
-
-    public List<SelectItem> getFeatureTopicSelectItems() {
-        return featureTopicSelectItems;
-    }
-
-    public List<SelectItem> getDatabaseSelectItems() {
-        return databaseSelectItems;
-    }
-
-    public List<SelectItem> getQualifierSelectItems() {
-        return qualifierSelectItems;
-    }
-
-    public List<SelectItem> getFuzzyTypeSelectItems() {
-        return fuzzyTypeSelectItems;
     }
 
     @Override
@@ -234,7 +151,8 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     }
 
     private void refreshParticipantSelectItems() {
-        this.participantSelectItems.clear();
+        participantSelectItems = new ArrayList<SelectItem>();
+        participantSelectItems.add(new SelectItem(null, "select participant", "select participant", false, false, true));
 
         if (this.feature.getParticipant() != null){
             ModelledParticipant modelledParticipant = this.feature.getParticipant();
@@ -269,10 +187,14 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            loadCvs();
             if ( ac != null ) {
                 if ( feature == null || !ac.equals( feature.getAc() ) ) {
                     feature = loadJamiByAc(IntactModelledFeature.class, ac);
+                    Hibernate.initialize(feature.getAliases());
+                    Hibernate.initialize(feature.getDbXrefs());
+                    Hibernate.initialize(feature.getAnnotations());
+                    Hibernate.initialize(feature.getDbLinkedFeatures());
+                    Hibernate.initialize(feature.getRanges());
                 }
             } else {
                 if ( feature != null ) ac = feature.getAc();

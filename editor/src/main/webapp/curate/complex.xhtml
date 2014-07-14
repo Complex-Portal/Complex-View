@@ -155,7 +155,7 @@
             <td colspan="3">
                 <ia:inputCvTerm id="complexTypeTxt" cvIdentifier="MI:0314"
                                 value="#{interaction.interactorType}"
-                                selectItems="#{complexController.interactorTypeSelectItems}"
+                                selectItems="#{editorCvTermService.interactorTypeSelectItems}"
                                 required="true" requiredMessage="Complex type is required"
                                 oncomplete="ia_enableSave()"
                                 update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
@@ -169,7 +169,7 @@
             <td colspan="3">
                 <ia:inputCvTerm id="interactionTypeTxt" cvIdentifier="MI:0190"
                                 value="#{interaction.interactionType}"
-                                selectItems="#{complexController.interactionTypeSelectItems}"
+                                selectItems="#{editorCvTermService.interactionTypeSelectItems}"
                                 required="true" requiredMessage="Interaction type is required"
                                 oncomplete="ia_enableSave()"
                                 update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
@@ -183,7 +183,7 @@
             <td colspan="3">
                 <ia:inputCvTerm id="ecoCodeTxt" cvIdentifier="ECO:0000000"
                                 value="#{interaction.evidenceType}"
-                                selectItems="#{complexController.evidenceTypeSelectItems}"
+                                selectItems="#{editorCvTermService.evidenceTypeSelectItems}"
                                 required="true" requiredMessage="ECO code is required"
                                 oncomplete="ia_enableSave()"
                                 update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
@@ -199,7 +199,7 @@
                                    valueChangeAwareObject="#{complexController}"
                                    oncomplete="ia_enableSave()"
                                    update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
-                                   selectItems="#{complexController.organismSelectItems}">
+                                   selectItems="#{editorOrganismService.organismSelectItems}">
                     <ed:curation/>
                 </ia:inputOrganism>
             </td>
@@ -254,10 +254,10 @@
     </p:tab>
 
     <ui:decorate template="jpropertiesTabs.xhtml">
-        <ui:param name="annotatedObjectSelectItems" value="#{complexController.interactionTopicSelectItems}"/>
-        <ui:param name="databaseSelectItems" value="#{complexController.databaseSelectItems}"/>
-        <ui:param name="qualifierSelectItems" value="#{complexController.qualifierSelectItems}"/>
-        <ui:param name="aliasTypeSelectItems" value="#{complexController.aliasTypeSelectItems}"/>
+        <ui:param name="annotatedObjectSelectItems" value="#{editorCvTermService.complexTopicSelectItems}"/>
+        <ui:param name="databaseSelectItems" value="#{editorCvTermService.complexDatabaseSelectItems}"/>
+        <ui:param name="qualifierSelectItems" value="#{editorCvTermService.qualifierSelectItems}"/>
+        <ui:param name="aliasTypeSelectItems" value="#{editorCvTermService.aliasTypeSelectItems}"/>
         <ui:param name="updateOnChange" value=":editorForm:basic"/>
     </ui:decorate>
 
@@ -267,8 +267,8 @@
         <p:outputPanel id="parametersPanel" autoUpdate="true">
             <ui:decorate template="jparameters_table.xhtml">
                 <ui:param name="annotatedObjectController" value="#{complexController}"/>
-                <ui:param name="parameterTypeSelectItems" value="#{complexController.parameterTypeSelectItems}"/>
-                <ui:param name="parameterUnitSelectItems" value="#{complexController.parameterUnitSelectItems}"/>
+                <ui:param name="parameterTypeSelectItems" value="#{editorCvTermService.parameterTypeSelectItems}"/>
+                <ui:param name="parameterUnitSelectItems" value="#{editorCvTermService.parameterUnitSelectItems}"/>
                 <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
                 <ui:param name="disableParameterSelectItems" value="#{complexController.isParameterDisabled()}"/>
             </ui:decorate>
@@ -281,7 +281,7 @@
         <p:outputPanel id="confidencesPanel" autoUpdate="true">
             <ui:decorate template="jconfidences_table.xhtml">
                 <ui:param name="annotatedObjectController" value="#{complexController}"/>
-                <ui:param name="confidenceTypeSelectItems" value="#{complexController.confidenceTypeSelectItems}"/>
+                <ui:param name="confidenceTypeSelectItems" value="#{editorCvTermService.confidenceTypeSelectItems}"/>
                 <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
                 <ui:param name="disableConfidenceSelectItems" value="#{complexController.isConfidenceDisabled()}"/>
             </ui:decorate>

@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.primefaces.model.SelectableDataModelWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -46,13 +47,11 @@ import uk.ac.ebi.intact.jami.model.extension.*;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.CvTopic;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.DataModel;
-import javax.faces.model.SelectItem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -88,65 +87,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Autowired
     private ComplexController interactionController;
 
-    private List<SelectItem> aliasTypeSelectItems;
-    private List<SelectItem> participantTopicSelectItems;
-    private List<SelectItem> databaseSelectItems;
-    private List<SelectItem> qualifierSelectItems;
-    private List<SelectItem> biologicalRoleSelectItems;
-
     public ModelledParticipantController() {
-    }
-
-    public void loadCvs() {
-        aliasTypeSelectItems = new ArrayList<SelectItem>();
-        aliasTypeSelectItems.add(new SelectItem( null, "select type", "select type", false, false, true ));
-        participantTopicSelectItems = new ArrayList<SelectItem>();
-        participantTopicSelectItems.add(new SelectItem(null, "select topic", "select topic", false, false, true));
-        databaseSelectItems = new ArrayList<SelectItem>();
-        databaseSelectItems.add(new SelectItem( null, "select database", "select database", false, false, true ));
-        qualifierSelectItems = new ArrayList<SelectItem>();
-        qualifierSelectItems.add(new SelectItem( null, "select qualifier", "select qualifier", false, false, true ));
-        biologicalRoleSelectItems = new ArrayList<SelectItem>();
-        biologicalRoleSelectItems.add(new SelectItem(null, "select biological role", "select biological role", false, false, true));
-
-        IntactDao intactDao = getIntactDao();
-        CvTermDao cvDao = intactDao.getCvTermDao();
-
-        IntactCvTerm aliasTypeParent = cvDao.getByMIIdentifier("MI:0300", IntactUtils.ALIAS_TYPE_OBJCLASS);
-        loadChildren(aliasTypeParent, aliasTypeSelectItems);
-
-        IntactCvTerm participantTopicParent = cvDao.getByMIIdentifier("MI:0666", IntactUtils.TOPIC_OBJCLASS);
-        loadChildren(participantTopicParent, participantTopicSelectItems);
-
-        IntactCvTerm databaseParent = cvDao.getByMIIdentifier("MI:0473", IntactUtils.DATABASE_OBJCLASS);
-        loadChildren(databaseParent, databaseSelectItems);
-
-        IntactCvTerm qualifierParent = cvDao.getByMIIdentifier("MI:0353", IntactUtils.QUALIFIER_OBJCLASS);
-        loadChildren(qualifierParent, qualifierSelectItems);
-
-        IntactCvTerm bioRoleParent = cvDao.getByMIIdentifier("MI:0500", IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
-        loadChildren(bioRoleParent, biologicalRoleSelectItems);
-    }
-
-    private void loadChildren(IntactCvTerm parent, List<SelectItem> selectItems){
-        for (OntologyTerm child : parent.getChildren()){
-            IntactCvTerm cv = (IntactCvTerm)child;
-            SelectItem item = createSelectItem(cv);
-            if (item != null){
-                selectItems.add(item);
-            }
-            if (!cv.getChildren().isEmpty()){
-                loadChildren(cv, selectItems);
-            }
-        }
-    }
-
-    private SelectItem createSelectItem( IntactCvTerm cv ) {
-        if (AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
-            boolean obsolete = AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), CvTopic.OBSOLETE_MI_REF, CvTopic.OBSOLETE).isEmpty();
-            return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")), cv.getFullName());
-        }
-        return null;
     }
 
     @Override
@@ -169,54 +110,17 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         // do nothing
     }
 
-    public List<SelectItem> getAliasTypeSelectItems() {
-        return aliasTypeSelectItems;
-    }
-
-    public void setAliasTypeSelectItems(List<SelectItem> aliasTypeSelectItems) {
-        this.aliasTypeSelectItems = aliasTypeSelectItems;
-    }
-
-    public List<SelectItem> getParticipantTopicSelectItems() {
-        return participantTopicSelectItems;
-    }
-
-    public void setParticipantTopicSelectItems(List<SelectItem> participantTopicSelectItems) {
-        this.participantTopicSelectItems = participantTopicSelectItems;
-    }
-
-    public List<SelectItem> getDatabaseSelectItems() {
-        return databaseSelectItems;
-    }
-
-    public void setDatabaseSelectItems(List<SelectItem> databaseSelectItems) {
-        this.databaseSelectItems = databaseSelectItems;
-    }
-
-    public List<SelectItem> getQualifierSelectItems() {
-        return qualifierSelectItems;
-    }
-
-    public void setQualifierSelectItems(List<SelectItem> qualifierSelectItems) {
-        this.qualifierSelectItems = qualifierSelectItems;
-    }
-
-    public List<SelectItem> getBiologicalRoleSelectItems() {
-        return biologicalRoleSelectItems;
-    }
-
-    public void setBiologicalRoleSelectItems(List<SelectItem> biologicalRoleSelectItems) {
-        this.biologicalRoleSelectItems = biologicalRoleSelectItems;
-    }
-
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            loadCvs();
             if ( ac != null ) {
                 if ( participant == null || !ac.equals( participant.getAc() ) ) {
                     IntactDao intactDao = getIntactDao();
                     participant = loadJamiByAc(IntactModelledParticipant.class, ac);
+                    Hibernate.initialize(participant.getAliases());
+                    Hibernate.initialize(participant.getXrefs());
+                    Hibernate.initialize(participant.getAnnotations());
+                    Hibernate.initialize(participant.getFeatures());
                 }
             } else {
                 if ( participant != null ) ac = participant.getAc();
