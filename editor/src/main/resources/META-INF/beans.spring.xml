@@ -87,4 +87,9 @@
         <property name="imexUpdateConfig" ref="imexUpdateConfig"/>
     </bean>
 
+    <!-- jami fetchers -->
+    <bean id="proteinFetcher" class="psidev.psi.mi.jami.bridges.uniprot.CachedUniprotProteinFetcher"/>
+    <bean id="bioactiveEntityFetcher" class="psidev.psi.mi.jami.bridges.chebi.CachedChebiFetcher"/>
+    <bean id="geneFetcher" class="psidev.psi.mi.jami.bridges.uniprot.CachedUniprotGeneFetcher"/>
+
 </beans>

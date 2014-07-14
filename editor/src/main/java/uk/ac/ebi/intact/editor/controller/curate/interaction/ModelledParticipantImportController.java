@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,6 @@ import psidev.psi.mi.jami.bridges.chebi.ChebiFetcher;
 import psidev.psi.mi.jami.bridges.exception.BridgeFailedException;
 import psidev.psi.mi.jami.bridges.uniprot.UniprotGeneFetcher;
 import psidev.psi.mi.jami.bridges.uniprot.UniprotProteinFetcher;
-import psidev.psi.mi.jami.bridges.uniprot.taxonomy.UniprotTaxonomyFetcher;
 import psidev.psi.mi.jami.model.BioactiveEntity;
 import psidev.psi.mi.jami.model.CvTerm;
 import psidev.psi.mi.jami.model.Gene;
@@ -66,15 +66,15 @@ public class ModelledParticipantImportController extends JpaAwareController {
     private static final Log log = LogFactory.getLog(ModelledParticipantImportController.class);
 
     @Autowired
+    @Qualifier("proteinFetcher")
     private UniprotProteinFetcher uniprotProteinFetcher;
 
     @Autowired
-    private UniprotTaxonomyFetcher uniprotTaxonomyFetcher;
-
-    @Autowired
+    @Qualifier("bioactiveEntityFetcher")
     private ChebiFetcher chebiFetcher;
 
     @Autowired
+    @Qualifier("geneFetcher")
     private UniprotGeneFetcher uniprotGeneFetcher;
 
     @Autowired
