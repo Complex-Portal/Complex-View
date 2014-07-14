@@ -20,6 +20,7 @@
     <ui:define name="metadata">
         <f:metadata>
             <f:viewParam name="ac" value="#{modelledFeatureController.ac}"/>
+            <f:event type="preRenderView" listener="#{editorCvTermService.loadDataIfNotDone}"/>
             <f:event type="preRenderView" listener="#{modelledFeatureController.loadData}"/>
             <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(modelledFeatureController)}"/>
         </f:metadata>

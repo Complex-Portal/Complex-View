@@ -18,6 +18,8 @@
 <ui:define name="metadata">
     <f:metadata>
         <f:viewParam name="ac" value="#{complexController.ac}"/>
+        <f:event type="preRenderView" listener="#{editorCvTermService.loadDataIfNotDone}"/>
+        <f:event type="preRenderView" listener="#{editorOrganismService.loadDataIfNotDone}"/>
         <f:event type="preRenderView" listener="#{complexController.loadData}"/>
         <f:event type="preRenderView" listener="#{curateController.setCurrentAnnotatedObjectController(complexController)}"/>
     </f:metadata>

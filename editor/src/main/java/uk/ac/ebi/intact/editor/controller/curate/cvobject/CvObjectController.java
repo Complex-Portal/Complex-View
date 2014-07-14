@@ -34,6 +34,9 @@ public class CvObjectController extends AnnotatedObjectController {
     @Autowired
     private CvObjectService cvObjectService;
 
+    @Autowired
+    private EditorCvTermService cvTermService;
+
     private String ac;
     private CvDagObject cvObject;
     private String cvClassName;
@@ -137,6 +140,7 @@ public class CvObjectController extends AnnotatedObjectController {
     @Override
     public boolean doSaveDetails() {
         cvObjectService.refresh(null);
+        cvTermService.clearAll();
         
         Collection<CvObject> parentsToRemove = CollectionUtils.subtract(cvObject.getParents(), parents.getTarget());
         Collection<CvObject> parentsToAdd = CollectionUtils.subtract(parents.getTarget(), cvObject.getParents());
