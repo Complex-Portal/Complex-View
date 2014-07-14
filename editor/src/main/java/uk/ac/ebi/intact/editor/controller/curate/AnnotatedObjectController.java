@@ -1444,4 +1444,34 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public String getJamiObjectName(){
         return "";
     }
+
+    public String getObjectCategory(){
+        CuratorContextController contextController = getCuratorContextController();
+        if (getAnnotatedObject() != null){
+            return contextController.intactObjectSimpleName(getAnnotatedObject());
+        }
+        else if (getJamiObject() != null){
+            return contextController.jamiObjectSimpleName(getJamiObject());
+        }
+        else{
+            return "";
+        }
+    }
+
+    public String getTitle(){
+        CuratorContextController contextController = getCuratorContextController();
+        if (getAnnotatedObject() != null){
+            return contextController.intactObjectSimpleName(getAnnotatedObject()) + ": " + getAnnotatedObject().getShortLabel()+" | Curate | Editor";
+        }
+        else if (getJamiObject() != null){
+            return contextController.jamiObjectSimpleName(getJamiObject()) + ": " + getJamiObjectName()+" | Curate | Editor";
+        }
+        else{
+            return " | Curate | Editor";
+        }
+    }
+
+    public String getAc(){
+        return null;
+    }
 }
