@@ -193,8 +193,8 @@
                 <h:outputLabel value="Organism: " for="organismTxt"/>
             </td>
             <td colspan="3">
-                <ia:inputOrganism id="organismTxt" value="#{interactor.bioSource}"
-                                   valueChangeAwareObject="#{interactorController}"
+                <ia:inputOrganism id="organismTxt" value="#{complex.organism}"
+                                   valueChangeAwareObject="#{complexController}"
                                    oncomplete="ia_enableSave()"
                                    update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
                                    selectItems="#{complexController.organismSelectItems}">

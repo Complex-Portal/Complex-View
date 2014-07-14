@@ -37,7 +37,7 @@ function loadGraph(xmlUrl){
         // whether the edges should be merged or not
         var merged = true;
 
-        // loadData and draw
+        // loadCvs and draw
         vis = new org.cytoscapeweb.Visualization("cytoscapeweb", options);
 
         // callback when Cytoscape Web has finished drawing

@@ -19,57 +19,37 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.bridges.chebi.ChebiFetcher;
 import psidev.psi.mi.jami.bridges.exception.BridgeFailedException;
-import psidev.psi.mi.jami.bridges.fetcher.BioactiveEntityFetcher;
-import psidev.psi.mi.jami.bridges.fetcher.OrganismFetcher;
 import psidev.psi.mi.jami.bridges.uniprot.UniprotGeneFetcher;
 import psidev.psi.mi.jami.bridges.uniprot.UniprotProteinFetcher;
 import psidev.psi.mi.jami.bridges.uniprot.taxonomy.UniprotTaxonomyFetcher;
-import psidev.psi.mi.jami.model.*;
-import uk.ac.ebi.intact.core.context.IntactContext;
-import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
-import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
-import uk.ac.ebi.intact.core.persister.IntactCore;
-import uk.ac.ebi.intact.dbupdate.bioactiveentity.importer.BioActiveEntityService;
-import uk.ac.ebi.intact.dbupdate.bioactiveentity.importer.BioActiveEntityServiceException;
-import uk.ac.ebi.intact.dbupdate.gene.importer.GeneService;
-import uk.ac.ebi.intact.dbupdate.gene.importer.GeneServiceException;
-import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriter;
-import uk.ac.ebi.intact.dbupdate.prot.report.ReportWriterImpl;
-import uk.ac.ebi.intact.dbupdate.prot.report.UpdateReportHandler;
+import psidev.psi.mi.jami.model.BioactiveEntity;
+import psidev.psi.mi.jami.model.CvTerm;
+import psidev.psi.mi.jami.model.Gene;
+import psidev.psi.mi.jami.model.Participant;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
-import uk.ac.ebi.intact.editor.controller.BaseController;
-import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
+import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.util.CheckIdentifier;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.context.IntactConfiguration;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.dao.ModelledParticipantDao;
-import uk.ac.ebi.intact.jami.model.extension.*;
+import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
+import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
+import uk.ac.ebi.intact.jami.model.extension.IntactModelledParticipant;
+import uk.ac.ebi.intact.jami.model.extension.IntactStoichiometry;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.Interaction;
-import uk.ac.ebi.intact.model.Interactor;
-import uk.ac.ebi.intact.model.Protein;
-import uk.ac.ebi.intact.model.Xref;
-import uk.ac.ebi.intact.model.util.XrefUtils;
-import uk.ac.ebi.intact.uniprot.model.UniprotProtein;
-import uk.ac.ebi.intact.uniprot.model.UniprotProteinLike;
-import uk.ac.ebi.intact.uniprot.model.UniprotProteinTranscript;
-import uk.ac.ebi.intact.uniprot.service.UniprotRemoteService;
-import uk.ac.ebi.intact.util.ProteinServiceImpl;
-import uk.ac.ebi.intact.util.biosource.BioSourceService;
-import uk.ac.ebi.intact.util.protein.ProteinServiceException;
 
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
-import java.io.IOException;
-import java.io.Writer;
 import java.util.*;
 
 /**
@@ -79,7 +59,9 @@ import java.util.*;
 @Controller
 @Scope("conversation.access")
 @ConversationName("general")
-public class ModelledParticipantImportController extends BaseController {
+@EnableTransactionManagement
+@Configuration
+public class ModelledParticipantImportController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog(ModelledParticipantImportController.class);
 
@@ -115,11 +97,12 @@ public class ModelledParticipantImportController extends BaseController {
         this.maxStoichiometry = (int)editorConfig.getDefaultStoichiometry();
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void importParticipants(ActionEvent evt) {
         importCandidates = new ArrayList<ImportJamiCandidate>();
         queriesNoResults = new ArrayList<String>();
 
-        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        IntactDao intactDao = getIntactDao();
         CvTermDao cvObjectService = intactDao.getCvTermDao();
 
         cvBiologicalRole = cvObjectService.getByMIIdentifier(Participant.UNSPECIFIED_ROLE, IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
@@ -156,6 +139,7 @@ public class ModelledParticipantImportController extends BaseController {
         participantsToImport = new String[0];
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void importSelected(ActionEvent evt) {
         for (ImportJamiCandidate candidate : importCandidates) {
             if (candidate.isSelected()) {
@@ -168,7 +152,7 @@ public class ModelledParticipantImportController extends BaseController {
         }
     }
 
-
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public Set<ImportJamiCandidate> importParticipant(String participantToImport) {
         if (participantToImport == null) {
             addErrorMessage("No participant to import", "Provide one or more accessions");
@@ -244,7 +228,7 @@ public class ModelledParticipantImportController extends BaseController {
         Set<ImportJamiCandidate> candidates = new HashSet<ImportJamiCandidate>();
 
         IntactConfiguration config = ApplicationContextProvider.getBean("intactJamiConfiguration");
-        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        IntactDao intactDao = getIntactDao();
         final ModelledParticipantDao componentDao = intactDao.getModelledParticipantDao();
         final uk.ac.ebi.intact.jami.dao.InteractorDao<IntactInteractor> interactorDao = intactDao.getInteractorDao(IntactInteractor.class);
 
@@ -366,7 +350,7 @@ public class ModelledParticipantImportController extends BaseController {
         psidev.psi.mi.jami.model.Interactor interactor = candidate.getInteractor();
 
         if (cvBiologicalRole == null) {
-            IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+            IntactDao intactDao = getIntactDao();
             CvTermDao cvObjectService = intactDao.getCvTermDao();
 
             cvBiologicalRole = cvObjectService.getByMIIdentifier(Participant.UNSPECIFIED_ROLE, IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);

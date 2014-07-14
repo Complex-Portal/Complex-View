@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.feature;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.exception.IllegalRangeException;
 import psidev.psi.mi.jami.utils.RangeUtils;
@@ -49,7 +50,7 @@ public class ModelledRangeWrapper {
         this.sequence = sequence;
     }
 
-    @Transactional(value = "jamiTransactionManager")
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void onRangeAsStringChanged(AjaxBehaviorEvent evt) throws PersisterException, FinderException, SynchronizerException, IllegalRangeException {
         psidev.psi.mi.jami.model.Range newRange = RangeUtils.createRangeFromString(rangeAsString, false);
         newRange.setResultingSequence(new ModelledResultingSequence(RangeUtils.extractRangeSequence(newRange, this.sequence), null));

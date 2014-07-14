@@ -119,7 +119,7 @@ public class UserAdminController extends AbstractUserController {
     }
 
     public void loadData() {
-        log.debug( "AbstractUserController.loadData" );
+        log.debug( "AbstractUserController.loadCvs" );
 
         Collection<User> users = getDaoFactory().getUserDao().getAll();
         allUsers = new SelectableDataModelWrapper(new SelectableCollectionDataModel<User>(users), users);

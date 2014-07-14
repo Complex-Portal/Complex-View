@@ -71,7 +71,7 @@ public class ApplicationInitializer extends JpaAwareController implements Initia
         addMissingRole( allRoles, "CURATOR" );
         addMissingRole( allRoles, "REVIEWER" );
 
-        log.info( "After loadData: found " + daoFactory.getRoleDao().getAll().size() + " role(s) in the database." );
+        log.info( "After loadCvs: found " + daoFactory.getRoleDao().getAll().size() + " role(s) in the database." );
     }
 
     private void addMissingRole( List<Role> allRoles, String roleName ) {

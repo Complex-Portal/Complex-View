@@ -21,8 +21,11 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.model.SelectableDataModelWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.model.impl.DefaultStoichiometry;
@@ -36,7 +39,6 @@ import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportJamiCandidate
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ModelledParticipantImportController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ModelledParticipantWrapper;
 import uk.ac.ebi.intact.editor.util.SelectableCollectionDataModel;
-import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
@@ -64,6 +66,8 @@ import java.util.List;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
+@EnableTransactionManagement
+@Configuration
 public class ModelledParticipantController extends AnnotatedObjectController {
 
     private static final Log log = LogFactory.getLog( ModelledParticipantController.class );
@@ -93,8 +97,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     public ModelledParticipantController() {
     }
 
-    @Transactional(value = "jamiTransactionManager")
-    public void loadData() {
+    public void loadCvs() {
         aliasTypeSelectItems = new ArrayList<SelectItem>();
         aliasTypeSelectItems.add(new SelectItem( null, "select type", "select type", false, false, true ));
         participantTopicSelectItems = new ArrayList<SelectItem>();
@@ -106,7 +109,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         biologicalRoleSelectItems = new ArrayList<SelectItem>();
         biologicalRoleSelectItems.add(new SelectItem(null, "select biological role", "select biological role", false, false, true));
 
-        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        IntactDao intactDao = getIntactDao();
         CvTermDao cvDao = intactDao.getCvTermDao();
 
         IntactCvTerm aliasTypeParent = cvDao.getByMIIdentifier("MI:0300", IntactUtils.ALIAS_TYPE_OBJCLASS);
@@ -139,7 +142,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     }
 
     private SelectItem createSelectItem( IntactCvTerm cv ) {
-        if (!AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
+        if (AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
             boolean obsolete = AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), CvTopic.OBSOLETE_MI_REF, CvTopic.OBSOLETE).isEmpty();
             return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")), cv.getFullName());
         }
@@ -206,13 +209,13 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         this.biologicalRoleSelectItems = biologicalRoleSelectItems;
     }
 
-    @Transactional(value = "jamiTransactionManager")
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            loadData();
+            loadCvs();
             if ( ac != null ) {
                 if ( participant == null || !ac.equals( participant.getAc() ) ) {
-                    IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+                    IntactDao intactDao = getIntactDao();
                     participant = loadJamiByAc(IntactModelledParticipant.class, ac);
                 }
             } else {
@@ -325,7 +328,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     public String newParticipant(IntactComplex interaction) {
         this.interactor = null;
 
-        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        IntactDao intactDao = getIntactDao();
         CvTermDao cvObjectService = intactDao.getCvTermDao();
 
         CvTerm defaultBiologicalRole = cvObjectService.getByMIIdentifier(Participant.UNSPECIFIED_ROLE_MI, IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);

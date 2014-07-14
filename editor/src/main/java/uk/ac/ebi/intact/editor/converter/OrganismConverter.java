@@ -19,7 +19,6 @@ import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.dao.OrganismDao;
 import uk.ac.ebi.intact.jami.model.extension.IntactOrganism;
-import uk.ac.ebi.intact.model.BioSource;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -46,7 +45,7 @@ public class OrganismConverter implements Converter {
     public String getAsString( FacesContext facesContext, UIComponent uiComponent, Object o ) throws ConverterException {
         if ( o == null ) return null;
 
-        if ( o instanceof BioSource ) {
+        if ( o instanceof IntactOrganism ) {
             IntactOrganism bioSource = ( IntactOrganism ) o;
             return bioSource.getAc();
         } else {

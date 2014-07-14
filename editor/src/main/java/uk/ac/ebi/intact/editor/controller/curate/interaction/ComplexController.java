@@ -38,6 +38,7 @@ import uk.ac.ebi.intact.editor.controller.curate.cloner.ComplexJamiCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantJamiCloner;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
+import uk.ac.ebi.intact.jami.dao.OrganismDao;
 import uk.ac.ebi.intact.jami.lifecycle.LifeCycleManager;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.*;
@@ -94,6 +95,8 @@ public class ComplexController extends AnnotatedObjectController {
     private List<SelectItem> confidenceTypeSelectItems;
     private List<SelectItem> parameterTypeSelectItems;
     private List<SelectItem> parameterUnitSelectItems;
+
+    private List<SelectItem> organismSelectItems;
 
     private boolean assignToMe = true;
     private String reasonForReadyForChecking;
@@ -164,6 +167,20 @@ public class ComplexController extends AnnotatedObjectController {
         loadChildren(parameterUnit, parameterTypeSelectItems);
     }
 
+    private void loadOrganisms() {
+        organismSelectItems = new ArrayList<SelectItem>();
+        organismSelectItems.add(new SelectItem( null, "select organism", "select organism", false, false, true ));
+
+        IntactDao intactDao = getIntactDao();
+        OrganismDao organismDao = getIntactDao().getOrganismDao();
+
+        Collection<IntactOrganism> loadedOrganisms = organismDao.getAllOrganisms(false, false);
+        for (IntactOrganism organism : loadedOrganisms){
+            organismSelectItems.add(createSelectItem(organism));
+        }
+
+    }
+
     private void loadChildren(IntactCvTerm parent, List<SelectItem> selectItems){
         if (parent != null){
             for (OntologyTerm child : parent.getChildren()){
@@ -180,11 +197,15 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     private SelectItem createSelectItem( IntactCvTerm cv ) {
-        if (!AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
+        if (AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
             boolean obsolete = AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), CvTopic.OBSOLETE_MI_REF, CvTopic.OBSOLETE).isEmpty();
             return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")), cv.getFullName());
         }
         return null;
+    }
+
+    private SelectItem createSelectItem( IntactOrganism organism ) {
+        return new SelectItem( organism, organism.getCommonName(), organism.getScientificName());
     }
 
     public List<SelectItem> getAliasTypeSelectItems() {
@@ -265,6 +286,14 @@ public class ComplexController extends AnnotatedObjectController {
 
     public void setParameterTypeSelectItems(List<SelectItem> parameterTypeSelectItems) {
         this.parameterTypeSelectItems = parameterTypeSelectItems;
+    }
+
+    public List<SelectItem> getOrganismSelectItems() {
+        return organismSelectItems;
+    }
+
+    public void setOrganismSelectItems(List<SelectItem> organismSelectItems) {
+        this.organismSelectItems = organismSelectItems;
     }
 
     @Override
@@ -376,6 +405,7 @@ public class ComplexController extends AnnotatedObjectController {
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             loadCvs();
+            loadOrganisms();
 
             if ( ac != null ) {
                 if ( complex == null || !ac.equals( complex.getAc() )) {

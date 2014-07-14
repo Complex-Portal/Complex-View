@@ -20,8 +20,11 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.event.TabChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.Complex;
 import psidev.psi.mi.jami.model.ModelledParticipant;
@@ -33,7 +36,6 @@ import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureJamiCloner;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ComplexController;
 import uk.ac.ebi.intact.editor.controller.curate.participant.ModelledParticipantController;
-import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
@@ -65,6 +67,8 @@ import java.util.List;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
+@EnableTransactionManagement
+@Configuration
 public class ModelledFeatureController extends AnnotatedObjectController {
 
     private static final Log log = LogFactory.getLog( ModelledFeatureController.class );
@@ -101,8 +105,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     public ModelledFeatureController() {
     }
 
-    @Transactional(value = "jamiTransactionManager")
-    public void loadData() {
+    public void loadCvs() {
         typeSelectItems = new ArrayList<SelectItem>();
         typeSelectItems.add(new SelectItem( null, "select type", "select type", false, false, true ));
         roleSelectItems = new ArrayList<SelectItem>();
@@ -120,7 +123,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         fuzzyTypeSelectItems = new ArrayList<SelectItem>();
         fuzzyTypeSelectItems.add(new SelectItem(null, "select status", "select status", false, false, true));
 
-        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        IntactDao intactDao = getIntactDao();
         CvTermDao cvDao = intactDao.getCvTermDao();
 
         IntactCvTerm typeParent = cvDao.getByMIIdentifier("MI:0116", IntactUtils.FEATURE_TYPE_OBJCLASS);
@@ -163,7 +166,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     }
 
     private SelectItem createSelectItem( IntactCvTerm cv ) {
-        if (!AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
+        if (AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
             boolean obsolete = AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), CvTopic.OBSOLETE_MI_REF, CvTopic.OBSOLETE).isEmpty();
             return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")), cv.getFullName());
         }
@@ -263,10 +266,10 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         return "/curate/jparticipant?faces-redirect=true&includeViewParams=true";
     }
 
-    @Transactional(value = "jamiTransactionManager")
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            loadData();
+            loadCvs();
             if ( ac != null ) {
                 if ( feature == null || !ac.equals( feature.getAc() ) ) {
                     feature = loadJamiByAc(IntactModelledFeature.class, ac);
@@ -337,7 +340,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         return navigateToObject(feature);
     }
 
-    @Transactional(value = "jamiTransactionManager")
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void newRange(ActionEvent evt) {
         if (newRangeValue == null || newRangeValue.isEmpty()) {
             addErrorMessage("Range value field is empty", "Please provide a range value before clicking on the New Range button");
@@ -368,7 +371,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
         range.setLink(false);
         range.setResultingSequence(new ModelledResultingSequence(RangeUtils.extractRangeSequence(range, sequence), null));
-        IntactDao dao = ApplicationContextProvider.getBean("intactDao");
+        IntactDao dao = getIntactDao();
         try {
             range = dao.getSynchronizerContext().getModelledRangeSynchronizer().synchronize(range, false);
         } catch (FinderException e) {
