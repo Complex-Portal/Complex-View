@@ -16,7 +16,11 @@
 package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
 import psidev.psi.mi.jami.model.*;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.model.extension.*;
+
+import java.util.Date;
 
 /**
  * Editor specific cloning routine for complex features.
@@ -29,8 +33,12 @@ public class FeatureJamiCloner {
 
 
     public static ModelledFeature cloneFeature(Feature feature) {
-        ModelledFeature clone = new IntactModelledFeature();
-
+        IntactModelledFeature clone = new IntactModelledFeature();
+        clone.setCreated(new Date());
+        clone.setUpdated(clone.getCreated());
+        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
+        clone.setCreator(jamiUserContext.getUserId());
+        clone.setUpdator(jamiUserContext.getUserId());
         clone.setShortName(feature.getShortName());
         clone.setFullName(feature.getFullName());
         clone.setRole(feature.getRole());

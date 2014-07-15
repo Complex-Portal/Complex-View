@@ -40,6 +40,8 @@ import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportJamiCandidate
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ModelledParticipantImportController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ModelledParticipantWrapper;
 import uk.ac.ebi.intact.editor.util.SelectableCollectionDataModel;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
@@ -54,6 +56,7 @@ import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.DataModel;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -238,6 +241,11 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         CvTerm defaultBiologicalRole = cvObjectService.getByMIIdentifier(Participant.UNSPECIFIED_ROLE_MI, IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
 
         IntactModelledParticipant participant = new IntactModelledParticipant(new IntactInteractor("unspecified"));
+        participant.setCreated(new Date());
+        participant.setUpdated(participant.getCreated());
+        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
+        participant.setCreator(jamiUserContext.getUserId());
+        participant.setUpdator(jamiUserContext.getUserId());
         participant.setBiologicalRole(defaultBiologicalRole);
         participant.setStoichiometry(new DefaultStoichiometry((int)getEditorConfig().getDefaultStoichiometry()));
 

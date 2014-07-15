@@ -39,6 +39,7 @@ import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.curate.util.CheckIdentifier;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.context.IntactConfiguration;
+import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.dao.ModelledParticipantDao;
@@ -357,6 +358,11 @@ public class ModelledParticipantImportController extends JpaAwareController {
         }
 
         IntactModelledParticipant component = new IntactModelledParticipant(interactor);
+        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
+        component.setCreator(jamiUserContext.getUserId());
+        component.setUpdator(jamiUserContext.getUserId());
+        component.setCreated(new Date());
+        component.setUpdated(component.getCreated());
         component.setInteraction(interaction);
         component.setStoichiometry(new IntactStoichiometry(minStoichiometry,maxStoichiometry));
         component.setBiologicalRole(cvBiologicalRole);

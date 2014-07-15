@@ -17,11 +17,18 @@ package uk.ac.ebi.intact.editor.controller.admin;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.editor.controller.UserListener;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.context.UserContext;
+import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.model.user.User;
 
 import java.util.*;
@@ -31,6 +38,8 @@ import java.util.*;
  * @version $Id$
  */
 @Controller
+@EnableTransactionManagement
+@Configuration
 public class UserManagerController extends BaseController implements UserListener {
 
     private static final Log log = LogFactory.getLog( UserManagerController.class );
@@ -71,6 +80,7 @@ public class UserManagerController extends BaseController implements UserListene
     }
 
     @Override
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void userLoggedIn(User user) {
         if (user == null) return;
 
@@ -80,6 +90,10 @@ public class UserManagerController extends BaseController implements UserListene
 
         // set the user to be used when writing into the database
         IntactContext.getCurrentInstance().getUserContext().setUser( user );
+
+        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
+        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        jamiUserContext.setUser(intactDao.getUserDao().getByLogin(user.getLogin()));
 
         loggedInUsers.add(user);
     }

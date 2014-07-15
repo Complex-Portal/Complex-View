@@ -17,7 +17,11 @@ package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
 import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.utils.XrefUtils;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.model.extension.*;
+
+import java.util.Date;
 
 /**
  * Editor specific cloning routine for complex participants.
@@ -29,7 +33,12 @@ import uk.ac.ebi.intact.jami.model.extension.*;
 public class ComplexJamiCloner {
 
     public static Complex cloneInteraction(InteractionEvidence evidence) {
-        Complex clone = new IntactComplex(evidence.getShortName());
+        IntactComplex clone = new IntactComplex(evidence.getShortName());
+        clone.setCreated(new Date());
+        clone.setUpdated(clone.getCreated());
+        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
+        clone.setCreator(jamiUserContext.getUserId());
+        clone.setUpdator(jamiUserContext.getUserId());
 
         clone.setInteractionType(evidence.getInteractionType());
         if (evidence.getExperiment() != null){
@@ -81,8 +90,9 @@ public class ComplexJamiCloner {
     }
 
     public static Complex cloneComplex(Complex complex) {
-        Complex clone = new IntactComplex(complex.getShortName());
-
+        IntactComplex clone = new IntactComplex(complex.getShortName());
+        clone.setCreated(new Date());
+        clone.setUpdated(clone.getCreated());
         clone.setOrganism(complex.getOrganism());
         clone.setEvidenceType(complex.getEvidenceType());
         clone.setSource(complex.getSource());

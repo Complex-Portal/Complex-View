@@ -37,6 +37,8 @@ import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureJamiCloner;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ComplexController;
 import uk.ac.ebi.intact.editor.controller.curate.participant.ModelledParticipantController;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.*;
@@ -57,6 +59,7 @@ import javax.faces.model.SelectItem;
 import javax.faces.validator.ValidatorException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -253,6 +256,11 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         IntactModelledFeature feature = new IntactModelledFeature();
         feature.setParticipant(participant);
         feature.setShortName(null);
+        feature.setCreated(new Date());
+        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
+        feature.setCreator(jamiUserContext.getUserId());
+        feature.setUpdator(jamiUserContext.getUserId());
+        feature.setUpdated(feature.getCreated());
 
         setFeature(feature);
 

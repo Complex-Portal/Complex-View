@@ -16,7 +16,11 @@
 package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
 import psidev.psi.mi.jami.model.*;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.model.extension.*;
+
+import java.util.Date;
 
 /**
  * Editor specific cloning routine for biological complexes.
@@ -29,8 +33,12 @@ public class ParticipantJamiCloner {
 
 
     public static ModelledParticipant cloneParticipant(Participant participant) {
-        ModelledParticipant clone = new IntactModelledParticipant(participant.getInteractor());
-
+        IntactModelledParticipant clone = new IntactModelledParticipant(participant.getInteractor());
+        clone.setCreated(new Date());
+        clone.setUpdated(clone.getCreated());
+        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
+        clone.setCreator(jamiUserContext.getUserId());
+        clone.setUpdator(jamiUserContext.getUserId());
         clone.setBiologicalRole(participant.getBiologicalRole());
         if (participant.getInteraction() instanceof Complex){
             clone.setInteraction((Complex)participant.getInteraction());

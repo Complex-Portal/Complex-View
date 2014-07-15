@@ -36,6 +36,8 @@ import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedJamiChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ComplexJamiCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantJamiCloner;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.lifecycle.LifeCycleManager;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
@@ -177,7 +179,14 @@ public class ComplexController extends AnnotatedObjectController {
     @Override
     protected IntactComplex cloneAnnotatedObject(IntactPrimaryObject ao) {
         // to be overrided
-        return (IntactComplex) ComplexJamiCloner.cloneComplex((IntactComplex) ao);
+        IntactComplex complex = (IntactComplex)ComplexJamiCloner.cloneComplex((IntactComplex) ao);
+        lifecycleManager.getStartStatus().create(complex, "Created in Editor");
+
+        if (assignToMe) {
+            lifecycleManager.getNewStatus().claimOwnership(complex);
+            lifecycleManager.getAssignedStatus().startCuration(complex);
+        }
+        return complex;
     }
 
     @Override
@@ -879,6 +888,12 @@ public class ComplexController extends AnnotatedObjectController {
         }
 
         setComplex((IntactComplex)ComplexJamiCloner.cloneInteraction(getIntactDao().getInteractionDao().getByAc(interactionEvidence.getAc())));
+        lifecycleManager.getStartStatus().create(this.complex, "Created in Editor");
+
+        if (assignToMe) {
+            lifecycleManager.getNewStatus().claimOwnership(this.complex);
+            lifecycleManager.getAssignedStatus().startCuration(this.complex);
+        }
 
         return "/curate/complex?faces-redirect=true";
     }
@@ -890,6 +905,11 @@ public class ComplexController extends AnnotatedObjectController {
         CvTerm type = dao.getByMIIdentifier(Complex.COMPLEX_MI, IntactUtils.INTERACTOR_TYPE_OBJCLASS);
 
         setComplex(new IntactComplex("name to specify"));
+        this.complex.setCreatedDate(new Date());
+        this.complex.setUpdatedDate(this.complex.getCreatedDate());
+        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
+        this.complex.setCreator(jamiUserContext.getUserId());
+        this.complex.setUpdator(jamiUserContext.getUserId());
         this.complex.setInteractorType(type);
         lifecycleManager.getStartStatus().create(this.complex, "Created in Editor");
 
