@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.editor.controller.admin;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Hibernate;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -94,6 +95,8 @@ public class UserManagerController extends BaseController implements UserListene
         UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
         IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
         jamiUserContext.setUser(intactDao.getUserDao().getByLogin(user.getLogin()));
+        Hibernate.initialize(jamiUserContext.getUser().getPreferences());
+        Hibernate.initialize(jamiUserContext.getUser().getRoles());
 
         loggedInUsers.add(user);
     }

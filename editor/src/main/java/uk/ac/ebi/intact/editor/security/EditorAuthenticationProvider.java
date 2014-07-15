@@ -21,9 +21,11 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.*;
 import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.controller.UserListener;
@@ -38,6 +40,8 @@ import java.util.Map;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
+@EnableTransactionManagement
+@Configuration
 public class EditorAuthenticationProvider implements AuthenticationProvider {
 
     private static final Log log = LogFactory.getLog( EditorAuthenticationProvider.class );
@@ -51,7 +55,6 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private UserManagerController userManagerController;
 
-    @Transactional(value = "transactionManager", readOnly = true )
     public Authentication authenticate( Authentication authentication ) throws AuthenticationException {
 
         log.debug( "======================= AUTHENTICATE ======================" );
@@ -61,26 +64,7 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
             log.debug( "Authenticating user: " + authentication.getPrincipal() );
         }
 
-        final User user = daoFactory.getUserDao().getByLogin( authentication.getPrincipal().toString() );
-
-        // initialize the user collections because we will access it often
-        if (user != null) {
-            Hibernate.initialize(user.getPreferences());
-            Hibernate.initialize(user.getRoles());
-        }
-
-        if ( user == null || !user.getPassword().equals( authentication.getCredentials() ) ) {
-            if ( log.isDebugEnabled() ) log.debug( "Bad credentials for user: " + authentication.getPrincipal() );
-            throw new BadCredentialsException( "Unknown user or incorrect password." );
-        }
-
-        if ( user.isDisabled() ) {
-            throw new DisabledException( "User " + user.getLogin() + " has been disabled, please contact the IntAct team." );
-        }
-
-
-
-        if ( log.isInfoEnabled() ) log.info( "Authentication successful for user: " + authentication.getPrincipal() );
+        final User user = loadIntactUser(authentication);
 
         // get all the "user listener" beans and notify the login
         final Map<String,UserListener> userListeners = applicationContext.getBeansOfType(UserListener.class);
@@ -100,6 +84,30 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
         return new UsernamePasswordAuthenticationToken( authentication.getPrincipal(),
                                                         authentication.getCredentials(),
                                                         authorities.toArray( new GrantedAuthority[authorities.size()] ) );
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true )
+    public User loadIntactUser(Authentication authentication) {
+        final User user = daoFactory.getUserDao().getByLogin( authentication.getPrincipal().toString() );
+
+        // initialize the user collections because we will access it often
+        if (user != null) {
+            Hibernate.initialize(user.getPreferences());
+            Hibernate.initialize(user.getRoles());
+        }
+
+        if ( user == null || !user.getPassword().equals( authentication.getCredentials() ) ) {
+            if ( log.isDebugEnabled() ) log.debug( "Bad credentials for user: " + authentication.getPrincipal() );
+            throw new BadCredentialsException( "Unknown user or incorrect password." );
+        }
+
+        if ( user.isDisabled() ) {
+            throw new DisabledException( "User " + user.getLogin() + " has been disabled, please contact the IntAct team." );
+        }
+
+
+        if ( log.isInfoEnabled() ) log.info( "Authentication successful for user: " + authentication.getPrincipal() );
+        return user;
     }
 
     public boolean supports( Class authentication ) {
