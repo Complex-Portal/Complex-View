@@ -88,8 +88,8 @@
     </bean>
 
     <!-- jami fetchers -->
-    <bean id="proteinFetcher" class="psidev.psi.mi.jami.bridges.uniprot.CachedUniprotProteinFetcher"/>
-    <bean id="bioactiveEntityFetcher" class="psidev.psi.mi.jami.bridges.chebi.CachedChebiFetcher"/>
-    <bean id="geneFetcher" class="psidev.psi.mi.jami.bridges.uniprot.CachedUniprotGeneFetcher"/>
+    <bean id="proteinFetcher" class="psidev.psi.mi.jami.bridges.uniprot.UniprotProteinFetcher"/>
+    <bean id="bioactiveEntityFetcher" class="psidev.psi.mi.jami.bridges.chebi.ChebiFetcher"/>
+    <bean id="geneFetcher" class="psidev.psi.mi.jami.bridges.uniprot.UniprotGeneFetcher"/>
 
 </beans>

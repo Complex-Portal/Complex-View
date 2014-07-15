@@ -15,9 +15,8 @@
  */
 package uk.ac.ebi.intact.editor.converter;
 
+import uk.ac.ebi.intact.editor.controller.curate.cvobject.EditorCvTermService;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
-import uk.ac.ebi.intact.jami.dao.CvTermDao;
-import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.extension.IntactCvTerm;
 
 import javax.faces.component.UIComponent;
@@ -36,9 +35,8 @@ public class CvTermConverter implements Converter {
     @Override
     public Object getAsObject( FacesContext facesContext, UIComponent uiComponent, String ac ) throws ConverterException {
         if ( ac == null ) return null;
-        IntactDao dao = ApplicationContextProvider.getBean("intactDao");
-        CvTermDao cvDao = dao.getCvTermDao();
-        return cvDao.getByAc( ac );
+        EditorCvTermService dao = ApplicationContextProvider.getBean("editorCvTermService");
+        return dao.findCvByAc( ac );
     }
 
     @Override

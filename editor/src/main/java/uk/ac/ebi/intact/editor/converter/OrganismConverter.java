@@ -15,9 +15,8 @@
  */
 package uk.ac.ebi.intact.editor.converter;
 
+import uk.ac.ebi.intact.editor.controller.curate.organism.EditorOrganismService;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
-import uk.ac.ebi.intact.jami.dao.IntactDao;
-import uk.ac.ebi.intact.jami.dao.OrganismDao;
 import uk.ac.ebi.intact.jami.model.extension.IntactOrganism;
 
 import javax.faces.component.UIComponent;
@@ -36,9 +35,8 @@ public class OrganismConverter implements Converter {
     public Object getAsObject( FacesContext facesContext, UIComponent uiComponent, String ac ) throws ConverterException {
         if ( ac == null ) return null;
 
-        IntactDao dao = ApplicationContextProvider.getBean("intactDao");
-        OrganismDao orgDao = dao.getOrganismDao();
-        return orgDao.getByAc(ac);
+        EditorOrganismService dao = ApplicationContextProvider.getBean("editorOrganismService");
+        return dao.findCvByAc(ac);
     }
 
     @Override

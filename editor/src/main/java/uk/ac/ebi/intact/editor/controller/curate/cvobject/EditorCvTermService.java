@@ -19,7 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  */
-@Controller
+@Service
 @Lazy
 @EnableTransactionManagement
 @Configuration
@@ -303,5 +303,12 @@ public class EditorCvTermService extends JpaAwareController {
 
     public List<SelectItem> getParameterUnitSelectItems() {
         return parameterUnitSelectItems;
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public IntactCvTerm findCvByAc(String ac){
+        IntactDao dao = getIntactDao();
+        CvTermDao cvDao = dao.getCvTermDao();
+        return cvDao.getByAc( ac );
     }
 }

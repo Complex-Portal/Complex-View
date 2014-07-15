@@ -19,7 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +38,7 @@ import java.util.List;
 /**
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  */
-@Controller
+@Service
 @Lazy
 @EnableTransactionManagement
 @Configuration
@@ -89,5 +89,12 @@ public class EditorOrganismService extends JpaAwareController {
 
     public List<SelectItem> getOrganismSelectItems() {
         return organismSelectItems;
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public IntactOrganism findCvByAc(String ac){
+        IntactDao dao = getIntactDao();
+        OrganismDao orgDao = dao.getOrganismDao();
+        return orgDao.getByAc(ac);
     }
 }
