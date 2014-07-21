@@ -43,7 +43,7 @@ public class WebAppController {
                                    @RequestParam ( required = false ) String type,
                                    ModelMap model,
                                    HttpSession session,
-                                   HttpServletRequest request) throws ComplexPortalException, IOException {
+                                   HttpServletRequest request) throws Exception {
         model.addAttribute("complex_search_form", request.getRequestURL().toString());
         model.addAttribute("page_title", "Complex Search");
         setDefaultModelMapValues(model, request);
@@ -97,7 +97,7 @@ public class WebAppController {
                          @RequestParam ( required = false ) String type,
                          ModelMap model,
                          HttpSession session,
-                         HttpServletRequest request) throws ComplexPortalException, IOException {
+                         HttpServletRequest request) throws Exception {
         model.addAttribute("complex_search_form", request.getRequestURL().toString());
         setDefaultModelMapValues(model, request);
         if ( q !=null && !q.equals("") && q.length()> 0 ) {
@@ -151,7 +151,7 @@ public class WebAppController {
     public String showDetails(@PathVariable String ac,
                                     ModelMap model,
                                     HttpSession session,
-                                    HttpServletRequest request) throws ComplexPortalException, IOException {
+                                    HttpServletRequest request) throws Exception {
         ComplexDetails details = restConnection.getDetails(cleanQuery(ac), QueryTypes.DETAILS.value);
         session.setAttribute("details", details);
         setDefaultModelMapValues(model, request);
