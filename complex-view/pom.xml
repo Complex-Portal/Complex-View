@@ -13,7 +13,7 @@
     </parent>
     <artifactId>complex-view</artifactId>
     <packaging>war</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <name>complex-view</name>
 
     <properties>

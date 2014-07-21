@@ -7,4 +7,18 @@ import java.io.IOException;
  */
 public class ComplexPortalException extends Exception {
 
+    public ComplexPortalException() {
+    }
+
+    public ComplexPortalException(String s) {
+        super(s);
+    }
+
+    public ComplexPortalException(String s, Throwable throwable) {
+        super(s, throwable);
+    }
+
+    public ComplexPortalException(Throwable throwable) {
+        super(throwable);
+    }
 }

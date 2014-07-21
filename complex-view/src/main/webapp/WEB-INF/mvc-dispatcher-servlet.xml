@@ -40,6 +40,7 @@
         <constructor-arg index="0" type="java.lang.String" value="${complex.ws.url}"/>
         <constructor-arg index="1" type="java.lang.Integer" value="10"/>
         <constructor-arg index="2" type="java.util.Map" ref="facetFieldNames"/>
+        <constructor-arg index="3" type="java.lang.String" value="${complex.ftp}"/>
     </bean>
 
 </beans>

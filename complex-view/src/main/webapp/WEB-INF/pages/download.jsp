@@ -86,7 +86,7 @@
         </p>
     </nav>
     <p>Complex Portal is released monthly and all data is in PSI-MI 2.5 format. See the <a href="<c:url value="http://www.psidev.info/index.php?q=node/31" />">PSI website</a> for a detailed format description.</p>
-    <p>All Complex Portal data and software is freely available to all users, academic or commercial, under the terms of the Apache License, Version 2.0, from <a href="<c:url value="ftp://ftp.ebi.ac.uk/pub/databases/intact/complex/current/" />">ftp://ftp.ebi.ac.uk/pub/databases/intact/complex/current/</a></p>
+    <p>All Complex Portal data and software is freely available to all users, academic or commercial, under the terms of the Apache License, Version 2.0, from <a href="<c:url value="${complex_ftp_url}" />">${complex_ftp_url}</a></p>
     <%--<p>Contents of the Complex Portal FTP directory:</p>--%>
     <%--<ul>--%>
         <%--<il></il>--%>

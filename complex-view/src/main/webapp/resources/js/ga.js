@@ -6,7 +6,7 @@
 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-ga('create', 'UA-672146-8', 'ebi.ac.uk');
+ga('create', 'UA-672146-9', 'ebi.ac.uk');
 /*UA-672146-9 for Production*/
 /*UA-672146-8 for Dev*/
 ga('send', 'pageview');

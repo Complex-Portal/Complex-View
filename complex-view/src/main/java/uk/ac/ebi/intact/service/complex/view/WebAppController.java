@@ -213,6 +213,7 @@ public class WebAppController {
         model.addAttribute("complex_contact_url", "http://www.ebi.ac.uk/support/index.php?query=intact");//"mailto:intact-help@ebi.ac.uk?Subject=Complex%20Portal");
         model.addAttribute("complex_about_url", request.getContextPath() + "/about/" );
         model.addAttribute("intact_url", "http://www.ebi.ac.uk/intact/");
+        model.addAttribute("complex_ftp_url", this.restConnection.getFtpUrl());
     }
 
     private String cleanQuery(String query) {
@@ -254,6 +255,13 @@ public class WebAppController {
     @ExceptionHandler(ComplexPortalException.class)
     public ModelAndView handleComplexPortalException(ComplexPortalException e, HttpServletResponse response, HttpServletRequest request){
         ModelAndView model = new ModelAndView("error/503");
+        setDefaultModelMapValues(model.getModelMap(), request);
+        return model;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ModelAndView allExceptions(Exception e, HttpServletResponse response, HttpServletRequest request){
+        ModelAndView model = new ModelAndView("error/404");
         setDefaultModelMapValues(model.getModelMap(), request);
         return model;
     }
