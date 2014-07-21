@@ -13,7 +13,7 @@
     </parent>
     <artifactId>complex-ws</artifactId>
     <packaging>war</packaging>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <name>complex-ws</name>
 
     <properties>

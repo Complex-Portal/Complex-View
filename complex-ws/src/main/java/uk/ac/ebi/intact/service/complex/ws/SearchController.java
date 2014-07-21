@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -190,7 +191,7 @@ public class SearchController {
      */
     @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public @ResponseBody ComplexDetails retrieveComplex(@PathVariable String ac) {
+    public @ResponseBody ComplexDetails retrieveComplex(@PathVariable String ac) throws Exception {
         InteractionDao interactionDao = daoFactory.getInteractionDao();
         InteractionImpl complex = interactionDao.getByAc(ac);
         ComplexDetails details = null;
@@ -203,8 +204,8 @@ public class SearchController {
             details.setDisease          ( ComplexUtils.getDisease           ( complex ) );
             details.setLigand           ( ComplexUtils.getLigand            ( complex ) );
             details.setComplexAssembly  ( ComplexUtils.getComplexAssembly   ( complex ) );
-            details.setName             ( ComplexUtils.getName              ( complex ) );
-            details.setSynonyms         ( ComplexUtils.getSynonyms          ( complex ) );
+            details.setName             ( getComplexName                    ( complex ) );
+            details.setSynonyms         ( getComplexSynonyms                ( complex ) );
             details.setSystematicName   ( ComplexUtils.getSystematicName    ( complex ) );
             details.setSpecies          ( ComplexUtils.getSpeciesName       ( complex ) + "; " +
                                           ComplexUtils.getSpeciesTaxId      ( complex ) );
@@ -212,13 +213,37 @@ public class SearchController {
             setParticipants(complex, details);
             setCrossReferences(complex, details);
         }
+        else{
+            throw new Exception();
+        }
         return details;
     }
-
 
     /*******************************/
     /*      Protected methods      */
     /*******************************/
+    protected static List<String> getComplexSynonyms(InteractionImpl complex) {
+        List<String> synosyms = new ArrayList<String>();
+        for (Alias alias : complex.getAliases()) {
+            if (alias.getName() != null && alias.getCvAliasType() != null && alias.getCvAliasType().getIdentifier().equals(CvAliasType.COMPLEX_SYNONYM_NAME_MI_REF)) {
+                synosyms.add(alias.getName());
+            }
+        }
+        return synosyms;
+    }
+
+    protected String getComplexName(InteractionImpl complex){
+        String name = ComplexUtils.getRecommendedName(complex);
+        if (name != null) return name;
+        name = ComplexUtils.getSystematicName(complex);
+        if (name != null) return name;
+        List<String> synonyms = getComplexSynonyms(complex);
+        if (! synonyms.isEmpty()) return synonyms.get(0);
+        name = ComplexUtils.getFirstAlias(complex);
+        if (name != null) return name;
+        return complex.getShortLabel();
+    }
+
     // This method controls the first and number parameters and retrieve data
     protected ComplexRestResult query(String query, String first, String number, String filters, String facets) throws SolrServerException {
         // Get parameters (if we have them)
