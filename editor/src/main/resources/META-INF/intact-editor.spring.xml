@@ -37,7 +37,6 @@
 
     <!-- Spring scopes -->
 
-
     <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
         <property name="scopes">
             <map>

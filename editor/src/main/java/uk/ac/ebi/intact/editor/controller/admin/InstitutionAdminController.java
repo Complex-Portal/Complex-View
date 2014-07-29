@@ -21,6 +21,7 @@ import org.primefaces.model.SelectableDataModelWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
@@ -76,7 +77,7 @@ public class InstitutionAdminController extends JpaAwareController {
 
     }
 
-    @Transactional("transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void mergeSelected(ActionEvent evt) {
         if (mergeDestinationInstitution == null) {
             addErrorMessage("Destination institution not selected", "Select one in the drop down list");
@@ -91,14 +92,14 @@ public class InstitutionAdminController extends JpaAwareController {
         institutionService.refresh(null);
     }
 
-    @Transactional("transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void deleteSelected(ActionEvent evt) {
         for (Institution selectedInstitution : selectedInstitutions) {
             getDaoFactory().getInstitutionDao().deleteByAc(selectedInstitution.getAc());
         }
     }
 
-    @Transactional("transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void fixAnnotatedObjectOwners(ActionEvent evt) {
         if (usersDualListModel.getTarget().isEmpty()) {
             addErrorMessage("No users selected", "Add some users to fix using the picklist");

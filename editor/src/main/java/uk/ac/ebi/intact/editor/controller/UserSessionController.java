@@ -20,10 +20,8 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.InstitutionDao;
@@ -40,8 +38,6 @@ import uk.ac.ebi.intact.model.user.User;
  */
 @Controller
 @Scope( "session" )
-@EnableTransactionManagement
-@Configuration
 public class UserSessionController extends JpaAwareController implements DisposableBean {
 
     private static final Log log = LogFactory.getLog( UserSessionController.class );
@@ -88,14 +84,13 @@ public class UserSessionController extends JpaAwareController implements Disposa
         return user.equals(currentUser);
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isJamiUserMe(uk.ac.ebi.intact.jami.model.user.User user) {
         if (user == null) return false;
 
         return user.getLogin().equals(currentUser.getLogin());
     }
 
-    @Transactional("transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void notifyLastActivity() {
         DateTime dateTime = new DateTime();
         String dateTimeStr = dateTime.toString("dd/MM/yyyy HH:mm");

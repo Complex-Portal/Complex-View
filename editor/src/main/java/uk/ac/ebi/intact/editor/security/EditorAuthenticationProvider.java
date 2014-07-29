@@ -21,11 +21,10 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.*;
 import org.springframework.security.providers.AuthenticationProvider;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.controller.UserListener;
@@ -40,8 +39,6 @@ import java.util.Map;
  * @author Bruno Aranda (baranda@ebi.ac.uk)
  * @version $Id$
  */
-@EnableTransactionManagement
-@Configuration
 public class EditorAuthenticationProvider implements AuthenticationProvider {
 
     private static final Log log = LogFactory.getLog( EditorAuthenticationProvider.class );
@@ -86,7 +83,7 @@ public class EditorAuthenticationProvider implements AuthenticationProvider {
                                                         authorities.toArray( new GrantedAuthority[authorities.size()] ) );
     }
 
-    @Transactional(value = "transactionManager", readOnly = true )
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public User loadIntactUser(Authentication authentication) {
         final User user = daoFactory.getUserDao().getByLogin( authentication.getPrincipal().toString() );
 

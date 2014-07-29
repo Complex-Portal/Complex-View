@@ -20,10 +20,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.bridges.chebi.ChebiFetcher;
@@ -60,8 +58,6 @@ import java.util.*;
 @Controller
 @Scope("conversation.access")
 @ConversationName("general")
-@EnableTransactionManagement
-@Configuration
 public class ModelledParticipantImportController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog(ModelledParticipantImportController.class);

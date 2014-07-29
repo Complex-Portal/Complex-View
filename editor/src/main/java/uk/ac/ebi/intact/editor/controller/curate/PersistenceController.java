@@ -19,11 +19,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.IllegalTransactionStateException;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.CvTerm;
@@ -39,7 +37,7 @@ import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.audit.Auditable;
-import uk.ac.ebi.intact.jami.model.extension.*;
+import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.model.*;
 
@@ -57,8 +55,6 @@ import java.util.Set;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-@EnableTransactionManagement
-@Configuration
 public class PersistenceController extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( PersistenceController.class );
@@ -93,7 +89,7 @@ public class PersistenceController extends JpaAwareController {
         }
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRES_NEW)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public boolean doSave( IntactPrimaryObject object, IntactDbSynchronizer dbSynchronizer) {
         if ( object == null ) {
             addErrorMessage( "No annotated object to save", "How did I get here?" );
@@ -113,7 +109,7 @@ public class PersistenceController extends JpaAwareController {
         }
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRES_NEW)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public uk.ac.ebi.intact.jami.model.audit.Auditable doSynchronize( Object object, IntactDbSynchronizer dbSynchronizer) {
         if ( object == null ) {
             addErrorMessage( "No annotated object to save", "How did I get here?" );
@@ -146,7 +142,7 @@ public class PersistenceController extends JpaAwareController {
         return intactObject;
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRES_NEW)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public IntactPrimaryObject doRevert(IntactPrimaryObject intactObject) {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Reverting: " + intactObject.getAc());
@@ -188,7 +184,7 @@ public class PersistenceController extends JpaAwareController {
         return false;
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRES_NEW)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public boolean doDelete(IntactPrimaryObject intactObject, IntactDbSynchronizer dbSynchronizer) {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Deleting: " + intactObject.getAc());

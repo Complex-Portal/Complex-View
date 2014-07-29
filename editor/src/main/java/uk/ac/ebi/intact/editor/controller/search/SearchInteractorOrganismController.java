@@ -4,6 +4,7 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
@@ -40,7 +41,7 @@ public class SearchInteractorOrganismController extends JpaAwareController {
 		this.ac = ac;
 	}
 
-    @Transactional(value = "transactionManager", readOnly = true)
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
 	public void loadData(ComponentSystemEvent evt) {
 		if (!FacesContext.getCurrentInstance().isPostback()) {
 

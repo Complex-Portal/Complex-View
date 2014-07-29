@@ -64,6 +64,7 @@
         <userContext.scope>session</userContext.scope>
 
         <projectStage>Development</projectStage>
+        <user.context.id>EDITOR_USER</user.context.id>
 
     </properties>
 

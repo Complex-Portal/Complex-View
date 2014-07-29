@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.util;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.CorePersisterImpl;
@@ -38,7 +39,7 @@ public class EditorCorePersister extends CorePersisterImpl {
         super(intactContext, finder);
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public PersisterStatistics saveOrUpdate( EntityManager em, AnnotatedObject ao ) {
 
         em.setFlushMode(FlushModeType.COMMIT);
@@ -56,7 +57,7 @@ public class EditorCorePersister extends CorePersisterImpl {
         return getStatistics();
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public PersisterStatistics saveOrUpdate( AnnotatedObject ao ) {
         throw new UnsupportedOperationException("Use saveOrUpdate(EntityManager, AnnotatedObject) instead");
     }

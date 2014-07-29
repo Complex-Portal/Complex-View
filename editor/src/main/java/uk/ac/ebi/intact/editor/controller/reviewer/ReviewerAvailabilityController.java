@@ -43,12 +43,12 @@ public class ReviewerAvailabilityController extends JpaAwareController {
     public ReviewerAvailabilityController() {
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData(ComponentSystemEvent evt) {
         reviewers = getDaoFactory().getUserDao().getReviewers();
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRES_NEW)
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void save(ActionEvent evt) {
         for (User reviewer : reviewers) {
 

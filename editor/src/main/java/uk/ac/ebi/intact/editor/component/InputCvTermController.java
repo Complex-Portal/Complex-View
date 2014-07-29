@@ -22,6 +22,7 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.CvTerm;
 import uk.ac.ebi.intact.editor.controller.BaseController;
@@ -54,7 +55,7 @@ public class InputCvTermController extends BaseController{
     public InputCvTermController() {
     }
 
-    @Transactional("jamiTransactionManager")
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void load( ComponentSystemEvent evt) {
         log.trace( "Loading CvObject with id '"+id+"'" );
 
@@ -92,7 +93,7 @@ public class InputCvTermController extends BaseController{
     }
 
     @SuppressWarnings({"JpaQlInspection"})
-    @Transactional("jamiTransactionManager")
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getDescription(IntactCvTerm cvObject) {
         if (cvObject == null) return null;
 

@@ -21,6 +21,7 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.CvObjectDao;
@@ -56,7 +57,7 @@ public class InputCvObjectController extends BaseController{
     public InputCvObjectController() {
     }
 
-    @Transactional("transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, readOnly = true)
     public void load( ComponentSystemEvent evt) {
         log.trace( "Loading CvObject with id '"+id+"'" );
 
@@ -93,7 +94,7 @@ public class InputCvObjectController extends BaseController{
     }
 
     @SuppressWarnings({"JpaQlInspection"})
-    @Transactional("transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, readOnly = true)
     public String getDescription(CvObject cvObject) {
         if (cvObject == null) return null;
         

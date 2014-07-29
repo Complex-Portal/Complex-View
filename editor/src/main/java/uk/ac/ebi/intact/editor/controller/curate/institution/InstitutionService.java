@@ -56,7 +56,7 @@ public class InstitutionService extends JpaAwareController {
         refresh( null );
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
+    @Transactional(value = "transactionManager", propagation = Propagation.NEVER, readOnly = true)
     public void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading Institutions" );
 

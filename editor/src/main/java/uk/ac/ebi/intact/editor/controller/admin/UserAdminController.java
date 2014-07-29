@@ -8,6 +8,7 @@ import org.primefaces.model.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.user.UserDao;
 import uk.ac.ebi.intact.core.persistence.svc.UserService;
@@ -126,7 +127,7 @@ public class UserAdminController extends AbstractUserController {
     }
 
 
-    @Transactional("transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public String saveUser() {
         final UserDao userDao = getDaoFactory().getUserDao();
 

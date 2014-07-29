@@ -18,8 +18,11 @@ package uk.ac.ebi.intact.editor.controller.admin.report;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import org.joda.time.DateTime;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.CvLifecycleEventType;
@@ -49,7 +52,7 @@ public class AssignmentReportController extends JpaAwareController {
         toDate = new DateTime().toDate();
     }
 
-    @Transactional("transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, readOnly = true)
     public void calculate(ActionEvent evt) {
         assignmentInfos = new ArrayList<AssignmentInfo>();
 

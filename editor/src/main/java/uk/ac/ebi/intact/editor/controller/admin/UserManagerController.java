@@ -18,9 +18,7 @@ package uk.ac.ebi.intact.editor.controller.admin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
@@ -39,8 +37,6 @@ import java.util.*;
  * @version $Id$
  */
 @Controller
-@EnableTransactionManagement
-@Configuration
 public class UserManagerController extends BaseController implements UserListener {
 
     private static final Log log = LogFactory.getLog( UserManagerController.class );

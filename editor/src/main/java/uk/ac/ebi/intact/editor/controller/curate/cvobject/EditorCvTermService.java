@@ -43,8 +43,6 @@ import java.util.List;
  */
 @Service
 @Lazy
-@EnableTransactionManagement
-@Configuration
 public class EditorCvTermService extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( EditorCvTermService.class );

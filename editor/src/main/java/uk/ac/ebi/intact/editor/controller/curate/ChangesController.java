@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.*;
 import uk.ac.ebi.intact.core.persister.IntactCore;
@@ -50,8 +51,6 @@ import java.util.*;
  * @version $Id$
  */
 @Component
-@EnableTransactionManagement
-@Configuration
 public class ChangesController extends JpaAwareController implements UserListener {
 
     private static final Log log = LogFactory.getLog(ChangesController.class);
@@ -404,7 +403,7 @@ public class ChangesController extends JpaAwareController implements UserListene
         addUnsavedHiddenChange(change);
     }
 
-    @Transactional(value= "transactionManager")
+    @Transactional(value= "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void markToDeleteInteraction(Interaction interaction, Collection<Experiment> experiments) {
         Collection<Experiment> parents;
 

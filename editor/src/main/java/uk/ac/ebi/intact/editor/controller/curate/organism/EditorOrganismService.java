@@ -17,10 +17,8 @@ package uk.ac.ebi.intact.editor.controller.curate.organism;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
@@ -40,8 +38,6 @@ import java.util.List;
  */
 @Service
 @Lazy
-@EnableTransactionManagement
-@Configuration
 public class EditorOrganismService extends JpaAwareController {
 
     private static final Log log = LogFactory.getLog( EditorOrganismService.class );

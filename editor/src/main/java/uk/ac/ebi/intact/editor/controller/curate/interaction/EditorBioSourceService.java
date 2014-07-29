@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyService;
 import uk.ac.ebi.intact.bridges.taxonomy.UniprotTaxonomyService;
@@ -44,7 +45,7 @@ public class EditorBioSourceService extends BioSourceServiceImpl {
     }
 
     @Override
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public BioSource getBiosourceByTaxid(String taxid) throws BioSourceServiceException {
         BioSource biosource = bioSourceDao.getByTaxonIdUnique(taxid);
 

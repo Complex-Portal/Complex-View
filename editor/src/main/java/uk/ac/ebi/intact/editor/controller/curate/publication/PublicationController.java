@@ -26,8 +26,11 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.cdb.webservice.Authors;
 import uk.ac.ebi.cdb.webservice.Result;
@@ -386,7 +389,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public String newEmptyUnassigned() {
         SequenceManager sequenceManager = (SequenceManager) getSpringContext().getBean("sequenceManager");
         try {
@@ -443,7 +446,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void newEmpty() {
 
         Publication publication = new Publication(userSessionController.getUserInstitution(), identifier);
@@ -607,7 +610,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void revertReadyForChecking(ActionEvent evt) {
         LifecycleEvent event = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.READY_FOR_CHECKING.identifier());
         publication.removeLifecycleEvent(event);
@@ -623,7 +626,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void revertAccepted(ActionEvent evt) {
         LifecycleEvent readyForReleaseEvt = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.READY_FOR_RELEASE.identifier());
         LifecycleEvent acceptedEvt = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.ACCEPTED.identifier());
@@ -647,7 +650,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void putOnHold(ActionEvent evt) {
         setOnHold(reasonForOnHoldFromDialog);
 
@@ -670,7 +673,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void readyForReleaseFromOnHold(ActionEvent evt) {
         removeAnnotation(CvTopic.ON_HOLD);
 
@@ -1146,7 +1149,7 @@ public class PublicationController extends AnnotatedObjectController {
         setAnnotation(CURATION_DEPTH, curationDepth);
     }
 
-    @Transactional(value = "transactionManager", readOnly = true)
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isAccepted() {
         if (isAcceptedOrBeyond(publication)) return true;
 
@@ -1170,7 +1173,7 @@ public class PublicationController extends AnnotatedObjectController {
                 pub.getStatus().getIdentifier().equals(CvPublicationStatusType.RELEASED.identifier());
     }
 
-    @Transactional(value = "transactionManager", readOnly = true)
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isAccepted(Publication pub) {
         if (isAcceptedOrBeyond(pub)) return true;
 

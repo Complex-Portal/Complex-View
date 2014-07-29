@@ -22,6 +22,7 @@ import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
@@ -75,7 +76,7 @@ public class MyNotesController extends JpaAwareController {
                request.getContextPath();
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadPage(ComponentSystemEvent evt) {
         User user = userSessionController.getCurrentUser(true);
 
@@ -100,7 +101,7 @@ public class MyNotesController extends JpaAwareController {
         processNotes();
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void saveNotes(ActionEvent evt) {
         User user = userSessionController.getCurrentUser();
 

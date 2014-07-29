@@ -196,6 +196,7 @@
             classpath*:/META-INF/jobs/*.spring.xml,
             classpath:/META-INF/security/security.spring.xml,
             classpath:/META-INF/intact-editor.spring.xml
+            classpath:/META-INF/jpa.spring.xml
         </param-value>
     </context-param>
 

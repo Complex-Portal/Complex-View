@@ -8,8 +8,11 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.application.SearchThreadConfig;
@@ -124,7 +127,7 @@ public class SearchController extends AnnotatedObjectController {
         this.query = null;
     }
 
-    @Transactional( value = "transactionManager", readOnly = true )
+    @Transactional( value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String doSearch() {
 
         log.info( "Searching for '" + query + "'..." );
@@ -238,7 +241,7 @@ public class SearchController extends AnnotatedObjectController {
         return "search.results";
     }
 
-    @Transactional( value = "jamiTransactionManager", readOnly = true )
+    @Transactional( value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String doJamiSearch() {
 
         log.info( "Searching for '" + query + "'..." );

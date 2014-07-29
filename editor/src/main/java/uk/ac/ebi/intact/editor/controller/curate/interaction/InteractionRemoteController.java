@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
@@ -61,7 +62,7 @@ public class InteractionRemoteController extends JpaAwareController {
     public InteractionRemoteController() {
     }
 
-    @Transactional(value = "transactionManager", readOnly = true)
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         interactions = getDaoFactory().getInteractionDao().getByInteractorsPrimaryId(true, proteins);
 

@@ -22,10 +22,8 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
 import org.primefaces.model.SelectableDataModelWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.*;
@@ -68,8 +66,6 @@ import java.util.List;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-@EnableTransactionManagement
-@Configuration
 public class ModelledParticipantController extends AnnotatedObjectController {
 
     private static final Log log = LogFactory.getLog( ModelledParticipantController.class );

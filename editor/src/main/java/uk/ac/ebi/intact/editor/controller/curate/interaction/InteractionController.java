@@ -22,8 +22,11 @@ import org.hibernate.Hibernate;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
@@ -441,7 +444,7 @@ public class InteractionController extends ParameterizableObjectController {
         return oldExp;
     }
 
-    @Transactional(value = "transactionManager", readOnly = true)
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String newInteraction(Publication publication, Experiment exp) {
         Interaction interaction = new InteractionImpl();
         interaction.setOwner(userSessionController.getUserInstitution());

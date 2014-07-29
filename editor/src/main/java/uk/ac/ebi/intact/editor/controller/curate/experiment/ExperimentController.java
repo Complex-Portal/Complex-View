@@ -22,6 +22,7 @@ import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
@@ -454,7 +455,7 @@ public class ExperimentController extends AnnotatedObjectController {
         return e;
     }
 
-    @Transactional(value = "transactionManager")
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void copyPublicationAnnotations(ActionEvent evt) {
         CurateUtils.copyPublicationAnnotationsToExperiment(experiment);
 

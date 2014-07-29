@@ -22,10 +22,8 @@ import org.hibernate.Hibernate;
 import org.primefaces.event.TabChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.*;
@@ -65,8 +63,6 @@ import java.util.*;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName( "general" )
-@EnableTransactionManagement
-@Configuration
 public class ComplexController extends AnnotatedObjectController {
 
     private static final Log log = LogFactory.getLog( ComplexController.class );
