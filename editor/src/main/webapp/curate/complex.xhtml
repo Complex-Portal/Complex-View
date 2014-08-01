@@ -286,7 +286,7 @@
 <p:tabView id="complexTabs" dynamic="true">
     <p:ajax event="tabChange" listener="#{complexController.onTabChanged}" />
 
-    <p:tab id="participantsTab" title="Participants (#{complexController.participants.size()})">
+    <!--<p:tab id="participantsTab" title="Participants (#{complexController.participants.size()})">
 
         <p:panel style="padding:0">
             Participants:&#160;
@@ -342,16 +342,17 @@
                 </ui:decorate>
             </p:outputPanel>
 
-        </p:tab>
+        </p:tab> -->
 
         <p:tab id="lifeCycleTab" title="Lifecycle">
 
             <h:panelGrid columns="2">
                 <h:outputLabel for="statusTxt" value="Status: "/>
-                <h:outputText id="statusTxt" value="#{complexController.complex.status.shortName}"/>
+                <h:outputText id="statusTxt" value="#{complexController.complex.status}"/>
 
-                <h:outputLabel for="ownerTxt" value="Owner: "/>
-                <h:outputText id="ownerTxt" value="#{complexController.complex.currentOwner.login}"/>
+                <h:outputLabel for="ownerTxt" value="Owner: " rendered="#{complexController.complex.currentOwner != null}"/>
+                <h:outputText id="ownerTxt" value="#{complexController.complex.currentOwner.login}"
+                              rendered="#{complexController.complex.currentOwner != null}"/>
 
                 <h:outputLabel value="Reviewer: " rendered="#{complexController.complex.currentReviewer != null}"/>
 
@@ -359,8 +360,8 @@
                               rendered="#{!userSessionController.hasRole('ADMIN') and complexController.complex.currentReviewer != null}"/>
 
                 <h:selectOneMenu value="#{complexController.complex.currentReviewer}" hideNoSelectionOption="true"
-                                 rendered="#{(userSessionController.hasRole('ADMIN') and complexController.complex.currentReviewer != null) or complexController.isLifeCycleDisabled()}"
-                        >
+                                 rendered="#{(userSessionController.hasRole('ADMIN') and complexController.complex.currentReviewer != null)
+                                 or complexController.isLifeCycleDisabled()}">
                     <f:selectItems value="#{userAdminController.reviewerSelectItems}"/>
                     <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
 
@@ -371,7 +372,7 @@
 
             <p:fieldset legend="Events">
 
-                <p:dataTable var="event" value="#{complexController.complex.lifeCycleEvents}">
+                <p:dataTable var="event" value="#{complexController.complex.lifecycleEvents}">
                     <p:column headerText="Date">
                         <h:outputText value="#{event.when}">
                             <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>

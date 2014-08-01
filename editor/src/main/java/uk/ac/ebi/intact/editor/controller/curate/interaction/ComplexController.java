@@ -205,6 +205,7 @@ public class ComplexController extends AnnotatedObjectController {
                 Hibernate.initialize(complex.getDbAnnotations());
                 Hibernate.initialize(complex.getModelledConfidences());
                 Hibernate.initialize(complex.getModelledParameters());
+                Hibernate.initialize(complex.getLifecycleEvents());
             }
 
             if (complex == null) {
