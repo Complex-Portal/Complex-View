@@ -27,6 +27,7 @@ import uk.ac.ebi.intact.jami.dao.OrganismDao;
 import uk.ac.ebi.intact.jami.model.extension.IntactOrganism;
 
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
 import java.util.ArrayList;
@@ -92,5 +93,12 @@ public class EditorOrganismService extends JpaAwareController {
         IntactDao dao = getIntactDao();
         OrganismDao orgDao = dao.getOrganismDao();
         return orgDao.getByAc(ac);
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public void refresh( ActionEvent evt ) {
+        if ( log.isDebugEnabled() ) log.debug( "Loading BioSources" );
+
+        loadOrganisms();
     }
 }

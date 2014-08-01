@@ -79,7 +79,10 @@
 
 <ui:define name="breadcrumbs">
     <p:breadCrumb>
-        <p:menuitem value="#{complexController.name}"/>
+        <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{complexController.name}"
+                    action="/curate/complex?includeViewParams=true&amp;faces-redirect=true" process="@this"/>
+        <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{complexController.name}"
+                    action="/curate/complex?includeViewParams=true&amp;faces-redirect=true" process="@this"/>
     </p:breadCrumb>
 </ui:define>
 
@@ -197,10 +200,10 @@
             </td>
             <td colspan="3">
                 <ia:inputOrganism id="organismTxt" value="#{complex.organism}"
-                                   valueChangeAwareObject="#{complexController}"
-                                   oncomplete="ia_enableSave()"
-                                   update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
-                                   selectItems="#{editorOrganismService.organismSelectItems}">
+                                  valueChangeAwareObject="#{complexController}"
+                                  oncomplete="ia_enableSave()"
+                                  update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
+                                  selectItems="#{editorOrganismService.organismSelectItems}">
                     <ed:curation/>
                 </ia:inputOrganism>
             </td>
@@ -211,12 +214,12 @@
             </td>
             <td colspan="2">
                 <h:panelGroup>
-                    <p:inputText id="recommendedNameTxt" value="#{complecController.recommendedName}" size="70"
-                                 valueChangeListener="#{complecController.onRecommendedNameChange}">
+                    <p:inputText id="recommendedNameTxt" value="#{complexController.recommendedName}" size="70"
+                                 valueChangeListener="#{complexController.onRecommendedNameChange}">
                         <ed:curation/>
                     </p:inputText>
 
-                    <p:commandButton id="clearRecommendedNameBtn" value="Clear" actionListener="#{complecController.setUnsavedChanges(true)}"
+                    <p:commandButton id="clearRecommendedNameBtn" value="Clear" actionListener="#{complexController.setUnsavedChanges(true)}"
                                      onclick="document.getElementById('recommendedNameTxt').value = ''"
                                      update=":editorForm:infoPanels,:editorForm:complexTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:panelGroup>
@@ -228,12 +231,12 @@
             </td>
             <td colspan="2">
                 <h:panelGroup>
-                    <p:inputText id="systematicNameTxt" value="#{complecController.systematicName}" size="70"
-                                 valueChangeListener="#{complecController.onSystematicNameChange}">
+                    <p:inputText id="systematicNameTxt" value="#{complexController.systematicName}" size="70"
+                                 valueChangeListener="#{complexController.onSystematicNameChange}">
                         <ed:curation/>
                     </p:inputText>
 
-                    <p:commandButton id="clearSystematicNameBtn" value="Clear" actionListener="#{complecController.setUnsavedChanges(true)}"
+                    <p:commandButton id="clearSystematicNameBtn" value="Clear" actionListener="#{complexController.setUnsavedChanges(true)}"
                                      onclick="document.getElementById('systematicNameTxt').value = ''"
                                      update=":editorForm:infoPanels,:editorForm:complexTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:panelGroup>
@@ -245,12 +248,12 @@
             </td>
             <td colspan="3">
                 <h:panelGroup>
-                    <p:inputText id="onHoldTxt" value="#{complecController.onHold}" size="70"
-                                 valueChangeListener="#{complecController.onHoldChanged}">
+                    <p:inputText id="onHoldTxt" value="#{complexController.onHold}" size="70"
+                                 valueChangeListener="#{complexController.onHoldChanged}">
                         <ed:curation/>
                     </p:inputText>
 
-                    <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{complecController.setUnsavedChanges(true)}"
+                    <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{complexController.setUnsavedChanges(true)}"
                                      onclick="document.getElementById('onHoldTxt').value = ''"
                                      update=":editorForm:infoPanels,:editorForm:complexTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:panelGroup>
@@ -262,12 +265,12 @@
             </td>
             <td colspan="3">
                 <h:panelGroup>
-                    <p:inputTextarea id="curatedComplexTxt" value="#{complecController.description}" size="70"
-                                 valueChangeListener="#{complecController.onDescriptionChange}">
+                    <p:inputTextarea id="curatedComplexTxt" value="#{complexController.description}"
+                                     valueChangeListener="#{complexController.onDescriptionChange}" rows="5" cols="80">
                         <ed:curation/>
                     </p:inputTextarea>
 
-                    <p:commandButton id="clearCuratedComplexBtn" value="Clear" actionListener="#{complecController.setUnsavedChanges(true)}"
+                    <p:commandButton id="clearCuratedComplexBtn" value="Clear" actionListener="#{complexController.setUnsavedChanges(true)}"
                                      onclick="document.getElementById('curatedComplexTxt').value = ''"
                                      update=":editorForm:infoPanels,:editorForm:complexTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:panelGroup>
@@ -303,89 +306,89 @@
                 <ui:param name="value" value="#{complexController.participants}"/>
             </ui:include>
         </p:outputPanel>
-    </p:tab>
+        </p:tab>
 
-    <ui:decorate template="jpropertiesTabs.xhtml">
-        <ui:param name="annotatedObjectSelectItems" value="#{editorCvTermService.complexTopicSelectItems}"/>
-        <ui:param name="databaseSelectItems" value="#{editorCvTermService.complexDatabaseSelectItems}"/>
-        <ui:param name="qualifierSelectItems" value="#{editorCvTermService.qualifierSelectItems}"/>
-        <ui:param name="aliasTypeSelectItems" value="#{editorCvTermService.aliasTypeSelectItems}"/>
-        <ui:param name="updateOnChange" value=":editorForm:basic"/>
-    </ui:decorate>
+        <ui:decorate template="jpropertiesTabs.xhtml">
+            <ui:param name="annotatedObjectSelectItems" value="#{editorCvTermService.complexTopicSelectItems}"/>
+            <ui:param name="databaseSelectItems" value="#{editorCvTermService.complexDatabaseSelectItems}"/>
+            <ui:param name="qualifierSelectItems" value="#{editorCvTermService.qualifierSelectItems}"/>
+            <ui:param name="aliasTypeSelectItems" value="#{editorCvTermService.aliasTypeSelectItems}"/>
+            <ui:param name="updateOnChange" value=":editorForm:basic"/>
+        </ui:decorate>
 
 
-    <p:tab id="parametersTab" title="Parameters (#{interaction.modelledParameters.size()})">
+        <p:tab id="parametersTab" title="Parameters (#{interaction.modelledParameters.size()})">
 
-        <p:outputPanel id="parametersPanel" autoUpdate="true">
-            <ui:decorate template="jparameters_table.xhtml">
-                <ui:param name="annotatedObjectController" value="#{complexController}"/>
-                <ui:param name="parameterTypeSelectItems" value="#{editorCvTermService.parameterTypeSelectItems}"/>
-                <ui:param name="parameterUnitSelectItems" value="#{editorCvTermService.parameterUnitSelectItems}"/>
-                <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
-                <ui:param name="disableParameterSelectItems" value="#{complexController.isParameterDisabled()}"/>
-            </ui:decorate>
-        </p:outputPanel>
+            <p:outputPanel id="parametersPanel" autoUpdate="true">
+                <ui:decorate template="jparameters_table.xhtml">
+                    <ui:param name="annotatedObjectController" value="#{complexController}"/>
+                    <ui:param name="parameterTypeSelectItems" value="#{editorCvTermService.parameterTypeSelectItems}"/>
+                    <ui:param name="parameterUnitSelectItems" value="#{editorCvTermService.parameterUnitSelectItems}"/>
+                    <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
+                    <ui:param name="disableParameterSelectItems" value="#{complexController.isParameterDisabled()}"/>
+                </ui:decorate>
+            </p:outputPanel>
 
-    </p:tab>
+        </p:tab>
 
-    <p:tab id="confidencesTab" title="Confidences (#{interaction.modelledConfidences.size()})">
+        <p:tab id="confidencesTab" title="Confidences (#{interaction.modelledConfidences.size()})">
 
-        <p:outputPanel id="confidencesPanel" autoUpdate="true">
-            <ui:decorate template="jconfidences_table.xhtml">
-                <ui:param name="annotatedObjectController" value="#{complexController}"/>
-                <ui:param name="confidenceTypeSelectItems" value="#{editorCvTermService.confidenceTypeSelectItems}"/>
-                <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
-                <ui:param name="disableConfidenceSelectItems" value="#{complexController.isConfidenceDisabled()}"/>
-            </ui:decorate>
-        </p:outputPanel>
+            <p:outputPanel id="confidencesPanel" autoUpdate="true">
+                <ui:decorate template="jconfidences_table.xhtml">
+                    <ui:param name="annotatedObjectController" value="#{complexController}"/>
+                    <ui:param name="confidenceTypeSelectItems" value="#{editorCvTermService.confidenceTypeSelectItems}"/>
+                    <ui:param name="update" value=":editorForm:changesPanel :editorForm:unsavedChangesInfo :editorForm:messagesComponent"/>
+                    <ui:param name="disableConfidenceSelectItems" value="#{complexController.isConfidenceDisabled()}"/>
+                </ui:decorate>
+            </p:outputPanel>
 
-    </p:tab>
+        </p:tab>
 
-    <p:tab id="lifeCycleTab" title="Lifecycle">
+        <p:tab id="lifeCycleTab" title="Lifecycle">
 
-        <h:panelGrid columns="2">
-            <h:outputLabel for="statusTxt" value="Status: "/>
-            <h:outputText id="statusTxt" value="#{complexController.complex.status.shortName}"/>
+            <h:panelGrid columns="2">
+                <h:outputLabel for="statusTxt" value="Status: "/>
+                <h:outputText id="statusTxt" value="#{complexController.complex.status.shortName}"/>
 
-            <h:outputLabel for="ownerTxt" value="Owner: "/>
-            <h:outputText id="ownerTxt" value="#{complexController.complex.currentOwner.login}"/>
+                <h:outputLabel for="ownerTxt" value="Owner: "/>
+                <h:outputText id="ownerTxt" value="#{complexController.complex.currentOwner.login}"/>
 
-            <h:outputLabel value="Reviewer: " rendered="#{complexController.complex.currentReviewer != null}"/>
+                <h:outputLabel value="Reviewer: " rendered="#{complexController.complex.currentReviewer != null}"/>
 
-            <h:outputText value="#{complexController.complex.currentReviewer.login}"
-                          rendered="#{!userSessionController.hasRole('ADMIN') and complexController.complex.currentReviewer != null}"/>
+                <h:outputText value="#{complexController.complex.currentReviewer.login}"
+                              rendered="#{!userSessionController.hasRole('ADMIN') and complexController.complex.currentReviewer != null}"/>
 
-            <h:selectOneMenu value="#{complexController.complex.currentReviewer}" hideNoSelectionOption="true"
-                             rendered="#{(userSessionController.hasRole('ADMIN') and complexController.complex.currentReviewer != null) or complexController.isLifeCycleDisabled()}"
-                    >
-                <f:selectItems value="#{userAdminController.reviewerSelectItems}"/>
-                <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
+                <h:selectOneMenu value="#{complexController.complex.currentReviewer}" hideNoSelectionOption="true"
+                                 rendered="#{(userSessionController.hasRole('ADMIN') and complexController.complex.currentReviewer != null) or complexController.isLifeCycleDisabled()}"
+                        >
+                    <f:selectItems value="#{userAdminController.reviewerSelectItems}"/>
+                    <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
 
-            </h:selectOneMenu>
-        </h:panelGrid>
+                </h:selectOneMenu>
+            </h:panelGrid>
 
-        <br/>
+            <br/>
 
-        <p:fieldset legend="Events">
+            <p:fieldset legend="Events">
 
-            <p:dataTable var="event" value="#{complexController.complex.lifeCycleEvents}">
-                <p:column headerText="Date">
-                    <h:outputText value="#{event.when}">
-                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
-                    </h:outputText>
-                </p:column>
-                <p:column headerText="Event">
-                    <h:outputText value="#{event.event}"/>
-                </p:column>
-                <p:column headerText="Who">
-                    <h:outputText value="#{event.who}"/>
-                </p:column>
-                <p:column headerText="Comment">
-                    <h:outputText value="#{event.note}"/>
-                </p:column>
-            </p:dataTable>
+                <p:dataTable var="event" value="#{complexController.complex.lifeCycleEvents}">
+                    <p:column headerText="Date">
+                        <h:outputText value="#{event.when}">
+                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Event">
+                        <h:outputText value="#{event.event}"/>
+                    </p:column>
+                    <p:column headerText="Who">
+                        <h:outputText value="#{event.who}"/>
+                    </p:column>
+                    <p:column headerText="Comment">
+                        <h:outputText value="#{event.note}"/>
+                    </p:column>
+                </p:dataTable>
 
-        </p:fieldset>
+            </p:fieldset>
 
     </p:tab>
 </p:tabView>

@@ -54,6 +54,8 @@
             <p:commandButton id="selectBtn" value="Browse" style="visibility: hidden; display:none" onclick="#{dialogWidgetId}_ibs.browse(#{dialogWidgetId})"
                              type="button"/>
 
+            <p:commandButton id="refreshBtn" value="Refresh list" style="visibility: hidden; display:none" actionListener="#{editorOrganismService.refresh}"
+                             update="selectObject"/>
 
            <h:panelGroup id="info" style="color: gray">
                <h:panelGroup rendered="#{cc.attrs.value != null}">
