@@ -100,18 +100,19 @@
 
 <h:panelGroup id="info" rendered="#{interaction != null}">
 
-<p:panel id="basic" header="Interaction Details">
+<p:panel id="basic" header="Complex Details">
 
     <p:outputPanel id="infoPanels">
-        <h:panelGroup rendered="#{not empty complexController.toBeReviewed}">
+        <h:panelGroup rendered="#{complexController.toBeReviewed}">
             <ia:panelMessage level="warn">
                 <b>To be reviewed: </b> #{complexController.toBeReviewed}
                 &#160;&#160;&#160;
-                <p:commandButton value="Clear" rendered="#{userSessionController.isItMe(complexController.complex.currentReviewer)}" actionListener="#{complexController.clearToBeReviewed}" update=":editorForm:centralUnit"/>
+                <p:commandButton value="Clear" rendered="#{userSessionController.isItMe(complexController.complex.currentReviewer)}"
+                                 actionListener="#{complexController.clearToBeReviewed}" update=":editorForm:centralUnit"/>
             </ia:panelMessage>
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{not empty complexController.onHold}">
+        <h:panelGroup rendered="#{complexController.onHold}">
             <ia:panelMessage level="warn">
                 This Complex is <b>on-hold</b>. Reason: #{complexController.onHold}
                 &#160;&#160;&#160;
@@ -181,7 +182,7 @@
                 <h:outputLabel value="ECO code: " for="ecoCodeTxt"/>
             </td>
             <td colspan="3">
-                <ia:inputCvTerm id="ecoCodeTxt" cvIdentifier="ECO:0000000"
+                <ia:inputCvTerm id="ecoCodeTxt" cvIdentifier="MI:1331"
                                 value="#{interaction.evidenceType}"
                                 selectItems="#{editorCvTermService.evidenceTypeSelectItems}"
                                 required="true" requiredMessage="ECO code is required"
@@ -206,6 +207,40 @@
         </tr>
         <tr>
             <td class="firstCell">
+                <h:outputLabel value="Recommended name: " for="recommendedNameTxt"/>
+            </td>
+            <td colspan="2">
+                <h:panelGroup>
+                    <p:inputText id="recommendedNameTxt" value="#{complecController.recommendedName}" size="70"
+                                 valueChangeListener="#{complecController.onRecommendedNameChange}">
+                        <ed:curation/>
+                    </p:inputText>
+
+                    <p:commandButton id="clearRecommendedNameBtn" value="Clear" actionListener="#{complecController.setUnsavedChanges(true)}"
+                                     onclick="document.getElementById('recommendedNameTxt').value = ''"
+                                     update=":editorForm:infoPanels,:editorForm:complexTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
+                </h:panelGroup>
+            </td>
+        </tr>
+        <tr>
+            <td class="firstCell">
+                <h:outputLabel value="Systematic name: " for="systematicNameTxt"/>
+            </td>
+            <td colspan="2">
+                <h:panelGroup>
+                    <p:inputText id="systematicNameTxt" value="#{complecController.systematicName}" size="70"
+                                 valueChangeListener="#{complecController.onSystematicNameChange}">
+                        <ed:curation/>
+                    </p:inputText>
+
+                    <p:commandButton id="clearSystematicNameBtn" value="Clear" actionListener="#{complecController.setUnsavedChanges(true)}"
+                                     onclick="document.getElementById('systematicNameTxt').value = ''"
+                                     update=":editorForm:infoPanels,:editorForm:complexTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
+                </h:panelGroup>
+            </td>
+        </tr>
+        <tr>
+            <td class="firstCell">
                 <h:outputLabel value="On hold: " for="onHoldTxt"/>
             </td>
             <td colspan="3">
@@ -217,6 +252,23 @@
 
                     <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{complecController.setUnsavedChanges(true)}"
                                      onclick="document.getElementById('onHoldTxt').value = ''"
+                                     update=":editorForm:infoPanels,:editorForm:complexTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
+                </h:panelGroup>
+            </td>
+        </tr>
+        <tr>
+            <td class="firstCell">
+                <h:outputLabel value="Description: " for="curatedComplexTxt"/>
+            </td>
+            <td colspan="3">
+                <h:panelGroup>
+                    <p:inputTextarea id="curatedComplexTxt" value="#{complecController.description}" size="70"
+                                 valueChangeListener="#{complecController.onDescriptionChange}">
+                        <ed:curation/>
+                    </p:inputTextarea>
+
+                    <p:commandButton id="clearCuratedComplexBtn" value="Clear" actionListener="#{complecController.setUnsavedChanges(true)}"
+                                     onclick="document.getElementById('curatedComplexTxt').value = ''"
                                      update=":editorForm:infoPanels,:editorForm:complexTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:panelGroup>
             </td>

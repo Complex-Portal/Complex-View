@@ -46,7 +46,6 @@ import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleStatus;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Interaction;
 
 import javax.faces.context.FacesContext;
@@ -89,6 +88,15 @@ public class ComplexController extends AnnotatedObjectController {
     @Qualifier("jamiLifeCycleManager")
     private LifeCycleManager lifecycleManager;
 
+    private String name = null;
+    private String toBeReviewed = null;
+    private String onHold = null;
+    private String cautionMessage = null;
+    private String internalRemark = null;
+    private String recommendedName = null;
+    private String systematicName = null;
+    private String description = null;
+
     public ComplexController() {
 
     }
@@ -114,47 +122,24 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     public String getName(){
-        String name = this.complex.getShortName();
-        if (this.complex.getRecommendedName() != null){
-            name = this.complex.getRecommendedName();
-        }
-        else if (this.complex.getSystematicName() != null){
-            name = this.complex.getSystematicName();
-        }
-        else if (!this.complex.getAliases().isEmpty()){
-            name = this.complex.getAliases().iterator().next().getName();
-        }
-        return name;
+        return this.name;
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String extractName(IntactComplex complex){
         String name = complex.getShortName();
-        if (complex.areAliasesInitialized()){
-            if (complex.getRecommendedName() != null){
-                name = complex.getRecommendedName();
-            }
-            else if (complex.getSystematicName() != null){
-                name = complex.getSystematicName();
-            }
-            else if (!complex.getAliases().isEmpty()){
-                name = complex.getAliases().iterator().next().getName();
-            }
+        Collection<Alias> aliases = getIntactDao().getComplexDao().getAliasesForInteractor(complex.getAc());
+        Alias recName = AliasUtils.collectFirstAliasWithType(aliases, Alias.COMPLEX_RECOMMENDED_NAME_MI, Alias.COMPLEX_RECOMMENDED_NAME);
+        if (recName != null){
+            name = recName.getName();
         }
         else{
-            Collection<Alias> aliases = getIntactDao().getComplexDao().getAliasesForInteractor(complex.getAc());
-            Alias recName = AliasUtils.collectFirstAliasWithType(aliases, Alias.COMPLEX_RECOMMENDED_NAME_MI, Alias.COMPLEX_RECOMMENDED_NAME);
+            recName = AliasUtils.collectFirstAliasWithType(aliases, Alias.COMPLEX_SYSTEMATIC_NAME_MI, Alias.COMPLEX_SYSTEMATIC_NAME);
             if (recName != null){
                 name = recName.getName();
             }
-            else{
-                recName = AliasUtils.collectFirstAliasWithType(aliases, Alias.COMPLEX_SYSTEMATIC_NAME_MI, Alias.COMPLEX_SYSTEMATIC_NAME);
-                if (recName != null){
-                    name = recName.getName();
-                }
-                else if (!aliases.isEmpty()){
-                    name = aliases.iterator().next().getName();
-                }
+            else if (!aliases.isEmpty()){
+                name = aliases.iterator().next().getName();
             }
         }
         return name;
@@ -174,8 +159,11 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Override
     protected IntactComplex cloneAnnotatedObject(IntactPrimaryObject ao) {
+        CvTermDao dao = getIntactDao().getCvTermDao();
+        CvTerm type = dao.getByMIIdentifier(Complex.COMPLEX_MI, IntactUtils.INTERACTOR_TYPE_OBJCLASS);
         // to be overrided
         IntactComplex complex = (IntactComplex)ComplexJamiCloner.cloneComplex((IntactComplex) ao);
+        complex.setInteractorType(type);
         lifecycleManager.getStartStatus().create(complex, "Created in Editor");
 
         if (assignToMe) {
@@ -201,40 +189,33 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     public String getOnHold(){
-        psidev.psi.mi.jami.model.Annotation onHold = AnnotationUtils.collectFirstAnnotationWithTopic(this.complex.getAnnotations(), null, "on-hold");
-        return onHold != null ? onHold.getValue() : null;
+        return onHold != null ? onHold : "";
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
-            if ( ac != null ) {
-                if ( complex == null || !ac.equals( complex.getAc() )) {
-                    complex = loadJamiByAc(IntactComplex.class, ac);
-                    Hibernate.initialize(complex.getDbAliases());
-                    Hibernate.initialize(complex.getDbXrefs());
-                    Hibernate.initialize(complex.getDbAnnotations());
-                    Hibernate.initialize(complex.getModelledConfidences());
-                    Hibernate.initialize(complex.getModelledParameters());
-                }
-            } else {
-                ac = complex.getAc();
+            if ( complex == null || ac == null || (ac != null && !ac.equals( complex.getAc() ))) {
+                setComplex(loadJamiByAc(IntactComplex.class, ac));
+
+                // initialise collections
+                Hibernate.initialize(complex.getDbAliases());
+                Hibernate.initialize(complex.getDbXrefs());
+                Hibernate.initialize(complex.getDbAnnotations());
+                Hibernate.initialize(complex.getModelledConfidences());
+                Hibernate.initialize(complex.getModelledParameters());
             }
 
             if (complex == null) {
                 addErrorMessage("No Complex with this AC", ac);
                 return;
             }
-            setComplex(complex);
 
-            if (complex != null) {
-                if (!complex.areParticipantsInitialized()) {
-                    Hibernate.initialize(complex.getParticipants());
-                }
-                refreshParticipants();
+            if (!complex.areParticipantsInitialized()) {
+                Hibernate.initialize(complex.getParticipants());
             }
-
+            refreshParticipants();
             refreshTabsAndFocusXref();
         }
 
@@ -439,7 +420,40 @@ public class ComplexController extends AnnotatedObjectController {
         this.complex = complex;
         if (complex != null) {
             this.ac = complex.getAc();
+
+            refreshName();
+            refreshInfoMessages();
         }
+    }
+
+    private void refreshName() {
+        this.name = this.complex.getShortName();
+        if (this.complex.getRecommendedName() != null){
+            this.name = this.complex.getRecommendedName();
+        }
+        else if (this.complex.getSystematicName() != null){
+            this.name = this.complex.getSystematicName();
+        }
+        else if (!this.complex.getAliases().isEmpty()){
+            this.name = this.complex.getAliases().iterator().next().getName();
+        }
+
+        this.systematicName = this.complex.getSystematicName();
+        this.recommendedName = this.complex.getRecommendedName();
+    }
+
+    private void refreshInfoMessages() {
+        this.toBeReviewed = this.complex.getToBeReviewedComment();
+        this.onHold = this.complex.getOnHoldComment();
+        Annotation remark = AnnotationUtils.collectFirstAnnotationWithTopic(this.complex.getAnnotations(), null,
+                "remark-internal");
+        this.internalRemark = remark != null ? remark.getValue() : null;
+        Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.complex.getAnnotations(), Annotation.CAUTION_MI,
+                Annotation.CAUTION);
+        this.cautionMessage = caution != null ? caution.getValue() : null;
+        Annotation desc = AnnotationUtils.collectFirstAnnotationWithTopic(this.complex.getAnnotations(), null,
+                "curated-complex");
+        this.description = desc != null ? desc.getValue() : null;
     }
 
     public Collection<ModelledParticipantWrapper> getParticipants() {
@@ -581,33 +595,22 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Override
     public String getCautionMessage() {
-        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.complex.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
-                psidev.psi.mi.jami.model.Annotation.CAUTION);
-        return caution != null ? caution.getValue() : null;
+        return cautionMessage;
     }
 
     @Override
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getJamiCautionMessage(IntactPrimaryObject ao) {
         IntactComplex complex = (IntactComplex)ao;
-        if (complex.areAnnotationsInitialized()){
-            psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(complex.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
-                    psidev.psi.mi.jami.model.Annotation.CAUTION);
-            return caution != null ? caution.getValue() : null;
-        }
-        else{
-            Collection<Annotation> annots = getIntactDao().getComplexDao().getAnnotationsForInteractor(ao.getAc());
-            psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(annots, psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
-                    psidev.psi.mi.jami.model.Annotation.CAUTION);
-            return caution != null ? caution.getValue() : null;
-        }
+        Collection<Annotation> annots = getIntactDao().getComplexDao().getAnnotationsForInteractor(ao.getAc());
+        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(annots, psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
+                psidev.psi.mi.jami.model.Annotation.CAUTION);
+        return caution != null ? caution.getValue() : null;
     }
 
     @Override
     public String getInternalRemarkMessage() {
-        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.complex.getAnnotations(), null,
-                "remark-internal");
-        return caution != null ? caution.getValue() : null;
+        return this.internalRemark;
     }
 
     @Override
@@ -684,15 +687,7 @@ public class ComplexController extends AnnotatedObjectController {
             return;
         }
         if (isBeenRejectedBefore()) {
-            psidev.psi.mi.jami.model.Annotation correctionCommentAnnot = AnnotationUtils.collectFirstAnnotationWithTopic(complex.getAnnotations(), null
-                    , CvTopic.CORRECTION_COMMENT);
-
-            if (correctionCommentAnnot != null) {
-                reasonForReadyForChecking = correctionCommentAnnot.getValue();
-            }
-            else{
-                reasonForReadyForChecking = null;
-            }
+            reasonForReadyForChecking = this.complex.getCorrectionComment();
         }
 
         // TODO run a proper sanity check
@@ -714,7 +709,6 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     public void putOnHold(ActionEvent evt) {
-        setOnHold(reasonForOnHoldFromDialog);
 
         if (complex.getStatus().equals(LifeCycleStatus.READY_FOR_RELEASE)) {
             lifecycleManager.getReadyForReleaseStatus().putOnHold(complex, reasonForOnHoldFromDialog);
@@ -723,24 +717,78 @@ public class ComplexController extends AnnotatedObjectController {
             lifecycleManager.getReleasedStatus().putOnHold(complex, reasonForOnHoldFromDialog);
             addInfoMessage("On-hold added to released complex", "Data will be publicly visible until the next release");
         }
-
+        else{
+            setOnHold(reasonForOnHoldFromDialog);
+        }
+        this.onHold = this.complex.getOnHoldComment();
         reasonForOnHoldFromDialog = null;
     }
 
     public void readyForReleaseFromOnHold(ActionEvent evt) {
-        this.complex.removeOnHold();
-
         lifecycleManager.getAcceptedOnHoldStatus().onHoldRemoved(complex, null);
     }
 
     public void setOnHold(String reason) {
-        this.complex.onHold(reason);
+        this.onHold = reason;
     }
 
     public void onHoldChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
         this.complex.onHold((String) evt.getNewValue());
+        this.onHold = (String) evt.getNewValue();
+    }
+
+    public String getRecommendedName() {
+        return recommendedName;
+    }
+
+    public void setRecommendedName(String recommendedName) {
+        this.recommendedName = recommendedName;
+    }
+
+    public String getSystematicName() {
+        return systematicName;
+    }
+
+    public void setSystematicName(String systematicName) {
+        this.systematicName = systematicName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void onRecommendedNameChanged(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+
+        this.complex.setRecommendedName((String) evt.getNewValue());
+        this.recommendedName = (String) evt.getNewValue();
+    }
+
+    public void onSystematicNameChanged(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+
+        this.complex.setSystematicName((String) evt.getNewValue());
+        this.systematicName = (String) evt.getNewValue();
+    }
+
+    public void onDescriptionChanged(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+
+        this.description = (String) evt.getNewValue();
+
+        Annotation curatedComplex = AnnotationUtils.collectFirstAnnotationWithTopic(this.complex.getAnnotations(), null, "curated-complex");
+        if (curatedComplex != null){
+            curatedComplex.setValue(this.description);
+        }
+        else{
+            this.complex.getAnnotations().add(new InteractorAnnotation(IntactUtils.createMITopic("curated-complex", null), this.description));
+        }
     }
 
     public boolean isAccepted() {
@@ -762,14 +810,15 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     public boolean isToBeReviewed(IntactComplex pub) {
-        return AnnotationUtils.collectFirstAnnotationWithTopic(pub.getAnnotations(), null, "to-be-reviewed") != null;
+        return this.complex.isToBeReviewed();
+    }
+
+    public boolean isOnHold(IntactComplex pub) {
+        return this.complex.isOnHold();
     }
 
     public void acceptComplex(ActionEvent evt) {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
-
-        //clear to-be-reviewed
-        AnnotationUtils.removeAllAnnotationsWithTopic(this.complex.getAnnotations(), null, "to-be-reviewed");
 
         lifecycleManager.getReadyForCheckingStatus().accept(complex, "Accepted " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase());
 
@@ -788,15 +837,11 @@ public class ComplexController extends AnnotatedObjectController {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         String date = "Rejected " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase();
 
-        this.complex.onToBeReviewed(date + ". " + reasonForRejection);
-
         addInfoMessage("Complex rejected", "");
 
-        lifecycleManager.getReadyForCheckingStatus().reject(complex, reasonForRejection);
-    }
+        lifecycleManager.getReadyForCheckingStatus().reject(complex, date + ". " + reasonForRejection);
 
-    public boolean isRejected(IntactComplex complex) {
-        return complex.isToBeReviewed();
+        this.toBeReviewed = this.complex.getToBeReviewedComment();
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
@@ -839,12 +884,12 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     public String getToBeReviewed() {
-        Annotation annot = AnnotationUtils.collectFirstAnnotationWithTopic(complex.getAnnotations(), null, "to-be-reviewed");
-        return annot != null ? annot.getValue() : null;
+        return toBeReviewed != null ? toBeReviewed : "";
     }
 
     public void clearToBeReviewed(ActionEvent evt) {
-        AnnotationUtils.removeAllAnnotationsWithTopic(complex.getAnnotations(), null, "to-be-reviewed");
+        this.complex.removeToBeReviewed();
+        toBeReviewed = null;
     }
 
     public boolean isAssignToMe() {
@@ -882,8 +927,12 @@ public class ComplexController extends AnnotatedObjectController {
             addErrorMessage("Cannot create biological complex", "Interaction evidence is empty or not saved");
             return null;
         }
+        CvTermDao dao = getIntactDao().getCvTermDao();
+        CvTerm type = dao.getByMIIdentifier(Complex.COMPLEX_MI, IntactUtils.INTERACTOR_TYPE_OBJCLASS);
 
         setComplex((IntactComplex)ComplexJamiCloner.cloneInteraction(getIntactDao().getInteractionDao().getByAc(interactionEvidence.getAc())));
+        this.complex.setInteractorType(type);
+
         lifecycleManager.getStartStatus().create(this.complex, "Created in Editor");
 
         if (assignToMe) {

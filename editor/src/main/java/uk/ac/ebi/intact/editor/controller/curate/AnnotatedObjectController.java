@@ -19,6 +19,8 @@ import org.primefaces.event.TabChangeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import uk.ac.ebi.intact.core.context.IntactContext;
@@ -677,6 +679,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         setUnsavedChanges(true);
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
         if (getAnnotatedObject() != null){
             return clone(getAnnotatedObject(), newClonerInstance());
