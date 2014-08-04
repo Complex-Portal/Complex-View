@@ -287,7 +287,7 @@
 
         <p:panel style="padding:0">
             Participants:&#160;
-            <p:commandButton value="New participant" action="#{modelledParticipantController.newParticipant(complexController.complex)}"
+            <p:commandButton value="New participant" action="#{modelledParticipantController.newParticipant(interaction)}"
                              ajax="false"/>
             <p:commandButton id="importParticipantBtn" value="Import..." type="button" onclick="jimportParticipantDialog.show()"/>
             &#160;| Features:&#160;
@@ -313,7 +313,7 @@
         <ui:param name="updateOnChange" value=":editorForm:basic"/>
     </ui:decorate>
 
-    <p:tab id="parametersTab" title="Parameters (#{interaction.parametersSize})">
+    <p:tab id="parametersTab" title="Parameters (#{complexController.parametersSize})">
 
         <p:outputPanel id="parametersPanel" autoUpdate="true">
             <ui:decorate template="jparameters_table.xhtml">

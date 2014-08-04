@@ -207,10 +207,6 @@ public class ComplexController extends AnnotatedObjectController {
                 return;
             }
 
-            if (!complex.areParticipantsInitialized()) {
-                Hibernate.initialize(complex.getParticipants());
-            }
-            refreshParticipants();
             refreshTabsAndFocusXref();
         }
 
@@ -270,12 +266,12 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     public void refreshParticipants() {
-        participantWrappers = new LinkedList<ModelledParticipantWrapper>();
-
         final Collection<ModelledParticipant> components = complex.getParticipants();
 
+        participantWrappers = new LinkedList<ModelledParticipantWrapper>();
+
         for ( ModelledParticipant component : components ) {
-            participantWrappers.add( new ModelledParticipantWrapper( (IntactModelledParticipant)component, getChangesController(), null ) );
+            participantWrappers.add( new ModelledParticipantWrapper( (IntactModelledParticipant)component, getChangesController(), this ) );
         }
     }
 
@@ -418,6 +414,10 @@ public class ComplexController extends AnnotatedObjectController {
 
             refreshName();
             refreshInfoMessages();
+            if (!complex.areParticipantsInitialized()) {
+                Hibernate.initialize(complex.getParticipants());
+            }
+            refreshParticipants();
         }
     }
 
