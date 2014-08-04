@@ -26,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.Complex;
+import psidev.psi.mi.jami.model.ModelledEntity;
 import psidev.psi.mi.jami.model.ModelledParticipant;
 import psidev.psi.mi.jami.model.OntologyTerm;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
@@ -154,7 +155,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         participantSelectItems.add(new SelectItem(null, "select participant", "select participant", false, false, true));
 
         if (this.feature.getParticipant() != null){
-            ModelledParticipant modelledParticipant = this.feature.getParticipant();
+            ModelledEntity modelledParticipant = this.feature.getParticipant();
             if (modelledParticipant.getInteractor() instanceof psidev.psi.mi.jami.model.Complex){
                 isComplexFeature = true;
                 loadParticipants((Complex)modelledParticipant.getInteractor(), this.participantSelectItems);
@@ -204,14 +205,14 @@ public class ModelledFeatureController extends AnnotatedObjectController {
                 return;
             }
 
-            final ModelledParticipant participant = feature.getParticipant();
+            final ModelledEntity participant = feature.getParticipant();
 
             if (modelledParticipantController.getParticipant() == null) {
                 modelledParticipantController.setParticipant((IntactModelledParticipant)participant);
             }
 
             if( complexController.getComplex() == null ) {
-                final Complex interaction = (Complex)participant.getInteraction();
+                final Complex interaction = (Complex)((IntactModelledParticipant)participant).getInteraction();
                 complexController.setComplex((IntactComplex) interaction);
             }
 
@@ -562,5 +563,15 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Override
     public String getJamiObjectName() {
         return this.feature.getShortName();
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getAliasesSize() {
+        if (this.feature.areAliasesInitialized()){
+            return this.feature.getAliases().size();
+        }
+        else{
+            return getIntactDao().getModelledFeatureDao().countAliasesForFeature(this.ac);
+        }
     }
 }

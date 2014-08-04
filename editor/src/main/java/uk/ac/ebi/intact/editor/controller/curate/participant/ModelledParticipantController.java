@@ -513,4 +513,14 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     public String getJamiObjectName() {
         return getInteractor();
     }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getAliasesSize() {
+        if (this.participant.areAliasesInitialized()){
+            return this.participant.getAliases().size();
+        }
+        else{
+            return getIntactDao().getModelledParticipantDao().countAliasesForParticipant(this.ac);
+        }
+    }
 }
