@@ -9,7 +9,7 @@
                 xmlns:ia="http://java.sun.com/jsf/composite/intact-components"
                 xmlns:ed="http://ebi.ac.uk/intact/editor/ui">
 
-    <p:tab id="xrefsTab" title="Xrefs (#{annotatedObjectController.jamiObject.dbXrefs.size()})">
+    <p:tab id="xrefsTab" title="Xrefs (#{annotatedObjectController.xrefsSize()})">
         <p:outputPanel id="xrefsPanel" autoUpdate="true">
             <ui:decorate template="jxrefs_table.xhtml">
 

@@ -582,6 +582,16 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getXrefsSize() {
+        if (this.feature.areXrefsInitialized()){
+            return this.feature.getDbXrefs().size();
+        }
+        else{
+            return getIntactDao().getModelledFeatureDao().countXrefsForFeature(this.ac);
+        }
+    }
+
     public void removeAlias(Alias alias){
         this.feature.getAliases().remove(alias);
     }

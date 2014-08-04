@@ -627,6 +627,20 @@ public class ComplexController extends AnnotatedObjectController {
         return aliases;
     }
 
+    @Override
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List getXrefs() {
+        if (!this.complex.areXrefsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
+
+        List<Xref> xrefs = new ArrayList(this.complex.getDbXrefs());
+
+        getJamiEntityManager().detach(this.complex);
+        return xrefs;
+    }
+
     public boolean isNewPublication() {
         return complex.getStatus() == LifeCycleStatus.NEW;
     }
@@ -1117,6 +1131,16 @@ public class ComplexController extends AnnotatedObjectController {
      */
     public int getAnnotationsSize() {
         return this.complex.getAnnotations().size();
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getXrefsSize() {
+        if (this.complex.areXrefsInitialized()){
+            return this.complex.getDbXrefs().size();
+        }
+        else{
+            return getIntactDao().getComplexDao().countXrefsForInteractor(this.ac);
+        }
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
