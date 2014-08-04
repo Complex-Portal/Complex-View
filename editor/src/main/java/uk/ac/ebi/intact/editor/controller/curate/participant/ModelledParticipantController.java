@@ -224,10 +224,6 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         return (IntactModelledParticipant) ParticipantJamiCloner.cloneParticipant((IntactModelledParticipant) ao);
     }
 
-    public boolean isInteractorSet(IntactModelledParticipant p){
-        return !p.getInteractor().getShortName().equals("unspecified");
-    }
-
     public String newParticipant(IntactComplex interaction) {
         this.interactor = null;
 
@@ -480,9 +476,10 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     }
 
     @Override
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getJamiCautionMessage(IntactPrimaryObject ao) {
-        IntactModelledParticipant participant = (IntactModelledParticipant)ao;
-        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(participant.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
+        Collection<Annotation> annots = getIntactDao().getModelledParticipantDao().getAnnotationsForParticipant(ao.getAc());
+        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(annots, psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
                 psidev.psi.mi.jami.model.Annotation.CAUTION);
         return caution != null ? caution.getValue() : null;
     }

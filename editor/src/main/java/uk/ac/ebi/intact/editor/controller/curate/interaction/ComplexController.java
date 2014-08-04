@@ -467,16 +467,6 @@ public class ComplexController extends AnnotatedObjectController {
     //////////////////////////////////
     // Participant related methods
 
-    public String getInteractorIdentity(psidev.psi.mi.jami.model.Interactor interactor) {
-        if (interactor == null) return null;
-
-        Xref ref = interactor.getPreferredIdentifier();
-        if (ref == null){
-            return interactor.getShortName();
-        }
-        return ref.getId();
-    }
-
     public boolean isFeaturesAvailable(){
         boolean featuresAvailable = false;
         Complex interaction = this.complex;

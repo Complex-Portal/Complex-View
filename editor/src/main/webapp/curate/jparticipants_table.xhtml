@@ -44,39 +44,26 @@
                       filterBy="#{interactor.shortName}"
                       filterMatchMode="contains">
                 <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
-                               value="#{interactor.shortName}" rendered="#{modelledParticipantController.interactorSet(interactor) and not changesController.isDeletedAc(participant.ac)}"
+                               value="#{interactor.shortName}" rendered="#{not changesController.isDeletedAc(participant.ac)}"
                                styleClass="#{participant.ac == null? 'intact-new' :''}"
                                ajax="false"/>
                 <h:panelGroup rendered="#{changesController.isDeletedAc(participant.ac)}">
                     <h:outputText value="#{interactor.shortName}" styleClass="intact-deleted"/>
                 </h:panelGroup>
-
-                <h:panelGroup rendered="#{!modelledParticipantController.interactorSet(interactor)}">
-                    <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
-                                   value="(no interactor)" style="font-style: italic;"
-                                   ajax="false"/>
-
-                                    <span class="ui-icon ui-icon-alert" style="display:inline-block"
-                                          title="No interactor for this participant"/>
-                </h:panelGroup>
             </p:column>
 
             <p:column id="ao">
-                <ui:include src="common_column_notifications.xhtml">
+                <ui:include src="jcommon_column_notifications.xhtml">
                     <ui:param name="annotatedObjectController" value="#{modelledParticipantController}"/>
                     <ui:param name="ao" value="#{participant}"/>
                 </ui:include>
-                <h:panelGroup rendered="#{annotatedObjectController.isNoUniprotUpdate(participant.interactor)}">
-                    <h:graphicImage alt="no uniprot update" library="images" name="no_uni_update.png"
-                                    title="No Uniprot Update"/>
-                </h:panelGroup>
             </p:column>
 
             <p:column id="identity" headerText="Identity"
-                      sortBy="#{complexController.getInteractorIdentity(participant.interactor)}"
-                      filterBy="#{complexController.getInteractorIdentity(participant.interactor)}"
+                      sortBy="#{wrapper.interactorIdentity}"
+                      filterBy="#{wrapper.interactorIdentity}"
                       filterMatchMode="contains">
-                <h:outputText id="participantId" value="#{complexController.getInteractorIdentity(participant.interactor)}"
+                <h:outputText id="participantId" value="#{wrapper.interactorIdentity}"
                               styleClass="#{changesController.isDeletedAc(participant.ac)? 'intact-deleted' : ''}"/>
             </p:column>
 
@@ -84,10 +71,10 @@
 
                 <h:selectOneMenu id="bioRoleCv" value="#{wrapper.participant.biologicalRole}"
                                  rendered="#{value.size() lt 5}" disabled="#{complexController.isParticipantDisabled()}">
-                    <f:selectItems value="#{modelledParticipantController.biologicalRoleSelectItems}" />
+                    <f:selectItems value="#{editorCvTermService.biologicalRoleSelectItems}" />
                     <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
-                <h:outputText value="#{wrapper.participant.cvBiologicalRole != null? wrapper.participant.cvBiologicalRole.shortLabel : ''}"
+                <h:outputText value="#{wrapper.participant.biologicalRole != null? wrapper.participant.biologicalRole.shortName : ''}"
                               rendered="#{value.size() ge 5}"/>
             </p:column>
 
@@ -105,7 +92,7 @@
                         <div id="feature_#{featureWrapper.feature.ac}"
                              onmouseover="this.style.fontWeight = '#{!empty feature.linkedFeatures? 'bold' : 'inherit'}';"
                              onmouseout="this.style.fontWeight = 'inherit';">
-                            <h:outputText value="#{featureWrapper.feature.shortName} #{featureWrapper.feature.ranges}"/>
+                            <h:outputText value="#{featureWrapper.feature.shortName} #{featureWrapper.ranges}"/>
 
 
                             <h:panelGroup rendered="#{!empty feature.linkedFeatures}">

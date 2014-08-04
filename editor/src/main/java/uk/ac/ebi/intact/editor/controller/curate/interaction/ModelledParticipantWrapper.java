@@ -1,6 +1,7 @@
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
 import psidev.psi.mi.jami.model.ModelledFeature;
+import psidev.psi.mi.jami.model.Xref;
 import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
@@ -22,6 +23,7 @@ public class ModelledParticipantWrapper {
     private IntactModelledParticipant participant;
     private ChangesController changesController;
     private List<ModelledFeatureWrapper> features;
+    private String interactorIdentity;
 
     private ComplexController interactionController;
 
@@ -38,10 +40,22 @@ public class ModelledParticipantWrapper {
         }
 
         this.interactionController = interactionController;
+
+        Xref ref = participant.getInteractor().getPreferredIdentifier();
+        if (ref == null){
+            this.interactorIdentity = participant.getInteractor().getShortName();
+        }
+        else{
+            this.interactorIdentity = ref.getId();
+        }
     }
 
     public IntactModelledParticipant getParticipant() {
         return participant;
+    }
+
+    public String getInteractorIdentity() {
+        return interactorIdentity;
     }
 
     public void setParticipant( IntactModelledParticipant participant ) {

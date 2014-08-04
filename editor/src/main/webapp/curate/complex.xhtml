@@ -283,7 +283,7 @@
 
     <p:tab id="participantsTab" title="Participants (#{complexController.participants.size()})">
 
-        <!--<p:panel style="padding:0">
+        <p:panel style="padding:0">
             Participants:&#160;
             <p:commandButton value="New participant" action="#{modelledParticipantController.newParticipant(interaction)}"
                              ajax="false"/>
@@ -300,7 +300,7 @@
             <ui:include src="jparticipants_table.xhtml">
                 <ui:param name="value" value="#{complexController.participants}"/>
             </ui:include>
-        </p:outputPanel>-->
+        </p:outputPanel>
     </p:tab>
 
     <ui:decorate template="jpropertiesTabs.xhtml">

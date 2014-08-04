@@ -15,21 +15,45 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
+import psidev.psi.mi.jami.model.Range;
+import psidev.psi.mi.jami.utils.RangeUtils;
 import uk.ac.ebi.intact.jami.model.extension.IntactModelledFeature;
 
+import java.util.Iterator;
+
 /**
-* Feature wrapper for modelled features
-*
-* @author Marine Dumousseau (marine@ebi.ac.uk)
-* @version $Id$
-*/
+ * Feature wrapper for modelled features
+ *
+ * @author Marine Dumousseau (marine@ebi.ac.uk)
+ * @version $Id$
+ */
 public class ModelledFeatureWrapper {
 
     private IntactModelledFeature feature;
     private boolean selected;
+    private String ranges=null;
 
     public ModelledFeatureWrapper(IntactModelledFeature feature) {
         this.feature = feature;
+
+        initialiseRangesAsString();
+    }
+
+    private void initialiseRangesAsString(){
+
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[");
+
+        Iterator<Range> rangeIterator = feature.getRanges().iterator();
+        while (rangeIterator.hasNext()){
+            Range range = rangeIterator.next();
+            buffer.append(RangeUtils.convertRangeToString(range));
+            if (rangeIterator.hasNext()){
+                buffer.append(", ");
+            }
+        }
+        buffer.append("]");
+        this.ranges = buffer.toString();
     }
 
     public IntactModelledFeature getFeature() {
@@ -46,5 +70,9 @@ public class ModelledFeatureWrapper {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public String getRanges() {
+        return ranges;
     }
 }
