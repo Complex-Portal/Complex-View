@@ -43,6 +43,7 @@ import uk.ac.ebi.intact.jami.model.extension.*;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEvent;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEventType;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleStatus;
+import uk.ac.ebi.intact.jami.model.lifecycle.Releasable;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
@@ -96,6 +97,7 @@ public class ComplexController extends AnnotatedObjectController {
     private String recommendedName = null;
     private String systematicName = null;
     private String description = null;
+    private String complexProperties = null;
 
     public ComplexController() {
 
@@ -447,6 +449,16 @@ public class ComplexController extends AnnotatedObjectController {
         Annotation desc = AnnotationUtils.collectFirstAnnotationWithTopic(this.complex.getAnnotations(), null,
                 "curated-complex");
         this.description = desc != null ? desc.getValue() : null;
+        this.complexProperties = this.complex.getPhysicalProperties();
+    }
+
+    public String getComplexProperties() {
+        return complexProperties;
+    }
+
+    public void setComplexProperties(String complexProperties) {
+        this.complex.setPhysicalProperties(complexProperties);
+        this.complexProperties = complexProperties;
     }
 
     public Collection<ModelledParticipantWrapper> getParticipants() {
@@ -597,7 +609,13 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Override
     public List getAnnotations() {
-        return new ArrayList(this.complex.getAnnotations());
+        List<Annotation> annotations = new ArrayList(this.complex.getAnnotations());
+        AnnotationUtils.removeAllAnnotationsWithTopic(annotations, null, Releasable.ON_HOLD);
+        AnnotationUtils.removeAllAnnotationsWithTopic(annotations, null, Releasable.TO_BE_REVIEWED);
+        AnnotationUtils.removeAllAnnotationsWithTopic(annotations, Annotation.COMPLEX_PROPERTIES_MI, Annotation.COMPLEX_PROPERTIES);
+        AnnotationUtils.removeAllAnnotationsWithTopic(annotations, null, "curated-complex");
+
+        return annotations;
     }
 
     @Override
@@ -849,6 +867,20 @@ public class ComplexController extends AnnotatedObjectController {
         }
     }
 
+    public void onComplexPropertiesChanged(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+
+        String newValue = (String) evt.getNewValue();
+        if (newValue == null || newValue.length() == 0){
+            this.complex.setPhysicalProperties(null);
+            this.complexProperties = null;
+        }
+        else{
+            this.complex.setPhysicalProperties(newValue);
+            this.complexProperties = newValue;
+        }
+    }
+
     public boolean isAccepted() {
         if (complex == null || complex.getStatus() == null) {
             return false;
@@ -1072,11 +1104,19 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     /**
-     * No transcational as it should always be initialised when loaded recommended name and systematic name when loading the page
+     * No transactional as it should always be initialised when loaded recommended name and systematic name when loading the page
      * @return
      */
     public int getAliasesSize() {
         return this.complex.getAliases().size();
+    }
+
+    /**
+     * No transactional as it should always be initialised when loaded recommended name and systematic name when loading the page
+     * @return
+     */
+    public int getAnnotationsSize() {
+        return this.complex.getAnnotations().size();
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
@@ -1115,6 +1155,18 @@ public class ComplexController extends AnnotatedObjectController {
 
     public void removeParameter(ModelledParameter param){
         this.complex.getModelledParameters().remove(param);
+    }
+
+    public void removeAlias(Alias alias){
+        this.complex.getAliases().remove(alias);
+    }
+
+    public void removeXref(Xref xref){
+        this.complex.getDbXrefs().remove(xref);
+    }
+
+    public void removeAnnotation(Annotation annot){
+        this.complex.getAnnotations().remove(annot);
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)

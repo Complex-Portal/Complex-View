@@ -218,10 +218,6 @@
                                  valueChangeListener="#{complexController.onRecommendedNameChange}">
                         <ed:curation/>
                     </p:inputText>
-
-                    <p:commandButton id="clearRecommendedNameBtn" value="Clear" actionListener="#{complexController.setUnsavedChanges(true)}"
-                                     onclick="document.getElementById('recommendedNameTxt').value = ''"
-                                     update=":editorForm:infoPanels,:editorForm:complexTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:panelGroup>
             </td>
         </tr>
@@ -235,10 +231,6 @@
                                  valueChangeListener="#{complexController.onSystematicNameChange}">
                         <ed:curation/>
                     </p:inputText>
-
-                    <p:commandButton id="clearSystematicNameBtn" value="Clear" actionListener="#{complexController.setUnsavedChanges(true)}"
-                                     onclick="document.getElementById('systematicNameTxt').value = ''"
-                                     update=":editorForm:infoPanels,:editorForm:complexTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:panelGroup>
             </td>
         </tr>
@@ -252,10 +244,6 @@
                                  valueChangeListener="#{complexController.onHoldChanged}">
                         <ed:curation/>
                     </p:inputText>
-
-                    <p:commandButton id="clearOnHoldBtn" value="Clear" actionListener="#{complexController.setUnsavedChanges(true)}"
-                                     onclick="document.getElementById('onHoldTxt').value = ''"
-                                     update=":editorForm:infoPanels,:editorForm:complexTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:panelGroup>
             </td>
         </tr>
@@ -269,10 +257,19 @@
                                      valueChangeListener="#{complexController.onDescriptionChange}" rows="5" cols="80">
                         <ed:curation/>
                     </p:inputTextarea>
-
-                    <p:commandButton id="clearCuratedComplexBtn" value="Clear" actionListener="#{complexController.setUnsavedChanges(true)}"
-                                     onclick="document.getElementById('curatedComplexTxt').value = ''"
-                                     update=":editorForm:infoPanels,:editorForm:complexTabs,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
+                </h:panelGroup>
+            </td>
+        </tr>
+        <tr>
+            <td class="firstCell">
+                <h:outputLabel value="Complex properties: " for="complexPropertiesTxt"/>
+            </td>
+            <td colspan="2">
+                <h:panelGroup>
+                    <p:inputText id="complexPropertiesTxt" value="#{complexController.complexProperties}" size="70"
+                                 valueChangeListener="#{complexController.onComplexPropertiesChange}">
+                        <ed:curation/>
+                    </p:inputText>
                 </h:panelGroup>
             </td>
         </tr>

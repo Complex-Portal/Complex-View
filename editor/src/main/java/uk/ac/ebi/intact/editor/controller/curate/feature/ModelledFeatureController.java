@@ -25,10 +25,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import psidev.psi.mi.jami.model.Complex;
-import psidev.psi.mi.jami.model.ModelledEntity;
-import psidev.psi.mi.jami.model.ModelledParticipant;
-import psidev.psi.mi.jami.model.OntologyTerm;
+import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import psidev.psi.mi.jami.utils.RangeUtils;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
@@ -573,5 +570,27 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         else{
             return getIntactDao().getModelledFeatureDao().countAliasesForFeature(this.ac);
         }
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getAnnotationsSize() {
+        if (this.feature.areAnnotationsInitialized()){
+            return this.feature.getAnnotations().size();
+        }
+        else{
+            return getIntactDao().getModelledFeatureDao().countAnnotationsForFeature(this.ac);
+        }
+    }
+
+    public void removeAlias(Alias alias){
+        this.feature.getAliases().remove(alias);
+    }
+
+    public void removeXref(Xref xref){
+        this.feature.getDbXrefs().remove(xref);
+    }
+
+    public void removeAnnotation(Annotation annot){
+        this.feature.getAnnotations().remove(annot);
     }
 }

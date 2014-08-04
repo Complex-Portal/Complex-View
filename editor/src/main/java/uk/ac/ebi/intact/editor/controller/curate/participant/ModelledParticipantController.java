@@ -523,4 +523,26 @@ public class ModelledParticipantController extends AnnotatedObjectController {
             return getIntactDao().getModelledParticipantDao().countAliasesForParticipant(this.ac);
         }
     }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getAnnotationsSize() {
+        if (this.participant.areAnnotationsInitialized()){
+            return this.participant.getAnnotations().size();
+        }
+        else{
+            return getIntactDao().getModelledParticipantDao().countAnnotationsForParticipant(this.ac);
+        }
+    }
+
+    public void removeAlias(Alias alias){
+        this.participant.getAliases().remove(alias);
+    }
+
+    public void removeXref(Xref xref){
+        this.participant.getXrefs().remove(xref);
+    }
+
+    public void removeAnnotation(Annotation annot){
+        this.participant.getAnnotations().remove(annot);
+    }
 }

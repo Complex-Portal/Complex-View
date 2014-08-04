@@ -29,7 +29,7 @@
 
     </p:tab>
 
-    <p:tab id="annotationsTab" title="Annotations (#{annotatedObjectController.jamiObject.annotations.size()})">
+    <p:tab id="annotationsTab" title="Annotations (#{annotatedObjectController.annotationsSize()})">
          <p:outputPanel id="annotationsPanel" autoUpdate="true">
              <ui:decorate template="jannotations_table.xhtml">
                  <ui:param name="annotatedObjectController" value="#{annotatedObjectController}"/>
