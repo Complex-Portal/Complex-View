@@ -317,7 +317,7 @@
         </ui:decorate>
 
 
-        <p:tab id="parametersTab" title="Parameters (#{interaction.modelledParameters.size()})">
+        <p:tab id="parametersTab" title="Parameters (#{interaction.parametersSize})">
 
             <p:outputPanel id="parametersPanel" autoUpdate="true">
                 <ui:decorate template="jparameters_table.xhtml">
@@ -331,7 +331,7 @@
 
         </p:tab>
 
-        <p:tab id="confidencesTab" title="Confidences (#{complexController.confidenceSize})">
+        <p:tab id="confidencesTab" title="Confidences (#{complexController.confidencesSize})">
 
             <p:outputPanel id="confidencesPanel" autoUpdate="true">
                 <ui:decorate template="jconfidences_table.xhtml">

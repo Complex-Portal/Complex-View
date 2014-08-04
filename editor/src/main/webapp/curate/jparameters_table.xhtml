@@ -16,7 +16,7 @@
                              update="parametersTable #{update}"/>
         </div>
 
-        <p:dataTable id="parametersTable" var="parameter" value="#{complexController.complex.modelledParameters}">
+        <p:dataTable id="parametersTable" var="parameter" value="#{complexController.parameters}">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Type"/>
@@ -79,7 +79,7 @@
                      <h:outputText value="Actions"/>
                 </f:facet>
                 <p:commandLink id="removeParamBtn" styleClass="ui-icon ui-icon-closethick" process="removeParamBtn"
-                               actionListener="#{complexController.complex.modelledParameters.remove(parameter)}"
+                               actionListener="#{complexController.removeParameter(parameter)}"
                                oncomplete="markAsUnsaved()"
                                update="parametersTable #{update}"/>
             </p:column>
