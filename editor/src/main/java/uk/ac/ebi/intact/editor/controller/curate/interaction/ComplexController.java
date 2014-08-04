@@ -620,11 +620,37 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Override
     public List getAliases() {
-        List<Alias> aliases = new ArrayList(this.complex.getAliases());
-        AliasUtils.removeAllAliasesWithType(aliases, Alias.COMPLEX_RECOMMENDED_NAME_MI, Alias.COMPLEX_RECOMMENDED_NAME);
-        AliasUtils.removeAllAliasesWithType(aliases, Alias.COMPLEX_SYSTEMATIC_NAME_MI, Alias.COMPLEX_SYSTEMATIC_NAME);
+        return new ArrayList(this.complex.getAliases());
+    }
 
-        return aliases;
+    public boolean isAliasNotEditable(Alias alias){
+        if (AliasUtils.doesAliasHaveType(alias, Alias.COMPLEX_RECOMMENDED_NAME_MI, Alias.COMPLEX_RECOMMENDED_NAME)){
+           return true;
+        }
+        else if (AliasUtils.doesAliasHaveType(alias, Alias.COMPLEX_SYSTEMATIC_NAME_MI, Alias.COMPLEX_SYSTEMATIC_NAME)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public boolean isAnnotationNotEditable(Annotation annot){
+        if (AnnotationUtils.doesAnnotationHaveTopic(annot, null, Releasable.ON_HOLD)){
+            return true;
+        }
+        else if (AnnotationUtils.doesAnnotationHaveTopic(annot, Annotation.COMPLEX_PROPERTIES_MI, Annotation.COMPLEX_PROPERTIES)){
+            return true;
+        }
+        else if (AnnotationUtils.doesAnnotationHaveTopic(annot, null, Releasable.TO_BE_REVIEWED)){
+            return true;
+        }
+        else if (AnnotationUtils.doesAnnotationHaveTopic(annot, null, "curated-complex")){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     @Override

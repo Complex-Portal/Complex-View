@@ -603,4 +603,12 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     public void removeAnnotation(Annotation annot){
         this.feature.getAnnotations().remove(annot);
     }
+
+    public boolean isAliasNotEditable(Alias alias){
+        return false;
+    }
+
+    public boolean isAnnotationNotEditable(Annotation annot){
+        return false;
+    }
 }

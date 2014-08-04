@@ -555,4 +555,12 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     public void removeAnnotation(Annotation annot){
         this.participant.getAnnotations().remove(annot);
     }
+
+    public boolean isAliasNotEditable(Alias alias){
+        return false;
+    }
+
+    public boolean isAnnotationNotEditable(Annotation annot){
+        return false;
+    }
 }

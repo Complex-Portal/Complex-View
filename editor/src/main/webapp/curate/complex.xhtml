@@ -153,6 +153,32 @@
             </td>
         </tr>
         <tr>
+            <td class="firstCell">
+                <h:outputLabel value="Recommended name: " for="recommendedNameTxt"/>
+            </td>
+            <td colspan="2">
+                <h:panelGroup>
+                    <p:inputText id="recommendedNameTxt" value="#{complexController.recommendedName}" size="70"
+                                 valueChangeListener="#{complexController.onRecommendedNameChange}">
+                        <ed:curation/>
+                    </p:inputText>
+                </h:panelGroup>
+            </td>
+        </tr>
+        <tr>
+            <td class="firstCell">
+                <h:outputLabel value="Systematic name: " for="systematicNameTxt"/>
+            </td>
+            <td colspan="2">
+                <h:panelGroup>
+                    <p:inputText id="systematicNameTxt" value="#{complexController.systematicName}" size="70"
+                                 valueChangeListener="#{complexController.onSystematicNameChange}">
+                        <ed:curation/>
+                    </p:inputText>
+                </h:panelGroup>
+            </td>
+        </tr>
+        <tr>
             <td colspan="1" class="firstCell">
                 <h:outputLabel value="Complex type: " for="complexTypeTxt"/>
             </td>
@@ -210,32 +236,6 @@
         </tr>
         <tr>
             <td class="firstCell">
-                <h:outputLabel value="Recommended name: " for="recommendedNameTxt"/>
-            </td>
-            <td colspan="2">
-                <h:panelGroup>
-                    <p:inputText id="recommendedNameTxt" value="#{complexController.recommendedName}" size="70"
-                                 valueChangeListener="#{complexController.onRecommendedNameChange}">
-                        <ed:curation/>
-                    </p:inputText>
-                </h:panelGroup>
-            </td>
-        </tr>
-        <tr>
-            <td class="firstCell">
-                <h:outputLabel value="Systematic name: " for="systematicNameTxt"/>
-            </td>
-            <td colspan="2">
-                <h:panelGroup>
-                    <p:inputText id="systematicNameTxt" value="#{complexController.systematicName}" size="70"
-                                 valueChangeListener="#{complexController.onSystematicNameChange}">
-                        <ed:curation/>
-                    </p:inputText>
-                </h:panelGroup>
-            </td>
-        </tr>
-        <tr>
-            <td class="firstCell">
                 <h:outputLabel value="On hold: " for="onHoldTxt"/>
             </td>
             <td colspan="3">
@@ -274,8 +274,6 @@
             </td>
         </tr>
     </table>
-
-    <!--</ia:panelFormLayout>-->
 </p:panel>
 
 <br/>
@@ -285,7 +283,7 @@
 
     <p:tab id="participantsTab" title="Participants (#{complexController.participants.size()})">
 
-        <p:panel style="padding:0">
+        <!--<p:panel style="padding:0">
             Participants:&#160;
             <p:commandButton value="New participant" action="#{modelledParticipantController.newParticipant(interaction)}"
                              ajax="false"/>
@@ -302,7 +300,7 @@
             <ui:include src="jparticipants_table.xhtml">
                 <ui:param name="value" value="#{complexController.participants}"/>
             </ui:include>
-        </p:outputPanel>
+        </p:outputPanel>-->
     </p:tab>
 
     <ui:decorate template="jpropertiesTabs.xhtml">
