@@ -991,7 +991,8 @@ public class ComplexController extends AnnotatedObjectController {
         int timesRejected = 0;
         int timesReadyForChecking = 0;
 
-        Collection<LifeCycleEvent> events = getLifecycleEvents();
+        Collection<LifeCycleEvent> events = complex.areLifeCycleEventsInitialized() ? complex.getLifecycleEvents() :
+                getIntactDao().getComplexDao().getLifeCycleEventsForComplex(complex.getAc());
 
         for (LifeCycleEvent evt : events) {
             if (LifeCycleEventType.REJECTED.equals(evt.getEvent())) {
