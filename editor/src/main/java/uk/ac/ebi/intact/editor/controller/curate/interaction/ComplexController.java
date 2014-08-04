@@ -198,14 +198,6 @@ public class ComplexController extends AnnotatedObjectController {
 
             if ( complex == null || ac == null || (ac != null && !ac.equals( complex.getAc() ))) {
                 setComplex(loadJamiByAc(IntactComplex.class, ac));
-
-                // initialise collections
-                Hibernate.initialize(complex.getDbAliases());
-                Hibernate.initialize(complex.getDbXrefs());
-                Hibernate.initialize(complex.getDbAnnotations());
-                Hibernate.initialize(complex.getModelledConfidences());
-                Hibernate.initialize(complex.getModelledParameters());
-                Hibernate.initialize(complex.getLifecycleEvents());
             }
 
             if (complex == null) {
@@ -494,16 +486,6 @@ public class ComplexController extends AnnotatedObjectController {
         complex.getModelledConfidences().add(confidence);
     }
 
-    public List<ModelledConfidence> getConfidences() {
-        if (complex == null) return Collections.EMPTY_LIST;
-        return new ArrayList<ModelledConfidence>(complex.getModelledConfidences());
-    }
-
-    public List<ModelledParameter> getParameters() {
-        if (complex == null) return Collections.EMPTY_LIST;
-        return new ArrayList<ModelledParameter>(complex.getModelledParameters());
-    }
-
     public boolean isParticipantDisabled() {
         return isParticipantDisabled;
     }
@@ -625,34 +607,40 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     public boolean isNewPublication() {
-        return complex.getStatus().equals(LifeCycleStatus.NEW);
+        return complex.getStatus() == LifeCycleStatus.NEW;
     }
 
     public boolean isAssigned() {
-        return complex.getStatus().equals(LifeCycleStatus.ASSIGNED);
+        return complex.getStatus() == LifeCycleStatus.ASSIGNED;
     }
 
     public boolean isCurationInProgress() {
-        return complex.getStatus().equals(LifeCycleStatus.CURATION_IN_PROGRESS);
+        return complex.getStatus() == LifeCycleStatus.CURATION_IN_PROGRESS;
     }
 
     public boolean isReadyForChecking() {
-        return complex.getStatus().equals(LifeCycleStatus.READY_FOR_CHECKING);
+        return complex.getStatus() == LifeCycleStatus.READY_FOR_CHECKING;
     }
 
     public boolean isReadyForRelease() {
-        return complex.getStatus().equals(LifeCycleStatus.READY_FOR_RELEASE);
+        return complex.getStatus() == LifeCycleStatus.READY_FOR_RELEASE;
     }
 
     public boolean isAcceptedOnHold() {
-        return complex.getStatus().equals(LifeCycleStatus.ACCEPTED_ON_HOLD);
+        return complex.getStatus() == LifeCycleStatus.ACCEPTED_ON_HOLD;
     }
 
     public boolean isReleased() {
-        return complex.getStatus().equals(LifeCycleStatus.RELEASED);
+        return complex.getStatus() == LifeCycleStatus.RELEASED;
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void claimOwnership(ActionEvent evt) {
+        if (!this.complex.areLifeCycleEventsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
+
         lifecycleManager.getGlobalStatus().changeOwnership(complex, getCurrentJamiUser(), null);
 
         // automatically set as curation in progress if no one was assigned before
@@ -661,27 +649,43 @@ public class ComplexController extends AnnotatedObjectController {
         }
 
         addInfoMessage("Claimed Complex ownership", "You are now the owner of this complex");
+        getJamiEntityManager().detach(this.complex);
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void markAsAssignedToMe(ActionEvent evt) {
+        if (!this.complex.areLifeCycleEventsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
+
         lifecycleManager.getNewStatus().assignToCurator(complex, getCurrentJamiUser());
 
         addInfoMessage("Ownership claimed", "The complex has been assigned to you");
 
         markAsCurationInProgress(evt);
+        getJamiEntityManager().detach(this.complex);
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void markAsCurationInProgress(ActionEvent evt) {
         if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
             addErrorMessage("Cannot mark as curation in progress", "You are not the owner of this publication");
             return;
         }
 
+        if (!this.complex.areLifeCycleEventsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
+
         lifecycleManager.getAssignedStatus().startCuration(complex);
 
         addInfoMessage("Curation started", "Curation is now in progress");
+        getJamiEntityManager().detach(this.complex);
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void markAsReadyForChecking(ActionEvent evt) {
         if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
             addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this complex");
@@ -689,6 +693,11 @@ public class ComplexController extends AnnotatedObjectController {
         }
         if (isBeenRejectedBefore()) {
             reasonForReadyForChecking = this.complex.getCorrectionComment();
+        }
+
+        if (!this.complex.areLifeCycleEventsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
         }
 
         // TODO run a proper sanity check
@@ -699,17 +708,40 @@ public class ComplexController extends AnnotatedObjectController {
         reasonForReadyForChecking = null;
 
         addInfoMessage("Complex ready for checking", "Assigned to reviewer: " + complex.getCurrentReviewer().getLogin());
+
+        getJamiEntityManager().detach(this.complex);
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void revertReadyForChecking(ActionEvent evt) {
+        if (!this.complex.areLifeCycleEventsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
+
         lifecycleManager.getReadyForCheckingStatus().revert(this.complex);
+
+        getJamiEntityManager().detach(this.complex);
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void revertAccepted(ActionEvent evt) {
+        if (!this.complex.areLifeCycleEventsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
+
         lifecycleManager.getReadyForReleaseStatus().revert(this.complex);
+
+        getJamiEntityManager().detach(this.complex);
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void putOnHold(ActionEvent evt) {
+        if (!this.complex.areLifeCycleEventsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
 
         if (complex.getStatus().equals(LifeCycleStatus.READY_FOR_RELEASE)) {
             lifecycleManager.getReadyForReleaseStatus().putOnHold(complex, reasonForOnHoldFromDialog);
@@ -723,10 +755,19 @@ public class ComplexController extends AnnotatedObjectController {
         }
         this.onHold = this.complex.getOnHoldComment();
         reasonForOnHoldFromDialog = null;
+
+        getJamiEntityManager().detach(this.complex);
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void readyForReleaseFromOnHold(ActionEvent evt) {
+        if (!this.complex.areLifeCycleEventsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
         lifecycleManager.getAcceptedOnHoldStatus().onHoldRemoved(complex, null);
+        getJamiEntityManager().detach(this.complex);
+        this.onHold = null;
     }
 
     public void setOnHold(String reason) {
@@ -797,28 +838,33 @@ public class ComplexController extends AnnotatedObjectController {
             return false;
         }
 
-        return complex.getStatus().equals(LifeCycleStatus.ACCEPTED) ||
-                complex.getStatus().equals(LifeCycleStatus.ACCEPTED_ON_HOLD)||
-                complex.getStatus().equals(LifeCycleStatus.READY_FOR_RELEASE) ||
-                complex.getStatus().equals(LifeCycleStatus.RELEASED);
+        return complex.getStatus() == LifeCycleStatus.ACCEPTED ||
+                complex.getStatus() == LifeCycleStatus.ACCEPTED_ON_HOLD ||
+                complex.getStatus() == LifeCycleStatus.READY_FOR_RELEASE ||
+                complex.getStatus() == LifeCycleStatus.RELEASED;
     }
 
     public boolean isAccepted(IntactComplex pub) {
-        return pub.getStatus().equals(LifeCycleStatus.ACCEPTED) ||
-                pub.getStatus().equals(LifeCycleStatus.ACCEPTED_ON_HOLD)||
-                pub.getStatus().equals(LifeCycleStatus.READY_FOR_RELEASE) ||
-                pub.getStatus().equals(LifeCycleStatus.RELEASED);
+        return pub.getStatus() == LifeCycleStatus.ACCEPTED ||
+                pub.getStatus() == LifeCycleStatus.ACCEPTED_ON_HOLD ||
+                pub.getStatus() == LifeCycleStatus.READY_FOR_RELEASE ||
+                pub.getStatus() == LifeCycleStatus.RELEASED;
     }
 
     public boolean isToBeReviewed(IntactComplex pub) {
-        return this.complex.isToBeReviewed();
+        return pub.isToBeReviewed();
     }
 
     public boolean isOnHold(IntactComplex pub) {
-        return this.complex.isOnHold();
+        return pub.isOnHold();
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void acceptComplex(ActionEvent evt) {
+        if (!this.complex.areLifeCycleEventsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
         lifecycleManager.getReadyForCheckingStatus().accept(complex, "Accepted " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase());
@@ -826,23 +872,33 @@ public class ComplexController extends AnnotatedObjectController {
         if (!complex.isOnHold()) {
             lifecycleManager.getAcceptedStatus().readyForRelease(complex, "Accepted and not on-hold");
         }
+
+        getJamiEntityManager().detach(this.complex);
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void rejectComplex(ActionEvent evt) {
 
         rejectComplex(reasonForRejection);
 
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void rejectComplex(String reasonForRejection) {
+        if (!this.complex.areLifeCycleEventsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         String date = "Rejected " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase();
 
         addInfoMessage("Complex rejected", "");
 
-        lifecycleManager.getReadyForCheckingStatus().reject(complex, date + ". " + reasonForRejection);
+        lifecycleManager.getReadyForCheckingStatus().reject(this.complex, date + ". " + reasonForRejection);
 
         this.toBeReviewed = this.complex.getToBeReviewedComment();
+
+        getJamiEntityManager().detach(this.complex);
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
@@ -854,8 +910,7 @@ public class ComplexController extends AnnotatedObjectController {
         int timesRejected = 0;
         int timesReadyForChecking = 0;
 
-        Collection<LifeCycleEvent> events = complex.areLifeCycleEventsInitialized() ? complex.getLifecycleEvents() :
-                getIntactDao().getComplexDao().getLifeCycleEventsForComplex(complex.getAc());
+        Collection<LifeCycleEvent> events = getLifecycleEvents();
 
         for (LifeCycleEvent evt : events) {
             if (LifeCycleEventType.REJECTED.equals(evt.getEvent())) {
@@ -874,8 +929,9 @@ public class ComplexController extends AnnotatedObjectController {
         return "";
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isBeenRejectedBefore() {
-        for (LifeCycleEvent evt : complex.getLifecycleEvents()) {
+        for (LifeCycleEvent evt : getLifecycleEvents()) {
             if (LifeCycleEventType.REJECTED.equals(evt.getEvent())) {
                 return true;
             }
@@ -975,5 +1031,80 @@ public class ComplexController extends AnnotatedObjectController {
     @Override
     public String getJamiObjectName() {
         return getName();
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getParametersSize() {
+        if (this.complex.areParametersInitialized()){
+            return this.complex.getModelledParameters().size();
+        }
+        else{
+            // reload complex without flushing changes
+            return getIntactDao().getComplexDao().countParametersForComplex(this.ac);
+        }
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getConfidencesSize() {
+        if (this.complex.areConfidencesInitialized()){
+            return this.complex.getModelledConfidences().size();
+        }
+        else{
+            // reload complex without flushing changes
+            return getIntactDao().getComplexDao().countConfidencesForComplex(this.ac);
+        }
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public Collection<ModelledConfidence> getConfidences() {
+        if (this.complex.areConfidencesInitialized()){
+            return this.complex.getModelledConfidences();
+        }
+        else{
+            // reload complex without flushing changes
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            Collection<ModelledConfidence> confs = reloadedComplex.getModelledConfidences();
+            setComplex(reloadedComplex);
+            getJamiEntityManager().detach(reloadedComplex);
+            return confs;
+        }
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public Collection<ModelledParameter> getParameters() {
+        if (this.complex.areConfidencesInitialized()){
+            return this.complex.getModelledParameters();
+        }
+        else{
+            // reload complex without flushing changes
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            Collection<ModelledParameter> params = reloadedComplex.getModelledParameters();
+            setComplex(reloadedComplex);
+            getJamiEntityManager().detach(reloadedComplex);
+            return params;
+        }
+    }
+
+    public void removeConfidence(ModelledConfidence conf){
+        this.complex.getModelledConfidences().remove(conf);
+    }
+
+    public void removeParameter(ModelledParameter param){
+        this.complex.getModelledParameters().remove(param);
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public Collection<LifeCycleEvent> getLifecycleEvents() {
+        if (this.complex.areLifeCycleEventsInitialized()){
+            return this.complex.getLifecycleEvents();
+        }
+        else{
+            // reload complex without flushing changes
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            Collection<LifeCycleEvent> events = reloadedComplex.getLifecycleEvents();
+            setComplex(reloadedComplex);
+            getJamiEntityManager().detach(reloadedComplex);
+            return events;
+        }
     }
 }
