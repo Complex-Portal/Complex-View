@@ -173,7 +173,9 @@ public class EditorCvTermService extends JpaAwareController {
         loadChildren(complexTopicParent, complexTopicSelectItems, false);
 
         IntactCvTerm complexDatabaseParent = cvDao.getByMIIdentifier("MI:0473", IntactUtils.DATABASE_OBJCLASS);
+        IntactCvTerm complexDatabaseParent2 = cvDao.getByMIIdentifier("MI:0461", IntactUtils.DATABASE_OBJCLASS);
         loadChildren(complexDatabaseParent, complexDatabaseSelectItems, false);
+        loadChildren(complexDatabaseParent2, complexDatabaseSelectItems, false);
 
         IntactCvTerm interactionTypeParent = cvDao.getByMIIdentifier("MI:0190", IntactUtils.INTERACTION_TYPE_OBJCLASS);
         loadChildren(interactionTypeParent, interactionTypeSelectItems, false);

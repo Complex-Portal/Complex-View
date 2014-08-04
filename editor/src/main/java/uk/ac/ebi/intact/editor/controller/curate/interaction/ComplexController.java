@@ -100,7 +100,6 @@ public class ComplexController extends AnnotatedObjectController {
     private String complexProperties = null;
 
     public ComplexController() {
-
     }
 
     @Override
@@ -609,13 +608,7 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Override
     public List getAnnotations() {
-        List<Annotation> annotations = new ArrayList(this.complex.getAnnotations());
-        AnnotationUtils.removeAllAnnotationsWithTopic(annotations, null, Releasable.ON_HOLD);
-        AnnotationUtils.removeAllAnnotationsWithTopic(annotations, null, Releasable.TO_BE_REVIEWED);
-        AnnotationUtils.removeAllAnnotationsWithTopic(annotations, Annotation.COMPLEX_PROPERTIES_MI, Annotation.COMPLEX_PROPERTIES);
-        AnnotationUtils.removeAllAnnotationsWithTopic(annotations, null, "curated-complex");
-
-        return annotations;
+        return new ArrayList(this.complex.getAnnotations());
     }
 
     @Override
@@ -1179,6 +1172,7 @@ public class ComplexController extends AnnotatedObjectController {
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
             Collection<ModelledConfidence> confs = reloadedComplex.getModelledConfidences();
             setComplex(reloadedComplex);
+            Hibernate.initialize(confs);
             getJamiEntityManager().detach(reloadedComplex);
             return confs;
         }
@@ -1194,6 +1188,7 @@ public class ComplexController extends AnnotatedObjectController {
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
             Collection<ModelledParameter> params = reloadedComplex.getModelledParameters();
             setComplex(reloadedComplex);
+            Hibernate.initialize(params);
             getJamiEntityManager().detach(reloadedComplex);
             return params;
         }
@@ -1228,6 +1223,7 @@ public class ComplexController extends AnnotatedObjectController {
             // reload complex without flushing changes
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
             Collection<LifeCycleEvent> events = reloadedComplex.getLifecycleEvents();
+            Hibernate.initialize(events);
             setComplex(reloadedComplex);
             getJamiEntityManager().detach(reloadedComplex);
             return events;

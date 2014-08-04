@@ -51,24 +51,18 @@
                             </p:inputText>
 
                             <h:panelGroup id="validityPanel">
-                                <!--<h:panelGroup rendered="#{annotatedObjectController.isXrefValid(xref)}">-->
-                                    <!--<span class="ui-icon ui-icon-circle-check" title="Matches the expected regular expression"/>-->
-                                <!--</h:panelGroup>-->
-                                <h:panelGroup rendered="#{not annotatedObjectController.isXrefValid(xref)}">
+
+                                <h:panelGroup rendered="#{not annotatedObjectController.isJamiXrefValid(xref)}">
                                     <span class="ui-icon ui-icon-alert" style="display:inline-block"
                                           title="Does not match the expected regular expression"/>
-                                    <!--<h:graphicImage alt="warn" library="images" name="warn.gif" -->
-                                                    <!--title="Does not match the expected regular expression"/>-->
                                 </h:panelGroup>
                             </h:panelGroup>
 
                                 <h:panelGroup id="linkPanel">
-                                <!--<h:panelGroup rendered="#{annotatedObjectController.isXrefValid(xref)}">-->
-                                    <!--<span class="ui-icon ui-icon-circle-check" title="Matches the expected regular expression"/>-->
-                                <!--</h:panelGroup>-->
-                                <h:panelGroup rendered="#{annotatedObjectController.isXrefValid(xref) and annotatedObjectController.externalLink(xref) != null}">
+
+                                <h:panelGroup rendered="#{annotatedObjectController.isJamiXrefValid(xref) and annotatedObjectController.externalJamiLink(xref) != null}">
                                     <ot:separateConversationContext>
-                                        <h:outputLink value="#{annotatedObjectController.externalLink(xref)}" target="_blank">
+                                        <h:outputLink value="#{annotatedObjectController.externalJamiLink(xref)}" target="_blank">
                                             <span class="ui-icon ui-icon-extlink" style="display:inline-block"
                                                   title="External link to #{xref.database.shortName}"/>
                                         </h:outputLink>

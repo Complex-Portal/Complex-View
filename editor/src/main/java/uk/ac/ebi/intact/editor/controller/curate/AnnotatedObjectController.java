@@ -895,100 +895,92 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return getAnnotatedObjectHelper().findXrefPrimaryId(databaseId, qualifierId);
     }
 
-    public boolean isXrefValid(Object obj) {
-        if (obj == null) return false;
-        else if (obj instanceof Xref){
-            Xref xref = (Xref)obj;
-            if (xref.getPrimaryId() == null) return false;
-            if (xref.getCvDatabase() == null) return true;
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String externalJamiLink(psidev.psi.mi.jami.model.Xref ref) {
+        if (ref == null) return null;
+        if (ref.getId() == null) return null;
+        if (ref.getDatabase() == null) return null;
 
-            AnnotatedObject ao = xref.getCvDatabase();
-
-            if (!IntactCore.isInitialized(ao.getAnnotations())) {
-                ao = IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(ao.getClass())
-                        .getByAc(getAnnotatedObject().getAc());
-            }
-
-            if (ao == null) { // this can happen if the object has been removed in the same request just before
-                return true;
-            }
-
-            final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( ao, CvTopic.XREF_VALIDATION_REGEXP_MI_REF);
-
-            if (annotation == null) return true;
-            return xref.getPrimaryId().matches(annotation.getAnnotationText());
+        IntactCvTerm ao = (IntactCvTerm)ref.getDatabase();
+        if (ao == null) { // this can happen if the object has been removed in the same request just before
+            return null;
         }
-        else{
-            psidev.psi.mi.jami.model.Xref ref = (psidev.psi.mi.jami.model.Xref)obj;
-            if (ref.getId() == null) return false;
-            if (ref.getDatabase() == null) return true;
 
-            IntactCvTerm ao = (IntactCvTerm)ref.getDatabase();
+        IntactCvTerm reloadedDb = getJamiEntityManager().merge(ao);
 
-            if (!ao.areAnnotationsInitialized()) {
-                ao = getJamiEntityManager().find(IntactCvTerm.class, ao.getAc());
-            }
+        final psidev.psi.mi.jami.model.Annotation annotation = AnnotationUtils.collectFirstAnnotationWithTopic(reloadedDb.getAnnotations(),
+                psidev.psi.mi.jami.model.Annotation.SEARCH_URL_MI, psidev.psi.mi.jami.model.Annotation.SEARCH_URL);
+        if (annotation == null) return null;
 
-            if (ao == null) { // this can happen if the object has been removed in the same request just before
-                return true;
-            }
-
-            final psidev.psi.mi.jami.model.Annotation annotation = AnnotationUtils.collectFirstAnnotationWithTopic(ao.getAnnotations(),
-                    psidev.psi.mi.jami.model.Annotation.VALIDATION_REGEXP_MI, psidev.psi.mi.jami.model.Annotation.VALIDATION_REGEXP);
-
-            if (annotation == null) return true;
-            return ref.getId().matches(annotation.getValue());
-        }
+        String extUrl = annotation.getValue();
+        return extUrl.replaceAll("\\$\\{ac\\}", ref.getId());
     }
 
-    public String externalLink(Object obj) {
-        if (obj == null) return null;
-        else if (obj instanceof Xref){
-            Xref xref = (Xref)obj;
-            if (xref.getPrimaryId() == null) return null;
-            if (xref.getCvDatabase() == null) return null;
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public boolean isJamiXrefValid(psidev.psi.mi.jami.model.Xref ref) {
+        if (ref == null) return false;
+        if (ref.getId() == null) return false;
+        if (ref.getDatabase() == null) return true;
 
-            AnnotatedObject ao = xref.getCvDatabase();
+        IntactCvTerm ao = (IntactCvTerm)ref.getDatabase();
 
-            if (!IntactCore.isInitialized(ao.getAnnotations())) {
-                ao = IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(ao.getClass())
-                        .getByAc(getAnnotatedObject().getAc());
-            }
-
-            if (ao == null) { // this can happen if the object has been removed in the same request just before
-                return null;
-            }
-
-            final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(ao, CvTopic.SEARCH_URL_MI_REF);
-            if (annotation == null) return null;
-
-
-            String extUrl = annotation.getAnnotationText();
-            return extUrl.replaceAll("\\$\\{ac\\}", xref.getPrimaryId());
-        }
-        else{
-            psidev.psi.mi.jami.model.Xref ref = (psidev.psi.mi.jami.model.Xref)obj;
-            if (ref.getId() == null) return null;
-            if (ref.getDatabase() == null) return null;
-
-            IntactCvTerm ao = (IntactCvTerm)ref.getDatabase();
-
-            if (!ao.areAnnotationsInitialized()) {
-                ao = getJamiEntityManager().find(IntactCvTerm.class, ao.getAc());
-            }
-
-            if (ao == null) { // this can happen if the object has been removed in the same request just before
-                return null;
-            }
-
-            final psidev.psi.mi.jami.model.Annotation annotation = AnnotationUtils.collectFirstAnnotationWithTopic(ao.getAnnotations(),
-                    psidev.psi.mi.jami.model.Annotation.SEARCH_URL_MI, psidev.psi.mi.jami.model.Annotation.SEARCH_URL);
-            if (annotation == null) return null;
-
-            String extUrl = annotation.getValue();
-            return extUrl.replaceAll("\\$\\{ac\\}", ref.getId());
+        if (ao == null) { // this can happen if the object has been removed in the same request just before
+            return true;
         }
 
+        IntactCvTerm reloadedDb = getJamiEntityManager().merge(ao);
+
+        final psidev.psi.mi.jami.model.Annotation annotation = AnnotationUtils.collectFirstAnnotationWithTopic(reloadedDb.getAnnotations(),
+                psidev.psi.mi.jami.model.Annotation.VALIDATION_REGEXP_MI, psidev.psi.mi.jami.model.Annotation.VALIDATION_REGEXP);
+
+        if (annotation == null) return true;
+        return ref.getId().matches(annotation.getValue());
+    }
+
+    public boolean isXrefValid(Xref xref) {
+        if (xref == null) return false;
+        if (xref.getPrimaryId() == null) return false;
+        if (xref.getCvDatabase() == null) return true;
+
+        AnnotatedObject ao = xref.getCvDatabase();
+
+        if (!IntactCore.isInitialized(ao.getAnnotations())) {
+            ao = IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(ao.getClass())
+                    .getByAc(getAnnotatedObject().getAc());
+        }
+
+        if (ao == null) { // this can happen if the object has been removed in the same request just before
+            return true;
+        }
+
+        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( ao, CvTopic.XREF_VALIDATION_REGEXP_MI_REF);
+
+        if (annotation == null) return true;
+        return xref.getPrimaryId().matches(annotation.getAnnotationText());
+    }
+
+    public String externalLink(Xref xref) {
+        if (xref == null) return null;
+        if (xref.getPrimaryId() == null) return null;
+        if (xref.getCvDatabase() == null) return null;
+
+        AnnotatedObject ao = xref.getCvDatabase();
+
+        if (!IntactCore.isInitialized(ao.getAnnotations())) {
+            ao = IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(ao.getClass())
+                    .getByAc(getAnnotatedObject().getAc());
+        }
+
+        if (ao == null) { // this can happen if the object has been removed in the same request just before
+            return null;
+        }
+
+        final Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(ao, CvTopic.SEARCH_URL_MI_REF);
+        if (annotation == null) return null;
+
+
+        String extUrl = annotation.getAnnotationText();
+        return extUrl.replaceAll("\\$\\{ac\\}", xref.getPrimaryId());
     }
 
     protected String navigateToObject(Object annotatedObject) {
