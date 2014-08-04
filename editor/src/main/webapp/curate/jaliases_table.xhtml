@@ -20,7 +20,8 @@
                 <f:facet name="header">
                     <h:outputText value="Type"/>
                 </f:facet>
-                <h:selectOneMenu id="aliasTypeSel" value="#{alias.type}" required="true" requiredMessage="Alias type is required" disabled="#{annotatedObjectController.isAliasDisabled()}">
+                <h:selectOneMenu id="aliasTypeSel" value="#{alias.type}" required="true"
+                                 requiredMessage="Alias type is required" disabled="#{annotatedObjectController.isAliasDisabled()}">
                     <f:selectItems value="#{aliasTypeSelectItems}"/>
                 </h:selectOneMenu>
             </p:column>
@@ -28,7 +29,8 @@
                 <f:facet name="header">
                     <h:outputText value="Name"/>
                 </f:facet>
-                <p:inputText id="aliasNameTxt"  value="#{alias.name}" size="50" required="true" requiredMessage="Alias names are required" converter="trimmingConverter">
+                <p:inputText id="aliasNameTxt"  value="#{alias.name}" size="50" required="true"
+                             requiredMessage="Alias names are required" converter="trimmingConverter">
                     <ed:curation/>
                 </p:inputText>
             </p:column>
@@ -37,7 +39,7 @@
                      <h:outputText value="Actions"/>
                 </f:facet>
                 <p:commandLink id="removeAliasBtn" styleClass="ui-icon ui-icon-closethick" process="removeAliasBtn"
-                               actionListener="#{annotatedObjectController.jamiObject.aliases.remove(alias)}"
+                               actionListener="#{annotatedObjectController.removeAlias(alias)}"
                                oncomplete="markAsUnsaved()"
                                update="aliasTable,#{update}"/>
             </p:column>

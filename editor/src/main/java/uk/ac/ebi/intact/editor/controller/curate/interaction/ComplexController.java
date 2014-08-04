@@ -584,7 +584,6 @@ public class ComplexController extends AnnotatedObjectController {
     @Override
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getJamiCautionMessage(IntactPrimaryObject ao) {
-        IntactComplex complex = (IntactComplex)ao;
         Collection<Annotation> annots = getIntactDao().getComplexDao().getAnnotationsForInteractor(ao.getAc());
         psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(annots, psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
                 psidev.psi.mi.jami.model.Annotation.CAUTION);
@@ -603,7 +602,11 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Override
     public List getAliases() {
-        return new ArrayList(this.complex.getAliases());
+        List<Alias> aliases = new ArrayList(this.complex.getAliases());
+        AliasUtils.removeAllAliasesWithType(aliases, Alias.COMPLEX_RECOMMENDED_NAME_MI, Alias.COMPLEX_RECOMMENDED_NAME);
+        AliasUtils.removeAllAliasesWithType(aliases, Alias.COMPLEX_SYSTEMATIC_NAME_MI, Alias.COMPLEX_SYSTEMATIC_NAME);
+
+        return aliases;
     }
 
     public boolean isNewPublication() {
@@ -807,16 +810,29 @@ public class ComplexController extends AnnotatedObjectController {
 
     public void onRecommendedNameChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
-
-        this.complex.setRecommendedName((String) evt.getNewValue());
-        this.recommendedName = (String) evt.getNewValue();
+        String newValue = (String) evt.getNewValue();
+        if (newValue == null || newValue.length() == 0){
+           this.complex.setRecommendedName(null);
+           this.recommendedName = null;
+        }
+        else{
+            this.complex.setRecommendedName(newValue);
+            this.recommendedName = newValue;
+        }
     }
 
     public void onSystematicNameChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
-        this.complex.setSystematicName((String) evt.getNewValue());
-        this.systematicName = (String) evt.getNewValue();
+        String newValue = (String) evt.getNewValue();
+        if (newValue == null || newValue.length() == 0){
+            this.complex.setSystematicName(null);
+            this.systematicName = null;
+        }
+        else{
+            this.complex.setSystematicName(newValue);
+            this.systematicName = newValue;
+        }
     }
 
     public void onDescriptionChanged(ValueChangeEvent evt) {
@@ -1053,6 +1069,14 @@ public class ComplexController extends AnnotatedObjectController {
             // reload complex without flushing changes
             return getIntactDao().getComplexDao().countConfidencesForComplex(this.ac);
         }
+    }
+
+    /**
+     * No transcational as it should always be initialised when loaded recommended name and systematic name when loading the page
+     * @return
+     */
+    public int getAliasesSize() {
+        return this.complex.getAliases().size();
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
