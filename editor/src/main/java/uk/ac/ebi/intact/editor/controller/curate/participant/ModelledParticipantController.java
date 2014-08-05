@@ -618,4 +618,9 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         refreshFeatures();
     }
 
+    @Override
+    protected boolean areXrefsInitialised() {
+        return this.participant.areXrefsInitialized();
+    }
+
 }

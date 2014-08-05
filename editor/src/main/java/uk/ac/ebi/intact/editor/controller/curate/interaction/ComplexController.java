@@ -126,6 +126,11 @@ public class ComplexController extends AnnotatedObjectController {
         return this.name;
     }
 
+    @Override
+    protected boolean areXrefsInitialised() {
+        return this.complex.areXrefsInitialized();
+    }
+
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String extractName(IntactComplex complex){
         String name = complex.getShortName();

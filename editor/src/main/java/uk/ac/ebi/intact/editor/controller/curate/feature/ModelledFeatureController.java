@@ -623,4 +623,9 @@ public class ModelledFeatureController extends AnnotatedObjectController {
                 Annotation.CAUTION);
         this.cautionMessage = caution != null ? caution.getValue() : null;
     }
+
+    @Override
+    protected boolean areXrefsInitialised() {
+        return this.feature.areXrefsInitialized();
+    }
 }

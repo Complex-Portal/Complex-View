@@ -40,12 +40,14 @@ import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.lifecycle.LifeCycleManager;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
+import uk.ac.ebi.intact.jami.model.extension.AbstractIntactXref;
 import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
 import uk.ac.ebi.intact.jami.model.extension.IntactCvTerm;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEvent;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEventType;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleStatus;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
+import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
@@ -367,6 +369,13 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             doPostSave();
         }
         else{
+            // adjust any xref, just if the curator introduced a value in the primaryId of the xref
+            // and clicked on save without focusing on another field first (which would trigger
+            // a change event and field the values with ajax)
+
+            if (areXrefsInitialised()) {
+                jamiXrefChanged(null);
+            }
 
             String currentAc = getJamiObject() != null ? getJamiObject().getAc() : null;
             boolean currentAnnotatedObjectDeleted = false;
@@ -418,6 +427,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             }
             doPostSave();
         }
+    }
+
+    protected boolean areXrefsInitialised(){
+        return false;
     }
 
     private boolean processDeleteEvents(String currentAc){
@@ -792,6 +805,50 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                         }
                         CvXrefQualifier qualifier = calculateQualifier(goCategory);
                         xref.setCvXrefQualifier(qualifier);
+                    }
+                } catch (GoServerProxy.GoIdNotFoundException notFoundExc) {
+                    continue;
+                } catch (Throwable e) {
+                    handleException(e);
+                    return;
+                }
+            }
+        }
+    }
+
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    public void jamiXrefChanged(AjaxBehaviorEvent evt) {
+        changed(evt);
+
+        GoServerProxy goServerProxy = new GoServerProxy();
+
+        CvTerm goDb = null;
+
+        for (Object obj : getXrefs()) {
+            AbstractIntactXref xref = (AbstractIntactXref)obj;
+            if (xref.getId() != null &&
+                    (xref.getId().startsWith("go:") ||
+                            xref.getId().startsWith("GO:"))) {
+
+                xref.setId(xref.getId().toUpperCase());
+
+                try {
+                    GoTerm goTerm = goServerProxy.query(xref.getId());
+
+                    if (goTerm != null) {
+                        if (goDb == null)
+                            goDb = getIntactDao().getCvTermDao().getByMIIdentifier(CvDatabase.GO_MI_REF, IntactUtils.DATABASE_OBJCLASS);
+
+                        xref.setDatabase(goDb);
+                        xref.setSecondaryId(goTerm.getName());
+
+                        GoTerm goCategory = goTerm.getCategory();
+                        // we have a root term
+                        if (goCategory == null) {
+                            goCategory = goTerm;
+                        }
+                        CvTerm qualifier = calculateCvQualifier(goCategory);
+                        xref.setQualifier(qualifier);
                     }
                 } catch (GoServerProxy.GoIdNotFoundException notFoundExc) {
                     continue;
