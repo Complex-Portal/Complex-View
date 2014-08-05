@@ -11,10 +11,7 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.CvObjectIntactCloner;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
-import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.CvDagObject;
-import uk.ac.ebi.intact.model.CvObject;
-import uk.ac.ebi.intact.model.CvTopic;
+import uk.ac.ebi.intact.model.*;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
@@ -127,6 +124,109 @@ public class CvObjectController extends AnnotatedObjectController {
             Class cvClass = Thread.currentThread().getContextClassLoader().loadClass(cvClassName);
 
             obj = (CvDagObject) cvClass.newInstance();
+
+            if (cvClass.equals(CvInteraction.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvInteraction.class).getByIdentifier("MI:0001");
+                if (parent != null){
+                     obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvInteractionType.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvInteractionType.class).getByIdentifier("MI:0190");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvIdentification.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvIdentification.class).getByIdentifier("MI:0002");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvFeatureIdentification.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvFeatureIdentification.class).getByIdentifier("MI:0003");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvFeatureType.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvFeatureType.class).getByIdentifier("MI:0116");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvInteractorType.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvInteractorType.class).getByIdentifier("MI:0313");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvExperimentalPreparation.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvExperimentalPreparation.class).getByIdentifier("MI:0346");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvFuzzyType.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvFuzzyType.class).getByIdentifier("MI:0333");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvXrefQualifier.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvXrefQualifier.class).getByIdentifier("MI:0353");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvDatabase.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvDatabase.class).getByIdentifier("MI:0444");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvExperimentalRole.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvExperimentalRole.class).getByIdentifier("MI:0495");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvBiologicalRole.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvBiologicalRole.class).getByIdentifier("MI:0500");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvAliasType.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvAliasType.class).getByIdentifier("MI:0300");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvTopic.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvTopic.class).getByIdentifier("MI:0590");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvParameterType.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvParameterType.class).getByIdentifier("MI:0640");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvParameterUnit.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvParameterUnit.class).getByIdentifier("MI:0647");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
+            else if (cvClass.equals(CvConfidenceType.class)){
+                CvDagObject parent = getDaoFactory().getCvObjectDao(CvConfidenceType.class).getByIdentifier("MI:1064");
+                if (parent != null){
+                    obj.getParents().add(parent);
+                }
+            }
         } catch (Exception e) {
             addErrorMessage("Problem creating cvObject", "Class "+cvClassName);
             e.printStackTrace();
