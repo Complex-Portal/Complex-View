@@ -15,11 +15,14 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
+import psidev.psi.mi.jami.model.ModelledFeature;
 import psidev.psi.mi.jami.model.Range;
 import psidev.psi.mi.jami.utils.RangeUtils;
 import uk.ac.ebi.intact.jami.model.extension.IntactModelledFeature;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Feature wrapper for modelled features
@@ -32,11 +35,13 @@ public class ModelledFeatureWrapper {
     private IntactModelledFeature feature;
     private boolean selected;
     private String ranges=null;
+    private List<ModelledFeature> linkedFeatures;
 
     public ModelledFeatureWrapper(IntactModelledFeature feature) {
         this.feature = feature;
 
         initialiseRangesAsString();
+        this.linkedFeatures = new ArrayList<ModelledFeature>(this.feature.getLinkedFeatures());
     }
 
     private void initialiseRangesAsString(){
@@ -60,10 +65,6 @@ public class ModelledFeatureWrapper {
         return feature;
     }
 
-    public void setFeature(IntactModelledFeature feature) {
-        this.feature = feature;
-    }
-
     public boolean isSelected() {
         return selected;
     }
@@ -74,5 +75,9 @@ public class ModelledFeatureWrapper {
 
     public String getRanges() {
         return ranges;
+    }
+
+    public List<ModelledFeature> getLinkedFeatures() {
+        return linkedFeatures;
     }
 }

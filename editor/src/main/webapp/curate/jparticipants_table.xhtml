@@ -95,8 +95,8 @@
                             <h:outputText value="#{featureWrapper.feature.shortName} #{featureWrapper.ranges}"/>
 
 
-                            <h:panelGroup rendered="#{!empty feature.linkedFeatures}">
-                                <ui:repeat value="#{feature.linkedFeatures}" var="linked" varStatus="status">
+                            <h:panelGroup rendered="#{!empty featureWrapper.linkedFeatures}">
+                                <ui:repeat value="#{featureWrapper.linkedFeatures}" var="linked" varStatus="status">
                                     <p:commandLink type="button" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(linked.ac)}.show()"
                                                    styleClass="ui-icon ui-icon-link" style="display:inline-block"
                                                    title="Linked to #{linked.shortName}">

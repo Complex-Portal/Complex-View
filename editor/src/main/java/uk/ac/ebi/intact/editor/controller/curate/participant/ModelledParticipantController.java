@@ -27,15 +27,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.model.impl.DefaultStoichiometry;
-import psidev.psi.mi.jami.utils.AliasUtils;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedJamiChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantJamiCloner;
-import uk.ac.ebi.intact.editor.controller.curate.interaction.ComplexController;
-import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportJamiCandidate;
-import uk.ac.ebi.intact.editor.controller.curate.interaction.ModelledParticipantImportController;
-import uk.ac.ebi.intact.editor.controller.curate.interaction.ModelledParticipantWrapper;
+import uk.ac.ebi.intact.editor.controller.curate.interaction.*;
 import uk.ac.ebi.intact.editor.util.SelectableCollectionDataModel;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.context.UserContext;
@@ -52,10 +48,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.DataModel;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Modelled Participant controller.
@@ -75,8 +68,8 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     private String interactor;
     private List<ImportJamiCandidate> interactorCandidates;
 
-    private DataModel<IntactModelledFeature> featuresDataModel;
-    private IntactModelledFeature[] selectedFeatures;
+    private DataModel<ModelledFeatureWrapper> featuresDataModel;
+    private ModelledFeatureWrapper[] selectedFeatures;
 
     /**
      * The AC of the participant to be loaded.
@@ -117,7 +110,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if ( ac != null ) {
                 if ( participant == null || !ac.equals( participant.getAc() ) ) {
-                    participant = loadJamiByAc(IntactModelledParticipant.class, ac);
+                    setParticipant(loadJamiByAc(IntactModelledParticipant.class, ac));
                 }
             } else {
                 if ( participant != null ) ac = participant.getAc();
@@ -127,8 +120,6 @@ public class ModelledParticipantController extends AnnotatedObjectController {
                 addErrorMessage("No participant with this AC", ac);
                 return;
             }
-
-            featuresDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<ModelledFeature>(participant.getFeatures()), participant.getFeatures());
 
             if (participant.getInteraction() != null){
                 if (interactionController.getComplex() == null || !interactionController.getComplex().getAc().equalsIgnoreCase(((IntactComplex) participant.getInteraction()).getAc())){
@@ -217,6 +208,14 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     }
 
     @Override
+    public String clone() {
+        String value = clone(getParticipant());
+        refreshFeatures();
+
+        return value;
+    }
+
+    @Override
     protected IntactModelledParticipant cloneAnnotatedObject(IntactPrimaryObject ao) {
         // to be overrided
         return (IntactModelledParticipant) ParticipantJamiCloner.cloneParticipant((IntactModelledParticipant) ao);
@@ -285,14 +284,15 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         // don't forget to unlink features first
         if (intactFeature.getAc() == null) {
             participant.removeFeature(feature);
+            refreshFeatures();
         } else {
             getChangesController().markJamiToDelete(intactFeature, participant, getIntactDao().getSynchronizerContext().getModelledFeatureSynchronizer());
         }
     }
 
     public void deleteSelectedFeatures(ActionEvent evt) {
-        for (IntactModelledFeature feature : selectedFeatures) {
-            markFeatureToDelete(feature);
+        for (ModelledFeatureWrapper feature : selectedFeatures) {
+            markFeatureToDelete(feature.getFeature());
         }
 
         addInfoMessage("Features to be deleted", selectedFeatures.length+" have been marked to be deleted");
@@ -361,31 +361,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         if (participant != null){
             this.ac = participant.getAc();
             refreshInfoMessages();
-        }
-    }
-
-    public String getAuthorGivenName() {
-        psidev.psi.mi.jami.model.Alias author = AliasUtils.collectFirstAliasWithType(this.participant.getAliases(), Alias.AUTHOR_ASSIGNED_NAME_MI, Alias.AUTHOR_ASSIGNED_NAME);
-        return author != null ? author.getName() : null;
-    }
-
-    public void setAuthorGivenName( String name ) {
-        if (name == null){
-            psidev.psi.mi.jami.utils.AliasUtils.removeAllAliasesWithType(this.participant.getAliases(), psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI,
-                    psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME);
-        }
-        else{
-            psidev.psi.mi.jami.model.Alias alias = psidev.psi.mi.jami.utils.AliasUtils.collectFirstAliasWithType(this.participant.getAliases(), psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI,
-                    psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME);
-            if (alias != null && alias.getName().equals(name)){
-                ((AbstractIntactAlias)alias).setName(name);
-                getChangesController().markAsJamiUnsaved(participant, getDbSynchronizer());
-            }
-            else {
-                this.participant.getAliases().add(new ModelledFeatureAlias(IntactUtils.createMIAliasType(psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME,
-                        psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI), name));
-                getChangesController().markAsJamiUnsaved(participant, getDbSynchronizer());
-            }
+            refreshFeatures();
         }
     }
 
@@ -431,15 +407,15 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         this.interactorCandidates = interactorCandidates;
     }
 
-    public IntactModelledFeature[] getSelectedFeatures() {
+    public ModelledFeatureWrapper[] getSelectedFeatures() {
         return selectedFeatures;
     }
 
-    public void setSelectedFeatures(IntactModelledFeature[] selectedFeatures) {
+    public void setSelectedFeatures(ModelledFeatureWrapper[] selectedFeatures) {
         this.selectedFeatures = selectedFeatures;
     }
 
-    public DataModel<IntactModelledFeature> getFeaturesDataModel() {
+    public DataModel<ModelledFeatureWrapper> getFeaturesDataModel() {
         return featuresDataModel;
     }
 
@@ -467,6 +443,48 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     }
 
     @Override
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List getXrefs() {
+        if (!this.participant.areXrefsInitialized()){
+            IntactModelledParticipant reloaded = getJamiEntityManager().merge(this.participant);
+            setParticipant(reloaded);
+        }
+
+        List<Xref> xrefs = new ArrayList<Xref>(this.participant.getXrefs());
+
+        getJamiEntityManager().detach(this.participant);
+        return xrefs;
+    }
+
+    @Override
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List getAliases() {
+        if (!this.participant.areAliasesInitialized()){
+            IntactModelledParticipant reloaded = getJamiEntityManager().merge(this.participant);
+            setParticipant(reloaded);
+        }
+
+        List<Alias> aliases = new ArrayList<Alias>(this.participant.getAliases());
+
+        getJamiEntityManager().detach(this.participant);
+        return aliases;
+    }
+
+    @Override
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List getAnnotations() {
+        if (!this.participant.areAnnotationsInitialized()){
+            IntactModelledParticipant reloaded = getJamiEntityManager().merge(this.participant);
+            setParticipant(reloaded);
+        }
+
+        List<Annotation> xrefs = new ArrayList<Annotation>(this.participant.getAnnotations());
+
+        getJamiEntityManager().detach(this.participant);
+        return xrefs;
+    }
+
+    @Override
     public String getCautionMessage() {
         return this.cautionMessage;
     }
@@ -483,16 +501,6 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Override
     public String getInternalRemarkMessage() {
         return this.internalRemark;
-    }
-
-    @Override
-    public List getAnnotations() {
-        return new ArrayList(this.participant.getAnnotations());
-    }
-
-    @Override
-    public List getAliases() {
-        return new ArrayList(this.participant.getAliases());
     }
 
     @Override
@@ -575,4 +583,39 @@ public class ModelledParticipantController extends AnnotatedObjectController {
             return AnnotationUtils.collectFirstAnnotationWithTopic(participant.getInteractor().getAnnotations(), null, CvTopic.NON_UNIPROT) != null;
         }
     }
+
+    public void refreshFeatures() {
+        final Collection<ModelledFeature> components = participant.getFeatures();
+
+        List<ModelledFeatureWrapper> wrappers = new LinkedList<ModelledFeatureWrapper>();
+
+        for ( ModelledFeature component : components ) {
+            wrappers.add( new ModelledFeatureWrapper( (IntactModelledFeature)component ) );
+        }
+
+        featuresDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<ModelledFeatureWrapper>(wrappers), wrappers);
+    }
+
+    @Override
+    public void forceRefreshCurrentViewObject(){
+        super.forceRefreshCurrentViewObject();
+
+        if (participant != null) {
+            refreshFeatures();
+        }
+    }
+
+    @Override
+    public boolean doSaveDetails() {
+        boolean saved = true;
+
+        refreshFeatures();
+        return saved;
+    }
+
+    @Override
+    protected void postRevert() {
+        refreshFeatures();
+    }
+
 }

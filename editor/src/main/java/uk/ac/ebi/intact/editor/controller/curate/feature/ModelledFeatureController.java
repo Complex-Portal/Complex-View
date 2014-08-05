@@ -612,4 +612,9 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     public boolean isAnnotationNotEditable(Annotation annot){
         return false;
     }
+
+    @Override
+    public void doPostSave(){
+        modelledParticipantController.refreshFeatures();
+    }
 }

@@ -160,11 +160,8 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Override
     protected IntactComplex cloneAnnotatedObject(IntactPrimaryObject ao) {
-        CvTermDao dao = getIntactDao().getCvTermDao();
-        CvTerm type = dao.getByMIIdentifier(Complex.COMPLEX_MI, IntactUtils.INTERACTOR_TYPE_OBJCLASS);
         // to be overrided
         IntactComplex complex = (IntactComplex)ComplexJamiCloner.cloneComplex((IntactComplex) ao);
-        complex.setInteractorType(type);
         lifecycleManager.getStartStatus().create(complex, "Created in Editor");
 
         if (assignToMe) {
@@ -212,6 +209,7 @@ public class ComplexController extends AnnotatedObjectController {
         generalLoadChecks();
     }
 
+    @Override
     public void forceRefreshCurrentViewObject(){
         super.forceRefreshCurrentViewObject();
 
