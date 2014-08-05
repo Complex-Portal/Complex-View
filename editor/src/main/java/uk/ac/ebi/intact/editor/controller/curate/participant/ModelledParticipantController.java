@@ -97,7 +97,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     @Override
     public void setJamiObject(IntactPrimaryObject annotatedObject) {
-        this.participant = (IntactModelledParticipant)annotatedObject;
+        setParticipant((IntactModelledParticipant)annotatedObject);
     }
 
     @Override

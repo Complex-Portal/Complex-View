@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.editor.controller.curate.feature;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.hibernate.Hibernate;
 import org.primefaces.event.TabChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -43,7 +42,6 @@ import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
 import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
 import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 
 import javax.faces.application.FacesMessage;
@@ -91,32 +89,10 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     private List<SelectItem> participantSelectItems;
     private boolean isComplexFeature=false;
 
+    private String cautionMessage = null;
+    private String internalRemark = null;
+
     public ModelledFeatureController() {
-    }
-
-    private void loadChildren(IntactCvTerm parent, List<SelectItem> selectItems){
-        for (OntologyTerm child : parent.getChildren()){
-            IntactCvTerm cv = (IntactCvTerm)child;
-            SelectItem item = createSelectItem(cv);
-            if (item != null){
-                selectItems.add(item);
-            }
-            if (!cv.getChildren().isEmpty()){
-                loadChildren(cv, selectItems);
-            }
-        }
-    }
-
-    private SelectItem createSelectItem( IntactCvTerm cv ) {
-        if (AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
-            boolean obsolete = AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), CvTopic.OBSOLETE_MI_REF, CvTopic.OBSOLETE).isEmpty();
-            return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")), cv.getFullName());
-        }
-        return null;
-    }
-
-    public List<SelectItem> getParticipantSelectItems() {
-        return participantSelectItems;
     }
 
     @Override
@@ -142,9 +118,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     @Override
     public void setJamiObject(IntactPrimaryObject annotatedObject) {
-        this.feature = (IntactModelledFeature)annotatedObject;
-
-        refreshParticipantSelectItems();
+        setFeature((IntactModelledFeature)annotatedObject);
     }
 
     private void refreshParticipantSelectItems() {
@@ -186,12 +160,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if ( ac != null ) {
                 if ( feature == null || !ac.equals( feature.getAc() ) ) {
-                    feature = loadJamiByAc(IntactModelledFeature.class, ac);
-                    Hibernate.initialize(feature.getAliases());
-                    Hibernate.initialize(feature.getDbXrefs());
-                    Hibernate.initialize(feature.getAnnotations());
-                    Hibernate.initialize(feature.getDbLinkedFeatures());
-                    Hibernate.initialize(feature.getRanges());
+                    setFeature(loadJamiByAc(IntactModelledFeature.class, ac));
                 }
             } else {
                 if ( feature != null ) ac = feature.getAc();
@@ -215,8 +184,6 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
             refreshTabsAndFocusXref();
         }
-
-        refreshRangeWrappers();
 
         if (containsInvalidRanges) {
             addWarningMessage("This feature contains invalid ranges", "Ranges must be fixed before being able to save");
@@ -378,6 +345,8 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
         if (feature != null){
             this.ac = feature.getAc();
+            refreshRangeWrappers();
+            refreshInfoMessages();
         }
         refreshParticipantSelectItems();
     }
@@ -522,9 +491,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     @Override
     public String getCautionMessage() {
-        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.feature.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
-                psidev.psi.mi.jami.model.Annotation.CAUTION);
-        return caution != null ? caution.getValue() : null;
+        return this.cautionMessage;
     }
 
     @Override
@@ -538,19 +505,49 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     @Override
     public String getInternalRemarkMessage() {
-        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.feature.getAnnotations(), null,
-                "remark-internal");
-        return caution != null ? caution.getValue() : null;
+        return this.internalRemark;
     }
 
     @Override
-    public List getAnnotations() {
-        return new ArrayList(this.feature.getAnnotations());
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List getXrefs() {
+        if (!this.feature.areXrefsInitialized()){
+            IntactModelledFeature reloaded = getJamiEntityManager().merge(this.feature);
+            setFeature(reloaded);
+        }
+
+        List<Xref> xrefs = new ArrayList<Xref>(this.feature.getDbXrefs());
+
+        getJamiEntityManager().detach(this.feature);
+        return xrefs;
     }
 
     @Override
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public List getAliases() {
-        return new ArrayList(this.feature.getAliases());
+        if (!this.feature.areAliasesInitialized()){
+            IntactModelledFeature reloaded = getJamiEntityManager().merge(this.feature);
+            setFeature(reloaded);
+        }
+
+        List<Alias> aliases = new ArrayList<Alias>(this.feature.getAliases());
+
+        getJamiEntityManager().detach(this.feature);
+        return aliases;
+    }
+
+    @Override
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List getAnnotations() {
+        if (!this.feature.areAnnotationsInitialized()){
+            IntactModelledFeature reloaded = getJamiEntityManager().merge(this.feature);
+            setFeature(reloaded);
+        }
+
+        List<Annotation> xrefs = new ArrayList<Annotation>(this.feature.getAnnotations());
+
+        getJamiEntityManager().detach(this.feature);
+        return xrefs;
     }
 
     @Override
@@ -616,5 +613,14 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Override
     public void doPostSave(){
         modelledParticipantController.refreshFeatures();
+    }
+
+    private void refreshInfoMessages() {
+        Annotation remark = AnnotationUtils.collectFirstAnnotationWithTopic(this.feature.getAnnotations(), null,
+                "remark-internal");
+        this.internalRemark = remark != null ? remark.getValue() : null;
+        Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.feature.getAnnotations(), Annotation.CAUTION_MI,
+                Annotation.CAUTION);
+        this.cautionMessage = caution != null ? caution.getValue() : null;
     }
 }
