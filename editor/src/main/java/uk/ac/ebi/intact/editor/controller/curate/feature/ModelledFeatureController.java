@@ -528,9 +528,10 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     }
 
     @Override
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getJamiCautionMessage(IntactPrimaryObject ao) {
-        IntactModelledFeature feature = (IntactModelledFeature)ao;
-        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(feature.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
+        Collection<Annotation> annots = getIntactDao().getModelledFeatureDao().getAnnotationsForFeature(ao.getAc());
+        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(annots, psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
                 psidev.psi.mi.jami.model.Annotation.CAUTION);
         return caution != null ? caution.getValue() : null;
     }

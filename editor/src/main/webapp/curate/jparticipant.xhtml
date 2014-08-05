@@ -11,8 +11,7 @@
 
                 template="/curate/curate_template.xhtml">
 
-<ui:param name="title" value="Participant: #{modelledParticipantController.participantPrimaryId(modelledParticipantController.participant)} | Curate | Editor"/>
-
+<ui:param name="title" value="Participant: #{modelledParticipantController.participantPrimaryId} | Curate | Editor"/>
 
 <ui:param name="annotatedObjectController" value="#{modelledParticipantController}"/>
 
@@ -30,6 +29,8 @@
 
 <ui:define name="breadcrumbs">
     <p:breadCrumb>
+        <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{complexController.name}"
+                    action="#{curateController.edit(interaction)}" process="@this"/>
         <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{complexController.name}"
                     action="#{curateController.edit(interaction)}" process="@this"/>
         <p:menuitem value="#{participant.interactor.shortName}"/>
@@ -51,7 +52,7 @@
             <ui:param name="annotatedObjectController" value="#{modelledParticipantController}"/>
         </ui:include>
 
-        <h:panelGroup rendered="#{modelledParticipantController.isNoUniprotUpdate(participant.interactor)}">
+        <h:panelGroup rendered="#{modelledParticipantController.jamiNoUniprotUpdate}">
             <ia:panelMessage level="warn">
                 <b>No Uniprot Update: </b>The interactor for this participant won't be updated using Uniprot.
             </ia:panelMessage>
@@ -73,7 +74,7 @@
         </tr>
         <tr>
             <td class="firstCell">
-                <h:outputLabel value="Interactor (#{participant.interactor != null? participant.interactor.interactorType.shortName : ''}): " for="interactorTxt"/>
+                <h:outputLabel value="Interactor (#{participant.interactor.interactorType.shortName}): " for="interactorTxt"/>
             </td>
             <td colspan="2">
                 <p:inputText id="interactorTxt" value="#{modelledParticipantController.interactor}"
@@ -85,16 +86,6 @@
                                  action="#{curateController.editByAc(participant.interactor.ac)}" ajax="false"/>
 
                 <ui:include src="jdialog_import_interactor.xhtml"/>
-            </td>
-        </tr>
-        <tr>
-            <td class="firstCell">
-                <h:outputLabel value="Author given name: " for="authorGivenNameTxt"/>
-            </td>
-            <td colspan="2">
-                <p:inputText id="authorGivenNameTxt" value="#{modelledParticipantController.modelledParticipantWrapper.authorGivenName}" size="10" converter="trimmingConverter">
-                    <p:ajax event="change" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:participantTabs,:editorForm:messagesComponent" process="@this"/>
-                </p:inputText>
             </td>
         </tr>
         <tr>
@@ -145,54 +136,14 @@
             </ui:include>
         </p:outputPanel>
     </p:tab>
-    <p:tab id="xrefsTab" title="Xrefs (#{modelledParticipantController.participant.dbXrefs.size()})">
-        <p:outputPanel id="xrefsPanel" autoUpdate="true">
-            <ui:decorate template="jxrefs_table.xhtml">
 
-                <ui:param name="annotatedObjectController" value="#{modelledParticipantController}"/>
-                <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,#{updateOnChange}"/>
-                <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
-                <ui:param name="valueChangeAwareObject" value="#{modelledParticipantController}"/>
-                <ui:param name="databaseSelectItems" value="#{editorCvTermService.participantDatabaseSelectItems}"/>
-                <ui:param name="qualifierSelectItems" value="#{editorCvTermService.qualifierSelectItems}"/>
-
-                <ui:define name="syncValues">
-                    <ui:insert name="xrefSyncValues"/>
-                </ui:define>
-
-            </ui:decorate>
-        </p:outputPanel>
-
-    </p:tab>
-
-    <p:tab id="annotationsTab" title="Annotations (#{modelledParticipantController.participant.annotations.size()})">
-        <p:outputPanel id="annotationsPanel" autoUpdate="true">
-            <ui:decorate template="jannotations_table.xhtml">
-                <ui:param name="annotatedObjectController" value="#{modelledParticipantController}"/>
-                <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,#{updateOnChange}"/>
-                <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
-                <ui:param name="valueChangeAwareObject" value="#{modelledParticipantController}"/>
-                <ui:param name="annotatedObjectSelectItems" value="#{editorCvTermService.participantTopicSelectItems}"/>
-
-                <ui:define name="syncValues">
-                    <ui:insert name="annotationSyncValues"/>
-                </ui:define>
-
-            </ui:decorate>
-        </p:outputPanel>
-
-    </p:tab>
-    <p:tab id="aliasesTab" title="Aliases (#{modelledParticipantController.participant.aliases.size()})">
-        <p:outputPanel id="aliasesPanel" autoUpdate="true">
-            <ui:decorate template="jaliases_table.xhtml">
-                <ui:param name="annotatedObjectController" value="#{modelledParticipantController}"/>
-                <ui:param name="update" value=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent #{updateOnChange}"/>
-                <ui:param name="valueChangeRender" value="#{updateOnChange} :editorForm:changesPanel"/>
-                <ui:param name="aliasTypeSelectItems" value="#{editorCvTermService.aliasTypeSelectItems}"/>
-            </ui:decorate>
-
-        </p:outputPanel>
-    </p:tab>
+    <ui:decorate template="jpropertiesTabs.xhtml">
+        <ui:param name="annotatedObjectSelectItems" value="#{editorCvTermService.participantTopicSelectItems}"/>
+        <ui:param name="databaseSelectItems" value="#{editorCvTermService.participantDatabaseSelectItems}"/>
+        <ui:param name="qualifierSelectItems" value="#{editorCvTermService.qualifierSelectItems}"/>
+        <ui:param name="aliasTypeSelectItems" value="#{editorCvTermService.aliasTypeSelectItems}"/>
+        <ui:param name="updateOnChange" value=":editorForm:basic"/>
+    </ui:decorate>
 
 </p:tabView>
 

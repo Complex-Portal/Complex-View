@@ -19,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
-import org.hibernate.Hibernate;
 import org.primefaces.model.SelectableDataModelWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -47,6 +46,7 @@ import uk.ac.ebi.intact.jami.model.extension.*;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
+import uk.ac.ebi.intact.model.CvTopic;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -86,6 +86,9 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Autowired
     private ComplexController interactionController;
 
+    private String cautionMessage = null;
+    private String internalRemark = null;
+
     public ModelledParticipantController() {
     }
 
@@ -114,12 +117,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if ( ac != null ) {
                 if ( participant == null || !ac.equals( participant.getAc() ) ) {
-                    IntactDao intactDao = getIntactDao();
                     participant = loadJamiByAc(IntactModelledParticipant.class, ac);
-                    Hibernate.initialize(participant.getAliases());
-                    Hibernate.initialize(participant.getXrefs());
-                    Hibernate.initialize(participant.getAnnotations());
-                    Hibernate.initialize(participant.getFeatures());
                 }
             } else {
                 if ( participant != null ) ac = participant.getAc();
@@ -362,6 +360,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
         if (participant != null){
             this.ac = participant.getAc();
+            refreshInfoMessages();
         }
     }
 
@@ -390,18 +389,17 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         }
     }
 
-    public String participantPrimaryId(IntactModelledParticipant component) {
-        if (component == null) return null;
-        if (component.getInteractor() == null) return null;
+    public String participantPrimaryId() {
+        if (participant == null) return null;
 
-        final Xref xrefs = component.getInteractor().getPreferredIdentifier();
+        final Xref xrefs = participant.getInteractor().getPreferredIdentifier();
 
-        if (xrefs == null && component.getInteractor() instanceof IntactInteractor) {
-            String ac = ((IntactInteractor)component.getInteractor()).getAc();
-            return ac != null ? ac : component.getInteractor().getShortName();
+        if (xrefs == null && participant.getInteractor() instanceof IntactInteractor) {
+            String ac = ((IntactInteractor)participant.getInteractor()).getAc();
+            return ac != null ? ac : participant.getInteractor().getShortName();
         }
         else if (xrefs == null){
-            return component.getInteractor().getShortName();
+            return participant.getInteractor().getShortName();
         }
 
         return xrefs.getId();
@@ -470,9 +468,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     @Override
     public String getCautionMessage() {
-        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.participant.getAnnotations(), psidev.psi.mi.jami.model.Annotation.CAUTION_MI,
-                psidev.psi.mi.jami.model.Annotation.CAUTION);
-        return caution != null ? caution.getValue() : null;
+        return this.cautionMessage;
     }
 
     @Override
@@ -486,9 +482,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     @Override
     public String getInternalRemarkMessage() {
-        psidev.psi.mi.jami.model.Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.participant.getAnnotations(), null,
-                "remark-internal");
-        return caution != null ? caution.getValue() : null;
+        return this.internalRemark;
     }
 
     @Override
@@ -559,5 +553,26 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     public boolean isAnnotationNotEditable(Annotation annot){
         return false;
+    }
+
+    private void refreshInfoMessages() {
+        Annotation remark = AnnotationUtils.collectFirstAnnotationWithTopic(this.participant.getAnnotations(), null,
+                "remark-internal");
+        this.internalRemark = remark != null ? remark.getValue() : null;
+        Annotation caution = AnnotationUtils.collectFirstAnnotationWithTopic(this.participant.getAnnotations(), Annotation.CAUTION_MI,
+                Annotation.CAUTION);
+        this.cautionMessage = caution != null ? caution.getValue() : null;
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public boolean isJamiNoUniprotUpdate() {
+
+        if (participant.getInteractor() instanceof IntactInteractor && !((IntactInteractor)participant.getInteractor()).areAnnotationsInitialized()){
+            return AnnotationUtils.collectFirstAnnotationWithTopic(getIntactDao().getInteractorBaseDao().
+                    getAnnotationsForInteractor(((IntactInteractor)participant.getInteractor()).getAc()), null, CvTopic.NON_UNIPROT) != null;
+        }
+        else{
+            return AnnotationUtils.collectFirstAnnotationWithTopic(participant.getInteractor().getAnnotations(), null, CvTopic.NON_UNIPROT) != null;
+        }
     }
 }

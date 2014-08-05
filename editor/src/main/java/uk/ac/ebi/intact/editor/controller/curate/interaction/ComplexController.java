@@ -298,7 +298,6 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public int countParticipantsByInteractionAc( String ac ) {
-        String sql = "select size(c.participants) from IntactComplex c where c.ac = '"+ac+"'";
         return getIntactDao().getComplexDao().countParticipantsForComplex(ac);
     }
 
@@ -413,9 +412,6 @@ public class ComplexController extends AnnotatedObjectController {
 
             refreshName();
             refreshInfoMessages();
-            if (!complex.areParticipantsInitialized()) {
-                Hibernate.initialize(complex.getParticipants());
-            }
             refreshParticipants();
         }
     }
@@ -464,20 +460,6 @@ public class ComplexController extends AnnotatedObjectController {
         return participantWrappers;
     }
 
-    //////////////////////////////////
-    // Participant related methods
-
-    public boolean isFeaturesAvailable(){
-        boolean featuresAvailable = false;
-        Complex interaction = this.complex;
-        for(ModelledParticipant component : interaction.getParticipants()){
-            featuresAvailable = featuresAvailable || (component.getFeatures().size() > 0);
-            if(featuresAvailable){
-                continue;
-            }
-        }
-        return featuresAvailable;
-    }
 
     // Confidence
     ///////////////////////////////////////////////

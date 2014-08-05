@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import psidev.psi.mi.jami.model.*;
+import psidev.psi.mi.jami.model.CvTerm;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.lifecycle.LifecycleManager;
@@ -42,18 +42,11 @@ import uk.ac.ebi.intact.jami.lifecycle.LifeCycleManager;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
 import uk.ac.ebi.intact.jami.model.extension.IntactCvTerm;
-import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEvent;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEventType;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleStatus;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.Alias;
-import uk.ac.ebi.intact.model.Annotation;
-import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.Interactor;
-import uk.ac.ebi.intact.model.Publication;
-import uk.ac.ebi.intact.model.Xref;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 import uk.ac.ebi.intact.model.clone.IntactClonerException;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
@@ -1112,19 +1105,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         if (interactor == null) return false;
 
         return newAnnotatedObjectHelper(interactor).findAnnotationText(CvTopic.NON_UNIPROT) != null;
-    }
-
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public boolean isJamiNoUniprotUpdate(psidev.psi.mi.jami.model.Interactor interactor) {
-        if (interactor == null) return false;
-
-        if (interactor instanceof IntactInteractor && !((IntactInteractor)interactor).areAnnotationsInitialized()){
-            return AnnotationUtils.collectFirstAnnotationWithTopic(getIntactDao().getInteractorBaseDao().
-                    getAnnotationsForInteractor(((IntactInteractor)interactor).getAc()), null, CvTopic.NON_UNIPROT) != null;
-        }
-        else{
-            return AnnotationUtils.collectFirstAnnotationWithTopic(interactor.getAnnotations(), null, CvTopic.NON_UNIPROT) != null;
-        }
     }
 
     protected PersistenceController getPersistenceController() {
