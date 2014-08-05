@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ia="http://java.sun.com/jsf/composite/intact-components">
 
-    <p:dialog id="ipDialog" widgetVar="jimportParticipantDialog" header="Import participants"
+    <p:dialog id="jipDialog" widgetVar="jimportParticipantDialog" header="Import participants"
               position="center"
               resizable="true"
               width="500">
@@ -36,7 +36,7 @@
         </ia:panelDialogLayout>
     </p:dialog>
 
-    <p:dialog id="candidatesDialog" widgetVar="jcandidatesDialogWV" header="Import participants" dynamic="true"
+    <p:dialog id="jcandidatesDialog" widgetVar="jcandidatesDialogWV" header="Import participants" dynamic="true"
               position="center" resizable="true"
               width="800">
         <p:outputPanel id="candidatesContent">
@@ -121,8 +121,8 @@
                         <h:outputLabel value="Biological role: " for="bioRoleDialogTxt"/>
                         <ia:inputCvTerm id="bioRoleDialogTxt" cvIdentifier="MI:0500"
                                           modal="false"
-                                          value="#{modelledParticipantImportController.cvBiologicalRole}"
-                                          selectItems="#{modelledParticipantController.biologicalRoleSelectItems}" />
+                                          value="#{modelledParticipantImportController.biologicalRole}"
+                                          selectItems="#{editorCvTermService.biologicalRoleSelectItems}" />
 
                         <h:outputLabel value="Min Stoichiometry: " for="minStoichiometryDialogTxt"/>
                         <p:spinner id="minStoichiometryDialogTxt" value="#{modelledParticipantImportController.minStoichiometry}" min="0" stepFactor="1" size="3" maxlength="2"/>
