@@ -11,11 +11,11 @@
               resizable="true"
               width="500">
 
-        <ia:panelDialogLayout id="ipDialogPanel">
+        <ia:panelDialogLayout id="jipDialogPanel">
             <f:facet name="buttonBar">
-                <p:commandButton id="participantSearchBtn" value="Search" actionListener="#{modelledParticipantImportController.importParticipants}"
-                                 process="searchParticipantTxt"
-                                 update=":editorForm:messagesComponent :editorForm:interactionTabs:candidatesContent"
+                <p:commandButton id="jparticipantSearchBtn" value="Search" actionListener="#{modelledParticipantImportController.importParticipants}"
+                                 process="jsearchParticipantTxt"
+                                 update=":editorForm:messagesComponent :editorForm:complexTabs:jcandidatesContent"
                                  onstart="searching_load.show()"
                                  onerror="alert('Error opening candidates dialog')"
                                  oncomplete="searching_load.hide(); jimportParticipantDialog.hide()"
@@ -28,7 +28,7 @@
                     (comma or line separated)
                 </p>
 
-                <p:inputTextarea id="searchParticipantTxt" value="#{modelledParticipantImportController.participantsToImport}"
+                <p:inputTextarea id="jsearchParticipantTxt" value="#{modelledParticipantImportController.participantsToImport}"
                                  converter="arrayConverter"
                                  cols="30" rows="5" autoResize="false"/>
             </h:panelGrid>
@@ -39,22 +39,22 @@
     <p:dialog id="jcandidatesDialog" widgetVar="jcandidatesDialogWV" header="Import participants" dynamic="true"
               position="center" resizable="true"
               width="800">
-        <p:outputPanel id="candidatesContent">
-            <ia:panelDialogLayout id="candidatesDialogContent">
+        <p:outputPanel id="jcandidatesContent">
+            <ia:panelDialogLayout id="jcandidatesDialogContent">
                 <f:facet name="buttonBar">
-                    <h:panelGroup id="candidatesButtonGroup">
-                        <p:commandButton id="importSelected" value="Import selected" rendered="#{not empty modelledParticipantImportController.importCandidates}"
+                    <h:panelGroup id="jcandidatesButtonGroup">
+                        <p:commandButton id="jimportSelected" value="Import selected" rendered="#{not empty modelledParticipantImportController.importCandidates}"
                                          actionListener="#{modelledParticipantImportController.importSelected}"
                                          onstart="jcandidatesDialogWV.hide();adding_load.show()" onerror="adding_load.hide(); jcandidatesDialogWV.show();"
                                          oncomplete="adding_load.hide(); " process=":editorForm:complexTabs:jcandidatesDialog"
-                                         update=":editorForm:complexTabs:participantsPanel :editorForm:shortlabelTxt :editorForm:messagesComponent :editorForm:changesPanel"/>
+                                         update=":editorForm:complexTabs:jparticipantsPanel :editorForm:shortlabelTxt :editorForm:messagesComponent :editorForm:changesPanel"/>
                         <p:commandButton type="button" value="Back" rendered="#{empty modelledParticipantImportController.importCandidates}"
                                          onclick="jcandidatesDialogWV.hide(); jimportParticipantDialog.show()"/>
                     </h:panelGroup>
                 </f:facet>
 
 
-                <p:dataTable id="candidatesTable" var="candidate" rendered="#{not empty modelledParticipantImportController.importCandidates}"
+                <p:dataTable id="jcandidatesTable" var="candidate" rendered="#{not empty modelledParticipantImportController.importCandidates}"
                              paginatorAlwaysVisible="false"
                              value="#{modelledParticipantImportController.importCandidates}" paginator="true" rows="10">
                     <p:column>
@@ -115,11 +115,11 @@
 
                 <br/>
 
-                <p:panel id="globalAttributesId" header="Global attributes" rendered="#{not empty modelledParticipantImportController.importCandidates}">
+                <p:panel id="jglobalAttributesId" header="Global attributes" rendered="#{not empty modelledParticipantImportController.importCandidates}">
                     <h:panelGrid columns="2">
 
-                        <h:outputLabel value="Biological role: " for="bioRoleDialogTxt"/>
-                        <ia:inputCvTerm id="bioRoleDialogTxt" cvIdentifier="MI:0500"
+                        <h:outputLabel value="Biological role: " for="jbioRoleDialogTxt"/>
+                        <ia:inputCvTerm id="jbioRoleDialogTxt" cvIdentifier="MI:0500"
                                           modal="false"
                                           value="#{modelledParticipantImportController.biologicalRole}"
                                           selectItems="#{editorCvTermService.biologicalRoleSelectItems}" />

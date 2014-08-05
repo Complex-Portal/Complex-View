@@ -287,7 +287,7 @@
             Participants:&#160;
             <p:commandButton value="New participant" action="#{modelledParticipantController.newParticipant(interaction)}"
                              ajax="false"/>
-            <p:commandButton id="importParticipantBtn" value="Import..." type="button" onclick="jimportParticipantDialog.show()"/>
+            <p:commandButton id="importModelledParticipantBtn" value="Import..." type="button" onclick="jimportParticipantDialog.show()"/>
             &#160;| Features:&#160;
             <p:commandButton value="Link features" actionListener="#{complexController.linkSelectedFeatures}" ajax="false"/>
         </p:panel>
@@ -296,11 +296,11 @@
 
         <ui:include src="jdialog_import_participant.xhtml"/>
 
-        <!--<p:outputPanel id="participantsPanel" autoUpdate="true">
+        <p:outputPanel id="jparticipantsPanel" autoUpdate="true">
             <ui:include src="jparticipants_table.xhtml">
                 <ui:param name="value" value="#{complexController.participants}"/>
             </ui:include>
-        </p:outputPanel>-->
+        </p:outputPanel>
     </p:tab>
 
     <ui:decorate template="jpropertiesTabs.xhtml">
