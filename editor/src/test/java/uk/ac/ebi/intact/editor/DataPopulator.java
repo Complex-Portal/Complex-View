@@ -19,7 +19,6 @@ import uk.ac.ebi.intact.dataexchange.cvutils.OboUtils;
 import uk.ac.ebi.intact.dataexchange.psimi.xml.exchange.PsiExchange;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.user.User;
-import uk.ac.ebi.intact.model.util.PublicationUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,7 +56,9 @@ public class DataPopulator {
     public static void main(String[] args) throws Exception {
         IntactContext.initContext(new String[]{"classpath*:/META-INF/intact-batch.spring.xml",
                 "classpath*:/META-INF/editor-test.spring.xml",
-                "classpath*:/META-INF/editor.jpa-test.spring.xml"});
+                "classpath*:/META-INF/editor.jpa-test.spring.xml",
+                "classpath*:/META-INF/intact-jami-test.spring.xml",
+                "classpath*:/META-INF/intact.spring.xml"});
 
         final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
 
