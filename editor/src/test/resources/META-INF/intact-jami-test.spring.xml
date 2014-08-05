@@ -68,10 +68,10 @@
     </bean>
     <!-- Intact core basic datasource for testing -->
     <bean id="jamiCoreDataSourceTest" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:mem:intactcore;DB_CLOSE_DELAY=-1;LOCK_MODE=0"/>
+        <property name="url" value="jdbc:h2:tcp:localhost:39102/intact-editor;DB_CLOSE_DELAY=-1;LOCK_MODE=0"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
+        <property name="driverClassName" value="org.h2.Driver"/>
     </bean>
 
     <!-- INTACT more specific beans -->
