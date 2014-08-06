@@ -70,7 +70,8 @@
             <p:column id="bioRoleCol" headerText="Biological role">
 
                 <h:selectOneMenu id="bioRoleCv" value="#{wrapper.participant.biologicalRole}"
-                                 rendered="#{value.size() lt 5}" disabled="#{complexController.isParticipantDisabled()}">
+                                 rendered="#{value.size() lt 5}" disabled="#{complexController.isParticipantDisabled()}"
+                                 converter="cvTermConverter">
                     <f:selectItems value="#{editorCvTermService.biologicalRoleSelectItems}" />
                     <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>

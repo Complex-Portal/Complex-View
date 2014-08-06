@@ -89,7 +89,7 @@ public class InputOrganismController extends BaseController {
                 .createQuery("select b from IntactOrganism b " +
                         "where lower(b.commonName) like lower(:commonName) or " +
                         "lower(b.scientificName) like lower(:scientificName) or " +
-                        "b.dbTaxId = :taxId");
+                        "b.dbTaxid = :taxId");
         jpaQuery.setParameter("commonName", query+"%");
         jpaQuery.setParameter("scientificName", query+"%");
         jpaQuery.setParameter("taxId", query);

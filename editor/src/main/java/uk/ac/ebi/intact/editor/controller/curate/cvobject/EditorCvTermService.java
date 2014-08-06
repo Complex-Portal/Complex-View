@@ -34,7 +34,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Marine Dumousseau (marine@ebi.ac.uk)
@@ -68,8 +70,10 @@ public class EditorCvTermService extends JpaAwareController {
 
     private boolean isInitialised = false;
 
-    public EditorCvTermService() {
+    private Map<String, IntactCvTerm> acCvObjectMap;
 
+    public EditorCvTermService() {
+        acCvObjectMap = new HashMap<String, IntactCvTerm>();
     }
 
     public void clearAll(){
@@ -92,6 +96,7 @@ public class EditorCvTermService extends JpaAwareController {
         this.parameterTypeSelectItems = null;
         this.parameterUnitSelectItems = null;
         isInitialised = false;
+        acCvObjectMap.clear();
     }
 
     private void loadCvs() {
@@ -215,10 +220,12 @@ public class EditorCvTermService extends JpaAwareController {
 
     private SelectItem createSelectItem( IntactCvTerm cv, boolean ignoreHidden ) {
         if (!ignoreHidden && AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
+            acCvObjectMap.put(cv.getAc(), cv);
             boolean obsolete = !AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), CvTopic.OBSOLETE_MI_REF, CvTopic.OBSOLETE).isEmpty();
             return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")), cv.getFullName());
         }
         else if (ignoreHidden){
+            acCvObjectMap.put(cv.getAc(), cv);
             boolean obsolete = !AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), CvTopic.OBSOLETE_MI_REF, CvTopic.OBSOLETE).isEmpty();
             return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")), cv.getFullName());
         }
@@ -307,10 +314,7 @@ public class EditorCvTermService extends JpaAwareController {
         return parameterUnitSelectItems;
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public IntactCvTerm findCvByAc(String ac){
-        IntactDao dao = getIntactDao();
-        CvTermDao cvDao = dao.getCvTermDao();
-        return cvDao.getByAc( ac );
+        return acCvObjectMap.get(ac);
     }
 }

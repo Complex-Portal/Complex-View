@@ -61,4 +61,9 @@
         <property name="driverClassName" value="org.h2.Driver"/>
     </bean>
 
+    <!-- jami fetchers -->
+    <bean id="proteinFetcher" class="psidev.psi.mi.jami.bridges.uniprot.UniprotProteinFetcher"/>
+    <bean id="bioactiveEntityFetcher" class="psidev.psi.mi.jami.bridges.chebi.ChebiFetcher"/>
+    <bean id="geneFetcher" class="psidev.psi.mi.jami.bridges.uniprot.UniprotGeneFetcher"/>
+
 </beans>

@@ -5,8 +5,10 @@ import psidev.psi.mi.jami.model.Xref;
 import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
-import uk.ac.ebi.intact.jami.model.extension.*;
-import uk.ac.ebi.intact.jami.utils.IntactUtils;
+import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
+import uk.ac.ebi.intact.jami.model.extension.IntactModelledFeature;
+import uk.ac.ebi.intact.jami.model.extension.IntactModelledParticipant;
+import uk.ac.ebi.intact.jami.model.extension.IntactStoichiometry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,33 +63,6 @@ public class ModelledParticipantWrapper {
     public void setParticipant( IntactModelledParticipant participant ) {
         if (participant != null){
             this.participant = participant;
-        }
-    }
-
-    public String getAuthorGivenName() {
-        psidev.psi.mi.jami.model.Alias alias = psidev.psi.mi.jami.utils.AliasUtils.collectFirstAliasWithType(this.participant.getAliases(), psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI,
-                psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME);
-        return alias != null ? alias.getName() : null;
-    }
-
-    public void setAuthorGivenName( String name ) {
-        if (name == null){
-            psidev.psi.mi.jami.utils.AliasUtils.removeAllAliasesWithType(this.participant.getAliases(), psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI,
-                    psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME);
-        }
-        else{
-            IntactDao dao = ApplicationContextProvider.getBean("intactDao");
-            psidev.psi.mi.jami.model.Alias alias = psidev.psi.mi.jami.utils.AliasUtils.collectFirstAliasWithType(this.participant.getAliases(), psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI,
-                    psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME);
-            if (alias != null && alias.getName().equals(name)){
-                ((AbstractIntactAlias)alias).setName(name);
-                changesController.markAsJamiUnsaved(participant, dao.getSynchronizerContext().getModelledParticipantSynchronizer());
-            }
-            else {
-                this.participant.getAliases().add(new ModelledFeatureAlias(IntactUtils.createMIAliasType(psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME,
-                        psidev.psi.mi.jami.model.Alias.AUTHOR_ASSIGNED_NAME_MI), name));
-                changesController.markAsJamiUnsaved(participant, dao.getSynchronizerContext().getModelledParticipantSynchronizer());
-            }
         }
     }
 

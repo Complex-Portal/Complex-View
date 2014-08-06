@@ -225,7 +225,7 @@
                 <h:outputLabel value="Organism: " for="organismTxt"/>
             </td>
             <td colspan="3">
-                <ia:inputOrganism id="organismTxt" value="#{complex.organism}"
+                <ia:inputOrganism id="organismTxt" value="#{interaction.organism}"
                                   valueChangeAwareObject="#{complexController}"
                                   oncomplete="ia_enableSave()"
                                   update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
@@ -342,19 +342,19 @@
 
         <h:panelGrid columns="2">
             <h:outputLabel for="statusTxt" value="Status: "/>
-            <h:outputText id="statusTxt" value="#{complexController.complex.status}"/>
+            <h:outputText id="statusTxt" value="#{interaction.status}"/>
 
-            <h:outputLabel for="ownerTxt" value="Owner: " rendered="#{complexController.complex.currentOwner != null}"/>
-            <h:outputText id="ownerTxt" value="#{complexController.complex.currentOwner.login}"
-                          rendered="#{complexController.complex.currentOwner != null}"/>
+            <h:outputLabel for="ownerTxt" value="Owner: " rendered="#{interaction.currentOwner != null}"/>
+            <h:outputText id="ownerTxt" value="#{interaction.currentOwner.login}"
+                          rendered="#{interaction.currentOwner != null}"/>
 
-            <h:outputLabel value="Reviewer: " rendered="#{complexController.complex.currentReviewer != null}"/>
+            <h:outputLabel value="Reviewer: " rendered="#{interaction.currentReviewer != null}"/>
 
-            <h:outputText value="#{complexController.complex.currentReviewer.login}"
-                          rendered="#{!userSessionController.hasRole('ADMIN') and complexController.complex.currentReviewer != null}"/>
+            <h:outputText value="#{interaction.currentReviewer.login}"
+                          rendered="#{!userSessionController.hasRole('ADMIN') and interaction.currentReviewer != null}"/>
 
             <h:selectOneMenu value="#{complexController.complex.currentReviewer}" hideNoSelectionOption="true"
-                             rendered="#{(userSessionController.hasRole('ADMIN') and complexController.complex.currentReviewer != null)
+                             rendered="#{(userSessionController.hasRole('ADMIN') and interaction.currentReviewer != null)
                                  or complexController.isLifeCycleDisabled()}">
                 <f:selectItems value="#{userAdminController.reviewerSelectItems}"/>
                 <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>

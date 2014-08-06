@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
-import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.dao.OrganismDao;
 import uk.ac.ebi.intact.jami.model.extension.IntactOrganism;
 
@@ -30,9 +29,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Marine Dumousseau (marine@ebi.ac.uk)
@@ -47,8 +44,10 @@ public class EditorOrganismService extends JpaAwareController {
 
     private boolean isInitialised = false;
 
-    public EditorOrganismService() {
+    private Map<String, IntactOrganism> acOrganismMap;
 
+    public EditorOrganismService() {
+        acOrganismMap = new HashMap<String, IntactOrganism>();
     }
 
     public void clearAll(){
@@ -60,11 +59,11 @@ public class EditorOrganismService extends JpaAwareController {
         organismSelectItems = new ArrayList<SelectItem>();
         organismSelectItems.add(new SelectItem( null, "select organism", "select organism", false, false, true ));
 
-        IntactDao intactDao = getIntactDao();
         OrganismDao organismDao = getIntactDao().getOrganismDao();
 
         Collection<IntactOrganism> loadedOrganisms = organismDao.getAllOrganisms(false, false);
         for (IntactOrganism organism : loadedOrganisms){
+            acOrganismMap.put(organism.getAc(), organism);
             organismSelectItems.add(createSelectItem(organism));
         }
 
@@ -88,11 +87,8 @@ public class EditorOrganismService extends JpaAwareController {
         return organismSelectItems;
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public IntactOrganism findCvByAc(String ac){
-        IntactDao dao = getIntactDao();
-        OrganismDao orgDao = dao.getOrganismDao();
-        return orgDao.getByAc(ac);
+        return acOrganismMap.get(ac);
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)

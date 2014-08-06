@@ -59,7 +59,7 @@
 
            <h:panelGroup id="info" style="color: gray">
                <h:panelGroup rendered="#{cc.attrs.value != null}">
-                   <h:outputText value=" #{cc.attrs.value.dbTaxId} | #{cc.attrs.value.scientificName}"/>
+                   <h:outputText value=" #{cc.attrs.value.taxId} | #{cc.attrs.value.scientificName}"/>
                    <h:outputText value=" | #{cc.attrs.value.cvTissue.commonName}" rendered="#{cc.attrs.value.tissue != null}"/>
                    <h:outputText value=" | #{cc.attrs.value.cvCellType.commonName}" rendered="#{cc.attrs.value.cellType != null}"/>
                </h:panelGroup>

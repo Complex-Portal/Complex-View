@@ -23,7 +23,7 @@
                 </f:facet>
                 <h:selectOneMenu id="annotationTopicSel" value="#{annotation.topic}"
                                  required="true" requiredMessage="Topic is required" disabled="#{annotatedObjectController.isAnnotationTopicDisabled()
-                                 and annotatedObjectController.isAnnotationNotEditable(annotation)}">
+                                 and annotatedObjectController.isAnnotationNotEditable(annotation)}" converter="cvTermConverter">
                     <f:selectItems value="#{topicSelectItems}"/>
                 </h:selectOneMenu>
             </p:column>

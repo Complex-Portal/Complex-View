@@ -28,7 +28,7 @@
                                 <h:outputText value="Database"/>
                             </f:facet>
                             <h:selectOneMenu id="databaseSel" value="#{xref.database}" required="true"
-                                             requiredMessage="Database for xref is required" disabled="#{annotatedObjectController.isXrefDisabled()}">
+                                             requiredMessage="Database for xref is required" disabled="#{annotatedObjectController.isXrefDisabled()}" converter="cvTermConverter">
                                 <f:selectItems value="#{databaseSelectItems}"/>
                             </h:selectOneMenu>
 
@@ -90,7 +90,7 @@
                             <f:facet name="header">
                                 <h:outputText value="Qualifier"/>
                             </f:facet>
-                            <h:selectOneMenu id="qualifierSel" value="#{xref.qualifier}" disabled="#{annotatedObjectController.isXrefDisabled()}">
+                            <h:selectOneMenu id="qualifierSel" value="#{xref.qualifier}" disabled="#{annotatedObjectController.isXrefDisabled()}" converter="cvTermConverter">
                                 <f:selectItems value="#{qualifierSelectItems}"/>
                             </h:selectOneMenu>
                         </p:column>
