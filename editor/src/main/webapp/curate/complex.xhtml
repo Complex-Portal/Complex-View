@@ -279,7 +279,7 @@
 <br/>
 
 <p:tabView id="complexTabs" dynamic="true">
-    <p:ajax event="tabChange" listener="#{complexController.onTabChanged}" />
+    <p:ajax event="tabChange" listener="#{complexController.onTabChanged}" onstart="loadDialog.show()" oncomplete="loadDialog.hide()"/>
 
     <p:tab id="participantsTab" title="Participants (#{complexController.participants.size()})">
 

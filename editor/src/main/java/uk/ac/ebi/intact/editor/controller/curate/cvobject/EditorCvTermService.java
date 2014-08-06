@@ -222,12 +222,14 @@ public class EditorCvTermService extends JpaAwareController {
         if (!ignoreHidden && AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), null, "hidden").isEmpty()){
             acCvObjectMap.put(cv.getAc(), cv);
             boolean obsolete = !AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), CvTopic.OBSOLETE_MI_REF, CvTopic.OBSOLETE).isEmpty();
-            return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")), cv.getFullName());
+            return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")),
+                    cv.getFullName() + (cv.getMIIdentifier() != null ? "("+cv.getMIIdentifier()+")":""));
         }
         else if (ignoreHidden){
             acCvObjectMap.put(cv.getAc(), cv);
             boolean obsolete = !AnnotationUtils.collectAllAnnotationsHavingTopic(cv.getAnnotations(), CvTopic.OBSOLETE_MI_REF, CvTopic.OBSOLETE).isEmpty();
-            return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")), cv.getFullName());
+            return new SelectItem( cv, cv.getShortName()+((obsolete? " (obsolete)" : "")),
+                    cv.getFullName()+ (cv.getMIIdentifier() != null ? "("+cv.getMIIdentifier()+")":""));
         }
         return null;
     }
