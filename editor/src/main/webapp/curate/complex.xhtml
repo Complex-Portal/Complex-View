@@ -159,7 +159,7 @@
             <td colspan="2">
                 <h:panelGroup>
                     <p:inputText id="recommendedNameTxt" value="#{complexController.recommendedName}" size="70"
-                                 valueChangeListener="#{complexController.onRecommendedNameChange}">
+                                 valueChangeListener="#{complexController.onRecommendedNameChanged}">
                         <ed:curation/>
                     </p:inputText>
                 </h:panelGroup>
@@ -172,7 +172,7 @@
             <td colspan="2">
                 <h:panelGroup>
                     <p:inputText id="systematicNameTxt" value="#{complexController.systematicName}" size="70"
-                                 valueChangeListener="#{complexController.onSystematicNameChange}">
+                                 valueChangeListener="#{complexController.onSystematicNameChanged}">
                         <ed:curation/>
                     </p:inputText>
                 </h:panelGroup>
@@ -254,7 +254,7 @@
             <td colspan="3">
                 <h:panelGroup>
                     <p:inputTextarea id="curatedComplexTxt" value="#{complexController.description}"
-                                     valueChangeListener="#{complexController.onDescriptionChange}" rows="5" cols="80">
+                                     valueChangeListener="#{complexController.onDescriptionChanged}" rows="5" cols="80">
                         <ed:curation/>
                     </p:inputTextarea>
                 </h:panelGroup>
@@ -267,7 +267,7 @@
             <td colspan="2">
                 <h:panelGroup>
                     <p:inputText id="complexPropertiesTxt" value="#{complexController.complexProperties}" size="70"
-                                 valueChangeListener="#{complexController.onComplexPropertiesChange}">
+                                 valueChangeListener="#{complexController.onComplexPropertiesChanged}">
                         <ed:curation/>
                     </p:inputText>
                 </h:panelGroup>
