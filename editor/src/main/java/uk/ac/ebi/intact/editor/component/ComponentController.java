@@ -16,6 +16,8 @@
 package uk.ac.ebi.intact.editor.component;
 
 import org.springframework.stereotype.Controller;
+import psidev.psi.mi.jami.model.Range;
+import psidev.psi.mi.jami.utils.RangeUtils;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -30,5 +32,9 @@ public class ComponentController {
     public String toJavascriptFriendlyVar(String str) {
         str = str.replaceAll("-", "_");
         return str.replaceAll(":", "__");
+    }
+
+    public String convertRangeToString(Range range) {
+        return RangeUtils.convertRangeToString(range);
     }
 }

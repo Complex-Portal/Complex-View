@@ -199,8 +199,7 @@ public class ComplexController extends AnnotatedObjectController {
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
-            if ( (complex == null && ac != null) || (ac == null && complex != null)
-                    || (ac != null && complex != null && !ac.equals( complex.getAc() ))) {
+            if ( (complex == null && ac != null) || (ac != null && complex != null && !ac.equals( complex.getAc() ))) {
                 setComplex(loadJamiByAc(IntactComplex.class, ac));
             }
 
@@ -417,6 +416,9 @@ public class ComplexController extends AnnotatedObjectController {
             refreshName();
             refreshInfoMessages();
             refreshParticipants();
+        }
+        else{
+            this.ac = null;
         }
     }
 

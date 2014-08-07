@@ -43,10 +43,14 @@
                       sortBy="#{interactor.shortName}"
                       filterBy="#{interactor.shortName}"
                       filterMatchMode="contains">
-                <p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
+                <h:link outcome="/curate/jparticipant" value="#{interactor.shortName}" includeViewParams="true"
+                        rendered="#{not changesController.isDeletedAc(participant.ac)}" styleClass="#{participant.ac == null? 'intact-new' :''}">
+                    <f:param name="ac" value="#{participant.ac}"/>
+                </h:link>
+                <!--<p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
                                value="#{interactor.shortName}" rendered="#{not changesController.isDeletedAc(participant.ac)}"
                                styleClass="#{participant.ac == null? 'intact-new' :''}"
-                               ajax="false"/>
+                               ajax="false"/> -->
                 <h:panelGroup rendered="#{changesController.isDeletedAc(participant.ac)}">
                     <h:outputText value="#{interactor.shortName}" styleClass="intact-deleted"/>
                 </h:panelGroup>

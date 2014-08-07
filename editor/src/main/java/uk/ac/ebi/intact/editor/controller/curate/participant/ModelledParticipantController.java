@@ -81,6 +81,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     private String cautionMessage = null;
     private String internalRemark = null;
+    private String participantPrimaryId=null;
 
     public ModelledParticipantController() {
     }
@@ -108,12 +109,9 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            if ( ac != null ) {
-                if ( participant == null || !ac.equals( participant.getAc() ) ) {
-                    setParticipant(loadJamiByAc(IntactModelledParticipant.class, ac));
-                }
-            } else {
-                if ( participant != null ) ac = participant.getAc();
+
+            if ( (participant == null && ac != null) || (ac != null && participant != null && !ac.equals( participant.getAc() ))) {
+                setParticipant(loadJamiByAc(IntactModelledParticipant.class, ac));
             }
 
             if (participant == null) {
@@ -362,23 +360,32 @@ public class ModelledParticipantController extends AnnotatedObjectController {
             this.ac = participant.getAc();
             refreshInfoMessages();
             refreshFeatures();
+            refreshParticipantPrimaryId();
+        }
+        else{
+            this.ac = null;
         }
     }
 
-    public String participantPrimaryId() {
-        if (participant == null) return null;
+    public String getParticipantPrimaryId() {
+        return this.participantPrimaryId;
+    }
+
+    private void refreshParticipantPrimaryId(){
+        if (participant == null) this.participantPrimaryId = null;
 
         final Xref xrefs = participant.getInteractor().getPreferredIdentifier();
 
         if (xrefs == null && participant.getInteractor() instanceof IntactInteractor) {
             String ac = ((IntactInteractor)participant.getInteractor()).getAc();
-            return ac != null ? ac : participant.getInteractor().getShortName();
+            this.participantPrimaryId = ac != null ? ac : participant.getInteractor().getShortName();
         }
         else if (xrefs == null){
-            return participant.getInteractor().getShortName();
+            this.participantPrimaryId = participant.getInteractor().getShortName();
         }
-
-        return xrefs.getId();
+        else{
+            this.participantPrimaryId = xrefs.getId();
+        }
     }
 
     private String joinIds(Collection<Xref> xrefs) {

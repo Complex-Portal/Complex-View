@@ -166,6 +166,10 @@ public class ModelledFeatureController extends AnnotatedObjectController {
                 if ( feature != null ) ac = feature.getAc();
             }
 
+            if ( (feature == null && ac != null) || (ac != null && feature != null && !ac.equals( feature.getAc() ))) {
+                setFeature(loadJamiByAc(IntactModelledFeature.class, ac));
+            }
+
             if (feature == null) {
                 super.addErrorMessage("Feature does not exist", ac);
                 return;
@@ -347,6 +351,9 @@ public class ModelledFeatureController extends AnnotatedObjectController {
             this.ac = feature.getAc();
             refreshRangeWrappers();
             refreshInfoMessages();
+        }
+        else{
+            this.ac = null;
         }
         refreshParticipantSelectItems();
     }
