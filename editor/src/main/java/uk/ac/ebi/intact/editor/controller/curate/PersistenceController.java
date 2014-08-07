@@ -143,7 +143,7 @@ public class PersistenceController extends JpaAwareController {
     }
 
     @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
-    public IntactPrimaryObject doRevert(IntactPrimaryObject intactObject) {
+    public void doRevert(IntactPrimaryObject intactObject, AnnotatedObjectController controller) {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Reverting: " + intactObject.getAc());
 
@@ -154,7 +154,7 @@ public class PersistenceController extends JpaAwareController {
             intactObject = getJamiEntityManager().find(intactObject.getClass(), intactObject.getAc());
         }
 
-        return intactObject;
+        controller.setJamiObject(intactObject);
     }
 
     @Transactional(value = "transactionManager", propagation = Propagation.SUPPORTS)

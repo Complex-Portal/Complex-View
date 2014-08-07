@@ -348,14 +348,6 @@ public class ComplexController extends AnnotatedObjectController {
         }
     }
 
-    /**
-     * When reverting, we need to refresh the collection of wrappers because they are not part of the IntAct model.
-     */
-    @Override
-    protected void postRevert() {
-        refreshParticipants();
-    }
-
     public void cloneParticipant(ModelledParticipantWrapper participantWrapper) {
         IntactModelledParticipant participant = participantWrapper.getParticipant();
 

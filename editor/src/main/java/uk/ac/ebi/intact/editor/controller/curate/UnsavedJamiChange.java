@@ -17,7 +17,6 @@ package uk.ac.ebi.intact.editor.controller.curate;
 
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
-import uk.ac.ebi.intact.model.IntactObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,7 +68,7 @@ public class UnsavedJamiChange {
         return unsavedObject;
     }
 
-    public String getDescription(IntactObject intactObject) {
+    public String getDescription(IntactPrimaryObject intactObject) {
         
         return intactObject.toString();
     }

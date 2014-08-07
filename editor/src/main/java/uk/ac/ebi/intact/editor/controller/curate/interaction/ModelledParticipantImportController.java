@@ -81,7 +81,7 @@ public class ModelledParticipantImportController extends JpaAwareController {
     private List<String> queriesNoResults;
     private String[] participantsToImport = new String[0];
 
-    private CvTerm cvBiologicalRole;
+    private transient CvTerm cvBiologicalRole;
     private int minStoichiometry;
     private int maxStoichiometry;
 

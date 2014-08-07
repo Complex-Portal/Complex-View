@@ -642,7 +642,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                 setAnnotatedObject((AnnotatedObject) persistenceController.doRevert(getAnnotatedObject()));
             }
             else{
-                setJamiObject(persistenceController.doRevert(getJamiObject()));
+                persistenceController.doRevert(getJamiObject(), this);
             }
 
             postRevert();
