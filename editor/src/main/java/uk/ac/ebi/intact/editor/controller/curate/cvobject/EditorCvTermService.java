@@ -141,68 +141,104 @@ public class EditorCvTermService extends JpaAwareController {
         CvTermDao cvDao = intactDao.getCvTermDao();
 
         IntactCvTerm typeParent = cvDao.getByMIIdentifier("MI:0116", IntactUtils.FEATURE_TYPE_OBJCLASS);
-        loadChildren(typeParent, featureTypeSelectItems, false);
+        if (typeParent != null){
+            loadChildren(typeParent, featureTypeSelectItems, false);
+        }
 
         IntactCvTerm roleParent = cvDao.getByMIIdentifier("MI:0925", IntactUtils.TOPIC_OBJCLASS);
         SelectItem item2 = roleParent != null ? createSelectItem(roleParent, false):null;
         if (item2 != null){
             featureRoleSelectItems.add(item2);
         }
-        loadChildren(roleParent, featureRoleSelectItems, false);
+        if (roleParent != null){
+            loadChildren(roleParent, featureRoleSelectItems, false);
+        }
 
         IntactCvTerm aliasTypeParent = cvDao.getByMIIdentifier("MI:0300", IntactUtils.ALIAS_TYPE_OBJCLASS);
-        loadChildren(aliasTypeParent, aliasTypeSelectItems, false);
+        if (aliasTypeParent != null){
+            loadChildren(aliasTypeParent, aliasTypeSelectItems, false);
+        }
 
         IntactCvTerm featureTopicParent = cvDao.getByMIIdentifier("MI:0668", IntactUtils.TOPIC_OBJCLASS);
-        loadChildren(featureTopicParent, featureTopicSelectItems, false);
+        if (featureTopicParent != null){
+            loadChildren(featureTopicParent, featureTopicSelectItems, false);
+        }
 
         IntactCvTerm databaseParent = cvDao.getByMIIdentifier("MI:0447", IntactUtils.DATABASE_OBJCLASS);
-        loadChildren(databaseParent, featureDatabaseSelectItems, false);
+        if (databaseParent != null){
+            loadChildren(databaseParent, featureDatabaseSelectItems, false);
+        }
 
         IntactCvTerm qualifierParent = cvDao.getByMIIdentifier("MI:0353", IntactUtils.QUALIFIER_OBJCLASS);
-        loadChildren(qualifierParent, qualifierSelectItems, false);
+        if (qualifierParent != null){
+            loadChildren(qualifierParent, qualifierSelectItems, false);
+        }
 
         IntactCvTerm statusParent = cvDao.getByMIIdentifier("MI:0333", IntactUtils.RANGE_STATUS_OBJCLASS);
-        loadChildren(statusParent, fuzzyTypeSelectItems, false);
+        if (statusParent != null){
+            loadChildren(statusParent, fuzzyTypeSelectItems, false);
+        }
 
         IntactCvTerm participantTopicParent = cvDao.getByMIIdentifier("MI:0666", IntactUtils.TOPIC_OBJCLASS);
-        loadChildren(participantTopicParent, participantTopicSelectItems, false);
+        if (participantTopicParent != null){
+            loadChildren(participantTopicParent, participantTopicSelectItems, false);
+        }
 
         IntactCvTerm participantDbParent = cvDao.getByMIIdentifier("MI:0473", IntactUtils.DATABASE_OBJCLASS);
-        loadChildren(participantDbParent, participantDatabaseSelectItems, false);
+        if (participantDbParent != null){
+            loadChildren(participantDbParent, participantDatabaseSelectItems, false);
+        }
 
         IntactCvTerm bioRoleParent = cvDao.getByMIIdentifier("MI:0500", IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
-        loadChildren(bioRoleParent, biologicalRoleSelectItems, false);
+        if (bioRoleParent != null){
+            loadChildren(bioRoleParent, biologicalRoleSelectItems, false);
+        }
 
         IntactCvTerm complexTopicParent = cvDao.getByMIIdentifier("MI:0664", IntactUtils.TOPIC_OBJCLASS);
         loadChildren(complexTopicParent, complexTopicSelectItems, false);
 
         IntactCvTerm complexDatabaseParent = cvDao.getByMIIdentifier("MI:0473", IntactUtils.DATABASE_OBJCLASS);
         IntactCvTerm complexDatabaseParent2 = cvDao.getByMIIdentifier("MI:0461", IntactUtils.DATABASE_OBJCLASS);
-        loadChildren(complexDatabaseParent, complexDatabaseSelectItems, false);
-        loadChildren(complexDatabaseParent2, complexDatabaseSelectItems, false);
+        if (complexDatabaseParent != null){
+            loadChildren(complexDatabaseParent, complexDatabaseSelectItems, false);
+        }
+        if (complexDatabaseParent2 != null){
+            loadChildren(complexDatabaseParent2, complexDatabaseSelectItems, false);
+        }
 
         IntactCvTerm interactionTypeParent = cvDao.getByMIIdentifier("MI:0190", IntactUtils.INTERACTION_TYPE_OBJCLASS);
-        loadChildren(interactionTypeParent, interactionTypeSelectItems, false);
+        if (interactionTypeParent != null){
+            loadChildren(interactionTypeParent, interactionTypeSelectItems, false);
+        }
 
         IntactCvTerm interactorTypeParent = cvDao.getByMIIdentifier("MI:0314", IntactUtils.INTERACTOR_TYPE_OBJCLASS);
-        loadChildren(interactorTypeParent, interactorTypeSelectItems, false);
+        if (interactorTypeParent != null){
+            loadChildren(interactorTypeParent, interactorTypeSelectItems, false);
+        }
 
         IntactCvTerm evidenceTypeParent = cvDao.getByMIIdentifier("MI:1331", IntactUtils.DATABASE_OBJCLASS);
         SelectItem item = evidenceTypeParent != null ? createSelectItem(evidenceTypeParent, true):null;
         if (item != null){
             evidenceTypeSelectItems.add(item);
         }
-        loadChildren(evidenceTypeParent, evidenceTypeSelectItems, true);
+        if (evidenceTypeParent != null){
+            loadChildren(evidenceTypeParent, evidenceTypeSelectItems, true);
+        }
 
         IntactCvTerm confidenceTypeParent = cvDao.getByMIIdentifier("MI:1064", IntactUtils.CONFIDENCE_TYPE_OBJCLASS);
-        loadChildren(confidenceTypeParent, confidenceTypeSelectItems, false);
+        if (confidenceTypeParent != null){
+            loadChildren(confidenceTypeParent, confidenceTypeSelectItems, false);
+        }
 
         IntactCvTerm parameterTypeParent = cvDao.getByMIIdentifier("MI:0640", IntactUtils.PARAMETER_TYPE_OBJCLASS);
-        loadChildren(parameterTypeParent, parameterTypeSelectItems, false);
+        if (parameterTypeParent != null){
+            loadChildren(parameterTypeParent, parameterTypeSelectItems, false);
+        }
 
         IntactCvTerm parameterUnit = cvDao.getByMIIdentifier("MI:0647", IntactUtils.UNIT_OBJCLASS);
-        loadChildren(parameterUnit, parameterTypeSelectItems, false);
+        if (parameterUnit != null){
+            loadChildren(parameterUnit, parameterTypeSelectItems, false);
+        }
     }
 
     private void loadChildren(IntactCvTerm parent, List<SelectItem> selectItems, boolean ignoreHidden){
