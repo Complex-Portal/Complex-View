@@ -17,7 +17,10 @@ package uk.ac.ebi.intact.editor.controller.admin;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.model.IntactObject;
 
 import javax.faces.event.ActionEvent;
@@ -36,9 +39,11 @@ public class HqlRunnerController extends JpaAwareController {
     private static final int MAX_RESULTS = 200;
 
     private String hqlQuery;
+    private String jamiHqlQuery;
     private int maxResults;
 
     private Collection<? extends IntactObject> results;
+    private Collection<? extends IntactPrimaryObject> jamiResults;
 
     public HqlRunnerController() {
         maxResults = MAX_RESULTS;
@@ -69,12 +74,59 @@ public class HqlRunnerController extends JpaAwareController {
     }
 
     @SuppressWarnings({"unchecked"})
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public void runJamiQuery(ActionEvent evt) {
+        maxResults = Math.min(maxResults, MAX_RESULTS);
+
+        jamiHqlQuery = cleanQuery(jamiHqlQuery);
+
+        try {
+            EntityManager em = getJamiEntityManager();
+            Query query = em.createQuery(jamiHqlQuery);
+            query.setMaxResults(maxResults);
+
+            long startTime = System.currentTimeMillis();
+
+            jamiResults = query.getResultList();
+
+            long duration = System.currentTimeMillis() - startTime;
+
+            addInfoMessage("Execution successful ("+duration+"ms)", "Results: "+(results.size() == MAX_RESULTS ? "More than " : "")+results.size());
+
+        } catch (Throwable e) {
+            addErrorMessage("Problem running query", e.getMessage());
+        }
+    }
+
+    @SuppressWarnings({"unchecked"})
     public void executeQuery(ActionEvent evt) {
         hqlQuery = cleanQuery(hqlQuery);
 
         try {
             EntityManager em = getCoreEntityManager();
             Query query = em.createQuery(hqlQuery);
+
+            long startTime = System.currentTimeMillis();
+
+            int updated = query.executeUpdate();
+
+            long duration = System.currentTimeMillis() - startTime;
+
+            addInfoMessage("Execution successful ("+duration+"ms)", "Affected records: "+updated);
+
+        } catch (Throwable e) {
+            addErrorMessage("Problem executing query", e.getMessage());
+        }
+    }
+
+    @SuppressWarnings({"unchecked"})
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public void executeJamiQuery(ActionEvent evt) {
+        jamiHqlQuery = cleanQuery(jamiHqlQuery);
+
+        try {
+            EntityManager em = getJamiEntityManager();
+            Query query = em.createQuery(jamiHqlQuery);
 
             long startTime = System.currentTimeMillis();
 
@@ -115,5 +167,21 @@ public class HqlRunnerController extends JpaAwareController {
 
     public void setMaxResults(int maxResults) {
         this.maxResults = maxResults;
+    }
+
+    public String getJamiHqlQuery() {
+        return jamiHqlQuery;
+    }
+
+    public void setJamiHqlQuery(String jamiHqlQuery) {
+        this.jamiHqlQuery = jamiHqlQuery;
+    }
+
+    public Collection<? extends IntactPrimaryObject> getJamiResults() {
+        return jamiResults;
+    }
+
+    public void setJamiResults(Collection<? extends IntactPrimaryObject> jamiResults) {
+        this.jamiResults = jamiResults;
     }
 }

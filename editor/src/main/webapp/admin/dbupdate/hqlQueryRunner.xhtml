@@ -34,6 +34,26 @@
 
         </h:panelGroup>
 
+        <h:panelGroup id="jamiQueryPanel">
+
+
+            <p:inputTextarea id="jamiQueryArea" value="#{hqlRunnerController.jamiHqlQuery}" rows="5" cols="80"/>
+
+            <br/>
+            <p:commandButton value="Get Results" actionListener="#{hqlRunnerController.runJamiQuery}"
+                             process="queryArea"
+                             update=":editorForm:jamiQueryPanel, :editorForm:messagesComponent"/>
+            <p:commandButton value="Execute" actionListener="#{hqlRunnerController.executeJamiQuery}"
+                             process="queryArea"
+                             update=":editorForm:jamiQueryPanel, :editorForm:messagesComponent"/>
+
+
+            <ui:include src="/shared/jamiObjects_table.xhtml">
+                <ui:param name="jamiObjects" value="#{hqlRunnerController.jamiResults}"/>
+            </ui:include>
+
+        </h:panelGroup>
+
 
 
     </ui:define>
