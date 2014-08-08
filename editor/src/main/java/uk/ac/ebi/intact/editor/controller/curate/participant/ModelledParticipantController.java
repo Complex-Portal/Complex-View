@@ -132,9 +132,8 @@ public class ModelledParticipantController extends AnnotatedObjectController {
             }
 
             refreshTabsAndFocusXref();
+            generalJamiLoadChecks();
         }
-
-        generalLoadChecks();
     }
 
     @Override

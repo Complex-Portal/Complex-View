@@ -199,7 +199,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                         releasedDate = evt.getWhen();
                     }
                 }
-                addInfoMessage("Publication already released", "This publication was released on " + (releasedDate != null ? sdf.format(releasedDate) : ""));
+                addInfoMessage("Complex already released", "This complex was released on " + (releasedDate != null ? sdf.format(releasedDate) : ""));
             }
         }
     }

@@ -37,6 +37,7 @@ import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantJamiCloner;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
+import uk.ac.ebi.intact.jami.lifecycle.ComplexBCLifecycleEventListener;
 import uk.ac.ebi.intact.jami.lifecycle.LifeCycleManager;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.*;
@@ -167,7 +168,7 @@ public class ComplexController extends AnnotatedObjectController {
     protected IntactComplex cloneAnnotatedObject(IntactPrimaryObject ao) {
         // to be overrided
         IntactComplex complex = (IntactComplex)ComplexJamiCloner.cloneComplex((IntactComplex) ao);
-        lifecycleManager.getStartStatus().create(complex, "Created in Editor");
+        getLifecycleManager().getStartStatus().create(complex, "Created in Editor");
 
         if (assignToMe) {
             lifecycleManager.getNewStatus().claimOwnership(complex);
@@ -209,9 +210,8 @@ public class ComplexController extends AnnotatedObjectController {
             }
 
             refreshTabsAndFocusXref();
+            generalJamiLoadChecks();
         }
-
-        generalLoadChecks();
     }
 
     @Override
@@ -665,7 +665,7 @@ public class ComplexController extends AnnotatedObjectController {
             setComplex(reloadedComplex);
         }
 
-        lifecycleManager.getGlobalStatus().changeOwnership(complex, getCurrentJamiUser(), null);
+        getLifecycleManager().getGlobalStatus().changeOwnership(complex, getCurrentJamiUser(), null);
 
         // automatically set as curation in progress if no one was assigned before
         if (isAssigned()) {
@@ -683,7 +683,7 @@ public class ComplexController extends AnnotatedObjectController {
             setComplex(reloadedComplex);
         }
 
-        lifecycleManager.getNewStatus().assignToCurator(complex, getCurrentJamiUser());
+        getLifecycleManager().getNewStatus().assignToCurator(complex, getCurrentJamiUser());
 
         addInfoMessage("Ownership claimed", "The complex has been assigned to you");
 
@@ -703,7 +703,7 @@ public class ComplexController extends AnnotatedObjectController {
             setComplex(reloadedComplex);
         }
 
-        lifecycleManager.getAssignedStatus().startCuration(complex);
+        getLifecycleManager().getAssignedStatus().startCuration(complex);
 
         addInfoMessage("Curation started", "Curation is now in progress");
         getJamiEntityManager().detach(this.complex);
@@ -727,7 +727,7 @@ public class ComplexController extends AnnotatedObjectController {
         // TODO run a proper sanity check
         boolean sanityCheckPassed = true;
 
-        lifecycleManager.getCurationInProgressStatus().readyForChecking(complex, reasonForReadyForChecking, sanityCheckPassed);
+        getLifecycleManager().getCurationInProgressStatus().readyForChecking(complex, reasonForReadyForChecking, sanityCheckPassed);
 
         reasonForReadyForChecking = null;
 
@@ -743,7 +743,7 @@ public class ComplexController extends AnnotatedObjectController {
             setComplex(reloadedComplex);
         }
 
-        lifecycleManager.getReadyForCheckingStatus().revert(this.complex);
+        getLifecycleManager().getReadyForCheckingStatus().revert(this.complex);
 
         getJamiEntityManager().detach(this.complex);
     }
@@ -755,7 +755,7 @@ public class ComplexController extends AnnotatedObjectController {
             setComplex(reloadedComplex);
         }
 
-        lifecycleManager.getReadyForReleaseStatus().revert(this.complex);
+        getLifecycleManager().getReadyForReleaseStatus().revert(this.complex);
 
         getJamiEntityManager().detach(this.complex);
     }
@@ -768,10 +768,10 @@ public class ComplexController extends AnnotatedObjectController {
         }
 
         if (complex.getStatus().equals(LifeCycleStatus.READY_FOR_RELEASE)) {
-            lifecycleManager.getReadyForReleaseStatus().putOnHold(complex, reasonForOnHoldFromDialog);
+            getLifecycleManager().getReadyForReleaseStatus().putOnHold(complex, reasonForOnHoldFromDialog);
             addInfoMessage("On-hold added to complex", "Complex won't be released until the 'on hold' is removed");
         } else if (complex.getStatus().equals(LifeCycleStatus.RELEASED)) {
-            lifecycleManager.getReleasedStatus().putOnHold(complex, reasonForOnHoldFromDialog);
+            getLifecycleManager().getReleasedStatus().putOnHold(complex, reasonForOnHoldFromDialog);
             addInfoMessage("On-hold added to released complex", "Data will be publicly visible until the next release");
         }
         else{
@@ -789,7 +789,7 @@ public class ComplexController extends AnnotatedObjectController {
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
             setComplex(reloadedComplex);
         }
-        lifecycleManager.getAcceptedOnHoldStatus().onHoldRemoved(complex, null);
+        getLifecycleManager().getAcceptedOnHoldStatus().onHoldRemoved(complex, null);
         getJamiEntityManager().detach(this.complex);
         this.onHold = null;
     }
@@ -918,7 +918,7 @@ public class ComplexController extends AnnotatedObjectController {
         }
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
-        lifecycleManager.getReadyForCheckingStatus().accept(complex, "Accepted " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase());
+        getLifecycleManager().getReadyForCheckingStatus().accept(complex, "Accepted " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase());
 
         if (!complex.isOnHold()) {
             lifecycleManager.getAcceptedStatus().readyForRelease(complex, "Accepted and not on-hold");
@@ -945,7 +945,7 @@ public class ComplexController extends AnnotatedObjectController {
 
         addInfoMessage("Complex rejected", "");
 
-        lifecycleManager.getReadyForCheckingStatus().reject(this.complex, date + ". " + reasonForRejection);
+        getLifecycleManager().getReadyForCheckingStatus().reject(this.complex, date + ". " + reasonForRejection);
 
         this.toBeReviewed = this.complex.getToBeReviewedComment();
 
@@ -1042,7 +1042,7 @@ public class ComplexController extends AnnotatedObjectController {
         setComplex((IntactComplex)ComplexJamiCloner.cloneInteraction(getIntactDao().getInteractionDao().getByAc(interactionEvidence.getAc())));
         this.complex.setInteractorType(type);
 
-        lifecycleManager.getStartStatus().create(this.complex, "Created in Editor");
+        getLifecycleManager().getStartStatus().create(this.complex, "Created in Editor");
 
         if (assignToMe) {
             lifecycleManager.getNewStatus().claimOwnership(this.complex);
@@ -1065,7 +1065,7 @@ public class ComplexController extends AnnotatedObjectController {
         this.complex.setCreator(jamiUserContext.getUserId());
         this.complex.setUpdator(jamiUserContext.getUserId());
         this.complex.setInteractorType(type);
-        lifecycleManager.getStartStatus().create(this.complex, "Created in Editor");
+        getLifecycleManager().getStartStatus().create(this.complex, "Created in Editor");
 
         if (assignToMe) {
             lifecycleManager.getNewStatus().claimOwnership(this.complex);
@@ -1204,5 +1204,10 @@ public class ComplexController extends AnnotatedObjectController {
     @Override
     protected boolean isPublicationParent() {
         return false;
+    }
+
+    public LifeCycleManager getLifecycleManager() {
+        this.lifecycleManager.registerListener(new ComplexBCLifecycleEventListener());
+        return lifecycleManager;
     }
 }

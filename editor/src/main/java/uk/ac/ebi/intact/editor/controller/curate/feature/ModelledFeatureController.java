@@ -187,13 +187,12 @@ public class ModelledFeatureController extends AnnotatedObjectController {
             }
 
             refreshTabsAndFocusXref();
-        }
+            if (containsInvalidRanges) {
+                addWarningMessage("This feature contains invalid ranges", "Ranges must be fixed before being able to save");
+            }
 
-        if (containsInvalidRanges) {
-            addWarningMessage("This feature contains invalid ranges", "Ranges must be fixed before being able to save");
+            generalJamiLoadChecks();
         }
-
-        generalLoadChecks();
     }
 
     public void refreshRangeWrappers() {
