@@ -13,7 +13,7 @@
     <!-- Spring specific -->
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
-    <aop:aspectj-autoproxy/>
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
 
     <!-- this switches on the load-time weaving -->
     <!--<context:load-time-weaver />-->

@@ -839,7 +839,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void jamiXrefChanged(AjaxBehaviorEvent evt) {
-        changed(evt);
 
         GoServerProxy goServerProxy = new GoServerProxy();
 
