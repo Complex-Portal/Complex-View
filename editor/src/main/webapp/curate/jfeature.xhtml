@@ -29,11 +29,11 @@
     <ui:define name="breadcrumbs">
         <p:breadCrumb>
             <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{complexController.name}"
-                        action="#{curateController.edit(interaction)}" process="@this"/>
+                        action="#{curateController.editJami(interaction)}" process="@this"/>
             <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{complexController.name}"
-                        action="#{curateController.edit(interaction)}" process="@this"/>
+                        action="#{curateController.editJami(interaction)}" process="@this"/>
             <p:menuitem ajax="false" onclick="loadDialog.show()" value="#{participant.interactor.shortName}"
-                        action="#{curateController.edit(participant)}" process="@this"/>
+                        action="#{curateController.editJami(participant)}" process="@this"/>
             <p:menuitem value="#{feature.shortName}"/>
         </p:breadCrumb>
     </ui:define>

@@ -41,9 +41,9 @@
         </p:dataTable>
         <p:dataTable id="unsavedJamiChangesTable" var="change" value="#{changesController.unsavedJamiChangesForCurrentUser}">
             <p:column>
-                <p:commandButton value="Edit" action="#{curateController.edit(change.unsavedObject)}" ajax="false"/>
-                <p:commandButton value="Save" actionListener="#{curateController.save(change.unsavedObject)}" update=":editorForm:unsavedChangesTable,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo"/>
-                <p:commandButton value="Discard" actionListener="#{curateController.discard(change.unsavedObject)}" update=":editorForm:unsavedChangesTable,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo"/>
+                <p:commandButton value="Edit" action="#{curateController.editJami(change.unsavedObject)}" ajax="false"/>
+                <p:commandButton value="Save" actionListener="#{curateController.saveJami(change.unsavedObject)}" update=":editorForm:unsavedChangesTable,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo"/>
+                <p:commandButton value="Discard" actionListener="#{curateController.discardJami(change.unsavedObject)}" update=":editorForm:unsavedChangesTable,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo"/>
             </p:column>
             <p:column>
                 <f:facet name="header"><h:outputText value="Modification"/></f:facet>

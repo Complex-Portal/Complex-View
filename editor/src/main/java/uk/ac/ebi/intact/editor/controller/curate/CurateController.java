@@ -49,32 +49,60 @@ public class CurateController extends JpaAwareController {
 
     private AnnotatedObjectController currentAnnotatedObjectController;
 
-    public String edit(Object object) {
-        if (object instanceof IntactObject){
-            IntactObject intactObject = (IntactObject)object;
-            String suffix = (intactObject.getAc() != null)? "?faces-redirect=true&includeViewParams=true" : "";
+    public String edit(IntactObject intactObject) {
+        String suffix = (intactObject.getAc() != null)? "?faces-redirect=true&includeViewParams=true" : "";
 
-            CurateObjectMetadata metadata = getMetadata(intactObject);
-            setCurrentAnnotatedObjectController(metadata.getAnnotatedObjectController());
+        CurateObjectMetadata metadata = getMetadata(intactObject);
+        setCurrentAnnotatedObjectController(metadata.getAnnotatedObjectController());
 
-            getCurrentAnnotatedObjectController().refreshTabsAndFocusXref();
-            return "/curate/"+metadata.getSlug()+suffix;
-        }
-        else{
-            IntactPrimaryObject intactObject = (IntactPrimaryObject)object;
-            String suffix = (intactObject.getAc() != null)? "?faces-redirect=true&includeViewParams=true" : "";
+        getCurrentAnnotatedObjectController().refreshTabsAndFocusXref();
+        return "/curate/"+metadata.getSlug()+suffix;
+    }
 
-            CurateJamiMetadata metadata = getJamiMetadata(intactObject);
-            setCurrentAnnotatedObjectController(metadata.getObjController());
+    public String editJami(IntactPrimaryObject intactObject) {
+        String suffix = (intactObject.getAc() != null)? "?faces-redirect=true&includeViewParams=true" : "";
 
-            metadata.getObjController().setJamiObject((IntactPrimaryObject)object);
+        CurateJamiMetadata metadata = getJamiMetadata(intactObject);
+        setCurrentAnnotatedObjectController(metadata.getObjController());
 
-            getCurrentAnnotatedObjectController().refreshTabsAndFocusXref();
-            return "/curate/"+metadata.getSlug()+suffix;
-        }
+        metadata.getObjController().setJamiObject(intactObject);
+
+        getCurrentAnnotatedObjectController().refreshTabsAndFocusXref();
+        return "/curate/"+metadata.getSlug()+suffix;
     }
 
     public String editByAc(String ac) {
+        if (ac == null) {
+            addErrorMessage("Illegal AC", "No AC provided");
+            FacesContext.getCurrentInstance().renderResponse();
+            return "";
+        }
+
+        ac = ac.trim();
+
+        try {
+            Class<? extends AnnotatedObject> aoClass = IntactCore.classForAc(getIntactContext(), ac);
+
+            if (aoClass == null) {
+                addErrorMessage("Illegal AC", "No annotated object found with this AC: "+ac);
+                FacesContext.getCurrentInstance().renderResponse();
+            }
+
+            AnnotatedObject ao = getDaoFactory().getAnnotatedObjectDao(aoClass).getByAc(ac);
+
+            if ( ao == null ) {
+                addErrorMessage( "AC not found", "There is no IntAct object with ac '" + ac + "'" );
+                return "";
+            } else {
+                return edit(ao);
+            }
+        } catch (IllegalArgumentException e){
+            addErrorMessage( "AC not found", "There is no IntAct object with ac '" + ac + "'" );
+            return "";
+        }
+    }
+
+    public String editJamiByAc(String ac) {
         if (ac == null) {
             addErrorMessage("Illegal AC", "No AC provided");
             FacesContext.getCurrentInstance().renderResponse();
@@ -89,100 +117,77 @@ public class CurateController extends JpaAwareController {
             if (primary == null){
                 primary = getJamiEntityManager().find(IntactModelledFeature.class, ac);
 
-                if (primary == null){
-                    try {
-                        Class<? extends AnnotatedObject> aoClass = IntactCore.classForAc(getIntactContext(), ac);
-
-                        if (aoClass == null) {
-                            addErrorMessage("Illegal AC", "No annotated object found with this AC: "+ac);
-                            FacesContext.getCurrentInstance().renderResponse();
-                        }
-
-                        AnnotatedObject ao = getDaoFactory().getAnnotatedObjectDao(aoClass).getByAc(ac);
-
-                        if ( ao == null ) {
-                            addErrorMessage( "AC not found", "There is no IntAct object with ac '" + ac + "'" );
-                            return "";
-                        } else {
-                            return edit(ao);
-                        }
-                    } catch (IllegalArgumentException e){
-                        addErrorMessage( "AC not found", "There is no IntAct object with ac '" + ac + "'" );
-                        return "";
-                    }
-                }
-                else{
-                    return edit(primary);
-                }
+                return editJami(primary);
             }
             else{
-                return edit(primary);
+                return editJami(primary);
             }
         }
         else{
-            return edit(primary);
+            return editJami(primary);
         }
     }
 
-    public void save(Object o) {
+    public void save(IntactObject o) {
         save(o, true);
     }
 
-    public void save(Object object, boolean refreshCurrentView) {
-        AnnotatedObjectController annotatedObjectController;
-        if (object instanceof IntactObject){
-            annotatedObjectController = getMetadata((IntactObject)object).getAnnotatedObjectController();
-        }
-        else{
-            annotatedObjectController = getJamiMetadata(((IntactPrimaryObject)object)).getObjController();
-        }
+    public void save(IntactObject object, boolean refreshCurrentView) {
+        AnnotatedObjectController annotatedObjectController = getMetadata(object).getAnnotatedObjectController();
         annotatedObjectController.doSave(refreshCurrentView);
     }
 
-    public void discard(Object object) {
+    public void saveJami(IntactPrimaryObject o) {
+        saveJami(o, true);
+    }
 
-        AnnotatedObjectController annotatedObjectController;
-        if (object instanceof IntactObject){
-            annotatedObjectController = getMetadata((IntactObject)object).getAnnotatedObjectController();
-        }
-        else{
-            annotatedObjectController = getJamiMetadata(((IntactPrimaryObject)object)).getObjController();
-        }
+    public void saveJami(IntactPrimaryObject object, boolean refreshCurrentView) {
+        AnnotatedObjectController annotatedObjectController = getJamiMetadata(object).getObjController();
+        annotatedObjectController.doSave(refreshCurrentView);
+    }
 
+    public void discard(IntactObject object) {
+
+        AnnotatedObjectController annotatedObjectController = getMetadata(object).getAnnotatedObjectController();
         annotatedObjectController.doRevertChanges(null);
     }
 
-    public String cancelEdition(Object object) {
+    public void discardJami(IntactPrimaryObject object) {
 
-        AnnotatedObjectController annotatedObjectController;
-        if (object instanceof IntactObject){
-            annotatedObjectController = getMetadata((IntactObject)object).getAnnotatedObjectController();
-        }
-        else{
-            annotatedObjectController = getJamiMetadata(((IntactPrimaryObject)object)).getObjController();
-        }
+        AnnotatedObjectController annotatedObjectController = getJamiMetadata((object)).getObjController();
+        annotatedObjectController.doRevertChanges(null);
+    }
 
+    public String cancelEdition(IntactObject object) {
+
+        AnnotatedObjectController annotatedObjectController = getMetadata(object).getAnnotatedObjectController();
         return annotatedObjectController.doCancelEdition();
     }
 
-    public String newIntactObject(Object object) {
-        AnnotatedObjectController annotatedObjectController;
-        String slug;
-        if (object instanceof IntactObject){
-            CurateObjectMetadata meta = getMetadata((IntactObject)object);
-            annotatedObjectController = meta.getAnnotatedObjectController();
-            slug = meta.getSlug();
-        }
-        else{
-            CurateJamiMetadata meta = getJamiMetadata(((IntactPrimaryObject)object));
-            annotatedObjectController = meta.getObjController();
-            slug = meta.getSlug();
-        }
-        setCurrentAnnotatedObjectController(annotatedObjectController);
+    public String cancelJamiEdition(IntactPrimaryObject object) {
 
+        AnnotatedObjectController annotatedObjectController = getJamiMetadata((object)).getObjController();
+        return annotatedObjectController.doCancelEdition();
+    }
+
+    public String newIntactObject(IntactObject object) {
+        AnnotatedObjectController annotatedObjectController;
+        CurateObjectMetadata meta = getMetadata(object);
+        annotatedObjectController = meta.getAnnotatedObjectController();
+        setCurrentAnnotatedObjectController(annotatedObjectController);
         getCurrentAnnotatedObjectController().refreshTabsAndFocusXref();
 
-        return "/curate/"+slug;
+        return "/curate/"+meta.getSlug();
+    }
+
+    public String newJamiObject(IntactPrimaryObject object) {
+        AnnotatedObjectController annotatedObjectController;
+        CurateJamiMetadata meta = getJamiMetadata(((IntactPrimaryObject)object));
+        annotatedObjectController = meta.getObjController();
+        setCurrentAnnotatedObjectController(annotatedObjectController);
+        getCurrentAnnotatedObjectController().refreshTabsAndFocusXref();
+
+        return "/curate/"+meta.getSlug();
     }
 
     public CurateObjectMetadata getMetadata(IntactObject intactObject) {
@@ -271,7 +276,53 @@ public class CurateController extends JpaAwareController {
     }
 
     public String openByAc() {
-        return editByAc(acToOpen);
+        if (acToOpen == null) {
+            addErrorMessage("Illegal AC", "No AC provided");
+            FacesContext.getCurrentInstance().renderResponse();
+            return "";
+        }
+
+        acToOpen = acToOpen.trim();
+
+        IntactPrimaryObject primary = getJamiEntityManager().find(IntactComplex.class, acToOpen);
+        if (primary == null){
+            primary = getJamiEntityManager().find(IntactModelledParticipant.class, acToOpen);
+            if (primary == null){
+                primary = getJamiEntityManager().find(IntactModelledFeature.class, acToOpen);
+
+                if (primary == null){
+                    try {
+                        Class<? extends AnnotatedObject> aoClass = IntactCore.classForAc(getIntactContext(), acToOpen);
+
+                        if (aoClass == null) {
+                            addErrorMessage("Illegal AC", "No annotated object found with this AC: "+acToOpen);
+                            FacesContext.getCurrentInstance().renderResponse();
+                        }
+
+                        AnnotatedObject ao = getDaoFactory().getAnnotatedObjectDao(aoClass).getByAc(acToOpen);
+
+                        if ( ao == null ) {
+                            addErrorMessage( "AC not found", "There is no IntAct object with ac '" + acToOpen + "'" );
+                            return "";
+                        } else {
+                            return edit(ao);
+                        }
+                    } catch (IllegalArgumentException e){
+                        addErrorMessage( "AC not found", "There is no IntAct object with ac '" + acToOpen + "'" );
+                        return "";
+                    }
+                }
+                else{
+                    return editJami(primary);
+                }
+            }
+            else{
+                return editJami(primary);
+            }
+        }
+        else{
+            return editJami(primary);
+        }
     }
 
     public boolean isAnnotatedObject(Object obj) {

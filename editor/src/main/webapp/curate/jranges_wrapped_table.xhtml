@@ -77,7 +77,7 @@
                            update=":editorForm:changesPanel,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo" rendered="#{not changesController.isDeletedAc(modelledRangeWrapper.range.ac)}"
                            />
             <p:commandLink id="revertBtn" process="revertBtn" immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
-                           actionListener="#{changesController.revert(modelledRangeWrapper.range)}"
+                           actionListener="#{changesController.revertJami(modelledRangeWrapper.range)}"
                            update=":editorForm:changesPanel,:editorForm:messagesComponent,:editorForm:unsavedChangesInfo" rendered="#{changesController.isDeletedAc(modelledRangeWrapper.range.ac)}"/>
         </p:column>
 

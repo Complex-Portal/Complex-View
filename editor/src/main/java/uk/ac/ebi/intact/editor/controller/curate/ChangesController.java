@@ -17,12 +17,11 @@ package uk.ac.ebi.intact.editor.controller.curate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import psidev.psi.mi.jami.model.*;
+import psidev.psi.mi.jami.model.ModelledFeature;
+import psidev.psi.mi.jami.model.ModelledParticipant;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
@@ -34,11 +33,6 @@ import uk.ac.ebi.intact.jami.model.extension.IntactModelledFeature;
 import uk.ac.ebi.intact.jami.model.extension.IntactModelledParticipant;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.Experiment;
-import uk.ac.ebi.intact.model.Feature;
-import uk.ac.ebi.intact.model.Interaction;
-import uk.ac.ebi.intact.model.Publication;
-import uk.ac.ebi.intact.model.Range;
 import uk.ac.ebi.intact.model.user.User;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
@@ -537,7 +531,7 @@ public class ChangesController extends JpaAwareController implements UserListene
 
             // the object has an ac, we can compare using ac
             if (io.getAc() != null){
-                // change concerning the object, we can remove it because the revert has been done
+                // change concerning the object, we can remove it because the revertJami has been done
                 if (io.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
                     iterator.remove();
                 }
@@ -563,7 +557,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
         }
 
-        // now revert additonal changes related to this revert
+        // now revertJami additonal changes related to this revertJami
         if (!additionnalUnsavedEventToRevert.isEmpty()){
             CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
@@ -574,7 +568,7 @@ public class ChangesController extends JpaAwareController implements UserListene
         }
     }
 
-    public void revert(IntactPrimaryObject io) {
+    public void revertJami(IntactPrimaryObject io) {
         Iterator<UnsavedJamiChange> iterator = getUnsavedJamiChangesForCurrentUser().iterator();
 
         Collection<UnsavedJamiChange> additionnalUnsavedEventToRevert = new ArrayList<UnsavedJamiChange>(getUnsavedJamiChangesForCurrentUser().size());
@@ -585,7 +579,7 @@ public class ChangesController extends JpaAwareController implements UserListene
 
             // the object has an ac, we can compare using ac
             if (io.getAc() != null){
-                // change concerning the object, we can remove it because the revert has been done
+                // change concerning the object, we can remove it because the revertJami has been done
                 if (io.getAc().equals(unsavedChange.getUnsavedObject().getAc())) {
                     iterator.remove();
                 }
@@ -602,7 +596,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
         }
 
-        // now revert additonal changes related to this revert
+        // now revertJami additonal changes related to this revertJami
         if (!additionnalUnsavedEventToRevert.isEmpty()){
             CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
@@ -671,7 +665,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
         }
 
-        // now revert additonal changes related to this revert
+        // now revertJami additonal changes related to this revertJami
         if (!additionnalUnsavedEventToRevert.isEmpty()){
             CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
@@ -740,7 +734,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
         }
 
-        // now revert additonal changes related to this revert
+        // now revertJami additonal changes related to this revertJami
         if (!additionnalUnsavedEventToRevert.isEmpty()){
             CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
@@ -790,7 +784,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
         }
 
-        // now revert additonal changes related to this revert
+        // now revertJami additonal changes related to this revertJami
         if (!additionnalUnsavedEventToRevert.isEmpty()){
             CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
@@ -842,7 +836,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
         }
 
-        // now revert additonal changes related to this revert
+        // now revertJami additonal changes related to this revertJami
         if (!additionnalUnsavedEventToRevert.isEmpty()){
             CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
@@ -910,7 +904,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
         }
 
-        // now revert additonal changes related to this revert
+        // now revertJami additonal changes related to this revertJami
         if (!additionnalUnsavedEventToRevert.isEmpty()){
             CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
@@ -968,7 +962,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
         }
 
-        // now revert additonal changes related to this revert
+        // now revertJami additonal changes related to this revertJami
         if (!additionnalUnsavedEventToRevert.isEmpty()){
             CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
@@ -1017,7 +1011,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
         }
 
-        // now revert additonal changes related to this revert
+        // now revertJami additonal changes related to this revertJami
         if (!additionnalUnsavedEventToRevert.isEmpty()){
             CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
@@ -1056,7 +1050,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             }
         }
 
-        // now revert additonal changes related to this revert
+        // now revertJami additonal changes related to this revertJami
         if (!additionnalUnsavedEventToRevert.isEmpty()){
             CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
 
@@ -1069,11 +1063,11 @@ public class ChangesController extends JpaAwareController implements UserListene
 
     private void checkParentOfUnsavedObject(Collection<String> parentAcs, Iterator<UnsavedChange> iterator, UnsavedChange unsavedChange) {
 
-        // both parent acs are not saved, revert it
+        // both parent acs are not saved, revertJami it
         if (parentAcs.isEmpty() && unsavedChange.getAcsToDeleteOn().isEmpty()){
             iterator.remove();
         }
-        // if one of the parents is saved, checks that the parent acs of the unsaved changes are in common so we don't revert changes not saved which concerns another publication
+        // if one of the parents is saved, checks that the parent acs of the unsaved changes are in common so we don't revertJami changes not saved which concerns another publication
         else if (!parentAcs.isEmpty()){
             boolean haveSameParents = true;
             for (String parentAc : parentAcs) {
@@ -1091,11 +1085,11 @@ public class ChangesController extends JpaAwareController implements UserListene
 
     private void checkParentOfUnsavedObject(Collection<String> parentAcs, Iterator<UnsavedJamiChange> iterator, UnsavedJamiChange unsavedChange) {
 
-        // both parent acs are not saved, revert it
+        // both parent acs are not saved, revertJami it
         if (parentAcs.isEmpty() && unsavedChange.getAcsToDeleteOn().isEmpty()){
             iterator.remove();
         }
-        // if one of the parents is saved, checks that the parent acs of the unsaved changes are in common so we don't revert changes not saved which concerns another publication
+        // if one of the parents is saved, checks that the parent acs of the unsaved changes are in common so we don't revertJami changes not saved which concerns another publication
         else if (!parentAcs.isEmpty()){
             boolean haveSameParents = true;
             for (String parentAc : parentAcs) {

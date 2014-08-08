@@ -160,14 +160,14 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if ( ac != null ) {
                 if ( feature == null || !ac.equals( feature.getAc() ) ) {
-                    setFeature(loadJamiByAc(IntactModelledFeature.class, ac));
+                    setFeature(loadByJamiAc(IntactModelledFeature.class, ac));
                 }
             } else {
                 if ( feature != null ) ac = feature.getAc();
             }
 
             if ( (feature == null && ac != null) || (ac != null && feature != null && !ac.equals( feature.getAc() ))) {
-                setFeature(loadJamiByAc(IntactModelledFeature.class, ac));
+                setFeature(loadByJamiAc(IntactModelledFeature.class, ac));
             }
 
             if (feature == null) {
@@ -232,7 +232,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         refreshRangeWrappers();
         changed();
 
-        return navigateToObject(feature);
+        return navigateToJamiObject(feature);
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
@@ -597,15 +597,15 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         }
     }
 
-    public void removeAlias(Alias alias){
+    public void removeJamiAlias(Alias alias){
         this.feature.getAliases().remove(alias);
     }
 
-    public void removeXref(Xref xref){
+    public void removeJamiXref(Xref xref){
         this.feature.getDbXrefs().remove(xref);
     }
 
-    public void removeAnnotation(Annotation annot){
+    public void removeJamiAnnotation(Annotation annot){
         this.feature.getAnnotations().remove(annot);
     }
 

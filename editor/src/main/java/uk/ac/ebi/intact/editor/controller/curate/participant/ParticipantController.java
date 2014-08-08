@@ -358,7 +358,7 @@ public class ParticipantController extends ParameterizableObjectController {
         participant.setInteractor(null);
         participant.setStoichiometry(getEditorConfig().getDefaultStoichiometry());
 
-        // by setting the interaction of a participant, we don't add the participant to the collection of participants for this interaction so if we revert, it will not affect anything.
+        // by setting the interaction of a participant, we don't add the participant to the collection of participants for this interaction so if we revertJami, it will not affect anything.
         // when saving, it will be added to the list of participants for this interaction. we just have to refresh the list of participants
         participant.setInteraction(interaction);
 

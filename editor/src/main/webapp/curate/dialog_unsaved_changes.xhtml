@@ -9,7 +9,7 @@
     <p:dialog id="unsavedChangesDialog" widgetVar="unsavedChangesDialog" header="Unsaved changes" modal="true"
               position="center"
               width="500">
-
+        <h:outputLabel value="Interaction evidences, publications and experiments: " for="unsavedTable"/>
         <p:dataTable id="unsavedTable" var="change" value="#{changesController.unsavedChangesForCurrentUser}" paginator="true" rows="10"
                 paginatorAlwaysVisible="false">
             <p:column>
@@ -44,18 +44,19 @@
 
 
         </p:dataTable>
+        <h:outputLabel value="Biological complexes: " for="unsavedJamiTable"/>
         <p:dataTable id="unsavedJamiTable" var="change" value="#{changesController.unsavedJamiChangesForCurrentUser}" paginator="true" rows="10"
                      paginatorAlwaysVisible="false">
             <p:column>
-                <p:commandButton value="Edit" action="#{curateController.edit(change.unsavedObject)}" ajax="false"/>
-                <p:commandButton value="Save" actionListener="#{curateController.save(change.unsavedObject)}"
+                <p:commandButton value="Edit" action="#{curateController.editJami(change.unsavedObject)}" ajax="false"/>
+                <p:commandButton value="Save" actionListener="#{curateController.saveJami(change.unsavedObject)}"
                                  onstart="saveDlg.show()" onsuccess="saveDlg.hide()"
                                  update=":editorForm"/>
-                <p:commandButton value="Discard" actionListener="#{curateController.discard(change.unsavedObject)}"
+                <p:commandButton value="Discard" actionListener="#{curateController.discardJami(change.unsavedObject)}"
                                  update=":editorForm"
                                  onclick="revertDlg.show()" oncomplete="revertDlg.hide()" immediate="true"
                                  rendered="#{change.unsavedObject.ac != null}"/>
-                <p:commandButton value="Cancel" action="#{curateController.cancelEdition(change.unsavedObject)}"
+                <p:commandButton value="Cancel" action="#{curateController.cancelJamiEdition(change.unsavedObject)}"
                                  update=":editorForm"
                                  onclick="revertDlg.show()" oncomplete="revertDlg.hide()" immediate="true" rendered="#{change.unsavedObject.ac == null}"/>
             </p:column>

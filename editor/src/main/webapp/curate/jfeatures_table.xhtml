@@ -59,7 +59,7 @@
                             rendered="#{not changesController.isDeletedAc(featureWrapper.feature.ac)}" styleClass="#{featureWrapper.feature.ac == null? 'intact-new' :''}">
                         <f:param name="ac" value="#{featureWrapper.feature.ac}"/>
                     </h:link>
-                    <!--<p:commandLink onclick="load_feature.show()" action="#{curateController.edit(featureWrapper.feature)}"
+                    <!--<p:commandLink onclick="load_feature.show()" action="#{curateController.editJami(featureWrapper.feature)}"
                                    style="#{featureWrapper.feature.ac == null? 'color:blue' :''}"
                                    value="#{featureWrapper.feature.shortName}" ajax="false"/> -->
                 </h:panelGroup>
@@ -79,7 +79,7 @@
 
                 <ui:repeat value="#{featureWrapper.linkedFeatures}" var="linked" varStatus="status">
                     <h:panelGroup rendered="#{linked.ac != null}">
-                        <p:commandLink onclick="load_feature.show()" action="#{curateController.edit(linked)}"
+                        <p:commandLink onclick="load_feature.show()" action="#{curateController.editJami(linked)}"
                                        style="#{linked.ac == null? 'color:blue' :''}"
                                        value="#{linked.shortName}" ajax="false"/>
                     </h:panelGroup>
@@ -125,7 +125,7 @@
                                actionListener="#{modelledParticipantController.markFeatureToDelete(featureWrapper.feature)}"
                                update=":editorForm:participantTabs:featuresPanel :editorForm:changesPanel :editorForm:messagesComponent :editorForm:unsavedChangesInfo" rendered="#{not changesController.isDeletedAc(featureWrapper.feature.ac)}"/>
                 <p:commandLink id="revertBtn" process="revertBtn" immediate="true" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
-                               actionListener="#{changesController.revert(featureWrapper.feature)}"
+                               actionListener="#{changesController.revertJami(featureWrapper.feature)}"
                                update=":editorForm:participantTabs:featuresPanel :editorForm:changesPanel :editorForm:messagesComponent :editorForm:unsavedChangesInfo" rendered="#{changesController.isDeletedAc(featureWrapper.feature.ac)}"/>
             </p:column>
         </p:dataTable>

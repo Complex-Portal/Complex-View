@@ -107,7 +107,7 @@
                                 <h:outputText value="Actions"/>
                             </f:facet>
                             <p:commandLink id="removeXrefBtn" styleClass="ui-icon ui-icon-closethick" process="removeXrefBtn"
-                               actionListener="#{annotatedObjectController.removeXref(xref)}"
+                               actionListener="#{annotatedObjectController.removeJamiXref(xref)}"
                                oncomplete="markAsUnsaved()"
                                update="xrefsTable,#{update}"/>
                         </p:column>

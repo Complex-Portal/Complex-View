@@ -200,7 +200,7 @@ public class ComplexController extends AnnotatedObjectController {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             if ( (complex == null && ac != null) || (ac != null && complex != null && !ac.equals( complex.getAc() ))) {
-                setComplex(loadJamiByAc(IntactComplex.class, ac));
+                setComplex(loadByJamiAc(IntactComplex.class, ac));
             }
 
             if (complex == null) {
@@ -1173,15 +1173,15 @@ public class ComplexController extends AnnotatedObjectController {
         this.complex.getModelledParameters().remove(param);
     }
 
-    public void removeAlias(Alias alias){
+    public void removeJamiAlias(Alias alias){
         this.complex.getAliases().remove(alias);
     }
 
-    public void removeXref(Xref xref){
+    public void removeJamiXref(Xref xref){
         this.complex.getDbXrefs().remove(xref);
     }
 
-    public void removeAnnotation(Annotation annot){
+    public void removeJamiAnnotation(Annotation annot){
         this.complex.getAnnotations().remove(annot);
     }
 
@@ -1199,5 +1199,10 @@ public class ComplexController extends AnnotatedObjectController {
             getJamiEntityManager().detach(reloadedComplex);
             return events;
         }
+    }
+
+    @Override
+    protected boolean isPublicationParent() {
+        return false;
     }
 }

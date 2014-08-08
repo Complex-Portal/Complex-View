@@ -230,7 +230,7 @@ public class PersistenceController extends JpaAwareController {
 
             // checks that the current unsaved change is not obsolete because of a previous change (when saving/deleting, some unsaved change became obsolete and have been removed from the unsaved changes)
             if (changesController.getUnsavedJamiChangesForCurrentUser().contains(unsaved)){
-                curateController.save(object, false);
+                curateController.saveJami(object, false);
             }
         }
 
@@ -344,7 +344,7 @@ public class PersistenceController extends JpaAwareController {
 
             // checks that the current unsaved change is not obsolete because of a previous change (when saving/deleting, some unsaved change became obsolete and have been removed from the unsaved changes)
             if (changesController.getUnsavedJamiChangesForCurrentUser().contains(unsaved)){
-                curateController.discard(object);
+                curateController.discardJami(object);
             }
         }
     }

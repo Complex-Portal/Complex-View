@@ -111,7 +111,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             if ( (participant == null && ac != null) || (ac != null && participant != null && !ac.equals( participant.getAc() ))) {
-                setParticipant(loadJamiByAc(IntactModelledParticipant.class, ac));
+                setParticipant(loadByJamiAc(IntactModelledParticipant.class, ac));
             }
 
             if (participant == null) {
@@ -236,7 +236,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         participant.setBiologicalRole(defaultBiologicalRole);
         participant.setStoichiometry(new DefaultStoichiometry((int)getEditorConfig().getDefaultStoichiometry()));
 
-        // by setting the interaction of a participant, we don't add the participant to the collection of participants for this interaction so if we revert, it will not affect anything.
+        // by setting the interaction of a participant, we don't add the participant to the collection of participants for this interaction so if we revertJami, it will not affect anything.
         // when saving, it will be added to the list of participants for this interaction. we just have to refresh the list of participants
         participant.setInteraction(interaction);
 
@@ -244,7 +244,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
         changed();
 
-        return navigateToObject(participant);
+        return navigateToJamiObject(participant);
     }
 
     public void importInteractor(ActionEvent evt) {
@@ -550,15 +550,15 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         }
     }
 
-    public void removeAlias(Alias alias){
+    public void removeJamiAlias(Alias alias){
         this.participant.getAliases().remove(alias);
     }
 
-    public void removeXref(Xref xref){
+    public void removeJamiXref(Xref xref){
         this.participant.getXrefs().remove(xref);
     }
 
-    public void removeAnnotation(Annotation annot){
+    public void removeJamiAnnotation(Annotation annot){
         this.participant.getAnnotations().remove(annot);
     }
 
@@ -628,6 +628,11 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Override
     protected boolean areXrefsInitialised() {
         return this.participant.areXrefsInitialized();
+    }
+
+    @Override
+    protected boolean isPublicationParent() {
+        return false;
     }
 
 }

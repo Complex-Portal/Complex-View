@@ -47,7 +47,7 @@
                         rendered="#{not changesController.isDeletedAc(participant.ac)}" styleClass="#{participant.ac == null? 'intact-new' :''}">
                     <f:param name="ac" value="#{participant.ac}"/>
                 </h:link>
-                <!--<p:commandLink onclick="load_participant.show()" action="#{curateController.edit(participant)}"
+                <!--<p:commandLink onclick="load_participant.show()" action="#{curateController.editJami(participant)}"
                                value="#{interactor.shortName}" rendered="#{not changesController.isDeletedAc(participant.ac)}"
                                styleClass="#{participant.ac == null? 'intact-new' :''}"
                                ajax="false"/> -->
@@ -145,7 +145,7 @@
                 </div>
                 <div style="float:right">
                     <p:commandLink id="revertBtn" process="revertBtn" title="Revert" styleClass="ui-icon ui-icon-arrowreturnthick-1-w"
-                                   actionListener="#{changesController.revert(participant)}"
+                                   actionListener="#{changesController.revertJami(participant)}"
                                    update=":editorForm:unsavedChangesInfo,:editorForm:changesPanel,:editorForm:messagesComponent"
                                    rendered="#{changesController.isDeletedAc(participant.ac)}"/>
                 </div>

@@ -73,7 +73,6 @@
             <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null or annotatedObjectController.jamiObject != null}">
             <ui:insert name="topActionsPanel"/>
 
-            <h:panelGroup rendered="#{annotatedObjectController.annotatedObject != null or annotatedObjectController.jamiObject != null}">
                 <h:panelGroup id="topSavePanel" style="padding: 10px">
                     <p:commandButton type="button" id="topSaveButton" value="Save" styleClass="important-button"
                                      onclick="save(); return false"/>
@@ -85,7 +84,6 @@
                         </h:outputText>
                     </h:panelGroup>
                 </h:panelGroup>
-            </h:panelGroup>
 
             </h:panelGroup>
         </div>

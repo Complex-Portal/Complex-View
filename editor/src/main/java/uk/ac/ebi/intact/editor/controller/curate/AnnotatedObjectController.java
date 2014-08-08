@@ -153,86 +153,94 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     protected void generalLoadChecks() {
         if (getAnnotatedObject() != null) {
-            ChangesController generalChangesController = (ChangesController) getSpringContext().getBean("changesController");
-            if (generalChangesController.isObjectBeingEdited(getAnnotatedObject(), false)) {
-                String who = generalChangesController.whoIsEditingObject(getAnnotatedObject());
-
-                addWarningMessage("This object is already being edited by: " + who, "Modifications may be lost or affect current work by the other curator");
-            }
-
-            PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
-
-            if (publicationController.getPublication() != null) {
-                Publication publication = publicationController.getPublication();
-
-                if (publication.getStatus() == null) {
-                    // we assume for now that null status means that the publication has been created using an external process (ie. XML import)
-                    LifecycleManager lifecycleManager = getSpringContext().getBean(LifecycleManager.class);
-                    lifecycleManager.getStartStatus().create(publication, "Imported from external source");
-
-                    addWarningMessage("Publication without status", "Assuming that it has been imported. Save it if you are happy with this assumption");
-                    setUnsavedChanges(true);
-                } else if (CvPublicationStatusType.CURATION_IN_PROGRESS.identifier().equals(publication.getStatus().getIdentifier())) {
-                    if (!getUserSessionController().isItMe(publication.getCurrentOwner())) {
-                        addWarningMessage("Publication being curated by '" + publication.getCurrentOwner().getLogin() + "'", "Please do not modify it without permission");
-                    }
-                } else if (CvPublicationStatusType.READY_FOR_CHECKING.identifier().equals(publication.getStatus().getIdentifier())) {
-                    if (!getUserSessionController().isItMe(publication.getCurrentReviewer())) {
-                        addWarningMessage("Publication under review", "This publication is being reviewed by '" + publication.getCurrentReviewer().getLogin() + "'");
-                    }
-                } else if (CvPublicationStatusType.ACCEPTED_ON_HOLD.identifier().equals(publication.getStatus().getIdentifier())) {
-                    addWarningMessage("Publication on-hold", "Reason: " + publicationController.getOnHold());
-                } else if (CvPublicationStatusType.RELEASED.identifier().equals(publication.getStatus().getIdentifier())) {
-                    LifecycleEvent event = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.RELEASED.identifier());
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
-                    addInfoMessage("Publication already released", "This publication was released on " + sdf.format(event.getWhen()));
-                }
-
-            }
+            generalIntactLoadChecks();
         }
         else if (getJamiObject() != null) {
-            ChangesController generalChangesController = (ChangesController) getSpringContext().getBean("changesController");
-            if (generalChangesController.isObjectBeingEdited(getJamiObject(), false)) {
-                String who = generalChangesController.whoIsEditingObject(getJamiObject());
+            generalJamiLoadChecks();
+        }
+    }
 
-                addWarningMessage("This object is already being edited by: " + who, "Modifications may be lost or affect current work by the other curator");
-            }
+    protected void generalJamiLoadChecks() {
+        ChangesController generalChangesController = (ChangesController) getSpringContext().getBean("changesController");
+        if (generalChangesController.isObjectBeingEdited(getJamiObject(), false)) {
+            String who = generalChangesController.whoIsEditingObject(getJamiObject());
 
-            ComplexController complexController = (ComplexController) getSpringContext().getBean("complexController");
+            addWarningMessage("This object is already being edited by: " + who, "Modifications may be lost or affect current work by the other curator");
+        }
 
-            if (complexController.getComplex() != null) {
-                IntactComplex complex = complexController.getComplex();
+        ComplexController complexController = (ComplexController) getSpringContext().getBean("complexController");
 
-                if (complex.getStatus() == null) {
-                    // we assume for now that null status means that the publication has been created using an external process (ie. XML import)
-                    LifeCycleManager lifecycleManager = ApplicationContextProvider.getBean("jamiLifeCycleManager", LifeCycleManager.class);
-                    lifecycleManager.getStartStatus().create(complex, "Imported from external source");
+        if (complexController.getComplex() != null) {
+            IntactComplex complex = complexController.getComplex();
 
-                    addWarningMessage("Complex without status", "Assuming that it has been imported. Save it if you are happy with this assumption");
-                    setUnsavedChanges(true);
-                } else if (LifeCycleStatus.CURATION_IN_PROGRESS.equals(complex.getStatus())) {
-                    if (!getUserSessionController().isJamiUserMe(complex.getCurrentOwner())) {
-                        addWarningMessage("Complex being curated by '" + complex.getCurrentOwner().getLogin() + "'", "Please do not modify it without permission");
-                    }
-                } else if (LifeCycleStatus.READY_FOR_CHECKING.equals(complex.getStatus())) {
-                    if (!getUserSessionController().isJamiUserMe(complex.getCurrentReviewer())) {
-                        addWarningMessage("Complex under review", "This complex is being reviewed by '" + complex.getCurrentReviewer().getLogin() + "'");
-                    }
-                } else if (LifeCycleStatus.ACCEPTED_ON_HOLD.equals(complex.getStatus())) {
-                    addWarningMessage("Complex on-hold", "Reason: " + complexController.getOnHold());
-                } else if (LifeCycleStatus.RELEASED.equals(complex.getStatus())) {
+            if (complex.getCvStatus() == null) {
+                // we assume for now that null status means that the publication has been created using an external process (ie. XML import)
+                LifeCycleManager lifecycleManager = ApplicationContextProvider.getBean("jamiLifeCycleManager", LifeCycleManager.class);
+                lifecycleManager.getStartStatus().create(complex, "Imported from external source");
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
-                    Date releasedDate=null;
-                    for (LifeCycleEvent evt : complex.getLifecycleEvents()){
-                        if (LifeCycleEventType.RELEASED.equals(evt.getEvent())){
-                            releasedDate = evt.getWhen();
-                        }
-                    }
-                    addInfoMessage("Publication already released", "This publication was released on " + (releasedDate != null ? sdf.format(releasedDate) : ""));
+                addWarningMessage("Complex without status", "Assuming that it has been imported. Save it if you are happy with this assumption");
+                setUnsavedChanges(true);
+            } else if (LifeCycleStatus.CURATION_IN_PROGRESS.equals(complex.getStatus())) {
+                if (!getUserSessionController().isJamiUserMe(complex.getCurrentOwner())) {
+                    addWarningMessage("Complex being curated by '" + complex.getCurrentOwner().getLogin() + "'", "Please do not modify it without permission");
                 }
+            } else if (LifeCycleStatus.READY_FOR_CHECKING.equals(complex.getStatus())) {
+                if (!getUserSessionController().isJamiUserMe(complex.getCurrentReviewer())) {
+                    addWarningMessage("Complex under review", "This complex is being reviewed by '" + complex.getCurrentReviewer().getLogin() + "'");
+                }
+            } else if (LifeCycleStatus.ACCEPTED_ON_HOLD.equals(complex.getStatus())) {
+                addWarningMessage("Complex on-hold", "Reason: " + complexController.getOnHold());
+            } else if (LifeCycleStatus.RELEASED.equals(complex.getStatus())) {
+
+                SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
+                Date releasedDate=null;
+                for (LifeCycleEvent evt : complex.getLifecycleEvents()){
+                    if (LifeCycleEventType.RELEASED.equals(evt.getEvent())){
+                        releasedDate = evt.getWhen();
+                    }
+                }
+                addInfoMessage("Publication already released", "This publication was released on " + (releasedDate != null ? sdf.format(releasedDate) : ""));
             }
+        }
+    }
+
+    protected void generalIntactLoadChecks() {
+        ChangesController generalChangesController = (ChangesController) getSpringContext().getBean("changesController");
+        if (generalChangesController.isObjectBeingEdited(getAnnotatedObject(), false)) {
+            String who = generalChangesController.whoIsEditingObject(getAnnotatedObject());
+
+            addWarningMessage("This object is already being edited by: " + who, "Modifications may be lost or affect current work by the other curator");
+        }
+
+        PublicationController publicationController = (PublicationController) getSpringContext().getBean("publicationController");
+
+        if (publicationController.getPublication() != null) {
+            Publication publication = publicationController.getPublication();
+
+            if (publication.getStatus() == null) {
+                // we assume for now that null status means that the publication has been created using an external process (ie. XML import)
+                LifecycleManager lifecycleManager = getSpringContext().getBean(LifecycleManager.class);
+                lifecycleManager.getStartStatus().create(publication, "Imported from external source");
+
+                addWarningMessage("Publication without status", "Assuming that it has been imported. Save it if you are happy with this assumption");
+                setUnsavedChanges(true);
+            } else if (CvPublicationStatusType.CURATION_IN_PROGRESS.identifier().equals(publication.getStatus().getIdentifier())) {
+                if (!getUserSessionController().isItMe(publication.getCurrentOwner())) {
+                    addWarningMessage("Publication being curated by '" + publication.getCurrentOwner().getLogin() + "'", "Please do not modify it without permission");
+                }
+            } else if (CvPublicationStatusType.READY_FOR_CHECKING.identifier().equals(publication.getStatus().getIdentifier())) {
+                if (!getUserSessionController().isItMe(publication.getCurrentReviewer())) {
+                    addWarningMessage("Publication under review", "This publication is being reviewed by '" + publication.getCurrentReviewer().getLogin() + "'");
+                }
+            } else if (CvPublicationStatusType.ACCEPTED_ON_HOLD.identifier().equals(publication.getStatus().getIdentifier())) {
+                addWarningMessage("Publication on-hold", "Reason: " + publicationController.getOnHold());
+            } else if (CvPublicationStatusType.RELEASED.identifier().equals(publication.getStatus().getIdentifier())) {
+                LifecycleEvent event = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.RELEASED.identifier());
+
+                SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
+                addInfoMessage("Publication already released", "This publication was released on " + sdf.format(event.getWhen()));
+            }
+
         }
     }
 
@@ -246,7 +254,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return ao;
     }
 
-    protected <T extends IntactPrimaryObject> T loadJamiByAc(Class<T> cl, String ac) {
+    protected <T extends IntactPrimaryObject> T loadByJamiAc(Class<T> cl, String ac) {
         T ao = (T) changesController.findJamiByAc(ac);
 
         if (ao == null) {
@@ -293,132 +301,142 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         PersistenceController persistenceController = getPersistenceController();
 
         if (getAnnotatedObject() != null){
-            // adjust any xref, just if the curator introduced a value in the primaryId of the xref
-            // and clicked on save without focusing on another field first (which would trigger
-            // a change event and field the values with ajax)
-            if (IntactCore.isInitialized(getAnnotatedObject().getXrefs())) {
-                xrefChanged(null);
-            }
+            doSaveIntact(refreshCurrentView, changesController, persistenceController);
 
-            // check if object already exists in the database before creating a new one
-            try {
-                // if the annotated object does not have an ac, check if another one similar exists in the db
-                if (getAnnotatedObject().getAc() == null) {
-                    Finder finder = (Finder) getSpringContext().getBean("finder");
-
-                    final String ac = finder.findAc(getAnnotatedObject());
-
-                    if (ac != null) {
-                        AnnotatedObject existingAo = getDaoFactory().getEntityManager().find(getAnnotatedObject().getClass(), ac);
-                        addErrorMessage("An identical object exists: " + DebugUtil.annotatedObjectToString(existingAo, false), "Cannot save identical objects");
-                        FacesContext.getCurrentInstance().renderResponse();
-                        return;
-                    }
-                }
-            } catch (Throwable t) {
-                handleException(t);
-            }
-
-            String currentAc = getAnnotatedObject() != null ? getAnnotatedObject().getAc() : null;
-            boolean currentAnnotatedObjectDeleted = false;
-
-            // annotated objects specific tasks to prepare the save/delete
-            doPreSave();
-
-            boolean saved = false;
-
-            // delete from the unsaved manager
-            currentAnnotatedObjectDeleted = processDeleteEvents(currentAc);
-            if (currentAnnotatedObjectDeleted){
-                saved = true;
-            }
-
-            AnnotatedObject annotatedObject = getAnnotatedObject();
-
-            if (!currentAnnotatedObjectDeleted) {
-                saved = persistenceController.doSave(annotatedObject);
-
-                if (saved) {
-                    // saves specific elements for each annotated object (e.g. components in interactions)
-                    boolean detailsSaved = doSaveDetails();
-
-                    if (detailsSaved) saved = true;
-                }
-            }
-
-            if (saved) {
-                lastSaved = new Date();
-                changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject());
-            }
-
-            // we refresh the object if it has been saved
-            if (annotatedObject.getAc() != null && saved) {
-
-                annotatedObject = refresh(annotatedObject);
-            }
-
-            setAnnotatedObject(annotatedObject);
-
-            if (annotatedObject != null) {
-                addInfoMessage("Saved", DebugUtil.annotatedObjectToString(getAnnotatedObject(), false));
-            }
-
-            if (refreshCurrentView) {
-                refreshCurrentViewObject();
-            }
-            doPostSave();
         }
         else{
-            // adjust any xref, just if the curator introduced a value in the primaryId of the xref
-            // and clicked on save without focusing on another field first (which would trigger
-            // a change event and field the values with ajax)
+            doSaveJami(refreshCurrentView, changesController, persistenceController);
 
-            if (areXrefsInitialised()) {
-                jamiXrefChanged(null);
-            }
+        }
+    }
 
-            String currentAc = getJamiObject() != null ? getJamiObject().getAc() : null;
-            boolean currentAnnotatedObjectDeleted = false;
+    protected void doSaveJami(boolean refreshCurrentView, ChangesController changesController, PersistenceController persistenceController) {
+        // adjust any xref, just if the curator introduced a value in the primaryId of the xref
+        // and clicked on save without focusing on another field first (which would trigger
+        // a change event and field the values with ajax)
 
-            // annotated objects specific tasks to prepare the save/delete
-            doPreSave();
+        if (areXrefsInitialised()) {
+            jamiXrefChanged(null);
+        }
 
-            boolean saved = false;
+        String currentAc = getJamiObject() != null ? getJamiObject().getAc() : null;
+        boolean currentAnnotatedObjectDeleted = false;
 
-            // delete from the unsaved manager
-            // delete from the unsaved manager
-            currentAnnotatedObjectDeleted = processDeleteEvents(currentAc);
-            if (currentAnnotatedObjectDeleted){
-                saved = true;
-            }
+        // annotated objects specific tasks to prepare the save/delete
+        doPreSave();
 
-            IntactPrimaryObject annotatedObject = getJamiObject();
+        boolean saved = false;
 
-            if (!currentAnnotatedObjectDeleted) {
-                saved = persistenceController.doSave(annotatedObject, getDbSynchronizer(), this);
+        // delete from the unsaved manager
+        // delete from the unsaved manager
+        currentAnnotatedObjectDeleted = processDeleteEvents(currentAc);
+        if (currentAnnotatedObjectDeleted){
+            saved = true;
+        }
 
-                if (saved) {
-                    // saves specific elements for each annotated object (e.g. components in interactions)
-                    boolean detailsSaved = doSaveDetails();
+        IntactPrimaryObject annotatedObject = getJamiObject();
 
-                    if (detailsSaved) saved = true;
-                }
-            }
+        if (!currentAnnotatedObjectDeleted) {
+            saved = persistenceController.doSave(annotatedObject, getDbSynchronizer(), this);
 
             if (saved) {
-                lastSaved = new Date();
-                changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject(), getDbSynchronizer());
-            }
+                // saves specific elements for each annotated object (e.g. components in interactions)
+                boolean detailsSaved = doSaveDetails();
 
-            if (annotatedObject != null) {
-                addInfoMessage("Saved", annotatedObject.getAc());
+                if (detailsSaved) saved = true;
             }
-
-            if (refreshCurrentView) {
-                refreshCurrentViewObject();
-            }
-            doPostSave();
         }
+
+        if (saved) {
+            lastSaved = new Date();
+            changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject(), getDbSynchronizer());
+        }
+
+        if (annotatedObject != null) {
+            addInfoMessage("Saved", annotatedObject.getAc());
+        }
+
+        if (refreshCurrentView) {
+            refreshCurrentViewObject();
+        }
+        doPostSave();
+    }
+
+    protected void doSaveIntact(boolean refreshCurrentView, ChangesController changesController, PersistenceController persistenceController) {
+        // adjust any xref, just if the curator introduced a value in the primaryId of the xref
+        // and clicked on save without focusing on another field first (which would trigger
+        // a change event and field the values with ajax)
+        if (IntactCore.isInitialized(getAnnotatedObject().getXrefs())) {
+            xrefChanged(null);
+        }
+
+        // check if object already exists in the database before creating a new one
+        try {
+            // if the annotated object does not have an ac, check if another one similar exists in the db
+            if (getAnnotatedObject().getAc() == null) {
+                Finder finder = (Finder) getSpringContext().getBean("finder");
+
+                final String ac = finder.findAc(getAnnotatedObject());
+
+                if (ac != null) {
+                    AnnotatedObject existingAo = getDaoFactory().getEntityManager().find(getAnnotatedObject().getClass(), ac);
+                    addErrorMessage("An identical object exists: " + DebugUtil.annotatedObjectToString(existingAo, false), "Cannot save identical objects");
+                    FacesContext.getCurrentInstance().renderResponse();
+                    return;
+                }
+            }
+        } catch (Throwable t) {
+            handleException(t);
+        }
+
+        String currentAc = getAnnotatedObject() != null ? getAnnotatedObject().getAc() : null;
+        boolean currentAnnotatedObjectDeleted = false;
+
+        // annotated objects specific tasks to prepare the save/delete
+        doPreSave();
+
+        boolean saved = false;
+
+        // delete from the unsaved manager
+        currentAnnotatedObjectDeleted = processDeleteEvents(currentAc);
+        if (currentAnnotatedObjectDeleted){
+            saved = true;
+        }
+
+        AnnotatedObject annotatedObject = getAnnotatedObject();
+
+        if (!currentAnnotatedObjectDeleted) {
+            saved = persistenceController.doSave(annotatedObject);
+
+            if (saved) {
+                // saves specific elements for each annotated object (e.g. components in interactions)
+                boolean detailsSaved = doSaveDetails();
+
+                if (detailsSaved) saved = true;
+            }
+        }
+
+        if (saved) {
+            lastSaved = new Date();
+            changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject());
+        }
+
+        // we refresh the object if it has been saved
+        if (annotatedObject.getAc() != null && saved) {
+
+            annotatedObject = refresh(annotatedObject);
+        }
+
+        setAnnotatedObject(annotatedObject);
+
+        if (annotatedObject != null) {
+            addInfoMessage("Saved", DebugUtil.annotatedObjectToString(getAnnotatedObject(), false));
+        }
+
+        if (refreshCurrentView) {
+            refreshCurrentViewObject();
+        }
+        doPostSave();
     }
 
     protected boolean areXrefsInitialised(){
@@ -463,7 +481,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             IntactPrimaryObject unsavedObject = unsaved.getUnsavedObject();
 
             // when an object is deleted, other deleted events can become obsolete and could have been removed from the deleted change events
-            if (changesController.getAllUnsavedDeleted().contains(unsaved)) {
+            if (changesController.getAllUnsavedJamiDeleted().contains(unsaved)) {
                 // the object to delete is the current object itself. Should delete it now
                 if (unsavedObject.getAc() != null && unsavedObject.getAc().equals(currentAc)) {
 
@@ -508,7 +526,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return annotatedObject;
     }
 
-    private IntactPrimaryObject refresh(IntactPrimaryObject annotatedObject) {
+    private IntactPrimaryObject refreshJami(IntactPrimaryObject annotatedObject) {
 
         if (annotatedObject != null) {
             boolean isNew = false;
@@ -537,38 +555,44 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         final IntactPrimaryObject currentJami = curateController.getCurrentAnnotatedObjectController().getJamiObject();
 
         if (currentAo != null && currentAo.getAc() != null) {
-
-            // we have to refresh because the current annotated object is different from the annotated object of this controller
-            if (getAnnotatedObject() != null && !currentAo.getAc().equals(getAnnotatedObject().getAc())) {
-                if (log.isDebugEnabled())
-                    log.debug("Refreshing object in view: " + DebugUtil.annotatedObjectToString(currentAo, false));
-
-                AnnotatedObject refreshedAo = refresh(currentAo);
-                curateController.getCurrentAnnotatedObjectController().setAnnotatedObject(refreshedAo);
-            } else if (getAnnotatedObject() == null && currentAo != null) {
-                if (log.isDebugEnabled())
-                    log.debug("Refreshing object in view: " + DebugUtil.annotatedObjectToString(currentAo, false));
-
-                AnnotatedObject refreshedAo = refresh(currentAo);
-                curateController.getCurrentAnnotatedObjectController().setAnnotatedObject(refreshedAo);
-            }
+            refreshCurrentViewIntactObject(curateController, currentAo);
         }
         else if (currentJami != null && currentJami.getAc() != null) {
+            refreshCurrentViewJamiObject(curateController, currentJami);
+        }
+    }
 
-            // we have to refresh because the current annotated object is different from the annotated object of this controller
-            if (getJamiObject() != null && !currentJami.getAc().equals(getJamiObject().getAc())) {
-                if (log.isDebugEnabled())
-                    log.debug("Refreshing object in view: " + currentJami.getAc());
+    protected void refreshCurrentViewJamiObject(CurateController curateController, IntactPrimaryObject currentJami) {
+        // we have to refresh because the current annotated object is different from the annotated object of this controller
+        if (getJamiObject() != null && !currentJami.getAc().equals(getJamiObject().getAc())) {
+            if (log.isDebugEnabled())
+                log.debug("Refreshing object in view: " + currentJami.getAc());
 
-                IntactPrimaryObject refreshedAo = refresh(currentJami);
-                curateController.getCurrentAnnotatedObjectController().setJamiObject(refreshedAo);
-            } else if (getJamiObject() == null && currentJami != null) {
-                if (log.isDebugEnabled())
-                    log.debug("Refreshing object in view: " + currentJami.getAc());
+            IntactPrimaryObject refreshedAo = refreshJami(currentJami);
+            curateController.getCurrentAnnotatedObjectController().setJamiObject(refreshedAo);
+        } else if (getJamiObject() == null && currentJami != null) {
+            if (log.isDebugEnabled())
+                log.debug("Refreshing object in view: " + currentJami.getAc());
 
-                IntactPrimaryObject refreshedAo = refresh(currentJami);
-                curateController.getCurrentAnnotatedObjectController().setJamiObject(refreshedAo);
-            }
+            IntactPrimaryObject refreshedAo = refreshJami(currentJami);
+            curateController.getCurrentAnnotatedObjectController().setJamiObject(refreshedAo);
+        }
+    }
+
+    protected void refreshCurrentViewIntactObject(CurateController curateController, AnnotatedObject currentAo) {
+        // we have to refresh because the current annotated object is different from the annotated object of this controller
+        if (getAnnotatedObject() != null && !currentAo.getAc().equals(getAnnotatedObject().getAc())) {
+            if (log.isDebugEnabled())
+                log.debug("Refreshing object in view: " + DebugUtil.annotatedObjectToString(currentAo, false));
+
+            AnnotatedObject refreshedAo = refresh(currentAo);
+            curateController.getCurrentAnnotatedObjectController().setAnnotatedObject(refreshedAo);
+        } else if (getAnnotatedObject() == null && currentAo != null) {
+            if (log.isDebugEnabled())
+                log.debug("Refreshing object in view: " + DebugUtil.annotatedObjectToString(currentAo, false));
+
+            AnnotatedObject refreshedAo = refresh(currentAo);
+            curateController.getCurrentAnnotatedObjectController().setAnnotatedObject(refreshedAo);
         }
     }
 
@@ -591,7 +615,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             if (log.isDebugEnabled())
                 log.debug("Refreshing object in view: " + currentJami.getAc());
 
-            IntactPrimaryObject refreshedAo = refresh(currentJami);
+            IntactPrimaryObject refreshedAo = refreshJami(currentJami);
             curateController.getCurrentAnnotatedObjectController().setJamiObject(refreshedAo);
         }
     }
@@ -625,7 +649,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         }else if (getJamiObject() != null && getJamiObject().getAc() == null) {
             doCancelEdition();
         } else {
-            // revert first all unsaved events attached to any children of this object (will avoid to persist new annotations on children eg. copy publication annotations to experiments
+            // revertJami first all unsaved events attached to any children of this object (will avoid to persist new annotations on children eg. copy publication annotations to experiments
             // could not be reverted otherwise)
             refreshUnsavedChangesBeforeRevert();
 
@@ -661,7 +685,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             changesController.revert(getAnnotatedObject());
         }
         else{
-            changesController.revert(getJamiObject());
+            changesController.revertJami(getJamiObject());
         }
     }
 
@@ -678,7 +702,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         setUnsavedChanges(true);
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
         if (getAnnotatedObject() != null){
             return clone(getAnnotatedObject(), newClonerInstance());
@@ -711,7 +734,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         setJamiObject(clone);
         setUnsavedChanges(true);
         refreshTabsAndFocusXref();
-        return getCurateController().edit(clone);
+        return getCurateController().editJami(clone);
     }
 
     protected <T extends AnnotatedObject> T cloneAnnotatedObject(T ao, IntactCloner cloner) {
@@ -754,9 +777,15 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             setJamiObject(null);
             return goToParent();
         }
+
         // if delete not successfull, just display the message and don't go to the parent because the message will be lost
         // keep editing this object
-        return curateController.edit(getAnnotatedObject() != null ? getAnnotatedObject() : getJamiObject());
+        if (getAnnotatedObject() != null){
+            return curateController.edit(getAnnotatedObject());
+        }
+        else{
+            return curateController.editJami(getJamiObject());
+        }
     }
 
     // XREFS
@@ -1026,16 +1055,16 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return extUrl.replaceAll("\\$\\{ac\\}", xref.getPrimaryId());
     }
 
-    protected String navigateToObject(Object annotatedObject) {
+    protected String navigateToObject(AnnotatedObject annotatedObject) {
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
-
-        if (annotatedObject instanceof AnnotatedObject){
-            setAnnotatedObject((AnnotatedObject)annotatedObject);
-        }
-        else{
-            setJamiObject((IntactPrimaryObject)annotatedObject);
-        }
+        setAnnotatedObject(annotatedObject);
         return curateController.newIntactObject(annotatedObject);
+    }
+
+    protected String navigateToJamiObject(IntactPrimaryObject annotatedObject) {
+        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+        setJamiObject(annotatedObject);
+        return curateController.newJamiObject(annotatedObject);
     }
 
     // ANNOTATIONS
