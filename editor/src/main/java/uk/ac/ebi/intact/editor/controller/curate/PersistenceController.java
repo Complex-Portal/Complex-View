@@ -90,14 +90,14 @@ public class PersistenceController extends JpaAwareController {
     }
 
     @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
-    public boolean doSave( IntactPrimaryObject object, IntactDbSynchronizer dbSynchronizer) {
+    public boolean doSave( IntactPrimaryObject object, IntactDbSynchronizer dbSynchronizer, AnnotatedObjectController controller) {
         if ( object == null ) {
             addErrorMessage( "No annotated object to save", "How did I get here?" );
             return false;
         }
 
         try {
-            dbSynchronizer.synchronize(object, true);
+            controller.setJamiObject((IntactPrimaryObject)dbSynchronizer.synchronize(object, true));
 
             return true;
 

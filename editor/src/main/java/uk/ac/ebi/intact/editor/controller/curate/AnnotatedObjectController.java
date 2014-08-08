@@ -395,7 +395,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             IntactPrimaryObject annotatedObject = getJamiObject();
 
             if (!currentAnnotatedObjectDeleted) {
-                saved = persistenceController.doSave(annotatedObject, getDbSynchronizer());
+                saved = persistenceController.doSave(annotatedObject, getDbSynchronizer(), this);
 
                 if (saved) {
                     // saves specific elements for each annotated object (e.g. components in interactions)
@@ -409,14 +409,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                 lastSaved = new Date();
                 changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject(), getDbSynchronizer());
             }
-
-            // we refresh the object if it has been saved
-            if (annotatedObject.getAc() != null && saved) {
-
-                annotatedObject = refresh(annotatedObject);
-            }
-
-            setJamiObject(annotatedObject);
 
             if (annotatedObject != null) {
                 addInfoMessage("Saved", annotatedObject.getAc());
