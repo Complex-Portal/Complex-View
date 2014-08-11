@@ -366,7 +366,7 @@
 
         <p:fieldset legend="Events">
 
-            <p:dataTable var="event" value="#{complexController.lifecycleEvents}" rendered="#{!complexController.isLifeCycleDisabled()}">
+            <p:dataTable var="event" value="#{complexController.collectLifecycleEvents()}" rendered="#{!complexController.isLifeCycleDisabled()}">
                 <p:column headerText="Date">
                     <h:outputText value="#{event.when}">
                         <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
