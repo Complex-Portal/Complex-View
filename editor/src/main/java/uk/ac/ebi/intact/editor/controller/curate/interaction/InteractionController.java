@@ -22,10 +22,8 @@ import org.hibernate.Hibernate;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
@@ -885,7 +883,7 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public void setImexId(String imexId) {
-        setXref(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId);
+        updateXref(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId);
     }
 
     public void setAc( String ac ) {
@@ -954,7 +952,7 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     public void setFigureLegend(String figureLegend) {
-        setAnnotation(FIG_LEGEND, figureLegend);
+        updateAnnotation(FIG_LEGEND, figureLegend);
     }
 
     //////////////////////////////////

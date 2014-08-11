@@ -375,7 +375,7 @@ public class ExperimentController extends AnnotatedObjectController {
             removeAnnotation(CvTopic.TO_BE_REVIEWED);
         }
 
-        setAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
+        updateAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
     }
 
     public String getToBeReviewed() {
@@ -431,7 +431,7 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public void setAcceptedMessage( String message ) {
-        setAnnotation( CvTopic.ACCEPTED, message );
+        updateAnnotation(CvTopic.ACCEPTED, message);
     }
 
     public boolean isAccepted(Experiment exp) {
@@ -469,7 +469,7 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public void setOnHold( String reason ) {
-        setAnnotation( CvTopic.ON_HOLD, reason );
+        updateAnnotation(CvTopic.ON_HOLD, reason);
     }
 
     public String moveToPublication() {
@@ -490,7 +490,7 @@ public class ExperimentController extends AnnotatedObjectController {
 
             // update the primary reference when moving the experiment
             if (publication.getPublicationId() != null) {
-                setXref(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE, publication.getShortLabel());
+                updateXref(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE, publication.getShortLabel());
             }
 
             copyPublicationAnnotations(null);
@@ -603,7 +603,7 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     public void setCorrectionComment(String correctionComment) {
-        setAnnotation(CvTopic.CORRECTION_COMMENT, correctionComment);
+        updateAnnotation(CvTopic.CORRECTION_COMMENT, correctionComment);
     }
 
     public String getCorrectedComment() {

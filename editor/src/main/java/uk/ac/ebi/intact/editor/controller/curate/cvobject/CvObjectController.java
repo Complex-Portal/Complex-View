@@ -212,7 +212,7 @@ public class CvObjectController extends AnnotatedObjectController {
 
     public void setUsedIn(String[] usedIn) {
         String usedInArr = StringUtils.join(usedIn, ",");
-        super.setAnnotation(CvTopic.USED_IN_CLASS, usedInArr);
+        super.updateAnnotation(CvTopic.USED_IN_CLASS, usedInArr);
     }
 
     public String getAc() {

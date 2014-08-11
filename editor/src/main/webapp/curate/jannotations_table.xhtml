@@ -16,7 +16,8 @@
                                  update="annotationsTable #{update}"/>
         </div>
 
-        <p:dataTable id="annotationsTable" var="annotation" value="#{annotatedObjectController.annotations}">
+        <p:dataTable id="annotationsTable" var="annotation" value="#{annotatedObjectController.collectnnotations()}"
+                     rendered="#{!annotatedObjectController.isAnnotationTopicDisabled()}">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Topic"/>

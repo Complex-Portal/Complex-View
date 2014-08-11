@@ -15,7 +15,8 @@
                              update="aliasTable #{update}"/>
         </div>
 
-        <p:dataTable id="aliasTable" var="alias" value="#{annotatedObjectController.aliases}">
+        <p:dataTable id="aliasTable" var="alias" value="#{annotatedObjectController.collectAliases()}"
+                     rendered="#{!annotatedObjectController.isAliasDisabled()}">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Type"/>

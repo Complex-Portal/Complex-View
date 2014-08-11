@@ -105,7 +105,7 @@ public class InstitutionController extends AnnotatedObjectController {
     }
 
     public void setPostalAddress(String address) {
-        setAnnotation("postaladdress", address);
+        updateAnnotation("postaladdress", address);
     }
 
     public String getUrl() {
@@ -113,6 +113,6 @@ public class InstitutionController extends AnnotatedObjectController {
     }
 
     public void setUrl(String address) {
-        setAnnotation(CvTopic.URL_MI_REF, address);
+        updateAnnotation(CvTopic.URL_MI_REF, address);
     }
 }

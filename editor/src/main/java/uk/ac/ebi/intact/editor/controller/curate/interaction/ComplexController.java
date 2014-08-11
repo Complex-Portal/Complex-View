@@ -577,12 +577,12 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     @Override
-    public List getAnnotations() {
+    public List collectAnnotations() {
         return new ArrayList(this.complex.getAnnotations());
     }
 
     @Override
-    public List getAliases() {
+    public List collectAliases() {
         return new ArrayList(this.complex.getAliases());
     }
 
@@ -618,7 +618,7 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Override
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public List getXrefs() {
+    public List collectXrefs() {
         if (!this.complex.areXrefsInitialized()){
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
             setComplex(reloadedComplex);
@@ -983,7 +983,7 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isBeenRejectedBefore() {
-        for (LifeCycleEvent evt : getLifecycleEvents()) {
+        for (LifeCycleEvent evt : collectLifecycleEvents()) {
             if (LifeCycleEventType.REJECTED.equals(evt.getEvent())) {
                 return true;
             }
@@ -1134,7 +1134,7 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public Collection<ModelledConfidence> getConfidences() {
+    public Collection<ModelledConfidence> collectConfidences() {
         if (this.complex.areConfidencesInitialized()){
             return this.complex.getModelledConfidences();
         }
@@ -1150,7 +1150,7 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public Collection<ModelledParameter> getParameters() {
+    public Collection<ModelledParameter> collectParameters() {
         if (this.complex.areConfidencesInitialized()){
             return this.complex.getModelledParameters();
         }
@@ -1186,7 +1186,7 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public Collection<LifeCycleEvent> getLifecycleEvents() {
+    public Collection<LifeCycleEvent> collectLifecycleEvents() {
         if (this.complex.areLifeCycleEventsInitialized()){
             return this.complex.getLifecycleEvents();
         }

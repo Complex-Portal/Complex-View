@@ -516,7 +516,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     @Override
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public List getXrefs() {
+    public List collectXrefs() {
         if (!this.feature.areXrefsInitialized()){
             IntactModelledFeature reloaded = getJamiEntityManager().merge(this.feature);
             setFeature(reloaded);
@@ -530,7 +530,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     @Override
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public List getAliases() {
+    public List collectAliases() {
         if (!this.feature.areAliasesInitialized()){
             IntactModelledFeature reloaded = getJamiEntityManager().merge(this.feature);
             setFeature(reloaded);
@@ -544,7 +544,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     @Override
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public List getAnnotations() {
+    public List collectAnnotations() {
         if (!this.feature.areAnnotationsInitialized()){
             IntactModelledFeature reloaded = getJamiEntityManager().merge(this.feature);
             setFeature(reloaded);

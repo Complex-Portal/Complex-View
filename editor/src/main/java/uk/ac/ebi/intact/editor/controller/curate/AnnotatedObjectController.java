@@ -801,7 +801,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         CvDatabase goDb = null;
 
-        for (Object obj : getXrefs()) {
+        for (Object obj : collectXrefs()) {
             Xref xref = (Xref)obj;
             if (xref.getPrimaryId() != null &&
                     (xref.getPrimaryId().startsWith("go:") ||
@@ -844,7 +844,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         CvTerm goDb = null;
 
-        for (Object obj : getXrefs()) {
+        for (Object obj : collectXrefs()) {
             AbstractIntactXref xref = (AbstractIntactXref)obj;
             if (xref.getId() != null &&
                     (xref.getId().startsWith("go:") ||
@@ -930,11 +930,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         setUnsavedChanges(true);
     }
 
-    public List getXrefs() {
+    public List collectXrefs() {
         return getAnnotatedObjectHelper().getXrefs();
     }
 
-    public void setXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
+    public void updateXref(String databaseIdOrLabel, String qualifierIdOrLabel, String primaryId) {
         getAnnotatedObjectHelper().setXref(databaseIdOrLabel, qualifierIdOrLabel, primaryId, null);
     }
 
@@ -1098,7 +1098,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         setUnsavedChanges(true);
     }
 
-    public void setAnnotation(String topicIdOrLabel, Object value) {
+    public void updateAnnotation(String topicIdOrLabel, Object value) {
         getAnnotatedObjectHelper().setAnnotation(topicIdOrLabel, value);
     }
 
@@ -1106,11 +1106,11 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return getAnnotatedObjectHelper().findAnnotationText(topicId);
     }
 
-    public List getAnnotations() {
+    public List collectAnnotations() {
         return getAnnotatedObjectHelper().getAnnotations();
     }
 
-    public List<AnnotatedObject> getParentsByAnnotationAc(String annotationAc) {
+    public List<AnnotatedObject> collectParentsByAnnotationAc(String annotationAc) {
         return getDaoFactory().getAnnotationDao().getParentsWithAnnotationAc(annotationAc);
     }
 
@@ -1139,7 +1139,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         setUnsavedChanges(true);
     }
 
-    public List getAliases() {
+    public List collectAliases() {
         return getAnnotatedObjectHelper().getAliases();
     }
 

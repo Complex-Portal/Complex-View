@@ -20,9 +20,9 @@
                                              update="xrefsTable #{update}"/>
                     </div>
 
-                    <p:dataTable id="xrefsTable" var="xref" value="#{annotatedObjectController.xrefs}"
+                    <p:dataTable id="xrefsTable" var="xref" value="#{annotatedObjectController.collectXrefs()}"
                                  rowIndexVar="xrefIndex"
-                                 style="width:100%">
+                                 style="width:100%" rendered="#{!annotatedObjectController.isXrefDisabled()}">
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="Database"/>

@@ -26,10 +26,8 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.cdb.webservice.Authors;
@@ -46,7 +44,6 @@ import uk.ac.ebi.intact.dataexchange.imex.idassigner.ImexCentralManager;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.PublicationImexUpdaterException;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
-import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
@@ -961,7 +958,7 @@ public class PublicationController extends AnnotatedObjectController {
 
 
     public void setJournal(String journal) {
-        setAnnotation(CvTopic.JOURNAL_MI_REF, journal);
+        updateAnnotation(CvTopic.JOURNAL_MI_REF, journal);
     }
 
     public String getContactEmail() {
@@ -969,7 +966,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setContactEmail(String contactEmail) {
-        setAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, contactEmail);
+        updateAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, contactEmail);
     }
 
     public String getSubmitted() {
@@ -977,7 +974,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setSubmitted(String submitted) {
-        setAnnotation(SUBMITTED, submitted);
+        updateAnnotation(SUBMITTED, submitted);
     }
 
     public String getCurationRequest() {
@@ -985,7 +982,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setCurationRequest(String requestedCuration) {
-        setAnnotation(CURATION_REQUEST, requestedCuration);
+        updateAnnotation(CURATION_REQUEST, requestedCuration);
     }
 
     public Short getYear() {
@@ -999,7 +996,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setYear(Short year) {
-        setAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, year);
+        updateAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, year);
     }
 
     public String getIdentifier() {
@@ -1044,7 +1041,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setPrimaryReference(String id) {
-        setXref(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id);
+        updateXref(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id);
     }
 
     public String getAuthors() {
@@ -1052,7 +1049,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setAuthors(String authors) {
-        setAnnotation(CvTopic.AUTHOR_LIST_MI_REF, authors);
+        updateAnnotation(CvTopic.AUTHOR_LIST_MI_REF, authors);
     }
 
     public String getOnHold() {
@@ -1060,7 +1057,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setOnHold(String reason) {
-        setAnnotation(CvTopic.ON_HOLD, reason);
+        updateAnnotation(CvTopic.ON_HOLD, reason);
     }
 
     public void setExperimentAnnotation(String topic, String text) {
@@ -1146,7 +1143,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setCurationDepthAnnot(String curationDepth) {
-        setAnnotation(CURATION_DEPTH, curationDepth);
+        updateAnnotation(CURATION_DEPTH, curationDepth);
     }
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
@@ -1189,7 +1186,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setAcceptedMessage(String message) {
-        setAnnotation(CvTopic.ACCEPTED, message);
+        updateAnnotation(CvTopic.ACCEPTED, message);
     }
 
     public boolean isToBeReviewed(Publication pub) {
@@ -1209,7 +1206,7 @@ public class PublicationController extends AnnotatedObjectController {
     }
 
     public void setImexId(String imexId) {
-        setXref(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId);
+        updateXref(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId);
     }
 
     public String getPublicationTitle() {
@@ -1405,7 +1402,7 @@ public class PublicationController extends AnnotatedObjectController {
             removeAnnotation(CvTopic.TO_BE_REVIEWED);
         }
 
-        setAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
+        updateAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
     }
 
     public String getToBeReviewed() {

@@ -450,7 +450,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     @Override
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public List getXrefs() {
+    public List collectXrefs() {
         if (!this.participant.areXrefsInitialized()){
             IntactModelledParticipant reloaded = getJamiEntityManager().merge(this.participant);
             setParticipant(reloaded);
@@ -464,7 +464,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     @Override
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public List getAliases() {
+    public List collectAliases() {
         if (!this.participant.areAliasesInitialized()){
             IntactModelledParticipant reloaded = getJamiEntityManager().merge(this.participant);
             setParticipant(reloaded);
@@ -478,7 +478,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     @Override
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public List getAnnotations() {
+    public List collectAnnotations() {
         if (!this.participant.areAnnotationsInitialized()){
             IntactModelledParticipant reloaded = getJamiEntityManager().merge(this.participant);
             setParticipant(reloaded);

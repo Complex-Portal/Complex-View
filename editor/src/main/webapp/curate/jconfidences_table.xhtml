@@ -16,7 +16,8 @@
                              update="confidencesTable #{update}"/>
         </div>
 
-        <p:dataTable id="confidencesTable" var="confidence" value="#{complexController.confidences}">
+        <p:dataTable id="confidencesTable" var="confidence" value="#{complexController.collectConfidences()}"
+                     rendered="#{!complexController.isConfidenceDisabled()}">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Type"/>

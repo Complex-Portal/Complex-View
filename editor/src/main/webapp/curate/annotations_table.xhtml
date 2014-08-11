@@ -16,7 +16,7 @@
                                  update="annotationsTable #{update}"/>
         </div>
 
-        <p:dataTable id="annotationsTable" var="annotation" value="#{annotatedObjectController.annotations}">
+        <p:dataTable id="annotationsTable" var="annotation" value="#{annotatedObjectController.collectAnnotations()}">
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="AC"/>
@@ -24,7 +24,7 @@
                 <h:outputText value="#{annotation.ac}"/>
 
                 <h:panelGroup rendered="#{annotation.ac != null}">
-                    <h:panelGroup rendered="#{annotatedObjectController.getParentsByAnnotationAc(annotation.ac).size() gt 1}">
+                    <h:panelGroup rendered="#{annotatedObjectController.collectParentsByAnnotationAc(annotation.ac).size() gt 1}">
                         <span class="ui-icon ui-icon-alert" style="display:inline-block"
                                   title="This annotation is shared by multiple objects: #{curatorContextController.acList(annotatedObjectController.getParentsByAnnotationAc(annotation.ac))}"/>
 
