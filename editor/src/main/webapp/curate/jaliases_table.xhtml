@@ -23,7 +23,7 @@
                 </f:facet>
                 <h:selectOneMenu id="aliasTypeSel" value="#{alias.type}" required="true"
                                  requiredMessage="Alias type is required" disabled="#{annotatedObjectController.isAliasDisabled()
-                                 and annotatedObjectController.isAliasNotEditable(alias)}" converter="cvTermConverter">
+                                 or annotatedObjectController.isAliasNotEditable(alias)}" converter="cvTermConverter">
                     <f:selectItems value="#{aliasTypeSelectItems}"/>
                 </h:selectOneMenu>
             </p:column>
