@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
@@ -45,6 +46,9 @@ import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
 import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.jami.model.extension.IntactModelledParticipant;
 import uk.ac.ebi.intact.jami.model.extension.IntactStoichiometry;
+import uk.ac.ebi.intact.jami.synchronizer.FinderException;
+import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
+import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 
 import javax.annotation.PostConstruct;
@@ -136,7 +140,7 @@ public class ModelledParticipantImportController extends JpaAwareController {
         participantsToImport = new String[0];
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void importSelected(ActionEvent evt) {
         for (ImportJamiCandidate candidate : importCandidates) {
             if (candidate.isSelected()) {
@@ -353,7 +357,18 @@ public class ModelledParticipantImportController extends JpaAwareController {
             cvBiologicalRole = cvObjectService.getByMIIdentifier(Participant.UNSPECIFIED_ROLE, IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
         }
 
-        IntactModelledParticipant component = new IntactModelledParticipant(interactor);
+        IntactModelledParticipant component = null;
+        try {
+            component = new IntactModelledParticipant(getIntactDao().
+                    getSynchronizerContext().
+                    getInteractorSynchronizer().synchronize(interactor, true));
+        } catch (FinderException e) {
+            addErrorMessage("Cannot import interactor " + interactor, ExceptionUtils.getFullStackTrace(e));
+        } catch (PersisterException e) {
+            addErrorMessage("Cannot import interactor " + interactor, ExceptionUtils.getFullStackTrace(e));
+        } catch (SynchronizerException e) {
+            addErrorMessage("Cannot import interactor " + interactor, ExceptionUtils.getFullStackTrace(e));
+        }
         UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
         component.setCreator(jamiUserContext.getUserId());
         component.setUpdator(jamiUserContext.getUserId());

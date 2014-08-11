@@ -16,6 +16,7 @@
 package uk.ac.ebi.intact.editor.controller.curate.participant;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
@@ -39,7 +40,10 @@ import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.*;
+import uk.ac.ebi.intact.jami.synchronizer.FinderException;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
+import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
+import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.CvTopic;
@@ -255,6 +259,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void addInteractorToParticipant(ActionEvent evt) {
         for (ImportJamiCandidate importCandidate : interactorCandidates) {
             if (importCandidate.isSelected()) {
@@ -266,7 +271,18 @@ public class ModelledParticipantController extends AnnotatedObjectController {
                         addParentAcsTo(parentAcs, (IntactComplex)participant.getInteraction());
                     }
                 }
-                participant.setInteractor(importCandidate.getInteractor());
+                try {
+                    participant.setInteractor(getIntactDao().
+                            getSynchronizerContext().
+                            getInteractorSynchronizer().
+                            synchronize(importCandidate.getInteractor(), true));
+                } catch (FinderException e) {
+                    addErrorMessage("Cannot import interactor " + importCandidate.getInteractor(), ExceptionUtils.getFullStackTrace(e));
+                } catch (PersisterException e) {
+                    addErrorMessage("Cannot import interactor " + importCandidate.getInteractor(), ExceptionUtils.getFullStackTrace(e));
+                } catch (SynchronizerException e) {
+                    addErrorMessage("Cannot import interactor " + importCandidate.getInteractor(), ExceptionUtils.getFullStackTrace(e));
+                }
 
                 // if the participant is a new participant, we don't need to add a unsaved notice because one already exists for creating a new participant
                 if (participant.getAc() != null){
