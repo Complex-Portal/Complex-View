@@ -1151,7 +1151,7 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public Collection<ModelledParameter> collectParameters() {
-        if (this.complex.areConfidencesInitialized()){
+        if (this.complex.areParametersInitialized()){
             return this.complex.getModelledParameters();
         }
         else{
