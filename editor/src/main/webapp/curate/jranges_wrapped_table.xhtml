@@ -94,7 +94,7 @@
                 <h:selectOneMenu id="linkedParticipantMenu" value="#{modelledRangeWrapper.range.participant}" converter="modelledParticipantConverter"
                                  rendered="#{modelledFeatureController.complexFeature}">
                     <f:ajax event="valueChange" render=":editorForm:featureTabs:rangesPanel :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                            process="@this" onevent="markAsUnsaved()"/>
+                            process="@this" onevent="markAsUnsaved()" listener="#{modelledRangeWrapper.onSeqenceChanged}"/>
                     <f:selectItems value="#{participantSelectItems}"/>
                 </h:selectOneMenu>
             </h:panelGrid>

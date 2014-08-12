@@ -18,7 +18,6 @@ package uk.ac.ebi.intact.editor.controller.curate.feature;
 import psidev.psi.mi.jami.exception.IllegalRangeException;
 import psidev.psi.mi.jami.utils.RangeUtils;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
-import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.extension.ModelledRange;
 import uk.ac.ebi.intact.jami.model.extension.ModelledResultingSequence;
 import uk.ac.ebi.intact.jami.synchronizer.FinderException;
@@ -42,7 +41,7 @@ public class ModelledRangeWrapper {
     private String sequence;
     private String rangeAsString;
 
-    public ModelledRangeWrapper(ModelledRange range, String sequence) {
+    public ModelledRangeWrapper(ModelledRange range, String sequence, ModelledFeatureController featureController) {
         this.range = range;
         this.rangeAsString = RangeUtils.convertRangeToString(range);
         this.sequence = sequence;
@@ -50,10 +49,25 @@ public class ModelledRangeWrapper {
 
     public void onRangeAsStringChanged(AjaxBehaviorEvent evt) throws PersisterException, FinderException, SynchronizerException, IllegalRangeException {
         psidev.psi.mi.jami.model.Range newRange = RangeUtils.createRangeFromString(rangeAsString, false);
-        newRange.setResultingSequence(new ModelledResultingSequence(RangeUtils.extractRangeSequence(newRange, this.sequence), null));
 
-        IntactDao dao = ApplicationContextProvider.getBean("intactDao");
-        this.range = dao.getSynchronizerContext().getModelledRangeSynchronizer().synchronize(newRange, false);
+        this.range.setPositions(newRange.getStart(), newRange.getEnd());
+        this.range.setResultingSequence(new ModelledResultingSequence(RangeUtils.extractRangeSequence(this.range, this.sequence), null));
+
+        ModelledFeatureController featureController = ApplicationContextProvider.getBean("modelledFeatureController");
+        featureController.refreshRangeProperties(this.range);
+    }
+
+    public void onSequenceChanged(AjaxBehaviorEvent evt) throws PersisterException, FinderException, SynchronizerException, IllegalRangeException {
+        // override sequence if range has a participant
+        if (range.getParticipant() != null){
+            psidev.psi.mi.jami.model.Interactor interactor = range.getParticipant().getInteractor();
+
+            if (interactor instanceof psidev.psi.mi.jami.model.Polymer) {
+                psidev.psi.mi.jami.model.Polymer polymer = (psidev.psi.mi.jami.model.Polymer) interactor;
+                sequence = polymer.getSequence();
+            }
+        }
+        this.range.setResultingSequence(new ModelledResultingSequence(RangeUtils.extractRangeSequence(this.range, this.sequence), null));
     }
 
     public void onFuzzyTypeChanged(AjaxBehaviorEvent evt) {

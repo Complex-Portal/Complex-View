@@ -173,14 +173,6 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
-            if ( ac != null ) {
-                if ( feature == null || !ac.equals( feature.getAc() ) ) {
-                    setFeature(loadByJamiAc(IntactModelledFeature.class, ac));
-                }
-            } else {
-                if ( feature != null ) ac = feature.getAc();
-            }
-
             if ( (feature == null && ac != null) || (ac != null && feature != null && !ac.equals( feature.getAc() ))) {
                 setFeature(loadByJamiAc(IntactModelledFeature.class, ac));
             }
@@ -218,7 +210,16 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         containsInvalidRanges = false;
 
         for (psidev.psi.mi.jami.model.Range range : feature.getRanges()) {
-            rangeWrappers.add(new ModelledRangeWrapper((ModelledRange)range, sequence));
+            // override sequence if range has a participant
+            if (range.getParticipant() != null){
+                psidev.psi.mi.jami.model.Interactor interactor = range.getParticipant().getInteractor();
+
+                if (interactor instanceof psidev.psi.mi.jami.model.Polymer) {
+                    psidev.psi.mi.jami.model.Polymer polymer = (psidev.psi.mi.jami.model.Polymer) interactor;
+                    sequence = polymer.getSequence();
+                }
+            }
+            rangeWrappers.add(new ModelledRangeWrapper((ModelledRange)range, sequence, this));
 
             if (!containsInvalidRanges && !RangeUtils.validateRange(range, sequence).isEmpty()) {
                 containsInvalidRanges = true;
@@ -229,6 +230,19 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Override
     protected IntactCloner newClonerInstance() {
         return new FeatureIntactCloner();
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public void refreshRangeProperties(ModelledRange range){
+        try {
+            getIntactDao().getSynchronizerContext().getModelledRangeSynchronizer().synchronizeProperties(range);
+        } catch (FinderException e) {
+            addErrorMessage("Cannot synchronize range" + range, e.getMessage());
+        } catch (PersisterException e) {
+            addErrorMessage("Cannot synchronize range" + range, e.getMessage());
+        } catch (SynchronizerException e) {
+            addErrorMessage("Cannot synchronize range" + range, e.getMessage());
+        }
     }
 
     public String newFeature(ModelledParticipant participant) {
