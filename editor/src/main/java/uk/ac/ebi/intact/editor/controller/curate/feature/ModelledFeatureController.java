@@ -379,11 +379,11 @@ public class ModelledFeatureController extends AnnotatedObjectController {
             this.ac = feature.getAc();
             refreshRangeWrappers();
             refreshInfoMessages();
+            refreshParticipantSelectItems();
         }
         else{
             this.ac = null;
         }
-        refreshParticipantSelectItems();
     }
 
     @Override

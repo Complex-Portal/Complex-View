@@ -92,7 +92,7 @@
 
                 <h:outputText value="Refers to participant:"/>
                 <h:selectOneMenu id="linkedParticipantMenu" value="#{modelledRangeWrapper.range.participant}" converter="modelledParticipantConverter"
-                                 rendered="#{modelledFeatureController.complexFeature}">
+                                 rendered="#{modelledFeatureController.complexFeature}" disabled="#{modelledFeatureController.isRangeDisabled()}">
                     <f:ajax event="valueChange" render=":editorForm:featureTabs:rangesPanel :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
                             process="@this" onevent="markAsUnsaved()" listener="#{modelledRangeWrapper.onSeqenceChanged}"/>
                     <f:selectItems value="#{participantSelectItems}"/>
