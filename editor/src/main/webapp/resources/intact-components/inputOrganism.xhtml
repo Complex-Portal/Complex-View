@@ -60,8 +60,8 @@
            <h:panelGroup id="info" style="color: gray">
                <h:panelGroup rendered="#{cc.attrs.value != null}">
                    <h:outputText value=" #{cc.attrs.value.taxId} | #{cc.attrs.value.scientificName}"/>
-                   <h:outputText value=" | #{cc.attrs.value.tissue.commonName}" rendered="#{cc.attrs.value.tissue != null}"/>
-                   <h:outputText value=" | #{cc.attrs.value.cellType.commonName}" rendered="#{cc.attrs.value.cellType != null}"/>
+                   <h:outputText value=" | #{cc.attrs.value.tissue.shortName}" rendered="#{cc.attrs.value.tissue != null}"/>
+                   <h:outputText value=" | #{cc.attrs.value.cellType.shortName}" rendered="#{cc.attrs.value.cellType != null}"/>
                </h:panelGroup>
            </h:panelGroup>
 

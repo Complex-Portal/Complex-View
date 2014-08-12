@@ -338,7 +338,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
         if (!currentAnnotatedObjectDeleted) {
             saved = persistenceController.doSave(annotatedObject, getDbSynchronizer(), this);
-
             if (saved) {
                 // saves specific elements for each annotated object (e.g. components in interactions)
                 boolean detailsSaved = doSaveDetails();

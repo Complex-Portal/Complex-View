@@ -20,7 +20,7 @@
                                              update="xrefsTable #{update}"/>
                     </div>
 
-                    <p:dataTable id="xrefsTable" var="xref" value="#{annotatedObjectController.xrefs}"
+                    <p:dataTable id="xrefsTable" var="xref" value="#{annotatedObjectController.collectXrefs()}"
                                  rowIndexVar="xrefIndex"
                                  style="width:100%">
                         <p:column>
