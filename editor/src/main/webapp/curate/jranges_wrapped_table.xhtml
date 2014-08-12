@@ -63,7 +63,7 @@
             <f:facet name="header">
                 <h:outputText value="Intramolecular"/>
             </f:facet>
-            <h:selectBooleanCheckbox value="#{modelledRangeWrapper.range.link}" disabled="#{modelledFeatureController.isRangeDisabled()}">
+            <h:selectBooleanCheckbox value="#{modelledRangeWrapper.linked}" disabled="#{modelledFeatureController.isRangeDisabled()}">
                 <f:ajax event="valueChange" render=":editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
                         process="@this" onevent="markAsUnsaved()"/>
              </h:selectBooleanCheckbox>
@@ -92,7 +92,8 @@
 
                 <h:outputText value="Refers to participant:"/>
                 <h:selectOneMenu id="linkedParticipantMenu" value="#{modelledRangeWrapper.range.participant}" converter="modelledParticipantConverter"
-                                 rendered="#{modelledFeatureController.complexFeature}" disabled="#{modelledFeatureController.isRangeDisabled()}">
+                                 rendered="#{modelledFeatureController.complexFeature}" disabled="#{!modelledFeatureController.complexFeature
+                                 or modelledFeatureController.isRangeDisabled()}">
                     <f:ajax event="valueChange" render=":editorForm:featureTabs:rangesPanel :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
                             process="@this" onevent="markAsUnsaved()" listener="#{modelledRangeWrapper.onSeqenceChanged}"/>
                     <f:selectItems value="#{participantSelectItems}"/>

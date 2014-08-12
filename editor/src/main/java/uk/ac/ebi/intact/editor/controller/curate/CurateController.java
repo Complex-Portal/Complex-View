@@ -258,7 +258,7 @@ public class CurateController extends JpaAwareController {
                     (ModelledFeatureController) getSpringContext().getBean("modelledFeatureController"));
             ModelledFeature feat = (ModelledFeature)intactObject;
             if (feat.getParticipant() instanceof IntactModelledParticipant){
-                IntactModelledParticipant part = (IntactModelledParticipant)intactObject;
+                IntactModelledParticipant part = (IntactModelledParticipant)feat.getParticipant();
                 if (part.getAc() != null){
                     meta.getParents().add(part.getAc());
                 }

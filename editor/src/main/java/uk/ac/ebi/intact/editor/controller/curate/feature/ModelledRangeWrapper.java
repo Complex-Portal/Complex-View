@@ -110,4 +110,12 @@ public class ModelledRangeWrapper {
     public void setRangeAsString(String rangeAsString) {
         this.rangeAsString = rangeAsString;
     }
+
+    public boolean getLinked(){
+        return this.range.isLink();
+    }
+
+    public void setLinked(boolean link){
+        this.range.setLink(link);
+    }
 }
