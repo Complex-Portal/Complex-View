@@ -1048,7 +1048,16 @@ public class ComplexController extends AnnotatedObjectController {
         CvTermDao dao = getIntactDao().getCvTermDao();
         CvTerm type = dao.getByMIIdentifier(Complex.COMPLEX_MI, IntactUtils.INTERACTOR_TYPE_OBJCLASS);
 
-        setComplex((IntactComplex)ComplexJamiCloner.cloneInteraction(getIntactDao().getInteractionDao().getByAc(interactionEvidence.getAc())));
+        InteractionEvidence ev = getIntactDao().getInteractionDao().getByAc(interactionEvidence.getAc());
+        // the interaction evidence is loaded with jami
+        if (ev != null){
+            setComplex((IntactComplex)ComplexJamiCloner.cloneInteraction(ev));
+        }
+        // the interaction evidence does not exist as it must be a complex
+        else {
+            setComplex((IntactComplex)ComplexJamiCloner.cloneComplex(getIntactDao().getComplexDao().getByAc(interactionEvidence.getAc())));
+        }
+
         this.complex.setInteractorType(type);
 
         getLifecycleManager().getStartStatus().create(this.complex, "Created in Editor");

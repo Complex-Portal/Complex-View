@@ -212,14 +212,18 @@ public class EditorCvTermService extends JpaAwareController {
         }
 
         IntactCvTerm interactorTypeParent = cvDao.getByMIIdentifier("MI:0314", IntactUtils.INTERACTOR_TYPE_OBJCLASS);
+        SelectItem item = interactorTypeParent != null ? createSelectItem(interactorTypeParent, true):null;
+        if (item != null){
+            interactorTypeSelectItems.add(item);
+        }
         if (interactorTypeParent != null){
             loadChildren(interactorTypeParent, interactorTypeSelectItems, false);
         }
 
         IntactCvTerm evidenceTypeParent = cvDao.getByMIIdentifier("MI:1331", IntactUtils.DATABASE_OBJCLASS);
-        SelectItem item = evidenceTypeParent != null ? createSelectItem(evidenceTypeParent, true):null;
-        if (item != null){
-            evidenceTypeSelectItems.add(item);
+        SelectItem item3 = evidenceTypeParent != null ? createSelectItem(evidenceTypeParent, true):null;
+        if (item3 != null){
+            evidenceTypeSelectItems.add(item3);
         }
         if (evidenceTypeParent != null){
             loadChildren(evidenceTypeParent, evidenceTypeSelectItems, true);
