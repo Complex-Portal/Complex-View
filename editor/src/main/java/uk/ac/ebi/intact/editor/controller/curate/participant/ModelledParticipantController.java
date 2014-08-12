@@ -209,9 +209,16 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     }
 
     @Override
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
+        if (!getJamiEntityManager().contains(getParticipant())){
+            IntactModelledParticipant reloadedParticipant = getJamiEntityManager().merge(this.participant);
+            setParticipant(reloadedParticipant);
+        }
+
         String value = clone(getParticipant());
-        refreshFeatures();
+
+        getJamiEntityManager().detach(getParticipant());
 
         return value;
     }

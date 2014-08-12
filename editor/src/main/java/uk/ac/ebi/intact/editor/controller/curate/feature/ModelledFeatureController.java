@@ -96,6 +96,21 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     }
 
     @Override
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String clone() {
+        if (!getJamiEntityManager().contains(getFeature())){
+            IntactModelledFeature reloadedFeature = getJamiEntityManager().merge(this.feature);
+            setFeature(reloadedFeature);
+        }
+
+        String value = clone(getFeature());
+
+        getJamiEntityManager().detach(getFeature());
+
+        return value;
+    }
+
+    @Override
     protected IntactModelledFeature cloneAnnotatedObject(IntactPrimaryObject ao) {
         // to be overrided
         return (IntactModelledFeature) FeatureJamiCloner.cloneFeature((IntactModelledFeature)ao);

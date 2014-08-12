@@ -157,9 +157,18 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     @Override
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
+
+        if (!getJamiEntityManager().contains(getComplex())){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
+
         String value = clone(getComplex());
         refreshParticipants();
+
+        getJamiEntityManager().detach(getComplex());
 
         return value;
     }

@@ -16,10 +16,12 @@
 package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
 import psidev.psi.mi.jami.model.*;
+import psidev.psi.mi.jami.utils.AnnotationUtils;
 import psidev.psi.mi.jami.utils.XrefUtils;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.model.extension.*;
+import uk.ac.ebi.intact.jami.model.lifecycle.Releasable;
 
 import java.util.Date;
 
@@ -85,6 +87,20 @@ public class ComplexJamiCloner {
             clone.getModelledParameters().add(new ComplexParameter(param.getType(), param.getValue()));
         }
 
+        // remove not wanted annotations
+        if (!clone.getAnnotations().isEmpty()){
+            AnnotationUtils.removeAllAnnotationsWithTopic(clone.getAnnotations(), Annotation.FIGURE_LEGEND_MI, Annotation.FIGURE_LEGEND);
+            AnnotationUtils.removeAllAnnotationsWithTopic(clone.getAnnotations(), null, Releasable.ON_HOLD);
+            AnnotationUtils.removeAllAnnotationsWithTopic(clone.getAnnotations(), null, Releasable.CORRECTION_COMMENT);
+            AnnotationUtils.removeAllAnnotationsWithTopic(clone.getAnnotations(), null, Releasable.ACCEPTED);
+            AnnotationUtils.removeAllAnnotationsWithTopic(clone.getAnnotations(), null, Releasable.TO_BE_REVIEWED);
+        }
+
+        // remove not wanted xrefs
+        if (evidence.getImexId() != null){
+            XrefUtils.removeAllXrefsWithDatabaseAndId(clone.getXrefs(), Xref.IMEX_MI, Xref.IMEX, evidence.getImexId());
+        }
+
         // don't need to add it to the feature component because it is already done by the cloner
         return clone;
     }
@@ -137,6 +153,14 @@ public class ComplexJamiCloner {
         for (Object obj : complex.getModelledParameters()){
             Parameter param = (Parameter)obj;
             clone.getModelledParameters().add(new ComplexParameter(param.getType(), param.getValue()));
+        }
+
+        // remove not wanted annotations
+        if (!clone.getAnnotations().isEmpty()){
+            AnnotationUtils.removeAllAnnotationsWithTopic(clone.getAnnotations(), null, Releasable.ON_HOLD);
+            AnnotationUtils.removeAllAnnotationsWithTopic(clone.getAnnotations(), null, Releasable.CORRECTION_COMMENT);
+            AnnotationUtils.removeAllAnnotationsWithTopic(clone.getAnnotations(), null, Releasable.ACCEPTED);
+            AnnotationUtils.removeAllAnnotationsWithTopic(clone.getAnnotations(), null, Releasable.TO_BE_REVIEWED);
         }
 
         // don't need to add it to the feature component because it is already done by the cloner
