@@ -32,7 +32,7 @@
                          styleClass="#{changesController.isDeletedAc(rangeWrapper.range.ac)? 'intact-deleted' : ''}"
                          style="font-family: monospace">
                 <f:ajax event="valueChange" render=":editorForm:featureTabs:rangesPanel :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                        process="@this" listener="#{rangeWrapper.onRangeAsStringChanged}" onevent="markAsUnsaved()"/>
+                        listener="#{rangeWrapper.onRangeAsStringChanged}" onevent="markAsUnsaved()"/>
             </h:inputText>
 
             <h:panelGroup id="validityPanel">
@@ -51,7 +51,7 @@
                              required="true"
                              requiredMessage="Range from CvFuzzyType is required" disabled="#{featureController.isRangeDisabled()}">
                 <f:ajax event="valueChange" render=":editorForm:featureTabs:rangesPanel :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                        process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()"/>
+                        listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()"/>
                 <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
             </h:selectOneMenu>
         </p:column>
@@ -63,7 +63,7 @@
                              required="true"
                              requiredMessage="Range to CvFuzzyType is required" disabled="#{featureController.isRangeDisabled()}">
                 <f:ajax event="valueChange" render=":editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                        process="@this" listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()"/>
+                        listener="#{rangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()"/>
                 <f:selectItems value="#{cvObjectService.fuzzyTypeSelectItems}"/>
             </h:selectOneMenu>
         </p:column>
@@ -73,7 +73,7 @@
             </f:facet>
             <h:selectBooleanCheckbox value="#{rangeWrapper.range.linked}" disabled="#{featureController.isRangeDisabled()}">
                 <f:ajax event="valueChange" render=":editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                        process="@this" onevent="markAsUnsaved()"/>
+                        onevent="markAsUnsaved()"/>
              </h:selectBooleanCheckbox>
 
             <!--A link range is different from link feature. We should not associate link range to link feature-->

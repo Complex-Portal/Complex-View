@@ -45,8 +45,9 @@
             <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="organismConverter"
                     required="#{cc.attrs.required}" requiredMessage="#{cc.attrs.requiredMessage}" disabled="#{cc.attrs.disabled}">
                 <f:selectItems value="#{cc.attrs.selectItems}"/>
-                <f:ajax event="valueChange" update="#{cc.attrs.update}" process="@this"
-                             oncomplete="#{cc.attrs.oncomplete}"
+                <p:ajax event="change" process="@this"
+                        onerror="alert('ERROR!')"
+                        onsuccess="markAsUnsaved(); #{cc.attrs.oncomplete}"
                         disabled="#{cc.attrs.valueChangeAwareObject == null}"
                         listener="#{cc.attrs.valueChangeAwareObject.changed}"/>
             </h:selectOneMenu>

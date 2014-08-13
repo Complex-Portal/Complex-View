@@ -62,7 +62,7 @@
                             <f:facet name="header">
                                 <h:outputText value="Full name"/>
                             </f:facet>
-                            <h:outputText value="#{bioSource.scientificName}"/>
+                            <h:outputText value="#{bioSource.scientificName}" rendered="#{bioSource.scientificName != null}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
