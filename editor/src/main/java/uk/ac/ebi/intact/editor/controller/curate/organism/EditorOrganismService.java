@@ -90,6 +90,14 @@ public class EditorOrganismService extends JpaAwareController {
         }
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public void loadDataIfNotDone( ) {
+        if (!isInitialised){
+            loadOrganisms();
+            isInitialised = true;
+        }
+    }
+
     public List<SelectItem> getOrganismSelectItems() {
         return organismSelectItems;
     }

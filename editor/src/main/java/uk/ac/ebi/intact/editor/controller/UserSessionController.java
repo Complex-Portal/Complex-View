@@ -24,9 +24,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import psidev.psi.mi.jami.model.Source;
 import uk.ac.ebi.intact.core.persistence.dao.InstitutionDao;
 import uk.ac.ebi.intact.core.persistence.dao.user.UserDao;
 import uk.ac.ebi.intact.editor.controller.misc.AbstractUserController;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
+import uk.ac.ebi.intact.jami.context.IntactContext;
+import uk.ac.ebi.intact.jami.dao.SourceDao;
 import uk.ac.ebi.intact.model.Institution;
 import uk.ac.ebi.intact.model.user.Preference;
 import uk.ac.ebi.intact.model.user.Role;
@@ -123,6 +127,27 @@ public class UserSessionController extends JpaAwareController implements Disposa
 
         if (institution == null) {
             return getIntactContext().getInstitution();
+        }
+
+        return institution;
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public Source getUserSource() {
+        Preference instiPref = currentUser.getPreference(AbstractUserController.INSTITUTION_AC);
+
+        if (instiPref == null) {
+            IntactContext jamiContext = ApplicationContextProvider.getBean("jamiIntactContext");
+            return jamiContext.getIntactConfiguration().getDefaultInstitution();
+        }
+
+        SourceDao institutionDao = getIntactDao().getSourceDao();
+
+        Source institution = institutionDao.getByAc(instiPref.getValue());
+
+        if (institution == null) {
+            IntactContext jamiContext = ApplicationContextProvider.getBean("jamiIntactContext");
+            return jamiContext.getIntactConfiguration().getDefaultInstitution();
         }
 
         return institution;

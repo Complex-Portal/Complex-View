@@ -18,11 +18,16 @@ package uk.ac.ebi.intact.editor.controller.curate.cloner;
 import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import psidev.psi.mi.jami.utils.XrefUtils;
+import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.organism.EditorOrganismService;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.context.UserContext;
+import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.extension.*;
 import uk.ac.ebi.intact.jami.model.lifecycle.Releasable;
+import uk.ac.ebi.intact.jami.synchronizer.FinderException;
+import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
+import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
 
 import java.util.Date;
 
@@ -35,7 +40,7 @@ import java.util.Date;
  */
 public class ComplexJamiCloner {
 
-    public static Complex cloneInteraction(InteractionEvidence evidence) {
+    public static Complex cloneInteraction(InteractionEvidence evidence) throws SynchronizerException, FinderException, PersisterException {
         IntactComplex clone = new IntactComplex(evidence.getShortName());
         clone.setCreated(new Date());
         clone.setUpdated(clone.getCreated());
@@ -51,16 +56,18 @@ public class ComplexJamiCloner {
             }
             else{
                 EditorOrganismService bioSourceService = ApplicationContextProvider.getBean("editorOrganismService");
-                Organism org = bioSourceService.findOrganismByTaxid(host.getTaxId());
+                bioSourceService.loadDataIfNotDone();
+                IntactOrganism org = bioSourceService.findOrganismByTaxid(host.getTaxId());
                 if (org == null){
                     org = new IntactOrganism(host.getTaxId(), host.getCommonName(), host.getScientificName());
+                    IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+                    intactDao.getOrganismDao().persist(org);
                 }
                 clone.setOrganism(org);
             }
-            if (evidence.getExperiment().getPublication() != null){
-                clone.setSource(evidence.getExperiment().getPublication().getSource());
-            }
         }
+        UserSessionController userSessionController = ApplicationContextProvider.getBean("userSessionController");
+        clone.setSource(userSessionController.getUserSource());
 
         for (Object obj : evidence.getIdentifiers()){
             Xref ref = (Xref)obj;
@@ -123,7 +130,9 @@ public class ComplexJamiCloner {
         clone.setUpdated(clone.getCreated());
         clone.setOrganism(complex.getOrganism());
         clone.setEvidenceType(complex.getEvidenceType());
-        clone.setSource(complex.getSource());
+
+        UserSessionController userSessionController = ApplicationContextProvider.getBean("userSessionController");
+        clone.setSource(userSessionController.getUserSource());
 
         for (Object obj : complex.getAliases()){
             Alias alias = (Alias)obj;

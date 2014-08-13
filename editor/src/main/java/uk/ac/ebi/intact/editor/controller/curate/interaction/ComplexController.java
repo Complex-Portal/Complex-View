@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
@@ -45,7 +46,10 @@ import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEvent;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEventType;
 import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleStatus;
 import uk.ac.ebi.intact.jami.model.lifecycle.Releasable;
+import uk.ac.ebi.intact.jami.synchronizer.FinderException;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
+import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
+import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Interaction;
@@ -1051,7 +1055,16 @@ public class ComplexController extends AnnotatedObjectController {
         InteractionEvidence ev = getIntactDao().getInteractionDao().getByAc(interactionEvidence.getAc());
         // the interaction evidence is loaded with jami
         if (ev != null){
-            setComplex((IntactComplex)ComplexJamiCloner.cloneInteraction(ev));
+            try {
+                IntactComplex complex = (IntactComplex)ComplexJamiCloner.cloneInteraction(ev);
+                setComplex(complex);
+            } catch (SynchronizerException e) {
+                addErrorMessage("Cannot clone the interaction evidence as a complex", ExceptionUtils.getFullStackTrace(e));
+            } catch (FinderException e) {
+                addErrorMessage("Cannot clone the interaction evidence as a complex", ExceptionUtils.getFullStackTrace(e));
+            } catch (PersisterException e) {
+                addErrorMessage("Cannot clone the interaction evidence as a complex", ExceptionUtils.getFullStackTrace(e));
+            }
         }
         // the interaction evidence does not exist as it must be a complex
         else {
