@@ -44,7 +44,7 @@ public class ComplexJamiCloner {
         clone.setUpdator(jamiUserContext.getUserId());
 
         clone.setInteractionType(evidence.getInteractionType());
-        if (evidence.getExperiment() != null){
+        if (evidence.getExperiment() != null && evidence.getExperiment().getHostOrganism() != null){
             Organism host = evidence.getExperiment().getHostOrganism();
             if (host.getCellType() == null && host.getTissue() == null){
                 clone.setOrganism(host);
