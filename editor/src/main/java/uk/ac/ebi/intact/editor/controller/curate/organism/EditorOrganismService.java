@@ -45,17 +45,23 @@ public class EditorOrganismService extends JpaAwareController {
     private boolean isInitialised = false;
 
     private Map<String, IntactOrganism> acOrganismMap;
+    private Map<Integer, IntactOrganism> taxidOrganismMap;
+
 
     public EditorOrganismService() {
         acOrganismMap = new HashMap<String, IntactOrganism>();
+        taxidOrganismMap = new HashMap<Integer, IntactOrganism>();
     }
 
     public void clearAll(){
         this.organismSelectItems = null;
         isInitialised = false;
+        acOrganismMap.clear();
+        taxidOrganismMap.clear();
     }
 
     private void loadOrganisms() {
+        clearAll();
         organismSelectItems = new ArrayList<SelectItem>();
         organismSelectItems.add(new SelectItem( null, "select organism", "select organism", false, false, true ));
 
@@ -64,6 +70,7 @@ public class EditorOrganismService extends JpaAwareController {
         Collection<IntactOrganism> loadedOrganisms = organismDao.getAllOrganisms(false, false);
         for (IntactOrganism organism : loadedOrganisms){
             acOrganismMap.put(organism.getAc(), organism);
+            taxidOrganismMap.put(organism.getTaxId(), organism);
             organismSelectItems.add(createSelectItem(organism));
         }
 
@@ -87,8 +94,12 @@ public class EditorOrganismService extends JpaAwareController {
         return organismSelectItems;
     }
 
-    public IntactOrganism findCvByAc(String ac){
+    public IntactOrganism findOrganismByAc(String ac){
         return acOrganismMap.get(ac);
+    }
+
+    public IntactOrganism findOrganismByTaxid(int taxid){
+        return taxidOrganismMap.get(taxid);
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)

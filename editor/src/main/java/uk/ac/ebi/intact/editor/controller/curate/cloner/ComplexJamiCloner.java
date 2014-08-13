@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.curate.cloner;
 import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import psidev.psi.mi.jami.utils.XrefUtils;
+import uk.ac.ebi.intact.editor.controller.curate.organism.EditorOrganismService;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.model.extension.*;
@@ -44,7 +45,18 @@ public class ComplexJamiCloner {
 
         clone.setInteractionType(evidence.getInteractionType());
         if (evidence.getExperiment() != null){
-            clone.setOrganism(evidence.getExperiment().getHostOrganism());
+            Organism host = evidence.getExperiment().getHostOrganism();
+            if (host.getCellType() == null && host.getTissue() == null){
+                clone.setOrganism(host);
+            }
+            else{
+                EditorOrganismService bioSourceService = ApplicationContextProvider.getBean("editorOrganismService");
+                Organism org = bioSourceService.findOrganismByTaxid(host.getTaxId());
+                if (org == null){
+                    org = new IntactOrganism(host.getTaxId(), host.getCommonName(), host.getScientificName());
+                }
+                clone.setOrganism(org);
+            }
             if (evidence.getExperiment().getPublication() != null){
                 clone.setSource(evidence.getExperiment().getPublication().getSource());
             }

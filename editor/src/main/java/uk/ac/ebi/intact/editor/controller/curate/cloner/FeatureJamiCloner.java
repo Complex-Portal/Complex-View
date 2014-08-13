@@ -69,7 +69,14 @@ public class FeatureJamiCloner {
 
         for (Object obj : feature.getRanges()){
             Range range = (Range)obj;
-            ModelledRange r = new ModelledRange(range.getStart(), range.getEnd(), range.isLink(), range.getResultingSequence());
+            ModelledRange r = new ModelledRange(range.getStart(), range.getEnd(), range.isLink());
+            r.setResultingSequence(new ModelledResultingSequence(range.getResultingSequence().getOriginalSequence(), range.getResultingSequence().getNewSequence()));
+
+            for (Object obj2 : range.getResultingSequence().getXrefs()){
+                Xref ref = (Xref)obj2;
+                r.getResultingSequence().getXrefs().add(new ModelledResultingSequenceXref(ref.getDatabase(), ref.getId(), ref.getVersion(), ref.getQualifier()));
+            }
+
             clone.getRanges().add(r);
         }
 

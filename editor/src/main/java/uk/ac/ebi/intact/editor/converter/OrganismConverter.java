@@ -36,7 +36,7 @@ public class OrganismConverter implements Converter {
         if ( ac == null ) return null;
 
         EditorOrganismService dao = ApplicationContextProvider.getBean("editorOrganismService");
-        return dao.findCvByAc(ac);
+        return dao.findOrganismByAc(ac);
     }
 
     @Override

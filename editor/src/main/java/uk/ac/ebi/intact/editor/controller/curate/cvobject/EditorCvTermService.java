@@ -100,6 +100,8 @@ public class EditorCvTermService extends JpaAwareController {
     }
 
     private void loadCvs() {
+        clearAll();
+
         featureTypeSelectItems = new ArrayList<SelectItem>();
         featureTypeSelectItems.add(new SelectItem(null, "select type", "select type", false, false, true));
         featureRoleSelectItems = new ArrayList<SelectItem>();

@@ -57,7 +57,7 @@
                 <h:panelGroup rendered="#{not changesController.isDeletedAc(featureWrapper.feature.ac)}">
                     <h:link outcome="/curate/jfeature" value="#{featureWrapper.feature.shortName}" includeViewParams="true"
                             rendered="#{not changesController.isDeletedAc(featureWrapper.feature.ac)}" styleClass="#{featureWrapper.feature.ac == null? 'intact-new' :''}">
-                        <f:param name="ac" value="#{featureWrapper.feature.ac}"/>
+                        <f:param name="ac" value="#{featureWrapper.feature.ac}" disable="#{featureWrapper.feature.ac == null}"/>
                     </h:link>
                     <!--<p:commandLink onclick="load_feature.show()" action="#{curateController.editJami(featureWrapper.feature)}"
                                    style="#{featureWrapper.feature.ac == null? 'color:blue' :''}"
