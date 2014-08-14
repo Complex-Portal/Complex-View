@@ -43,7 +43,7 @@
                       sortBy="#{interactor.shortName}"
                       filterBy="#{interactor.shortName}"
                       filterMatchMode="contains">
-                <h:link outcome="/curate/jparticipant" value="#{interactor.shortName}" includeViewParams="true"
+                <h:link outcome="/curate/cparticipant" value="#{interactor.shortName}" includeViewParams="true"
                         rendered="#{not changesController.isDeletedAc(participant.ac)}" styleClass="#{participant.ac == null? 'intact-new' :''}">
                     <f:param name="ac" value="#{participant.ac}" disable="#{participant.ac == null}"/>
                 </h:link>

@@ -55,7 +55,7 @@
             </p:column>
             <p:column headerText="Shortlabel">
                 <h:panelGroup rendered="#{not changesController.isDeletedAc(featureWrapper.feature.ac)}">
-                    <h:link outcome="/curate/jfeature" value="#{featureWrapper.feature.shortName}" includeViewParams="true"
+                    <h:link outcome="/curate/cfeature" value="#{featureWrapper.feature.shortName}" includeViewParams="true"
                             rendered="#{not changesController.isDeletedAc(featureWrapper.feature.ac)}" styleClass="#{featureWrapper.feature.ac == null? 'intact-new' :''}">
                         <f:param name="ac" value="#{featureWrapper.feature.ac}" disable="#{featureWrapper.feature.ac == null}"/>
                     </h:link>

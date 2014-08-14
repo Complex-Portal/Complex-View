@@ -243,7 +243,7 @@ public class CurateController extends JpaAwareController {
             return new CurateJamiMetadata("complex",
                     (ComplexController) getSpringContext().getBean("complexController"));
         } else if (ModelledParticipant.class.isAssignableFrom(iaClass)) {
-            CurateJamiMetadata meta = new CurateJamiMetadata("jparticipant",
+            CurateJamiMetadata meta = new CurateJamiMetadata("cparticipant",
                     (ModelledParticipantController) getSpringContext().getBean("modelledParticipantController"));
             ModelledParticipant part = (ModelledParticipant)intactObject;
             if (part.getInteraction() instanceof IntactComplex){
@@ -254,7 +254,7 @@ public class CurateController extends JpaAwareController {
             }
             return meta;
         } else if (ModelledFeature.class.isAssignableFrom(iaClass)) {
-            CurateJamiMetadata meta = new CurateJamiMetadata("jfeature",
+            CurateJamiMetadata meta = new CurateJamiMetadata("cfeature",
                     (ModelledFeatureController) getSpringContext().getBean("modelledFeatureController"));
             ModelledFeature feat = (ModelledFeature)intactObject;
             if (feat.getParticipant() instanceof IntactModelledParticipant){
