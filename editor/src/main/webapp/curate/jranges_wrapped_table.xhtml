@@ -32,7 +32,7 @@
                          styleClass="#{changesController.isDeletedAc(modelledRangeWrapper.range.ac)? 'intact-deleted' : ''}"
                          style="font-family: monospace">
                 <f:ajax event="valueChange" render=":editorForm:featureTabs:rangesPanel :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                        process="@this" listener="#{modelledRangeWrapper.onRangeAsStringChanged}" onevent="markAsUnsaved()"/>
+                        listener="#{modelledRangeWrapper.onRangeAsStringChanged}" onevent="markAsUnsaved()"/>
             </h:inputText>
         </p:column>
         <p:column>
@@ -43,7 +43,7 @@
                              required="true"
                              requiredMessage="Range from CvFuzzyType is required" disabled="#{modelledFeatureController.isRangeDisabled()}">
                 <f:ajax event="valueChange" render=":editorForm:featureTabs:rangesPanel :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                        process="@this" listener="#{modelledRangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()"/>
+                        listener="#{modelledRangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()"/>
                 <f:selectItems value="#{fuzzyTypeSelectItems}"/>
             </h:selectOneMenu>
         </p:column>
@@ -55,7 +55,7 @@
                              required="true"
                              requiredMessage="Range to CvFuzzyType is required" disabled="#{modelledFeatureController.isRangeDisabled()}">
                 <f:ajax event="valueChange" render=":editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                        process="@this" listener="#{modelledRangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()"/>
+                        listener="#{modelledRangeWrapper.onFuzzyTypeChanged}" onevent="markAsUnsaved()"/>
                 <f:selectItems value="#{fuzzyTypeSelectItems}"/>
             </h:selectOneMenu>
         </p:column>
@@ -65,7 +65,7 @@
             </f:facet>
             <h:selectBooleanCheckbox value="#{modelledRangeWrapper.linked}" disabled="#{modelledFeatureController.isRangeDisabled()}">
                 <f:ajax event="valueChange" render=":editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                        process="@this" onevent="markAsUnsaved()"/>
+                        onevent="markAsUnsaved()"/>
              </h:selectBooleanCheckbox>
         </p:column>
         <p:column>
@@ -95,7 +95,7 @@
                                  rendered="#{modelledFeatureController.complexFeature}" disabled="#{!modelledFeatureController.complexFeature
                                  or modelledFeatureController.isRangeDisabled()}">
                     <f:ajax event="valueChange" render=":editorForm:featureTabs:rangesPanel :editorForm:messagesComponent :editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                            process="@this" onevent="markAsUnsaved()" listener="#{modelledRangeWrapper.onSeqenceChanged}"/>
+                            onevent="markAsUnsaved()" listener="#{modelledRangeWrapper.onSeqenceChanged}"/>
                     <f:selectItems value="#{participantSelectItems}"/>
                 </h:selectOneMenu>
             </h:panelGrid>
