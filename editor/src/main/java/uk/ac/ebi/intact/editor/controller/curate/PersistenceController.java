@@ -344,7 +344,7 @@ public class PersistenceController extends JpaAwareController {
         revertJamiChanges(curateController, jamiChanges);
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.NEVER)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void revertJamiChanges(CurateController curateController, Collection<UnsavedJamiChange> jamiChanges) {
         for (UnsavedJamiChange unsaved : jamiChanges){
             IntactPrimaryObject object = unsaved.getUnsavedObject();
@@ -356,7 +356,7 @@ public class PersistenceController extends JpaAwareController {
         }
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "transactionManager", propagation = Propagation.NEVER)
     public void revertIntactCoreChanges(CurateController curateController, Collection<UnsavedChange> changes) {
         for (UnsavedChange unsaved : changes){
             IntactObject object = unsaved.getUnsavedObject();
