@@ -21,6 +21,7 @@ import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
 import uk.ac.ebi.intact.jami.model.extension.IntactModelledFeature;
+import uk.ac.ebi.intact.jami.model.extension.IntactModelledParticipant;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
@@ -76,6 +77,10 @@ public class SearchController extends AnnotatedObjectController {
     private LazyDataModel<Component> participants;
 
     private LazyDataModel<IntactComplex> complexes;
+
+    private LazyDataModel<IntactModelledParticipant> modelledParticipants;
+
+    private LazyDataModel<IntactModelledFeature> modelledFeatures;
 
     private List<Future> runningTasks;
 

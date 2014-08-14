@@ -284,10 +284,16 @@ public class ModelledParticipantController extends AnnotatedObjectController {
                             getInteractorSynchronizer().
                             synchronize(importCandidate.getInteractor(), true));
                 } catch (FinderException e) {
+                    // clear cache
+                    getIntactDao().getSynchronizerContext().clearCache();
                     addErrorMessage("Cannot import interactor " + importCandidate.getInteractor(), ExceptionUtils.getFullStackTrace(e));
                 } catch (PersisterException e) {
+                    // clear cache
+                    getIntactDao().getSynchronizerContext().clearCache();
                     addErrorMessage("Cannot import interactor " + importCandidate.getInteractor(), ExceptionUtils.getFullStackTrace(e));
                 } catch (SynchronizerException e) {
+                    // clear cache
+                    getIntactDao().getSynchronizerContext().clearCache();
                     addErrorMessage("Cannot import interactor " + importCandidate.getInteractor(), ExceptionUtils.getFullStackTrace(e));
                 }
 

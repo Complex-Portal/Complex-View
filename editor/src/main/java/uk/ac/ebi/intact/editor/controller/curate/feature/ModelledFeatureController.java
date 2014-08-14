@@ -237,10 +237,16 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         try {
             getIntactDao().getSynchronizerContext().getModelledRangeSynchronizer().synchronizeProperties(range);
         } catch (FinderException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize range" + range, e.getMessage());
         } catch (PersisterException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize range" + range, e.getMessage());
         } catch (SynchronizerException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize range" + range, e.getMessage());
         }
     }
@@ -298,10 +304,16 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         try {
             range = dao.getSynchronizerContext().getModelledRangeSynchronizer().synchronize(range, false);
         } catch (FinderException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot create new Range", e.getMessage());
         } catch (PersisterException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot create new Range", e.getMessage());
         } catch (SynchronizerException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot create new Range", e.getMessage());
         }
 

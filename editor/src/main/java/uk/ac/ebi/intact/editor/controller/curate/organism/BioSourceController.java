@@ -136,6 +136,8 @@ public class BioSourceController extends AnnotatedObjectController {
 
     @Override
     public void doPostSave() {
+        EditorOrganismService organismService = (EditorOrganismService) getSpringContext().getBean("editorOrganismService");
+        organismService.clearAll();
         BioSourceService bioSourceService = (BioSourceService) getSpringContext().getBean("bioSourceService");
         bioSourceService.refresh(null);
     }

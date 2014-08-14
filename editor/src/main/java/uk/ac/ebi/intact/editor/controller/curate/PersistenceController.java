@@ -102,6 +102,9 @@ public class PersistenceController extends JpaAwareController {
             return true;
 
         } catch ( Throwable e ) {
+            // clear cache after exception
+            getIntactDao().getSynchronizerContext().clearCache();
+
             addErrorMessage("Problem persisting object", object.toString());
             handleException(e);
 
@@ -120,6 +123,8 @@ public class PersistenceController extends JpaAwareController {
             return dbSynchronizer.synchronize(object, true);
 
         } catch ( Throwable e ) {
+            // clear cache after exception
+            getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Problem persisting object", object.toString());
             handleException(e);
 
@@ -199,6 +204,8 @@ public class PersistenceController extends JpaAwareController {
                 return true;
             }
             catch (IntactObjectDeleteException e){
+                // clear cache
+                getIntactDao().getSynchronizerContext().clearCache();
                 addErrorMessage("Deletion not allowed", e.getMessage());
                 FacesContext.getCurrentInstance().renderResponse();
             }

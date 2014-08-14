@@ -813,9 +813,11 @@ public class ComplexController extends AnnotatedObjectController {
 
     public void onHoldChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
-
-        this.complex.onHold((String) evt.getNewValue());
-        this.onHold = (String) evt.getNewValue();
+        String newValue = (String) evt.getNewValue();
+        if (newValue != null && newValue.length() > 0){
+            this.complex.onHold(newValue);
+            this.onHold = newValue;
+        }
     }
 
     public String getRecommendedName() {
@@ -1059,10 +1061,16 @@ public class ComplexController extends AnnotatedObjectController {
                 IntactComplex complex = (IntactComplex)ComplexJamiCloner.cloneInteraction(ev);
                 setComplex(complex);
             } catch (SynchronizerException e) {
+                // clear cache
+                getIntactDao().getSynchronizerContext().clearCache();
                 addErrorMessage("Cannot clone the interaction evidence as a complex", ExceptionUtils.getFullStackTrace(e));
             } catch (FinderException e) {
+                // clear cache
+                getIntactDao().getSynchronizerContext().clearCache();
                 addErrorMessage("Cannot clone the interaction evidence as a complex", ExceptionUtils.getFullStackTrace(e));
             } catch (PersisterException e) {
+                // clear cache
+                getIntactDao().getSynchronizerContext().clearCache();
                 addErrorMessage("Cannot clone the interaction evidence as a complex", ExceptionUtils.getFullStackTrace(e));
             }
         }
