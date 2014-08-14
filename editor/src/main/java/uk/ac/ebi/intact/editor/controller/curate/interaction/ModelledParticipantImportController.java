@@ -365,15 +365,15 @@ public class ModelledParticipantImportController extends JpaAwareController {
         } catch (FinderException e) {
             // clear cache
             getIntactDao().getSynchronizerContext().clearCache();
-            addErrorMessage("Cannot import interactor " + interactor, ExceptionUtils.getFullStackTrace(e));
+            addErrorMessage("Cannot import interactor: " + e.getMessage(), ExceptionUtils.getFullStackTrace(e));
         } catch (PersisterException e) {
             // clear cache
             getIntactDao().getSynchronizerContext().clearCache();
-            addErrorMessage("Cannot import interactor " + interactor, ExceptionUtils.getFullStackTrace(e));
+            addErrorMessage("Cannot import interactor: " + e.getMessage(), ExceptionUtils.getFullStackTrace(e));
         } catch (SynchronizerException e) {
             // clear cache
             getIntactDao().getSynchronizerContext().clearCache();
-            addErrorMessage("Cannot import interactor " + interactor, ExceptionUtils.getFullStackTrace(e));
+            addErrorMessage("Cannot import interactor: " + e.getMessage(), ExceptionUtils.getFullStackTrace(e));
         }
         UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
         component.setCreator(jamiUserContext.getUserId());

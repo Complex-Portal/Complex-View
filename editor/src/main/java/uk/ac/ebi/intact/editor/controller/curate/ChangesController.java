@@ -509,14 +509,14 @@ public class ChangesController extends JpaAwareController implements UserListene
 
         if (parent != null && parent.getAc() != null){
             scope = parent.getAc();
+            CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
+            CurateController.CurateJamiMetadata meta = curateController.getJamiMetadata(parent);
+
+            getUnsavedJamiChangesForCurrentUser().remove(new UnsavedJamiChange(object, UnsavedChange.DELETED, parent, scope, dbSynchronizer));
         }
         else {
             scope = null;
         }
-        CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
-        CurateController.CurateJamiMetadata meta = curateController.getJamiMetadata(parent);
-
-        getUnsavedJamiChangesForCurrentUser().remove(new UnsavedJamiChange(object, UnsavedChange.DELETED, parent, scope, dbSynchronizer));
         removeObsoleteJamiChangesOnDelete(object);
     }
 

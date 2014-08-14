@@ -303,6 +303,7 @@ public class ComplexController extends AnnotatedObjectController {
     protected void refreshUnsavedChangesBeforeRevert(){
 
         getChangesController().revertComplex(complex, Collections.EMPTY_LIST);
+        setComplex(null);
     }
 
     public String getAc() {
@@ -1063,15 +1064,15 @@ public class ComplexController extends AnnotatedObjectController {
             } catch (SynchronizerException e) {
                 // clear cache
                 getIntactDao().getSynchronizerContext().clearCache();
-                addErrorMessage("Cannot clone the interaction evidence as a complex", ExceptionUtils.getFullStackTrace(e));
+                addErrorMessage("Cannot clone the interaction evidence as a complex: "+e.getMessage(), ExceptionUtils.getFullStackTrace(e));
             } catch (FinderException e) {
                 // clear cache
                 getIntactDao().getSynchronizerContext().clearCache();
-                addErrorMessage("Cannot clone the interaction evidence as a complex", ExceptionUtils.getFullStackTrace(e));
+                addErrorMessage("Cannot clone the interaction evidence as a complex: "+e.getMessage(), ExceptionUtils.getFullStackTrace(e));
             } catch (PersisterException e) {
                 // clear cache
                 getIntactDao().getSynchronizerContext().clearCache();
-                addErrorMessage("Cannot clone the interaction evidence as a complex", ExceptionUtils.getFullStackTrace(e));
+                addErrorMessage("Cannot clone the interaction evidence as a complex: "+e.getMessage(), ExceptionUtils.getFullStackTrace(e));
             }
         }
         // the interaction evidence does not exist as it must be a complex

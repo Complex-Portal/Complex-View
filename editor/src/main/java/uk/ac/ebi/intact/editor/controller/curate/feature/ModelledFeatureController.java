@@ -239,15 +239,15 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         } catch (FinderException e) {
             // clear cache
             getIntactDao().getSynchronizerContext().clearCache();
-            addErrorMessage("Cannot synchronize range" + range, e.getMessage());
+            addErrorMessage("Cannot synchronize range: " + e.getMessage(), e.getMessage());
         } catch (PersisterException e) {
             // clear cache
             getIntactDao().getSynchronizerContext().clearCache();
-            addErrorMessage("Cannot synchronize range" + range, e.getMessage());
+            addErrorMessage("Cannot synchronize range: " + e.getMessage(), e.getMessage());
         } catch (SynchronizerException e) {
             // clear cache
             getIntactDao().getSynchronizerContext().clearCache();
-            addErrorMessage("Cannot synchronize range" + range, e.getMessage());
+            addErrorMessage("Cannot synchronize range: " + e.getMessage(), e.getMessage());
         }
     }
 
@@ -306,15 +306,15 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         } catch (FinderException e) {
             // clear cache
             getIntactDao().getSynchronizerContext().clearCache();
-            addErrorMessage("Cannot create new Range", e.getMessage());
+            addErrorMessage("Cannot create new Range: "+e.getMessage(), e.getMessage());
         } catch (PersisterException e) {
             // clear cache
             getIntactDao().getSynchronizerContext().clearCache();
-            addErrorMessage("Cannot create new Range", e.getMessage());
+            addErrorMessage("Cannot create new Range: "+e.getMessage(), e.getMessage());
         } catch (SynchronizerException e) {
             // clear cache
             getIntactDao().getSynchronizerContext().clearCache();
-            addErrorMessage("Cannot create new Range", e.getMessage());
+            addErrorMessage("Cannot create new Range: "+e.getMessage(), e.getMessage());
         }
 
         feature.getRanges().add(range);

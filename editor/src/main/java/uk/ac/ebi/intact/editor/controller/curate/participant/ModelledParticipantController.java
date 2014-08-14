@@ -286,15 +286,15 @@ public class ModelledParticipantController extends AnnotatedObjectController {
                 } catch (FinderException e) {
                     // clear cache
                     getIntactDao().getSynchronizerContext().clearCache();
-                    addErrorMessage("Cannot import interactor " + importCandidate.getInteractor(), ExceptionUtils.getFullStackTrace(e));
+                    addErrorMessage("Cannot import interactor: " + e.getMessage(), ExceptionUtils.getFullStackTrace(e));
                 } catch (PersisterException e) {
                     // clear cache
                     getIntactDao().getSynchronizerContext().clearCache();
-                    addErrorMessage("Cannot import interactor " + importCandidate.getInteractor(), ExceptionUtils.getFullStackTrace(e));
+                    addErrorMessage("Cannot import interactor: " + e.getMessage(), ExceptionUtils.getFullStackTrace(e));
                 } catch (SynchronizerException e) {
                     // clear cache
                     getIntactDao().getSynchronizerContext().clearCache();
-                    addErrorMessage("Cannot import interactor " + importCandidate.getInteractor(), ExceptionUtils.getFullStackTrace(e));
+                    addErrorMessage("Cannot import interactor: " + e.getMessage(), ExceptionUtils.getFullStackTrace(e));
                 }
 
                 // if the participant is a new participant, we don't need to add a unsaved notice because one already exists for creating a new participant
