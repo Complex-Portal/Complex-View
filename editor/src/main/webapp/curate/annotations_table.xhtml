@@ -44,6 +44,7 @@
                 <h:selectOneMenu id="annotationTopicSel" value="#{annotation.cvTopic}"
                                  required="true" requiredMessage="Topic is required" disabled="#{annotatedObjectController.isAnnotationTopicDisabled()}">
                     <f:selectItems value="#{topicSelectItems}"/>
+                    <ed:curation/>
                 </h:selectOneMenu>
             </p:column>
             <p:column>

@@ -58,6 +58,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ValueChangeEvent;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -479,8 +480,13 @@ public class ComplexController extends AnnotatedObjectController {
     ///////////////////////////////////////////////
 
     public void newConfidence() {
-        ComplexConfidence confidence = new ComplexConfidence();
+        ComplexConfidence confidence = new ComplexConfidence(IntactUtils.createMIConfidenceType("unspecified", null), "to set");
         complex.getModelledConfidences().add(confidence);
+    }
+
+    public void newParameter() {
+        ComplexParameter param = new ComplexParameter(IntactUtils.createMIParameterType("unspecified", null), new ParameterValue(new BigDecimal(0)));
+        complex.getModelledParameters().add(param);
     }
 
     public boolean isParticipantDisabled() {
@@ -557,19 +563,19 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Override
     public void newXref(ActionEvent evt) {
-        this.complex.getDbXrefs().add(new InteractorXref());
+        this.complex.getDbXrefs().add(new InteractorXref(IntactUtils.createMIDatabase("unspecified", null), "to set"));
         setUnsavedChanges(true);
     }
 
     @Override
     public void newAnnotation(ActionEvent evt) {
-        this.complex.getAnnotations().add(new InteractorAnnotation());
+        this.complex.getAnnotations().add(new InteractorAnnotation(IntactUtils.createMITopic("unspecified", null)));
         setUnsavedChanges(true);
     }
 
     @Override
     public void newAlias(ActionEvent evt) {
-        this.complex.getAliases().add(new InteractorAlias());
+        this.complex.getAliases().add(new InteractorAlias("to set"));
         setUnsavedChanges(true);
     }
 

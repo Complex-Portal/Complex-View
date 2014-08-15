@@ -41,6 +41,7 @@ import uk.ac.ebi.intact.jami.synchronizer.FinderException;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
 import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
+import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.clone.IntactCloner;
 
@@ -520,19 +521,19 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     @Override
     public void newXref(ActionEvent evt) {
-        this.feature.getDbXrefs().add(new ModelledFeatureXref());
+        this.feature.getDbXrefs().add(new ModelledFeatureXref(IntactUtils.createMIDatabase("unspecified", null), "to set"));
         setUnsavedChanges(true);
     }
 
     @Override
     public void newAnnotation(ActionEvent evt) {
-        this.feature.getAnnotations().add(new ModelledFeatureAnnotation());
+        this.feature.getAnnotations().add(new ModelledFeatureAnnotation(IntactUtils.createMITopic("unspecified", null)));
         setUnsavedChanges(true);
     }
 
     @Override
     public void newAlias(ActionEvent evt) {
-        this.feature.getAliases().add(new ModelledFeatureAlias());
+        this.feature.getAliases().add(new ModelledFeatureAlias("to set"));
         setUnsavedChanges(true);
     }
 

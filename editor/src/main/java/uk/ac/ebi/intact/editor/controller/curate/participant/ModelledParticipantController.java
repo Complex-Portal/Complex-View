@@ -461,19 +461,19 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     @Override
     public void newXref(ActionEvent evt) {
-        this.participant.getXrefs().add(new ModelledParticipantXref());
+        this.participant.getXrefs().add(new ModelledParticipantXref(IntactUtils.createMIDatabase("unspecified", null), "to set"));
         setUnsavedChanges(true);
     }
 
     @Override
     public void newAnnotation(ActionEvent evt) {
-        this.participant.getAnnotations().add(new ModelledParticipantAnnotation());
+        this.participant.getAnnotations().add(new ModelledParticipantAnnotation(IntactUtils.createMITopic("unspecified", null)));
         setUnsavedChanges(true);
     }
 
     @Override
     public void newAlias(ActionEvent evt) {
-        this.participant.getAliases().add(new ModelledParticipantAlias());
+        this.participant.getAliases().add(new ModelledParticipantAlias("to set"));
         setUnsavedChanges(true);
     }
 

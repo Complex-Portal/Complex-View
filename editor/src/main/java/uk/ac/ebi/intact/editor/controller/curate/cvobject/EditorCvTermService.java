@@ -29,9 +29,7 @@ import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.extension.IntactCvTerm;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
-import uk.ac.ebi.intact.model.Component;
-import uk.ac.ebi.intact.model.CvTopic;
-import uk.ac.ebi.intact.model.Feature;
+import uk.ac.ebi.intact.model.*;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
@@ -236,8 +234,18 @@ public class EditorCvTermService extends JpaAwareController {
         }
 
         // TODO when we have a better hierarchy use ontology only
-        //IntactCvTerm complexTopicParent = cvDao.getByMIIdentifier("MI:0664", IntactUtils.TOPIC_OBJCLASS);
-        //loadChildren(complexTopicParent, complexTopicSelectItems, false);
+        IntactCvTerm complexTopicParent = cvDao.getByMIIdentifier("MI:0664", IntactUtils.TOPIC_OBJCLASS);
+        processTopicAcs = new ArrayList<String>();
+        if (complexTopicParent != null){
+            processTopicAcs.addAll(loadChildren(complexTopicParent, complexTopicSelectItems, false));
+        }
+        if (participantTopicParent != null){
+            processTopicAcs.addAll(loadChildren(participantTopicParent, complexTopicSelectItems, false));
+        }
+        loadMissingCvsFromIntactCvService(intactCvService, cvDao, processTopicAcs, complexTopicSelectItems, Interaction.class.getCanonicalName());
+
+
+        // TODO when we have a better hierarchy use ontology only
         //IntactCvTerm complexDatabaseParent = cvDao.getByMIIdentifier("MI:0473", IntactUtils.DATABASE_OBJCLASS);
         //IntactCvTerm complexDatabaseParent2 = cvDao.getByMIIdentifier("MI:0461", IntactUtils.DATABASE_OBJCLASS);
         //if (complexDatabaseParent != null){

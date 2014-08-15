@@ -30,6 +30,7 @@
                             <h:selectOneMenu id="databaseSel" value="#{xref.database}" required="true"
                                              requiredMessage="Database for xref is required" disabled="#{annotatedObjectController.isXrefDisabled()}" converter="cvTermConverter">
                                 <f:selectItems value="#{databaseSelectItems}"/>
+                                <ed:curation/>
                             </h:selectOneMenu>
 
                             <script type="text/javascript">
@@ -92,6 +93,7 @@
                             </f:facet>
                             <h:selectOneMenu id="qualifierSel" value="#{xref.qualifier}" disabled="#{annotatedObjectController.isXrefDisabled()}" converter="cvTermConverter">
                                 <f:selectItems value="#{qualifierSelectItems}"/>
+                                <ed:curation/>
                             </h:selectOneMenu>
                         </p:column>
                         <p:column>
