@@ -82,8 +82,9 @@
                         </td>
                         <td colspan="2">
                             <ia:inputCvTerm id="featureTypeTxt" cvIdentifier="MI:0116" value="#{feature.type}"
-                                    selectItems="#{editorCvTermService.featureTypeSelectItems}"
-                                    required="true" requiredMessage="Feature type is required"
+                                            cvClass="uk.ac.ebi.intact.model.CvFeatureType"
+                                            selectItems="#{editorCvTermService.featureTypeSelectItems}"
+                                            required="true" requiredMessage="Feature type is required"
                                            update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                         </td>
@@ -94,6 +95,7 @@
                         </td>
                         <td colspan="2">
                             <ia:inputCvTerm id="featureRoleTxt" cvIdentifier="MI:0925" value="#{feature.role}"
+                                            cvClass="uk.ac.ebi.intact.model.CvTopic"
                                             selectItems="#{editorCvTermService.featureRoleSelectItems}"
                                             update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
                                             valueChangeAwareObject="#{annotatedObjectController}"/>

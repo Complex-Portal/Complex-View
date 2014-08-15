@@ -15,6 +15,7 @@
       <composite:attribute name="beforeTimeoutEvent" default=""/>
       <composite:attribute name="disabled" type="java.lang.Boolean" default="false"/>
       <composite:attribute name="cvIdentifier" required="true" shortDescription="Identifier of the CvObject"/>
+      <composite:attribute name="cvClass" required="true" shortDescription="Class of the CvObject"/>
       <composite:attribute name="immediate" default="false"/>
       <composite:attribute name="modal" type="java.lang.Boolean" default="true"/>
       <composite:attribute name="oncomplete"/>
@@ -38,7 +39,7 @@
 
         <script type="text/javascript">
             var #{dialogWidgetId}_icv = new InputCvObject('#{cc.clientId}');
-            #{dialogWidgetId}_icv.setUrl('#{facesContext.externalContext.requestContextPath}/comp/inputcvterm_inner.xhtml?identifier=#{cc.attrs.cvIdentifier}&amp;dialogId=#{dialogWidgetId}&amp;clientId=#{cc.clientId}&amp;visible=true');
+            #{dialogWidgetId}_icv.setUrl('#{facesContext.externalContext.requestContextPath}/comp/inputcvterm_inner.xhtml?identifier=#{cc.attrs.cvIdentifier}&amp;dialogId=#{dialogWidgetId}&amp;clientId=#{cc.clientId}&amp;visible=true&amp;className=#{cc.attrs.cvClass}');
         </script>
 
          <h:panelGrid columns="2" id="inputPanel" onmouseover="document.getElementById('#{cc.clientId}:cvButtons').style.visibility = 'visible';"

@@ -21,7 +21,7 @@ import org.hibernate.Hibernate;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.CvTerm;
@@ -37,7 +37,7 @@ import javax.faces.event.ComponentSystemEvent;
  * @author Marine Dumousseau (marine@ebi.ac.uk)
  * @version $Id$
  */
-@Component
+@Controller
 @Scope("conversation.access")
 public class InputCvTermController extends BaseController{
 

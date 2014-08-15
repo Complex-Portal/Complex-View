@@ -184,6 +184,7 @@
             </td>
             <td colspan="3">
                 <ia:inputCvTerm id="complexTypeTxt" cvIdentifier="MI:0314"
+                                cvClass="uk.ac.ebi.intact.model.CvInteractorType"
                                 value="#{interaction.interactorType}"
                                 selectItems="#{editorCvTermService.interactorTypeSelectItems}"
                                 required="true" requiredMessage="Complex type is required"
@@ -198,6 +199,7 @@
             </td>
             <td colspan="3">
                 <ia:inputCvTerm id="interactionTypeTxt" cvIdentifier="MI:0190"
+                                cvClass="uk.ac.ebi.intact.model.CvInteractionType"
                                 value="#{interaction.interactionType}"
                                 selectItems="#{editorCvTermService.interactionTypeSelectItems}"
                                 required="true" requiredMessage="Interaction type is required"
@@ -212,6 +214,7 @@
             </td>
             <td colspan="3">
                 <ia:inputCvTerm id="ecoCodeTxt" cvIdentifier="MI:1331"
+                                cvClass="uk.ac.ebi.intact.model.CvTopic"
                                 value="#{interaction.evidenceType}"
                                 selectItems="#{editorCvTermService.evidenceTypeSelectItems}"
                                 required="true" requiredMessage="ECO code is required"

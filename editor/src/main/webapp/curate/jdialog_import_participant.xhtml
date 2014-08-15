@@ -120,6 +120,7 @@
 
                         <h:outputLabel value="Biological role: " for="jbioRoleDialogTxt"/>
                         <ia:inputCvTerm id="jbioRoleDialogTxt" cvIdentifier="MI:0500"
+                                        cvClass="uk.ac.ebi.intact.model.CvBiologicalRole"
                                           modal="false"
                                           value="#{modelledParticipantImportController.biologicalRole}"
                                           selectItems="#{editorCvTermService.biologicalRoleSelectItems}" />

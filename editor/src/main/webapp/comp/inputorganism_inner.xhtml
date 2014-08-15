@@ -64,18 +64,6 @@
                             </f:facet>
                             <h:outputText value="#{bioSource.scientificName}" rendered="#{bioSource.scientificName != null}"/>
                         </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="Tissue"/>
-                            </f:facet>
-                            <h:outputText value="#{bioSource.tissue.shortName}" rendered="#{bioSource.tissue != null}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="Cell type"/>
-                            </f:facet>
-                            <h:outputText value="#{bioSource.cellType.shortName}" rendered="#{bioSource.cellType != null}"/>
-                        </p:column>
                     </p:dataTable>
 
                 </h:panelGrid>
