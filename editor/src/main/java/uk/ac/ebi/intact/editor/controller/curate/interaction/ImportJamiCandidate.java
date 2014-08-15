@@ -3,8 +3,7 @@ package uk.ac.ebi.intact.editor.controller.curate.interaction;
 import psidev.psi.mi.jami.model.Organism;
 import psidev.psi.mi.jami.model.Protein;
 import psidev.psi.mi.jami.model.Xref;
-import uk.ac.ebi.intact.uniprot.model.UniprotFeatureChain;
-import uk.ac.ebi.intact.uniprot.model.UniprotSpliceVariant;
+import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,10 +120,14 @@ public class ImportJamiCandidate {
     }
 
     public boolean isIsoform() {
-        return uniprotProtein != null && (uniprotProtein instanceof UniprotSpliceVariant);
+        return uniprotProtein != null && (uniprotProtein.getUniprotkb().contains("-"));
     }
 
     public boolean isChain() {
-        return uniprotProtein != null && (uniprotProtein instanceof UniprotFeatureChain);
+        return uniprotProtein != null && (uniprotProtein.getUniprotkb().contains("-PRO"));
+    }
+
+    public boolean isPersistentInteractor(){
+        return this.interactor instanceof IntactInteractor;
     }
 }

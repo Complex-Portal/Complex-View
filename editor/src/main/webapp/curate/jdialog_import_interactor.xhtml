@@ -81,7 +81,7 @@
                     </p:column>
                     <p:column>
                         <f:facet name="header"><h:outputText value="IntAct AC"/></f:facet>
-                        <h:outputText value="#{candidate.interactor.ac}" rendered="#{candidate.interactor != null}"/>
+                        <h:outputText value="#{candidate.interactor.ac}" rendered="#{candidate.persistentInteractor}"/>
                     </p:column>
                     <p:column>
                         <f:facet name="header"><h:outputText value="IntAct label"/></f:facet>

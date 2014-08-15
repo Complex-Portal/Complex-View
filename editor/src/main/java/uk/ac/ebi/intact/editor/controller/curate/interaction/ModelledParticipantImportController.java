@@ -42,10 +42,7 @@ import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.dao.ModelledParticipantDao;
-import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
-import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
-import uk.ac.ebi.intact.jami.model.extension.IntactModelledParticipant;
-import uk.ac.ebi.intact.jami.model.extension.IntactStoichiometry;
+import uk.ac.ebi.intact.jami.model.extension.*;
 import uk.ac.ebi.intact.jami.synchronizer.FinderException;
 import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
 import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
@@ -426,11 +423,11 @@ public class ModelledParticipantImportController extends JpaAwareController {
         this.importCandidates = importCandidates;
     }
 
-    public CvTerm getCvBiologicalRole() {
+    public CvTerm getBiologicalRole() {
         return cvBiologicalRole;
     }
 
-    public void setCvBiologicalRole(CvTerm cvBiologicalRole) {
+    public void setBiologicalRole(CvTerm cvBiologicalRole) {
         this.cvBiologicalRole = cvBiologicalRole;
     }
 
@@ -456,6 +453,7 @@ public class ModelledParticipantImportController extends JpaAwareController {
 
     public void setMinStoichiometry(int stoichiometry) {
         this.minStoichiometry = stoichiometry;
+        this.maxStoichiometry = Math.max(minStoichiometry, this.maxStoichiometry);
     }
 
     public int getMaxStoichiometry() {
@@ -464,5 +462,6 @@ public class ModelledParticipantImportController extends JpaAwareController {
 
     public void setMaxStoichiometry(int stoichiometry) {
         this.maxStoichiometry = stoichiometry;
+        this.minStoichiometry = Math.min(this.minStoichiometry, maxStoichiometry);
     }
 }

@@ -27,7 +27,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.*;
-import psidev.psi.mi.jami.model.impl.DefaultStoichiometry;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedJamiChange;
@@ -244,7 +243,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         participant.setCreator(jamiUserContext.getUserId());
         participant.setUpdator(jamiUserContext.getUserId());
         participant.setBiologicalRole(defaultBiologicalRole);
-        participant.setStoichiometry(new DefaultStoichiometry((int)getEditorConfig().getDefaultStoichiometry()));
+        participant.setStoichiometry(new IntactStoichiometry((int)getEditorConfig().getDefaultStoichiometry()));
 
         // by setting the interaction of a participant, we don't add the participant to the collection of participants for this interaction so if we revertJami, it will not affect anything.
         // when saving, it will be added to the list of participants for this interaction. we just have to refresh the list of participants
@@ -349,7 +348,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         }
         else {
             IntactStoichiometry stoichiometry = (IntactStoichiometry)participant.getStoichiometry();
-            this.participant.setStoichiometry(new IntactStoichiometry(stc, stoichiometry.getMaxValue()));
+            this.participant.setStoichiometry(new IntactStoichiometry(stc, Math.max(stc, stoichiometry.getMaxValue())));
         }
     }
 
@@ -359,7 +358,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         }
         else {
             IntactStoichiometry stoichiometry = (IntactStoichiometry)participant.getStoichiometry();
-            this.participant.setStoichiometry(new IntactStoichiometry(stoichiometry.getMinValue(), stc));
+            this.participant.setStoichiometry(new IntactStoichiometry(Math.min(stc, stoichiometry.getMinValue()), stc));
         }
     }
 
