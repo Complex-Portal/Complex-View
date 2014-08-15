@@ -53,7 +53,6 @@ public class InputOrganismController extends BaseController {
     public InputOrganismController() {
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadBioSources( ComponentSystemEvent evt) {
         if (log.isTraceEnabled()) log.trace("Load Biosources");
 //        setQuery(null);

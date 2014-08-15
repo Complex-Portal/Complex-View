@@ -71,7 +71,7 @@ public class InputCvTermController extends BaseController{
             throw new IllegalArgumentException("Root does not exist: " + id);
         }
 
-        // loadParticipants collections needed
+        // load laxzy collections collections needed
         Hibernate.initialize(rootCv.getDbAnnotations());
         Hibernate.initialize(rootCv.getDbXrefs());
 
@@ -86,18 +86,35 @@ public class InputCvTermController extends BaseController{
         TreeNode childNode = new DefaultTreeNode(cv, node);
 
         for ( CvTerm child : cv.getChildren() ) {
+            // load laxzy collections collections needed
+            Hibernate.initialize(((IntactCvTerm)child).getDbAnnotations());
+            Hibernate.initialize(((IntactCvTerm)child).getDbXrefs());
             buildTreeNode( (IntactCvTerm)child, childNode );
         }
 
         return childNode;
     }
 
-    @SuppressWarnings({"JpaQlInspection"})
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getDescription(IntactCvTerm cvObject) {
         if (cvObject == null) return null;
 
         return cvObject.getDefinition();
+    }
+
+    public String getIdentifier(IntactCvTerm cvObject) {
+        if (cvObject == null) return null;
+
+        String id = cvObject.getMIIdentifier();
+        if (id == null){
+            id = cvObject.getMODIdentifier();
+        }
+        if (id == null){
+            id = cvObject.getPARIdentifier();
+        }
+        if (id == null){
+            id = !cvObject.getIdentifiers().isEmpty() ? cvObject.getIdentifiers().iterator().next().getId() : null;
+        }
+        return id;
     }
 
     public TreeNode getRoot() {

@@ -16,9 +16,8 @@
       <composite:attribute name="disabled" type="java.lang.Boolean" default="false"/>
       <composite:attribute name="cvIdentifier" required="true" shortDescription="Identifier of the CvObject"/>
       <composite:attribute name="cvClass" required="true" shortDescription="Class of the CvObject"/>
-      <composite:attribute name="immediate" default="false"/>
       <composite:attribute name="modal" type="java.lang.Boolean" default="true"/>
-      <composite:attribute name="oncomplete"/>
+      <composite:attribute name="oncomplete" default=""/>
       <composite:attribute name="required" default="false"/>
       <composite:attribute name="requiredMessage"/>
       <composite:attribute name="selectItems" required="true"/>
@@ -47,7 +46,7 @@
 
                 <h:selectOneMenu id="selectObject" value="#{cc.attrs.value}" size="#{cc.attrs.size}" converter="cvTermConverter"
                                  required="#{cc.attrs.required}" requiredMessage="#{cc.attrs.requiredMessage}"
-                                 immediate="#{cc.attrs.immediate}" disabled="#{cc.attrs.disabled}">
+                                 disabled="#{cc.attrs.disabled}">
                     <f:selectItems value="#{cc.attrs.selectItems}"/>
                     <p:ajax event="change" process="@this"
                             onerror="alert('ERROR!')"
@@ -59,7 +58,6 @@
              <h:panelGrid columns="2" id="cvButtons" style="visibility: hidden">
                 <p:commandButton id="selectBtn" value="Browse"  type="button"
                                  onclick="#{dialogWidgetId}_icv.browse(#{dialogWidgetId})"/>
-
                  <p:commandButton id="editBtn" value="Edit" immediate="true" disabled="#{cc.attrs.value == null}"
                             action="#{curateController.editByAc(cc.attrs.value.ac)}" ajax="false"/>
              </h:panelGrid>
