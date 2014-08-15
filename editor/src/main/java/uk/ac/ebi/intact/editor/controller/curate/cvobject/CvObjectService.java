@@ -336,6 +336,14 @@ public class CvObjectService extends JpaAwareController {
         confidenceTypes = getSortedList( CvConfidenceType.class, cvObjectsByClass);
         confidenceTypeSelectItems = createSelectItems( confidenceTypes, "-- Select type --" );
 
+        // add all obsoletes and hidden now to the map of class objects
+        List<CvObject> allCvs = getDaoFactory().getCvObjectDao().getAll();
+        for ( CvObject cvObject : allCvs ) {
+            if (!cvObjectsByClass.containsKey(cvObject.getClass())){
+                cvObjectsByClass.put(cvObject.getClass(), cvObject);
+            }
+        }
+
         IntactContext.getCurrentInstance().getDataContext().commitTransaction( transactionStatus );
     }
 

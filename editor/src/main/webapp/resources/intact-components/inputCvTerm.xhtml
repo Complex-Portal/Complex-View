@@ -60,7 +60,7 @@
                                  onclick="#{dialogWidgetId}_icv.browse(#{dialogWidgetId})"/>
 
                  <p:commandButton id="editBtn" value="Edit" immediate="true" disabled="#{cc.attrs.value == null}"
-                            action="#{curateController.editJami(cc.attrs.value)}" ajax="false"/>
+                            action="#{curateController.editByAc(cc.attrs.value.ac)}" ajax="false"/>
              </h:panelGrid>
         </h:panelGrid>
 
