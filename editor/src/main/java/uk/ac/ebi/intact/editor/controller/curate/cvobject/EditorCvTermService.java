@@ -24,19 +24,19 @@ import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.OntologyTerm;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.extension.IntactCvTerm;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
+import uk.ac.ebi.intact.model.Component;
 import uk.ac.ebi.intact.model.CvTopic;
+import uk.ac.ebi.intact.model.Feature;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Marine Dumousseau (marine@ebi.ac.uk)
@@ -139,12 +139,19 @@ public class EditorCvTermService extends JpaAwareController {
         parameterUnitSelectItems = new ArrayList<SelectItem>();
         parameterUnitSelectItems.add(new SelectItem(null, "select parameter unit", "select parameter unit", false, false, true));
 
+        CvObjectService intactCvService = ApplicationContextProvider.getBean("cvObjectService");
+
         IntactDao intactDao = getIntactDao();
         CvTermDao cvDao = intactDao.getCvTermDao();
 
-        IntactCvTerm typeParent = cvDao.getByMIIdentifier("MI:0116", IntactUtils.FEATURE_TYPE_OBJCLASS);
-        if (typeParent != null){
-            loadChildren(typeParent, featureTypeSelectItems, false);
+        Collection<IntactCvTerm> featureTypes = cvDao.getByObjClass(IntactUtils.FEATURE_TYPE_OBJCLASS);
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm typeParent = cvDao.getByMIIdentifier("MI:0116", IntactUtils.FEATURE_TYPE_OBJCLASS);
+        //if (typeParent != null){
+            //loadChildren(typeParent, featureTypeSelectItems, false);
+        //}
+        if (!featureTypes.isEmpty()){
+            loadCollectionCv(featureTypes, featureTypeSelectItems, false);
         }
 
         IntactCvTerm roleParent = cvDao.getByMIIdentifier("MI:0925", IntactUtils.TOPIC_OBJCLASS);
@@ -156,70 +163,115 @@ public class EditorCvTermService extends JpaAwareController {
             loadChildren(roleParent, featureRoleSelectItems, false);
         }
 
-        IntactCvTerm aliasTypeParent = cvDao.getByMIIdentifier("MI:0300", IntactUtils.ALIAS_TYPE_OBJCLASS);
-        if (aliasTypeParent != null){
-            loadChildren(aliasTypeParent, aliasTypeSelectItems, false);
+        Collection<IntactCvTerm> aliaseTypes = cvDao.getByObjClass(IntactUtils.ALIAS_TYPE_OBJCLASS);
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm aliasTypeParent = cvDao.getByMIIdentifier("MI:0300", IntactUtils.ALIAS_TYPE_OBJCLASS);
+        //if (aliasTypeParent != null){
+        //    loadChildren(aliasTypeParent, aliasTypeSelectItems, false);
+        //}
+        if (!aliaseTypes.isEmpty()){
+            loadCollectionCv(aliaseTypes, aliasTypeSelectItems, false);
         }
 
         IntactCvTerm featureTopicParent = cvDao.getByMIIdentifier("MI:0668", IntactUtils.TOPIC_OBJCLASS);
+        List<String> processTopicAcs = Collections.EMPTY_LIST;
         if (featureTopicParent != null){
-            loadChildren(featureTopicParent, featureTopicSelectItems, false);
+            processTopicAcs = loadChildren(featureTopicParent, featureTopicSelectItems, false);
+        }
+        loadMissingCvsFromIntactCvService(intactCvService, cvDao, processTopicAcs, featureTopicSelectItems, Feature.class.getCanonicalName());
+
+        Collection<IntactCvTerm> databases = cvDao.getByObjClass(IntactUtils.DATABASE_OBJCLASS);
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm databaseParent = cvDao.getByMIIdentifier("MI:0447", IntactUtils.DATABASE_OBJCLASS);
+        //if (databaseParent != null){
+            //loadChildren(databaseParent, featureDatabaseSelectItems, false);
+        //}
+        if (!databases.isEmpty()){
+            loadCollectionCv(databases, featureDatabaseSelectItems, false);
         }
 
-        IntactCvTerm databaseParent = cvDao.getByMIIdentifier("MI:0447", IntactUtils.DATABASE_OBJCLASS);
-        if (databaseParent != null){
-            loadChildren(databaseParent, featureDatabaseSelectItems, false);
+        Collection<IntactCvTerm> qualifiers = cvDao.getByObjClass(IntactUtils.QUALIFIER_OBJCLASS);
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm qualifierParent = cvDao.getByMIIdentifier("MI:0353", IntactUtils.QUALIFIER_OBJCLASS);
+        //if (qualifierParent != null){
+        //    loadChildren(qualifierParent, qualifierSelectItems, false);
+        //}
+        if (!qualifiers.isEmpty()){
+            loadCollectionCv(qualifiers, qualifierSelectItems, false);
         }
 
-        IntactCvTerm qualifierParent = cvDao.getByMIIdentifier("MI:0353", IntactUtils.QUALIFIER_OBJCLASS);
-        if (qualifierParent != null){
-            loadChildren(qualifierParent, qualifierSelectItems, false);
-        }
-
-        IntactCvTerm statusParent = cvDao.getByMIIdentifier("MI:0333", IntactUtils.RANGE_STATUS_OBJCLASS);
-        if (statusParent != null){
-            loadChildren(statusParent, fuzzyTypeSelectItems, false);
+        Collection<IntactCvTerm> status = cvDao.getByObjClass(IntactUtils.RANGE_STATUS_OBJCLASS);
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm statusParent = cvDao.getByMIIdentifier("MI:0333", IntactUtils.RANGE_STATUS_OBJCLASS);
+        //if (statusParent != null){
+        //    loadChildren(statusParent, fuzzyTypeSelectItems, false);
+        //}
+        if (!status.isEmpty()){
+            loadCollectionCv(status, fuzzyTypeSelectItems, false);
         }
 
         IntactCvTerm participantTopicParent = cvDao.getByMIIdentifier("MI:0666", IntactUtils.TOPIC_OBJCLASS);
         if (participantTopicParent != null){
-            loadChildren(participantTopicParent, participantTopicSelectItems, false);
+            processTopicAcs = loadChildren(participantTopicParent, participantTopicSelectItems, false);
+        }
+        loadMissingCvsFromIntactCvService(intactCvService, cvDao, processTopicAcs, participantTopicSelectItems, Component.class.getCanonicalName());
+
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm participantDbParent = cvDao.getByMIIdentifier("MI:0473", IntactUtils.DATABASE_OBJCLASS);
+        //if (participantDbParent != null){
+        //    loadChildren(participantDbParent, participantDatabaseSelectItems, false);
+        //}
+        if (!databases.isEmpty()){
+            loadCollectionCv(databases, participantDatabaseSelectItems, false);
         }
 
-        IntactCvTerm participantDbParent = cvDao.getByMIIdentifier("MI:0473", IntactUtils.DATABASE_OBJCLASS);
-        if (participantDbParent != null){
-            loadChildren(participantDbParent, participantDatabaseSelectItems, false);
+        Collection<IntactCvTerm> bioRoles = cvDao.getByObjClass(IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm bioRoleParent = cvDao.getByMIIdentifier("MI:0500", IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
+        //if (bioRoleParent != null){
+        //    loadChildren(bioRoleParent, biologicalRoleSelectItems, false);
+        //}
+        if (!bioRoles.isEmpty()){
+            loadCollectionCv(bioRoles, biologicalRoleSelectItems, false);
         }
 
-        IntactCvTerm bioRoleParent = cvDao.getByMIIdentifier("MI:0500", IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
-        if (bioRoleParent != null){
-            loadChildren(bioRoleParent, biologicalRoleSelectItems, false);
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm complexTopicParent = cvDao.getByMIIdentifier("MI:0664", IntactUtils.TOPIC_OBJCLASS);
+        //loadChildren(complexTopicParent, complexTopicSelectItems, false);
+        //IntactCvTerm complexDatabaseParent = cvDao.getByMIIdentifier("MI:0473", IntactUtils.DATABASE_OBJCLASS);
+        //IntactCvTerm complexDatabaseParent2 = cvDao.getByMIIdentifier("MI:0461", IntactUtils.DATABASE_OBJCLASS);
+        //if (complexDatabaseParent != null){
+        //    loadChildren(complexDatabaseParent, complexDatabaseSelectItems, false);
+        //}
+        //if (complexDatabaseParent2 != null){
+        //    loadChildren(complexDatabaseParent2, complexDatabaseSelectItems, false);
+        //}
+        if (!databases.isEmpty()){
+            loadCollectionCv(databases, complexDatabaseSelectItems, false);
         }
 
-        IntactCvTerm complexTopicParent = cvDao.getByMIIdentifier("MI:0664", IntactUtils.TOPIC_OBJCLASS);
-        loadChildren(complexTopicParent, complexTopicSelectItems, false);
-
-        IntactCvTerm complexDatabaseParent = cvDao.getByMIIdentifier("MI:0473", IntactUtils.DATABASE_OBJCLASS);
-        IntactCvTerm complexDatabaseParent2 = cvDao.getByMIIdentifier("MI:0461", IntactUtils.DATABASE_OBJCLASS);
-        if (complexDatabaseParent != null){
-            loadChildren(complexDatabaseParent, complexDatabaseSelectItems, false);
-        }
-        if (complexDatabaseParent2 != null){
-            loadChildren(complexDatabaseParent2, complexDatabaseSelectItems, false);
+        Collection<IntactCvTerm> interactionTypes = cvDao.getByObjClass(IntactUtils.INTERACTION_TYPE_OBJCLASS);
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm interactionTypeParent = cvDao.getByMIIdentifier("MI:0190", IntactUtils.INTERACTION_TYPE_OBJCLASS);
+        //if (interactionTypeParent != null){
+        //    loadChildren(interactionTypeParent, interactionTypeSelectItems, false);
+        //}
+        if (!interactionTypes.isEmpty()){
+            loadCollectionCv(interactionTypes, interactionTypeSelectItems, false);
         }
 
-        IntactCvTerm interactionTypeParent = cvDao.getByMIIdentifier("MI:0190", IntactUtils.INTERACTION_TYPE_OBJCLASS);
-        if (interactionTypeParent != null){
-            loadChildren(interactionTypeParent, interactionTypeSelectItems, false);
-        }
-
-        IntactCvTerm interactorTypeParent = cvDao.getByMIIdentifier("MI:0314", IntactUtils.INTERACTOR_TYPE_OBJCLASS);
-        SelectItem item = interactorTypeParent != null ? createSelectItem(interactorTypeParent, true):null;
-        if (item != null){
-            interactorTypeSelectItems.add(item);
-        }
-        if (interactorTypeParent != null){
-            loadChildren(interactorTypeParent, interactorTypeSelectItems, false);
+        Collection<IntactCvTerm> interactorTypes = cvDao.getByObjClass(IntactUtils.INTERACTOR_TYPE_OBJCLASS);
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm interactorTypeParent = cvDao.getByMIIdentifier("MI:0314", IntactUtils.INTERACTOR_TYPE_OBJCLASS);
+        //SelectItem item = interactorTypeParent != null ? createSelectItem(interactorTypeParent, true):null;
+        //if (item != null){
+        //    interactorTypeSelectItems.add(item);
+        //}
+        //if (interactorTypeParent != null){
+        //    loadChildren(interactorTypeParent, interactorTypeSelectItems, false);
+        //}
+        if (!interactorTypes.isEmpty()){
+            loadCollectionCv(interactorTypes, interactorTypeSelectItems, false);
         }
 
         IntactCvTerm evidenceTypeParent = cvDao.getByMIIdentifier("MI:1331", IntactUtils.DATABASE_OBJCLASS);
@@ -231,33 +283,74 @@ public class EditorCvTermService extends JpaAwareController {
             loadChildren(evidenceTypeParent, evidenceTypeSelectItems, true);
         }
 
-        IntactCvTerm confidenceTypeParent = cvDao.getByMIIdentifier("MI:1064", IntactUtils.CONFIDENCE_TYPE_OBJCLASS);
-        if (confidenceTypeParent != null){
-            loadChildren(confidenceTypeParent, confidenceTypeSelectItems, false);
+        Collection<IntactCvTerm> confidenceTypes = cvDao.getByObjClass(IntactUtils.CONFIDENCE_TYPE_OBJCLASS);
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm confidenceTypeParent = cvDao.getByMIIdentifier("MI:1064", IntactUtils.CONFIDENCE_TYPE_OBJCLASS);
+        //if (confidenceTypeParent != null){
+        //    loadChildren(confidenceTypeParent, confidenceTypeSelectItems, false);
+        //}
+        if (!confidenceTypes.isEmpty()){
+            loadCollectionCv(confidenceTypes, confidenceTypeSelectItems, false);
         }
 
-        IntactCvTerm parameterTypeParent = cvDao.getByMIIdentifier("MI:0640", IntactUtils.PARAMETER_TYPE_OBJCLASS);
-        if (parameterTypeParent != null){
-            loadChildren(parameterTypeParent, parameterTypeSelectItems, false);
+        Collection<IntactCvTerm> parameterTypes = cvDao.getByObjClass(IntactUtils.PARAMETER_TYPE_OBJCLASS);
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm parameterTypeParent = cvDao.getByMIIdentifier("MI:0640", IntactUtils.PARAMETER_TYPE_OBJCLASS);
+        //if (parameterTypeParent != null){
+        //    loadChildren(parameterTypeParent, parameterTypeSelectItems, false);
+        //}
+        if (!parameterTypes.isEmpty()){
+            loadCollectionCv(parameterTypes, parameterTypeSelectItems, false);
         }
 
-        IntactCvTerm parameterUnit = cvDao.getByMIIdentifier("MI:0647", IntactUtils.UNIT_OBJCLASS);
-        if (parameterUnit != null){
-            loadChildren(parameterUnit, parameterTypeSelectItems, false);
+        Collection<IntactCvTerm> parameterUnits = cvDao.getByObjClass(IntactUtils.UNIT_OBJCLASS);
+        // TODO when we have a better hierarchy use ontology only
+        //IntactCvTerm parameterUnit = cvDao.getByMIIdentifier("MI:0647", IntactUtils.UNIT_OBJCLASS);
+        //if (parameterUnit != null){
+        //    loadChildren(parameterUnit, parameterTypeSelectItems, false);
+        //}
+        if (!parameterUnits.isEmpty()){
+            loadCollectionCv(parameterUnits, parameterUnitSelectItems, false);
         }
     }
 
-    private void loadChildren(IntactCvTerm parent, List<SelectItem> selectItems, boolean ignoreHidden){
+    protected void loadMissingCvsFromIntactCvService(CvObjectService intactCvService, CvTermDao cvDao, List<String> processTopicAcs, List<SelectItem> items, String usedInClass) {
+        Collection<CvTopic> topics = intactCvService.getCvTopicsByUsedInClass(usedInClass);
+        for (CvTopic topic : topics){
+            if (!processTopicAcs.contains(topic.getAc())){
+                SelectItem topicItem = createSelectItem(cvDao.getByAc(topic.getAc()), false);
+                if (topicItem != null){
+                   items.add(topicItem);
+                }
+            }
+        }
+    }
+
+    protected void loadCollectionCv(Collection<IntactCvTerm> featureTypes, List<SelectItem> items, boolean ignoreHidden) {
+        List<String> list = new ArrayList<String>(featureTypes.size());
+        for (IntactCvTerm term : featureTypes){
+            SelectItem item = createSelectItem(term, ignoreHidden);
+            if (item != null){
+                list.add(term.getAc());
+                 items.add(item);
+            }
+        }
+    }
+
+    private List<String> loadChildren(IntactCvTerm parent, List<SelectItem> selectItems, boolean ignoreHidden){
+        List<String> list = new ArrayList<String>(parent.getChildren().size());
         for (OntologyTerm child : parent.getChildren()){
             IntactCvTerm cv = (IntactCvTerm)child;
             SelectItem item = createSelectItem(cv, ignoreHidden);
             if (item != null){
+                list.add(cv.getAc());
                 selectItems.add(item);
             }
             if (!cv.getChildren().isEmpty()){
-                loadChildren(cv, selectItems, ignoreHidden);
+                list.addAll(loadChildren(cv, selectItems, ignoreHidden));
             }
         }
+        return list;
     }
 
     private SelectItem createSelectItem( IntactCvTerm cv, boolean ignoreHidden ) {
