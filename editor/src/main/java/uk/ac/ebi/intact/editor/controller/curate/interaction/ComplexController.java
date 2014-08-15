@@ -303,7 +303,9 @@ public class ComplexController extends AnnotatedObjectController {
     protected void refreshUnsavedChangesBeforeRevert(){
 
         getChangesController().revertComplex(complex, Collections.EMPTY_LIST);
-        setComplex(null);
+        if (complex != null && complex.getAc() == null){
+            setComplex(null);
+        }
     }
 
     public String getAc() {
