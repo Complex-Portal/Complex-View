@@ -22,9 +22,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.BaseController;
+import uk.ac.ebi.intact.editor.controller.curate.organism.EditorOrganismService;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
-import uk.ac.ebi.intact.jami.dao.IntactDao;
-import uk.ac.ebi.intact.jami.dao.OrganismDao;
 import uk.ac.ebi.intact.jami.model.extension.IntactOrganism;
 
 import javax.faces.event.ActionEvent;
@@ -32,6 +31,8 @@ import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -58,11 +59,10 @@ public class InputOrganismController extends BaseController {
 //        setQuery(null);
 //
         if (query == null) {
-            IntactDao dao = ApplicationContextProvider.getBean("intactDao");
-            OrganismDao organismDao = dao.getOrganismDao();
-            List<IntactOrganism> bioSources = organismDao.getAll();
+            EditorOrganismService dao = ApplicationContextProvider.getBean("editorOrganismService");
+            Collection<IntactOrganism> bioSources = dao.getAllOrganisms();
 
-            setBioSources(bioSources);
+            setBioSources(new ArrayList<IntactOrganism>(bioSources));
         }
     }
 

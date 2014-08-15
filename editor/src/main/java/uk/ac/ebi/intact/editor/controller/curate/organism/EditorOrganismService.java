@@ -102,6 +102,10 @@ public class EditorOrganismService extends JpaAwareController {
         return organismSelectItems;
     }
 
+    public Collection<IntactOrganism> getAllOrganisms() {
+        return this.acOrganismMap.values();
+    }
+
     public IntactOrganism findOrganismByAc(String ac){
         return acOrganismMap.get(ac);
     }
