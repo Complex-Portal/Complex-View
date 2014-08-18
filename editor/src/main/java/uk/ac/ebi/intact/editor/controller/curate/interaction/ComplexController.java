@@ -264,13 +264,12 @@ public class ComplexController extends AnnotatedObjectController {
 
     public void markParticipantToDelete(IntactModelledParticipant component) {
         if (component == null) return;
-
-        if (component.getAc() == null) {
-            complex.removeParticipant(component);
-            refreshParticipants();
-        } else {
+        complex.removeParticipant(component);
+        refreshParticipants();
+        if (component.getAc() != null) {
             getChangesController().markJamiToDelete(component, (IntactComplex)component.getInteraction(), getIntactDao().getSynchronizerContext().getModelledParticipantSynchronizer());
         }
+        changed();
     }
 
     @Override

@@ -352,6 +352,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
         feature.getRanges().remove(range);
         refreshRangeWrappers();
+        changed();
     }
 
     public List<ModelledRangeWrapper> getWrappedRanges() {
