@@ -8,16 +8,16 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.hibernate.Hibernate;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.editor.application.SearchThreadConfig;
+import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
 import uk.ac.ebi.intact.jami.model.extension.IntactModelledFeature;
@@ -84,6 +84,9 @@ public class SearchController extends AnnotatedObjectController {
 
     private List<Future> runningTasks;
 
+    private boolean isPublicationSearchEnabled = false;
+    private boolean isComplexSearchEnabled = false;
+
     //////////////////
     // Constructors
 
@@ -134,6 +137,13 @@ public class SearchController extends AnnotatedObjectController {
 
     @Transactional( value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String doSearch() {
+        UserSessionController userSessionController = ApplicationContextProvider.getBean("userSessionController");
+        if (userSessionController.hasRole("CURATOR") || userSessionController.hasRole("REVIEWER") ){
+            isPublicationSearchEnabled = true;
+        }
+        if (userSessionController.hasRole("COMPLEX_CURATOR") || userSessionController.hasRole("COMPLEX_REVIEWER") ){
+            isComplexSearchEnabled = true;
+        }
 
         log.info( "Searching for '" + query + "'..." );
 
@@ -173,26 +183,47 @@ public class SearchController extends AnnotatedObjectController {
                 runningTasks.clear();
             }
 
-            Runnable runnablePub = new Runnable() {
-                @Override
-                public void run() {
-                   loadPublication( finalQuery, originalQuery );
-                }
-            };
+            if (isPublicationSearchEnabled){
+                Runnable runnablePub = new Runnable() {
+                    @Override
+                    public void run() {
+                        loadPublication( finalQuery, originalQuery );
+                    }
+                };
 
-            Runnable runnableExp = new Runnable() {
-                @Override
-                public void run() {
-                   loadExperiments( finalQuery, originalQuery );
-                }
-            };
+                Runnable runnableExp = new Runnable() {
+                    @Override
+                    public void run() {
+                        loadExperiments( finalQuery, originalQuery );
+                    }
+                };
 
-            Runnable runnableInt = new Runnable() {
-                @Override
-                public void run() {
-                   loadInteractions( finalQuery, originalQuery );
-                }
-            };
+                Runnable runnableInt = new Runnable() {
+                    @Override
+                    public void run() {
+                        loadInteractions( finalQuery, originalQuery );
+                    }
+                };
+
+                Runnable runnableFeatures = new Runnable() {
+                    @Override
+                    public void run() {
+                        loadFeatures( finalQuery, originalQuery );
+                    }
+                };
+                Runnable runnableComponents = new Runnable() {
+                    @Override
+                    public void run() {
+                        loadParticipants(finalQuery, originalQuery);
+                    }
+                };
+
+                runningTasks.add(executorService.submit(runnablePub));
+                runningTasks.add(executorService.submit(runnableExp));
+                runningTasks.add(executorService.submit(runnableInt));
+                runningTasks.add(executorService.submit(runnableFeatures));
+                runningTasks.add(executorService.submit(runnableComponents));
+            }
 
             Runnable runnableMol = new Runnable() {
                 @Override
@@ -208,13 +239,6 @@ public class SearchController extends AnnotatedObjectController {
                 }
             };
 
-            Runnable runnableFeatures = new Runnable() {
-                @Override
-                public void run() {
-                   loadFeatures( finalQuery, originalQuery );
-                }
-            };
-
             Runnable runnableOrganisms = new Runnable() {
                 @Override
                 public void run() {
@@ -222,21 +246,9 @@ public class SearchController extends AnnotatedObjectController {
                 }
             };
 
-            Runnable runnableComponents = new Runnable() {
-                @Override
-                public void run() {
-                    loadParticipants(finalQuery, originalQuery);
-                }
-            };
-
-            runningTasks.add(executorService.submit(runnablePub));
-            runningTasks.add(executorService.submit(runnableExp));
-            runningTasks.add(executorService.submit(runnableInt));
             runningTasks.add(executorService.submit(runnableMol));
             runningTasks.add(executorService.submit(runnableCvs));
-            runningTasks.add(executorService.submit(runnableFeatures));
             runningTasks.add(executorService.submit(runnableOrganisms));
-            runningTasks.add(executorService.submit(runnableComponents));
 
             checkAndResumeTasks();
         } else {
@@ -287,14 +299,32 @@ public class SearchController extends AnnotatedObjectController {
                 runningTasks.clear();
             }
 
-            Runnable runnableComp = new Runnable() {
-                @Override
-                public void run() {
-                    loadComplexes( finalQuery, originalQuery );
-                }
-            };
+            if (isComplexSearchEnabled){
+                Runnable runnableComp = new Runnable() {
+                    @Override
+                    public void run() {
+                        loadComplexes( finalQuery, originalQuery );
+                    }
+                };
 
-            runningTasks.add(executorService.submit(runnableComp));
+                Runnable runnablePart= new Runnable() {
+                    @Override
+                    public void run() {
+                        loadModelledParticipants(finalQuery, originalQuery);
+                    }
+                };
+
+                Runnable runnableFeat = new Runnable() {
+                    @Override
+                    public void run() {
+                        loadModelledFeatures(finalQuery, originalQuery);
+                    }
+                };
+
+                runningTasks.add(executorService.submit(runnableComp));
+                runningTasks.add(executorService.submit(runnablePart));
+                runningTasks.add(executorService.submit(runnableFeat));
+            }
 
             checkAndResumeTasks();
         } else {
@@ -338,6 +368,8 @@ public class SearchController extends AnnotatedObjectController {
         molecules = null;
         cvobjects = null;
         complexes = null;
+        modelledFeatures = null;
+        modelledParticipants = null;
     }
 
     public boolean isEmptyQuery() {
@@ -353,7 +385,9 @@ public class SearchController extends AnnotatedObjectController {
                 && (features != null && features.getRowCount() == 0)
                 && (organisms != null && organisms.getRowCount() == 0)
                 && (participants != null && participants.getRowCount() == 0)
-                && (complexes != null && complexes.getRowCount() == 0);
+                && (complexes != null && complexes.getRowCount() == 0)
+                && (modelledParticipants != null && modelledParticipants.getRowCount() == 0)
+                && (modelledFeatures != null && modelledFeatures.getRowCount() == 0);
 
     }
 
@@ -369,6 +403,8 @@ public class SearchController extends AnnotatedObjectController {
         if ( organisms != null && organisms.getRowCount() > 0 ) matches++;
         if ( participants != null && participants.getRowCount() > 0 ) matches++;
         if ( complexes != null && complexes.getRowCount() > 0 ) matches++;
+        if ( modelledParticipants != null && modelledParticipants.getRowCount() > 0 ) matches++;
+        if ( modelledFeatures != null && modelledFeatures.getRowCount() > 0 ) matches++;
 
         return matches == 1;
     }
@@ -390,7 +426,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
                                                               "      or lower(i.identifier) like :query " +
-                                                              "      or lower(x.primaryId) like :query ) ",
+                                                              "      or lower(x.id) like :query ) ",
 
                                                               "select count(distinct i) " +
                                                               "from CvObject i left join i.xrefs as x " +
@@ -398,7 +434,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "      or lower(i.identifier) like :query " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
-                                                              "      or lower(x.primaryId) like :query )",
+                                                              "      or lower(x.id) like :query )",
 
                                                               params, "i", "updated", false);
 
@@ -421,7 +457,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "where    ( i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
-                                                              "      or lower(x.primaryId) like :query ) " +
+                                                              "      or lower(x.id) like :query ) " +
                                                               "      and i.cvInteractorType.identifier <> 'MI:0317'",
 
                                                               "select count(distinct i) " +
@@ -429,7 +465,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "where   (i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
-                                                              "      or lower(x.primaryId) like :query )" +
+                                                              "      or lower(x.id) like :query )" +
                                                               "     and i.cvInteractorType.identifier <> 'MI:0317'",
 
                                                               params, "i", "updated", false );
@@ -443,6 +479,11 @@ public class SearchController extends AnnotatedObjectController {
 
     public int countFeaturesByParticipantAc( Component comp ) {
         return getDaoFactory().getFeatureDao().getByComponentAc(comp.getAc()).size();
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int countModelledFeaturesByParticipantAc( String ac ) {
+        return getIntactDao().getModelledParticipantDao().countFeaturesForParticipant(ac);
     }
 
 	public int countParticipantsExpressIn( String biosourceAc ) {
@@ -486,6 +527,7 @@ public class SearchController extends AnnotatedObjectController {
         final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
         params.put( "ac", originalQuery );
+        params.put( "evidence", "interaction_evidence" );
 
         // Load experiment eagerly to avoid LazyInitializationException when rendering the view
         interactions = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
@@ -495,14 +537,14 @@ public class SearchController extends AnnotatedObjectController {
                                                                  "where    (i.ac = :ac " +
                                                                  "      or lower(i.shortLabel) like :query " +
                                                                  "      or lower(x.primaryId) like :query )" +
-                                                                 "      and i.category = 'interaction_evidence' ",
+                                                                 "      and i.category = :evidence ",
 
                                                                  "select count(distinct i.ac) " +
                                                                  "from InteractionImpl i left join i.xrefs as x " +
                                                                  "where    (i.ac = :ac " +
                                                                  "      or lower(i.shortLabel) like :query " +
                                                                  "      or lower(x.primaryId) like :query )"+
-                                                                  "      and i.category = 'interaction_evidence' ",
+                                                                  "      and i.category = :evidence ",
 
                                                                  params, "i", "updated", false );
 
@@ -566,20 +608,23 @@ public class SearchController extends AnnotatedObjectController {
         final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
         params.put( "ac", originalQuery );
+        params.put( "inferred", CvInteraction.INFERRED_BY_CURATOR_MI_REF );
 
         experiments = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                                 "select distinct e " +
                                                                 "from Experiment e left join e.xrefs as x " +
-                                                                "where    e.ac = :ac " +
+                                                                        "left join e.cvInteraction as d " +
+                                                                "where  d.identifier = :inferred and  (e.ac = :ac " +
                                                                 "      or lower(e.shortLabel) like :query " +
-                                                                "      or lower(x.primaryId) like :query ",
+                                                                "      or lower(x.primaryId) like :query)) ",
 
                                                                 "select count(distinct e) " +
                                                                 "from Experiment e left join e.xrefs as x " +
-                                                                "where    e.ac = :ac " +
+                                                                        "left join e.cvInteraction as d " +
+                                                                "where  d.identifier = :inferred and (e.ac = :ac " +
                                                                 "      or lower(e.shortLabel) like :query " +
-                                                                "      or lower(x.primaryId) like :query ",
+                                                                "      or lower(x.primaryId) like :query) ",
 
                                                                 params, "e", "updated", false );
 
@@ -592,23 +637,29 @@ public class SearchController extends AnnotatedObjectController {
         final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
         params.put( "ac", originalQuery );
+        params.put( "intactReleased", "14681455" );
+        params.put( "intactOnHold", "unassigned638" );
+        params.put( "pdbOnHold", "24288376" );
+        params.put( "chemblOnHold", "24214965" );
 
         // TODO add: author
         publications = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                                  "select distinct p " +
                                                                  "from Publication p left join p.xrefs as x " +
-                                                                 "where    p.ac = :ac " +
+                                                                 "where  p.shortLabel not in (:intactReleased, :intactOnHold, :pdbOnHold, :chemblOnHold) " +
+                                                                 "and  (p.ac = :ac " +
                                                                  "      or lower(p.shortLabel) like :query " +
                                                                  "      or lower(p.fullName) like :query " +
-                                                                 "      or lower(x.primaryId) like :query ",
+                                                                 "      or lower(x.primaryId) like :query) ",
 
                                                                  "select count(distinct p) " +
                                                                  "from Publication p left join p.xrefs as x " +
-                                                                 "where    p.ac = :ac " +
+                                                                 "where  p.shortLabel not in (:intactReleased, :intactOnHold, :pdbOnHold, :chemblOnHold) " +
+                                                                 "and  (p.ac = :ac " +
                                                                  "      or lower(p.shortLabel) like :query " +
                                                                  "      or lower(p.fullName) like :query " +
-                                                                 "      or lower(x.primaryId) like :query ",
+                                                                 "      or lower(x.primaryId) like :query) ",
 
                                                                  params, "p", "updated", false );
 
@@ -621,22 +672,23 @@ public class SearchController extends AnnotatedObjectController {
         final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
         params.put( "ac", originalQuery );
+        params.put( "evidence", "evidence" );
 
         features = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                                                                  "select distinct p " +
                                                                  "from Feature p left join p.xrefs as x " +
-                                                                 "where    p.ac = :ac " +
+                                                                 "where  p.category = :evidence and  (p.ac = :ac " +
                                                                  "      or lower(p.shortLabel) like :query " +
                                                                  "      or lower(p.fullName) like :query " +
-                                                                 "      or lower(x.primaryId) like :query ",
+                                                                 "      or lower(x.primaryId) like :query) ",
 
                                                                  "select count(distinct p) " +
                                                                  "from Feature p left join p.xrefs as x " +
-                                                                 "where    p.ac = :ac " +
+                                                                 "where p.category = :evidence and  (p.ac = :ac " +
                                                                  "      or lower(p.shortLabel) like :query " +
                                                                  "      or lower(p.fullName) like :query " +
-                                                                 "      or lower(x.primaryId) like :query ",
+                                                                 "      or lower(x.primaryId) like :query) ",
 
                                                                  params, "p", "updated", false);
 
@@ -678,25 +730,79 @@ public class SearchController extends AnnotatedObjectController {
         final HashMap<String, String> params = Maps.newHashMap();
         params.put( "query", query );
         params.put( "ac", originalQuery );
+        params.put( "evidence", "participant_evidence" );
 
         // Load experiment eagerly to avoid LazyInitializationException when redering the view
         participants = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
 
                 "select distinct p " +
                         "from Component p left join p.xrefs as x " +
-                        "where    p.ac = :ac " +
+                        "where  p.category = :evidence and  (p.ac = :ac " +
                         "      or lower(p.shortLabel) like :query "+
-                        "      or lower(x.primaryId) like :query ",
+                        "      or lower(x.primaryId) like :query) ",
 
                 "select count(distinct p) " +
                         "from Component p left join p.xrefs as x " +
-                        "where p.ac = :ac " +
+                        "where p.category = :evidence and  (p.ac = :ac " +
                         "      or lower(p.shortLabel) like :query "+
-                        "      or lower(x.primaryId) like :query ",
+                        "      or lower(x.primaryId) like :query) ",
 
                 params, "p", "updated", false);
 
         log.info( "Participants found: " + participants.getRowCount() );
+    }
+
+    private void loadModelledFeatures(String finalQuery, String originalQuery) {
+        log.info( "Searching for complex features matching '" + query + "' or AC '"+originalQuery+"'..." );
+
+        final HashMap<String, String> params = Maps.<String, String>newHashMap();
+        params.put( "query", query );
+        params.put( "ac", originalQuery );
+
+        modelledFeatures = LazyDataModelFactory.createLazyDataModel( getJamiEntityManager(),
+
+                "select distinct p " +
+                        "from IntactModelledFeature p left join p.dbXrefs as x " +
+                        "where  p.ac = :ac " +
+                        "      or lower(p.shortName) like :query " +
+                        "      or lower(p.fullName) like :query " +
+                        "      or lower(x.id) like :query ",
+
+                "select count(distinct p) " +
+                        "from IntactModelledFeature p left join p.dbXrefs as x " +
+                        "where p.ac = :ac " +
+                        "      or lower(p.shortName) like :query " +
+                        "      or lower(p.fullName) like :query " +
+                        "      or lower(x.id) like :query ",
+
+                params, "p", "updated", false);
+
+        log.info( "Complex Features found: " + modelledFeatures.getRowCount() );
+    }
+
+    private void loadModelledParticipants(String finalQuery, String originalQuery) {
+        log.info( "Searching for complex participants matching '" + query + "'..." );
+
+        final HashMap<String, String> params = Maps.newHashMap();
+        params.put( "query", query );
+        params.put( "ac", originalQuery );
+
+        // Load experiment eagerly to avoid LazyInitializationException when redering the view
+        modelledParticipants = LazyDataModelFactory.createLazyDataModel( getJamiEntityManager(),
+
+                "select distinct p " +
+                        "from IntactModelledParticipant p left join p.xrefs as x " +
+                        "where  p.ac = :ac " +
+                        "      or lower(x.id) like :query ",
+
+                "select count(distinct p) " +
+                        "from IntactModelledParticipant p left join p.xrefs as x " +
+                        "where p.ac = :ac " +
+                        "      or lower(x.id) like :query ",
+
+                params, "p", "updated", false);
+
+        log.info( "Complex Participants found: " + modelledParticipants.getRowCount() );
     }
 
     public int countExperimentsForPublication( Publication publication ) {
@@ -754,6 +860,14 @@ public class SearchController extends AnnotatedObjectController {
         return complexes;
     }
 
+    public LazyDataModel<IntactModelledParticipant> getModelledParticipants() {
+        return modelledParticipants;
+    }
+
+    public LazyDataModel<IntactModelledFeature> getModelledFeatures() {
+        return modelledFeatures;
+    }
+
     public String getQuickQuery() {
         return quickQuery;
     }
@@ -768,5 +882,13 @@ public class SearchController extends AnnotatedObjectController {
 
     public void setThreadTimeOut(int threadTimeOut) {
         this.threadTimeOut = threadTimeOut;
+    }
+
+    public boolean isPublicationSearchEnabled() {
+        return isPublicationSearchEnabled;
+    }
+
+    public boolean isComplexSearchEnabled() {
+        return isComplexSearchEnabled;
     }
 }

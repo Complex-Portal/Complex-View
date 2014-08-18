@@ -365,6 +365,24 @@ public class ComplexController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String getInteractorIdentity(String interactorAc){
+        if (interactorAc == null){
+            return null;
+        }
+        Interactor interactor = getIntactDao().getInteractorDao(IntactInteractor.class).getByAc(interactorAc);
+        if (interactor == null){
+            return null;
+        }
+        Xref ref = interactor.getPreferredIdentifier();
+        if (ref == null){
+            return interactor.getShortName();
+        }
+        else{
+            return ref.getId();
+        }
+    }
+
     public void cloneParticipant(ModelledParticipantWrapper participantWrapper) {
         IntactModelledParticipant participant = participantWrapper.getParticipant();
 

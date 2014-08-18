@@ -31,6 +31,7 @@
 
     When searching for a keyword, the following objects and their respective attributes are being search on:
     <br/>
+    >
     <blockquote>
         <table cellspacing="10">
             <tr>
@@ -87,12 +88,10 @@
 Results for query: <b>#{searchController.query}</b>
 <hr/>
 
-<ui:param name="annotatedObjectController" value="#{interactorController}"/>
-
 <p:accordionPanel autoHeight="false">
 
 <p:tab title="Publications (#{searchController.publications.rowCount})"
-       rendered="#{searchController.publications.rowCount != 0}">
+       rendered="#{searchController.publicationSearchEnabled and searchController.publications.rowCount != 0}">
 
     <ui:include src="/dashboard/publications_table.xhtml">
         <ui:param name="publicationsDataModel" value="#{searchController.publications}"/>
@@ -101,7 +100,7 @@ Results for query: <b>#{searchController.query}</b>
 </p:tab>
 
 <p:tab title="Experiments (#{searchController.experiments.rowCount})"
-       rendered="#{searchController.experiments.rowCount != 0}">
+       rendered="#{searchController.publicationSearchEnabled and searchController.experiments.rowCount != 0}">
 
     <ui:include src="/curate/experiments_table.xhtml">
         <ui:param name="value" value="#{searchController.experiments}"/>
@@ -112,20 +111,11 @@ Results for query: <b>#{searchController.query}</b>
 </p:tab>
 
 <p:tab title="Interactions (#{searchController.interactions.rowCount})"
-       rendered="#{searchController.interactions.rowCount != 0}">
+       rendered="#{searchController.publicationSearchEnabled and searchController.interactions.rowCount != 0}">
 
     <ui:include src="/curate/interactions_table.xhtml">
         <ui:param name="value" value="#{searchController.interactions}"/>
         <ui:param name="readonly" value="#{true}"/>
-    </ui:include>
-
-</p:tab>
-
-<p:tab title="Biological Complexes (#{searchController.complexes.rowCount})"
-       rendered="#{searchController.complexes.rowCount != 0}">
-
-    <ui:include src="/dashboard/complexes_table.xhtml">
-        <ui:param name="complexesDataModel" value="#{searchController.complexes}"/>
     </ui:include>
 
 </p:tab>
@@ -218,36 +208,6 @@ Results for query: <b>#{searchController.query}</b>
 
 </p:tab>
 
-<p:tab title="Features (#{searchController.features.rowCount})"
-       rendered="#{searchController.features.rowCount != 0}">
-
-    <p:dataTable id="searchFeaturesTable" var="feature" value="#{searchController.features}"
-                 paginatorPosition="both"
-                 paginator="true" paginatorAlwaysVisible="false"
-                 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-                 rowsPerPageTemplate="10,20,50,100"
-                 rows="10"
-                 dynamic="true">
-        <p:column headerText="Name" sortBy="#{feature.shortLabel}">
-            <ot:separateConversationContext>
-                <h:link outcome="/curate/feature" value="#{feature.ac}" includeViewParams="true">
-                    <f:param name="ac" value="#{feature.ac}"/>
-                </h:link>
-            </ot:separateConversationContext>
-        </p:column>
-        <p:column>
-            <ui:include src="/curate/common_column_notifications.xhtml">
-                <ui:param name="annotatedObjectController" value="#{featureController}"/>
-                <ui:param name="ao" value="#{feature}"/>
-            </ui:include>
-        </p:column>
-        <p:column headerText="Name" sortBy="#{feature.shortLabel}">
-            <h:outputText value="#{feature.shortLabel}"/>
-        </p:column>
-    </p:dataTable>
-
-</p:tab>
-
 <p:tab title="Organisms (#{searchController.organisms.rowCount})"
        rendered="#{searchController.organisms.rowCount != 0}">
 
@@ -312,8 +272,38 @@ Results for query: <b>#{searchController.query}</b>
 
 </p:tab>
 
+<p:tab title="Features (#{searchController.features.rowCount})"
+       rendered="#{searchController.publicationSearchEnabled and searchController.features.rowCount != 0}">
+
+    <p:dataTable id="searchFeaturesTable" var="feature" value="#{searchController.features}"
+                 paginatorPosition="both"
+                 paginator="true" paginatorAlwaysVisible="false"
+                 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                 rowsPerPageTemplate="10,20,50,100"
+                 rows="10"
+                 dynamic="true">
+        <p:column headerText="Name" sortBy="#{feature.shortLabel}">
+            <ot:separateConversationContext>
+                <h:link outcome="/curate/feature" value="#{feature.ac}" includeViewParams="true">
+                    <f:param name="ac" value="#{feature.ac}"/>
+                </h:link>
+            </ot:separateConversationContext>
+        </p:column>
+        <p:column>
+            <ui:include src="/curate/common_column_notifications.xhtml">
+                <ui:param name="annotatedObjectController" value="#{featureController}"/>
+                <ui:param name="ao" value="#{feature}"/>
+            </ui:include>
+        </p:column>
+        <p:column headerText="Name" sortBy="#{feature.shortLabel}">
+            <h:outputText value="#{feature.shortLabel}"/>
+        </p:column>
+    </p:dataTable>
+
+</p:tab>
+
 <p:tab title="Participants (#{searchController.participants.rowCount})"
-       rendered="#{searchController.participants.rowCount != 0}">
+       rendered="#{searchController.publicationSearchEnabled and searchController.participants.rowCount != 0}">
 
     <p:dataTable id="searchParticipantsTable" var="participant" value="#{searchController.participants}"
                  paginatorPosition="both"
@@ -387,6 +377,121 @@ Results for query: <b>#{searchController.query}</b>
 
         <p:column headerText="Stoich.">
             <h:outputText id="stoichiometryTxt" value="#{participant.stoichiometry}"/>
+        </p:column>
+    </p:dataTable>
+
+</p:tab>
+
+<br/>
+
+<p:tab title="Biological Complexes (#{searchController.complexes.rowCount})"
+       rendered="#{searchController.complexSearchEnabled and searchController.complexes.rowCount != 0}">
+
+    <ui:include src="/dashboard/complexes_table.xhtml">
+        <ui:param name="complexesDataModel" value="#{searchController.complexes}"/>
+    </ui:include>
+
+</p:tab>
+
+
+<p:tab title="Complex Features (#{searchController.modelledFeatures.rowCount})"
+       rendered="#{searchController.complexSearchEnabled and searchController.modelledFeatures.rowCount != 0}">
+
+    <p:dataTable id="searchModelledFeaturesTable" var="feature" value="#{searchController.modelledFeatures}"
+                 paginatorPosition="both"
+                 paginator="true" paginatorAlwaysVisible="false"
+                 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                 rowsPerPageTemplate="10,20,50,100"
+                 rows="10"
+                 dynamic="true">
+        <p:column headerText="Name" sortBy="#{feature.shortName}">
+            <ot:separateConversationContext>
+                <h:link outcome="/curate/cfeature" value="#{feature.ac}" includeViewParams="true">
+                    <f:param name="ac" value="#{feature.ac}"/>
+                </h:link>
+            </ot:separateConversationContext>
+        </p:column>
+        <p:column>
+            <ui:include src="/curate/jcommon_column_notifications.xhtml">
+                <ui:param name="annotatedObjectController" value="#{modelledFeatureController}"/>
+                <ui:param name="ao" value="#{feature}"/>
+            </ui:include>
+        </p:column>
+        <p:column headerText="Name" sortBy="#{feature.shortName}">
+            <h:outputText value="#{feature.shortName}"/>
+        </p:column>
+    </p:dataTable>
+
+</p:tab>
+
+<p:tab title="Complex Participants (#{searchController.modelledParticipants.rowCount})"
+       rendered="#{searchController.complexSearchEnabled and searchController.modelledParticipants.rowCount != 0}">
+
+    <p:dataTable id="searchModelledParticipantsTable" var="participant" value="#{searchController.modelledParticipants}"
+                 paginatorPosition="both"
+                 paginator="true" paginatorAlwaysVisible="false" rows="10"
+                 paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                 rowsPerPageTemplate="10,20,50,100"
+                 dynamic="true">
+
+        <ui:param name="interactor" value="#{participant.interactor}"/>
+
+        <p:column style="width:16px">
+            <p:rowToggler/>
+        </p:column>
+
+        <p:column headerText="Name" sortBy="#{interactor.shortLabel}">
+            <ot:separateConversationContext>
+                <h:link outcome="/curate/cparticipant" value="#{interactor.shortName}"
+                        rendered="#{interactor != null and not changesController.isDeletedAc(participant.ac)}" includeViewParams="true">
+                    <f:param name="ac" value="#{participant.ac}"/>
+                </h:link>
+            </ot:separateConversationContext>
+            <h:panelGroup rendered="#{changesController.isDeletedAc(participant.ac)}">
+                <h:outputText value="#{interactor.shortName}" styleClass="intact-deleted"/>
+            </h:panelGroup>
+
+            <h:panelGroup rendered="#{interactor == null}">
+                <p:commandLink action="#{curateController.editJamiByAc(participant.ac)}"
+                               value="(no interactor)" rendered="#{interactor == null}"
+                               style="font-style: italic;"
+                               ajax="false"/>
+
+                                    <span class="ui-icon ui-icon-alert" style="display:inline-block"
+                                          title="No interactor for this participant"/>
+            </h:panelGroup>
+        </p:column>
+
+        <p:column>
+            <ui:include src="/curate/jcommon_column_notifications.xhtml">
+                <ui:param name="annotatedObjectController" value="#{modelledParticipantController}"/>
+                <ui:param name="ao" value="#{participant}"/>
+            </ui:include>
+        </p:column>
+
+        <p:column headerText="Identity">
+            <h:outputText id="modelledParticipantId"
+                          value="#{complexController.getInteractorIdentity(interactor.ac)}"
+                          styleClass="#{changesController.isDeletedAc(participant.ac)? 'intact-deleted' : ''}"
+                    rendered="#{interactor.ac != null}"/>
+        </p:column>
+
+        <p:column headerText="Biological role">
+
+            <h:outputText
+                    value="#{participant.biologicalRole != null? participant.biologicalRole.shortName : ''}"/>
+        </p:column>
+
+        <p:column headerText="# Features">
+            <h:outputText value="#{searchController.countModelledFeaturesByParticipantAc( participant.ac )}"/>
+        </p:column>
+
+        <p:column headerText="Min Stoich.">
+            <h:outputText id="minStoichiometryTxt" value="#{participant.stoichiometry.minValue}" rendered="#{participant.stoichiometry != null}"/>
+        </p:column>
+
+        <p:column headerText="Max Stoich.">
+            <h:outputText id="maxStoichiometryTxt" value="#{participant.stoichiometry.maxValue}" rendered="#{participant.stoichiometry != null}"/>
         </p:column>
     </p:dataTable>
 
