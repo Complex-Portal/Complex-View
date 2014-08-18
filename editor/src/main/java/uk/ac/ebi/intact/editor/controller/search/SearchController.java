@@ -22,6 +22,7 @@ import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
 import uk.ac.ebi.intact.jami.model.extension.IntactModelledFeature;
 import uk.ac.ebi.intact.jami.model.extension.IntactModelledParticipant;
+import uk.ac.ebi.intact.jami.model.extension.IntactOrganism;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
 
@@ -558,23 +559,24 @@ public class SearchController extends AnnotatedObjectController {
         final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
         params.put( "ac", originalQuery );
-
         // Load experiment eagerly to avoid LazyInitializationException when rendering the view
         complexes = LazyDataModelFactory.createLazyDataModel( getJamiEntityManager(),
 
                 "select distinct i " +
-                        "from IntactComplex i left join i.dbXrefs as x left join i.dbAliases as a " +
+                        "from IntactComplex i left join i.dbXrefs as x left join i.dbAliases as a left join i.organism as o " +
                         "where    i.ac = :ac " +
                         "      or lower(i.shortName) like :query " +
                         "      or lower(x.id) like :query "+
-                        "      or lower(a.name) like :query ",
+                        "      or lower(a.name) like :query "+
+                        "      or lower(o.dbTaxid) like :query ",
 
                 "select count(distinct i.ac) " +
-                        "from IntactComplex i left join i.dbXrefs as x left join i.dbAliases as a " +
+                        "from IntactComplex i left join i.dbXrefs as x left join i.dbAliases as a left join i.organism as o " +
                         "where    i.ac = :ac " +
                         "      or lower(i.shortName) like :query " +
                         "      or lower(x.id) like :query "+
-                        "      or lower(a.name) like :query ",
+                        "      or lower(a.name) like :query "+
+                        "      or lower(o.dbTaxid) like :query ",
 
                 params, "i", "updated", false );
 
