@@ -44,7 +44,7 @@
                     <h:panelGroup>
                     <p:commandButton id="importSelected" value="Import selected" rendered="#{not empty modelledParticipantController.interactorCandidates}"
                                      actionListener="#{modelledParticipantController.addInteractorToParticipant}"
-                                     onstart="candidatesDialog.hide();adding_load.show()" onerror="adding_load.hide(); candidatesDialog.show();"
+                                     onstart="candidatesDialog.hide();adding_load.show()" onerror="adding_load.hide(); jcandidatesDialog.show();"
                                      oncomplete="adding_load.hide();  "
                                      update=":editorForm" />
                     <p:commandButton type="button" value="Back" rendered="#{empty modelledParticipantController.interactorCandidates}"
