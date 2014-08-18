@@ -568,7 +568,7 @@ public class SearchController extends AnnotatedObjectController {
                         "      or lower(i.shortName) like :query " +
                         "      or lower(x.id) like :query "+
                         "      or lower(a.name) like :query "+
-                        "      or lower(o.dbTaxid) like :query ",
+                        "      or lower(o.dbTaxid) = :ac ",
 
                 "select count(distinct i.ac) " +
                         "from IntactComplex i left join i.dbXrefs as x left join i.dbAliases as a left join i.organism as o " +
@@ -576,7 +576,7 @@ public class SearchController extends AnnotatedObjectController {
                         "      or lower(i.shortName) like :query " +
                         "      or lower(x.id) like :query "+
                         "      or lower(a.name) like :query "+
-                        "      or lower(o.dbTaxid) like :query ",
+                        "      or lower(o.dbTaxid) = :ac ",
 
                 params, "i", "updated", false );
 
