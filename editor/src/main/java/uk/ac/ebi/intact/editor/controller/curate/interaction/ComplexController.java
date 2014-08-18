@@ -302,10 +302,11 @@ public class ComplexController extends AnnotatedObjectController {
 
     @Override
     protected void refreshUnsavedChangesBeforeRevert(){
-
-        getChangesController().revertComplex(complex, Collections.EMPTY_LIST);
-        if (complex != null && complex.getAc() == null){
-            setComplex(null);
+        if (complex != null){
+            getChangesController().revertComplex(complex, Collections.EMPTY_LIST);
+            if (complex.getAc() == null){
+                setComplex(null);
+            }
         }
     }
 

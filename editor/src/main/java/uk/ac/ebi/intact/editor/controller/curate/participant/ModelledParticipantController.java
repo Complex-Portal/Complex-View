@@ -181,13 +181,15 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     @Override
     protected void refreshUnsavedChangesBeforeRevert(){
-        Collection<String> parentAcs = new ArrayList<String>();
+        if (participant != null){
+            Collection<String> parentAcs = new ArrayList<String>();
 
-        if (participant.getInteraction() != null){
-            addParentAcsTo(parentAcs, (IntactComplex)participant.getInteraction());
+            if (participant.getInteraction() != null){
+                addParentAcsTo(parentAcs, (IntactComplex)participant.getInteraction());
+            }
+
+            getChangesController().revertModelledParticipant(participant, parentAcs);
         }
-
-        getChangesController().revertModelledParticipant(participant, parentAcs);
     }
 
 

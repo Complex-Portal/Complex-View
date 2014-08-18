@@ -441,18 +441,20 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     @Override
     protected void refreshUnsavedChangesBeforeRevert(){
-        Collection<String> parentAcs = new ArrayList<String>();
+        if (feature != null){
+            Collection<String> parentAcs = new ArrayList<String>();
 
-        if (feature.getParticipant() != null){
-            IntactModelledParticipant comp = (IntactModelledParticipant)feature.getParticipant();
-            if (comp.getAc() != null){
-                parentAcs.add(comp.getAc());
+            if (feature.getParticipant() != null){
+                IntactModelledParticipant comp = (IntactModelledParticipant)feature.getParticipant();
+                if (comp.getAc() != null){
+                    parentAcs.add(comp.getAc());
+                }
+
+                addParentAcsTo(parentAcs, comp);
             }
 
-            addParentAcsTo(parentAcs, comp);
+            getChangesController().revertFeature(feature, parentAcs);
         }
-
-        getChangesController().revertFeature(feature, parentAcs);
     }
 
     /**

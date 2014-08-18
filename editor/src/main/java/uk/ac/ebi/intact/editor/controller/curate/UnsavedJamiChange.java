@@ -48,6 +48,7 @@ public class UnsavedJamiChange {
         this.unsavedObject = unsavedObject;
         this.action = action;
         this.scope = scope;
+        this.dbSynchronizer = dbSynchronizer;
     }
 
     public UnsavedJamiChange(IntactPrimaryObject unsavedObject, String action, IntactPrimaryObject parentObject, String scope, IntactDbSynchronizer dbSynchronizer) {
