@@ -70,6 +70,16 @@
                      styleClass="important-button-bad"
                      rendered="#{(complexController.readyForRelease or complexController.released) and (userSessionController.isJamiUserMe(complexController.complex.currentOwner) or userSessionController.isJamiUserMe(complexController.complex.currentReviewer))}"
                      onclick="putOnHoldDialog.show()"/>
+    <p:commandButton value="Remove on hold" type="button"
+                     styleClass="important-button-bad"
+                     rendered="#{complexController.onHold and (userSessionController.isJamiUserMe(complexController.complex.currentOwner) or userSessionController.isJamiUserMe(complexController.complex.currentReviewer))}"
+                     actionListener="#{complexController.removeOnHold}"
+                     action="#{complexController.doSave}" ajax="false"/>
+    <p:commandButton value="Remove to be reviewed" type="button"
+                     styleClass="important-button-bad"
+                     rendered="#{complexController.toBeReviewed and userSessionController.isJamiUserMe(complexController.complex.currentReviewer)}"
+                     actionListener="#{complexController.removeToBeReviewed}"
+                     action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Ready for Release (removes on-hold)"
                      styleClass="important-button-alt"
                      rendered="#{complexController.acceptedOnHold and (userSessionController.isJamiUserMe(complexController.complex.currentReviewer) or userSessionController.isJamiUserMe(complexController.complex.currentOwner))}"
@@ -109,17 +119,12 @@
         <h:panelGroup rendered="#{complexController.toBeReviewed}">
             <ia:panelMessage level="warn">
                 <b>To be reviewed: </b> #{complexController.toBeReviewed}
-                &#160;&#160;&#160;
-                <p:commandButton value="Clear" rendered="#{userSessionController.isItMe(complexController.complex.currentReviewer)}"
-                                 actionListener="#{complexController.clearToBeReviewed}" update=":editorForm:centralUnit"/>
             </ia:panelMessage>
         </h:panelGroup>
 
         <h:panelGroup rendered="#{complexController.onHold}">
             <ia:panelMessage level="warn">
                 This Complex is <b>on-hold</b>. Reason: #{complexController.onHold}
-                &#160;&#160;&#160;
-                <p:commandButton value="Clear" onclick="document.getElementById('clearOnHoldBtn').click();" />
             </ia:panelMessage>
         </h:panelGroup>
 
@@ -237,19 +242,7 @@
                 </ia:inputOrganism>
             </td>
         </tr>
-        <tr>
-            <td class="firstCell">
-                <h:outputLabel value="On hold: " for="onHoldTxt"/>
-            </td>
-            <td colspan="3">
-                <h:panelGroup>
-                    <p:inputText id="onHoldTxt" value="#{complexController.onHold}" size="70"
-                                 valueChangeListener="#{complexController.onHoldChanged}">
-                        <ed:curation/>
-                    </p:inputText>
-                </h:panelGroup>
-            </td>
-        </tr>
+
         <tr>
             <td class="firstCell">
                 <h:outputLabel value="Description: " for="curatedComplexTxt"/>
@@ -269,12 +262,29 @@
             </td>
             <td colspan="2">
                 <h:panelGroup>
-                    <p:inputText id="complexPropertiesTxt" value="#{complexController.complexProperties}" size="70"
+                    <p:inputTextarea id="complexPropertiesTxt" value="#{complexController.complexProperties}" rows="5" cols="80"
                                  valueChangeListener="#{complexController.onComplexPropertiesChanged}">
                         <ed:curation/>
-                    </p:inputText>
+                    </p:inputTextarea>
                 </h:panelGroup>
             </td>
+        </tr>
+
+        <tr>
+            <h:panelGroup rendered="#{complexController.onHold}">
+
+                <td class="firstCell">
+                    <h:outputLabel value="On hold: " for="onHoldTxt"/>
+                </td>
+                <td colspan="3">
+                    <h:panelGroup rendered="#{complexController.onHold}">
+                        <p:inputText id="onHoldTxt" value="#{complexController.onHold}" size="70"
+                                     valueChangeListener="#{complexController.onHoldChanged}">
+                            <ed:curation/>
+                        </p:inputText>
+                    </h:panelGroup>
+                </td>
+            </h:panelGroup>
         </tr>
     </table>
 </p:panel>

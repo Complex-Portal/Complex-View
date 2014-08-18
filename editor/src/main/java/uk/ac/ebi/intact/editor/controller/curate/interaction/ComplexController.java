@@ -790,6 +790,25 @@ public class ComplexController extends AnnotatedObjectController {
 
         getLifecycleManager().getReadyForReleaseStatus().revert(this.complex);
     }
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    public void removeOnHold(ActionEvent evt) {
+        if (!this.complex.areLifeCycleEventsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
+
+        this.complex.removeOnHold();
+    }
+
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    public void removeToBeReviewed(ActionEvent evt) {
+        if (!this.complex.areLifeCycleEventsInitialized()){
+            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+            setComplex(reloadedComplex);
+        }
+
+        this.complex.removeToBeReviewed();
+    }
 
     @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void putOnHold(ActionEvent evt) {
