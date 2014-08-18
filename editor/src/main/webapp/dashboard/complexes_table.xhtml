@@ -39,7 +39,7 @@
         <p:column id="interaction_type" headerText="Interaction Type">
             <h:outputText value="#{complex.interactionType.shortName}"/>
         </p:column>
-        <p:column id="organism" headerText="Organism">
+        <p:column id="organism" headerText="Organism" sortBy="#{complex.organism.taxId}">
             <h:outputText value="#{complex.organism.commonName}" rendered="#{complex.organism != null}"/>
         </p:column>
         <p:column id="participants" headerText="# Participants">
@@ -51,8 +51,8 @@
         <p:column headerText="Reviewer" sortBy="#{complex.currentReviewer}">
             <h:outputText value="#{complex.currentReviewer.login}" rendered="#{complex.currentReviewer != null}"/>
         </p:column>
-        <p:column headerText="Status" sortBy="#{complex.cvStatus}">
-            <h:outputText value="#{complex.cvStatus.shortName}" rendered="#{complex.cvStatus != null}"/>
+        <p:column headerText="Status" sortBy="#{complex.status}">
+            <h:outputText value="#{complex.status}"/>
         </p:column>
     </p:dataTable>
 

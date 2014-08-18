@@ -10,11 +10,11 @@
 
                 template="/dashboard/dashboard_template.xhtml">
 
-        <ui:param name="title" value="Dashboard"/>
+    <ui:param name="title" value="Dashboard"/>
 
     <ui:define name="metadata">
-         <f:metadata>
-          <f:event type="preRenderView" listener="#{dashboardController.loadData}"/>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{dashboardController.loadData}"/>
         </f:metadata>
     </ui:define>
 
@@ -25,35 +25,42 @@
     <ui:define name="content">
 
         <h:panelGroup>
-            <p>
-                To create new publications/biological complexes go to the&#160;
-                <p:commandLink value="Curate" action="/curate/curate?faces-redirect=true&amp;includeViewParams=true"
-                           rendered="#{userSessionController.hasRole('CURATOR')}"
-                           ajax="false"
-                           immediate="true"/>
-                section.
-            </p>
+            <h:panelGroup rendered="#{dashboardController.publicationTableEnabled}">
+                <p>
+                    To create new publications go to the&#160;
+                    <p:commandLink value="Curate" action="/curate/curate?faces-redirect=true&amp;includeViewParams=true"
+                                   ajax="false"
+                                   immediate="true"/>
+                    section.
+                </p>
+            </h:panelGroup>
+
+            <h:panelGroup endered="#{dashboardController.complexTableEnabled}">
+                <p>
+                    To create new biological complexes go to the&#160;
+                    <p:commandLink value="Curate" action="/curate/curate?faces-redirect=true&amp;includeViewParams=true"
+                                   ajax="false"
+                                   immediate="true"/>
+                    section.
+                </p>
+            </h:panelGroup>
 
             <p>
                 <h:panelGrid columns="3">
-                <h:outputLabel for="selStatus" value="Show status:" escape="false"/>
-                <!--<h:selectBooleanCheckbox id="selStatus" value="#{dashboardController.hideAcceptedAndReleased}">-->
-                    <!--<p:ajax event="valueChange" update="publicationDashboard" listener="#{dashboardController.refreshTables()}" />-->
-                <!--</h:selectBooleanCheckbox>-->
-                <h:selectManyCheckbox id="selStatus" value="#{dashboardController.statusToShow}">
-                    <f:selectItem itemLabel="New" itemValue="PL:0004"/>
-                    <f:selectItem itemLabel="Curation in progress" itemValue="PL:0007"/>
-                    <f:selectItem itemLabel="Ready for checking" itemValue="PL:0008"/>
-                    <!--<f:selectItem itemLabel="Accepted" itemValue="PL:0009"/>-->
-                    <f:selectItem itemLabel="Accepted on hold" itemValue="PL:0010"/>
-                    <f:selectItem itemLabel="Ready for release" itemValue="PL:0011"/>
-                    <f:selectItem itemLabel="Released" itemValue="PL:0012"/>
-                </h:selectManyCheckbox>
+                    <h:outputLabel for="selStatus" value="Show status:" escape="false"/>
+                    <h:selectManyCheckbox id="selStatus" value="#{dashboardController.statusToShow}">
+                        <f:selectItem itemLabel="New" itemValue="PL:0004"/>
+                        <f:selectItem itemLabel="Curation in progress" itemValue="PL:0007"/>
+                        <f:selectItem itemLabel="Ready for checking" itemValue="PL:0008"/>
+                        <f:selectItem itemLabel="Accepted on hold" itemValue="PL:0010"/>
+                        <f:selectItem itemLabel="Ready for release" itemValue="PL:0011"/>
+                        <f:selectItem itemLabel="Released" itemValue="PL:0012"/>
+                    </h:selectManyCheckbox>
                     <p:commandButton value="Refresh" actionListener="#{dashboardController.refreshTables()}" ajax="false"/>
                 </h:panelGrid>
             </p>
 
-            <p:tabView id="publicationDashboard" dynamic="true">
+            <p:tabView id="publicationDashboard" dynamic="true" rendered="#{dashboardController.publicationTableEnabled}">
                 <p:tab title="Publications owned by you (#{dashboardController.ownedByUser.rowCount})">
                     <h:panelGroup rendered="#{dashboardController.ownedByUser.rowCount gt 0}">
                         <ui:include src="publications_table.xhtml">
@@ -64,7 +71,7 @@
                 </p:tab>
 
                 <p:tab title="Publications reviewed by you (#{dashboardController.reviewedByUser.rowCount})"
-                        rendered="#{userSessionController.hasRole('REVIEWER')}">
+                       rendered="#{userSessionController.hasRole('REVIEWER')}">
                     <h:panelGroup rendered="#{dashboardController.reviewedByUser.rowCount gt 0}">
                         <ui:include src="publications_table.xhtml">
                             <ui:param name="publicationsDataModel" value="#{dashboardController.reviewedByUser}"/>
@@ -80,7 +87,7 @@
                 </p:tab>
             </p:tabView>
 
-            <p:tabView id="complexesDashboard" dynamic="true">
+            <p:tabView id="complexesDashboard" dynamic="true" rendered="#{dashboardController.complexTableEnabled}">
                 <p:tab title="Biological Complexes owned by you (#{dashboardController.complexesOwnedByUser.rowCount})">
                     <h:panelGroup rendered="#{dashboardController.ownedByUser.rowCount gt 0}">
                         <ui:include src="complexes_table.xhtml">
@@ -91,7 +98,7 @@
                 </p:tab>
 
                 <p:tab title="Biological Complexes reviewed by you (#{dashboardController.complexesReviewedByUser.rowCount})"
-                       rendered="#{userSessionController.hasRole('REVIEWER')}">
+                       rendered="#{userSessionController.hasRole('COMPLEX_REVIEWER')}">
                     <h:panelGroup rendered="#{dashboardController.complexesReviewedByUser.rowCount gt 0}">
                         <ui:include src="complexes_table.xhtml">
                             <ui:param name="complexesDataModel" value="#{dashboardController.complexesReviewedByUser}"/>

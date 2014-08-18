@@ -21,7 +21,7 @@
         <li>
 
             <p:commandLink id="curateNavLink" value="Curate" action="/curate/curate?faces-redirect=true&amp;includeViewParams=true"
-                           rendered="#{userSessionController.hasRole('CURATOR')}"
+                           rendered="#{userSessionController.hasRole('CURATOR')  or userSessionController.hasRole('COMPLEX_CURATOR')}"
                            ajax="false"
                            styleClass="#{selected == 'curate'? 'top-bar-selected' : ''}"
                            immediate="true"/>
@@ -37,12 +37,12 @@
         <li>
 
             <p:commandLink id="bulkOpNavLink" value="Bulk Op." action="/bulk/bulk_default?faces-redirect=true&amp;includeViewParams=true"
-                           rendered="#{userSessionController.hasRole('CURATOR')}"
+                           rendered="#{userSessionController.hasRole('CURATOR') or userSessionController.hasRole('COMPLEX_CURATOR')}"
                            ajax="false"
                            styleClass="#{selected == 'bulk'? 'top-bar-selected' : ''}"
                            immediate="true"/>
         </li>
-        <h:panelGroup rendered="#{userSessionController.hasRole('REVIEWER')}">
+        <h:panelGroup rendered="#{userSessionController.hasRole('REVIEWER')  or userSessionController.hasRole('COMPLEX_REVIEWER')}">
             <li>
                 <p:commandLink id="reviewerdNavLink" value="Reviewer" action="/reviewer/reviewerDashboard?faces-redirect=true"
                                styleClass="#{selected == 'reviewer'? 'top-bar-selected' : ''}"

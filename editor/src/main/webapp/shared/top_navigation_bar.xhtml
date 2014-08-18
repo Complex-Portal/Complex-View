@@ -15,13 +15,13 @@
             ajax="false" immediate="true"/>
     &#160;
     <p:commandButton value="Curate" action="/curate/curate?faces-redirect=true&amp;includeViewParams=true"
-                     rendered="#{userSessionController.hasRole('CURATOR')}"
+                     rendered="#{userSessionController.hasRole('CURATOR') or userSessionController.hasRole('COMPLEX_CURATOR')}"
                      ajax="false"
                      disabled="#{selected == 'curate'}"
                      immediate="true"/>
     &#160;
     <p:commandButton value="Bulk Op." action="/bulk/bulk_default?faces-redirect=true&amp;includeViewParams=true"
-                     rendered="#{userSessionController.hasRole('CURATOR')}"
+                     rendered="#{userSessionController.hasRole('CURATOR')  or userSessionController.hasRole('COMPLEX_CURATOR')}"
                      ajax="false"
                      disabled="#{selected == 'bulk'}"
                      immediate="true"/>
