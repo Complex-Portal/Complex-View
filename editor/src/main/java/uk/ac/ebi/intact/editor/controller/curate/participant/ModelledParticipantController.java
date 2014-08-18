@@ -307,13 +307,8 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     }
 
     public void markFeatureToDelete(ModelledFeature feature) {
-        IntactModelledFeature intactFeature = (IntactModelledFeature)feature;
         participant.removeFeature(feature);
         refreshFeatures();
-        // don't forget to unlink features first
-        if (intactFeature.getAc() != null) {
-            getChangesController().markJamiToDelete(intactFeature, participant, getIntactDao().getSynchronizerContext().getModelledFeatureSynchronizer());
-        }
         changed();
     }
 
