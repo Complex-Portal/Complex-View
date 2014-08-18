@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.IntactObjectDao;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedChange;
@@ -48,6 +49,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.DataModel;
 import javax.faces.model.SelectItem;
+import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -197,6 +199,23 @@ public class ParticipantController extends ParameterizableObjectController {
         }
 
         generalLoadChecks();
+    }
+
+    @Override
+    protected <T extends AnnotatedObject> T loadByAc(IntactObjectDao<T> dao, String ac) {
+        T ao = (T) getChangesController().findByAc(ac);
+
+        if (ao == null) {
+            Query query = getCoreEntityManager().createQuery("select f from Component f where f.ac = :ac and f.category = :evidence");
+            query.setParameter("ac", ac);
+            query.setParameter("evidence", "participant_evidence");
+            List<Component> components = query.getResultList();
+            if (components.size() == 1){
+                ao = (T)components.iterator().next();
+            }
+        }
+
+        return ao;
     }
 
     @Override

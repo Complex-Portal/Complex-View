@@ -27,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.core.persistence.dao.IntactObjectDao;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
@@ -51,6 +52,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
+import javax.persistence.Query;
 import java.util.*;
 
 /**
@@ -201,6 +203,23 @@ public class InteractionController extends ParameterizableObjectController {
         }
 
         generalLoadChecks();
+    }
+
+    @Override
+    protected <T extends AnnotatedObject> T loadByAc(IntactObjectDao<T> dao, String ac) {
+        T ao = (T) getChangesController().findByAc(ac);
+
+        if (ao == null) {
+            Query query = getCoreEntityManager().createQuery("select f from InteractionImpl f where f.ac = :ac and f.category = :evidence");
+            query.setParameter("ac", ac);
+            query.setParameter("evidence", "interaction_evidence");
+            List<InteractionImpl> interactions = query.getResultList();
+            if (interactions.size() == 1){
+                ao = (T)interactions.iterator().next();
+            }
+        }
+
+        return ao;
     }
 
     private void refreshParentControllers() {

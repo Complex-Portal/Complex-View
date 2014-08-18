@@ -107,6 +107,7 @@ public class ExperimentController extends AnnotatedObjectController {
             if ( ac != null ) {
                 if ( experiment == null || !ac.equals( experiment.getAc() ) ) {
                     experiment = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao(), ac);
+                    resetToNullIfComplexExperiment();
                 }
                 if (experiment == null) {
                     addErrorMessage("No Experiment with this AC", ac);
@@ -133,6 +134,19 @@ public class ExperimentController extends AnnotatedObjectController {
         }
 
         generalLoadChecks();
+    }
+
+    /**
+     * This method is for backward compatibility only. We exclude all experiments that were created for complex curation and that should all have 'inferred by curator'
+     * as interaction detection method
+     */
+    protected void resetToNullIfComplexExperiment() {
+        if (experiment != null){
+            if (experiment.getCvInteraction() != null &&
+                    CvInteraction.INFERRED_BY_CURATOR_MI_REF.equals(experiment.getCvInteraction().getIdentifier())){
+                 experiment = null;
+            }
+        }
     }
 
     @SuppressWarnings({"unchecked"})

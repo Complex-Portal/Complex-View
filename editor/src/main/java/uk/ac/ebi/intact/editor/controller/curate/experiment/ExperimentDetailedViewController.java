@@ -71,6 +71,9 @@ public class ExperimentDetailedViewController extends JpaAwareController {
             }
             else if (ac != null) {
                 Experiment experiment = getDaoFactory().getExperimentDao().getByAc(ac);
+                if (isComplexExperiment(experiment)){
+                   experiment = null;
+                }
 
                 if (experiment != null) {
                     this.experimentWrapper = new ExperimentWrapper(experiment, getDaoFactory().getEntityManager());
@@ -81,6 +84,20 @@ public class ExperimentDetailedViewController extends JpaAwareController {
             }
         }
 
+    }
+
+    /**
+     * This method is for backward compatibility only. We exclude all experiments that were created for complex curation and that should all have 'inferred by curator'
+     * as interaction detection method
+     */
+    protected boolean isComplexExperiment(Experiment experiment) {
+        if (experiment != null){
+            if (experiment.getCvInteraction() != null &&
+                    CvInteraction.INFERRED_BY_CURATOR_MI_REF.equals(experiment.getCvInteraction().getIdentifier())){
+                return true;
+            }
+        }
+        return false;
     }
 
 	//Now in experiment_overview we show all the annotations in the interaction not only these two

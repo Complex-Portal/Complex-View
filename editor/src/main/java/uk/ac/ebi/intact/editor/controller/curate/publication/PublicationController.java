@@ -154,11 +154,28 @@ public class PublicationController extends AnnotatedObjectController {
         generalLoadChecks();
     }
 
+    /**
+     * This method is for backward compatibility only. We exclude all publications that were created for complex curation
+     */
+    protected void resetToNullIfComplexPublication() {
+        if (publication != null){
+            if (publication.getShortLabel() != null && (
+                    "14681455".equals(publication.getShortLabel()) ||
+                            "unassigned638".equals(publication.getShortLabel()) ||
+                            "24288376".equals(publication.getShortLabel()) ||
+                            "24214965".equals(publication.getShortLabel())
+                    )){
+                this.publication = null;
+            }
+        }
+    }
+
     private void loadByAc() {
 
         if (ac != null) {
             if (publication == null || !ac.equals(publication.getAc())) {
                 publication = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getPublicationDao(), ac);
+                resetToNullIfComplexPublication();
 
                 if (publication == null) {
                     publication = getDaoFactory().getPublicationDao().getByPubmedId(ac);
