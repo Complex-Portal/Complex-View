@@ -18,7 +18,7 @@
 
     <ui:define name="content">
 
-         <h1>Reviewer availability</h1>
+         <h1>Reviewer availability for IntAct curation</h1>
 
         <p:dataTable style="width: 400px" var="reviewer" value="#{reviewerAvailabilityController.reviewers}" rows="20"
                      paginatorAlwaysVisible="false" paginator="true">
@@ -32,6 +32,23 @@
                 <h:inputHidden id="txt2" value="#{reviewerAvailabilityController.wrapReviewer(reviewer).availability}" />
                 <p:slider for="txt2" style="width:200px" step="10" disabled="#{not userSessionController.hasRole('ROLE_ADMIN')}"/>
                 <h:outputText id="output"  value="#{reviewerAvailabilityController.wrapReviewer(reviewer).availability}"/>
+            </p:column>
+        </p:dataTable>
+
+        <h1>Reviewer availability for Biological Complex curation</h1>
+
+        <p:dataTable style="width: 400px" var="reviewer" value="#{reviewerAvailabilityController.complexReviewers}" rows="20"
+                     paginatorAlwaysVisible="false" paginator="true">
+            <p:column headerText="Login">
+                <h:outputText value="#{reviewer.login}"/>
+            </p:column>
+            <p:column headerText="Name">
+                <h:outputText value="#{reviewer.firstName} #{reviewer.lastName}"/>
+            </p:column>
+            <p:column headerText="Availability">
+                <h:inputHidden id="txt3" value="#{reviewerAvailabilityController.wrapReviewer(reviewer).availability}" />
+                <p:slider for="txt3" style="width:200px" step="10" disabled="#{not userSessionController.hasRole('ROLE_ADMIN')}"/>
+                <h:outputText id="output2"  value="#{reviewerAvailabilityController.wrapReviewer(reviewer).availability}"/>
             </p:column>
         </p:dataTable>
 

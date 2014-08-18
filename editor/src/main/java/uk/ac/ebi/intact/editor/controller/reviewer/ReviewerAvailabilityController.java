@@ -27,6 +27,7 @@ import uk.ac.ebi.intact.model.util.UserUtils;
 
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import javax.persistence.Query;
 import java.util.List;
 
 /**
@@ -39,6 +40,7 @@ import java.util.List;
 public class ReviewerAvailabilityController extends JpaAwareController {
 
     private List<User> reviewers;
+    private List<User> complexReviewers;
 
     public ReviewerAvailabilityController() {
     }
@@ -46,6 +48,10 @@ public class ReviewerAvailabilityController extends JpaAwareController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData(ComponentSystemEvent evt) {
         reviewers = getDaoFactory().getUserDao().getReviewers();
+        final Query query = getCoreEntityManager().createQuery("select u from User as u join u.roles as role where role.name = :roleName");
+        query.setParameter("roleName", "COMPLEX_REVIEWER");
+
+        complexReviewers = query.getResultList();
     }
 
     @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
@@ -61,6 +67,18 @@ public class ReviewerAvailabilityController extends JpaAwareController {
         }
 
         addInfoMessage("Saved", "The reviewers' availability has been updated");
+
+        for (User reviewer : complexReviewers) {
+
+            Preference pref = reviewer.getPreference(Preference.KEY_REVIEWER_AVAILABILITY);
+
+            if (pref != null) {
+                getDaoFactory().getPreferenceDao().merge(pref);
+            }
+
+        }
+
+        addInfoMessage("Saved", "The complex reviewers' availability has been updated");
     }
 
     public ReviewerWrapper wrapReviewer(User user) {
@@ -75,6 +93,13 @@ public class ReviewerAvailabilityController extends JpaAwareController {
         this.reviewers = reviewers;
     }
 
+    public List<User> getComplexReviewers() {
+        return complexReviewers;
+    }
+
+    public void setComplexReviewers(List<User> complexReviewers) {
+        this.complexReviewers = complexReviewers;
+    }
 
     public class ReviewerWrapper {
         private User reviewer;
