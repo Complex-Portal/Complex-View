@@ -397,11 +397,12 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     @Override
     protected void doPostDelete(){
+        interactionController.setComplex(null);
+
         // remove this one from the complex
         if (participant.getInteraction() != null){
             interactionController.setAc(((IntactComplex)participant.getInteraction()).getAc());
         }
-        interactionController.setComplex(null);
     }
 
     private void refreshParticipantPrimaryId(){

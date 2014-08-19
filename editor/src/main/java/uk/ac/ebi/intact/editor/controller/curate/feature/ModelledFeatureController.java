@@ -682,10 +682,10 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     @Override
     protected void doPostDelete(){
+        modelledParticipantController.setParticipant(null);
         // remove this one from the participant
         if (feature.getParticipant() != null){
             modelledParticipantController.setAc(((IntactModelledParticipant)feature.getParticipant()).getAc());
         }
-        modelledParticipantController.setParticipant(null);
     }
 }
