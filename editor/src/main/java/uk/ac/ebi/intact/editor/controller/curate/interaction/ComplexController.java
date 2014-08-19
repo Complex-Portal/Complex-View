@@ -386,6 +386,8 @@ public class ComplexController extends AnnotatedObjectController {
 
         IntactModelledParticipant clone = (IntactModelledParticipant)ParticipantJamiCloner.cloneParticipant(participant);
         addParticipant(clone);
+
+        getJamiEntityManager().detach(participant);
     }
 
     public void linkSelectedFeatures(ActionEvent evt) {
@@ -697,7 +699,7 @@ public class ComplexController extends AnnotatedObjectController {
         return complex.getStatus() == LifeCycleStatus.RELEASED;
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void claimOwnership(ActionEvent evt) {
         if (!this.complex.areLifeCycleEventsInitialized()){
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
@@ -712,9 +714,10 @@ public class ComplexController extends AnnotatedObjectController {
         }
 
         addInfoMessage("Claimed Complex ownership", "You are now the owner of this complex");
+        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void markAsAssignedToMe(ActionEvent evt) {
         if (!this.complex.areLifeCycleEventsInitialized()){
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
@@ -726,9 +729,10 @@ public class ComplexController extends AnnotatedObjectController {
         addInfoMessage("Ownership claimed", "The complex has been assigned to you");
 
         markAsCurationInProgress(evt);
+        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void markAsCurationInProgress(ActionEvent evt) {
         if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
             addErrorMessage("Cannot mark as curation in progress", "You are not the owner of this publication");
@@ -743,9 +747,10 @@ public class ComplexController extends AnnotatedObjectController {
         getLifecycleManager().getAssignedStatus().startCuration(complex);
 
         addInfoMessage("Curation started", "Curation is now in progress");
+        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void markAsReadyForChecking(ActionEvent evt) {
         if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
             addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this complex");
@@ -768,9 +773,10 @@ public class ComplexController extends AnnotatedObjectController {
         reasonForReadyForChecking = null;
 
         addInfoMessage("Complex ready for checking", "Assigned to reviewer: " + complex.getCurrentReviewer().getLogin());
+        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void revertReadyForChecking(ActionEvent evt) {
         if (!this.complex.areLifeCycleEventsInitialized()){
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
@@ -778,9 +784,10 @@ public class ComplexController extends AnnotatedObjectController {
         }
 
         getLifecycleManager().getReadyForCheckingStatus().revert(this.complex);
+        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly =  true, propagation = Propagation.REQUIRED)
     public void revertAccepted(ActionEvent evt) {
         if (!this.complex.areLifeCycleEventsInitialized()){
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
@@ -788,8 +795,9 @@ public class ComplexController extends AnnotatedObjectController {
         }
 
         getLifecycleManager().getReadyForReleaseStatus().revert(this.complex);
+        getJamiEntityManager().detach(getComplex());
     }
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void removeOnHold(ActionEvent evt) {
         if (!this.complex.areLifeCycleEventsInitialized()){
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
@@ -797,9 +805,10 @@ public class ComplexController extends AnnotatedObjectController {
         }
 
         this.complex.removeOnHold();
+        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void removeToBeReviewed(ActionEvent evt) {
         if (!this.complex.areLifeCycleEventsInitialized()){
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
@@ -807,9 +816,10 @@ public class ComplexController extends AnnotatedObjectController {
         }
 
         this.complex.removeToBeReviewed();
+        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void putOnHold(ActionEvent evt) {
         if (!this.complex.areLifeCycleEventsInitialized()){
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
@@ -828,9 +838,10 @@ public class ComplexController extends AnnotatedObjectController {
         }
         this.onHold = this.complex.getOnHoldComment();
         reasonForOnHoldFromDialog = null;
+        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void readyForReleaseFromOnHold(ActionEvent evt) {
         if (!this.complex.areLifeCycleEventsInitialized()){
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
@@ -838,6 +849,7 @@ public class ComplexController extends AnnotatedObjectController {
         }
         getLifecycleManager().getAcceptedOnHoldStatus().onHoldRemoved(complex, null);
         this.onHold = null;
+        getJamiEntityManager().detach(getComplex());
     }
 
     public void setOnHold(String reason) {
@@ -958,7 +970,7 @@ public class ComplexController extends AnnotatedObjectController {
         return pub.isOnHold();
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void acceptComplex(ActionEvent evt) {
         if (!this.complex.areLifeCycleEventsInitialized()){
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
@@ -971,6 +983,8 @@ public class ComplexController extends AnnotatedObjectController {
         if (!complex.isOnHold()) {
             lifecycleManager.getAcceptedStatus().readyForRelease(complex, "Accepted and not on-hold");
         }
+
+        getJamiEntityManager().detach(getComplex());
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
@@ -980,7 +994,7 @@ public class ComplexController extends AnnotatedObjectController {
 
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void rejectComplex(String reasonForRejection) {
         if (!this.complex.areLifeCycleEventsInitialized()){
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
@@ -994,6 +1008,7 @@ public class ComplexController extends AnnotatedObjectController {
         getLifecycleManager().getReadyForCheckingStatus().reject(this.complex, date + ". " + reasonForRejection);
 
         this.toBeReviewed = this.complex.getToBeReviewedComment();
+        getJamiEntityManager().detach(getComplex());
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)

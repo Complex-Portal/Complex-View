@@ -71,6 +71,7 @@ public class UserAdminController extends AbstractUserController {
     private boolean fileUploaded;
 
     private List<SelectItem> reviewerSelectItems;
+    private List<SelectItem> complexReviewerSelectItems;
 
     /////////////////
     // Users
@@ -114,8 +115,21 @@ public class UserAdminController extends AbstractUserController {
 
         List<User> reviewers = getDaoFactory().getUserDao().getReviewers();
 
+
         for (User reviewer : reviewers) {
             reviewerSelectItems.add(new SelectItem(reviewer, reviewer.getLogin()));
+        }
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public void loadComplexReviewerSelectItems() {
+        this.complexReviewerSelectItems = new ArrayList<SelectItem>();
+        complexReviewerSelectItems.add(new SelectItem(null, "-- Random --", "Correction assigner", false, true, false));
+
+        Collection<uk.ac.ebi.intact.jami.model.user.User> reviewers = getIntactDao().getUserDao().getByRole("COMPLEX_REVIEWER");
+
+        for (uk.ac.ebi.intact.jami.model.user.User reviewer : reviewers) {
+            complexReviewerSelectItems.add(new SelectItem(reviewer, reviewer.getLogin()));
         }
     }
 
@@ -455,5 +469,16 @@ public class UserAdminController extends AbstractUserController {
 
     public void setReviewerSelectItems(List<SelectItem> reviewerSelectItems) {
         this.reviewerSelectItems = reviewerSelectItems;
+    }
+
+    public List<SelectItem> getComplexReviewerSelectItems() {
+        if (complexReviewerSelectItems == null){
+            loadComplexReviewerSelectItems();
+        }
+        return complexReviewerSelectItems;
+    }
+
+    public void setComplexReviewerSelectItems(List<SelectItem> complexReviewerSelectItems) {
+        this.complexReviewerSelectItems = complexReviewerSelectItems;
     }
 }
