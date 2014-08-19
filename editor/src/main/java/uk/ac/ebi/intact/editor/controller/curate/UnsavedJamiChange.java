@@ -15,6 +15,9 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate;
 
+import psidev.psi.mi.jami.model.Complex;
+import psidev.psi.mi.jami.model.ModelledFeature;
+import psidev.psi.mi.jami.model.ModelledParticipant;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 
@@ -70,6 +73,16 @@ public class UnsavedJamiChange {
     }
 
     public String getDescription(IntactPrimaryObject intactObject) {
+
+        if (intactObject instanceof Complex){
+            return ((Complex) intactObject).getShortName();
+        }
+        else if (intactObject instanceof ModelledParticipant){
+            return ((ModelledParticipant) intactObject).getInteractor().getShortName();
+        }
+        else if (intactObject instanceof ModelledFeature){
+            return ((ModelledFeature) intactObject).getShortName();
+        }
         
         return intactObject.toString();
     }
