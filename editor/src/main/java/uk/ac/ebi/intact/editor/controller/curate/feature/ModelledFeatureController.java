@@ -168,7 +168,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     @Override
     public String goToParent() {
-        return "/curate/jparticipant?faces-redirect=true&includeViewParams=true";
+        return "/curate/cparticipant?faces-redirect=true&includeViewParams=true";
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
