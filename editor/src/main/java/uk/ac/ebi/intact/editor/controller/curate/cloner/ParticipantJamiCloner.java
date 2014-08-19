@@ -66,7 +66,7 @@ public class ParticipantJamiCloner {
             clone.addFeature(r);
         }
 
-        clone.setInteractionAndAddParticipant((ModelledInteraction)participant.getInteraction());
+        clone.setInteraction((ModelledInteraction)participant.getInteraction());
 
         // don't need to add it to the feature component because it is already done by the cloner
         return clone;

@@ -80,7 +80,7 @@ public class FeatureJamiCloner {
             clone.getRanges().add(r);
         }
 
-        clone.setParticipantAndAddFeature((ModelledParticipant)feature.getParticipant());
+        clone.setParticipant((ModelledParticipant)feature.getParticipant());
 
         // don't need to add it to the feature component because it is already done by the cloner
         return clone;
