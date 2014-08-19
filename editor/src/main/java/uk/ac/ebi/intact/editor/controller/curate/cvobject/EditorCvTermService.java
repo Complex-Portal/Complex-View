@@ -198,14 +198,9 @@ public class EditorCvTermService extends JpaAwareController {
             loadCollectionCv(qualifiers, qualifierSelectItems, false);
         }
 
-        Collection<IntactCvTerm> status = cvDao.getByObjClass(IntactUtils.RANGE_STATUS_OBJCLASS);
-        // TODO when we have a better hierarchy use ontology only
-        //IntactCvTerm statusParent = cvDao.getByMIIdentifier("MI:0333", IntactUtils.RANGE_STATUS_OBJCLASS);
-        //if (statusParent != null){
-        //    loadChildren(statusParent, fuzzyTypeSelectItems, false);
-        //}
-        if (!status.isEmpty()){
-            loadCollectionCv(status, fuzzyTypeSelectItems, false);
+        IntactCvTerm statusParent = cvDao.getByMIIdentifier("MI:0333", IntactUtils.RANGE_STATUS_OBJCLASS);
+        if (statusParent != null){
+            loadChildren(statusParent, fuzzyTypeSelectItems, false);
         }
 
         IntactCvTerm participantTopicParent = cvDao.getByMIIdentifier("MI:0666", IntactUtils.TOPIC_OBJCLASS);
@@ -223,14 +218,9 @@ public class EditorCvTermService extends JpaAwareController {
             loadCollectionCv(databases, participantDatabaseSelectItems, false);
         }
 
-        Collection<IntactCvTerm> bioRoles = cvDao.getByObjClass(IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
-        // TODO when we have a better hierarchy use ontology only
-        //IntactCvTerm bioRoleParent = cvDao.getByMIIdentifier("MI:0500", IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
-        //if (bioRoleParent != null){
-        //    loadChildren(bioRoleParent, biologicalRoleSelectItems, false);
-        //}
-        if (!bioRoles.isEmpty()){
-            loadCollectionCv(bioRoles, biologicalRoleSelectItems, false);
+        IntactCvTerm bioRoleParent = cvDao.getByMIIdentifier("MI:0500", IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
+        if (bioRoleParent != null){
+            loadChildren(bioRoleParent, biologicalRoleSelectItems, false);
         }
 
         // TODO when we have a better hierarchy use ontology only
@@ -258,28 +248,18 @@ public class EditorCvTermService extends JpaAwareController {
             loadCollectionCv(databases, complexDatabaseSelectItems, false);
         }
 
-        Collection<IntactCvTerm> interactionTypes = cvDao.getByObjClass(IntactUtils.INTERACTION_TYPE_OBJCLASS);
-        // TODO when we have a better hierarchy use ontology only
-        //IntactCvTerm interactionTypeParent = cvDao.getByMIIdentifier("MI:0190", IntactUtils.INTERACTION_TYPE_OBJCLASS);
-        //if (interactionTypeParent != null){
-        //    loadChildren(interactionTypeParent, interactionTypeSelectItems, false);
-        //}
-        if (!interactionTypes.isEmpty()){
-            loadCollectionCv(interactionTypes, interactionTypeSelectItems, false);
+        IntactCvTerm interactionTypeParent = cvDao.getByMIIdentifier("MI:0190", IntactUtils.INTERACTION_TYPE_OBJCLASS);
+        if (interactionTypeParent != null){
+            loadChildren(interactionTypeParent, interactionTypeSelectItems, false);
         }
 
-        Collection<IntactCvTerm> interactorTypes = cvDao.getByObjClass(IntactUtils.INTERACTOR_TYPE_OBJCLASS);
-        // TODO when we have a better hierarchy use ontology only
-        //IntactCvTerm interactorTypeParent = cvDao.getByMIIdentifier("MI:0314", IntactUtils.INTERACTOR_TYPE_OBJCLASS);
-        //SelectItem item = interactorTypeParent != null ? createSelectItem(interactorTypeParent, true):null;
-        //if (item != null){
-        //    interactorTypeSelectItems.add(item);
-        //}
-        //if (interactorTypeParent != null){
-        //    loadChildren(interactorTypeParent, interactorTypeSelectItems, false);
-        //}
-        if (!interactorTypes.isEmpty()){
-            loadCollectionCv(interactorTypes, interactorTypeSelectItems, false);
+        IntactCvTerm interactorTypeParent = cvDao.getByMIIdentifier("MI:0314", IntactUtils.INTERACTOR_TYPE_OBJCLASS);
+        SelectItem item = interactorTypeParent != null ? createSelectItem(interactorTypeParent, true):null;
+        if (item != null){
+            interactorTypeSelectItems.add(item);
+        }
+        if (interactorTypeParent != null){
+            loadChildren(interactorTypeParent, interactorTypeSelectItems, false);
         }
 
         IntactCvTerm evidenceTypeParent = cvDao.getByMIIdentifier("MI:1331", IntactUtils.DATABASE_OBJCLASS);
