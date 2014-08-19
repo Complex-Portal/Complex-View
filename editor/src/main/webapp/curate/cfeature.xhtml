@@ -78,6 +78,17 @@
                     </tr>
                     <tr>
                         <td class="firstCell">
+                            <h:outputLabel value="FullName: " for="fullNameTxt"/>
+                        </td>
+                        <td colspan="2">
+                            <p:inputText id="fullNameTxt" value="#{feature.fullName}" size="30"
+                                         converter="trimmingConverter" valueChangeListener="#{annotatedObjectController.changed}">
+                                <ed:curation/>
+                            </p:inputText>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="firstCell">
                             <h:outputLabel value="Feature type: " for="featureTypeTxt"/>
                         </td>
                         <td colspan="2">
