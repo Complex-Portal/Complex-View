@@ -380,8 +380,9 @@ public class ComplexController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void cloneParticipant(ModelledParticipantWrapper participantWrapper) {
-        IntactModelledParticipant participant = participantWrapper.getParticipant();
+        IntactModelledParticipant participant = getJamiEntityManager().merge(participantWrapper.getParticipant());
 
         IntactModelledParticipant clone = (IntactModelledParticipant)ParticipantJamiCloner.cloneParticipant(participant);
         addParticipant(clone);

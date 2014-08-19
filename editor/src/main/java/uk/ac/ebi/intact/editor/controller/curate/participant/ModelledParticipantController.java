@@ -20,6 +20,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.SelectableDataModelWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -85,6 +86,8 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     private String cautionMessage = null;
     private String internalRemark = null;
     private String participantPrimaryId=null;
+
+    private boolean isFeatureDisabled;
 
     public ModelledParticipantController() {
     }
@@ -370,11 +373,8 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Override
     public void refreshTabsAndFocusXref(){
         refreshTabs();
-    }
 
-    @Override
-    public void refreshTabs(){
-        super.refreshTabsAndFocusXref();
+        this.isFeatureDisabled = false;
     }
 
     public void setParticipant( IntactModelledParticipant participant ) {
@@ -657,6 +657,25 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Override
     protected boolean isPublicationParent() {
         return false;
+    }
+
+    public void onTabChanged(TabChangeEvent e) {
+
+        // the xref tab is active
+        super.onTabChanged(e);
+
+        // all the tabs selectOneMenu are disabled, we can process the tabs specific to interaction
+        if (isAliasDisabled() && isXrefDisabled() && isAnnotationTopicDisabled()){
+            if (e.getTab().getId().equals("featuresTab")){
+                isFeatureDisabled = false;
+            }
+            else {
+                isFeatureDisabled = true;
+            }
+        }
+        else {
+            isFeatureDisabled = true;
+        }
     }
 
 }
