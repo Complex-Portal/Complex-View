@@ -987,6 +987,18 @@ public class ComplexController extends AnnotatedObjectController {
         return pub.hasCorrectionComment();
     }
 
+    public boolean isComplexToBeReviewed() {
+        return this.complex.isToBeReviewed();
+    }
+
+    public boolean isComplexOnHold() {
+        return this.complex.isOnHold();
+    }
+
+    public boolean isComplexWithCorrectionComment() {
+        return this.complex.hasCorrectionComment();
+    }
+
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void acceptComplex(ActionEvent evt) {
         if (!this.complex.areLifeCycleEventsInitialized()){

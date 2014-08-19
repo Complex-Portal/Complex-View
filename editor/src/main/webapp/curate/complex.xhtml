@@ -70,14 +70,14 @@
                      styleClass="important-button-bad"
                      rendered="#{(complexController.readyForRelease or complexController.released) and (userSessionController.isJamiUserMe(complexController.complex.currentOwner) or userSessionController.isJamiUserMe(complexController.complex.currentReviewer))}"
                      onclick="putOnHoldDialog.show()"/>
-    <p:commandButton value="Remove on hold" type="button"
+    <p:commandButton value="Remove on hold"
                      styleClass="important-button-bad"
-                     rendered="#{complexController.onHold and (userSessionController.isJamiUserMe(complexController.complex.currentOwner) or userSessionController.isJamiUserMe(complexController.complex.currentReviewer))}"
+                     rendered="#{complexController.complexOnHold and (userSessionController.isJamiUserMe(complexController.complex.currentOwner) or userSessionController.isJamiUserMe(complexController.complex.currentReviewer))}"
                      actionListener="#{complexController.removeOnHold}"
                      action="#{complexController.doSave}" ajax="false"/>
-    <p:commandButton value="Remove to be reviewed" type="button"
+    <p:commandButton value="Remove to be reviewed"
                      styleClass="important-button-bad"
-                     rendered="#{complexController.toBeReviewed and userSessionController.isJamiUserMe(complexController.complex.currentReviewer)}"
+                     rendered="#{complexController.complexToBeReviewed and userSessionController.isJamiUserMe(complexController.complex.currentReviewer)}"
                      actionListener="#{complexController.removeToBeReviewed}"
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Ready for Release (removes on-hold)"
@@ -87,12 +87,11 @@
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Correction Comment" type="button"
                      styleClass="important-button-alt"
-                     rendered="#{(complexController.curationInProgress and userSessionController.isJamiUserMe(complexController.complex.currentOwner) )
-                     or complexController.correctionComment}"
+                     rendered="#{complexController.curationInProgress and userSessionController.isJamiUserMe(complexController.complex.currentOwner)}"
                      onclick="correctionCommentDialog.show()"/>
     <p:commandButton value="Remove Correction Comment" actionListener="#{complexController.removeCorrectionComment}"
                      styleClass="important-button-alt"
-                     rendered="#{complexController.correctionComment and (userSessionController.isJamiUserMe(complexController.complex.currentOwner) or userSessionController.isJamiUserMe(complexController.complex.currentReviewer))}"
+                     rendered="#{complexController.complexWithCorrectionComment and (userSessionController.isJamiUserMe(complexController.complex.currentOwner) or userSessionController.isJamiUserMe(complexController.complex.currentReviewer))}"
                      action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Reject Complex" type="button"
                      styleClass="important-button-bad"
@@ -129,19 +128,19 @@
 <p:panel id="basic" header="Complex Details">
 
     <p:outputPanel id="infoPanels">
-        <h:panelGroup rendered="#{complexController.toBeReviewed}">
+        <h:panelGroup rendered="#{complexController.complexToBeReviewed}">
             <ia:panelMessage level="warn">
                 <b>To be reviewed: </b> #{complexController.toBeReviewed}
             </ia:panelMessage>
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{complexController.correctionComment}">
+        <h:panelGroup rendered="#{complexController.complexWithCorrectionComment}">
             <ia:panelMessage level="info">
                 <b>Correction comment: </b>#{complexController.correctionComment}
             </ia:panelMessage>
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{complexController.onHold}">
+        <h:panelGroup rendered="#{complexController.complexOnHold}">
             <ia:panelMessage level="warn">
                 This Complex is <b>on-hold</b>. Reason: #{complexController.onHold}
             </ia:panelMessage>
@@ -386,8 +385,8 @@
                           rendered="#{userSessionController.hasRole('ADMIN') and interaction.currentReviewer != null}"/>
 
             <h:selectOneMenu value="#{complexController.complex.currentReviewer}" hideNoSelectionOption="true"
-                             rendered="#{(userSessionController.hasRole('ADMIN') and interaction.currentReviewer != null)
-                                 or complexController.isLifeCycleDisabled()}">
+                             rendered="#{(userSessionController.hasRole('ADMIN') and interaction.currentReviewer != null)}"
+                             disabled="#{complexController.isLifeCycleDisabled()}">
                 <f:selectItems value="#{userAdminController.complexReviewerSelectItems}"/>
                 <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
 
@@ -447,7 +446,7 @@
         <p:commandButton value="Add comment" actionListener="#{complexController.addCorrectionComment}"
                          process="corrComTxt"
                          action="#{complexController.doSave}"
-                         ajax="false" update=":editorForm" />
+                         ajax="false"/>
     </h:panelGrid>
 </p:dialog>
 

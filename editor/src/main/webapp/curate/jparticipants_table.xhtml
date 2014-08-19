@@ -111,8 +111,9 @@
                                                      message="Do you want to unlink this feature?" modal="true">
                                         <p:commandButton value="Yes Sure"
                                                          actionListener="#{complexController.unlinkFeature(featureWrapper.feature, linked)}"
-                                                         ajax="false"/>
-                                        <p:commandButton value="Not Yet" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(linked.ac)}.hide()" />
+                                                         update=":editorForm:complexTabs:participantsTable :editorForm:changesPanel :editorForm:messagesComponent :editorForm:unsavedChangesInfo"
+                                                         onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()"/>
+                                        <p:commandButton value="Not Yet" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()" />
                                     </p:confirmDialog>
 
                                     <p:outputPanel rendered="#{status.index lt (status.end - 1)}">
