@@ -347,7 +347,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
             this.participant.setStoichiometry(new IntactStoichiometry(stc));
         }
         else {
-            IntactStoichiometry stoichiometry = (IntactStoichiometry)participant.getStoichiometry();
+            Stoichiometry stoichiometry = participant.getStoichiometry();
             this.participant.setStoichiometry(new IntactStoichiometry(stc, Math.max(stc, stoichiometry.getMaxValue())));
         }
     }
@@ -357,7 +357,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
             this.participant.setStoichiometry(new IntactStoichiometry(stc));
         }
         else {
-            IntactStoichiometry stoichiometry = (IntactStoichiometry)participant.getStoichiometry();
+            Stoichiometry stoichiometry = participant.getStoichiometry();
             this.participant.setStoichiometry(new IntactStoichiometry(Math.min(stc, stoichiometry.getMinValue()), stc));
         }
     }
@@ -393,6 +393,15 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     public String getParticipantPrimaryId() {
         return this.participantPrimaryId;
+    }
+
+    @Override
+    protected void doPostDelete(){
+        // remove this one from the complex
+        if (participant.getInteraction() != null){
+            interactionController.setAc(((IntactComplex)participant.getInteraction()).getAc());
+        }
+        interactionController.setComplex(null);
     }
 
     private void refreshParticipantPrimaryId(){

@@ -103,7 +103,7 @@ public class ModelledParticipantWrapper {
         }
         else {
             IntactStoichiometry stoichiometry = (IntactStoichiometry)participant.getStoichiometry();
-            this.participant.setStoichiometry(new IntactStoichiometry(stc, stoichiometry.getMaxValue()));
+            this.participant.setStoichiometry(new IntactStoichiometry(stc, Math.max(stc, stoichiometry.getMaxValue())));
         }
     }
 
@@ -113,7 +113,7 @@ public class ModelledParticipantWrapper {
         }
         else {
             IntactStoichiometry stoichiometry = (IntactStoichiometry)participant.getStoichiometry();
-            this.participant.setStoichiometry(new IntactStoichiometry(stoichiometry.getMinValue(), stc));
+            this.participant.setStoichiometry(new IntactStoichiometry(Math.min(stc, stoichiometry.getMinValue()), stc));
         }
     }
 }

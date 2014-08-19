@@ -124,7 +124,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         else{
             ComplexController complexController = (ComplexController) getSpringContext().getBean("complexController");
 
-            if (complexController.getComplex() == null) {
+            if (complexController.getComplex() == null && complexController.getAc() == null) {
                 return "/curate/curate?faces-redirect=true";
             }
 
@@ -773,6 +773,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             return goToParent();
         }
         else if (getJamiObject() != null && persistenceController.doDelete(getJamiObject(), getDbSynchronizer())){
+            doPostDelete();
             setJamiObject(null);
             return goToParent();
         }
@@ -785,6 +786,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         else{
             return curateController.editJami(getJamiObject());
         }
+    }
+
+    protected void doPostDelete(){
+        // nothing to do by default
     }
 
     // XREFS

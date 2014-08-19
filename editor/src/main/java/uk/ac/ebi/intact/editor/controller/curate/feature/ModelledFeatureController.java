@@ -679,4 +679,13 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     protected boolean areXrefsInitialised() {
         return this.feature.areXrefsInitialized();
     }
+
+    @Override
+    protected void doPostDelete(){
+        // remove this one from the participant
+        if (feature.getParticipant() != null){
+            modelledParticipantController.setAc(((IntactModelledParticipant)feature.getParticipant()).getAc());
+        }
+        modelledParticipantController.setParticipant(null);
+    }
 }

@@ -129,11 +129,17 @@
             </p:column>
 
             <p:column headerText="Min Stoich.">
-                <p:spinner id="minStoichiometryValue" value="#{wrapper.minStoichiometry}" min="0" stepFactor="1" size="3" maxlength="2" onchange="markAsUnsaved()"/>
+                <p:spinner id="minStoichiometryValue" value="#{wrapper.minStoichiometry}"
+                           min="0" stepFactor="1" maxlength="3" size="3">
+                    <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,:editorForm:basic"/>
+                </p:spinner>
             </p:column>
 
             <p:column headerText="Max Stoich.">
-                <p:spinner id="maxStoichiometryValue" value="#{wrapper.maxStoichiometry}" min="0" stepFactor="1" size="3" maxlength="2" onchange="markAsUnsaved()"/>
+                <p:spinner id="maxStoichiometryValue" value="#{wrapper.maxStoichiometry}"
+                           min="0" stepFactor="1" maxlength="3" size="3">
+                    <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent,:editorForm:basic"/>
+                </p:spinner>
             </p:column>
 
             <p:column headerText="Options">
