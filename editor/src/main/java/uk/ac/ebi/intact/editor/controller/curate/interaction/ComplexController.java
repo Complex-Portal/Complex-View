@@ -414,7 +414,7 @@ public class ComplexController extends AnnotatedObjectController {
 
         addInfoMessage("Features linked", "Size of linked features : "+selected.size());
         setUnsavedChanges(true);
-
+        refreshParticipants();
     }
 
     public void unlinkFeature(IntactModelledFeature feature1, IntactModelledFeature feature2) {
@@ -423,6 +423,7 @@ public class ComplexController extends AnnotatedObjectController {
 
         addInfoMessage("Feature unlinked", feature2.toString());
         setUnsavedChanges(true);
+        refreshParticipants();
     }
 
     public void setAc( String ac ) {

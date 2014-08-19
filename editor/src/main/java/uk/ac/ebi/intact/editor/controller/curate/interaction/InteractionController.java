@@ -503,6 +503,8 @@ public class InteractionController extends ParameterizableObjectController {
             updateParametersExperiment(clonedInteraction, clonedInteraction.getExperiments().iterator().next());
         }
 
+        clone.setOwner(userSessionController.getUserInstitution());
+
         refreshTabs();
 
         try {

@@ -52,7 +52,9 @@ public class ExperimentIntactCloner extends EditorIntactCloner {
             Collection<Interaction> interactions = IntactCore.ensureInitializedInteractions(experiment);
 
             for (Interaction i : interactions) {
-                clone.addInteraction(clone(i));
+                Interaction inter = clone(i);
+                inter.setOwner(experiment.getOwner());
+                clone.addInteraction(inter);
             }
         }
 
