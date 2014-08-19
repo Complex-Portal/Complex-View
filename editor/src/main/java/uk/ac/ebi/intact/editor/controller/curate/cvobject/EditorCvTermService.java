@@ -27,9 +27,12 @@ import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
+import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
 import uk.ac.ebi.intact.jami.model.extension.IntactCvTerm;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
-import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.Component;
+import uk.ac.ebi.intact.model.CvTopic;
+import uk.ac.ebi.intact.model.Feature;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
@@ -232,7 +235,7 @@ public class EditorCvTermService extends JpaAwareController {
         if (participantTopicParent != null){
             processTopicAcs.addAll(loadChildren(participantTopicParent, complexTopicSelectItems, false));
         }
-        loadMissingCvsFromIntactCvService(intactCvService, cvDao, processTopicAcs, complexTopicSelectItems, Interaction.class.getCanonicalName());
+        loadMissingCvsFromIntactCvService(intactCvService, cvDao, processTopicAcs, complexTopicSelectItems, IntactComplex.class.getCanonicalName());
 
 
         // TODO when we have a better hierarchy use ontology only

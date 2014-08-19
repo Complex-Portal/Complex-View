@@ -85,6 +85,19 @@
                      rendered="#{complexController.acceptedOnHold and (userSessionController.isJamiUserMe(complexController.complex.currentReviewer) or userSessionController.isJamiUserMe(complexController.complex.currentOwner))}"
                      actionListener="#{complexController.readyForReleaseFromOnHold}"
                      action="#{complexController.doSave}" ajax="false"/>
+    <p:commandButton value="Correction Comment" type="button"
+                     styleClass="important-button-alt"
+                     rendered="#{(complexController.curationInProgress and userSessionController.isJamiUserMe(complexController.complex.currentOwner) )
+                     or complexController.correctionComment}"
+                     onclick="correctionCommentDialog.show()"/>
+    <p:commandButton value="Remove Correction Comment" actionListener="#{complexController.removeCorrectionComment}"
+                     styleClass="important-button-alt"
+                     rendered="#{complexController.correctionComment and (userSessionController.isJamiUserMe(complexController.complex.currentOwner) or userSessionController.isJamiUserMe(complexController.complex.currentReviewer))}"
+                     action="#{complexController.doSave}" ajax="false"/>
+    <p:commandButton value="Reject Complex" type="button"
+                     styleClass="important-button-bad"
+                     rendered="#{complexController.readyForChecking and userSessionController.isJamiUserMe(complexController.complex.currentReviewer) }"
+                     onclick="rejectComplexDialog.show()"/>
 </ui:define>
 
 <ui:define name="breadcrumbs">
@@ -119,6 +132,12 @@
         <h:panelGroup rendered="#{complexController.toBeReviewed}">
             <ia:panelMessage level="warn">
                 <b>To be reviewed: </b> #{complexController.toBeReviewed}
+            </ia:panelMessage>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{complexController.correctionComment}">
+            <ia:panelMessage level="info">
+                <b>Correction comment: </b>#{complexController.correctionComment}
             </ia:panelMessage>
         </h:panelGroup>
 
@@ -279,7 +298,7 @@
                 <td colspan="3">
                     <h:panelGroup rendered="#{complexController.onHold}">
                         <p:inputText id="onHoldTxt" value="#{complexController.onHold}" size="70"
-                                     valueChangeListener="#{complexController.onHoldChanged}">
+                                     valueChangeListener="#{complexController.onHoldChanged}" disabled="#{!complexController.onHold}">
                             <ed:curation/>
                         </p:inputText>
                     </h:panelGroup>
@@ -408,12 +427,40 @@
           modal="true" position="center">
     <h:panelGrid columns="3" style="margin-bottom:10px">
         <h:outputLabel for="putOnHoldTxt" value="Reason for on-hold:"/>
-        <p:inputTextarea id="putOnHoldTxt" value="#{complexController.reasonForOnHoldFromDialog}" rows="4" cols="60" converter="trimmingConverter"/>
+        <p:inputTextarea id="putOnHoldTxt" value="#{complexController.onHold}" rows="4" cols="60" converter="trimmingConverter"/>
 
         <p:commandButton value="Put on hold" actionListener="#{complexController.putOnHold}"
                          action="#{complexController.doSave}"
                          process="putOnHoldTxt"
                          ajax="false"/>
+    </h:panelGrid>
+</p:dialog>
+
+<p:dialog header="Correction comment" width="600" widgetVar="correctionCommentDialog" draggable="false"
+          modal="true" position="center">
+    <h:panelGrid columns="3" style="margin-bottom:10px">
+        <h:outputLabel for="corrComTxt" value="Comment to reviewer:"/>
+        <p:inputTextarea id="corrComTxt" value="#{complexController.correctionComment}" rows="4" cols="40"
+                         autoResize="false"
+                         converter="trimmingConverter"/>
+
+        <p:commandButton value="Add comment" actionListener="#{complexController.addCorrectionComment}"
+                         process="corrComTxt"
+                         action="#{complexController.doSave}"
+                         ajax="false" update=":editorForm" />
+    </h:panelGrid>
+</p:dialog>
+
+<p:dialog header="Reject complex" width="600" widgetVar="rejectComplexDialog" draggable="false"
+          modal="true" position="center">
+    <h:panelGrid columns="3" style="margin-bottom:10px">
+        <h:outputLabel for="reasonRejTxt" value="Reason for rejection:"/>
+        <p:inputTextarea id="reasonRejTxt" value="#{complexController.toBeReviewed}" rows="4" cols="40"
+                         autoResize="false"
+                         converter="trimmingConverter"/>
+
+        <p:commandButton value="Reject" actionListener="#{complexController.rejectComplex}"
+                         process="reasonRejTxt" update=":editorForm"/>
     </h:panelGrid>
 </p:dialog>
 

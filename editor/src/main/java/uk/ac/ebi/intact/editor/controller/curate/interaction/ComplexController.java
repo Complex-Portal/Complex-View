@@ -87,9 +87,6 @@ public class ComplexController extends AnnotatedObjectController {
     private boolean isLifeCycleDisabled;
 
     private boolean assignToMe = true;
-    private String reasonForReadyForChecking;
-    private String reasonForRejection;
-    private String reasonForOnHoldFromDialog;
 
     @Autowired
     @Qualifier("jamiLifeCycleManager")
@@ -98,6 +95,7 @@ public class ComplexController extends AnnotatedObjectController {
     private String name = null;
     private String toBeReviewed = null;
     private String onHold = null;
+    private String correctionComment = null;
     private String cautionMessage = null;
     private String internalRemark = null;
     private String recommendedName = null;
@@ -209,6 +207,8 @@ public class ComplexController extends AnnotatedObjectController {
     public String getOnHold(){
         return onHold != null ? onHold : "";
     }
+
+    public String getCorrectionComment(){return correctionComment != null ? correctionComment : null;}
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
@@ -469,6 +469,7 @@ public class ComplexController extends AnnotatedObjectController {
     private void refreshInfoMessages() {
         this.toBeReviewed = this.complex.getToBeReviewedComment();
         this.onHold = this.complex.getOnHoldComment();
+        this.correctionComment = this.complex.getCorrectionComment();
         Annotation remark = AnnotationUtils.collectFirstAnnotationWithTopic(this.complex.getAnnotations(), null,
                 "remark-internal");
         this.internalRemark = remark != null ? remark.getValue() : null;
@@ -649,6 +650,9 @@ public class ComplexController extends AnnotatedObjectController {
         else if (AnnotationUtils.doesAnnotationHaveTopic(annot, null, Releasable.TO_BE_REVIEWED)){
             return true;
         }
+        else if (AnnotationUtils.doesAnnotationHaveTopic(annot, null, Releasable.CORRECTION_COMMENT)){
+            return true;
+        }
         else if (AnnotationUtils.doesAnnotationHaveTopic(annot, null, "curated-complex")){
             return true;
         }
@@ -750,6 +754,8 @@ public class ComplexController extends AnnotatedObjectController {
         getJamiEntityManager().detach(getComplex());
     }
 
+
+
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void markAsReadyForChecking(ActionEvent evt) {
         if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
@@ -757,7 +763,7 @@ public class ComplexController extends AnnotatedObjectController {
             return;
         }
         if (isBeenRejectedBefore()) {
-            reasonForReadyForChecking = this.complex.getCorrectionComment();
+            correctionComment = this.complex.getCorrectionComment();
         }
 
         if (!this.complex.areLifeCycleEventsInitialized()){
@@ -768,9 +774,9 @@ public class ComplexController extends AnnotatedObjectController {
         // TODO run a proper sanity check
         boolean sanityCheckPassed = true;
 
-        getLifecycleManager().getCurationInProgressStatus().readyForChecking(complex, reasonForReadyForChecking, sanityCheckPassed);
+        getLifecycleManager().getCurationInProgressStatus().readyForChecking(complex, correctionComment, sanityCheckPassed);
 
-        reasonForReadyForChecking = null;
+        correctionComment = null;
 
         addInfoMessage("Complex ready for checking", "Assigned to reviewer: " + complex.getCurrentReviewer().getLogin());
         getJamiEntityManager().detach(getComplex());
@@ -827,17 +833,16 @@ public class ComplexController extends AnnotatedObjectController {
         }
 
         if (complex.getStatus().equals(LifeCycleStatus.READY_FOR_RELEASE)) {
-            getLifecycleManager().getReadyForReleaseStatus().putOnHold(complex, reasonForOnHoldFromDialog);
+            getLifecycleManager().getReadyForReleaseStatus().putOnHold(complex, onHold);
             addInfoMessage("On-hold added to complex", "Complex won't be released until the 'on hold' is removed");
         } else if (complex.getStatus().equals(LifeCycleStatus.RELEASED)) {
-            getLifecycleManager().getReleasedStatus().putOnHold(complex, reasonForOnHoldFromDialog);
+            getLifecycleManager().getReleasedStatus().putOnHold(complex, onHold);
             addInfoMessage("On-hold added to released complex", "Data will be publicly visible until the next release");
         }
         else{
-            setOnHold(reasonForOnHoldFromDialog);
+            setOnHold(onHold);
         }
         this.onHold = this.complex.getOnHoldComment();
-        reasonForOnHoldFromDialog = null;
         getJamiEntityManager().detach(getComplex());
     }
 
@@ -854,6 +859,14 @@ public class ComplexController extends AnnotatedObjectController {
 
     public void setOnHold(String reason) {
         this.onHold = reason;
+    }
+
+    public void setCorrectionComment(String reason) {
+        this.correctionComment = reason;
+    }
+
+    public void setToBeReviewed(String reason) {
+        this.toBeReviewed = reason;
     }
 
     public void onHoldChanged(ValueChangeEvent evt) {
@@ -970,6 +983,10 @@ public class ComplexController extends AnnotatedObjectController {
         return pub.isOnHold();
     }
 
+    public boolean isCorrectionComment(IntactComplex pub) {
+        return pub.hasCorrectionComment();
+    }
+
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void acceptComplex(ActionEvent evt) {
         if (!this.complex.areLifeCycleEventsInitialized()){
@@ -990,7 +1007,7 @@ public class ComplexController extends AnnotatedObjectController {
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void rejectComplex(ActionEvent evt) {
 
-        rejectComplex(reasonForRejection);
+        rejectComplex(toBeReviewed);
 
     }
 
@@ -1066,22 +1083,6 @@ public class ComplexController extends AnnotatedObjectController {
 
     public void setAssignToMe(boolean assignToMe) {
         this.assignToMe = assignToMe;
-    }
-
-    public String getReasonForReadyForChecking() {
-        return reasonForReadyForChecking;
-    }
-
-    public void setReasonForReadyForChecking(String reasonForReadyForChecking) {
-        this.reasonForReadyForChecking = reasonForReadyForChecking;
-    }
-
-    public String getReasonForOnHoldFromDialog() {
-        return reasonForOnHoldFromDialog;
-    }
-
-    public void setReasonForOnHoldFromDialog(String reasonForOnHoldFromDialog) {
-        this.reasonForOnHoldFromDialog = reasonForOnHoldFromDialog;
     }
 
     public boolean isNewComplex() {
@@ -1292,5 +1293,15 @@ public class ComplexController extends AnnotatedObjectController {
     public LifeCycleManager getLifecycleManager() {
         this.lifecycleManager.registerListener(new ComplexBCLifecycleEventListener());
         return lifecycleManager;
+    }
+
+    public void addCorrectionComment(ActionEvent evt) {
+        addInfoMessage("Added correction comment", correctionComment);
+        this.complex.onCorrectionComment(correctionComment);
+    }
+
+    public void removeCorrectionComment(ActionEvent evt) {
+        addInfoMessage("Removed correction comment", correctionComment);
+        this.complex.removeCorrectionComment();
     }
 }
