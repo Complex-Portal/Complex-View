@@ -77,44 +77,41 @@
             <p:column headerText="Linked feature(s)">
                 <h:outputText value="-" rendered="#{empty featureWrapper.linkedFeatures}"/>
 
-                <h:panelGroup id="linkedFeatureGroup">
-                    <ui:repeat value="#{featureWrapper.linkedFeatures}" var="linked" varStatus="status">
-                        <h:panelGroup rendered="#{linked.ac != null}">
-                            <p:commandLink onclick="load_feature.show()" action="#{curateController.editJami(linked)}"
-                                           style="#{linked.ac == null? 'color:blue' :''}"
-                                           value="#{linked.shortName}" ajax="false"/>
-                        </h:panelGroup>
+                <ui:repeat value="#{featureWrapper.linkedFeatures}" var="linked" varStatus="status">
+                    <h:panelGroup rendered="#{linked.ac != null}">
+                        <p:commandLink onclick="load_feature.show()" action="#{curateController.editJami(linked)}"
+                                       style="#{linked.ac == null? 'color:blue' :''}"
+                                       value="#{linked.shortName}" ajax="false"/>
+                    </h:panelGroup>
 
-                        <h:panelGroup rendered="#{linked.ac == null}">
-                            <h:outputText value="#{linked.shortName}"/>
-                        </h:panelGroup>
+                    <h:panelGroup rendered="#{linked.ac == null}">
+                        <h:outputText value="#{linked.shortName}"/>
+                    </h:panelGroup>
 
 
-                        <h:panelGroup>
-                            <p:commandLink type="button"
-                                           oncomplete="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.show()"
-                                           styleClass="ui-icon ui-icon-link" style="display:inline-block"
-                                           title="Linked to #{linked.shortName}" action="#{modelledParticipantController.selectedLinkedFeature(featureWrapper, linked)}"
-                                           update=":editorForm:participantTabs:featuresPanel">
-                            </p:commandLink>
-                        </h:panelGroup>
-                        <p:outputPanel rendered="#{status.index lt (status.end - 1)}">
-                            <br/>
-                        </p:outputPanel>
-                    </ui:repeat>
+                    <p:commandLink type="button"
+                                   oncomplete="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.show()"
+                                   styleClass="ui-icon ui-icon-link" style="display:inline-block"
+                                   title="Linked to #{linked.shortName}" action="#{modelledParticipantController.selectLinkedFeature(featureWrapper, linked)}"
+                                   update=":editorForm:participantTabs:featuresPanel" immediate="true" process="@this">
+                    </p:commandLink>
+                    <p:outputPanel rendered="#{status.index lt (status.end - 1)}">
+                        <br/>
+                    </p:outputPanel>
+                </ui:repeat>
 
-                    <p:confirmDialog
-                            widgetVar="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}"
-                            message="Do you want to unlink this feature?" modal="true">
-                        <p:commandButton value="Yes Sure"
-                                         actionListener="#{modelledParticipantController.unlinkFeature(featureWrapper.feature, featureWrapper.selectedLinkedFeature)}"
-                                         update=":editorForm:participantTabs:featuresPanel :editorForm:changesPanel :editorForm:messagesComponent :editorForm:unsavedChangesInfo"
-                                         onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()"/>
-                        <p:commandButton value="Not Yet"
-                                         onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()"
-                                />
-                    </p:confirmDialog>
-                </h:panelGroup>
+                <p:confirmDialog
+                        widgetVar="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}"
+                        message="Do you want to unlink this feature?" modal="true">
+                    <p:commandButton value="Yes Sure"
+                                     actionListener="#{modelledParticipantController.unlinkFeature(featureWrapper)}"
+                                     immediate="true" process="@this"
+                                     update=":editorForm:participantTabs:featuresPanel :editorForm:changesPanel :editorForm:messagesComponent :editorForm:unsavedChangesInfo"
+                                     onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()"/>
+                    <p:commandButton value="Not Yet"
+                                     onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()"
+                            />
+                </p:confirmDialog>
             </p:column>
             <p:column headerText="Range(s)">
                 <ui:repeat value="#{featureWrapper.feature.ranges}" var="range" varStatus="status">
