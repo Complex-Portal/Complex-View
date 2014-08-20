@@ -246,7 +246,8 @@ public class ParticipantImportController extends BaseController {
             Interactor interactor = interactorDao.getByAc(participantToImport);
 
             if (interactor != null) {
-                if (!(interactor instanceof InteractionImpl && AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(interactor, "curated-complex") == null)){
+                if (!(interactor instanceof InteractionImpl
+                        && AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(interactor, "curated-complex") == null)){
                     candidates.add(toImportCandidate(participantToImport, interactor));
                 }
             } else {
