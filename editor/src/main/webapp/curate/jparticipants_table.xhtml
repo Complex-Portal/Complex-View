@@ -100,33 +100,30 @@
                             <h:outputText value="#{featureWrapper.feature.shortName} #{featureWrapper.ranges}"/>
 
 
-                            <h:panelGroup rendered="#{!empty featureWrapper.linkedFeatures}">
+                            <h:panelGroup id="linkedFeaturePanelGroup" rendered="#{!empty featureWrapper.linkedFeatures}">
                                 <ui:repeat value="#{featureWrapper.linkedFeatures}" var="linked" varStatus="status">
-                                    <p:commandLink type="button" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(linked.ac)}.show()"
+                                    <p:commandLink type="button" oncomplete="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.show()"
                                                    styleClass="ui-icon ui-icon-link" style="display:inline-block"
-                                                   title="Linked to #{linked.shortName}">
+                                                   title="Linked to #{linked.shortName}" action="#{complexController.selectLinkedFeature(featureWrapper, linked)}"
+                                                   update=":editorForm:complexTabs:participantsTable">
                                     </p:commandLink>
-
-                                    <p:confirmDialog widgetVar="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(linked.ac)}"
-                                                     message="Do you want to unlink this feature?" modal="true">
-                                        <p:commandButton value="Yes Sure"
-                                                         actionListener="#{complexController.unlinkFeature(featureWrapper.feature, linked)}"
-                                                         update=":editorForm:complexTabs:participantsTable :editorForm:changesPanel :editorForm:messagesComponent :editorForm:unsavedChangesInfo"
-                                                         onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()"/>
-                                        <p:commandButton value="Not Yet" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()" />
-                                    </p:confirmDialog>
 
                                     <p:outputPanel rendered="#{status.index lt (status.end - 1)}">
                                         <br/>
                                     </p:outputPanel>
                                 </ui:repeat>
-
                             </h:panelGroup>
                         </div>
-
+                        <p:confirmDialog widgetVar="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}"
+                                         message="Do you want to unlink this feature?" modal="true">
+                            <p:commandButton value="Yes Sure"
+                                             actionListener="#{complexController.unlinkFeature(featureWrapper)}"
+                                             update=":editorForm:complexTabs:participantsTable :editorForm:changesPanel :editorForm:messagesComponent :editorForm:unsavedChangesInfo"
+                                             onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()"/>
+                            <p:commandButton value="Not Yet" onclick="unlinkConfirm_#{intactComponentUtils.toJavascriptFriendlyVar(featureWrapper.feature.ac)}.hide()" />
+                        </p:confirmDialog>
                     </h:column>
                 </h:dataTable>
-
             </p:column>
 
             <p:column headerText="Min Stoich.">

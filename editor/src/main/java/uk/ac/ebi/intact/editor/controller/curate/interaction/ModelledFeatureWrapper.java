@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.interaction;
 
+import org.hibernate.Hibernate;
 import psidev.psi.mi.jami.model.ModelledFeature;
 import psidev.psi.mi.jami.model.Range;
 import psidev.psi.mi.jami.utils.RangeUtils;
@@ -37,11 +38,17 @@ public class ModelledFeatureWrapper {
     private String ranges=null;
     private List<ModelledFeature> linkedFeatures;
 
+    private IntactModelledFeature selectedLinkedFeature;
+
     public ModelledFeatureWrapper(IntactModelledFeature feature) {
         this.feature = feature;
 
         initialiseRangesAsString();
         this.linkedFeatures = new ArrayList<ModelledFeature>(this.feature.getLinkedFeatures());
+
+        for (ModelledFeature linked : this.linkedFeatures){
+            Hibernate.initialize(linked.getLinkedFeatures());
+        }
     }
 
     private void initialiseRangesAsString(){
@@ -79,5 +86,13 @@ public class ModelledFeatureWrapper {
 
     public List<ModelledFeature> getLinkedFeatures() {
         return linkedFeatures;
+    }
+
+    public IntactModelledFeature getSelectedLinkedFeature() {
+        return selectedLinkedFeature;
+    }
+
+    public void setSelectedLinkedFeature(IntactModelledFeature selectedLinkedFeature) {
+        this.selectedLinkedFeature = selectedLinkedFeature;
     }
 }

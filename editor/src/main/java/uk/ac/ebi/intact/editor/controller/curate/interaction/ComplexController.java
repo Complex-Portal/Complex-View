@@ -419,13 +419,38 @@ public class ComplexController extends AnnotatedObjectController {
         refreshParticipants();
     }
 
-    public void unlinkFeature(IntactModelledFeature feature1, IntactModelledFeature feature2) {
-        feature1.getLinkedFeatures().remove(feature2);
-        feature2.getLinkedFeatures().remove(feature1);
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public void unlinkFeature(ModelledFeatureWrapper wrapper) {
+        Feature feature1 = wrapper.getFeature();
+        IntactModelledFeature feature2 = wrapper.getSelectedLinkedFeature();
+        if (feature2 != null){
+            feature1.getLinkedFeatures().remove(feature2);
+            feature2.getLinkedFeatures().remove(feature1);
 
-        addInfoMessage("Feature unlinked", feature2.toString());
-        setUnsavedChanges(true);
-        refreshParticipants();
+            for (ModelledParticipantWrapper pw : participantWrappers) {
+                ModelledFeatureWrapper wrapperToRemove=null;
+                for (ModelledFeatureWrapper fw : pw.getFeatures()) {
+                    if (fw.getFeature() == wrapper.getSelectedLinkedFeature()) {
+                        wrapperToRemove = fw;
+                        break;
+                    }
+                }
+                if (wrapperToRemove != null){
+                    wrapperToRemove.getLinkedFeatures().clear();
+                    wrapperToRemove.getLinkedFeatures().addAll(feature2.getLinkedFeatures());
+                    break;
+                }
+            }
+
+            addInfoMessage("Feature unlinked", feature2.toString());
+            setUnsavedChanges(true);
+            wrapper.getLinkedFeatures().clear();
+            wrapper.getLinkedFeatures().addAll(feature1.getLinkedFeatures());
+        }
+    }
+
+    public void selectLinkedFeature(ModelledFeatureWrapper wrapper, IntactModelledFeature linked){
+         wrapper.setSelectedLinkedFeature(linked);
     }
 
     public void setAc( String ac ) {
@@ -630,7 +655,7 @@ public class ComplexController extends AnnotatedObjectController {
 
     public boolean isAliasNotEditable(Alias alias){
         if (AliasUtils.doesAliasHaveType(alias, Alias.COMPLEX_RECOMMENDED_NAME_MI, Alias.COMPLEX_RECOMMENDED_NAME)){
-           return true;
+            return true;
         }
         else if (AliasUtils.doesAliasHaveType(alias, Alias.COMPLEX_SYSTEMATIC_NAME_MI, Alias.COMPLEX_SYSTEMATIC_NAME)){
             return true;
@@ -906,8 +931,8 @@ public class ComplexController extends AnnotatedObjectController {
         setUnsavedChanges(true);
         String newValue = (String) evt.getNewValue();
         if (newValue == null || newValue.length() == 0){
-           this.complex.setRecommendedName(null);
-           this.recommendedName = null;
+            this.complex.setRecommendedName(null);
+            this.recommendedName = null;
         }
         else{
             this.complex.setRecommendedName(newValue);

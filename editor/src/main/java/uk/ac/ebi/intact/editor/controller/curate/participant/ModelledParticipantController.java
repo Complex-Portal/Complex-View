@@ -405,6 +405,38 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         }
     }
 
+    public void selectLinkedFeature(ModelledFeatureWrapper wrapper, IntactModelledFeature linked){
+        wrapper.setSelectedLinkedFeature(linked);
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public void unlinkFeature(ModelledFeatureWrapper wrapper) {
+        Feature feature1 = wrapper.getFeature();
+        IntactModelledFeature feature2 = wrapper.getSelectedLinkedFeature();
+        feature1.getLinkedFeatures().remove(feature2);
+        feature2.getLinkedFeatures().remove(feature1);
+
+        ModelledFeatureWrapper wrapperToRemove=null;
+        for (ModelledFeatureWrapper fw : featuresDataModel) {
+            if (fw.getFeature() == wrapper.getSelectedLinkedFeature()) {
+                wrapperToRemove = fw;
+                break;
+            }
+        }
+        if (wrapperToRemove != null){
+            wrapperToRemove.getLinkedFeatures().clear();
+            wrapperToRemove.getLinkedFeatures().addAll(feature2.getLinkedFeatures());
+        }
+
+        addInfoMessage("Feature unlinked", feature2.toString());
+        setUnsavedChanges(true);
+
+        wrapper.getLinkedFeatures().clear();
+        wrapper.getLinkedFeatures().addAll(feature1.getLinkedFeatures());
+
+        getJamiEntityManager().detach(feature2);
+    }
+
     private void refreshParticipantPrimaryId(){
         if (participant == null) this.participantPrimaryId = null;
 
