@@ -53,7 +53,7 @@ public class EditorOrganismService extends JpaAwareController {
         taxidOrganismMap = new HashMap<Integer, IntactOrganism>();
     }
 
-    public void clearAll(){
+    public synchronized void clearAll(){
         this.organismSelectItems = null;
         isInitialised = false;
         acOrganismMap.clear();
@@ -81,7 +81,7 @@ public class EditorOrganismService extends JpaAwareController {
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public void loadDataIfNotDone( ComponentSystemEvent event ) {
+    public synchronized void loadDataIfNotDone( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if (!isInitialised){
                 loadOrganisms();
@@ -91,7 +91,7 @@ public class EditorOrganismService extends JpaAwareController {
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public void loadDataIfNotDone( ) {
+    public synchronized void loadDataIfNotDone( ) {
         if (!isInitialised){
             loadOrganisms();
             isInitialised = true;
@@ -115,7 +115,7 @@ public class EditorOrganismService extends JpaAwareController {
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public void refresh( ActionEvent evt ) {
+    public synchronized void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading BioSources" );
 
         loadOrganisms();

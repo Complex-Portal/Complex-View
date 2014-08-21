@@ -77,7 +77,7 @@ public class EditorCvTermService extends JpaAwareController {
         acCvObjectMap = new HashMap<String, IntactCvTerm>();
     }
 
-    public void clearAll(){
+    public synchronized void clearAll(){
         this.featureTypeSelectItems = null;
         this.featureRoleSelectItems = null;
         this.aliasTypeSelectItems = null;
@@ -361,7 +361,7 @@ public class EditorCvTermService extends JpaAwareController {
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public void loadDataIfNotDone( ComponentSystemEvent event ) {
+    public synchronized void loadDataIfNotDone( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if (!isInitialised){
                 loadCvs();

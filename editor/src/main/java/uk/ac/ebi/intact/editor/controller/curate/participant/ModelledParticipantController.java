@@ -283,6 +283,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
                     }
                 }
                 try {
+                    getAfterCommitExecutor().registerDaoForSynchronization(getIntactDao());
                     participant.setInteractor(getIntactDao().
                             getSynchronizerContext().
                             getInteractorSynchronizer().

@@ -355,6 +355,7 @@ public class ModelledParticipantImportController extends JpaAwareController {
         }
 
         IntactModelledParticipant component = null;
+        getAfterCommitExecutor().registerDaoForSynchronization(getIntactDao());
         try {
             component = new IntactModelledParticipant(getIntactDao().
                     getSynchronizerContext().

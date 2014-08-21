@@ -166,7 +166,7 @@
                 <p:inputText id="shortlabelTxt" value="#{interaction.shortName}" size="30"
                              validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
                              required="true" requiredMessage="Shortlabel is required">
-                    <p:ajax event="change" update=":editorForm:messagesComponent,:editorForm:changesPanel,:editorForm:unsavedChangesInfo" async="true" process="@this" oncomplete="markAsJamiUnsaved()"/>
+                    <p:ajax event="change" update=":editorForm:messagesComponent,:editorForm:changesPanel,:editorForm:unsavedChangesInfo" async="true" process="@this" oncomplete="markAsUnsaved()"/>
                 </p:inputText>
             </td>
             <td style="padding-left: 50px;">

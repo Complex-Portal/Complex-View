@@ -236,6 +236,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void refreshRangeProperties(ModelledRange range){
         try {
+            getAfterCommitExecutor().registerDaoForSynchronization(getIntactDao());
             getIntactDao().getSynchronizerContext().getModelledRangeSynchronizer().synchronizeProperties(range);
         } catch (FinderException e) {
             // clear cache
@@ -302,6 +303,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         range.setLink(false);
         range.setResultingSequence(new ModelledResultingSequence(RangeUtils.extractRangeSequence(range, sequence), null));
         IntactDao dao = getIntactDao();
+        getAfterCommitExecutor().registerDaoForSynchronization(dao);
         try {
             range = dao.getSynchronizerContext().getModelledRangeSynchronizer().synchronize(range, false);
         } catch (FinderException e) {

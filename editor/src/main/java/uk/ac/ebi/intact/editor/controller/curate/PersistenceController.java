@@ -97,6 +97,8 @@ public class PersistenceController extends JpaAwareController {
         }
 
         try {
+            getAfterCommitExecutor().registerDaoForSynchronization(getIntactDao());
+
             controller.setJamiObject((IntactPrimaryObject)dbSynchronizer.synchronize(object, true));
 
             return true;
@@ -120,6 +122,8 @@ public class PersistenceController extends JpaAwareController {
         }
 
         try {
+            getAfterCommitExecutor().registerDaoForSynchronization(getIntactDao());
+
             return dbSynchronizer.synchronize(object, true);
 
         } catch ( Throwable e ) {
@@ -195,6 +199,8 @@ public class PersistenceController extends JpaAwareController {
             if (log.isDebugEnabled()) log.debug("Deleting: " + intactObject.getAc());
 
             try{
+                getAfterCommitExecutor().registerDaoForSynchronization(getIntactDao());
+
                 dbSynchronizer.delete(intactObject);
 
                 changesController.removeFromDeleted(intactObject, null, dbSynchronizer);
