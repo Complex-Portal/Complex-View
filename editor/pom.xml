@@ -65,6 +65,7 @@
 
         <projectStage>Development</projectStage>
         <user.context.id>EDITOR_USER</user.context.id>
+        <jami.user.context.id>EDITOR_USER</jami.user.context.id>
 
     </properties>
 
