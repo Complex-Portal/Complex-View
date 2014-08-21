@@ -29,11 +29,12 @@
         <intercept-url pattern="/expview/**" access="ROLE_CURATOR, ROLE_ADMIN, ROLE_REVIEWER"/>
         <intercept-url pattern="/interaction/**" access="ROLE_CURATOR, ROLE_ADMIN, ROLE_REVIEWER"/>
         <intercept-url pattern="/participant/**" access="ROLE_CURATOR, ROLE_ADMIN, ROLE_REVIEWER"/>
-        <intercept-url pattern="/feature/**" access="ROLE_CURATOR, ROLE_ADMIN, ROLE_REVIEWER"/>
+        <intercept-url pattern="/feature/**" access="ROLE_CURATOR,ROLE_ADMIN, ROLE_REVIEWER"/>
         <intercept-url pattern="/complex/**" access="ROLE_COMPLEX_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_REVIEWER"/>
         <intercept-url pattern="/cparticipant/**" access="ROLE_COMPLEX_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_REVIEWER"/>
-        <intercept-url pattern="/cfeature/**" access="ROLE_COMPLEX_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_REVIEWER"/>
+        <intercept-url pattern="/cfeature/**" access="ROLE_ADMIN, ROLE_COMPLEX_REVIEWER"/>
         <intercept-url pattern="/organism/**" access="ROLE_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_CURATOR, ROLE_REVIEWER, ROLE_COMPLEX_REVIEWER"/>
+        <intercept-url pattern="/interactor/**" access="ROLE_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_CURATOR, ROLE_REVIEWER, ROLE_COMPLEX_REVIEWER"/>
         <intercept-url pattern="/cv/**" access="ROLE_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_CURATOR, ROLE_REVIEWER, ROLE_COMPLEX_REVIEWER"/>
         <intercept-url pattern="/notes/query/**" access="ROLE_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_CURATOR, ROLE_REVIEWER, ROLE_COMPLEX_REVIEWER"/>
         <intercept-url pattern="/**" access="ROLE_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_CURATOR, ROLE_REVIEWER, ROLE_COMPLEX_REVIEWER"/>
