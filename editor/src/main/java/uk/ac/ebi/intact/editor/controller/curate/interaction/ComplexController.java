@@ -1180,6 +1180,8 @@ public class ComplexController extends AnnotatedObjectController {
         CvTerm type = dao.getByMIIdentifier(Complex.COMPLEX_MI, IntactUtils.INTERACTOR_TYPE_OBJCLASS);
 
         setComplex(new IntactComplex("name to specify"));
+        UserSessionController userSessionController = ApplicationContextProvider.getBean("userSessionController");
+        this.complex.setSource(userSessionController.getUserSource());
         this.complex.setCreatedDate(new Date());
         this.complex.setUpdatedDate(this.complex.getCreatedDate());
         UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
