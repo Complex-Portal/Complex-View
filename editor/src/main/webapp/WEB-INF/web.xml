@@ -196,18 +196,13 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
+            classpath:/META-INF/intact-jami-spring.xml,
             classpath*:/META-INF/*.spring.xml,
             classpath*:/META-INF/jobs/*.spring.xml,
             classpath:/META-INF/security/security.spring.xml,
-            classpath:/META-INF/intact-editor.spring.xml
+            classpath:/META-INF/intact-editor.spring.xml,
             classpath:/META-INF/jpa.spring.xml,
-            classpath:/META-INF/intact-jami.spring.xml
         </param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>jamiProperties</param-name>
-        <param-value>classpath:/META-INF/intact-jami.properties</param-value>
     </context-param>
 
     <context-param>
