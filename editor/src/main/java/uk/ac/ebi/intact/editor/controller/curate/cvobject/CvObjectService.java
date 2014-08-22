@@ -26,6 +26,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
@@ -160,7 +161,12 @@ public class CvObjectService extends JpaAwareController {
     public synchronized void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading Controlled Vocabularies" );
 
-        final TransactionStatus transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        boolean manualTransaction = false;
+        TransactionStatus transactionStatus=null;
+        if (!TransactionSynchronizationManager.isActualTransactionActive()){
+            manualTransaction = true;
+            transactionStatus = IntactContext.getCurrentInstance().getDataContext().beginTransaction();
+        }
 
         publicationTopicSelectItems = new ArrayList<SelectItem>();
 
@@ -344,7 +350,9 @@ public class CvObjectService extends JpaAwareController {
             }
         }
 
-        IntactContext.getCurrentInstance().getDataContext().commitTransaction( transactionStatus );
+        if (manualTransaction){
+            IntactContext.getCurrentInstance().getDataContext().commitTransaction( transactionStatus );
+        }
     }
 
     public List<CvTopic> getSortedTopicList( String key, Multimap<String, CvTopic> topicMultimap ) {
