@@ -21,7 +21,7 @@ import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persister.CorePersister;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
-import uk.ac.ebi.intact.jami.interceptor.AfterCommitExecutor;
+import uk.ac.ebi.intact.jami.interceptor.IntactTransactionSynchronization;
 import uk.ac.ebi.intact.jami.service.ComplexService;
 
 import javax.persistence.EntityManager;
@@ -54,8 +54,8 @@ public abstract class JpaAwareController extends BaseController {
     private IntactDao intactDao;
 
     @Autowired
-    @Qualifier("afterCommitExecutor")
-    private AfterCommitExecutor afterCommitExecutor;
+    @Qualifier("intactTransactionSynchronization")
+    private IntactTransactionSynchronization intactTransactionSynchronization;
 
     protected EntityManager getCoreEntityManager() {
         return coreEntityManager;
@@ -85,7 +85,7 @@ public abstract class JpaAwareController extends BaseController {
         return intactDao;
     }
 
-    public AfterCommitExecutor getAfterCommitExecutor() {
-        return afterCommitExecutor;
+    public IntactTransactionSynchronization getIntactTransactionSynchronization() {
+        return intactTransactionSynchronization;
     }
 }

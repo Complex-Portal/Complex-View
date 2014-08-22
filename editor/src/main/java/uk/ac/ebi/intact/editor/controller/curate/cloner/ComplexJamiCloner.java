@@ -23,7 +23,7 @@ import uk.ac.ebi.intact.editor.controller.curate.organism.EditorOrganismService;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
-import uk.ac.ebi.intact.jami.interceptor.AfterCommitExecutor;
+import uk.ac.ebi.intact.jami.interceptor.IntactTransactionSynchronization;
 import uk.ac.ebi.intact.jami.model.extension.*;
 import uk.ac.ebi.intact.jami.model.lifecycle.Releasable;
 import uk.ac.ebi.intact.jami.synchronizer.FinderException;
@@ -62,7 +62,7 @@ public class ComplexJamiCloner {
                 if (org == null){
                     org = new IntactOrganism(host.getTaxId(), host.getCommonName(), host.getScientificName());
                     IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
-                    AfterCommitExecutor afterCommitExecutor = ApplicationContextProvider.getBean("afterCommitExecutor");
+                    IntactTransactionSynchronization afterCommitExecutor = ApplicationContextProvider.getBean("intactTransactionSynchronization");
                     afterCommitExecutor.registerDaoForSynchronization(intactDao);
                     intactDao.getOrganismDao().persist(org);
                 }
