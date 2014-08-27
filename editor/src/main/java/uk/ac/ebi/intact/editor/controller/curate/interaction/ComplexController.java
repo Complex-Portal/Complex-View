@@ -167,7 +167,6 @@ public class ComplexController extends AnnotatedObjectController {
             IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
             setComplex(reloadedComplex);
         }
-
         String value = clone(getComplex());
         refreshParticipants();
 
@@ -728,60 +727,93 @@ public class ComplexController extends AnnotatedObjectController {
         return complex.getStatus() == LifeCycleStatus.RELEASED;
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void claimOwnership(ActionEvent evt) {
-        if (!this.complex.areLifeCycleEventsInitialized()){
-            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+        IntactComplex reloadedComplex = null;
+        try {
+            reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
+            getLifecycleManager().getGlobalStatus().changeOwnership(complex, getCurrentJamiUser(), null);
+
+            // automatically set as curation in progress if no one was assigned before
+            if (isAssigned()) {
+                markAsCurationInProgress(evt);
+            }
+
+            addInfoMessage("Claimed Complex ownership", "You are now the owner of this complex");
+        } catch (FinderException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (PersisterException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (SynchronizerException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
-
-        getLifecycleManager().getGlobalStatus().changeOwnership(complex, getCurrentJamiUser(), null);
-
-        // automatically set as curation in progress if no one was assigned before
-        if (isAssigned()) {
-            markAsCurationInProgress(evt);
-        }
-
-        addInfoMessage("Claimed Complex ownership", "You are now the owner of this complex");
-        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void markAsAssignedToMe(ActionEvent evt) {
-        if (!this.complex.areLifeCycleEventsInitialized()){
-            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+        IntactComplex reloadedComplex = null;
+        try {
+            reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
+            getLifecycleManager().getNewStatus().assignToCurator(complex, getCurrentJamiUser());
+
+            addInfoMessage("Ownership claimed", "The complex has been assigned to you");
+
+            markAsCurationInProgress(evt);
+        } catch (FinderException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (PersisterException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (SynchronizerException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
-
-        getLifecycleManager().getNewStatus().assignToCurator(complex, getCurrentJamiUser());
-
-        addInfoMessage("Ownership claimed", "The complex has been assigned to you");
-
-        markAsCurationInProgress(evt);
-        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void markAsCurationInProgress(ActionEvent evt) {
         if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
             addErrorMessage("Cannot mark as curation in progress", "You are not the owner of this publication");
             return;
         }
 
-        if (!this.complex.areLifeCycleEventsInitialized()){
-            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+        IntactComplex reloadedComplex = null;
+        try {
+            reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
+            getLifecycleManager().getAssignedStatus().startCuration(complex);
+
+            addInfoMessage("Curation started", "Curation is now in progress");
+        } catch (FinderException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (PersisterException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (SynchronizerException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
-
-        getLifecycleManager().getAssignedStatus().startCuration(complex);
-
-        addInfoMessage("Curation started", "Curation is now in progress");
-        getJamiEntityManager().detach(getComplex());
     }
 
 
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void markAsReadyForChecking(ActionEvent evt) {
         if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
             addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this complex");
@@ -791,95 +823,159 @@ public class ComplexController extends AnnotatedObjectController {
             correctionComment = this.complex.getCorrectionComment();
         }
 
-        if (!this.complex.areLifeCycleEventsInitialized()){
-            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+        IntactComplex reloadedComplex = null;
+        try {
+            reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
+            // TODO run a proper sanity check
+            boolean sanityCheckPassed = true;
+
+            getLifecycleManager().getCurationInProgressStatus().readyForChecking(complex, correctionComment, sanityCheckPassed);
+
+            correctionComment = null;
+
+            addInfoMessage("Complex ready for checking", "Assigned to reviewer: " + complex.getCurrentReviewer().getLogin());
+        } catch (FinderException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (PersisterException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (SynchronizerException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
-
-        // TODO run a proper sanity check
-        boolean sanityCheckPassed = true;
-
-        getLifecycleManager().getCurationInProgressStatus().readyForChecking(complex, correctionComment, sanityCheckPassed);
-
-        correctionComment = null;
-
-        addInfoMessage("Complex ready for checking", "Assigned to reviewer: " + complex.getCurrentReviewer().getLogin());
-        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void revertReadyForChecking(ActionEvent evt) {
-        if (!this.complex.areLifeCycleEventsInitialized()){
-            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
-            setComplex(reloadedComplex);
+        if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
+            addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this complex");
+            return;
         }
+        IntactComplex reloadedComplex = null;
+        try {
+            reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
+            setComplex(reloadedComplex);
+            getLifecycleManager().getReadyForCheckingStatus().revert(this.complex);
 
-        getLifecycleManager().getReadyForCheckingStatus().revert(this.complex);
-        getJamiEntityManager().detach(getComplex());
+            correctionComment = null;
+
+            addInfoMessage("Complex ready for checking", "Assigned to reviewer: " + complex.getCurrentReviewer().getLogin());
+        } catch (FinderException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (PersisterException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (SynchronizerException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        }
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly =  true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void revertAccepted(ActionEvent evt) {
-        if (!this.complex.areLifeCycleEventsInitialized()){
-            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
-            setComplex(reloadedComplex);
+        if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
+            addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this complex");
+            return;
         }
 
-        getLifecycleManager().getReadyForReleaseStatus().revert(this.complex);
-        getJamiEntityManager().detach(getComplex());
+        IntactComplex reloadedComplex = null;
+        try {
+            reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
+            setComplex(reloadedComplex);
+            getLifecycleManager().getReadyForReleaseStatus().revert(this.complex);
+
+        } catch (FinderException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (PersisterException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (SynchronizerException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        }
     }
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void removeOnHold(ActionEvent evt) {
-        if (!this.complex.areLifeCycleEventsInitialized()){
-            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
-            setComplex(reloadedComplex);
-        }
 
         this.complex.removeOnHold();
-        getJamiEntityManager().detach(getComplex());
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void removeToBeReviewed(ActionEvent evt) {
-        if (!this.complex.areLifeCycleEventsInitialized()){
-            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
-            setComplex(reloadedComplex);
-        }
 
         this.complex.removeToBeReviewed();
-        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void putOnHold(ActionEvent evt) {
-        if (!this.complex.areLifeCycleEventsInitialized()){
-            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
-            setComplex(reloadedComplex);
-        }
 
-        if (complex.getStatus().equals(LifeCycleStatus.READY_FOR_RELEASE)) {
-            getLifecycleManager().getReadyForReleaseStatus().putOnHold(complex, onHold);
-            addInfoMessage("On-hold added to complex", "Complex won't be released until the 'on hold' is removed");
-        } else if (complex.getStatus().equals(LifeCycleStatus.RELEASED)) {
-            getLifecycleManager().getReleasedStatus().putOnHold(complex, onHold);
-            addInfoMessage("On-hold added to released complex", "Data will be publicly visible until the next release");
+        IntactComplex reloadedComplex = null;
+        try {
+            reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
+            setComplex(reloadedComplex);
+            if (complex.getStatus().equals(LifeCycleStatus.READY_FOR_RELEASE)) {
+                getLifecycleManager().getReadyForReleaseStatus().putOnHold(complex, onHold);
+                addInfoMessage("On-hold added to complex", "Complex won't be released until the 'on hold' is removed");
+            } else if (complex.getStatus().equals(LifeCycleStatus.RELEASED)) {
+                getLifecycleManager().getReleasedStatus().putOnHold(complex, onHold);
+                addInfoMessage("On-hold added to released complex", "Data will be publicly visible until the next release");
+            }
+            else{
+                setOnHold(onHold);
+            }
+            this.onHold = this.complex.getOnHoldComment();
+
+        } catch (FinderException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (PersisterException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (SynchronizerException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
-        else{
-            setOnHold(onHold);
-        }
-        this.onHold = this.complex.getOnHoldComment();
-        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void readyForReleaseFromOnHold(ActionEvent evt) {
-        if (!this.complex.areLifeCycleEventsInitialized()){
-            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+
+        IntactComplex reloadedComplex = null;
+        try {
+            reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
+            getLifecycleManager().getAcceptedOnHoldStatus().onHoldRemoved(complex, null);
+            this.onHold = null;
+
+        } catch (FinderException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (PersisterException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (SynchronizerException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
-        getLifecycleManager().getAcceptedOnHoldStatus().onHoldRemoved(complex, null);
-        this.onHold = null;
-        getJamiEntityManager().detach(getComplex());
     }
 
     public void setOnHold(String reason) {
@@ -1024,45 +1120,77 @@ public class ComplexController extends AnnotatedObjectController {
         return this.complex.hasCorrectionComment();
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void acceptComplex(ActionEvent evt) {
-        if (!this.complex.areLifeCycleEventsInitialized()){
-            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
-            setComplex(reloadedComplex);
-        }
+
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
-        getLifecycleManager().getReadyForCheckingStatus().accept(complex, "Accepted " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase());
+        IntactComplex reloadedComplex = null;
+        try {
+            reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
+            setComplex(reloadedComplex);
+            getLifecycleManager().getReadyForCheckingStatus().accept(complex, "Accepted " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase());
 
-        if (!complex.isOnHold()) {
-            lifecycleManager.getAcceptedStatus().readyForRelease(complex, "Accepted and not on-hold");
+            if (!complex.isOnHold()) {
+                lifecycleManager.getAcceptedStatus().readyForRelease(complex, "Accepted and not on-hold");
+            }
+
+        } catch (FinderException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (PersisterException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (SynchronizerException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
-
-        getJamiEntityManager().detach(getComplex());
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void rejectComplex(ActionEvent evt) {
 
         rejectComplex(toBeReviewed);
 
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void rejectComplex(String reasonForRejection) {
-        if (!this.complex.areLifeCycleEventsInitialized()){
-            IntactComplex reloadedComplex = getJamiEntityManager().merge(this.complex);
+        IntactComplex reloadedComplex = null;
+        try {
+            reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
+            UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
+            String date = "Rejected " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase();
+
+            addInfoMessage("Complex rejected", "");
+
+            getLifecycleManager().getReadyForCheckingStatus().reject(this.complex, date + ". " + reasonForRejection);
+
+            this.toBeReviewed = this.complex.getToBeReviewedComment();
+
+            getLifecycleManager().getReadyForCheckingStatus().accept(complex, "Accepted " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase());
+
+            if (!complex.isOnHold()) {
+                lifecycleManager.getAcceptedStatus().readyForRelease(complex, "Accepted and not on-hold");
+            }
+
+        } catch (FinderException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (PersisterException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
+        } catch (SynchronizerException e) {
+            // clear cache
+            getIntactDao().getSynchronizerContext().clearCache();
+            addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
-        UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
-        String date = "Rejected " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase();
-
-        addInfoMessage("Complex rejected", "");
-
-        getLifecycleManager().getReadyForCheckingStatus().reject(this.complex, date + ". " + reasonForRejection);
-
-        this.toBeReviewed = this.complex.getToBeReviewedComment();
-        getJamiEntityManager().detach(getComplex());
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
