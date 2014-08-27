@@ -248,10 +248,16 @@ public class ModelledParticipantImportController extends JpaAwareController {
             Collection<IntactInteractor> interactorsByXref = interactorDao.getByXref(participantToImport);
 
             for (IntactInteractor interactorByXref : interactorsByXref) {
+                boolean add = false;
+
                 for (psidev.psi.mi.jami.model.Xref ref : interactorByXref.getIdentifiers()){
-                    if (psidev.psi.mi.jami.utils.XrefUtils.isXrefAnIdentifier(ref)){
-                        candidates.add(toImportCandidate(participantToImport, interactorByXref));
+                    if (psidev.psi.mi.jami.utils.XrefUtils.isXrefAnIdentifier(ref) && ref.getId().equalsIgnoreCase(participantToImport)){
+                        add = true;
                     }
+                }
+
+                if (add){
+                    candidates.add(toImportCandidate(participantToImport, interactorByXref));
                 }
             }
 

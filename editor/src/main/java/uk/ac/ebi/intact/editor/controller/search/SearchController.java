@@ -449,6 +449,7 @@ public class SearchController extends AnnotatedObjectController {
         final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
         params.put( "ac", originalQuery );
+        params.put( "evidence", "evidence" );
 
         // all molecules but interactions
         molecules = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
@@ -459,7 +460,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
                                                               "      or lower(x.id) like :query ) " +
-                                                              "      and i.cvInteractorType.identifier <> 'MI:0317'",
+                                                              "      and i.category <> :evidence",
 
                                                               "select count(distinct i) " +
                                                               "from InteractorImpl i left join i.xrefs as x " +
@@ -467,7 +468,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
                                                               "      or lower(x.id) like :query )" +
-                                                              "     and i.cvInteractorType.identifier <> 'MI:0317'",
+                                                              "     and i.category <> :evidence",
 
                                                               params, "i", "updated", false );
 
