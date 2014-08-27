@@ -459,7 +459,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "where    ( i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
-                                                              "      or lower(x.id) like :query ) " +
+                                                              "      or lower(x.primaryId) like :query ) " +
                                                               "      and i.category <> :evidence",
 
                                                               "select count(distinct i) " +
@@ -467,7 +467,7 @@ public class SearchController extends AnnotatedObjectController {
                                                               "where   (i.ac = :ac " +
                                                               "      or lower(i.shortLabel) like :query " +
                                                               "      or lower(i.fullName) like :query " +
-                                                              "      or lower(x.id) like :query )" +
+                                                              "      or lower(x.primaryId) like :query )" +
                                                               "     and i.category <> :evidence",
 
                                                               params, "i", "updated", false );
