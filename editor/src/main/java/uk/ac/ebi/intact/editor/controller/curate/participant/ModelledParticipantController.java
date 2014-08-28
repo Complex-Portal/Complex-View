@@ -119,6 +119,17 @@ public class ModelledParticipantController extends AnnotatedObjectController {
             if ( (participant == null && ac != null) || (ac != null && participant != null && !ac.equals( participant.getAc() ))) {
                 setParticipant(loadByJamiAc(IntactModelledParticipant.class, ac));
             }
+            // the participant is here, but we refresh features and properties
+            else if (participant != null){
+                // the participant is here and transient, but we refresh features and properties
+                if (participant.getAc() == null){
+                    setParticipant(this.participant);
+                }
+                // reload participant
+                else if (ac != null){
+                    setParticipant(loadByJamiAc(IntactModelledParticipant.class, ac));
+                }
+            }
 
             if (participant == null) {
                 addErrorMessage("No participant with this AC", ac);

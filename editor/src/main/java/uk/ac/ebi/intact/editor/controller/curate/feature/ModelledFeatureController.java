@@ -177,6 +177,16 @@ public class ModelledFeatureController extends AnnotatedObjectController {
             if ( (feature == null && ac != null) || (ac != null && feature != null && !ac.equals( feature.getAc() ))) {
                 setFeature(loadByJamiAc(IntactModelledFeature.class, ac));
             }
+            else if (feature != null){
+                // the feature is here, but we refresh ranges and properties
+                if (feature.getAc() == null){
+                    setFeature(this.feature);
+                }
+                // reload feature
+                else if (ac != null){
+                    setFeature(loadByJamiAc(IntactModelledFeature.class, ac));
+                }
+            }
 
             if (feature == null) {
                 super.addErrorMessage("Feature does not exist", ac);
