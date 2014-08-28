@@ -18,6 +18,7 @@ package uk.ac.ebi.intact.editor.controller.curate;
 import psidev.psi.mi.jami.model.Complex;
 import psidev.psi.mi.jami.model.ModelledFeature;
 import psidev.psi.mi.jami.model.ModelledParticipant;
+import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 
@@ -40,6 +41,7 @@ public class UnsavedJamiChange {
     private String action;
     private IntactDbSynchronizer dbSynchronizer;
     private Collection<String> acsToDeleteOn = new ArrayList<String>();
+    private IntactDao intactDao;
 
     /**
      * This is the global scope of change in case we delete an object from its parent. We know during which update we can save this change
@@ -47,15 +49,18 @@ public class UnsavedJamiChange {
      */
     private String scope;
 
-    public UnsavedJamiChange(IntactPrimaryObject unsavedObject, String action, String scope, IntactDbSynchronizer dbSynchronizer) {
+    public UnsavedJamiChange(IntactPrimaryObject unsavedObject, String action, String scope,
+                             IntactDbSynchronizer dbSynchronizer, IntactDao dao) {
         this.unsavedObject = unsavedObject;
         this.action = action;
         this.scope = scope;
         this.dbSynchronizer = dbSynchronizer;
+        this.intactDao = dao;
     }
 
-    public UnsavedJamiChange(IntactPrimaryObject unsavedObject, String action, IntactPrimaryObject parentObject, String scope, IntactDbSynchronizer dbSynchronizer) {
-        this(unsavedObject, action, scope, dbSynchronizer);
+    public UnsavedJamiChange(IntactPrimaryObject unsavedObject, String action, IntactPrimaryObject parentObject,
+                             String scope, IntactDbSynchronizer dbSynchronizer, IntactDao dao) {
+        this(unsavedObject, action, scope, dbSynchronizer, dao);
         this.parentObject = parentObject;
         this.scope = scope;
     }
@@ -132,5 +137,13 @@ public class UnsavedJamiChange {
 
     public Collection<String> getAcsToDeleteOn() {
         return acsToDeleteOn;
+    }
+
+    public IntactDao getIntactDao() {
+        return intactDao;
+    }
+
+    public void setIntactDao(IntactDao intactDao) {
+        this.intactDao = intactDao;
     }
 }

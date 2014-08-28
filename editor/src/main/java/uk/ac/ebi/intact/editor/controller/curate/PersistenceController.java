@@ -33,7 +33,6 @@ import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportJamiCandidate;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ModelledParticipantImportController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantImportController;
-import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.audit.Auditable;
@@ -90,14 +89,15 @@ public class PersistenceController extends JpaAwareController {
     }
 
     @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
-    public boolean doSave( IntactPrimaryObject object, IntactDbSynchronizer dbSynchronizer, AnnotatedObjectController controller) {
+    public boolean doSave( IntactPrimaryObject object, IntactDbSynchronizer dbSynchronizer, AnnotatedObjectController controller,
+                           IntactDao dao) {
         if ( object == null ) {
             addErrorMessage( "No annotated object to save", "How did I get here?" );
             return false;
         }
 
         try {
-            getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
+            getIntactTransactionSynchronization().registerDaoForSynchronization(dao);
 
             controller.setJamiObject((IntactPrimaryObject)dbSynchronizer.synchronize(object, true));
 
@@ -105,7 +105,7 @@ public class PersistenceController extends JpaAwareController {
 
         } catch ( Throwable e ) {
             // clear cache after exception
-            getIntactDao().getSynchronizerContext().clearCache();
+            dao.getSynchronizerContext().clearCache();
 
             addErrorMessage("Problem persisting object: "+e.getMessage(), object.toString());
             handleException(e);
@@ -194,16 +194,17 @@ public class PersistenceController extends JpaAwareController {
     }
 
     @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
-    public boolean doDelete(IntactPrimaryObject intactObject, IntactDbSynchronizer dbSynchronizer) {
+    public boolean doDelete(IntactPrimaryObject intactObject, IntactDbSynchronizer dbSynchronizer,
+                            IntactDao dao) {
         if (intactObject.getAc() != null) {
             if (log.isDebugEnabled()) log.debug("Deleting: " + intactObject.getAc());
 
             try{
-                getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
+                getIntactTransactionSynchronization().registerDaoForSynchronization(dao);
 
                 dbSynchronizer.delete(intactObject);
 
-                changesController.removeFromDeleted(intactObject, null, dbSynchronizer);
+                changesController.removeFromDeleted(intactObject, null, dbSynchronizer, dao);
 
                 addInfoMessage("Deleted object", intactObject.getAc());
 
@@ -317,7 +318,7 @@ public class PersistenceController extends JpaAwareController {
                                 psidev.psi.mi.jami.model.Interactor interactor = candidate.getInteractor();
 
                                 if (!(interactor instanceof IntactInteractor)) {
-                                    IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+                                    IntactDao intactDao = getIntactDao();
                                     Auditable persistedInteractor = doSynchronize(interactor, intactDao.getSynchronizerContext().getInteractorSynchronizer());
 
                                     if (persistedInteractor != null){

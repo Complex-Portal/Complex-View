@@ -27,6 +27,7 @@ import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserListener;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
+import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
 import uk.ac.ebi.intact.jami.model.extension.IntactModelledFeature;
@@ -136,7 +137,7 @@ public class ChangesController extends JpaAwareController implements UserListene
         addUnsavedChange(change);
     }
 
-    public void markAsJamiUnsaved(IntactPrimaryObject io, IntactDbSynchronizer dbSynchronizer) {
+    public void markAsJamiUnsaved(IntactPrimaryObject io, IntactDbSynchronizer dbSynchronizer, IntactDao dao) {
         if (io == null) return;
 
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
@@ -145,9 +146,9 @@ public class ChangesController extends JpaAwareController implements UserListene
 
         UnsavedJamiChange change;
         if (io.getAc() != null) {
-            change = new UnsavedJamiChange(io, UnsavedChange.UPDATED, null, dbSynchronizer);
+            change = new UnsavedJamiChange(io, UnsavedChange.UPDATED, null, dbSynchronizer, dao);
         } else {
-            change = new UnsavedJamiChange(io, UnsavedChange.CREATED, null, dbSynchronizer);
+            change = new UnsavedJamiChange(io, UnsavedChange.CREATED, null, dbSynchronizer, dao);
         }
         change.getAcsToDeleteOn().addAll(parentAcs);
         addUnsavedJamiChange(change);
@@ -168,7 +169,8 @@ public class ChangesController extends JpaAwareController implements UserListene
         addUnsavedChange(change);
     }
 
-    public void markAsJamiUnsaved(IntactPrimaryObject io, Collection<String> parentAcs, IntactDbSynchronizer dbSynchronizer) {
+    public void markAsJamiUnsaved(IntactPrimaryObject io, Collection<String> parentAcs, IntactDbSynchronizer dbSynchronizer,
+                                  IntactDao intactDao) {
         if (io == null) return;
 
         UnsavedJamiChange change;
@@ -176,9 +178,9 @@ public class ChangesController extends JpaAwareController implements UserListene
         CurateController.CurateJamiMetadata meta = curateController.getJamiMetadata(io);
 
         if (io.getAc() != null) {
-            change = new UnsavedJamiChange(io, UnsavedChange.UPDATED, null, dbSynchronizer);
+            change = new UnsavedJamiChange(io, UnsavedChange.UPDATED, null, dbSynchronizer, intactDao);
         } else {
-            change = new UnsavedJamiChange(io, UnsavedChange.CREATED, null, dbSynchronizer);
+            change = new UnsavedJamiChange(io, UnsavedChange.CREATED, null, dbSynchronizer, intactDao);
         }
         change.getAcsToDeleteOn().addAll(parentAcs);
 
@@ -218,7 +220,8 @@ public class ChangesController extends JpaAwareController implements UserListene
         }
     }
 
-    public void markJamiToDelete(IntactPrimaryObject object, IntactPrimaryObject parent, IntactDbSynchronizer dbSynchronizer) {
+    public void markJamiToDelete(IntactPrimaryObject object, IntactPrimaryObject parent, IntactDbSynchronizer dbSynchronizer,
+                                 IntactDao dao) {
         if (object.getAc() != null) {
 
             String scope;
@@ -238,7 +241,7 @@ public class ChangesController extends JpaAwareController implements UserListene
             CurateController.CurateJamiMetadata meta = curateController.getJamiMetadata(object);
             Collection<String> parentAcs = meta.getParents();
 
-            UnsavedJamiChange change = new UnsavedJamiChange(object, UnsavedChange.DELETED, scope, dbSynchronizer);
+            UnsavedJamiChange change = new UnsavedJamiChange(object, UnsavedChange.DELETED, scope, dbSynchronizer, dao);
             change.getAcsToDeleteOn().addAll(parentAcs);
             addJamiChange(change);
         }
@@ -461,13 +464,14 @@ public class ChangesController extends JpaAwareController implements UserListene
      * When removing a save event from unsaved events, we have to refresh the unsaved events which have been saved while saving this specific change
      * @param io
      */
-    public void removeFromUnsaved(IntactPrimaryObject io, Collection<String> parentAcs, IntactDbSynchronizer dbSynchronizer) {
+    public void removeFromUnsaved(IntactPrimaryObject io, Collection<String> parentAcs, IntactDbSynchronizer dbSynchronizer,
+                                  IntactDao dao) {
         List<UnsavedJamiChange> changes = getUnsavedJamiChangesForCurrentUser();
         CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
         CurateController.CurateJamiMetadata meta = curateController.getJamiMetadata(io);
 
-        changes.remove(new UnsavedJamiChange(io, UnsavedChange.CREATED, null, dbSynchronizer));
-        changes.remove(new UnsavedJamiChange(io, UnsavedChange.UPDATED, null, dbSynchronizer));
+        changes.remove(new UnsavedJamiChange(io, UnsavedChange.CREATED, null, dbSynchronizer, dao));
+        changes.remove(new UnsavedJamiChange(io, UnsavedChange.UPDATED, null, dbSynchronizer, dao));
 
         removeObsoleteJamiChangesOnSave(io, parentAcs);
     }
@@ -504,7 +508,8 @@ public class ChangesController extends JpaAwareController implements UserListene
         removeObsoleteChangesOnDelete(object);
     }
 
-    public void removeFromDeleted(IntactPrimaryObject object, IntactPrimaryObject parent, IntactDbSynchronizer dbSynchronizer) {
+    public void removeFromDeleted(IntactPrimaryObject object, IntactPrimaryObject parent, IntactDbSynchronizer dbSynchronizer,
+                                  IntactDao dao) {
         String scope;
 
         if (parent != null && parent.getAc() != null){
@@ -512,7 +517,8 @@ public class ChangesController extends JpaAwareController implements UserListene
             CurateController curateController = (CurateController) getSpringContext().getBean("curateController");
             CurateController.CurateJamiMetadata meta = curateController.getJamiMetadata(parent);
 
-            getUnsavedJamiChangesForCurrentUser().remove(new UnsavedJamiChange(object, UnsavedChange.DELETED, parent, scope, dbSynchronizer));
+            getUnsavedJamiChangesForCurrentUser().remove(new UnsavedJamiChange(object, UnsavedChange.DELETED, parent,
+                    scope, dbSynchronizer, dao));
         }
         else {
             scope = null;

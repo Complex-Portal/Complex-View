@@ -78,9 +78,11 @@ public class ModelledParticipantWrapper {
 
             if (deleted) {
 
-                changesController.markJamiToDelete(participant, (IntactComplex)participant.getInteraction(), dao.getSynchronizerContext().getModelledParticipantSynchronizer());
+                changesController.markJamiToDelete(participant, (IntactComplex)participant.getInteraction(), dao.getSynchronizerContext().getModelledParticipantSynchronizer(),
+                        dao);
             } else {
-                changesController.removeFromDeleted(participant, (IntactComplex)participant.getInteraction(), dao.getSynchronizerContext().getModelledParticipantSynchronizer());
+                changesController.removeFromDeleted(participant, (IntactComplex)participant.getInteraction(), dao.getSynchronizerContext().getModelledParticipantSynchronizer(),
+                         dao);
             }
         }
     }
