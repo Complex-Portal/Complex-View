@@ -216,16 +216,6 @@ public class ComplexController extends AnnotatedObjectController {
             if ( (complex == null && ac != null) || (ac != null && complex != null && !ac.equals( complex.getAc() ))) {
                 setComplex(loadByJamiAc(IntactComplex.class, ac));
             }
-            else if (complex != null){
-                // the complex is here and transient, but we refresh participants and properties
-                if (complex.getAc() == null){
-                    setComplex(this.complex);
-                }
-                // reload complex
-                else if (ac != null){
-                    setComplex(loadByJamiAc(IntactComplex.class, ac));
-                }
-            }
 
             if (complex == null) {
                 addErrorMessage("No Complex with this AC", ac);
