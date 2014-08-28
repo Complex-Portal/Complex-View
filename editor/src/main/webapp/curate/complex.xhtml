@@ -459,7 +459,9 @@
                          converter="trimmingConverter"/>
 
         <p:commandButton value="Reject" actionListener="#{complexController.rejectComplex}"
-                         process="reasonRejTxt" update=":editorForm"/>
+                         process="reasonRejTxt"
+                         action="#{complexController.doSave}"
+                         ajax="false"/>
     </h:panelGrid>
 </p:dialog>
 
