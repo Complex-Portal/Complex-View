@@ -408,6 +408,7 @@ public class ComplexController extends AnnotatedObjectController {
                     f2.getLinkedFeatures().add(f1);
                 }
             }
+            fIterator1.remove();
         }
 
 
