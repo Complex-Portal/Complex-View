@@ -196,7 +196,6 @@ public class ComplexController extends AnnotatedObjectController {
     @Override
     public void refreshTabs(){
         super.refreshTabs();
-
         isParticipantDisabled = false;
         isParameterDisabled = true;
         isConfidenceDisabled = true;

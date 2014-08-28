@@ -61,7 +61,8 @@
                     </h:link>
                     <p:commandLink onclick="load_feature.show()" action="#{curateController.editJami(featureWrapper.feature)}"
                                    style="#{'color:blue'}"
-                                   value="#{featureWrapper.feature.shortName}" ajax="false" rendered="#{featurWrapper.feature.ac == null}"/>
+                                   value="#{featureWrapper.feature.shortName}" ajax="false"
+                                   rendered="#{featureWrapper.feature.ac == null}"/>
                 </h:panelGroup>
                 <h:panelGroup rendered="#{changesController.isDeletedAc(featureWrapper.feature.ac)}">                                     .
                     <h:outputText value="#{featureWrapper.feature.shortName}" style="color:red; text-decoration:line-through"/>
