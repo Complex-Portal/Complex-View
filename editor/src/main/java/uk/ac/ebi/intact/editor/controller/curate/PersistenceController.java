@@ -212,7 +212,7 @@ public class PersistenceController extends JpaAwareController {
             }
             catch (IntactObjectDeleteException e){
                 // clear cache
-                getIntactDao().getSynchronizerContext().clearCache();
+                dao.getSynchronizerContext().clearCache();
                 addErrorMessage("Deletion not allowed: "+e.getMessage(), e.getMessage());
                 FacesContext.getCurrentInstance().renderResponse();
             }

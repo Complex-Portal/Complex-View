@@ -727,8 +727,10 @@ public class ComplexController extends AnnotatedObjectController {
         return complex.getStatus() == LifeCycleStatus.RELEASED;
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void claimOwnership(ActionEvent evt) {
+        getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
+
         IntactComplex reloadedComplex = null;
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
@@ -754,10 +756,13 @@ public class ComplexController extends AnnotatedObjectController {
             getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
+        getJamiEntityManager().detach(this.complex);
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void markAsAssignedToMe(ActionEvent evt) {
+        getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
+
         IntactComplex reloadedComplex = null;
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
@@ -780,14 +785,18 @@ public class ComplexController extends AnnotatedObjectController {
             getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
+        getJamiEntityManager().detach(this.complex);
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void markAsCurationInProgress(ActionEvent evt) {
+
         if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
             addErrorMessage("Cannot mark as curation in progress", "You are not the owner of this publication");
             return;
         }
+
+        getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
 
         IntactComplex reloadedComplex = null;
         try {
@@ -809,11 +818,12 @@ public class ComplexController extends AnnotatedObjectController {
             getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
+        getJamiEntityManager().detach(this.complex);
     }
 
 
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void markAsReadyForChecking(ActionEvent evt) {
         if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
             addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this complex");
@@ -822,6 +832,8 @@ public class ComplexController extends AnnotatedObjectController {
         if (isBeenRejectedBefore()) {
             correctionComment = this.complex.getCorrectionComment();
         }
+
+        getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
 
         IntactComplex reloadedComplex = null;
         try {
@@ -848,14 +860,16 @@ public class ComplexController extends AnnotatedObjectController {
             getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
+        getJamiEntityManager().detach(this.complex);
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void revertReadyForChecking(ActionEvent evt) {
         if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
             addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this complex");
             return;
         }
+        getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
         IntactComplex reloadedComplex = null;
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
@@ -878,15 +892,17 @@ public class ComplexController extends AnnotatedObjectController {
             getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
+        getJamiEntityManager().detach(this.complex);
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void revertAccepted(ActionEvent evt) {
         if (!userSessionController.isJamiUserMe(complex.getCurrentOwner())) {
             addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this complex");
             return;
         }
 
+        getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
         IntactComplex reloadedComplex = null;
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
@@ -906,22 +922,22 @@ public class ComplexController extends AnnotatedObjectController {
             getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
+        getJamiEntityManager().detach(this.complex);
     }
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+
     public void removeOnHold(ActionEvent evt) {
 
         this.complex.removeOnHold();
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void removeToBeReviewed(ActionEvent evt) {
 
         this.complex.removeToBeReviewed();
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void putOnHold(ActionEvent evt) {
-
+        getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
         IntactComplex reloadedComplex = null;
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
@@ -951,11 +967,12 @@ public class ComplexController extends AnnotatedObjectController {
             getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
+        getJamiEntityManager().detach(this.complex);
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void readyForReleaseFromOnHold(ActionEvent evt) {
-
+        getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
         IntactComplex reloadedComplex = null;
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
@@ -976,6 +993,7 @@ public class ComplexController extends AnnotatedObjectController {
             getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
+        getJamiEntityManager().detach(this.complex);
     }
 
     public void setOnHold(String reason) {
@@ -1120,11 +1138,11 @@ public class ComplexController extends AnnotatedObjectController {
         return this.complex.hasCorrectionComment();
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void acceptComplex(ActionEvent evt) {
 
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
-
+        getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
         IntactComplex reloadedComplex = null;
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
@@ -1148,17 +1166,19 @@ public class ComplexController extends AnnotatedObjectController {
             getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
+        getJamiEntityManager().detach(this.complex);
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void rejectComplex(ActionEvent evt) {
 
         rejectComplex(toBeReviewed);
 
     }
 
-    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void rejectComplex(String reasonForRejection) {
+        getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
         IntactComplex reloadedComplex = null;
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
@@ -1191,6 +1211,8 @@ public class ComplexController extends AnnotatedObjectController {
             getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot synchronize complex: " + e.getMessage(), e.getMessage());
         }
+
+        getJamiEntityManager().detach(this.complex);
     }
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
