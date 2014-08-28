@@ -50,7 +50,6 @@ import uk.ac.ebi.intact.jami.synchronizer.FinderException;
 import uk.ac.ebi.intact.jami.synchronizer.IntactDbSynchronizer;
 import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
 import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
-import uk.ac.ebi.intact.jami.synchronizer.impl.ModelledParticipantSynchronizer;
 import uk.ac.ebi.intact.jami.utils.IntactUtils;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Interaction;
@@ -400,7 +399,7 @@ public class ComplexController extends AnnotatedObjectController {
         }
 
         Iterator<IntactModelledFeature> fIterator1 = selected.iterator();
-        if (fIterator1.hasNext()){
+        while (fIterator1.hasNext()){
             IntactModelledFeature f1 = fIterator1.next();
 
             for (IntactModelledFeature f2 : selected){
