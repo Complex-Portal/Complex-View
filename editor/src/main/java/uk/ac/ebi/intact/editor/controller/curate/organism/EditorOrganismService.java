@@ -67,7 +67,13 @@ public class EditorOrganismService extends JpaAwareController {
 
         OrganismDao organismDao = getIntactDao().getOrganismDao();
 
-        Collection<IntactOrganism> loadedOrganisms = organismDao.getAllOrganisms(false, false);
+        List<IntactOrganism> loadedOrganisms = new ArrayList<IntactOrganism>(organismDao.getAllOrganisms(false, false));
+        Collections.sort(loadedOrganisms, new Comparator<IntactOrganism>() {
+            @Override
+            public int compare(IntactOrganism o, IntactOrganism o2) {
+                return o.getCommonName().compareTo(o2.getCommonName());
+            }
+        });
         for (IntactOrganism organism : loadedOrganisms){
             acOrganismMap.put(organism.getAc(), organism);
             taxidOrganismMap.put(organism.getTaxId(), organism);

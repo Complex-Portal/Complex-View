@@ -303,6 +303,32 @@ public class EditorCvTermService extends JpaAwareController {
         if (!parameterUnits.isEmpty()){
             loadCollectionCv(parameterUnits, parameterUnitSelectItems, false);
         }
+
+        Comparator<SelectItem> labelComparator = new Comparator<SelectItem>() {
+            @Override
+            public int compare(SelectItem selectItem, SelectItem selectItem2) {
+                return selectItem.getLabel().compareTo(selectItem2.getLabel());
+            }
+        };
+
+        Collections.sort(featureTypeSelectItems, labelComparator);
+        Collections.sort(featureRoleSelectItems, labelComparator);
+        Collections.sort(aliasTypeSelectItems, labelComparator);
+        Collections.sort(featureTopicSelectItems, labelComparator);
+        Collections.sort(featureDatabaseSelectItems, labelComparator);
+        Collections.sort(qualifierSelectItems, labelComparator);
+        Collections.sort(fuzzyTypeSelectItems, labelComparator);
+        Collections.sort(participantTopicSelectItems, labelComparator);
+        Collections.sort(participantDatabaseSelectItems, labelComparator);
+        Collections.sort(biologicalRoleSelectItems, labelComparator);
+        Collections.sort(complexTopicSelectItems, labelComparator);
+        Collections.sort(complexDatabaseSelectItems, labelComparator);
+        Collections.sort(interactionTypeSelectItems, labelComparator);
+        Collections.sort(interactorTypeSelectItems, labelComparator);
+        Collections.sort(evidenceTypeSelectItems, labelComparator);
+        Collections.sort(confidenceTypeSelectItems, labelComparator);
+        Collections.sort(parameterTypeSelectItems, labelComparator);
+        Collections.sort(parameterUnitSelectItems, labelComparator);
     }
 
     protected void loadMissingCvsFromIntactCvService(CvObjectService intactCvService, CvTermDao cvDao, List<String> processTopicAcs, List<SelectItem> items, String usedInClass) {

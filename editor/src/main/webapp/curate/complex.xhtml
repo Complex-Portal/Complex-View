@@ -174,7 +174,7 @@
             <td class="firstCell">
                 <h:outputLabel value="Recommended name: " for="recommendedNameTxt"/>
             </td>
-            <td colspan="2">
+            <td>
                 <h:panelGroup>
                     <p:inputText id="recommendedNameTxt" value="#{complexController.recommendedName}" size="70"
                                  valueChangeListener="#{complexController.onRecommendedNameChanged}">
@@ -187,7 +187,7 @@
             <td class="firstCell">
                 <h:outputLabel value="Systematic name: " for="systematicNameTxt"/>
             </td>
-            <td colspan="2">
+            <td>
                 <h:panelGroup>
                     <p:inputText id="systematicNameTxt" value="#{complexController.systematicName}" size="70"
                                  valueChangeListener="#{complexController.onSystematicNameChanged}">
@@ -197,10 +197,10 @@
             </td>
         </tr>
         <tr>
-            <td colspan="1" class="firstCell">
+            <td class="firstCell">
                 <h:outputLabel value="Complex type: " for="complexTypeTxt"/>
             </td>
-            <td colspan="3">
+            <td>
                 <ia:inputCvTerm id="complexTypeTxt" cvIdentifier="MI:0314"
                                 cvClass="uk.ac.ebi.intact.model.CvInteractorType"
                                 value="#{interaction.interactorType}"
@@ -210,12 +210,24 @@
                                 update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
                                 valueChangeAwareObject="#{complexController}"/>
             </td>
+            <td class="firstCell">
+                <h:outputLabel value="Organism: " for="organismTxt"/>
+            </td>
+            <td>
+                <ia:inputOrganism id="organismTxt" value="#{interaction.organism}"
+                                  valueChangeAwareObject="#{complexController}"
+                                  oncomplete="ia_enableSave()"
+                                  update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
+                                  selectItems="#{editorOrganismService.organismSelectItems}">
+                    <ed:curation/>
+                </ia:inputOrganism>
+            </td>
         </tr>
         <tr>
-            <td colspan="1" class="firstCell">
+            <td class="firstCell">
                 <h:outputLabel value="Interaction type: " for="interactionTypeTxt"/>
             </td>
-            <td colspan="3">
+            <td>
                 <ia:inputCvTerm id="interactionTypeTxt" cvIdentifier="MI:0190"
                                 cvClass="uk.ac.ebi.intact.model.CvInteractionType"
                                 value="#{interaction.interactionType}"
@@ -227,10 +239,10 @@
             </td>
         </tr>
         <tr>
-            <td colspan="1" class="firstCell">
+            <td class="firstCell">
                 <h:outputLabel value="ECO code: " for="ecoCodeTxt"/>
             </td>
-            <td colspan="3">
+            <td>
                 <ia:inputCvTerm id="ecoCodeTxt" cvIdentifier="MI:1331"
                                 cvClass="uk.ac.ebi.intact.model.CvTopic"
                                 value="#{interaction.evidenceType}"
@@ -241,41 +253,25 @@
                                 valueChangeAwareObject="#{complexController}"/>
             </td>
         </tr>
-        <tr>
-            <td colspan="1" class="firstCell">
-                <h:outputLabel value="Organism: " for="organismTxt"/>
-            </td>
-            <td colspan="3">
-                <ia:inputOrganism id="organismTxt" value="#{interaction.organism}"
-                                  valueChangeAwareObject="#{complexController}"
-                                  oncomplete="ia_enableSave()"
-                                  update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
-                                  selectItems="#{editorOrganismService.organismSelectItems}">
-                    <ed:curation/>
-                </ia:inputOrganism>
-            </td>
-        </tr>
 
         <tr>
             <td class="firstCell">
                 <h:outputLabel value="Description: " for="curatedComplexTxt"/>
             </td>
-            <td colspan="3">
+            <td>
                 <h:panelGroup>
                     <p:inputTextarea id="curatedComplexTxt" value="#{complexController.description}"
-                                     valueChangeListener="#{complexController.onDescriptionChanged}" rows="5" cols="80">
+                                     valueChangeListener="#{complexController.onDescriptionChanged}" rows="5" cols="60">
                         <ed:curation/>
                     </p:inputTextarea>
                 </h:panelGroup>
             </td>
-        </tr>
-        <tr>
             <td class="firstCell">
                 <h:outputLabel value="Complex properties: " for="complexPropertiesTxt"/>
             </td>
-            <td colspan="2">
+            <td>
                 <h:panelGroup>
-                    <p:inputTextarea id="complexPropertiesTxt" value="#{complexController.complexProperties}" rows="5" cols="80"
+                    <p:inputTextarea id="complexPropertiesTxt" value="#{complexController.complexProperties}" rows="5" cols="60"
                                  valueChangeListener="#{complexController.onComplexPropertiesChanged}">
                         <ed:curation/>
                     </p:inputTextarea>
