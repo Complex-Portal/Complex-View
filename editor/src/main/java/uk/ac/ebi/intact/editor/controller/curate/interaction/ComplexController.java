@@ -1191,12 +1191,6 @@ public class ComplexController extends AnnotatedObjectController {
 
             this.toBeReviewed = this.complex.getToBeReviewedComment();
 
-            getLifecycleManager().getReadyForCheckingStatus().accept(complex, "Accepted " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase());
-
-            if (!complex.isOnHold()) {
-                lifecycleManager.getAcceptedStatus().readyForRelease(complex, "Accepted and not on-hold");
-            }
-
         } catch (FinderException e) {
             // clear cache
             getIntactDao().getSynchronizerContext().clearCache();

@@ -56,11 +56,6 @@
                      rendered="#{complexController.readyForChecking and userSessionController.isJamiUserMe(complexController.complex.currentOwner)}"
                      actionListener="#{complexController.revertReadyForChecking}"
                      action="#{complexController.doSave}" ajax="false"/>
-    <p:commandButton value="Send Back to Curation"
-                     styleClass="important-button-alt"
-                     rendered="#{complexController.readyForChecking and userSessionController.isJamiUserMe(complexController.complex.currentReviewer)}"
-                     actionListener="#{complexController.rejectComplex}"
-                     action="#{complexController.doSave}" ajax="false"/>
     <p:commandButton value="Revert Accepted"
                      styleClass="important-button-alt"
                      rendered="#{complexController.readyForRelease and !complexController.released and userSessionController.isJamiUserMe(complexController.complex.currentReviewer)}"
