@@ -19,14 +19,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.Source;
 import uk.ac.ebi.intact.core.persistence.dao.InstitutionDao;
-import uk.ac.ebi.intact.core.persistence.dao.user.UserDao;
 import uk.ac.ebi.intact.editor.controller.misc.AbstractUserController;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.context.IntactContext;
@@ -46,10 +44,8 @@ public class UserSessionController extends JpaAwareController implements Disposa
 
     private static final Log log = LogFactory.getLog( UserSessionController.class );
 
-    @Autowired
-    private UserDao userDao;
-
     private User currentUser;
+    private uk.ac.ebi.intact.jami.model.user.User currentJamiUser;
 
     public UserSessionController() {
     }
@@ -68,6 +64,14 @@ public class UserSessionController extends JpaAwareController implements Disposa
 
     public void setCurrentUser( User currentUser ) {
         this.currentUser = currentUser;
+    }
+
+    public uk.ac.ebi.intact.jami.model.user.User getCurrentJamiUser() {
+        return currentJamiUser;
+    }
+
+    public void setCurrentJamiUser(uk.ac.ebi.intact.jami.model.user.User currentJamiUser) {
+        this.currentJamiUser = currentJamiUser;
     }
 
     public boolean hasRole(String role) {

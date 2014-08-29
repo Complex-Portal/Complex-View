@@ -179,11 +179,11 @@ public class ComplexController extends AnnotatedObjectController {
     protected IntactComplex cloneAnnotatedObject(IntactPrimaryObject ao) {
         // to be overrided
         IntactComplex complex = (IntactComplex)ComplexJamiCloner.cloneComplex((IntactComplex) ao);
-        getLifecycleManager().getStartStatus().create(complex, "Created in Editor");
+        getLifecycleManager().getStartStatus().create(complex, "Created in Editor", getIntactDao().getUserContext().getUser());
 
         if (assignToMe) {
-            lifecycleManager.getNewStatus().claimOwnership(complex);
-            lifecycleManager.getAssignedStatus().startCuration(complex);
+            lifecycleManager.getNewStatus().claimOwnership(complex, getIntactDao().getUserContext().getUser());
+            lifecycleManager.getAssignedStatus().startCuration(complex, getIntactDao().getUserContext().getUser());
         }
         return complex;
     }
@@ -766,7 +766,7 @@ public class ComplexController extends AnnotatedObjectController {
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
-            getLifecycleManager().getNewStatus().assignToCurator(complex, getCurrentJamiUser());
+            getLifecycleManager().getNewStatus().assignToCurator(complex, getCurrentJamiUser(), getCurrentJamiUser());
 
             addInfoMessage("Ownership claimed", "The complex has been assigned to you");
 
@@ -801,7 +801,7 @@ public class ComplexController extends AnnotatedObjectController {
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
-            getLifecycleManager().getAssignedStatus().startCuration(complex);
+            getLifecycleManager().getAssignedStatus().startCuration(complex, getIntactDao().getUserContext().getUser());
 
             addInfoMessage("Curation started", "Curation is now in progress");
         } catch (FinderException e) {
@@ -841,7 +841,7 @@ public class ComplexController extends AnnotatedObjectController {
             // TODO run a proper sanity check
             boolean sanityCheckPassed = true;
 
-            getLifecycleManager().getCurationInProgressStatus().readyForChecking(complex, correctionComment, sanityCheckPassed);
+            getLifecycleManager().getCurationInProgressStatus().readyForChecking(complex, correctionComment, sanityCheckPassed, getIntactDao().getUserContext().getUser());
 
             correctionComment = null;
 
@@ -873,7 +873,7 @@ public class ComplexController extends AnnotatedObjectController {
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
-            getLifecycleManager().getReadyForCheckingStatus().revert(this.complex);
+            getLifecycleManager().getReadyForCheckingStatus().revert(this.complex, getIntactDao().getUserContext().getUser());
 
             correctionComment = null;
 
@@ -906,7 +906,7 @@ public class ComplexController extends AnnotatedObjectController {
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
-            getLifecycleManager().getReadyForReleaseStatus().revert(this.complex);
+            getLifecycleManager().getReadyForReleaseStatus().revert(this.complex, getIntactDao().getUserContext().getUser());
 
         } catch (FinderException e) {
             // clear cache
@@ -942,10 +942,10 @@ public class ComplexController extends AnnotatedObjectController {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
             if (complex.getStatus().equals(LifeCycleStatus.READY_FOR_RELEASE)) {
-                getLifecycleManager().getReadyForReleaseStatus().putOnHold(complex, onHold);
+                getLifecycleManager().getReadyForReleaseStatus().putOnHold(complex, onHold, getIntactDao().getUserContext().getUser());
                 addInfoMessage("On-hold added to complex", "Complex won't be released until the 'on hold' is removed");
             } else if (complex.getStatus().equals(LifeCycleStatus.RELEASED)) {
-                getLifecycleManager().getReleasedStatus().putOnHold(complex, onHold);
+                getLifecycleManager().getReleasedStatus().putOnHold(complex, onHold, getIntactDao().getUserContext().getUser());
                 addInfoMessage("On-hold added to released complex", "Data will be publicly visible until the next release");
             }
             else{
@@ -976,7 +976,7 @@ public class ComplexController extends AnnotatedObjectController {
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
-            getLifecycleManager().getAcceptedOnHoldStatus().onHoldRemoved(complex, null);
+            getLifecycleManager().getAcceptedOnHoldStatus().onHoldRemoved(complex, null, getIntactDao().getUserContext().getUser());
             this.onHold = null;
 
         } catch (FinderException e) {
@@ -1146,10 +1146,10 @@ public class ComplexController extends AnnotatedObjectController {
         try {
             reloadedComplex = (IntactComplex)getDbSynchronizer().synchronize(this.complex, false);
             setComplex(reloadedComplex);
-            getLifecycleManager().getReadyForCheckingStatus().accept(complex, "Accepted " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase());
+            getLifecycleManager().getReadyForCheckingStatus().accept(complex, "Accepted " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase(), getIntactDao().getUserContext().getUser());
 
             if (!complex.isOnHold()) {
-                lifecycleManager.getAcceptedStatus().readyForRelease(complex, "Accepted and not on-hold");
+                lifecycleManager.getAcceptedStatus().readyForRelease(complex, "Accepted and not on-hold", getIntactDao().getUserContext().getUser());
             }
 
         } catch (FinderException e) {
@@ -1187,7 +1187,7 @@ public class ComplexController extends AnnotatedObjectController {
 
             addInfoMessage("Complex rejected", "");
 
-            getLifecycleManager().getReadyForCheckingStatus().reject(this.complex, date + ". " + reasonForRejection);
+            getLifecycleManager().getReadyForCheckingStatus().reject(this.complex, date + ". " + reasonForRejection, getIntactDao().getUserContext().getUser());
 
             this.toBeReviewed = this.complex.getToBeReviewedComment();
 
@@ -1306,11 +1306,11 @@ public class ComplexController extends AnnotatedObjectController {
 
         this.complex.setInteractorType(type);
 
-        getLifecycleManager().getStartStatus().create(this.complex, "Created in Editor");
+        getLifecycleManager().getStartStatus().create(this.complex, "Created in Editor", getIntactDao().getUserContext().getUser());
 
         if (assignToMe) {
-            lifecycleManager.getNewStatus().claimOwnership(this.complex);
-            lifecycleManager.getAssignedStatus().startCuration(this.complex);
+            lifecycleManager.getNewStatus().claimOwnership(this.complex, getIntactDao().getUserContext().getUser());
+            lifecycleManager.getAssignedStatus().startCuration(this.complex, getIntactDao().getUserContext().getUser());
         }
 
         return "/curate/complex?faces-redirect=true";
@@ -1327,15 +1327,15 @@ public class ComplexController extends AnnotatedObjectController {
         this.complex.setSource(userSessionController.getUserSource());
         this.complex.setCreatedDate(new Date());
         this.complex.setUpdatedDate(this.complex.getCreatedDate());
-        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
+        UserContext jamiUserContext = getIntactDao().getUserContext();
         this.complex.setCreator(jamiUserContext.getUserId());
         this.complex.setUpdator(jamiUserContext.getUserId());
         this.complex.setInteractorType(type);
-        getLifecycleManager().getStartStatus().create(this.complex, "Created in Editor");
+        getLifecycleManager().getStartStatus().create(this.complex, "Created in Editor", jamiUserContext.getUser());
 
         if (assignToMe) {
-            lifecycleManager.getNewStatus().claimOwnership(this.complex);
-            lifecycleManager.getAssignedStatus().startCuration(this.complex);
+            lifecycleManager.getNewStatus().claimOwnership(this.complex, jamiUserContext.getUser());
+            lifecycleManager.getAssignedStatus().startCuration(this.complex, jamiUserContext.getUser());
         }
 
         return "/curate/complex?faces-redirect=true";

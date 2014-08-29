@@ -18,6 +18,8 @@ package uk.ac.ebi.intact.editor.controller.admin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +44,10 @@ public class UserManagerController extends BaseController implements UserListene
     private static final Log log = LogFactory.getLog( UserManagerController.class );
 
     private Set<User> loggedInUsers;
+
+    @Autowired
+    @Qualifier(value = "jamiUserContext")
+    private UserContext userContext;
 
     public UserManagerController() {
         loggedInUsers = new HashSet<User>();
@@ -88,11 +94,12 @@ public class UserManagerController extends BaseController implements UserListene
         // set the user to be used when writing into the database
         IntactContext.getCurrentInstance().getUserContext().setUser( user );
 
-        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
+        // set current jami user
         IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
-        jamiUserContext.setUser(intactDao.getUserDao().getByLogin(user.getLogin()));
-        Hibernate.initialize(jamiUserContext.getUser().getPreferences());
-        Hibernate.initialize(jamiUserContext.getUser().getRoles());
+        this.userContext.setUser(intactDao.getUserDao().getByLogin(user.getLogin()));
+        Hibernate.initialize(this.userContext.getUser().getPreferences());
+        Hibernate.initialize(this.userContext.getUser().getRoles());
+        userSessionController.setCurrentJamiUser(this.userContext.getUser());
 
         loggedInUsers.add(user);
     }

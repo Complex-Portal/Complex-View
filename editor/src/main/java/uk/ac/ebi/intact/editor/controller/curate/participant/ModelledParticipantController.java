@@ -34,7 +34,6 @@ import uk.ac.ebi.intact.editor.controller.curate.UnsavedJamiChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantJamiCloner;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.*;
 import uk.ac.ebi.intact.editor.util.SelectableCollectionDataModel;
-import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
@@ -240,7 +239,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         IntactModelledParticipant participant = new IntactModelledParticipant(new IntactInteractor("unspecified"));
         participant.setCreated(new Date());
         participant.setUpdated(participant.getCreated());
-        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
+        UserContext jamiUserContext = getIntactDao().getUserContext();
         participant.setCreator(jamiUserContext.getUserId());
         participant.setUpdator(jamiUserContext.getUserId());
         participant.setBiologicalRole(defaultBiologicalRole);

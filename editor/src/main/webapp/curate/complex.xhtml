@@ -381,7 +381,7 @@
 
             <h:selectOneMenu value="#{complexController.complex.currentReviewer}" hideNoSelectionOption="true"
                              rendered="#{(userSessionController.hasRole('ADMIN') and interaction.currentReviewer != null)}"
-                             disabled="#{complexController.isLifeCycleDisabled()}">
+                             disabled="#{complexController.isLifeCycleDisabled()}" converter="jamiUserConverter">
                 <f:selectItems value="#{userAdminController.complexReviewerSelectItems}"/>
                 <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
 

@@ -161,6 +161,10 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     }
 
     protected void generalJamiLoadChecks() {
+        // set current user
+        getIntactDao().getUserContext().
+                setUser(getCurrentJamiUser());
+
         ChangesController generalChangesController = (ChangesController) getSpringContext().getBean("changesController");
         if (generalChangesController.isObjectBeingEdited(getJamiObject(), false)) {
             String who = generalChangesController.whoIsEditingObject(getJamiObject());
@@ -176,7 +180,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             if (complex.getCvStatus() == null) {
                 // we assume for now that null status means that the publication has been created using an external process (ie. XML import)
                 LifeCycleManager lifecycleManager = ApplicationContextProvider.getBean("jamiLifeCycleManager", LifeCycleManager.class);
-                lifecycleManager.getStartStatus().create(complex, "Imported from external source");
+                lifecycleManager.getStartStatus().create(complex, "Imported from external source", getIntactDao().getUserContext().getUser());
 
                 addWarningMessage("Complex without status", "Assuming that it has been imported. Save it if you are happy with this assumption");
                 setUnsavedChanges(true);

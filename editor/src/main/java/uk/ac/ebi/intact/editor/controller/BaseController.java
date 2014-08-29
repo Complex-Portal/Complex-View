@@ -19,8 +19,6 @@ package uk.ac.ebi.intact.editor.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
-import uk.ac.ebi.intact.jami.ApplicationContextProvider;
-import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.model.user.User;
 
 import javax.faces.application.FacesMessage;
@@ -78,8 +76,8 @@ public abstract class BaseController implements Serializable {
     }
 
     public uk.ac.ebi.intact.jami.model.user.User getCurrentJamiUser() {
-        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
-        return jamiUserContext.getUser();
+        UserSessionController userSessionController = getUserSessionController();
+        return userSessionController.getCurrentJamiUser();
     }
 
     protected void handleException(Throwable e) {

@@ -16,8 +16,8 @@
 package uk.ac.ebi.intact.editor.controller.curate.cloner;
 
 import psidev.psi.mi.jami.model.*;
+import uk.ac.ebi.intact.editor.controller.admin.UserManagerController;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
-import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.model.extension.*;
 
 import java.util.Date;
@@ -36,9 +36,10 @@ public class ParticipantJamiCloner {
         IntactModelledParticipant clone = new IntactModelledParticipant(participant.getInteractor());
         clone.setCreated(new Date());
         clone.setUpdated(clone.getCreated());
-        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
-        clone.setCreator(jamiUserContext.getUserId());
-        clone.setUpdator(jamiUserContext.getUserId());
+        // set current user
+        UserManagerController userController = ApplicationContextProvider.getBean("userManagerController");
+        clone.setCreator(userController.getCurrentJamiUser().getLogin());
+        clone.setUpdator(userController.getCurrentJamiUser().getLogin());
         clone.setBiologicalRole(participant.getBiologicalRole());
         if (participant.getInteraction() instanceof Complex){
             clone.setInteraction((Complex)participant.getInteraction());

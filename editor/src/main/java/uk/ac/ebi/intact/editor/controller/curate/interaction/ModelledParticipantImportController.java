@@ -35,6 +35,7 @@ import psidev.psi.mi.jami.model.Gene;
 import psidev.psi.mi.jami.model.Participant;
 import uk.ac.ebi.intact.editor.config.EditorConfig;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.editor.controller.admin.UserManagerController;
 import uk.ac.ebi.intact.editor.controller.curate.util.CheckIdentifier;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.context.IntactConfiguration;
@@ -97,6 +98,12 @@ public class ModelledParticipantImportController extends JpaAwareController {
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void importParticipants(ActionEvent evt) {
+        // set current user
+        getIntactDao().getUserContext().
+                setUser(((UserManagerController)ApplicationContextProvider.
+                        getBean("userManagerController")).
+                        getCurrentJamiUser());
+
         importCandidates = new ArrayList<ImportJamiCandidate>();
         queriesNoResults = new ArrayList<String>();
 
@@ -139,6 +146,12 @@ public class ModelledParticipantImportController extends JpaAwareController {
 
     @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void importSelected(ActionEvent evt) {
+        // set current user
+        getIntactDao().getUserContext().
+                setUser(((UserManagerController)ApplicationContextProvider.
+                        getBean("userManagerController")).
+                        getCurrentJamiUser());
+
         for (ImportJamiCandidate candidate : importCandidates) {
             if (candidate.isSelected()) {
                 final IntactComplex interaction = interactionController.getComplex();
@@ -379,7 +392,7 @@ public class ModelledParticipantImportController extends JpaAwareController {
             getIntactDao().getSynchronizerContext().clearCache();
             addErrorMessage("Cannot import interactor: " + e.getMessage(), ExceptionUtils.getFullStackTrace(e));
         }
-        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
+        UserContext jamiUserContext = getIntactDao().getUserContext();
         component.setCreator(jamiUserContext.getUserId());
         component.setUpdator(jamiUserContext.getUserId());
         component.setCreated(new Date());

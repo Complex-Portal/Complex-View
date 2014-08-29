@@ -19,9 +19,9 @@ import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import psidev.psi.mi.jami.utils.XrefUtils;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
+import uk.ac.ebi.intact.editor.controller.admin.UserManagerController;
 import uk.ac.ebi.intact.editor.controller.curate.organism.EditorOrganismService;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
-import uk.ac.ebi.intact.jami.context.UserContext;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.interceptor.IntactTransactionSynchronization;
 import uk.ac.ebi.intact.jami.model.extension.*;
@@ -45,9 +45,14 @@ public class ComplexJamiCloner {
         IntactComplex clone = new IntactComplex(evidence.getShortName());
         clone.setCreated(new Date());
         clone.setUpdated(clone.getCreated());
-        UserContext jamiUserContext = ApplicationContextProvider.getBean("jamiUserContext");
-        clone.setCreator(jamiUserContext.getUserId());
-        clone.setUpdator(jamiUserContext.getUserId());
+        IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
+        // set current user
+        intactDao.getUserContext().
+                setUser(((UserManagerController)ApplicationContextProvider.
+                        getBean("userManagerController")).
+                        getCurrentJamiUser());
+        clone.setCreator(intactDao.getUserContext().getUserId());
+        clone.setUpdator(intactDao.getUserContext().getUserId());
 
         clone.setInteractionType(evidence.getInteractionType());
         if (evidence.getExperiment() != null && evidence.getExperiment().getHostOrganism() != null){
@@ -61,7 +66,6 @@ public class ComplexJamiCloner {
                 IntactOrganism org = bioSourceService.findOrganismByTaxid(host.getTaxId());
                 if (org == null){
                     org = new IntactOrganism(host.getTaxId(), host.getCommonName(), host.getScientificName());
-                    IntactDao intactDao = ApplicationContextProvider.getBean("intactDao");
                     IntactTransactionSynchronization afterCommitExecutor = ApplicationContextProvider.getBean("intactTransactionSynchronization");
                     afterCommitExecutor.registerDaoForSynchronization(intactDao);
                     intactDao.getOrganismDao().persist(org);

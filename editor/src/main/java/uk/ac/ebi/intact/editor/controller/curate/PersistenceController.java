@@ -29,10 +29,12 @@ import uk.ac.ebi.intact.core.persister.CoreDeleter;
 import uk.ac.ebi.intact.core.persister.IntactObjectDeleteException;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
+import uk.ac.ebi.intact.editor.controller.admin.UserManagerController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportCandidate;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ImportJamiCandidate;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ModelledParticipantImportController;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ParticipantImportController;
+import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.jami.model.audit.Auditable;
@@ -120,6 +122,11 @@ public class PersistenceController extends JpaAwareController {
             addErrorMessage( "No annotated object to save", "How did I get here?" );
             return null;
         }
+        // set current user
+        getIntactDao().getUserContext().
+                setUser(((UserManagerController) ApplicationContextProvider.
+                        getBean("userManagerController")).
+                        getCurrentJamiUser());
 
         try {
             getIntactTransactionSynchronization().registerDaoForSynchronization(getIntactDao());
@@ -295,6 +302,12 @@ public class PersistenceController extends JpaAwareController {
      * @param intactObject
      */
     public void doSaveJamiMasterProteins(IntactPrimaryObject intactObject) {
+        // set current user
+        getIntactDao().getUserContext().
+                setUser(((UserManagerController)ApplicationContextProvider.
+                        getBean("userManagerController")).
+                        getCurrentJamiUser());
+
         if (intactObject instanceof psidev.psi.mi.jami.model.Protein){
             psidev.psi.mi.jami.model.Protein proteinTranscript = (psidev.psi.mi.jami.model.Protein) intactObject;
 
