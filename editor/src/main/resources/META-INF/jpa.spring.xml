@@ -44,6 +44,7 @@
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl}</prop>
                 <prop key="hibernate.ejb.event.post-update">uk.ac.ebi.intact.editor.jpa.CurateInfoListener</prop>
+                <prop key="hibernate.connection.release_mode">after_transaction</prop>
             </props>
         </property>
 
