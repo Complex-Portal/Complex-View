@@ -30,8 +30,8 @@
     </scm>
 
     <properties>
-        <core.version>2.6.4</core.version>
-        <dataexchange.version>2.1.10-SNAPSHOT</dataexchange.version>
+        <core.version>2.6.5</core.version>
+        <dataexchange.version>2.1.10</dataexchange.version>
         <spring.version>3.1.2.RELEASE</spring.version>
 
         <debug>false</debug>
