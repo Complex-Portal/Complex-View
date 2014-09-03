@@ -27,7 +27,7 @@ import java.io.IOException;
  */
 public class SessionExpiredFilter implements Filter {
 
-    private String timeoutPage = "main.xhtml";
+    private String timeoutPage = "home.xhtml";
 
     public void init(FilterConfig filterConfig) throws ServletException {
 

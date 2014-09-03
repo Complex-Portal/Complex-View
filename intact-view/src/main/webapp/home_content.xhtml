@@ -1,0 +1,170 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                xmlns:ot="http://myfaces.apache.org/orchestra"
+                xmlns:iam="http://intact.ebi.ac.uk/miscel"
+                xmlns:iav="http://intact.ebi.ac.uk/view"
+                xmlns:iax="http://intact.ebi.ac.uk/extlinks"
+                xmlns:iv="http://java.sun.com/jsf/composite/intactview"
+                xmlns:p="http://primefaces.org/ui"
+        >
+
+<ui:define name="metadata">
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{searchBean.refreshStatusOnLoad}"/>
+
+    </f:metadata>
+</ui:define>
+
+<section class="grid_18 alpha">
+    <h2>IntAct Molecular Interaction Database</h2>
+
+    <p>
+
+        <h:outputText value="#{intactView['webapp.name']} provides a freely available, open source database system
+                                and analysis tools for molecular interaction data. All interactions are derived from
+                                literature curation or direct user submissions and are freely available."/>
+        <h:outputText
+                value=" To perform a search in the #{intactView['webapp.name']} database use the search box above."/>
+
+    </p>
+
+    <h:form id="intactForm" prependId="false">
+        <ui:include src="/pages/search/search_panel.xhtml"/>
+    </h:form>
+
+    <section class="grid_12">
+        <h3>News</h3>
+
+        <p><!-- TWITTER -->
+            <ui:include src="/news_twitter.xhtml"/>
+        </p>
+    </section>
+
+    <section class="grid_12" style="overflow-y: auto">
+
+        <h:panelGroup rendered="#{dataSetsBean.dataSetOfTheMonth != null}">
+
+            <h3>Dataset of the month: #{dataSetsBean.dataSetOfTheMonth.month}</h3>
+
+
+            <p>
+                <ui:include src="/pages/dotm/dotm_template.xhtml">
+                    <ui:param name="dataSet" value="#{dataSetsBean.dataSetOfTheMonth}"/>
+                </ui:include>
+            </p>
+
+            <p>
+                <h:outputText value="Go to "/>
+                <h:link value="Archive" outcome="dotm_archive"/>
+
+            </p>
+
+
+        </h:panelGroup>
+        <h:panelGroup rendered="#{dataSetsBean.dataSetOfTheMonth == null}">
+            <h3>Dataset of the month</h3>
+
+            <p>
+                Dataset of the month is not available in this moment
+            </p>
+
+        </h:panelGroup>
+    </section>
+
+    <section class="grid_12" style="overflow-y: auto">
+        <p><a href="http://www.imexconsortium.org/" target="_blank">
+            <img src="/intact/images/logos/IMEx_logo_webmedium.jpg" width="160px" alt="IMEX" border="0" />
+            <br/>IMEx member
+        </a></p>
+    </section>
+
+    <br/>
+
+    <section class="grid_24 publication">
+        <h3>Citing #{intactView['webapp.name']}</h3>
+
+        <p>
+            <strong>The IntAct molecular interaction database in 2012.</strong>
+            Kerrien S et al [PMID: 22121220]
+            <br/>
+            <span style="font-style: italic">Nucl. Acids Res. (2011) (doi: 10.1093/nar/gkr1088)</span>
+            <br/>
+            <a href="http://nar.oxfordjournals.org/cgi/content/abstract/gkr1088"
+               target="_blank">[Abstract]</a>
+            <a href="http://nar.oxfordjournals.org/cgi/content/full/gkr1088" target="_blank">[Full Text]</a>
+        </p>
+    </section>
+</section>
+
+<section class="grid_6 omega">
+
+    <section>
+        <h3 class="icon icon-generic" data-icon="g">Data Content</h3>
+        <ul>
+            <li>
+                Publications: <h:outputText style="font-weight:bold;"
+                                            value="#{statisticsController.publicationCount}"/>
+            </li>
+            <li>
+                Interactions: <h:outputText style="font-weight:bold;"
+                                            value="#{statisticsController.binaryInteractionCount}"/>
+            </li>
+            <li>
+                Interactors: <h:outputText style="font-weight:bold;"
+                                           value="#{statisticsController.interactorsWithNoInteractions}"/>
+            </li>
+        </ul>
+    </section>
+
+    <section>
+
+        <h3>Contributors</h3>
+
+        <p>Manually curated content is added to IntAct by curators at the EMBL-EBI and the following organisations:</p>
+        <p>
+            <!-- LOGOS -->
+            <a href="http://mint.bio.uniroma2.it/">
+                <img class="contributorLogo" src="/intact/images/logos/partners/imex_mint_s.png"/>
+            </a>
+            <a href="http://www.uniprot.org/">
+                <img class="contributorLogo" src="/intact/images/logos/partners/imex_uniprot_s.png"/>
+            </a>
+            <a href="http://www.isb-sib.ch/">
+                <img class="contributorLogo" src="/intact/images/logos/partners/imex_sib_s.png"/>
+            </a>
+            <a href="http://ophid.utoronto.ca/i2d/">
+                <img class="contributorLogo" src="/intact/images/logos/partners/imex_id2_s.png"/>
+            </a>
+            <a href="http://www.innatedb.com/">
+                <img class="contributorLogo" src="/intact/images/logos/partners/imex_innatedb_s.png"/>
+            </a>
+            <a href="http://www.molecularconnections.com/">
+                <img class="contributorLogo" src="/intact/images/logos/partners/imex_mconnections_s.png"/>
+            </a>
+            <a href="http://matrixdb.ibcp.fr/">
+                <img class="contributorLogo" src="/intact/images/logos/partners/imex_matrixdb_s.png"/>
+            </a>
+            <a href="http://www.mechanobio.info/">
+                <img class="contributorLogo" src="/intact/images/logos/partners/imex_mbinfo_s.png"/>
+            </a>
+            <a href="http://www.agbase.msstate.edu/">
+                <img class="contributorLogo" src="/intact/images/logos/partners/imex_agbase_s.png"/>
+            </a>
+            <a href="http://www.ucl.ac.uk/cardiovasculargeneontology/">
+                <img class="contributorLogo" src="/intact/images/logos/partners/imex_acg_s.png"/>
+            </a>
+            <br style="clear:both"/>
+            <br/>
+            Under the terms of the <a href="http://www.imexconsortium.org/">IMEx</a> agreement, IntAct also incorporated and maintains the
+            <a href="http://www.imexconsortium.org/">IMEx</a> records of the now inactive MPIDB database.
+        </p>
+    </section>
+</section>
+
+
+</ui:composition>

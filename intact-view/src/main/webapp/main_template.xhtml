@@ -12,10 +12,10 @@
     <ui:define name="dialogs">
         <p:dialog modal="true" widgetVar="statusDialog" header="Please wait..."
                   draggable="false" closable="false" zindex="200" height="30" >
-                <h:graphicImage alt="loading" url="/images/wait_black_indicator.gif"
-                                style="vertical-align:middle;"/>
-                &#160;
-                <h:outputText value="Loading..."/>
+            <h:graphicImage alt="loading" url="/images/wait_black_indicator.gif"
+                            style="vertical-align:middle;"/>
+            &#160;
+            <h:outputText value="Loading..."/>
         </p:dialog>
 
         <p:dialog header="What is this view?" widgetVar="whatIsInteractionsDialog"
@@ -95,57 +95,58 @@
 
         </h:panelGroup>
 
-
-        <ui:include src="pages/search/search_panel.xhtml"/>
+        <h:form id="intactForm" prependId="false">
+            <ui:include src="pages/search/search_panel.xhtml"/>
+        </h:form>
 
 
         <p:tabView id="mainPanels" activeIndex="#{contextController.activeTabIndex}" dynamic="true"
                    widgetVar="mainTabsWidget" style="width: 100%">
-        <p:ajax event="tabChange" listener="#{searchBean.onTabChanged}" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
+            <p:ajax event="tabChange" listener="#{searchBean.onTabChanged}" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
 
             <p:tab id="homeTab" title="Home">
-                        <p:messages/>
-                        <ui:insert name="aboutTabContent"/>
+                <p:messages/>
+                <ui:insert name="aboutTabContent"/>
             </p:tab>
 
             <p:tab id="searchTab" title="Search">
-                        <p:messages/>
-                        <ui:insert name="searchTabContent"/>
+                <p:messages/>
+                <ui:insert name="searchTabContent"/>
             </p:tab>
 
             <p:tab id="interactionsTab" title="Interactions (#{searchBean.totalResults})" disabled="#{searchBean.totalResults == 0}">
-                        <p:messages/>
-                        <ui:insert name="interactionsTabContent"/>
+                <p:messages/>
+                <ui:insert name="interactionsTabContent"/>
             </p:tab>
 
             <p:tab id="browseTab" title="Browse" disabled="#{searchBean.totalResults == 0}">
-                        <p:messages/>
-                        <ui:insert name="browseTabContent"/>
+                <p:messages/>
+                <ui:insert name="browseTabContent"/>
             </p:tab>
 
             <p:tab id="listsTab" title="Lists" disabled="#{searchBean.totalResults == 0}">
-                        <p:messages/>
-                        <ui:insert name="listTabContent"/>
+                <p:messages/>
+                <ui:insert name="listTabContent"/>
             </p:tab>
 
             <p:tab id="detailsTab" title="Interaction Details" disabled="#{detailsBean.interaction == null}">
-                        <p:messages/>
-                        <ui:insert name="detailsTabContent"/>
+                <p:messages/>
+                <ui:insert name="detailsTabContent"/>
             </p:tab>
 
             <p:tab id="moleculeViewTab" title="Molecule View" disabled="#{moleculeViewBean.interactor == null}">
-                        <p:messages/>
+                <p:messages/>
                 <h:panelGroup rendered="#{moleculeViewBean.interactor != null}">
-                        <ui:insert name="moleculeTabContent"/>
+                    <ui:insert name="moleculeTabContent"/>
                 </h:panelGroup>
             </p:tab>
 
             <p:tab id="graphTab" title="Graph"  shortDesc="#{searchBean.totalResults == statisticsController.binaryInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
                    disabled="#{searchBean.totalResults == 0 or searchBean.totalResults == statisticsController.binaryInteractionCount}"
-                               >
-                        <p:messages/>
+                    >
+                <p:messages/>
                 <h:panelGroup rendered="#{searchBean.totalResults != 0}">
-                        <ui:insert name="graphTabContent"/>
+                    <ui:insert name="graphTabContent"/>
                 </h:panelGroup>
             </p:tab>
 

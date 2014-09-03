@@ -553,7 +553,7 @@
 
     <error-page>
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-        <location>/main.xhtml?status=exp</location>
+        <location>/home.xhtml?status=exp</location>
     </error-page>
 
     <resource-env-ref>

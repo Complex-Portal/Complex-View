@@ -195,6 +195,14 @@
 		</navigation-case>
 	</navigation-rule>
 
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>home</from-outcome>
+            <to-view-id>/home.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
 	<!-- Documentation pages -->
 	<navigation-rule>
         <from-view-id>*</from-view-id>
