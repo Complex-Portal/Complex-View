@@ -21,14 +21,12 @@
                                  rows="6" cols="50" value="#{userQuery.searchQuery}"
                                  disabled="#{userQuery.showNewFieldPanel}"/>
                 &#160;
-                <h:commandButton id="quickSearchBtn" ajax="false" style="display: inline"
+                <h:commandButton id="quickSearchBtn" style="display: inline"
                                  styleClass="submit"
                                  onclick="queryTxt = document.getElementById(':intactForm:queryTxt'); _gaq.push(['_trackEvent', 'SearchPanel', 'Search', queryTxt.value])"
                                  value="Search"
                                  disabled="#{userQuery.showNewFieldPanel}"
-                                 action="#{searchBean.doBinarySearchAction}"
-                                 onstart="statusDialog.show()"
-                                 oncomplete="statusDialog.hide()">
+                                 action="#{searchBean.doBinarySearchAction}">
                 </h:commandButton>
                 &#160;
                 <p:commandButton id="clearSearchBtn" value="Clear"
