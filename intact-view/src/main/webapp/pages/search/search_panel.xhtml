@@ -3,123 +3,65 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:fn="http://java.sun.com/jsp/jstl/functions" >
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:ot="http://myfaces.apache.org/orchestra">
 
     <p:panel style="width:100%">
 
         <p:dialog header="MIQL Syntax Reference" widgetVar="miqlHelpDialog" fixedCenter="true"
                   width="900" height="600">
-                <ui:include src="help_miql.xhtml"/>
+            <ui:include src="help_miql.xhtml"/>
         </p:dialog>
 
-        <h:panelGroup id="searchPanel" style="vertical-align:top">
-            <h:outputText value="Search: "/>
-            <h:inputText title="Search: " id="queryTxt"
-                         size="60" value="#{userQuery.searchQuery}"
-                         rows="#{(fn:length(userQuery.searchQuery) / 60) + 1}"
-                         disabled="#{userQuery.showNewFieldPanel}"/>
-            &#160;
-            <p:commandButton id="quickSearchBtn" ajax="false"
-                             onclick="queryTxt = document.getElementById(':intactForm:queryTxt'); _gaq.push(['_trackEvent', 'SearchPanel', 'Search', queryTxt.value])"
-                             value="Search"
-                             disabled="#{userQuery.showNewFieldPanel}"
-                             action="#{searchBean.doBinarySearchAction}"
-                             onstart="statusDialog.show()"
-                             oncomplete="statusDialog.hide()">
-            </p:commandButton>
-            &#160;
-            <p:commandButton id="clearSearchBtn" value="Clear"
-                             actionListener="#{userQuery.doClearSearchField}"
-                             onclick="_gaq.push(['_trackEvent', 'SearchPanel', 'Clear', ''])"
-                             disabled="#{userQuery.showNewFieldPanel}"
-                             onstart="statusDialog.show()"
-                             oncomplete="statusDialog.hide()"
-                             update=":intactForm:searchPanel"
-                             process="@this"
-                             partialSubmit="true"/>
-            &#160;
-            <p:commandLink id="addFieldBtn" value="Show Advanced Fields »"
-                           style="font-weight:bold"
-                           actionListener="#{userQuery.doShowAddFieldPanel}"
-                           disabled="#{userQuery.showNewFieldPanel}"
-                           update=":intactForm:searchPanelDetails,:intactForm:searchPanel"
-                           onstart="statusDialog.show()"
-                           oncomplete="statusDialog.hide()"
-                           partialSubmit="true"
-                           process=":intactForm:queryTxt @this"/>
-            &#160;
-            <p:commandLink onclick="miqlHelpDialog.show()">
-                MIQL syntax reference
-                <h:graphicImage alt="helpIcon" url="/images/help.png" inlineStyle="vertical-align: baseline"/>
-            </p:commandLink>
-        </h:panelGroup>
+
+        <fieldset id="searchPanelFld">
+            <legend>Search in IntAct</legend>
+            <h:panelGroup id="searchPanel">
+                <h:inputTextarea id="queryTxt" autoResize="false"
+                                 rows="6" cols="50" value="#{userQuery.searchQuery}"
+                                 disabled="#{userQuery.showNewFieldPanel}"/>
+                &#160;
+                <h:commandButton id="quickSearchBtn" ajax="false" style="display: inline"
+                                 styleClass="submit"
+                                 onclick="queryTxt = document.getElementById(':intactForm:queryTxt'); _gaq.push(['_trackEvent', 'SearchPanel', 'Search', queryTxt.value])"
+                                 value="Search"
+                                 disabled="#{userQuery.showNewFieldPanel}"
+                                 action="#{searchBean.doBinarySearchAction}"
+                                 onstart="statusDialog.show()"
+                                 oncomplete="statusDialog.hide()">
+                </h:commandButton>
+                &#160;
+                <p:commandButton id="clearSearchBtn" value="Clear"
+                                 actionListener="#{userQuery.doClearSearchField}"
+                                 onclick="_gaq.push(['_trackEvent', 'SearchPanel', 'Clear', ''])"
+                                 disabled="#{userQuery.showNewFieldPanel}"
+                                 onstart="statusDialog.show()"
+                                 oncomplete="statusDialog.hide()"
+                                 update=":intactForm:searchPanel"
+                                 process="@this"
+                                 partialSubmit="true"/>
+                &#160;
+                <p:commandLink id="addFieldBtn" value="Show Advanced Fields »"
+                               style="font-weight:bold"
+                               actionListener="#{userQuery.doShowAddFieldPanel}"
+                               disabled="#{userQuery.showNewFieldPanel}"
+                               update=":intactForm:searchPanelDetails,:intactForm:searchPanel"
+                               onstart="statusDialog.show()"
+                               oncomplete="statusDialog.hide()"
+                               partialSubmit="true"
+                               process=":intactForm:queryTxt @this"/>
+                &#160;
+                <p:commandLink onclick="miqlHelpDialog.show()">
+                    MIQL syntax reference
+                    <h:graphicImage alt="helpIcon" url="/images/help.png" inlineStyle="vertical-align: baseline"/>
+                </p:commandLink>
+            </h:panelGroup>
 
 
-        <table style="width: 100%;">
-            <tr>
-                <td style="width: 530px;">
-                    <h:panelGroup id="searchTips" style="vertical-align:top; font-size: 95%;">
-                       <ul style="margin-right: 20px;">
-                           <li><h:outputText value="Free text search will look by default for interactor identifier, species, interaction id, detection method, interaction type, publication identifier or author, interactor xrefs, interaction xrefs"/></li>
-                           <li><h:outputText value="For a more specific search, use MIQL syntax or advanced search"/></li>
-                           <li><h:outputText value="Search based on exact word matches eg. BRCA2 will not match BRCA2B"/></li>
-                           <li><h:outputText value="Search for isoforms of 'P12345' by using 'P12345*'"/></li>
-                       </ul>
-                   </h:panelGroup>
-                </td>
-                <td>
-                    <div style="font-weight: bold; padding-top: 1em;">Examples</div>
-                    <ul style="margin-top:0px;font-size: 95%;">
-                        <li>
-                            <h:outputText value="Gene name: e.g. "/>
-                            <h:commandLink id="geneNameExlink" value="BRCA2" action="#{searchBean.doBinarySearchAction}">
-                                <f:setPropertyActionListener value="BRCA2"
-                                                             target="#{userQuery.searchQuery}"/>
-                            </h:commandLink>
-                        </li>
-                        <li>
-                            <h:outputText value="UniProtKB Ac: e.g. "/>
-                            <h:commandLink id="uniprotAcExlink" value="Q06609" action="#{searchBean.doBinarySearchAction}">
-                                <f:setPropertyActionListener value="Q06609"
-                                                             target="#{userQuery.searchQuery}"/>
-                            </h:commandLink>
-                        </li>
-                        <li>
-                            <h:outputText value="UniProtKB Id: e.g. "/>
-                            <h:commandLink id="uniprotGeneExlink" value="dmc1" action="#{searchBean.doBinarySearchAction}">
-                                <f:setPropertyActionListener value="dmc1"
-                                                             target="#{userQuery.searchQuery}"/>
-                            </h:commandLink>
-                        </li>
-                        <li>
-                            <h:outputText value=" Pubmed Id: e.g. "/>
-                            <h:commandLink id="pubmedExlink" value="10831611" action="#{searchBean.doBinarySearchAction}">
-                                <f:setPropertyActionListener value="10831611"
-                                                             target="#{userQuery.searchQuery}"/>
-                            </h:commandLink>
-                        </li>
-                    </ul>
-                </td>
-                <td>
-                    <p:panel>
-                        <h:panelGroup style="text-align: center;display: block;">
-                            <h:graphicImage alt="infoIcon" url="/images/info-bubble-icon.png"/><br/>
-                            <h:outputLink value="http://www.ebi.ac.uk/support/index.php?query=intact">Support <br/>and feedback</h:outputLink>                        </h:panelGroup>
-                    </p:panel>
-                </td>
-            </tr>
-        </table>
+            <!--<h:panelGroup  >-->
+            <p:panel id="searchPanelDetails" visible="#{userQuery.showNewFieldPanel}">
 
-
-
-
-    </p:panel>
-
-
-    <h:panelGroup id="searchPanelDetails">
-        <p:panel style="width:100%" rendered="#{userQuery.showNewFieldPanel}">
-
-            <h:panelGroup>
+                <!--<h:panelGroup>-->
 
                 <h:selectOneMenu id="chooseOperator" value="#{userQuery.newQueryToken.operandStr}"
                                  disabled="#{userQuery.wildcardQuery}">
@@ -134,16 +76,15 @@
                 &#160;
                 <h:outputText value="Field: "/>
                 <h:selectOneMenu id="newQueryField" title="Field: " value="#{userQuery.newQueryToken.field}">
-                    <p:ajax event="change" update=":intactForm:newQueryPanel" process="@this" onstart="statusDialog.show()"
+                    <p:ajax event="change" update=":intactForm:newQueryPanel" process="@this"
+                            onstart="statusDialog.show()"
                             oncomplete="statusDialog.hide()"/>
                     <f:selectItems value="#{userQuery.searchFieldSelectItems}"/>
                 </h:selectOneMenu>
-                &#160;
-
-
 
                 <h:panelGroup id="newQueryPanel">
-                    <h:inputText id="newQuerytxt" value="#{userQuery.newQueryToken.query}" columns="60" rendered="#{not userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}"/>
+                    <h:inputText id="newQuerytxt" value="#{userQuery.newQueryToken.query}" columns="60"
+                                 rendered="#{not userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}"/>
 
                     <h:selectOneMenu id="selectFieldMap" value="#{userQuery.newQueryToken.query}"
                                      rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].list}">
@@ -155,55 +96,99 @@
                             <h:graphicImage id="browseOntologyImg" alt="Browse" url="/images/magnify.png" height="16px" width="16px"/>
                         </p:commandLink>
 
-
-                        <p:dialog id="ontologyDialog" header="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].displayName}" widgetVar="browseCvDialog" fixedCenter="true"
+                        <p:dialog id="ontologyDialog"
+                                  header="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].displayName}"
+                                  widgetVar="browseCvDialog" fixedCenter="true"
                                   width="800" height="600">
-                            <p><b>Choose a term by clicking on its name. The identifier will be used as the value for the search.</b></p>
+                            <p>
+                                <b>Choose a term by clicking on its name. The identifier will be used as the value for the search.</b>
+                            </p>
                             <br/>
 
-                            <p:tree id="ontologyTree" var="otw" value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.ontologyTreeNode}"
+                            <p:tree id="ontologyTree" var="otw"
+                                    value="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.ontologyTreeNode}"
                                     selectionMode="single" selection="#{userQuery.selectedSearchTerm}"
                                     dynamic="true" cache="true"
                                     style="width:50%;">
-                                <p:ajax event="select" listener="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.doSelectCvTerm}"
-                                        oncomplete="browseCvDialog.hide(); statusDialog.hide()" update=":intactForm:newQueryPanel" onstart="statusDialog.show()" process="@this"/>
+                                <p:ajax event="select"
+                                        listener="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.doSelectCvTerm}"
+                                        oncomplete="browseCvDialog.hide(); statusDialog.hide()"
+                                        update=":intactForm:newQueryPanel" onstart="statusDialog.show()" process="@this"/>
 
                                 <p:treeNode id="ontologyTreeNode">
                                     <h:outputText id="termTxt" value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
                                 </p:treeNode>
                             </p:tree>
 
-
                         </p:dialog>
+                    </h:panelGroup>
 
+                    &#160;
 
+                    <h:panelGroup style="display: inline-block">
+                        <p:commandButton id="addAndSearchBtn" value="Add &amp; Search"
+                                         actionListener="#{userQuery.doAddFieldToQuery}"
+                                         action="#{searchBean.doBinarySearchAction}"
+                                         onstart="statusDialog.show()"
+                                         oncomplete="statusDialog.hide()"
+                                         ajax="false"/>
+                        <p:commandButton id="cancelFieldBtn" value="Cancel"
+                                         process="@this"
+                                         actionListener="#{userQuery.doCancelAddField}"
+                                         update=":intactForm:searchPanel,:intactForm:searchPanelDetails"
+                                         onstart="statusDialog.show()"
+                                         oncomplete="statusDialog.hide()"
+                                         partialSubmit="true"/>
 
                     </h:panelGroup>
 
                 </h:panelGroup>
+            </p:panel>
+        </fieldset>
+
+        <h:panelGroup id="searchTips">
+            <h4>Search Tips</h4>
+            <ul>
+                <li>Free text search will look by default for interactor identifier, (e.g. gene name
+
+                    <ot:separateConversationContext>
+                        <h:commandLink id="geneNameExlink" value="BRCA2"
+                                       action="#{searchBean.doBinarySearchAction}">
+                            <f:setPropertyActionListener value="BRCA2"
+                                                         target="#{userQuery.searchQuery}"/>
+                        </h:commandLink>
+
+                        , UniProtKB Ac
+                        <h:commandLink id="uniprotAcExlink" value="Q06609"
+                                       action="#{searchBean.doBinarySearchAction}">
+                            <f:setPropertyActionListener value="Q06609"
+                                                         target="#{userQuery.searchQuery}"/>
+                        </h:commandLink>
+
+                        or UniProtKB Id
+                        <h:commandLink id="uniprotGeneExlink" value="dmc1"
+                                       action="#{searchBean.doBinarySearchAction}">
+                            <f:setPropertyActionListener value="dmc1"
+                                                         target="#{userQuery.searchQuery}"/>
+                        </h:commandLink>
+                    </ot:separateConversationContext>), species, interaction id, detection method, interaction type, publication identifier or author (e.g. Pubmed Id
+                    <ot:separateConversationContext>
+                        <h:commandLink id="pubmedExlink" value="10831611"
+                                       action="#{searchBean.doBinarySearchAction}">
+                            <f:setPropertyActionListener value="10831611"
+                                                         target="#{userQuery.searchQuery}"/>
+                        </h:commandLink>
+
+                    </ot:separateConversationContext>
+                    ), interactor xrefs, interaction xrefs.
+                </li>
+                <li>For a more specific search, use MIQL syntax or advanced search</li>
+                <li>Search based on exact word matches e.g. BRCA2 will not match BRCA2B</li>
+                <li>Search for isoforms of 'P12345' by using 'P12345*'</li>
+            </ul>
+        </h:panelGroup>
 
 
-                &#160;
-
-                <p:commandButton id="addAndSearchBtn" value="Add &amp; Search"
-                                 actionListener="#{userQuery.doAddFieldToQuery}"
-                                 action="#{searchBean.doBinarySearchAction}"
-                                 onstart="statusDialog.show()"
-                                 oncomplete="statusDialog.hide()"
-                                 ajax="false"/>
-                &#160;
-                <p:commandButton id="cancelFieldBtn" value="Cancel"
-                                 process="@this"
-                                 actionListener="#{userQuery.doCancelAddField}"
-                                 update=":intactForm:searchPanel,:intactForm:searchPanelDetails"
-                                 onstart="statusDialog.show()"
-                                 oncomplete="statusDialog.hide()"
-                                 partialSubmit="true"/>
-
-            </h:panelGroup>
-        </p:panel>
-    </h:panelGroup>
-
-    <hr/>
+    </p:panel>
 
 </ui:composition>

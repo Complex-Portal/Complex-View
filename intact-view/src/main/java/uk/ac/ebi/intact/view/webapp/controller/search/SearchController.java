@@ -168,12 +168,6 @@ public class SearchController extends JpaBaseController {
         return "/pages/interactions/interactions.xhtml?faces-redirect=true";
     }
 
-    public String doSearch() {
-        doBinarySearchAction();
-
-        return "/pages/interactions/interactions.xhtml";
-    }
-
     public String doBinarySearchWithInteractorFilterAction() {
         if (selectedInteractor != null){
             UserQuery userQuery = getUserQuery();
