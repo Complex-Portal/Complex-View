@@ -166,12 +166,12 @@
                 <ot:separateConversationContext>
                     <li class="#{sectionTitle eq 'Home' ? 'active' : null}"><h:link value="Home" outcome="home"/></li>
                     <li class="#{sectionTitle eq 'Advanced Search' ? 'active' : null}"><h:link value="Advanced Search" outcome="search"/></li>
-                    <li class="#{sectionTitle eq 'Tools' ? 'active' : null}"><h:link value="Tools" outcome="documentation.tools"/></li>
                     <li class="#{sectionTitle eq 'Data Submission' ? 'active' : null}"><h:link value="Data Submission" outcome="documentation.data_submission"/></li>
                     <li class="#{sectionTitle eq 'Downloads' ? 'active' : null}"><h:link value="Downloads" outcome="documentation.downloads"/></li>
+                    <li class="#{sectionTitle eq 'Datasets' ? 'active' : null}"><h:link value="Datasets" outcome="documentation.dataset"/></li>
                     <li class="#{sectionTitle eq 'Statistics' ? 'active' : null}"><h:link value="Statistics" outcome="documentation.statistics"/></li>
                     <li class="#{sectionTitle eq 'FAQ' ? 'active' : null}"><h:link value="FAQ" outcome="documentation.faq"/></li>
-                    <li><h:outputLink value="http://intact.googlecode.com/" target="_blank">Developer Resources</h:outputLink></li>
+                    <li><h:link value="Developer Resources" outcome="documentation.tools"/></li>
                     <li class="#{sectionTitle eq 'Contact Us' ? 'active' : null}"><h:link value="Contact Us" outcome="documentation.contactus"/></li>
                     <li class="#{sectionTitle eq 'About IntAct' ? 'active' : null} last"><h:link value="About IntAct" outcome="documentation.about"/></li>
 
