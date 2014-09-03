@@ -150,7 +150,7 @@
         <nav>
             <ul class="grid_24" id="local-nav">
                 <ot:separateConversationContext>
-                    <li class="#{sectionTitle eq 'Home' ? 'active' : null}"><h:link value="Home" outcome="documentation.home"/></li>
+                    <li class="#{sectionTitle eq 'Home' ? 'active' : null}"><h:link value="Home" outcome="main"/></li>
                     <li class="#{sectionTitle eq 'Advanced Search' ? 'active' : null}"><h:link value="Advanced Search" outcome="search"/></li>
                     <li class="#{sectionTitle eq 'Tools' ? 'active' : null}"><h:link value="Tools" outcome="documentation.tools"/></li>
                     <li class="#{sectionTitle eq 'Data Submission' ? 'active' : null}"><h:link value="Data Submission" outcome="documentation.data_submission"/></li>
@@ -195,7 +195,7 @@
     You don't need a breadcrumb trail on the homepage of your service... -->
     <nav id="breadcrumb">
         <p>
-            <h:link value="#{intactView['webapp.name']}" outcome="documentation.home" rendered="#{sectionTitle ne 'Home'}"/>
+            <h:link value="#{intactView['webapp.name']}" outcome="main" rendered="#{sectionTitle ne 'Home'}"/>
             <h:outputText value=" &gt; #{sectionTitle}" rendered="#{sectionTitle ne 'Home'}"/>
         </p>
     </nav>
@@ -314,7 +314,9 @@
         </h:panelGroup>
 
         <!--Place for the content in the template-->
-        <ui:insert name="content"/>
+        <h:form id="intactForm" prependId="false">
+            <ui:insert name="content"/>
+        </h:form>
 
         <!-- To avoid expired sessions, poll every 25 mins -->
         <h:form id="pollForm" prependId="false">

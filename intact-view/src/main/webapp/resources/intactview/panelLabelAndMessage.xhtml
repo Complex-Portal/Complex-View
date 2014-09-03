@@ -28,6 +28,7 @@
         <p:outputPanel id="#{cc.id}" rendered="#{cc.attrs.visible}">
 
             <table width="#{cc.attrs.width}">
+                <tbody>
                 <tr style="vertical-align:top">
                     <td style="border-style:none">
                         <h:outputText value="#{cc.attrs.label}" style="#{cc.attrs.labelStyle}"
@@ -41,11 +42,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <td></td>
+                    <td style="border-style:none"></td>
                     <td colspan="2" style="border-style:none">
                         <composite:renderFacet name="help"/>
                     </td>
                 </tr>
+                </tbody>
             </table>
 
         </p:outputPanel>

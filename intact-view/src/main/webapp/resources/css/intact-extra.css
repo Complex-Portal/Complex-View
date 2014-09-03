@@ -1,22 +1,18 @@
-a img {
-    border: 0;
+/*Tuning the primefaces css */
+.ui-selectonemenu .ui-selectonemenu-label {
+    float: none !important
+
 }
 
-.center{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+.ui-panel .ui-panel-content {
+    padding: 0 !important
 }
 
-/* Remove for compliance */
-.sidemenu a:hover, a:focus, a:active {
-    border-bottom: none !important;
-}
+/*a img {*/
+/*border: 0;*/
+/*}*/
 
-/* Remove for compliance */
-.contents a:hover, a:focus, a:active {
-    border-bottom: none !important;
-}
+
 
 /** status **/
 .busyStatus {
@@ -36,40 +32,40 @@ a img {
 }
 
 /** cols **/
-.labelColumn {
-    font-weight: bold;
-    white-space: nowrap;
-    vertical-align: top;
-    text-align: right;
-    padding-right: 10px;
-}
+/*.labelColumn {*/
+/*font-weight: bold;*/
+/*white-space: nowrap;*/
+/*vertical-align: top;*/
+/*text-align: right;*/
+/*padding-right: 10px;*/
+/*}*/
 
 /** interactions table **/
-td.notSameThanPrevious {
-    border-top: 1px solid #CDCDCD !important;
-}
+/*td.notSameThanPrevious {*/
+/*border-top: 1px solid #CDCDCD !important;*/
+/*}*/
 
 /** interactor table **/
-td.compoundStructure {
-    background-color:white;
-    vertical-align:middle;
-    text-align: center;
-}
+/*td.compoundStructure {*/
+/*background-color:white;*/
+/*vertical-align:middle;*/
+/*text-align: center;*/
+/*}*/
 
 
-.newInteractionRow {
-    border-top: 1px solid #CDCDCD !important;
-    border-left: 1px solid #CDCDCD !important;
-    border-right: 1px solid #CDCDCD !important;
-    border-bottom: 0 !important;
-}
+/*.newInteractionRow {*/
+/*border-top: 1px solid #CDCDCD !important;*/
+/*border-left: 1px solid #CDCDCD !important;*/
+/*border-right: 1px solid #CDCDCD !important;*/
+/*border-bottom: 0 !important;*/
+/*}*/
 
-.sameInteractionRow {
-    border-top: 0 !important;
-    border-left: 1px solid #CDCDCD !important;
-    border-right: 1px solid #CDCDCD !important;
-    border-bottom: 0 !important;
-}
+/*.sameInteractionRow {*/
+/*border-top: 0 !important;*/
+/*border-left: 1px solid #CDCDCD !important;*/
+/*border-right: 1px solid #CDCDCD !important;*/
+/*border-bottom: 0 !important;*/
+/*}*/
 
 .negativeInteractionRow {
     background: #ffdfe5;
@@ -81,18 +77,8 @@ td.compoundStructure {
 .ui-dialog {
     position:fixed !important;
 }
-
-#mainPanels {
-    background: white !important;
-}
-
-.ui-datatable .ui-datatable-data td, .ui-datatable .ui-datatable-data-empty td {
-    border-top:0 !important;
-    border-bottom:0 !important;
-}
-
 .ui-datatable table tbody tr.ui-selected{
-   background: #ffecc4;
+    background: #ffecc4;
 }
 
 .ui-dialog-titlebar {
@@ -108,8 +94,7 @@ td.compoundStructure {
     text-align: left !important;
 }
 
-/* Participant Legend */
-
+/*Participant Legend*/
 .ia-annotation {
     background: #a7cf9b !important;
     color:white;
@@ -158,54 +143,70 @@ td.compoundStructure {
     margin-right:5px;
 }
 
-
-.ia-front-page-columns {
-    vertical-align: top;
-    padding: 5px;
-}
-
-.ia-front-page-left-column {
-    /*background-color: #F4F4F4;*/
-    border-left: 1px solid #E8E8E8;
-}
-
-
-.ia-results-table th{
-    white-space: normal !important;
-}
+/*.intact_fixedWidth {*/
+/*width:650px;*/
+/*}*/
 
 .dasty_title
 {
-background:url(../../dasty/client/img/ebi_bg.gif);
-}
-
-.ia-front-page-title, .dasty_title
-{
-display:block;
-padding: 2px;
-margin-bottom:5px;
-background-repeat:repeat-y;
-font-weight:bold;
-font-size:120%;
-color:#006666;
+    display:block;
+    padding: 2px;
+    margin-bottom:5px;
+    background:url(../../dasty/client/img/ebi_bg.gif);
+    background-repeat:repeat-y;
+    font-weight:bold;
+    font-size:120%;
+    color:#006666;
 }
 
 
- div.contributorLogo{
-     float: left;
-     border: 3px solid #E8E8E8;
-     margin: 10px 0px 0px 10px;
-     padding: 3px;
-     text-align: center;
-     width: 110px;
-     height: 85px;
-     background-color: white;
- }
-div.contributorLogo div {
-    height: 28px;
-    vertical-align: middle;
-    display: table-cell;
+.contributorLogo{
+    float: left;
+    position: relative;
+    border: 3px solid #E8E8E8;
+    margin: 10px 10px 0px 0px;
+    padding: 3px;
     text-align: center;
     width: 110px;
+    height: 70px;
 }
+
+/*div.contributorLogo div {*/
+/*height: 28px;*/
+/*vertical-align: middle;*/
+/*display: table-cell;*/
+/*text-align: center;*/
+/*width: 110px;*/
+/*}*/
+
+.noBorderTextCenter {
+    text-align: center;
+    border-style: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+/*citation of intact*/
+.publication {
+    border: 1px;
+    background-color: #f5fcfa;
+    box-shadow: 6px 6px 3px #bbbbbb;
+    padding: 10px;
+}
+
+/*to top button*/
+.scrollup {
+    width: 40px;
+    height: 40px;
+    opacity: 0.3;
+    position: fixed;
+    bottom: 50px;
+    right: 100px;
+    display: none;
+    text-indent: -9999px;
+    background: url('../../images/ico_scroll_top.png') no-repeat;
+}
+
+
+
 
