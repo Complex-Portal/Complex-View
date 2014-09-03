@@ -276,14 +276,6 @@
 		</navigation-case>
 	</navigation-rule>
 
-	<navigation-rule>
-        <from-view-id>*</from-view-id>
-		<navigation-case>
-			<from-outcome>documentation.printerfriendly</from-outcome>
-			<to-view-id>/pages/documentation/all_printer_friendly.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
 	<!-- Contextual help -->
 
 	<navigation-rule>
