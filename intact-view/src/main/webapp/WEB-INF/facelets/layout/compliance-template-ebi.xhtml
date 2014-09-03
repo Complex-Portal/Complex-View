@@ -52,8 +52,8 @@
     <link rel="stylesheet" href="#{request.contextPath}/resources/css/custom-ebi-theme/skin.css" type="text/css"/>
 
     <style type="text/css">
-            /* You have the option of setting a maximum width for your page, and making sure everything is centered */
-             body { max-width: 1600px; margin: 0 auto; }
+        /* You have the option of setting a maximum width for your page, and making sure everything is centered */
+        body { max-width: 1600px; margin: 0 auto; }
     </style>
 
     <!-- end CSS-->
@@ -109,9 +109,9 @@
         <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
         <div class="grid_12 alpha logo-only" id="local-title">
             <h1 class="visuallyhidden"> #{intactView['webapp.name']}</h1>
-                <a href="#{requestConfigBean.absoluteContextPath}" title="Back to #{intactView['webapp.name']} homepage">
-                    <img src="#{intactView['webapp.logo.url']}" alt="#{intactView['webapp.name']} logo" height="64"/>
-                </a>
+            <a href="#{requestConfigBean.absoluteContextPath}" title="Back to #{intactView['webapp.name']} homepage">
+                <img src="#{intactView['webapp.logo.url']}" alt="#{intactView['webapp.name']} logo" height="64"/>
+            </a>
         </div>
         <!-- /local-title -->
 
@@ -119,28 +119,42 @@
         <!-- NB: if you do not have a local-search, delete the following div, and drop the class="grid_12 alpha" class from local-title above -->
 
         <div class="grid_12 omega">
-        <form id="local-search" name="local-search" action="[search-action]" method="post">
+            <h:form id="local-search" prependId="false">
 
-        <fieldset>
+                <fieldset>
 
-        <div class="left">
-        <label>
-        <input type="text" name="first" id="local-searchbox"/>
-        </label>
-        <!--&lt;!&ndash; Include some example searchterms - keep them short and few! &ndash;&gt;-->
-        <span class="examples">Examples: <a href="[search-url-1]">[search-text-1]</a>, <a href="[search-url-1]">[search-text-2]</a>, <a href="[search-url-1]">[search-text-3]</a></span>
-        </div>
+                    <div class="left">
+                        <label>
+                            <h:inputText value="#{userQuery.searchQuery}" id="local-searchbox"/>
+                        </label>
+                        <!--&lt;!&ndash; Include some example searchterms - keep them short and few! &ndash;&gt;-->
+        <span class="examples">Examples:
+            <h:link id="example-1" value="BRCA2" outcome="results">
+                <f:param name="query" value="BRCA2" />
+            </h:link>,
+            <h:link id="example-2" value="Q06609" outcome="results">
+                <f:param name="query" value="Q06609" />
+            </h:link>,
+            <h:link id="example-3" value="dmc1" outcome="results">
+                <f:param name="query" value="dmc1" />
+            </h:link>,
+            <h:link id="example-4" value="10831611" outcome="results">
+                <f:param name="query" value="10831611" />
+            </h:link></span>
+                    </div>
 
-        <div class="right">
-        <input type="submit" name="submit" value="Search" class="submit"/>
-        <!--&lt;!&ndash; If your search is more complex than just a keyword search, you can link to an Advanced Search,-->
-        <!--with whatever features you want available &ndash;&gt;-->
-        <span class="adv"><a href="../search" id="adv-search" title="Advanced">Advanced</a></span>
-        </div>
+                    <div class="right">
+                        <h:commandButton id="search-submit-button" value="Search" action="#{searchBean.doBinarySearchAction}"/>
+                        <!--&lt;!&ndash; If your search is more complex than just a keyword search, you can link to an Advanced Search,-->
+                        <!--with whatever features you want available &ndash;&gt;-->
+                        <span class="adv">
+                            <h:link id="adv-search" value="Advanced" outcome="search" title="Advanced"/>
+                        </span>
+                    </div>
 
-        </fieldset>
+                </fieldset>
 
-        </form>
+            </h:form>
         </div>
 
         <!-- /local-search -->
@@ -189,7 +203,7 @@
     </div>
 </header>
 
-    <div id="content" role="main" class="grid_24 clearfix">
+<div id="content" role="main" class="grid_24 clearfix">
 
     <!-- If you require a breadcrumb trail, its root should be your service.
     You don't need a breadcrumb trail on the homepage of your service... -->
@@ -201,181 +215,181 @@
     </nav>
 
     <!--////////////OLD ONE//////////////-->
-        <div id="statusIndicator" class="status-normal"></div>
+    <div id="statusIndicator" class="status-normal"></div>
 
-        <p:ajaxStatus onstart="document.getElementById('statusIndicator').setAttribute('class', 'status-busy')"
-                      oncomplete="document.getElementById('statusIndicator').setAttribute('class', 'status-normal')">
-            <f:facet name="start">
-                <div class="busyStatus">
-                    <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
-                                    style="vertical-align:middle;"/>
-                    &#160;
-                    <h:outputText value="Loading..."/>
-                </div>
-            </f:facet>
-
-            <f:facet name="complete">
-                <div>
-                    <h:outputText value=""/>
-                </div>
-            </f:facet>
-
-            <f:facet name="success">
-                <div>
-                    <h:outputText value=""/>
-                </div>
-            </f:facet>
-
-            <f:facet name="error">
-                <div class="busyStatus">
-                    <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
-                                    style="vertical-align:middle;"/>
-                    &#160;
-                    <h:outputText value="Error :("/>
-                </div>
-            </f:facet>
-        </p:ajaxStatus>
-
-
-        <!--Dialogs-->
-        <p:dialog modal="true" widgetVar="statusDialog" header="Please wait..."
-                  draggable="false" closable="false" zindex="200" height="30" >
-            <h:graphicImage alt="loading" url="/images/wait_black_indicator.gif"
-                            style="vertical-align:middle;"/>
-            &#160;
-            <h:outputText value="Loading..."/>
-        </p:dialog>
-
-        <p:dialog header="What is this view?" widgetVar="whatIsInteractionsDialog"
-                  width="700" height="500" modal="true" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/whatis_interactions.xhtml"/>
+    <p:ajaxStatus onstart="document.getElementById('statusIndicator').setAttribute('class', 'status-busy')"
+                  oncomplete="document.getElementById('statusIndicator').setAttribute('class', 'status-normal')">
+        <f:facet name="start">
+            <div class="busyStatus">
+                <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
+                                style="vertical-align:middle;"/>
+                &#160;
+                <h:outputText value="Loading..."/>
             </div>
-        </p:dialog>
+        </f:facet>
 
-        <p:dialog header="What is this view?" widgetVar="whatIsBrowseDialog"
-                  width="700" height="500" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/whatis_browser.xhtml"/>
+        <f:facet name="complete">
+            <div>
+                <h:outputText value=""/>
             </div>
-        </p:dialog>
+        </f:facet>
 
-        <p:dialog header="What is this view?" widgetVar="whatIsSearchDialog"
-                  width="700" height="500" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/whatis_search.xhtml"/>
+        <f:facet name="success">
+            <div>
+                <h:outputText value=""/>
             </div>
-        </p:dialog>
+        </f:facet>
 
-        <p:dialog header="Complex Expansion" widgetVar="complexExpansionDialog"
-                  width="700" height="500" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/complex_expansion.xhtml"/>
+        <f:facet name="error">
+            <div class="busyStatus">
+                <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
+                                style="vertical-align:middle;"/>
+                &#160;
+                <h:outputText value="Error :("/>
             </div>
-        </p:dialog>
+        </f:facet>
+    </p:ajaxStatus>
 
-        <p:dialog header="PSICQUIC" widgetVar="psicquicDialog"
-                  width="700" height="500" modal="true" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/psicquic.xhtml"/>
-            </div>
-        </p:dialog>
 
-        <p:dialog header="IMEx" widgetVar="psicquicImexDialog"
-                  width="700" height="500" modal="true" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/psicquic_imex.xhtml"/>
-            </div>
-        </p:dialog>
+    <!--Dialogs-->
+    <p:dialog modal="true" widgetVar="statusDialog" header="Please wait..."
+              draggable="false" closable="false" zindex="200" height="30" >
+        <h:graphicImage alt="loading" url="/images/wait_black_indicator.gif"
+                        style="vertical-align:middle;"/>
+        &#160;
+        <h:outputText value="Loading..."/>
+    </p:dialog>
 
-        <p:dialog header="What is this view?" widgetVar="whatIsFeaturesDialog"
-                  width="700" height="500" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/whatis_features.xhtml"/>
-            </div>
-        </p:dialog>
-        <p:dialog header="What is this view?" widgetVar="whatIsDynamicNetworkDialog"
-                  width="450" height="170">
-            <div style="width:430px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/whatis_dynamicnetwork.xhtml"/>
-            </div>
-        </p:dialog>
+    <p:dialog header="What is this view?" widgetVar="whatIsInteractionsDialog"
+              width="700" height="500" modal="true" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/whatis_interactions.xhtml"/>
+        </div>
+    </p:dialog>
 
+    <p:dialog header="What is this view?" widgetVar="whatIsBrowseDialog"
+              width="700" height="500" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/whatis_browser.xhtml"/>
+        </div>
+    </p:dialog>
+
+    <p:dialog header="What is this view?" widgetVar="whatIsSearchDialog"
+              width="700" height="500" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/whatis_search.xhtml"/>
+        </div>
+    </p:dialog>
+
+    <p:dialog header="Complex Expansion" widgetVar="complexExpansionDialog"
+              width="700" height="500" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/complex_expansion.xhtml"/>
+        </div>
+    </p:dialog>
+
+    <p:dialog header="PSICQUIC" widgetVar="psicquicDialog"
+              width="700" height="500" modal="true" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/psicquic.xhtml"/>
+        </div>
+    </p:dialog>
+
+    <p:dialog header="IMEx" widgetVar="psicquicImexDialog"
+              width="700" height="500" modal="true" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/psicquic_imex.xhtml"/>
+        </div>
+    </p:dialog>
+
+    <p:dialog header="What is this view?" widgetVar="whatIsFeaturesDialog"
+              width="700" height="500" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/whatis_features.xhtml"/>
+        </div>
+    </p:dialog>
+    <p:dialog header="What is this view?" widgetVar="whatIsDynamicNetworkDialog"
+              width="450" height="170">
+        <div style="width:430px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/whatis_dynamicnetwork.xhtml"/>
+        </div>
+    </p:dialog>
+
+
+    <h:panelGroup>
 
         <h:panelGroup>
-
-            <h:panelGroup>
-                <p:panel header="Important notice"
-                         rendered="#{not empty intactViewConfiguration.warningMessage}">
-                    <h:outputText value="#{intactViewConfiguration.warningMessage}"/>
-                </p:panel>
-            </h:panelGroup>
-
+            <p:panel header="Important notice"
+                     rendered="#{not empty intactViewConfiguration.warningMessage}">
+                <h:outputText value="#{intactViewConfiguration.warningMessage}"/>
+            </p:panel>
         </h:panelGroup>
 
-        <!--Place for the content in the template-->
-        <ui:insert name="content"/>
+    </h:panelGroup>
 
-        <!-- To avoid expired sessions, poll every 25 mins -->
-        <h:form id="pollForm" prependId="false">
+    <!--Place for the content in the template-->
+    <ui:insert name="content"/>
 
-            <p:poll interval="#{25*60*1000}" process="@this"/>
+    <!-- To avoid expired sessions, poll every 25 mins -->
+    <h:form id="pollForm" prependId="false">
 
-        </h:form>
+        <p:poll interval="#{25*60*1000}" process="@this"/>
 
-        <!--/////////////////////////-->
+    </h:form>
 
-        <div class="scrollup">Scroll</div>
+    <!--/////////////////////////-->
+
+    <div class="scrollup">Scroll</div>
+</div>
+
+
+<footer>
+    <!-- Optional local footer (insert citation / project-specific copyright / etc here -->
+
+    <div id="local-footer" class="grid_24 clearfix">
+        <p>IntAct View version: #{buildInfo.version}</p>
     </div>
 
+    <!-- End optional local footer -->
 
-    <footer>
-        <!-- Optional local footer (insert citation / project-specific copyright / etc here -->
+    <div id="global-footer" class="grid_24">
 
-        <div id="local-footer" class="grid_24 clearfix">
-          <p>IntAct View version: #{buildInfo.version}</p>
-        </div>
+        <nav id="global-nav-expanded">
 
-        <!-- End optional local footer -->
+            <div class="grid_4 alpha">
+                <h3 class="embl-ebi"><a href="//www.ebi.ac.uk/" title="EMBL-EBI">EMBL-EBI</a></h3>
+            </div>
 
-        <div id="global-footer" class="grid_24">
+            <div class="grid_4">
+                <h3 class="services"><a href="//www.ebi.ac.uk/services">Services</a></h3>
+            </div>
 
-            <nav id="global-nav-expanded">
+            <div class="grid_4">
+                <h3 class="research"><a href="//www.ebi.ac.uk/research">Research</a></h3>
+            </div>
 
-                <div class="grid_4 alpha">
-                    <h3 class="embl-ebi"><a href="//www.ebi.ac.uk/" title="EMBL-EBI">EMBL-EBI</a></h3>
-                </div>
+            <div class="grid_4">
+                <h3 class="training"><a href="//www.ebi.ac.uk/training">Training</a></h3>
+            </div>
 
-                <div class="grid_4">
-                    <h3 class="services"><a href="//www.ebi.ac.uk/services">Services</a></h3>
-                </div>
+            <div class="grid_4">
+                <h3 class="industry"><a href="//www.ebi.ac.uk/industry">Industry</a></h3>
+            </div>
 
-                <div class="grid_4">
-                    <h3 class="research"><a href="//www.ebi.ac.uk/research">Research</a></h3>
-                </div>
+            <div class="grid_4 omega">
+                <h3 class="about"><a href="//www.ebi.ac.uk/about">About us</a></h3>
+            </div>
 
-                <div class="grid_4">
-                    <h3 class="training"><a href="//www.ebi.ac.uk/training">Training</a></h3>
-                </div>
+        </nav>
 
-                <div class="grid_4">
-                    <h3 class="industry"><a href="//www.ebi.ac.uk/industry">Industry</a></h3>
-                </div>
+        <section id="ebi-footer-meta">
+            <p class="address">EMBL-EBI, Wellcome Trust Genome Campus, Hinxton, Cambridgeshire, CB10 1SD, UK &nbsp; &nbsp; +44 (0)1223 49 44 44</p>
+            <p class="legal">Copyright &copy; EMBL-EBI 2013 | EBI is an outstation of the <a href="http://www.embl.org">European Molecular Biology Laboratory</a> | <a href="/about/privacy">Privacy</a> | <a href="/about/cookies">Cookies</a> | <a href="/about/terms-of-use">Terms of use</a></p>
+        </section>
 
-                <div class="grid_4 omega">
-                    <h3 class="about"><a href="//www.ebi.ac.uk/about">About us</a></h3>
-                </div>
+    </div>
 
-            </nav>
-
-            <section id="ebi-footer-meta">
-                <p class="address">EMBL-EBI, Wellcome Trust Genome Campus, Hinxton, Cambridgeshire, CB10 1SD, UK &nbsp; &nbsp; +44 (0)1223 49 44 44</p>
-                <p class="legal">Copyright &copy; EMBL-EBI 2013 | EBI is an outstation of the <a href="http://www.embl.org">European Molecular Biology Laboratory</a> | <a href="/about/privacy">Privacy</a> | <a href="/about/cookies">Cookies</a> | <a href="/about/terms-of-use">Terms of use</a></p>
-            </section>
-
-        </div>
-
-    </footer>
+</footer>
 </div> <!--! end of #wrapper -->
 
 
@@ -402,10 +416,10 @@
 
 <!--TODO: uncomment for production-->
 <!--<script type="text/javascript">-->
-  <!--window._gaq = [['_setAccount','UA-672146-1'],['_trackPageview'],['_trackPageLoadTime']];-->
-  <!--Modernizr.load({-->
-    <!--load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'-->
-  <!--});-->
+<!--window._gaq = [['_setAccount','UA-672146-1'],['_trackPageview'],['_trackPageLoadTime']];-->
+<!--Modernizr.load({-->
+<!--load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'-->
+<!--});-->
 <!--</script>-->
 
 <!--old google analitics in IntAct-->
@@ -414,18 +428,18 @@
 <!--<ui:param name="googleTracker" value="#{intactViewConfiguration.googleAnalyticsTracker}"/>-->
 
 <!--<script type="text/javascript">-->
-    <!--var _gaq = _gaq || [];-->
-    <!--_gaq.push(['_setAccount', 'UA-672146-1']);-->
-    <!--_gaq.push(['_trackPageview']);-->
+<!--var _gaq = _gaq || [];-->
+<!--_gaq.push(['_setAccount', 'UA-672146-1']);-->
+<!--_gaq.push(['_trackPageview']);-->
 
-    <!--(function () {-->
-        <!--var ga = document.createElement('script');-->
-        <!--ga.type = 'text/javascript';-->
-        <!--ga.async = true;-->
-        <!--ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';-->
-        <!--var s = document.getElementsByTagName('script')[0];-->
-        <!--s.parentNode.insertBefore(ga, s);-->
-    <!--})();-->
+<!--(function () {-->
+<!--var ga = document.createElement('script');-->
+<!--ga.type = 'text/javascript';-->
+<!--ga.async = true;-->
+<!--ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';-->
+<!--var s = document.getElementsByTagName('script')[0];-->
+<!--s.parentNode.insertBefore(ga, s);-->
+<!--})();-->
 
 <!--</script>-->
 
@@ -444,22 +458,22 @@
 <script type="text/javascript" >
     $(document).ready(function () {
 
-    $(window).scroll(function () {
-        if ($(this).scrollTop() > 100) {
-            $('.scrollup').fadeIn();
-        } else {
-            $('.scrollup').fadeOut();
-        }
-    });
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) {
+                $('.scrollup').fadeIn();
+            } else {
+                $('.scrollup').fadeOut();
+            }
+        });
 
-    $('.scrollup').click(function () {
-        $("html, body").animate({
-            scrollTop: 0
-        }, 600);
-        return false;
-    });
+        $('.scrollup').click(function () {
+            $("html, body").animate({
+                scrollTop: 0
+            }, 600);
+            return false;
+        });
 
-});
+    });
 
 </script>
 
