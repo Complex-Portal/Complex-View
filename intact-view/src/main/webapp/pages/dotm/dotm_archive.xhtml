@@ -12,24 +12,24 @@
                 template="/main_template.xhtml">
 
 
-        <!-- Mandatorty params -->
-        <ui:param name="sectionTitle" value="Datasets of the month - Archive"/>
+    <!-- Mandatorty params -->
+    <ui:param name="sectionTitle" value="Datasets of the month - Archive"/>
 
-        <ui:define name="content">
+    <ui:define name="content">
 
-            <h1>Datasets of the month - Archive</h1>
+        <h1>Datasets of the month - Archive</h1>
 
-            <ul>
-                <ui:repeat var="dataSet" value="#{dataSetsBean.dataSets}">
-                    <li>
-                            <ui:param name="dataSet" value="#{dataSet}"/>
-                            <ui:param name="includeDate" value="true"/>
-                            <ui:include src="/pages/dotm/dotm_template.xhtml"/>
-                    </li>
-                </ui:repeat>
-            </ul>
+        <ul>
+            <ui:repeat var="dataSet" value="#{dataSetsBean.dataSets}">
+                <li>
+                    <ui:param name="dataSet" value="#{dataSet}"/>
+                    <ui:param name="includeDate" value="true"/>
+                    <ui:include src="/pages/dotm/dotm_template.xhtml"/>
+                </li>
+            </ui:repeat>
+        </ul>
 
-        </ui:define>
+    </ui:define>
 
-    </ui:composition>
+</ui:composition>
 

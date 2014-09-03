@@ -17,35 +17,27 @@
 
     <h:outputText value=" [#{dataSet.month}, #{dataSet.year}]" rendered="#{includeDate}"/>
 
-    <h:dataTable var="pubmed" value="#{dataSet.pubmeds}">
-        <h:column>
-            <h:outputText value="#{pubmed.author}"/>
-        </h:column>
-        <h:column>
-            <h:outputText value="  "/>
-        </h:column>
-    </h:dataTable>
-    <h:dataTable var="pubmed" value="#{dataSet.pubmeds}">
-        <h:column>
-            <h:commandLink action="#{searchBean.doBinarySearchAction}">
-                <f:setPropertyActionListener value="pubid:#{pubmed.id}"
-                                             target="#{userQuery.searchQuery}"/>
+    <p:dataList var="pubmed" value="#{dataSet.pubmeds}">
+        <p>
+            <h:outputText value="#{pubmed.author} "/>
+
+            <h:outputLink
+                    value="#{requestConfigBean.absoluteContextPath}/query/pubid:#{pubmed.id}">
                 <h:graphicImage title="IntAct" alt="webappLogo" url="#{intactView['webapp.logo.url']}"
                                 style="width:40px"/>
-            </h:commandLink>
-        </h:column>
-        <h:column>
+            </h:outputLink>
+
             <h:outputLink
                     value="#{intactViewConfiguration.ftpUrl}/psi25/pmid/#{(pubmed.year == null)? dataSet.year : pubmed.year}/#{pubmed.id}.zip">
                 <h:graphicImage alt="PSI 2.5" value="/images/psi25.png" style="border:0"/>
             </h:outputLink>
-        </h:column>
-        <h:column>
+
             <h:outputLink value="#{intactViewConfiguration.ftpUrl}/psimitab/pmid/#{(pubmed.year == null)? dataSet.year : pubmed.year}/#{pubmed.id}.txt">
                 <h:graphicImage alt="PSIMITAB" value="/images/mitab.png" style="border:0"/>
             </h:outputLink>
-        </h:column>
-    </h:dataTable>
+
+        </p>
+    </p:dataList>
+
 
 </ui:composition>
-  
