@@ -37,16 +37,16 @@
                                  oncomplete="statusDialog.hide()"
                                  update="searchPanel"
                                  process="@this"
-                                 partialSubmit="true"/>
+                                 ajax="true"/>
                 &#160;
                 <p:commandLink id="addFieldBtn" value="Show Advanced Fields »"
                                style="font-weight:bold"
                                actionListener="#{userQuery.doShowAddFieldPanel}"
                                disabled="#{userQuery.showNewFieldPanel}"
-                               update="searchPanelDetails,searchPanel"
+                               update="searchPanelDetails"
                                onstart="statusDialog.show()"
                                oncomplete="statusDialog.hide()"
-                               partialSubmit="true"
+                               ajax="true"
                                process="queryTxt @this"/>
                 &#160;
                 <p:commandLink onclick="miqlHelpDialog.show()">
@@ -56,8 +56,8 @@
             </h:panelGroup>
 
 
-            <!--<h:panelGroup  >-->
-            <p:panel id="searchPanelDetails" visible="#{userQuery.showNewFieldPanel}">
+            <h:panelGroup id="searchPanelDetails">
+            <p:panel visible="#{userQuery.showNewFieldPanel}">
 
                 <!--<h:panelGroup>-->
 
@@ -90,7 +90,8 @@
                     </h:selectOneMenu>
 
                     <h:panelGroup rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}">
-                        <p:commandLink id="browseOntology" actionListener="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.initializeTreeNode}" oncomplete="browseCvDialog.show()" ajax="true" update="ontologyDialog">
+                        <p:commandLink id="browseOntology" actionListener="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.initializeTreeNode}"
+                                       oncomplete="browseCvDialog.show()" ajax="true" update="ontologyDialog" process="@this">
                             <h:graphicImage id="browseOntologyImg" alt="Browse" url="/images/magnify.png" height="16px" width="16px"/>
                         </p:commandLink>
 
@@ -127,21 +128,20 @@
                         <p:commandButton id="addAndSearchBtn" value="Add &amp; Search"
                                          actionListener="#{userQuery.doAddFieldToQuery}"
                                          action="#{searchBean.doBinarySearchAction}"
-                                         onstart="statusDialog.show()"
-                                         oncomplete="statusDialog.hide()"
-                                         ajax="false"/>
+                                         ajax="false" process="@this"/>
                         <p:commandButton id="cancelFieldBtn" value="Cancel"
                                          process="@this"
                                          actionListener="#{userQuery.doCancelAddField}"
                                          update="searchPanel,searchPanelDetails"
                                          onstart="statusDialog.show()"
                                          oncomplete="statusDialog.hide()"
-                                         partialSubmit="true"/>
+                                         ajax="true"/>
 
                     </h:panelGroup>
 
                 </h:panelGroup>
             </p:panel>
+           </h:panelGroup>
         </fieldset>
 
         <h:panelGroup id="searchTips">
