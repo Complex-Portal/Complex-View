@@ -2,6 +2,7 @@ package uk.ac.ebi.intact.view.webapp.controller.search;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.myfaces.orchestra.conversation.ConversationUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -134,6 +135,12 @@ public class SearchController extends JpaBaseController {
                 userQuery.clearInteractionFilters();
                 doBinarySearch(userQuery.createSolrQuery());
             }
+        }
+    }
+
+    public void checkConversationContext(ComponentSystemEvent evt) {
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            ConversationUtils.ensureConversationRedirect("general", "/pages/interactions/interactions.xhtml");
         }
     }
 

@@ -125,10 +125,13 @@
                     &#160;
 
                     <h:panelGroup style="display: inline-block">
+
                         <p:commandButton id="addAndSearchBtn" value="Add &amp; Search"
                                          actionListener="#{userQuery.doAddFieldToQuery}"
                                          action="#{searchBean.doBinarySearchAction}"
-                                         ajax="false" process="@this"/>
+                                         ajax="false" process="@this"
+                                         onstart="statusDialog.show()"
+                                         oncomplete="statusDialog.hide()"/>
                         <p:commandButton id="cancelFieldBtn" value="Cancel"
                                          process="@this"
                                          actionListener="#{userQuery.doCancelAddField}"
