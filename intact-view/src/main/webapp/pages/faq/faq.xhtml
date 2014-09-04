@@ -1,50 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:c="http://java.sun.com/jstl/core"
-	xmlns:sf="http://www.ebi.ac.uk/faces/site"
-	template="/WEB-INF/facelets/layout/compliance-template-ebi.xhtml">
+                xmlns:jsp="http://java.sun.com/JSP/Page"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jstl/core"
+                xmlns:sf="http://www.ebi.ac.uk/faces/site"
+                template="/WEB-INF/facelets/layout/compliance-template-ebi.xhtml">
 
-	<!-- Mandatorty params -->
-	<ui:param name="sectionTitle" value="FAQ - Frequently Asked Questions" />
+    <!-- Mandatorty params -->
+    <ui:param name="sectionTitle" value="FAQ" />
 
-	<ui:define name="content">
-        <div class="intact_fixedWidth">
+    <ui:define name="content">
+        <section class="grid_18 alpha">
+            <ui:repeat var="topic" value="#{faqBean.topics}">
 
-		<h2>"FAQ - Frequently Asked Questions"</h2>
+                <h2>#{topic.topicInformation.name} #{topic.topicInformation.description}</h2>
 
-		<ui:repeat var="topic" value="#{faqBean.topics}">
-			<h2>#{topic.topicInformation.name}
-			- <i><font color="#808080">#{topic.topicInformation.description}</font></i></h2>
+                <ui:repeat var="item" value="#{topic.items}">
+                    <section id="#{item.id}">
+                        <h3>#{item.question}</h3>
+                        <h:outputText value="#{item.answer.value}" escape="#{item.answer.escape}"/>
 
-			<ul type="square">
-				<ui:repeat var="item" value="#{topic.items}">
-					<li><a href="##{item.id}">#{item.question}</a></li>
-				</ui:repeat>
-			</ul>
-		</ui:repeat>
+                    </section>
+                </ui:repeat>
 
-		<hr />
-		<br/><br/>
-		<ui:repeat var="topic" value="#{faqBean.topics}">
+            </ui:repeat>
+        </section>
 
-			<h2>#{topic.topicInformation.name} - <i><font color="#808080">#{topic.topicInformation.description}</font></i></h2>
+        <section class="grid_6 omega">
+            <h3>FAQ</h3>
 
-			<ui:repeat var="item" value="#{topic.items}">
-				<div id="#{item.id}">
-					<h3>#{item.question}</h3>
-					<br />
-					<h:outputText value="#{item.answer.value}" escape="#{item.answer.escape}"/>
-                </div>
-                <br/>
-			</ui:repeat>
+            <ui:repeat var="topic" value="#{faqBean.topics}">
+                <h4>#{topic.topicInformation.name} #{topic.topicInformation.description}</h4>
 
-		</ui:repeat>
-        </div>
+                <ul>
+                    <ui:repeat var="item" value="#{topic.items}">
+                        <li><a href="##{item.id}">#{item.question}</a></li>
+                    </ui:repeat>
+                </ul>
+            </ui:repeat>
 
-	</ui:define>
+        </section>
+    </ui:define>
 
 </ui:composition>
