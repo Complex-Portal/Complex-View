@@ -128,6 +128,7 @@
                             <h:inputText value="#{userQuery.searchQuery}" id="local-searchbox"/>
                         </label>
                         <!--&lt;!&ndash; Include some example searchterms - keep them short and few! &ndash;&gt;-->
+                        <ot:separateConversationContext>
         <span class="examples">Examples:
             <h:link id="example-1" value="BRCA2" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true">
                 <f:param name="query" value="BRCA2" />
@@ -141,6 +142,7 @@
             <h:link id="example-4" value="10831611" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true">
                 <f:param name="query" value="10831611" />
             </h:link></span>
+                        </ot:separateConversationContext>
                     </div>
 
                     <div class="right">
