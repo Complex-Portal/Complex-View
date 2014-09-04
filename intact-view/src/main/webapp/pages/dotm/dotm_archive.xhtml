@@ -9,26 +9,26 @@
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-                template="/main_template.xhtml">
+                template="/WEB-INF/facelets/layout/compliance-template-ebi.xhtml">
 
 
     <!-- Mandatorty params -->
     <ui:param name="sectionTitle" value="Datasets of the month - Archive"/>
 
     <ui:define name="content">
+        <section class="grid_18 alpha">
+            <h2>Datasets of the month - Archive</h2>
 
-        <h1>Datasets of the month - Archive</h1>
-
-        <ul>
-            <ui:repeat var="dataSet" value="#{dataSetsBean.dataSets}">
-                <li>
-                    <ui:param name="dataSet" value="#{dataSet}"/>
-                    <ui:param name="includeDate" value="true"/>
-                    <ui:include src="/pages/dotm/dotm_template.xhtml"/>
-                </li>
-            </ui:repeat>
-        </ul>
-
+            <ul>
+                <ui:repeat var="dataSet" value="#{dataSetsBean.dataSets}">
+                    <li>
+                        <ui:param name="dataSet" value="#{dataSet}"/>
+                        <ui:param name="includeDate" value="true"/>
+                        <ui:include src="/pages/dotm/dotm_template.xhtml"/>
+                    </li>
+                </ui:repeat>
+            </ul>
+        </section>
     </ui:define>
 
 </ui:composition>

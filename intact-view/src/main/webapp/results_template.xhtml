@@ -83,77 +83,61 @@
     </ui:define>
 
     <ui:define name="content">
-
-        <h:panelGroup>
-
+        <h:form id="mainForm" prependId="false">
             <h:panelGroup>
-                <p:panel header="Important notice"
-                         rendered="#{not empty intactViewConfiguration.warningMessage}">
-                    <h:outputText value="#{intactViewConfiguration.warningMessage}"/>
-                </p:panel>
+
+                <h:panelGroup>
+                    <p:panel header="Important notice"
+                             rendered="#{not empty intactViewConfiguration.warningMessage}">
+                        <h:outputText value="#{intactViewConfiguration.warningMessage}"/>
+                    </p:panel>
+                </h:panelGroup>
+
             </h:panelGroup>
 
-        </h:panelGroup>
 
-        <h:form id="intactForm" prependId="false">
-            <ui:include src="pages/search/search_panel.xhtml"/>
+            <p:tabView id="mainPanels" activeIndex="#{contextController.activeTabIndex}" dynamic="true"
+                       widgetVar="mainTabsWidget" style="width: 100%">
+                <p:ajax event="tabChange" listener="#{searchBean.onTabChanged}" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
+
+                <p:tab id="interactionsTab" title="Interactions (#{searchBean.totalResults})" disabled="#{searchBean.totalResults == 0}">
+                    <p:messages/>
+                    <ui:insert name="interactionsTabContent"/>
+                </p:tab>
+
+                <p:tab id="browseTab" title="Browse" disabled="#{searchBean.totalResults == 0}">
+                    <p:messages/>
+                    <ui:insert name="browseTabContent"/>
+                </p:tab>
+
+                <p:tab id="listsTab" title="Lists" disabled="#{searchBean.totalResults == 0}">
+                    <p:messages/>
+                    <ui:insert name="listTabContent"/>
+                </p:tab>
+
+                <p:tab id="detailsTab" title="Interaction Details" disabled="#{detailsBean.interaction == null}">
+                    <p:messages/>
+                    <ui:insert name="detailsTabContent"/>
+                </p:tab>
+
+                <p:tab id="moleculeViewTab" title="Molecule View" disabled="#{moleculeViewBean.interactor == null}">
+                    <p:messages/>
+                    <h:panelGroup rendered="#{moleculeViewBean.interactor != null}">
+                        <ui:insert name="moleculeTabContent"/>
+                    </h:panelGroup>
+                </p:tab>
+
+                <p:tab id="graphTab" title="Graph"  shortDesc="#{searchBean.totalResults == statisticsController.binaryInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
+                       disabled="#{searchBean.totalResults == 0 or searchBean.totalResults == statisticsController.binaryInteractionCount}"
+                        >
+                    <p:messages/>
+                    <h:panelGroup rendered="#{searchBean.totalResults != 0}">
+                        <ui:insert name="graphTabContent"/>
+                    </h:panelGroup>
+                </p:tab>
+
+            </p:tabView>
         </h:form>
-
-
-        <p:tabView id="mainPanels" activeIndex="#{contextController.activeTabIndex}" dynamic="true"
-                   widgetVar="mainTabsWidget" style="width: 100%">
-            <p:ajax event="tabChange" listener="#{searchBean.onTabChanged}" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
-
-            <p:tab id="homeTab" title="Home">
-                <p:messages/>
-                <ui:insert name="aboutTabContent"/>
-            </p:tab>
-
-            <p:tab id="searchTab" title="Search">
-                <p:messages/>
-                <ui:insert name="searchTabContent"/>
-            </p:tab>
-
-            <p:tab id="interactionsTab" title="Interactions (#{searchBean.totalResults})" disabled="#{searchBean.totalResults == 0}">
-                <p:messages/>
-                <ui:insert name="interactionsTabContent"/>
-            </p:tab>
-
-            <p:tab id="browseTab" title="Browse" disabled="#{searchBean.totalResults == 0}">
-                <p:messages/>
-                <ui:insert name="browseTabContent"/>
-            </p:tab>
-
-            <p:tab id="listsTab" title="Lists" disabled="#{searchBean.totalResults == 0}">
-                <p:messages/>
-                <ui:insert name="listTabContent"/>
-            </p:tab>
-
-            <p:tab id="detailsTab" title="Interaction Details" disabled="#{detailsBean.interaction == null}">
-                <p:messages/>
-                <ui:insert name="detailsTabContent"/>
-            </p:tab>
-
-            <p:tab id="moleculeViewTab" title="Molecule View" disabled="#{moleculeViewBean.interactor == null}">
-                <p:messages/>
-                <h:panelGroup rendered="#{moleculeViewBean.interactor != null}">
-                    <ui:insert name="moleculeTabContent"/>
-                </h:panelGroup>
-            </p:tab>
-
-            <p:tab id="graphTab" title="Graph"  shortDesc="#{searchBean.totalResults == statisticsController.binaryInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
-                   disabled="#{searchBean.totalResults == 0 or searchBean.totalResults == statisticsController.binaryInteractionCount}"
-                    >
-                <p:messages/>
-                <h:panelGroup rendered="#{searchBean.totalResults != 0}">
-                    <ui:insert name="graphTabContent"/>
-                </h:panelGroup>
-            </p:tab>
-
-        </p:tabView>
-        <!--shortDesc="#{searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount ? 'Too many interactions selected to display a graphical network' : 'Click this tab to visualize the interaction network' }"
-        disabled="#{searchBean.totalResults == 0 or searchBean.totalResults > intactViewConfiguration.graphMaxInteractionCount}"-->
-
     </ui:define>
 
 </ui:composition>
