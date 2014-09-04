@@ -9,8 +9,8 @@
 
    <!-- Begin UrlMappings -->
 
-    <url-mapping id="main">
-		<pattern value="/main" />
+    <url-mapping id="results">
+		<pattern value="/results" />
 		<view-id>/main.xhtml</view-id>
 	</url-mapping>
 
