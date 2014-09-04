@@ -23,7 +23,7 @@
                 &#160;
                 <h:commandButton id="quickSearchBtn" style="display: inline"
                                  styleClass="submit"
-                                 onclick="queryTxt = document.getElementById(':intactForm:queryTxt'); _gaq.push(['_trackEvent', 'SearchPanel', 'Search', queryTxt.value])"
+                                 onclick="queryTxt = document.getElementById('queryTxt'); _gaq.push(['_trackEvent', 'SearchPanel', 'Search', queryTxt.value])"
                                  value="Search"
                                  disabled="#{userQuery.showNewFieldPanel}"
                                  action="#{searchBean.doBinarySearchAction}">
@@ -35,7 +35,7 @@
                                  disabled="#{userQuery.showNewFieldPanel}"
                                  onstart="statusDialog.show()"
                                  oncomplete="statusDialog.hide()"
-                                 update=":intactForm:searchPanel"
+                                 update="searchPanel"
                                  process="@this"
                                  partialSubmit="true"/>
                 &#160;
@@ -43,11 +43,11 @@
                                style="font-weight:bold"
                                actionListener="#{userQuery.doShowAddFieldPanel}"
                                disabled="#{userQuery.showNewFieldPanel}"
-                               update=":intactForm:searchPanelDetails,:intactForm:searchPanel"
+                               update="searchPanelDetails,searchPanel"
                                onstart="statusDialog.show()"
                                oncomplete="statusDialog.hide()"
                                partialSubmit="true"
-                               process=":intactForm:queryTxt @this"/>
+                               process="queryTxt @this"/>
                 &#160;
                 <p:commandLink onclick="miqlHelpDialog.show()">
                     MIQL syntax reference
@@ -74,7 +74,7 @@
                 &#160;
                 <h:outputText value="Field: "/>
                 <h:selectOneMenu id="newQueryField" title="Field: " value="#{userQuery.newQueryToken.field}">
-                    <p:ajax event="change" update=":intactForm:newQueryPanel" process="@this"
+                    <p:ajax event="change" update="newQueryPanel" process="@this"
                             onstart="statusDialog.show()"
                             oncomplete="statusDialog.hide()"/>
                     <f:selectItems value="#{userQuery.searchFieldSelectItems}"/>
@@ -111,7 +111,7 @@
                                 <p:ajax event="select"
                                         listener="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.doSelectCvTerm}"
                                         oncomplete="browseCvDialog.hide(); statusDialog.hide()"
-                                        update=":intactForm:newQueryPanel" onstart="statusDialog.show()" process="@this"/>
+                                        update="newQueryPanel" onstart="statusDialog.show()" process="@this"/>
 
                                 <p:treeNode id="ontologyTreeNode">
                                     <h:outputText id="termTxt" value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
@@ -133,7 +133,7 @@
                         <p:commandButton id="cancelFieldBtn" value="Cancel"
                                          process="@this"
                                          actionListener="#{userQuery.doCancelAddField}"
-                                         update=":intactForm:searchPanel,:intactForm:searchPanelDetails"
+                                         update="searchPanel,searchPanelDetails"
                                          onstart="statusDialog.show()"
                                          oncomplete="statusDialog.hide()"
                                          partialSubmit="true"/>

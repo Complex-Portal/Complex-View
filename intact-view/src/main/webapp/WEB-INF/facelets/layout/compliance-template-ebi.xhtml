@@ -211,7 +211,7 @@
     You don't need a breadcrumb trail on the homepage of your service... -->
     <nav id="breadcrumb">
         <p>
-            <h:link value="#{intactView['webapp.name']}" outcome="home" rendered="#{sectionTitle ne 'Home'}"/>
+            <h:link value="#{intactView['webapp.name']}" outcome="/home.xhtml?faces-redirect=true" rendered="#{sectionTitle ne 'Home'}"/>
             <h:outputText value=" &gt; #{sectionTitle}" rendered="#{sectionTitle ne 'Home'}"/>
         </p>
     </nav>
@@ -223,7 +223,7 @@
                   oncomplete="document.getElementById('statusIndicator').setAttribute('class', 'status-normal')">
         <f:facet name="start">
             <div class="busyStatus">
-                <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
+                <h:graphicImage alt="busy" url="#{request.contextPath}/resources/css/ebi/images/status_busy_redback.gif"
                                 style="vertical-align:middle;"/>
                 &#160;
                 <h:outputText value="Loading..."/>
@@ -244,7 +244,7 @@
 
         <f:facet name="error">
             <div class="busyStatus">
-                <h:graphicImage alt="busy" url="/skins/ebi/images/status_busy_redback.gif"
+                <h:graphicImage alt="busy" url="#{request.contextPath}/resources/css/ebi/images/status_busy_redback.gif"
                                 style="vertical-align:middle;"/>
                 &#160;
                 <h:outputText value="Error :("/>
