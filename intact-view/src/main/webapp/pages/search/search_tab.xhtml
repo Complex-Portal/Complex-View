@@ -68,7 +68,9 @@
                         <f:facet name="end">
                             <h:commandButton id="searchBtn"
                                               value="Search"
-                                              action="#{searchBean.doBinarySearchAction}">
+                                              action="#{searchBean.doBinarySearchAction}"
+                                              style="display: inline"
+                                              styleClass="submit">
                              </h:commandButton>
                         </f:facet>
 
@@ -128,7 +130,9 @@
                             <h:commandButton id="ontologySearchBtn"
                                               value="Search"
                                               actionListener="#{userQuery.prepareFromOntologySearch}"
-                                              action="#{searchBean.doBinarySearchAction}">
+                                              action="#{searchBean.doBinarySearchAction}"
+                                              style="display: inline"
+                                              styleClass="submit">
                             </h:commandButton>
                         </f:facet>
                     </iv:panelLabelAndMessage>
