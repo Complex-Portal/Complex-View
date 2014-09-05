@@ -39,10 +39,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * Search controller.
@@ -66,6 +63,7 @@ public class SearchController extends JpaBaseController {
     private int smallMoleculeTotalResults;
     private int geneTotalResults;
     private int nucleicAcidTotalResults;
+    private int threadTimeOut =10;
 
     private String currentQuery;
     private String selectedInteractor;
@@ -211,17 +209,13 @@ public class SearchController extends JpaBaseController {
             final String query = solrQuery.getQuery();
 
             // prepare solr search
-            //Callable<Integer> intactRunnable = createIntactSearchRunnable(solrQueryCopy, solrServer, pageSize);
-            results = createInteractionDataModel( solrQueryCopy, solrServer, pageSize );
-
-            // store the current query
-            currentQuery = solrQueryCopy.getQuery();
+            Callable<Integer> intactRunnable = createIntactSearchRunnable(solrQueryCopy, solrServer, pageSize);
 
             // we are doing a new search so we reset browser
             hasLoadedSearchControllerResults = true;
             hasLoadedInteractorResults = false;
 
-            //Future<Integer> intactFuture = executorService.submit(intactRunnable);
+            Future<Integer> intactFuture = executorService.submit(intactRunnable);
 
             // count complex results
             complexController.countNumberOfComplexes(query);
@@ -229,13 +223,7 @@ public class SearchController extends JpaBaseController {
             psicquicController.countResultsInOtherDatabases(query);
 
             // resume tasks
-            //checkAndResumeSearchTasks(intactFuture);
-            if (results == null){
-                this.totalResults = 0;
-            }
-            else{
-                this.totalResults = results.getRowCount();
-            }
+            checkAndResumeSearchTasks(intactFuture);
             complexController.checkAndResumeComplexTasks();
             psicquicController.checkAndResumePsicquicTasks();
 
@@ -291,7 +279,7 @@ public class SearchController extends JpaBaseController {
     private void checkAndResumeSearchTasks(Future<Integer> intactFuture) {
 
         try {
-            this.totalResults = intactFuture.get();
+            this.totalResults = intactFuture.get(threadTimeOut, TimeUnit.SECONDS);
 
         } catch (InterruptedException e) {
             log.error("The intact search was interrupted, we cancel the task.", e);
@@ -460,7 +448,7 @@ public class SearchController extends JpaBaseController {
                                                Future<InteractorSearchResultDataModel> nucleicAcidFuture, Future<InteractorSearchResultDataModel> geneFuture) {
         if (proteinFuture != null){
             try {
-                this.proteinResults = proteinFuture.get();
+                this.proteinResults = proteinFuture.get(threadTimeOut, TimeUnit.SECONDS);
                 this.proteinTotalResults = proteinResults.getRowCount();
 
             } catch (InterruptedException e) {
@@ -484,7 +472,7 @@ public class SearchController extends JpaBaseController {
 
         if (compoundFuture != null){
             try {
-                this.smallMoleculeResults = compoundFuture.get();
+                this.smallMoleculeResults = compoundFuture.get(threadTimeOut, TimeUnit.SECONDS);
                 this.smallMoleculeTotalResults = smallMoleculeResults.getRowCount();
 
             } catch (InterruptedException e) {
@@ -508,7 +496,7 @@ public class SearchController extends JpaBaseController {
 
         if (nucleicAcidFuture != null){
             try {
-                this.nucleicAcidResults = nucleicAcidFuture.get();
+                this.nucleicAcidResults = nucleicAcidFuture.get(threadTimeOut, TimeUnit.SECONDS);
                 this.nucleicAcidTotalResults = nucleicAcidResults.getRowCount();
 
             } catch (InterruptedException e) {
@@ -532,7 +520,7 @@ public class SearchController extends JpaBaseController {
 
         if (geneFuture != null){
             try {
-                this.geneResults = geneFuture.get();
+                this.geneResults = geneFuture.get(threadTimeOut, TimeUnit.SECONDS);
                 this.geneTotalResults = geneResults.getRowCount();
 
             } catch (InterruptedException e) {
