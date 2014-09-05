@@ -43,7 +43,7 @@ function toggle(id) {
 </script>
 </head>
 <body>
-<h1>An Unexpected Error Occurred:</h1>
+<h2>An Unexpected Error Occurred:</h2>
 <div id="error" class="grayBox" style="border: 1px solid #900;">@@message@@<br/><br/>Caused by:<br/>@@cause@@</div>
 <h2><a href="#" onclick="toggle('trace'); return false;"><span id="traceOff">+</span><span id="traceOn" style="display: none;">-</span> Stack Trace</a></h2>
 <div id="trace" class="grayBox"><pre><code>@@trace@@</code></pre></div>
