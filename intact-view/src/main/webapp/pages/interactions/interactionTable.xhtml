@@ -99,7 +99,6 @@
              paginator="#{searchBean.results.rowCount gt userQuery.pageSize}"
              rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'} #{searchBean.results.negative? ', negativeInteractionRow' : ''}"
              rendered="#{searchBean.results != null and searchBean.results.rowCount > 0}"
-             tableStyle="font-size: smaller;"
         >
 
 <p:column id="firstExpToggler">

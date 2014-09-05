@@ -35,7 +35,7 @@ public class ViewExpiredExceptionHandler extends ExceptionHandlerWrapper {
             if (exception instanceof javax.faces.application.ViewExpiredException) {
 
                 try {
-                    fc.getExternalContext().redirect("/intact/home.xhtml?status=exp");
+                    fc.getExternalContext().redirect("intact/home.xhtml?status=exp");
                     fc.responseComplete();
                 } catch (IOException e) {
                     throw new IntactViewException(e);
