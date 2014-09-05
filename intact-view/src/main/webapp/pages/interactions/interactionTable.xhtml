@@ -78,6 +78,7 @@
         <p:commandButton type="button" id="exportBtn" value="Download"
                          disabled="#{searchBean.exportFormat == null}"
                          process="@this"
+                         rendered="#{searchBean.results != null}"
                          onclick="var selector = document.getElementById('mainPanels:exportFormatSelect');_gaq.push(['_trackEvent', 'Export', selector.options[selector.selectedIndex].text,'#{userQuery.searchQuery}']); var newWindow = window.open('#{requestConfigBean.absoluteContextPath}/export?#{searchBean.exportQueryParameters}', '_blank'); newWindow.focus()"/>
         <p:separator/>
 
@@ -95,9 +96,9 @@
              dynamic="true" rowIndexVar="row"
              paginatorPosition="top"
              paginatorAlwaysVisible="true"
-             paginator="#{searchBean.totalResults gt userQuery.pageSize}"
+             paginator="#{searchBean.results.rowCount gt userQuery.pageSize}"
              rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'} #{searchBean.results.negative? ', negativeInteractionRow' : ''}"
-             rendered="#{searchBean.totalResults > 0}"
+             rendered="#{searchBean.results != null and searchBean.results.rowCount > 0}"
              tableStyle="font-size: smaller;"
         >
 
