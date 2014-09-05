@@ -13,15 +13,25 @@
 
 <p:dialog id="updateColumns" header="Columns displayed" widgetVar="columnsDialog" width="300" height="450">
     Select:
-    <p:commandLink id="selectMinimalColumns" value="Minimal" actionListener="#{columnContext.selectMininumColumns()}" update="columnSelection" process="@this" partialSubmit="true" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
+    <p:commandLink id="selectMinimalColumns" value="Minimal" actionListener="#{columnContext.selectMininumColumns()}"
+                   update="columnSelection" process="@this" partialSubmit="true" onstart="statusDialog.show()"
+                   oncomplete="statusDialog.hide()"/>
     &#160;|&#160;
-    <p:commandLink id="selectBasicColumns" value="Basic" actionListener="#{columnContext.selectBasicColumns()}" update="columnSelection" process="@this" partialSubmit="true" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
+    <p:commandLink id="selectBasicColumns" value="Basic" actionListener="#{columnContext.selectBasicColumns()}"
+                   update="columnSelection" process="@this" partialSubmit="true" onstart="statusDialog.show()"
+                   oncomplete="statusDialog.hide()"/>
     &#160;|&#160;
-    <p:commandLink id="selectStandardColumns" value="Standard" actionListener="#{columnContext.selectStandardColumns()}" update="columnSelection" process="@this" partialSubmit="true" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
+    <p:commandLink id="selectStandardColumns" value="Standard" actionListener="#{columnContext.selectStandardColumns()}"
+                   update="columnSelection" process="@this" partialSubmit="true" onstart="statusDialog.show()"
+                   oncomplete="statusDialog.hide()"/>
     &#160;|&#160;
-    <p:commandLink id="selectExpandedColumns" value="Expanded" actionListener="#{columnContext.selectExpandedColumns()}" update="columnSelection" process="@this" partialSubmit="true" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
+    <p:commandLink id="selectExpandedColumns" value="Expanded" actionListener="#{columnContext.selectExpandedColumns()}"
+                   update="columnSelection" process="@this" partialSubmit="true" onstart="statusDialog.show()"
+                   oncomplete="statusDialog.hide()"/>
     &#160;|&#160;
-    <p:commandLink id="selectCompleteColumns" value="Complete" actionListener="#{columnContext.selectCompleteColumns()}" update="columnSelection" process="@this" partialSubmit="true" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
+    <p:commandLink id="selectCompleteColumns" value="Complete" actionListener="#{columnContext.selectCompleteColumns()}"
+                   update="columnSelection" process="@this" partialSubmit="true" onstart="statusDialog.show()"
+                   oncomplete="statusDialog.hide()"/>
     <hr/>
 
     <div style="height:300px; width: 100%;overflow-x: auto;">
@@ -37,8 +47,6 @@
                      process="columnSelection" ajax="true" partialSubmit="true"/>
 </p:dialog>
 
-
-<div style="width: 980px">
 <p:toolbar rendered="#{searchBean.totalResults > 0}">
 
     <p:toolbarGroup align="left">
@@ -81,7 +89,6 @@
 
 <iv:cvLazyDialog dialogVar="cvInfoDialog"/>
 
-<div style="overflow-x: auto; width: inherit">
 
 <p:dataTable id="resultsTable" var="binaryInteraction" value="#{searchBean.results}"
              rows="#{userQuery.pageSize}"
@@ -89,16 +96,27 @@
              paginatorPosition="top"
              paginatorAlwaysVisible="true"
              paginator="#{searchBean.totalResults gt userQuery.pageSize}"
-             rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'} #{searchBean.results.negative? ', negativeInteractionRow' : ''}" rendered="#{searchBean.totalResults > 0}"
-             styleClass="ia-results-table"
-             style="font-size: 90%">
-<p:column data-class="expand" id="detailCol">
-    <h:outputLink value="#{request.contextPath}/interaction/#{searchBean.getMainAccessionXref(binaryInteraction).identifier}" onclick="_gaq.push(['_trackEvent', 'Navigation', 'Interaction details','#{detailsBean.interactionAc}'])">
-        <h:graphicImage url="/images/magnify.png" alt="details" />
+             rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'} #{searchBean.results.negative? ', negativeInteractionRow' : ''}"
+             rendered="#{searchBean.totalResults > 0}"
+             tableStyle="font-size: smaller;"
+        >
+
+<p:column id="firstExpToggler">
+    <p:rowToggler/>
+</p:column>
+
+<p:column id="detailCol">
+    <f:facet name="header">
+        <h:outputText value="Dts"/>
+    </f:facet>
+    <h:outputLink
+            value="#{request.contextPath}/interaction/#{searchBean.getMainAccessionXref(binaryInteraction).identifier}"
+            onclick="_gaq.push(['_trackEvent', 'Navigation', 'Interaction details','#{detailsBean.interactionAc}'])">
+        <h:graphicImage url="/images/magnify.png" alt="details"/>
     </h:outputLink>
 </p:column>
 <p:column id="numberRowCol">
-    <f:facet name="header">
+    <f:facet name="header" data-hide="phone,tablet">
         <h:outputText value="#"/>
     </f:facet>
     <h:outputText value="#{row + 1}"/>
@@ -182,38 +200,6 @@
     </h:panelGroup>
 </p:column>
 
-<p:column id="altidACol" rendered="#{columnContext.isColumnVisible('moleculeA.alternativeId')}">
-    <f:facet name="header">
-        <h:outputText value="#{messages['moleculeA.alternativeId']}"/>
-    </f:facet>
-    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious and binaryInteraction.interactorA != null}">
-        <iam:collapsibleIterator disclosed="false"
-                                 value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
-                                 maxShown="3">
-            <h:outputText value="#{item.identifier}" style="white-space:nowrap;"/>
-        </iam:collapsibleIterator>
-    </h:panelGroup>
-    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious and binaryInteraction.interactorA == null}">
-        <h:outputText value="N/A"/>
-    </h:panelGroup>
-</p:column>
-
-<p:column id="altidBCol" rendered="#{columnContext.isColumnVisible('moleculeB.alternativeId')}">
-    <f:facet name="header">
-        <h:outputText value="#{messages['moleculeB.alternativeId']}"/>
-    </f:facet>
-    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious and binaryInteraction.interactorB != null}">
-        <iam:collapsibleIterator disclosed="false"
-                                 value="#{binaryInteraction.interactorB.alternativeIdentifiers}"
-                                 maxShown="3">
-            <h:outputText value="#{item.identifier}" style="white-space:nowrap;"/>
-        </iam:collapsibleIterator>
-    </h:panelGroup>
-    <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious and binaryInteraction.interactorB == null}">
-        <h:outputText value="N/A"/>
-    </h:panelGroup>
-</p:column>
-
 <p:column id="aliasesACol" styleClass="cellTextCompound"
           rendered="#{columnContext.isColumnVisible('moleculeA.aliases')}">
     <f:facet name="header"><h:outputText value="#{messages['moleculeA.aliases']}"/></f:facet>
@@ -222,7 +208,6 @@
         <iam:collapsibleIterator disclosed="false"
                                  value="#{iamf:getExclusionFilteredAliases(binaryInteraction.interactorA.aliases)}"
                                  maxShown="3">
-            <!--<h:outputText value="#{item.name}" style="white-space:nowrap;"/>-->
             <span style="display:block">
                 <h:outputText value="#{item.name}"/>
             </span>
@@ -241,7 +226,6 @@
         <iam:collapsibleIterator disclosed="false"
                                  value="#{iamf:getExclusionFilteredAliases(binaryInteraction.interactorB.aliases)}"
                                  maxShown="3">
-            <!--<h:outputText value="#{item.name}" style="white-space:nowrap;"/>-->
             <span style="display:block">
                 <h:outputText value="#{item.name}"/>
             </span>
@@ -259,7 +243,8 @@
     <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
         <h:panelGroup rendered="#{iamf:hasOrganism(binaryInteraction.interactorA)}">
             <ui:include src="/pages/interactions/organismXrefs.xhtml">
-                <ui:param name="xref" value="#{iamf:getUniqueOrganismXref(binaryInteraction.interactorA.organism.identifiers)}"/>
+                <ui:param name="xref"
+                          value="#{iamf:getUniqueOrganismXref(binaryInteraction.interactorA.organism.identifiers)}"/>
             </ui:include>
         </h:panelGroup>
         <h:panelGroup rendered="#{not iamf:hasOrganism(binaryInteraction.interactorA)}">
@@ -275,7 +260,8 @@
     <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
         <h:panelGroup rendered="#{iamf:hasOrganism(binaryInteraction.interactorB)}">
             <ui:include src="/pages/interactions/organismXrefs.xhtml">
-                <ui:param name="xref" value="#{iamf:getUniqueOrganismXref(binaryInteraction.interactorB.organism.identifiers)}"/>
+                <ui:param name="xref"
+                          value="#{iamf:getUniqueOrganismXref(binaryInteraction.interactorB.organism.identifiers)}"/>
             </ui:include>
         </h:panelGroup>
         <h:panelGroup rendered="#{not iamf:hasOrganism(binaryInteraction.interactorB)}">
@@ -292,23 +278,6 @@
                     cvIdentifier="#{binaryInteraction.detectionMethods[0].identifier}"/>
 </p:column>
 
-<p:column id="pubAuthCol" rendered="#{columnContext.isColumnVisible('interaction.firstauthor')}"
-          styleClass="cellTextInteraction">
-    <f:facet name="header"><h:outputText value="#{messages['interaction.firstauthor']}"/></f:facet>
-
-    <ui:repeat var="author" value="#{binaryInteraction.authors}">
-                        <span style="display:block">
-                                <h:outputText value="#{author.name}" style="white-space:nowrap;"/>
-                        </span>
-    </ui:repeat>
-</p:column>
-
-<p:column  id="pubIdCol" rendered="#{columnContext.isColumnVisible('interaction.pubmedid')}"
-           styleClass="cellTextInteraction">
-    <f:facet name="header"><h:outputText value="#{messages['interaction.pubmedid']}"/></f:facet>
-    <iav:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
-</p:column>
-
 <p:column id="typeCol" rendered="#{columnContext.isColumnVisible('interaction.interactiontype')}"
           styleClass="cellTextInteraction">
     <f:facet name="header"><h:outputText value="#{messages['interaction.interactiontype']}"/></f:facet>
@@ -317,69 +286,27 @@
                     cvIdentifier="#{binaryInteraction.interactionTypes[0].identifier}"/>
 </p:column>
 
-<p:column id="sourceCol" rendered="#{columnContext.isColumnVisible('interaction.sourcedb')}"
-          styleClass="cellTextInteraction">
-    <f:facet name="header"><h:outputText value="#{messages['interaction.sourcedb']}"/></f:facet>
-    <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
-</p:column>
-
-<p:column id="interactionAcCol" rendered="#{columnContext.isColumnVisible('interaction.ac')}" styleClass="cellTextInteraction">
-    <f:facet name="header"><h:outputText value="#{messages['interaction.ac']}"/></f:facet>
-    <iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true"/>
-</p:column>
-
 <p:column id="confCol" rendered="#{columnContext.isColumnVisible('interaction.confidencevalue')}"
           styleClass="cellTextInteraction">
     <f:facet name="header"><h:outputText value="#{messages['interaction.confidencevalue']}"/></f:facet>
     <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious}">
         <ui:repeat var="confidence" value="#{binaryInteraction.confidenceValues}" rows="0">
                             <span style="display:block">
-                                    <strong><h:outputText value="#{confidence.type}" style="white-space:nowrap"/></strong>
+                                    <strong><h:outputText value="#{confidence.type}"
+                                                          style="white-space:nowrap"/></strong>
                                     <h:outputText value=" : #{confidence.value}" style="white-space:nowrap"/>
                             </span>
         </ui:repeat>
     </h:panelGroup>
 </p:column>
 
-<p:column id="expansionCol" rendered="#{columnContext.isColumnVisible('interaction.expansionmethod')}"
-          styleClass="cellTextInteraction">
-    <f:facet name="header"><h:outputText value="#{messages['interaction.expansionmethod']}"/></f:facet>
-    <p:commandLink type="button" onclick="complexExpansionDialog.show()" value="#{iamf:getExpansionName(binaryInteraction)}"/>
-</p:column>
-
-<p:column id="bioroleACol" rendered="#{columnContext.isColumnVisible('moleculeA.biorole')}"
-          styleClass="cellTextCompound">
-    <f:facet name="header"><h:outputText value="#{messages['moleculeA.biorole']}"/></f:facet>
-    <h:panelGroup rendered="#{binaryInteraction.interactorA != null}">
-        <iv:cvLazyPopup text="#{binaryInteraction.interactorA.biologicalRoles[0].text}"  dialogVar="cvInfoDialog"
-                        cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"
-                        cvIdentifier="#{binaryInteraction.interactorA.biologicalRoles[0].identifier}"/>
-    </h:panelGroup>
-
-    <h:panelGroup rendered="#{binaryInteraction.interactorA == null}">
-        <h:outputText value="N/A"/>
-    </h:panelGroup>
-</p:column>
-<p:column id="bioroleBCol" rendered="#{columnContext.isColumnVisible('moleculeB.biorole')}"
-          styleClass="cellTextCompound">
-    <f:facet name="header"><h:outputText value="#{messages['moleculeB.biorole']}"/></f:facet>
-
-    <h:panelGroup rendered="#{binaryInteraction.interactorB != null}">
-        <iv:cvLazyPopup text="#{binaryInteraction.interactorB.biologicalRoles[0].text}"  dialogVar="cvInfoDialog"
-                        cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"
-                        cvIdentifier="#{binaryInteraction.interactorB.biologicalRoles[0].identifier}"/>
-    </h:panelGroup>
-    <h:panelGroup rendered="#{binaryInteraction.interactorB == null}">
-        <h:outputText value="N/A"/>
-    </h:panelGroup>
-</p:column>
 
 <p:column id="exproleACol" rendered="#{columnContext.isColumnVisible('moleculeA.exprole')}"
           styleClass="cellTextCompound">
     <f:facet name="header"><h:outputText value="#{messages['moleculeA.exprole']}"/></f:facet>
 
     <h:panelGroup rendered="#{binaryInteraction.interactorA != null}">
-        <iv:cvLazyPopup text="#{binaryInteraction.interactorA.experimentalRoles[0].text}"  dialogVar="cvInfoDialog"
+        <iv:cvLazyPopup text="#{binaryInteraction.interactorA.experimentalRoles[0].text}" dialogVar="cvInfoDialog"
                         cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"
                         cvIdentifier="#{binaryInteraction.interactorA.experimentalRoles[0].identifier}"/>
     </h:panelGroup>
@@ -393,7 +320,7 @@
     <f:facet name="header"><h:outputText value="#{messages['moleculeB.exprole']}"/></f:facet>
 
     <h:panelGroup rendered="#{binaryInteraction.interactorB != null}">
-        <iv:cvLazyPopup text="#{binaryInteraction.interactorB.experimentalRoles[0].text}"  dialogVar="cvInfoDialog"
+        <iv:cvLazyPopup text="#{binaryInteraction.interactorB.experimentalRoles[0].text}" dialogVar="cvInfoDialog"
                         cvClassName="uk.ac.ebi.intact.model.CvExperimentalRole"
                         cvIdentifier="#{binaryInteraction.interactorB.experimentalRoles[0].identifier}"/>
     </h:panelGroup>
@@ -407,7 +334,7 @@
     <f:facet name="header"><h:outputText value="#{messages['moleculeA.interactortype']}"/></f:facet>
 
     <h:panelGroup rendered="#{binaryInteraction.interactorA != null}">
-        <iv:cvLazyPopup text="#{binaryInteraction.interactorA.interactorTypes[0].text}"  dialogVar="cvInfoDialog"
+        <iv:cvLazyPopup text="#{binaryInteraction.interactorA.interactorTypes[0].text}" dialogVar="cvInfoDialog"
                         cvClassName="uk.ac.ebi.intact.model.CvInteractorType"
                         cvIdentifier="#{binaryInteraction.interactorA.interactorTypes[0].identifier}"/>
     </h:panelGroup>
@@ -421,7 +348,7 @@
     <f:facet name="header"><h:outputText value="#{messages['moleculeB.interactortype']}"/></f:facet>
 
     <h:panelGroup rendered="#{binaryInteraction.interactorB != null}">
-        <iv:cvLazyPopup text="#{binaryInteraction.interactorB.interactorTypes[0].text}"  dialogVar="cvInfoDialog"
+        <iv:cvLazyPopup text="#{binaryInteraction.interactorB.interactorTypes[0].text}" dialogVar="cvInfoDialog"
                         cvClassName="uk.ac.ebi.intact.model.CvInteractorType"
                         cvIdentifier="#{binaryInteraction.interactorB.interactorTypes[0].identifier}"/>
     </h:panelGroup>
@@ -430,111 +357,8 @@
     </h:panelGroup>
 </p:column>
 
-<p:column id="xrefACol" rendered="#{columnContext.isColumnVisible('moleculeA.xrefs')}"
-          styleClass="cellTextCompound">
-    <f:facet name="header"><h:outputText value="#{messages['moleculeA.xrefs']}"/></f:facet>
-    <h:panelGroup rendered="#{binaryInteraction.interactorA != null}">
-        <iam:collapsibleIterator  disclosed="false"
-                                  value="#{binaryInteraction.interactorA.xrefs}"
-                                  maxShown="3">
-            <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
-            <h:outputLink value="#{xrefUrl}" title="#{item.text}"
-                          target="_blank" disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
-        </iam:collapsibleIterator>
-    </h:panelGroup>
-
-    <h:panelGroup rendered="#{binaryInteraction.interactorA == null}">
-        <h:outputText value="N/A"/>
-    </h:panelGroup>
-</p:column>
-
-<p:column id="xrefBCol" rendered="#{columnContext.isColumnVisible('moleculeB.xrefs')}"
-          styleClass="cellTextCompound">
-    <f:facet name="header"><h:outputText value="#{messages['moleculeB.xrefs']}"/></f:facet>
-    <h:panelGroup rendered="#{binaryInteraction.interactorB != null}">
-        <iam:collapsibleIterator  disclosed="false"
-                                  value="#{binaryInteraction.interactorB.xrefs}"
-                                  maxShown="3">
-            <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
-            <h:outputLink value="#{xrefUrl}" title="#{item.text}"
-                          target="_blank" disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
-        </iam:collapsibleIterator>
-    </h:panelGroup>
-    <h:panelGroup rendered="#{binaryInteraction.interactorB == null}">
-        <h:outputText value="N/A"/>
-    </h:panelGroup>
-</p:column>
-
-<p:column id="xrefsCol" rendered="#{columnContext.isColumnVisible('interaction.xrefs')}"
-          styleClass="cellTextInteraction">
-    <f:facet name="header"><h:outputText value="#{messages['interaction.xrefs']}"/></f:facet>
-    <iam:collapsibleIterator disclosed="false"
-                             value="#{binaryInteraction.xrefs}"
-                             maxShown="3">
-        <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
-        <h:outputLink value="#{xrefUrl}" title="#{item.text}"
-                      target="_blank" disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
-    </iam:collapsibleIterator>
-</p:column>
-
-<p:column id="annotACol" rendered="#{columnContext.isColumnVisible('moleculeA.annotations')}"
-          styleClass="cellTextCompound">
-    <f:facet name="header"><h:outputText value="#{messages['moleculeA.annotations']}"/></f:facet>
-    <h:panelGroup rendered="#{binaryInteraction.interactorA != null}">
-        <iam:collapsibleIterator disclosed="false"
-                                 value="#{binaryInteraction.interactorA.annotations}"
-                                 maxShown="3">
-            <span style="display:block">
-                                   <!--<strong><h:outputText value="#{item.topic}" style="white-space:nowrap"/></strong>-->
-                                    <!--<h:outputText value=" : #{item.text}" style="white-space:nowrap" rendered="#{item.text != null}"/>-->
-                   <strong><h:outputText value="#{item.topic}" /></strong>
-                                    <h:outputText value=" : #{item.text}" rendered="#{item.text != null}"/>
-                            </span>
-        </iam:collapsibleIterator>
-    </h:panelGroup>
-
-    <h:panelGroup rendered="#{binaryInteraction.interactorA == null}">
-        <h:outputText value="N/A"/>
-    </h:panelGroup>
-</p:column>
-
-<p:column id="annotBCol" rendered="#{columnContext.isColumnVisible('moleculeB.annotations')}"
-          styleClass="cellTextCompound">
-    <f:facet name="header"><h:outputText value="#{messages['moleculeB.annotations']}"/></f:facet>
-    <h:panelGroup rendered="#{binaryInteraction.interactorB != null}">
-        <iam:collapsibleIterator disclosed="false"
-                                 value="#{binaryInteraction.interactorB.annotations}"
-                                 maxShown="3">
-            <span style="display:block">
-                               <strong><h:outputText value="#{item.topic}"/></strong>
-                                <h:outputText value=" : #{item.text}" rendered="#{item.text != null}"/>
-                                   <!--<strong><h:outputText value="#{item.topic}" style="white-space:nowrap"/></strong>-->
-                                    <!--<h:outputText value=" : #{item.text}" style="white-space:nowrap" rendered="#{item.text != null}"/>-->
-                            </span>
-        </iam:collapsibleIterator>
-    </h:panelGroup>
-    <h:panelGroup rendered="#{binaryInteraction.interactorB == null}">
-        <h:outputText value="N/A"/>
-    </h:panelGroup>
-</p:column>
-
-<p:column id="annotsCol" rendered="#{columnContext.isColumnVisible('interaction.annotations')}"
-          styleClass="cellTextInteraction">
-    <f:facet name="header"><h:outputText value="#{messages['interaction.annotations']}"/></f:facet>
-    <iam:collapsibleIterator disclosed="false"
-                             value="#{binaryInteraction.annotations}"
-                             maxShown="3">
-            <span style="display:block">
-                                   <!--<strong><h:outputText value="#{item.topic}" style="white-space:nowrap"/></strong>-->
-                                    <!--<h:outputText value=" : #{item.text}" style="white-space:nowrap" rendered="#{item.text != null}"/>-->
-                 <strong><h:outputText value="#{item.topic}"/></strong>
-                                    <h:outputText value=" : #{item.text}" rendered="#{item.text != null}"/>
-                            </span>
-    </iam:collapsibleIterator>
-</p:column>
-
 <p:column id="hostCol" styleClass="cellTextInteraction"
-          rendered="#{columnContext.isColumnVisible('interaction.hostorganism')}" >
+          rendered="#{columnContext.isColumnVisible('interaction.hostorganism')}">
     <f:facet name="header"><h:outputText value="#{messages['interaction.hostorganism']}"/></f:facet>
     <h:panelGroup rendered="#{binaryInteraction.hostOrganism != null}">
         <ui:include src="/pages/interactions/organismXrefs.xhtml">
@@ -551,76 +375,14 @@
     <f:facet name="header"><h:outputText value="#{messages['interaction.parameters']}"/></f:facet>
     <ui:repeat var="parameter" value="#{binaryInteraction.parameters}" rows="0">
                            <span style="display:block">
-                                    <strong><h:outputText value="#{parameter.type}" style="white-space:nowrap"/></strong>
-                                    <h:outputText value=" : #{iamf:getParameter(parameter)}" style="white-space:nowrap"/>
+                                    <strong><h:outputText value="#{parameter.type}"
+                                                          style="white-space:nowrap"/></strong>
+                                    <h:outputText value=" : #{iamf:getParameter(parameter)}"
+                                                  style="white-space:nowrap"/>
                             </span>
     </ui:repeat>
 </p:column>
 
-<p:column id="createdDateCol" rendered="#{columnContext.isColumnVisible('created.date')}"
-          styleClass="cellTextInteraction">
-    <f:facet name="header"><h:outputText value="#{messages['created.date']}"/></f:facet>
-    <ui:repeat var="created" value="#{binaryInteraction.creationDate}">
-                            <span style="display:block">
-                                    <h:outputText value="#{iamf:formatDate(created)}" style="white-space:nowrap"/>
-                            </span>
-    </ui:repeat>
-</p:column>
-
-<p:column id="updateDateCol" rendered="#{columnContext.isColumnVisible('update.date')}"
-          styleClass="cellTextInteraction">
-    <f:facet name="header"><h:outputText value="#{messages['update.date']}"/></f:facet>
-    <ui:repeat var="updated" value="#{binaryInteraction.updateDate}">
-                            <span style="display:block">
-                                    <h:outputText value="#{iamf:formatDate(updated)}" style="white-space:nowrap"/>
-                            </span>
-    </ui:repeat>
-</p:column>
-
-<p:column id="checksumACol" rendered="#{columnContext.isColumnVisible('moleculeA.checksum')}"
-          styleClass="cellTextCompound">
-    <f:facet name="header"><h:outputText value="#{messages['moleculeA.checksum']}"/></f:facet>
-    <h:panelGroup rendered="#{binaryInteraction.interactorA != null}">
-        <ui:repeat var="checksum" value="#{binaryInteraction.interactorA.checksums}" rows="0">
-                           <span style="display:block">
-                                    <strong><h:outputText value="#{checksum.methodName}" style="white-space:nowrap"/></strong>
-                                    <h:outputText value=" : #{checksum.checksum}" style="white-space:nowrap"/>
-                            </span>
-        </ui:repeat>
-    </h:panelGroup>
-
-    <h:panelGroup rendered="#{binaryInteraction.interactorA == null}">
-        <h:outputText value="N/A"/>
-    </h:panelGroup>
-</p:column>
-
-<p:column id="checksumBCol" rendered="#{columnContext.isColumnVisible('moleculeB.checksum')}"
-          styleClass="cellTextCompound">
-    <f:facet name="header"><h:outputText value="#{messages['moleculeB.checksum']}"/></f:facet>
-    <h:panelGroup rendered="#{binaryInteraction.interactorB != null}">
-        <ui:repeat var="checksum" value="#{binaryInteraction.interactorB.checksums}" rows="0">
-                           <span style="display:block">
-                                    <strong><h:outputText value="#{checksum.methodName}" style="white-space:nowrap"/></strong>
-                                    <h:outputText value=" : #{checksum.checksum}" style="white-space:nowrap"/>
-                            </span>
-        </ui:repeat>
-    </h:panelGroup>
-
-    <h:panelGroup rendered="#{binaryInteraction.interactorB == null}">
-        <h:outputText value="N/A"/>
-    </h:panelGroup>
-</p:column>
-
-<p:column id="checksumCol" rendered="#{columnContext.isColumnVisible('interaction.checksum')}"
-          styleClass="cellTextInteraction">
-    <f:facet name="header"><h:outputText value="#{messages['interaction.checksum']}"/></f:facet>
-    <ui:repeat var="checksum" value="#{binaryInteraction.checksums}" rows="0">
-                           <span style="display:block">
-                                    <strong><h:outputText value="#{checksum.methodName}" style="white-space:nowrap"/></strong>
-                                    <h:outputText value=" : #{checksum.checksum}" style="white-space:nowrap"/>
-                            </span>
-    </ui:repeat>
-</p:column>
 
 <p:column id="negativeCol" rendered="#{columnContext.isColumnVisible('interaction.negative')}"
           styleClass="cellTextInteraction">
@@ -628,6 +390,82 @@
     <h:outputText value="no" style="white-space:nowrap" rendered="#{not binaryInteraction.negativeInteraction}"/>
     <h:outputText value="yes" style="white-space:nowrap" rendered="#{binaryInteraction.negativeInteraction}"/>
 </p:column>
+
+
+<p:rowExpansion id="firstRowExp">
+<p:dataTable id="secondTable" value="binaryInteraction">
+    <p:column id="altidACol" rendered="#{columnContext.isColumnVisible('moleculeA.alternativeId')}">
+        <f:facet name="header">
+            <h:outputText value="#{messages['moleculeA.alternativeId']}"/>
+        </f:facet>
+        <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious and binaryInteraction.interactorA != null}">
+            <iam:collapsibleIterator disclosed="false"
+                                     value="#{binaryInteraction.interactorA.alternativeIdentifiers}"
+                                     maxShown="3">
+                <h:outputText value="#{item.identifier}" style="white-space:nowrap;"/>
+            </iam:collapsibleIterator>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious and binaryInteraction.interactorA == null}">
+            <h:outputText value="N/A"/>
+        </h:panelGroup>
+    </p:column>
+
+    <p:column id="altidBCol" rendered="#{columnContext.isColumnVisible('moleculeB.alternativeId')}">
+        <f:facet name="header">
+            <h:outputText value="#{messages['moleculeB.alternativeId']}"/>
+        </f:facet>
+        <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious and binaryInteraction.interactorB != null}">
+            <iam:collapsibleIterator disclosed="false"
+                                     value="#{binaryInteraction.interactorB.alternativeIdentifiers}"
+                                     maxShown="3">
+                <h:outputText value="#{item.identifier}" style="white-space:nowrap;"/>
+            </iam:collapsibleIterator>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{not searchBean.results.sameThanPrevious and binaryInteraction.interactorB == null}">
+            <h:outputText value="N/A"/>
+        </h:panelGroup>
+    </p:column>
+
+    <p:column id="pubAuthCol" rendered="#{columnContext.isColumnVisible('interaction.firstauthor')}"
+              styleClass="cellTextInteraction">
+        <f:facet name="header"><h:outputText value="#{messages['interaction.firstauthor']}"/></f:facet>
+
+        <ui:repeat var="author" value="#{binaryInteraction.authors}">
+                        <span style="display:block">
+                                <h:outputText value="#{author.name}" style="white-space:nowrap;"/>
+                        </span>
+        </ui:repeat>
+    </p:column>
+
+    <p:column id="pubIdCol" rendered="#{columnContext.isColumnVisible('interaction.pubmedid')}"
+              styleClass="cellTextInteraction">
+        <f:facet name="header"><h:outputText value="#{messages['interaction.pubmedid']}"/></f:facet>
+        <iav:xrefDataList value="#{binaryInteraction.publications}" itemPerLine="true"/>
+    </p:column>
+
+    <p:column id="sourceCol" rendered="#{columnContext.isColumnVisible('interaction.sourcedb')}"
+              styleClass="cellTextInteraction">
+        <f:facet name="header"><h:outputText value="#{messages['interaction.sourcedb']}"/></f:facet>
+        <iav:xrefDataList value="#{binaryInteraction.sourceDatabases}" itemPerLine="true" onlyText="true"/>
+    </p:column>
+
+    <p:column id="interactionAcCol" rendered="#{columnContext.isColumnVisible('interaction.ac')}"
+              styleClass="cellTextInteraction">
+        <f:facet name="header"><h:outputText value="#{messages['interaction.ac']}"/></f:facet>
+        <iav:xrefDataList value="#{binaryInteraction.interactionAcs}" itemPerLine="true"/>
+    </p:column>
+
+</p:dataTable>
+<p:dataTable id="thirdTable" value="binaryInteraction">
+
+
+<p:column id="expansionCol" rendered="#{columnContext.isColumnVisible('interaction.expansionmethod')}"
+          styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.expansionmethod']}"/></f:facet>
+    <p:commandLink type="button" onclick="complexExpansionDialog.show()"
+                   value="#{iamf:getExpansionName(binaryInteraction)}"/>
+</p:column>
+
 
 <p:column id="featureACol" rendered="#{columnContext.isColumnVisible('moleculeA.features')}"
           styleClass="cellTextInteraction">
@@ -637,13 +475,13 @@
                                  value="#{binaryInteraction.interactorA.features}"
                                  maxShown="3">
             <span style="display:block">
-                <!--<strong><h:outputText value="#{item.featureType}" style="white-space:nowrap"/></strong>-->
                 <strong><h:outputText value="#{item.featureType}"/></strong>
                 <h:panelGroup rendered="#{not empty item.ranges}">
                     <h:outputText value=" : " style="white-space:nowrap"/>
                     <ui:repeat var="range" value="#{item.ranges}">
                            <span style="display:block">
-                                    <strong><h:outputText value="#{checksum.methodName}" style="white-space:nowrap"/></strong>
+                                    <strong><h:outputText value="#{checksum.methodName}"
+                                                          style="white-space:nowrap"/></strong>
                           <h:outputText value="#{range}" style="white-space:nowrap"/>
                                <br/>
                           </span>
@@ -666,13 +504,13 @@
                                  value="#{binaryInteraction.interactorB.features}"
                                  maxShown="3">
             <span style="display:block">
-                <!--<strong><h:outputText value="#{item.featureType}" style="white-space:nowrap"/></strong>-->
                 <strong><h:outputText value="#{item.featureType}"/></strong>
                 <h:panelGroup rendered="#{not empty item.ranges}">
                     <h:outputText value=" : " style="white-space:nowrap"/>
                     <ui:repeat var="range" value="#{item.ranges}">
                            <span style="display:block">
-                                    <strong><h:outputText value="#{checksum.methodName}" style="white-space:nowrap"/></strong>
+                                    <strong><h:outputText value="#{checksum.methodName}"
+                                                          style="white-space:nowrap"/></strong>
                           <h:outputText value="#{range}" style="white-space:nowrap"/>
                                <br/>
                           </span>
@@ -712,11 +550,40 @@
     </h:panelGroup>
 </p:column>
 
+
+<p:column id="bioroleACol" rendered="#{columnContext.isColumnVisible('moleculeA.biorole')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeA.biorole']}"/></f:facet>
+    <h:panelGroup rendered="#{binaryInteraction.interactorA != null}">
+        <iv:cvLazyPopup text="#{binaryInteraction.interactorA.biologicalRoles[0].text}" dialogVar="cvInfoDialog"
+                        cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"
+                        cvIdentifier="#{binaryInteraction.interactorA.biologicalRoles[0].identifier}"/>
+    </h:panelGroup>
+
+    <h:panelGroup rendered="#{binaryInteraction.interactorA == null}">
+        <h:outputText value="N/A"/>
+    </h:panelGroup>
+</p:column>
+<p:column id="bioroleBCol" rendered="#{columnContext.isColumnVisible('moleculeB.biorole')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeB.biorole']}"/></f:facet>
+
+    <h:panelGroup rendered="#{binaryInteraction.interactorB != null}">
+        <iv:cvLazyPopup text="#{binaryInteraction.interactorB.biologicalRoles[0].text}" dialogVar="cvInfoDialog"
+                        cvClassName="uk.ac.ebi.intact.model.CvBiologicalRole"
+                        cvIdentifier="#{binaryInteraction.interactorB.biologicalRoles[0].identifier}"/>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{binaryInteraction.interactorB == null}">
+        <h:outputText value="N/A"/>
+    </h:panelGroup>
+</p:column>
+
 <p:column id="pmethodACol" rendered="#{columnContext.isColumnVisible('moleculeA.pmethod')}"
           styleClass="cellTextCompound">
     <f:facet name="header"><h:outputText value="#{messages['moleculeA.pmethod']}"/></f:facet>
     <h:panelGroup rendered="#{binaryInteraction.interactorA != null}">
-        <iv:cvLazyPopup text="#{binaryInteraction.interactorA.participantIdentificationMethods[0].text}"  dialogVar="cvInfoDialog"
+        <iv:cvLazyPopup text="#{binaryInteraction.interactorA.participantIdentificationMethods[0].text}"
+                        dialogVar="cvInfoDialog"
                         cvClassName="uk.ac.ebi.intact.model.CvIdentification"
                         cvIdentifier="#{binaryInteraction.interactorA.participantIdentificationMethods[0].identifier}"/>
     </h:panelGroup>
@@ -730,7 +597,8 @@
     <f:facet name="header"><h:outputText value="#{messages['moleculeB.pmethod']}"/></f:facet>
 
     <h:panelGroup rendered="#{binaryInteraction.interactorB != null}">
-        <iv:cvLazyPopup text="#{binaryInteraction.interactorB.participantIdentificationMethods[0].text}"  dialogVar="cvInfoDialog"
+        <iv:cvLazyPopup text="#{binaryInteraction.interactorB.participantIdentificationMethods[0].text}"
+                        dialogVar="cvInfoDialog"
                         cvClassName="uk.ac.ebi.intact.model.CvIdentification"
                         cvIdentifier="#{binaryInteraction.interactorB.participantIdentificationMethods[0].identifier}"/>
     </h:panelGroup>
@@ -739,9 +607,176 @@
     </h:panelGroup>
 </p:column>
 
+<p:column id="xrefACol" rendered="#{columnContext.isColumnVisible('moleculeA.xrefs')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeA.xrefs']}"/></f:facet>
+    <h:panelGroup rendered="#{binaryInteraction.interactorA != null}">
+        <iam:collapsibleIterator disclosed="false"
+                                 value="#{binaryInteraction.interactorA.xrefs}"
+                                 maxShown="3">
+            <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
+            <h:outputLink value="#{xrefUrl}" title="#{item.text}"
+                          target="_blank"
+                          disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
+        </iam:collapsibleIterator>
+    </h:panelGroup>
+
+    <h:panelGroup rendered="#{binaryInteraction.interactorA == null}">
+        <h:outputText value="N/A"/>
+    </h:panelGroup>
+</p:column>
+
+<p:column id="xrefBCol" rendered="#{columnContext.isColumnVisible('moleculeB.xrefs')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeB.xrefs']}"/></f:facet>
+    <h:panelGroup rendered="#{binaryInteraction.interactorB != null}">
+        <iam:collapsibleIterator disclosed="false"
+                                 value="#{binaryInteraction.interactorB.xrefs}"
+                                 maxShown="3">
+            <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
+            <h:outputLink value="#{xrefUrl}" title="#{item.text}"
+                          target="_blank"
+                          disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
+        </iam:collapsibleIterator>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{binaryInteraction.interactorB == null}">
+        <h:outputText value="N/A"/>
+    </h:panelGroup>
+</p:column>
+
+<p:column id="xrefsCol" rendered="#{columnContext.isColumnVisible('interaction.xrefs')}"
+          styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.xrefs']}"/></f:facet>
+    <iam:collapsibleIterator disclosed="false"
+                             value="#{binaryInteraction.xrefs}"
+                             maxShown="3">
+        <ui:param name="xrefUrl" value="#{iav:xrefUrl(appConfigBean.linkContext, item)}"/>
+        <h:outputLink value="#{xrefUrl}" title="#{item.text}"
+                      target="_blank" disabled="#{xrefUrl == null or xrefUrl == '#'}">#{item.identifier}</h:outputLink>
+    </iam:collapsibleIterator>
+</p:column>
+
+<p:column id="annotACol" rendered="#{columnContext.isColumnVisible('moleculeA.annotations')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeA.annotations']}"/></f:facet>
+    <h:panelGroup rendered="#{binaryInteraction.interactorA != null}">
+        <iam:collapsibleIterator disclosed="false"
+                                 value="#{binaryInteraction.interactorA.annotations}"
+                                 maxShown="3">
+            <span style="display:block">
+                <strong><h:outputText value="#{item.topic}"/></strong>
+                                    <h:outputText value=" : #{item.text}" rendered="#{item.text != null}"/>
+                            </span>
+        </iam:collapsibleIterator>
+    </h:panelGroup>
+
+    <h:panelGroup rendered="#{binaryInteraction.interactorA == null}">
+        <h:outputText value="N/A"/>
+    </h:panelGroup>
+</p:column>
+
+<p:column id="annotBCol" rendered="#{columnContext.isColumnVisible('moleculeB.annotations')}"
+          styleClass="cellTextCompound">
+    <f:facet name="header"><h:outputText value="#{messages['moleculeB.annotations']}"/></f:facet>
+    <h:panelGroup rendered="#{binaryInteraction.interactorB != null}">
+        <iam:collapsibleIterator disclosed="false"
+                                 value="#{binaryInteraction.interactorB.annotations}"
+                                 maxShown="3">
+            <span style="display:block">
+                               <strong><h:outputText value="#{item.topic}"/></strong>
+                                <h:outputText value=" : #{item.text}" rendered="#{item.text != null}"/>
+                            </span>
+        </iam:collapsibleIterator>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{binaryInteraction.interactorB == null}">
+        <h:outputText value="N/A"/>
+    </h:panelGroup>
+</p:column>
+
+<p:column id="annotsCol" rendered="#{columnContext.isColumnVisible('interaction.annotations')}"
+          styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['interaction.annotations']}"/></f:facet>
+    <iam:collapsibleIterator disclosed="false"
+                             value="#{binaryInteraction.annotations}"
+                             maxShown="3">
+            <span style="display:block">
+                <strong><h:outputText value="#{item.topic}"/></strong>
+                                    <h:outputText value=" : #{item.text}" rendered="#{item.text != null}"/>
+                            </span>
+    </iam:collapsibleIterator>
+</p:column>
+
+<p:column id="createdDateCol" rendered="#{columnContext.isColumnVisible('created.date')}"
+          styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['created.date']}"/></f:facet>
+    <ui:repeat var="created" value="#{binaryInteraction.creationDate}">
+                            <span style="display:block">
+                                    <h:outputText value="#{iamf:formatDate(created)}" style="white-space:nowrap"/>
+                            </span>
+    </ui:repeat>
+</p:column>
+
+<p:column id="updateDateCol" rendered="#{columnContext.isColumnVisible('update.date')}"
+          styleClass="cellTextInteraction">
+    <f:facet name="header"><h:outputText value="#{messages['update.date']}"/></f:facet>
+    <ui:repeat var="updated" value="#{binaryInteraction.updateDate}">
+                            <span style="display:block">
+                                    <h:outputText value="#{iamf:formatDate(updated)}" style="white-space:nowrap"/>
+                            </span>
+    </ui:repeat>
+</p:column>
 </p:dataTable>
-</div>
 
+<p:dataTable id="fourthTable" value="binaryInteraction">
+    <p:column id="checksumACol" rendered="#{columnContext.isColumnVisible('moleculeA.checksum')}"
+              styleClass="cellTextCompound">
+        <f:facet name="header"><h:outputText value="#{messages['moleculeA.checksum']}"/></f:facet>
+        <h:panelGroup rendered="#{binaryInteraction.interactorA != null}">
+            <ui:repeat var="checksum" value="#{binaryInteraction.interactorA.checksums}" rows="0">
+                           <span style="display:block">
+                                    <strong><h:outputText value="#{checksum.methodName}"
+                                                          style="white-space:nowrap"/></strong>
+                                    <h:outputText value=" : #{checksum.checksum}" style="white-space:nowrap"/>
+                            </span>
+            </ui:repeat>
+        </h:panelGroup>
 
-</div>
+        <h:panelGroup rendered="#{binaryInteraction.interactorA == null}">
+            <h:outputText value="N/A"/>
+        </h:panelGroup>
+    </p:column>
+
+    <p:column id="checksumBCol" rendered="#{columnContext.isColumnVisible('moleculeB.checksum')}"
+              styleClass="cellTextCompound">
+        <f:facet name="header"><h:outputText value="#{messages['moleculeB.checksum']}"/></f:facet>
+        <h:panelGroup rendered="#{binaryInteraction.interactorB != null}">
+            <ui:repeat var="checksum" value="#{binaryInteraction.interactorB.checksums}" rows="0">
+                           <span style="display:block">
+                                    <strong><h:outputText value="#{checksum.methodName}"
+                                                          style="white-space:nowrap"/></strong>
+                                    <h:outputText value=" : #{checksum.checksum}" style="white-space:nowrap"/>
+                            </span>
+            </ui:repeat>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{binaryInteraction.interactorB == null}">
+            <h:outputText value="N/A"/>
+        </h:panelGroup>
+    </p:column>
+
+    <p:column id="checksumCol" rendered="#{columnContext.isColumnVisible('interaction.checksum')}"
+              styleClass="cellTextInteraction">
+        <f:facet name="header"><h:outputText value="#{messages['interaction.checksum']}"/></f:facet>
+        <ui:repeat var="checksum" value="#{binaryInteraction.checksums}" rows="0">
+                           <span style="display:block">
+                                    <strong><h:outputText value="#{checksum.methodName}"
+                                                          style="white-space:nowrap"/></strong>
+                                    <h:outputText value=" : #{checksum.checksum}" style="white-space:nowrap"/>
+                            </span>
+        </ui:repeat>
+    </p:column>
+</p:dataTable>
+
+</p:rowExpansion>
+</p:dataTable>
 </ui:composition>

@@ -203,7 +203,7 @@ public class SearchController extends JpaBaseController {
         try {
             if ( log.isDebugEnabled() ) {log.debug( "\tSolrQuery:  "+ solrQuery.getQuery() );}
 
-            final SolrQuery solrQueryCopy = solrQuery;
+            final SolrQuery solrQueryCopy = solrQuery.getCopy();
             final SolrServer solrServer = intactViewConfiguration.getInteractionSolrServer();
             final int pageSize = getUserQuery().getPageSize();
             final PsicquicSearchManager psicquicController = this.psicquicController;
@@ -211,13 +211,17 @@ public class SearchController extends JpaBaseController {
             final String query = solrQuery.getQuery();
 
             // prepare solr search
-            Callable<Integer> intactRunnable = createIntactSearchRunnable(solrQueryCopy, solrServer, pageSize);
+            //Callable<Integer> intactRunnable = createIntactSearchRunnable(solrQueryCopy, solrServer, pageSize);
+            results = createInteractionDataModel( solrQueryCopy, solrServer, pageSize );
+
+            // store the current query
+            currentQuery = solrQueryCopy.getQuery();
 
             // we are doing a new search so we reset browser
             hasLoadedSearchControllerResults = true;
             hasLoadedInteractorResults = false;
 
-            Future<Integer> intactFuture = executorService.submit(intactRunnable);
+            //Future<Integer> intactFuture = executorService.submit(intactRunnable);
 
             // count complex results
             complexController.countNumberOfComplexes(query);
@@ -225,7 +229,13 @@ public class SearchController extends JpaBaseController {
             psicquicController.countResultsInOtherDatabases(query);
 
             // resume tasks
-            checkAndResumeSearchTasks(intactFuture);
+            //checkAndResumeSearchTasks(intactFuture);
+            if (results == null){
+                this.totalResults = 0;
+            }
+            else{
+                this.totalResults = results.getRowCount();
+            }
             complexController.checkAndResumeComplexTasks();
             psicquicController.checkAndResumePsicquicTasks();
 

@@ -6,10 +6,13 @@
 
                 template="/results_content_template.xhtml">
 
+    <ui:param name="sectionTitle" value="Browse"/>
+
     <ui:define name="metadata">
         <f:metadata>
-            <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(3)}"/>
+            <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(1)}"/>
             <f:event type="preRenderView" listener="#{browseBean.searchOnLoad}"/>
+            <f:viewParam name="query" value="#{userQuery.urlFriendlyQuery}"/>
         </f:metadata>
     </ui:define>
 
