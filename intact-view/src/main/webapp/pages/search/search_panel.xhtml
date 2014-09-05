@@ -90,8 +90,9 @@
                     </h:selectOneMenu>
 
                     <h:panelGroup rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}">
-                        <p:commandLink id="browseOntology" actionListener="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.initializeTreeNode}"
-                                       oncomplete="browseCvDialog.show()" ajax="true" update="ontologyDialog" process="@this">
+                        <p:commandLink id="browseOntology"
+                                       actionListener="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.initializeTreeNode}"
+                                       oncomplete="browseCvDialog.show()" ajax="true" update="ontologyDialog">
                             <h:graphicImage id="browseOntologyImg" alt="Browse" url="/images/magnify.png" height="16px" width="16px"/>
                         </p:commandLink>
 
