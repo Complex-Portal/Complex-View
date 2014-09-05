@@ -13,6 +13,8 @@
             <f:event type="preRenderView" listener="#{searchBean.searchOnLoad}"/>
 
             <f:viewParam name="query" value="#{userQuery.urlFriendlyQuery}"/>
+            <f:event type="preRenderView" listener="#{searchBean.refreshStatusOnLoad}"/>
+
         </f:metadata>
     </ui:define>
 

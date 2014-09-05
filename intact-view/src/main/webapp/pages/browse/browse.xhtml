@@ -13,6 +13,7 @@
             <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(1)}"/>
             <f:event type="preRenderView" listener="#{browseBean.searchOnLoad}"/>
             <f:viewParam name="query" value="#{userQuery.urlFriendlyQuery}"/>
+            <f:event type="preRenderView" listener="#{searchBean.refreshStatusOnLoad}"/>
         </f:metadata>
     </ui:define>
 
