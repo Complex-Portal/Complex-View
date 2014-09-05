@@ -279,7 +279,7 @@ public class SearchController extends JpaBaseController {
     private void checkAndResumeSearchTasks(Future<Integer> intactFuture) {
 
         try {
-            this.totalResults = intactFuture.get(threadTimeOut, TimeUnit.SECONDS);
+            this.totalResults = intactFuture.get();
 
         } catch (InterruptedException e) {
             log.error("The intact search was interrupted, we cancel the task.", e);
@@ -448,7 +448,7 @@ public class SearchController extends JpaBaseController {
                                                Future<InteractorSearchResultDataModel> nucleicAcidFuture, Future<InteractorSearchResultDataModel> geneFuture) {
         if (proteinFuture != null){
             try {
-                this.proteinResults = proteinFuture.get(threadTimeOut, TimeUnit.SECONDS);
+                this.proteinResults = proteinFuture.get();
                 this.proteinTotalResults = proteinResults.getRowCount();
 
             } catch (InterruptedException e) {
@@ -472,7 +472,7 @@ public class SearchController extends JpaBaseController {
 
         if (compoundFuture != null){
             try {
-                this.smallMoleculeResults = compoundFuture.get(threadTimeOut, TimeUnit.SECONDS);
+                this.smallMoleculeResults = compoundFuture.get();
                 this.smallMoleculeTotalResults = smallMoleculeResults.getRowCount();
 
             } catch (InterruptedException e) {
@@ -496,7 +496,7 @@ public class SearchController extends JpaBaseController {
 
         if (nucleicAcidFuture != null){
             try {
-                this.nucleicAcidResults = nucleicAcidFuture.get(threadTimeOut, TimeUnit.SECONDS);
+                this.nucleicAcidResults = nucleicAcidFuture.get();
                 this.nucleicAcidTotalResults = nucleicAcidResults.getRowCount();
 
             } catch (InterruptedException e) {
@@ -520,7 +520,7 @@ public class SearchController extends JpaBaseController {
 
         if (geneFuture != null){
             try {
-                this.geneResults = geneFuture.get(threadTimeOut, TimeUnit.SECONDS);
+                this.geneResults = geneFuture.get();
                 this.geneTotalResults = geneResults.getRowCount();
 
             } catch (InterruptedException e) {
