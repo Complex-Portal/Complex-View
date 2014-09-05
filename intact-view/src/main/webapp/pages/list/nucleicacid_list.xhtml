@@ -6,10 +6,14 @@
 
                 template="/results_content_template.xhtml">
 
-     <f:metadata>
-        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(4)}"/>
+    <ui:param name="sectionTitle" value="Nucleic acid list"/>
+
+    <ui:define name="metadata">
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(2)}"/>
          <f:event type="preRenderView" listener="#{contextController.setInteractorActiveTabIndex(2)}"/>
     </f:metadata>
+    </ui:define>
     <ui:param name="disclosedListTabName" value="nucleicacidList"/>
 
 </ui:composition>

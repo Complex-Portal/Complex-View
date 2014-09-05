@@ -6,9 +6,11 @@
 
                 template="/results_content_template.xhtml">
 
+    <ui:param name="sectionTitle" value="Molecule Details"/>
+
     <ui:define name="metadata">
         <f:metadata>
-            <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(6)}"/>
+            <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(4)}"/>
             <f:viewParam name="interactorAc" value="#{moleculeViewBean.interactorAc}"/>
             <f:event type="preRenderView" listener="#{moleculeViewBean.loadInteractor}"/>
         </f:metadata>

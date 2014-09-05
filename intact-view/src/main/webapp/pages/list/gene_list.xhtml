@@ -6,10 +6,13 @@
 
                 template="/results_content_template.xhtml">
 
+    <ui:param name="sectionTitle" value="Gene list"/>
+    <ui:define name="metadata">
     <f:metadata>
-        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(4)}"/>
+        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(2)}"/>
         <f:event type="preRenderView" listener="#{contextController.setInteractorActiveTabIndex(3)}"/>
     </f:metadata>
+    </ui:define>
 
     <ui:param name="disclosedListTabName" value="geneList"/>
 

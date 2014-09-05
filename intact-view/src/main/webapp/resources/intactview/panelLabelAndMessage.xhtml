@@ -3,26 +3,26 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
-                
+
                 xmlns:iamf="http://intact.ebi.ac.uk/mitabfunctions"
                 xmlns:iav="http://intact.ebi.ac.uk/view"
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
-                
+
                 xmlns:composite="http://java.sun.com/jsf/composite">
 
     <!-- INTERFACE -->
-  <composite:interface>
-      <composite:attribute name="label" required="true"/>
-      <composite:attribute name="labelStyle" default="white-space:nowrap;"/>
-      <composite:attribute name="labelStyleClass"/>
-      <composite:attribute name="visible" type="java.util.Boolean" default="true"/>
-      <composite:attribute name="width" default="100%"/>
+    <composite:interface>
+        <composite:attribute name="label" required="true"/>
+        <composite:attribute name="labelStyle" default="white-space:nowrap;"/>
+        <composite:attribute name="labelStyleClass"/>
+        <composite:attribute name="visible" type="java.util.Boolean" default="true"/>
+        <composite:attribute name="width" default="100%"/>
 
-      <composite:facet name="help"/>
-      <composite:facet name="end"/>
-  </composite:interface>
+        <composite:facet name="help"/>
+        <composite:facet name="end"/>
+    </composite:interface>
 
-  <!-- IMPLEMENTATION -->
+    <!-- IMPLEMENTATION -->
     <composite:implementation>
 
         <p:outputPanel id="#{cc.id}" rendered="#{cc.attrs.visible}">
