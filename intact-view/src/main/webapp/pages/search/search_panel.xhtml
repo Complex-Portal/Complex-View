@@ -26,7 +26,7 @@
                                  onclick="queryTxt = document.getElementById('queryTxt'); _gaq.push(['_trackEvent', 'SearchPanel', 'Search', queryTxt.value])"
                                  value="Search"
                                  disabled="#{userQuery.showNewFieldPanel}"
-                                 action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
+                                 action="/pages/interactions/interactions.xhtml?faces-redirect=true">
                 </h:commandButton>
                 &#160;
                 <p:commandButton id="clearSearchBtn" value="Clear"
@@ -129,7 +129,7 @@
 
                         <p:commandButton id="addAndSearchBtn" value="Add &amp; Search"
                                          actionListener="#{userQuery.doAddFieldToQuery}"
-                                         action="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true"
+                                         action="/pages/interactions/interactions.xhtml?faces-redirect=true"
                                          ajax="false" process="@this"
                                          onstart="statusDialog.show()"
                                          oncomplete="statusDialog.hide()"/>
