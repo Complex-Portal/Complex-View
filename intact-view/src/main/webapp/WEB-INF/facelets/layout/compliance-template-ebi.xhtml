@@ -130,23 +130,23 @@
                         <!--&lt;!&ndash; Include some example searchterms - keep them short and few! &ndash;&gt;-->
                         <ot:separateConversationContext>
         <span class="examples">Examples:
-            <h:link id="example-1" value="BRCA2" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true">
+            <h:link id="example-1" value="BRCA2" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
                 <f:param name="query" value="BRCA2" />
             </h:link>,
-            <h:link id="example-2" value="Q06609" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true">
+            <h:link id="example-2" value="Q06609" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
                 <f:param name="query" value="Q06609" />
             </h:link>,
-            <h:link id="example-3" value="dmc1" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true">
+            <h:link id="example-3" value="dmc1" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
                 <f:param name="query" value="dmc1" />
             </h:link>,
-            <h:link id="example-4" value="10831611" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true">
+            <h:link id="example-4" value="10831611" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
                 <f:param name="query" value="10831611" />
             </h:link></span>
                         </ot:separateConversationContext>
                     </div>
 
                     <div class="right">
-                        <h:commandButton id="search-submit-button" value="Search" action="/pages/interactions/interactions.xhtml?faces-redirect=true"/>
+                        <h:commandButton id="search-submit-button" value="Search" action="interactions?faces-redirect=true&amp;includeViewParams=true"/>
                         <!--&lt;!&ndash; If your search is more complex than just a keyword search, you can link to an Advanced Search,-->
                         <!--with whatever features you want available &ndash;&gt;-->
                         <span class="adv">
@@ -211,7 +211,7 @@
     You don't need a breadcrumb trail on the homepage of your service... -->
     <nav id="breadcrumb">
         <p>
-            <h:link value="#{intactView['webapp.name']}" outcome="/home.xhtml?faces-redirect=true" rendered="#{sectionTitle ne 'Home'}"/>
+            <h:link value="#{intactView['webapp.name']}" outcome="/home.xhtml?faces-redirect=true&amp;includeViewParams=true" rendered="#{sectionTitle ne 'Home'}"/>
             <h:outputText value=" &gt; #{sectionTitle}" rendered="#{sectionTitle ne 'Home'}"/>
         </p>
     </nav>

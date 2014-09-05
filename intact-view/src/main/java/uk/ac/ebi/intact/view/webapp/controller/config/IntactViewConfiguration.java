@@ -522,9 +522,18 @@ public class IntactViewConfiguration extends BaseController implements Initializ
         return solrServer;
     }
 
+    public HttpSolrServer createNewInteractionSolrServer() throws MalformedURLException {
+        return createSolrServer(getSolrInteractionsUrl());
+    }
+
     public HttpSolrServer getOntologySolrServer() {
 
         return ontologySolrServer;
+    }
+
+    public HttpSolrServer createNewOntologySolrServer() throws MalformedURLException {
+
+        return createSolrServer(getSolrOntologiesUrl());
     }
 
     public String getComplexViewUrl() {
