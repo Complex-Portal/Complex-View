@@ -19,6 +19,11 @@
 		<view-id>/pages/browse/browse.xhtml</view-id>
 	</url-mapping>
 
+    <url-mapping id="results">
+        <pattern value="/interactions" />
+        <view-id>/pages/interactions/interactions.xhtml</view-id>
+    </url-mapping>
+
     <url-mapping id="interactions">
 		<pattern value="/query/#{query}" />
 		<view-id>/pages/interactions/interactions.xhtml</view-id>
