@@ -92,7 +92,7 @@
                     <h:panelGroup rendered="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].ontologyBrowser}">
                         <p:commandLink id="browseOntology"
                                        actionListener="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.initializeTreeNode}"
-                                       oncomplete="browseCvDialog.show()" ajax="true" update="ontologyDialog">
+                                       oncomplete="browseCvDialog.show()" ajax="true" update="newQueryPanel">
                             <h:graphicImage id="browseOntologyImg" alt="Browse" url="/images/magnify.png" height="16px" width="16px"/>
                         </p:commandLink>
 
@@ -113,7 +113,7 @@
                                 <p:ajax event="select"
                                         listener="#{userQuery.searchFieldsMap[userQuery.newQueryToken.field].browser.doSelectCvTerm}"
                                         oncomplete="browseCvDialog.hide(); statusDialog.hide()"
-                                        update="newQueryPanel" onstart="statusDialog.show()" process="@this"/>
+                                        update=":intactForm:searchPanelDetails" onstart="statusDialog.show()" process="@this"/>
 
                                 <p:treeNode id="ontologyTreeNode">
                                     <h:outputText id="termTxt" value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
