@@ -8,34 +8,35 @@
                 template="/pages/browse/browser_template.xhtml">
 
     <f:metadata>
-        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(3)}"/>
+        <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(1)}"/>
         <f:event type="preRenderView" listener="#{chebiBrowser.searchOnLoad}"/>
     </f:metadata>
 
      <ui:define name="browseTabContent">
 
-        <h:panelGroup>
-            <h:graphicImage alt="Back" url="/images/back_arrow.gif" />
-            <p:commandLink value="Back to Browse options" action="/pages/browse/browse?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
-        </h:panelGroup>
-
-        <br/>
-
         <h2>ChEBI Ontology Browser</h2>
 
-        <p:tree var="otw" value="#{chebiBrowser.ontologyTreeNode}"
-                dynamic="true" cache="true"
-                selectionMode="single" selection="#{chebiBrowser.selectedNode}"
-                style="width:50%;">
+         <section>
+             <h:panelGroup>
+                 <h:graphicImage alt="Back" url="/images/back_arrow.gif" />
+                 <p:commandLink value="Back to Browse options" action="/pages/browse/browse?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
+             </h:panelGroup>
+         </section>
 
-            <p:ajax event="select" listener="#{chebiBrowser.onNodeSelect}" process="@this" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
+         <section>
+             <p:tree var="otw" value="#{chebiBrowser.ontologyTreeNode}"
+                     dynamic="true" cache="true"
+                     selectionMode="single" selection="#{chebiBrowser.selectedNode}"
+                     style="width:50%;">
 
-            <p:treeNode>
-                <h:outputText value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
-            </p:treeNode>
-        </p:tree>
+                 <p:ajax event="select" listener="#{chebiBrowser.onNodeSelect}" process="@this" onstart="statusDialog.show()" oncomplete="statusDialog.hide()"/>
 
+                 <p:treeNode>
+                     <h:outputText value="#{otw.term.name} - (#{otw.interactionCount} interactions)"/>
+                 </p:treeNode>
+             </p:tree>
 
+         </section>
     </ui:define>
 
 </ui:composition>
