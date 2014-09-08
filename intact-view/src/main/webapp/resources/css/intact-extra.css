@@ -53,19 +53,19 @@
 /*}*/
 
 
-/*.newInteractionRow {*/
-/*border-top: 1px solid #CDCDCD !important;*/
-/*border-left: 1px solid #CDCDCD !important;*/
-/*border-right: 1px solid #CDCDCD !important;*/
-/*border-bottom: 0 !important;*/
-/*}*/
+.newInteractionRow {
+border-top: 1px solid !important;
+border-left: 1px solid !important;
+border-right: 1px solid !important;
+border-bottom: 0 !important;
+}
 
-/*.sameInteractionRow {*/
-/*border-top: 0 !important;*/
-/*border-left: 1px solid #CDCDCD !important;*/
-/*border-right: 1px solid #CDCDCD !important;*/
-/*border-bottom: 0 !important;*/
-/*}*/
+.sameInteractionRow {
+border-top: 0 !important;
+border-left: 1px solid !important;
+border-right: 1px solid !important;
+border-bottom: 0 !important;
+}
 
 .negativeInteractionRow {
     background: #ffdfe5;
