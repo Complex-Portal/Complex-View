@@ -10,78 +10,82 @@
                 xmlns:iam="http://intact.ebi.ac.uk/miscel"
                 xmlns:o="http://myfaces.apache.org/orchestra" >
 
-    <section class="grid_18 alpha">
-        <section>
-            <h2>Quick search</h2>
+<section class="grid_18 alpha">
+    <p:dialog header="MIQL Syntax Reference" widgetVar="miqlHelpDialog" fixedCenter="true"
+              width="900" height="600">
+        <ui:include src="help_miql.xhtml"/>
+    </p:dialog>
+    <section>
+        <h2>Quick search</h2>
 
-            <iv:panelLabelAndMessage label="Search query:" width="40%">
-                <f:facet name="help">
+        <h:form id="intactQuickForm" prependId="false">
+
+            <h:outputLabel value="Search query:" for="searchInTabTxt"/>
+            &#160;
+            <h:inputTextarea id="searchInTabTxt" autoResize="false"
+                             rows="6" cols="50" value="#{userQuery.searchQuery}"/>
+            &#160;
+            <h:commandButton id="searchBtn"
+                             value="Search"
+                             action="#{searchBean.doBinarySearchAction}"
+                             style="display: inline"
+                             styleClass="submit"/>
+            <br/>
+            <br/>
+            <h:panelGroup>
+                <ul>
+                    <li>
+                        <h:panelGroup>
+                            Protein accession number: e.g.&#160;
+                            <h:link id="P20053" value="P20053" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
+                                <f:param name="query" value="P20053" />
+                            </h:link>
+                        </h:panelGroup>
+                    </li><li>
                     <h:panelGroup>
-                        <ul>
-                            <li>
-                                <h:panelGroup>
-                                    Protein accession number: e.g.&#160;
-                                    <h:link id="P20053" value="P20053" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
-                                        <f:param name="query" value="P20053" />
-                                    </h:link>
-                                </h:panelGroup>
-                            </li><li>
-                            <h:panelGroup>
-                                Drug name: e.g.&#160;
-                                <h:link id="imatinib" value="imatinib" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
-                                    <f:param name="query" value="imatinib" />
-                                </h:link>
-                            </h:panelGroup>
-                        </li><li>
-                            <h:panelGroup>
-                                Gene name: e.g.&#160;
-                                <h:link id="DDR1" value="DDR1" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
-                                    <f:param name="query" value="DDR1" />
-                                </h:link>
-                            </h:panelGroup>
-                        </li><li>
-                            <h:panelGroup>
-                                Phrases (surrounded by quotes): e.g.
-                                <ui:param name="expr" value="#{iam:surroundByQuotesIfMissing('NADH dehydrogenase')}"/>
-                                <h:link id="NADH" value="#{expr}" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
-                                    <f:param name="query" value="#{expr}" />
-                                </h:link>
-
-                            </h:panelGroup>
-                        </li>
-                        </ul>
+                        Drug name: e.g.&#160;
+                        <h:link id="imatinib" value="imatinib" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
+                            <f:param name="query" value="imatinib" />
+                        </h:link>
                     </h:panelGroup>
-                </f:facet>
+                </li><li>
+                    <h:panelGroup>
+                        Gene name: e.g.&#160;
+                        <h:link id="DDR1" value="DDR1" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
+                            <f:param name="query" value="DDR1" />
+                        </h:link>
+                    </h:panelGroup>
+                </li><li>
+                    <h:panelGroup>
+                        Phrases (surrounded by quotes): e.g.
+                        <ui:param name="expr" value="#{iam:surroundByQuotesIfMissing('NADH dehydrogenase')}"/>
+                        <h:link id="NADH" value="#{expr}" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
+                            <f:param name="query" value="#{expr}" />
+                        </h:link>
 
-                <f:facet name="end">
-                    <h:commandButton id="searchBtn"
-                                     value="Search"
-                                     action="#{searchBean.doBinarySearchAction}"
-                                     style="display: inline"
-                                     styleClass="submit">
-                    </h:commandButton>
-                </f:facet>
+                    </h:panelGroup>
+                </li>
+                </ul>
+            </h:panelGroup>
 
-                <h:inputText id="searchInTabTxt" size="40"
-                             onfocus="this.select()"
-                             onkeyup="$('#queryTxt').val(this.value);"/>
-            </iv:panelLabelAndMessage>
+        </h:form>
 
-            <p:panel>
-                You can do more powerful queries by using the&#160;
-                <p:commandLink type="button" onclick="miqlHelpDialog.show()">
-                    Molecular Interaction Query Language
-                    <h:graphicImage alt="help" url="/images/help.png" style="vertical-align: baseline"/>
-                </p:commandLink>
-            </p:panel>
-        </section>
-        <section>
-            <h2>Ontology Search</h2>
+        <p>
+            You can do more powerful queries by using the&#160;
+            <p:commandLink type="button" onclick="miqlHelpDialog.show()">
+                Molecular Interaction Query Language
+                <h:graphicImage alt="help" url="/images/help.png" style="vertical-align: baseline"/>
+            </p:commandLink>
+        </p>
+    </section>
+    <section>
+        <h2>Ontology Search</h2>
 
-            <h:outputText
-                    value="Start typing an ontology term, possible completions of the term associated with at least one binary interaction will be shown :"/>
-            <br/><br/>
+        <h:form id="intactOntologyForm" prependId="false">
 
+        <h:outputText
+                value="Start typing an ontology term, possible completions of the term associated with at least one binary interaction will be shown :"/>
+        <br/><br/>
 
             <iv:panelLabelAndMessage label="Ontology query:" width="40%">
 
@@ -125,53 +129,57 @@
                 </f:facet>
             </iv:panelLabelAndMessage>
 
-            <iv:panelLabelAndMessage label="Note: ">
-                <h:outputText value="Currently the following ontologies are supported : "/>
-                <ul>
-                    <li><h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=GO"
-                                      target="_blank">Gene Ontology</h:outputLink></li>
-                    <li><h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI"
-                                      target="_blank">PSI-MI (interaction detection methods, interaction types, biological roles, interactor types, feature types, annotation topics and participant identification methods)</h:outputLink></li>
-                    <li><h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=CHEBI"
-                                      target="_blank">ChEBI</h:outputLink></li>
-                    <li><h:outputLink value="http://www.uniprot.org/taxonomy"
-                                      target="_blank">UniProt Taxonomy</h:outputLink></li>
-                    <li><h:outputLink value="http://www.ebi.ac.uk/interpro/"
-                                      target="_blank">InterPro</h:outputLink></li>
-                </ul>
+        </h:form>
 
-            </iv:panelLabelAndMessage>
+        <iv:panelLabelAndMessage label="Note: ">
+            <h:outputText value="Currently the following ontologies are supported : "/>
+            <ul>
+                <li><h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=GO"
+                                  target="_blank">Gene Ontology</h:outputLink></li>
+                <li><h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI"
+                                  target="_blank">PSI-MI (interaction detection methods, interaction types, biological roles, interactor types, feature types, annotation topics and participant identification methods)</h:outputLink></li>
+                <li><h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=CHEBI"
+                                  target="_blank">ChEBI</h:outputLink></li>
+                <li><h:outputLink value="http://www.uniprot.org/taxonomy"
+                                  target="_blank">UniProt Taxonomy</h:outputLink></li>
+                <li><h:outputLink value="http://www.ebi.ac.uk/interpro/"
+                                  target="_blank">InterPro</h:outputLink></li>
+            </ul>
 
-            <p:commandLink value="Why do I find more interactions using the Ontology Search ?"
-                           onclick="ontologyInfoDialog.show()"/>
+        </iv:panelLabelAndMessage>
 
-            <p:dialog header="Why do I find more interactions using the Ontology Search ?"
-                      widgetVar="ontologyInfoDialog"
-                      width="700" height="500">
-                <div style="width:670px; overflow:auto;">
-                    <br/>
-                    The ontology search is designed to provide search facilities on a given set of ontologies.
-                    Furthermore, whenever you search for a given ontology term, it also includes the interactions of
-                    all children that may have been used to annotate participants of these interactions.
-                    <br/>
-                    <br/>
-                    <u>Example</u>: Let's look at a GO term like synapse (GO:0045202), when searching for synapse in the
-                    Ontology Search, we actually search for that term but also all of its children as depicted below:
+        <p:commandLink value="Why do I find more interactions using the Ontology Search ?"
+                       onclick="ontologyInfoDialog.show()"/>
 
-                    <blockquote>
-                        <h:graphicImage alt="goSynapse" url="/images/documentation/go_synapse.png"/></blockquote>
+        <p:dialog header="Why do I find more interactions using the Ontology Search ?"
+                  widgetVar="ontologyInfoDialog"
+                  width="700" height="500">
+            <div style="width:670px; overflow:auto;">
+                <br/>
+                The ontology search is designed to provide search facilities on a given set of ontologies.
+                Furthermore, whenever you search for a given ontology term, it also includes the interactions of
+                all children that may have been used to annotate participants of these interactions.
+                <br/>
+                <br/>
+                <u>Example</u>: Let's look at a GO term like synapse (GO:0045202), when searching for synapse in the
+                Ontology Search, we actually search for that term but also all of its children as depicted below:
 
-                    However, when searching for that same term in Quick Search, we will only present you with the
-                    interactions for which this and only this term was found.
-                </div>
-            </p:dialog>
-        </section>
+                <blockquote>
+                    <h:graphicImage alt="goSynapse" url="/images/documentation/go_synapse.png"/></blockquote>
 
-        <section>
-            <h:panelGroup rendered="#{intactViewConfiguration.chebiSearchEnabled}">
+                However, when searching for that same term in Quick Search, we will only present you with the
+                interactions for which this and only this term was found.
+            </div>
+        </p:dialog>
+    </section>
+
+    <section>
+        <h:panelGroup rendered="#{intactViewConfiguration.chebiSearchEnabled}">
 
 
-                <h2>Other Searches</h2>
+            <h2>Other Searches</h2>
+
+            <h:form id="intactChebiForm" prependId="false">
 
                 <p:panel header="Chemical Search" toggleable="true" collapsed="true">
 
@@ -181,17 +189,19 @@
 
                 </p:panel>
 
-            </h:panelGroup>
-        </section>
-    </section>
+            </h:form>
 
-    <section class="grid_6 omega">
-        <section>
-            <p:commandLink onclick="whatIsSearchDialog.show()">
-                What is this view
-                <h:graphicImage alt="helpIcon" url="/images/help.png"/>
-            </p:commandLink>
-        </section>
+        </h:panelGroup>
     </section>
+</section>
+
+<section class="grid_6 omega">
+    <section>
+        <p:commandLink onclick="whatIsSearchDialog.show()">
+            What is this view
+            <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+        </p:commandLink>
+    </section>
+</section>
 
 </ui:composition>
