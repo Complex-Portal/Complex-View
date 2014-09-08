@@ -86,70 +86,66 @@
         <h:outputText
                 value="Start typing an ontology term, possible completions of the term associated with at least one binary interaction will be shown :"/>
         <br/><br/>
+            <h:outputLabel value="Ontology query:" for="autoCompleteTerm"/>
+            &#160;
+            <p:autoComplete id="autoCompleteTerm" value="#{userQuery.ontologyTerm}"
+                            converter="ontologyTermConverter"
+                            var="term" itemLabel="#{term.name}" itemValue="#{term}"
+                            typeAhead="true" completeMethod="#{ontologyBean.fillAutocomplete}"
+                            autoHighlight="true" forceSelection="true"
+                            maxResults="20" size="40" scrollHeight="200" dropdown="false" style="position: relative"/>
+            &#160;
+            <h:commandButton id="ontologySearchBtn"
+                             value="Search"
+                             actionListener="#{userQuery.prepareFromOntologySearch}"
+                             action="#{searchBean.doBinarySearchAction}"
+                             style="display: inline"
+                             styleClass="submit">
+            </h:commandButton>
 
-            <iv:panelLabelAndMessage label="Ontology query:" width="40%">
-
-                <p:autoComplete id="autoCompleteTerm" value="#{userQuery.ontologyTerm}"
-                                converter="ontologyTermConverter"
-                                var="term" itemLabel="#{term.name}" itemValue="#{term}"
-                                typeAhead="true" completeMethod="#{ontologyBean.fillAutocomplete}"
-                                autoHighlight="true" forceSelection="true"
-                                maxResults="20" size="40" scrollHeight="200" dropdown="false" style="position: relative"/>
-
-                <f:facet name="help">
+            <br/>
+            <h:panelGroup>
+                <ul><li>
                     <h:panelGroup>
-                        <ul><li>
-                            <h:panelGroup>
-                                <h:outputText value="Term name: "/>
-                                <h:commandLink value="mammalia" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
-                                    <f:attribute name="#{userQuery.queryParameterName}" value="species:mammalia" />
-                                    <f:attribute name="#{userQuery.ontologyQueryParameterName}" value="true" />
-                                </h:commandLink>
-                            </h:panelGroup>
-                        </li><li>
-                            <h:panelGroup>
-                                <h:outputText value="Term name: "/>
-                                <h:commandLink value="two hybrid" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
-                                    <f:attribute name="#{userQuery.queryParameterName}" value="detmethod:two\ hybrid" />
-                                    <f:attribute name="#{userQuery.ontologyQueryParameterName}" value="true" />
-                                </h:commandLink>
-                            </h:panelGroup>
-                        </li>
-                        </ul>
+                        <h:outputText value="Term name: "/>
+                        <h:commandLink value="mammalia" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
+                            <f:attribute name="#{userQuery.queryParameterName}" value="species:mammalia" />
+                            <f:attribute name="#{userQuery.ontologyQueryParameterName}" value="true" />
+                        </h:commandLink>
                     </h:panelGroup>
-                </f:facet>
-                <f:facet name="end">
-                    <h:commandButton id="ontologySearchBtn"
-                                     value="Search"
-                                     actionListener="#{userQuery.prepareFromOntologySearch}"
-                                     action="#{searchBean.doBinarySearchAction}"
-                                     style="display: inline"
-                                     styleClass="submit">
-                    </h:commandButton>
-                </f:facet>
+                </li><li>
+                    <h:panelGroup>
+                        <h:outputText value="Term name: "/>
+                        <h:commandLink value="two hybrid" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
+                            <f:attribute name="#{userQuery.queryParameterName}" value="detmethod:two\ hybrid" />
+                            <f:attribute name="#{userQuery.ontologyQueryParameterName}" value="true" />
+                        </h:commandLink>
+                    </h:panelGroup>
+                </li>
+                </ul>
+            </h:panelGroup>
+
+            <iv:panelLabelAndMessage label="Note: ">
+                <h:outputText value="Currently the following ontologies are supported : "/>
+                <ul>
+                    <li><h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=GO"
+                                      target="_blank">Gene Ontology</h:outputLink></li>
+                    <li><h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI"
+                                      target="_blank">PSI-MI (interaction detection methods, interaction types, biological roles, interactor types, feature types, annotation topics and participant identification methods)</h:outputLink></li>
+                    <li><h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=CHEBI"
+                                      target="_blank">ChEBI</h:outputLink></li>
+                    <li><h:outputLink value="http://www.uniprot.org/taxonomy"
+                                      target="_blank">UniProt Taxonomy</h:outputLink></li>
+                    <li><h:outputLink value="http://www.ebi.ac.uk/interpro/"
+                                      target="_blank">InterPro</h:outputLink></li>
+                </ul>
+
             </iv:panelLabelAndMessage>
 
+            <p:commandLink value="Why do I find more interactions using the Ontology Search ?"
+                           onclick="ontologyInfoDialog.show()"/>
+
         </h:form>
-
-        <iv:panelLabelAndMessage label="Note: ">
-            <h:outputText value="Currently the following ontologies are supported : "/>
-            <ul>
-                <li><h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=GO"
-                                  target="_blank">Gene Ontology</h:outputLink></li>
-                <li><h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=MI"
-                                  target="_blank">PSI-MI (interaction detection methods, interaction types, biological roles, interactor types, feature types, annotation topics and participant identification methods)</h:outputLink></li>
-                <li><h:outputLink value="http://www.ebi.ac.uk/ontology-lookup/browse.do?ontName=CHEBI"
-                                  target="_blank">ChEBI</h:outputLink></li>
-                <li><h:outputLink value="http://www.uniprot.org/taxonomy"
-                                  target="_blank">UniProt Taxonomy</h:outputLink></li>
-                <li><h:outputLink value="http://www.ebi.ac.uk/interpro/"
-                                  target="_blank">InterPro</h:outputLink></li>
-            </ul>
-
-        </iv:panelLabelAndMessage>
-
-        <p:commandLink value="Why do I find more interactions using the Ontology Search ?"
-                       onclick="ontologyInfoDialog.show()"/>
 
         <p:dialog header="Why do I find more interactions using the Ontology Search ?"
                   widgetVar="ontologyInfoDialog"
