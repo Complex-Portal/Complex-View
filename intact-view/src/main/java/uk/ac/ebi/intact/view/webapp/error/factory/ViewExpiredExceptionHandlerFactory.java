@@ -22,7 +22,10 @@ public class ViewExpiredExceptionHandlerFactory extends ExceptionHandlerFactory 
 
     @Override
     public javax.faces.context.ExceptionHandler getExceptionHandler() {
-        return new ViewExpiredExceptionHandler(parent.getExceptionHandler());
+        if (parent != null){
+            return new ViewExpiredExceptionHandler(parent.getExceptionHandler());
+        }
+        return new ViewExpiredExceptionHandler(null);
     }
 
 }
