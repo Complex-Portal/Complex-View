@@ -211,139 +211,155 @@
 
     <!-- If you require a breadcrumb trail, its root should be your service.
     You don't need a breadcrumb trail on the homepage of your service... -->
-    <nav id="breadcrumb">
-        <p>
-            <h:link value="#{intactView['webapp.name']}" outcome="/home.xhtml?faces-redirect=true" rendered="#{sectionTitle ne 'Home'}"/>
-            <h:outputText value=" &gt; #{sectionTitle}" rendered="#{sectionTitle ne 'Home'}"/>
-        </p>
-    </nav>
 
-    <!--////////////OLD ONE//////////////-->
-    <div id="statusIndicator" class="status-normal"></div>
+    <div class="grid_24">
+        <div class="grid_18 alpha">
+            <nav id="breadcrumb">
+                <p>
+                    <h:link value="#{intactView['webapp.name']}" outcome="/home.xhtml?faces-redirect=true" rendered="#{sectionTitle ne 'Home'}"/>
+                    <h:outputText value=" &gt; #{sectionTitle}" rendered="#{sectionTitle ne 'Home'}"/>
+                </p>
+            </nav>
+        </div>
 
-    <p:ajaxStatus onstart="document.getElementById('statusIndicator').setAttribute('class', 'status-busy')"
-                  oncomplete="document.getElementById('statusIndicator').setAttribute('class', 'status-normal')">
-        <f:facet name="start">
-            <div class="busyStatus">
-                <h:graphicImage alt="busy" url="#{request.contextPath}/resources/css/ebi/images/status_busy_redback.gif"
-                                style="vertical-align:middle;"/>
-                &#160;
-                <h:outputText value="Loading..."/>
+        <h:panelGroup class="grid_6 omega shortcuts expander" id="search-extras" rendered="#{sectionTitle eq 'IntAct Search Results'}">
+            <div id="ebi_search_results"><h3 class="slideToggle icon icon-functional" data-icon="u">Show more data from EMBL-EBI</h3>
             </div>
-        </f:facet>
+            <br/>
+            <br/>
+        </h:panelGroup>
+    </div>
 
-        <f:facet name="complete">
-            <div>
-                <h:outputText value=""/>
+    <div class="grid_24">
+
+        <!--////////////OLD ONE//////////////-->
+        <div id="statusIndicator" class="status-normal"></div>
+
+        <p:ajaxStatus onstart="document.getElementById('statusIndicator').setAttribute('class', 'status-busy')"
+                      oncomplete="document.getElementById('statusIndicator').setAttribute('class', 'status-normal')">
+            <f:facet name="start">
+                <div class="busyStatus">
+                    <h:graphicImage alt="busy" url="#{request.contextPath}/resources/css/ebi/images/status_busy_redback.gif"
+                                    style="vertical-align:middle;"/>
+                    &#160;
+                    <h:outputText value="Loading..."/>
+                </div>
+            </f:facet>
+
+            <f:facet name="complete">
+                <div>
+                    <h:outputText value=""/>
+                </div>
+            </f:facet>
+
+            <f:facet name="success">
+                <div>
+                    <h:outputText value=""/>
+                </div>
+            </f:facet>
+
+            <f:facet name="error">
+                <div class="busyStatus">
+                    <h:graphicImage alt="busy" url="#{request.contextPath}/resources/css/ebi/images/status_busy_redback.gif"
+                                    style="vertical-align:middle;"/>
+                    &#160;
+                    <h:outputText value="Error :("/>
+                </div>
+            </f:facet>
+        </p:ajaxStatus>
+
+
+        <!--Dialogs-->
+        <p:dialog modal="true" widgetVar="statusDialog" header="Please wait..."
+                  draggable="false" closable="false" zindex="200" height="30" >
+            <h:graphicImage alt="loading" url="/images/wait_black_indicator.gif"
+                            style="vertical-align:middle;"/>
+            &#160;
+            <h:outputText value="Loading..."/>
+        </p:dialog>
+
+        <p:dialog header="What is this view?" widgetVar="whatIsInteractionsDialog"
+                  width="700" height="500" modal="true" draggable="true" closable="true">
+            <div style="width:670px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/whatis_interactions.xhtml"/>
             </div>
-        </f:facet>
+        </p:dialog>
 
-        <f:facet name="success">
-            <div>
-                <h:outputText value=""/>
+        <p:dialog header="What is this view?" widgetVar="whatIsBrowseDialog"
+                  width="700" height="500" draggable="true" closable="true">
+            <div style="width:670px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/whatis_browser.xhtml"/>
             </div>
-        </f:facet>
+        </p:dialog>
 
-        <f:facet name="error">
-            <div class="busyStatus">
-                <h:graphicImage alt="busy" url="#{request.contextPath}/resources/css/ebi/images/status_busy_redback.gif"
-                                style="vertical-align:middle;"/>
-                &#160;
-                <h:outputText value="Error :("/>
+        <p:dialog header="What is this view?" widgetVar="whatIsSearchDialog"
+                  width="700" height="500" draggable="true" closable="true">
+            <div style="width:670px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/whatis_search.xhtml"/>
             </div>
-        </f:facet>
-    </p:ajaxStatus>
+        </p:dialog>
 
+        <p:dialog header="Complex Expansion" widgetVar="complexExpansionDialog"
+                  width="700" height="500" draggable="true" closable="true">
+            <div style="width:670px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/complex_expansion.xhtml"/>
+            </div>
+        </p:dialog>
 
-    <!--Dialogs-->
-    <p:dialog modal="true" widgetVar="statusDialog" header="Please wait..."
-              draggable="false" closable="false" zindex="200" height="30" >
-        <h:graphicImage alt="loading" url="/images/wait_black_indicator.gif"
-                        style="vertical-align:middle;"/>
-        &#160;
-        <h:outputText value="Loading..."/>
-    </p:dialog>
+        <p:dialog header="PSICQUIC" widgetVar="psicquicDialog"
+                  width="700" height="500" modal="true" draggable="true" closable="true">
+            <div style="width:670px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/psicquic.xhtml"/>
+            </div>
+        </p:dialog>
 
-    <p:dialog header="What is this view?" widgetVar="whatIsInteractionsDialog"
-              width="700" height="500" modal="true" draggable="true" closable="true">
-        <div style="width:670px; overflow:auto;">
-            <ui:include src="/pages/documentation/contextual/whatis_interactions.xhtml"/>
-        </div>
-    </p:dialog>
+        <p:dialog header="IMEx" widgetVar="psicquicImexDialog"
+                  width="700" height="500" modal="true" draggable="true" closable="true">
+            <div style="width:670px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/psicquic_imex.xhtml"/>
+            </div>
+        </p:dialog>
 
-    <p:dialog header="What is this view?" widgetVar="whatIsBrowseDialog"
-              width="700" height="500" draggable="true" closable="true">
-        <div style="width:670px; overflow:auto;">
-            <ui:include src="/pages/documentation/contextual/whatis_browser.xhtml"/>
-        </div>
-    </p:dialog>
+        <p:dialog header="What is this view?" widgetVar="whatIsFeaturesDialog"
+                  width="700" height="500" draggable="true" closable="true">
+            <div style="width:670px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/whatis_features.xhtml"/>
+            </div>
+        </p:dialog>
+        <p:dialog header="What is this view?" widgetVar="whatIsDynamicNetworkDialog"
+                  width="450" height="170">
+            <div style="width:430px; overflow:auto;">
+                <ui:include src="/pages/documentation/contextual/whatis_dynamicnetwork.xhtml"/>
+            </div>
+        </p:dialog>
 
-    <p:dialog header="What is this view?" widgetVar="whatIsSearchDialog"
-              width="700" height="500" draggable="true" closable="true">
-        <div style="width:670px; overflow:auto;">
-            <ui:include src="/pages/documentation/contextual/whatis_search.xhtml"/>
-        </div>
-    </p:dialog>
-
-    <p:dialog header="Complex Expansion" widgetVar="complexExpansionDialog"
-              width="700" height="500" draggable="true" closable="true">
-        <div style="width:670px; overflow:auto;">
-            <ui:include src="/pages/documentation/contextual/complex_expansion.xhtml"/>
-        </div>
-    </p:dialog>
-
-    <p:dialog header="PSICQUIC" widgetVar="psicquicDialog"
-              width="700" height="500" modal="true" draggable="true" closable="true">
-        <div style="width:670px; overflow:auto;">
-            <ui:include src="/pages/documentation/contextual/psicquic.xhtml"/>
-        </div>
-    </p:dialog>
-
-    <p:dialog header="IMEx" widgetVar="psicquicImexDialog"
-              width="700" height="500" modal="true" draggable="true" closable="true">
-        <div style="width:670px; overflow:auto;">
-            <ui:include src="/pages/documentation/contextual/psicquic_imex.xhtml"/>
-        </div>
-    </p:dialog>
-
-    <p:dialog header="What is this view?" widgetVar="whatIsFeaturesDialog"
-              width="700" height="500" draggable="true" closable="true">
-        <div style="width:670px; overflow:auto;">
-            <ui:include src="/pages/documentation/contextual/whatis_features.xhtml"/>
-        </div>
-    </p:dialog>
-    <p:dialog header="What is this view?" widgetVar="whatIsDynamicNetworkDialog"
-              width="450" height="170">
-        <div style="width:430px; overflow:auto;">
-            <ui:include src="/pages/documentation/contextual/whatis_dynamicnetwork.xhtml"/>
-        </div>
-    </p:dialog>
-
-
-    <h:panelGroup>
 
         <h:panelGroup>
-            <p:panel header="Important notice"
-                     rendered="#{not empty intactViewConfiguration.warningMessage}">
-                <h:outputText value="#{intactViewConfiguration.warningMessage}"/>
-            </p:panel>
+
+            <h:panelGroup>
+                <p:panel header="Important notice"
+                         rendered="#{not empty intactViewConfiguration.warningMessage}">
+                    <h:outputText value="#{intactViewConfiguration.warningMessage}"/>
+                </p:panel>
+            </h:panelGroup>
+
         </h:panelGroup>
 
-    </h:panelGroup>
+        <!--Place for the content in the template-->
+        <ui:insert name="content"/>
 
-    <!--Place for the content in the template-->
-    <ui:insert name="content"/>
+        <!-- To avoid expired sessions, poll every 25 mins -->
+        <h:form id="pollForm" prependId="false">
 
-    <!-- To avoid expired sessions, poll every 25 mins -->
-    <h:form id="pollForm" prependId="false">
+            <p:poll interval="#{25*60*1000}" process="@this"/>
 
-        <p:poll interval="#{25*60*1000}" process="@this"/>
+        </h:form>
 
-    </h:form>
+        <!--/////////////////////////-->
 
-    <!--/////////////////////////-->
+        <div class="scrollup">Scroll</div>
 
-    <div class="scrollup">Scroll</div>
+    </div>
 </div>
 
 
@@ -453,6 +469,11 @@
   <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
   <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
 <![endif]-->
+
+<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+
+<script type="text/javascript" src="//www.ebi.ac.uk/web_guidelines/js/ebi-global-search-run.js"></script>
+<script type="text/javascript" src="//www.ebi.ac.uk/web_guidelines/js/ebi-global-search.js"></script>
 
 <script type="text/javascript" src="#{requestConfigBean.absoluteContextPath}/resources/javascript/intact.js"></script>
 
