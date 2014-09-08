@@ -27,28 +27,23 @@
 
         <p:outputPanel id="#{cc.id}" rendered="#{cc.attrs.visible}">
 
-            <table width="#{cc.attrs.width}">
-                <tbody>
-                <tr style="vertical-align:top">
-                    <td style="border-style:none">
+            <h:panelGroup style="width: #{cc.attrs.width}">
+                <h:panelGroup style="vertical-align:top">
+                    <h:panelGroup style="border-style:none">
                         <h:outputText value="#{cc.attrs.label}" style="#{cc.attrs.labelStyle}"
                                       class="#{cc.attrs.labelStyleClass}"/>
-                    </td>
-                    <td width="100%" style="border-style:none">
+                    </h:panelGroup>
+                    <h:panelGroup style="width: 100%; border-style:none">
                         <composite:insertChildren/>
-                    </td>
-                    <td style="border-style:none">
+                    </h:panelGroup>
+                    <h:panelGroup style="border-style:none">
                         <composite:renderFacet name="end"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="border-style:none"></td>
-                    <td colspan="2" style="border-style:none">
-                        <composite:renderFacet name="help"/>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    </h:panelGroup>
+                </h:panelGroup>
+                <h:panelGroup style="border-style:none">
+                    <composite:renderFacet name="help"/>
+                </h:panelGroup>
+            </h:panelGroup>
 
         </p:outputPanel>
 
