@@ -54,17 +54,17 @@
 
 
 .newInteractionRow {
-border-top: 1px solid !important;
-border-left: 1px solid !important;
-border-right: 1px solid !important;
-border-bottom: 0 !important;
+  border-top: 1px solid !important;
+  border-left: 1px solid !important;
+  border-right: 1px solid !important;
+  border-bottom: none !important;
 }
 
 .sameInteractionRow {
-border-top: 0 !important;
-border-left: 1px solid !important;
-border-right: 1px solid !important;
-border-bottom: 0 !important;
+  border-top: none !important;
+  border-left: 1px solid !important;
+  border-right: 1px solid !important;
+  border-bottom: none !important;
 }
 
 .negativeInteractionRow {
