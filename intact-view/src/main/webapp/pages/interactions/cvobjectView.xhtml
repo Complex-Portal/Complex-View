@@ -13,11 +13,13 @@
 
     <f:view>
         <h:head>
-            <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/contents.css" type="text/css"/>
-            <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/userstyles.css" type="text/css"/>
-            <link rel="stylesheet" href="#{ebisf:absoluteEbiUrl()}/inc/css/sidebars.css" type="text/css"/>
-            <link rel="stylesheet" type="text/css" href="#{request.contextPath}/resources/css/ebi/skin.css"></link>
-            <link rel="stylesheet" href="#{request.contextPath}/resources/css/intact-extra.css" type="text/css"/>
+            <!-- you can replace this with [projectname]-colours.css. See http://frontier.ebi.ac.uk/web/style/colour for details of how to do this -->
+            <!-- also inform ES so we can host your colour palette file -->
+            <!--<link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/embl-petrol-colours.css" type="text/css" media="screen">-->
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/intact-colours.css" type="text/css" media="screen"/>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/intact-extra.css" type="text/css" media="screen"/>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/twitter/intact-tweet.css" type="text/css"/>
+            <link rel="stylesheet" href="#{request.contextPath}/resources/css/custom-ebi-theme/skin.css" type="text/css"/>
         </h:head>
         <h:body>
             <h:form prependId="false">

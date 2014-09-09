@@ -19,33 +19,36 @@
 
         <section>
             <p:panel style="width:#{cc.attrs.width}px;">
-                <iv:panelLabelAndMessage label="Accession: " labelStyle="font-weight:bold;">
-                    <h:outputText value="#{cc.attrs.cv.ac}"/>
-                </iv:panelLabelAndMessage>
+                <h:panelGroup style="border-style:none">
+                    <h:outputText value="Accession: " style="font-weight:bold; font-size: 100%;"/>
+                </h:panelGroup>
+                <h:outputText value="#{cc.attrs.cv.ac}" style="font-size: 100%;"/>
                 <br/>
                 <br/>
-                <iv:panelLabelAndMessage label="Name: " labelStyle="font-weight:bold;">
-                    <h:outputText value="#{cc.attrs.cv.shortLabel}"/>
-                </iv:panelLabelAndMessage>
+                <h:panelGroup style="border-style:none">
+                    <h:outputText value="Name: " style="font-weight:bold; font-size: 100%;"/>
+                </h:panelGroup>
+                <h:outputText value="#{cc.attrs.cv.shortLabel}" style="font-size: 100%;"/>
                 <br/>
                 <br/>
-                <iv:panelLabelAndMessage label="Description: " labelStyle="font-weight:bold;"
-                                         visible="#{cc.attrs.cv.shortLabel != cc.attrs.cv.fullName}">
-                    <h:outputText value="#{(cc.attrs.cv.fullName == null ? '-' : cc.attrs.cv.fullName )}"/>
-                </iv:panelLabelAndMessage>
+                <h:panelGroup style="border-style:none">
+                    <h:outputText value="Description: " style="font-weight:bold; font-size: 100%;"/>
+                </h:panelGroup>
+                <h:outputText value="#{(cc.attrs.cv.fullName == null ? '-' : cc.attrs.cv.fullName )}" style="font-size: 100%;"/>
                 <br/>
                 <br/>
-                <iv:panelLabelAndMessage label="Cross References: " labelStyle="font-weight:bold;"
-                                         visible="true">
-                    <iv:cvXrefTable xrefs="#{cc.attrs.cv.xrefs}" />
-                </iv:panelLabelAndMessage>
+                <h:panelGroup style="border-style:none">
+                    <h:outputText value="Cross References: " style="font-weight:bold; font-size: 100%;"/>
+                </h:panelGroup>
+                <iv:cvXrefTable xrefs="#{cc.attrs.cv.xrefs}" />
                 <br/>
                 <br/>
-                <iv:panelLabelAndMessage label="Annotations: " labelStyle="font-weight:bold;"
-                                         visible="true">
-                    <iv:cvAnnotationTable annotations="#{cc.attrs.cv.annotations}" />
-                </iv:panelLabelAndMessage>
-
+                <h:panelGroup style="border-style:none">
+                    <h:outputText value="Annotations: " style="font-weight:bold; font-size: 100%;"/>
+                </h:panelGroup>
+                <iv:cvAnnotationTable annotations="#{cc.attrs.cv.annotations}" />
+                <br/>
+                <br/>
             </p:panel>
         </section>
 

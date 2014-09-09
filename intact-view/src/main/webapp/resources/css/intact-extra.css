@@ -52,11 +52,11 @@
 /*text-align: center;*/
 /*}*/
 
-/* interaction table, no border */
+/* interaction table, light border */
 .ui-datatable .ui-datatable-data td, .ui-datatable .ui-datatable-data-empty td {
-    border-color: inherit;
+    border-color: #f1f1f1 !important;
     border-style: solid;
-    border-width: 0 !important;
+    border-width: 1px !important;
     margin: 0;
     overflow: hidden;
     padding: 0;
