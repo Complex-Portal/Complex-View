@@ -109,11 +109,9 @@
     <f:facet name="header">
         <h:outputText value="Dts"/>
     </f:facet>
-    <h:outputLink
-            value="#{request.contextPath}/interaction/#{searchBean.getMainAccessionXref(binaryInteraction).identifier}"
-            onclick="_gaq.push(['_trackEvent', 'Navigation', 'Interaction details','#{detailsBean.interactionAc}'])">
+    <h:link outcome="/pages/details/details.xhtml?faces-redirect=true&amp;includeViewParams=true&amp;interactionAc=#{searchBean.getMainAccessionXref(binaryInteraction).identifier}&amp;keepMainSearchResults=true">
         <h:graphicImage url="/images/magnify.png" alt="details"/>
-    </h:outputLink>
+    </h:link>
 </p:column>
 <p:column id="numberRowCol">
     <f:facet name="header" data-hide="phone,tablet">
