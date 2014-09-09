@@ -123,11 +123,19 @@ public class DetailsController extends JpaBaseController {
             if ( interactionAc != null ) {
                 if ( log.isDebugEnabled() ) log.debug( "Parameter " + INTERACTION_AC_PARAM + " was specified" );
                 loadInteraction();
+                userQuery.reset();
+                userQuery.setSearchQuery(FieldNames.INTERACTION_ID+":"+interactionAc);
+                SolrQuery solrQuery = userQuery.createSolrQuery();
+                searchController.doBinarySearch( solrQuery );
 
             } else if ( experimentAc != null ) {
 
                 if ( log.isDebugEnabled() ) log.debug( "Parameter " + EXPERIMENT_AC_PARAM + " was specified" );
                 loadExperiment();
+                userQuery.reset();
+                userQuery.setSearchQuery(experimentAc);
+                SolrQuery solrQuery = userQuery.createSolrQuery();
+                searchController.doBinarySearch( solrQuery );
             }
 
             if (binary != null) {
@@ -156,22 +164,21 @@ public class DetailsController extends JpaBaseController {
                     loadNumberOfInteractorsInExperiment();
                     loadJsonExperimentInteractions();
 
-                    // Update interaction search
-                    userQuery.reset();
-                    userQuery.setSearchQuery(FieldNames.ID+":"+interactorAcs[0] + " AND " + FieldNames.ID+":" + interactorAcs[1] );
-                    SolrQuery solrQuery = userQuery.createSolrQuery();
-                    searchController.doBinarySearch( solrQuery );
-
                 } else {
                     addErrorMessage("No interactions were found", "");
                     return;
                 }
 
-                ContextController contextController = (ContextController) getBean("contextController");
-                contextController.setActiveTabIndex(5);
+                // Update interaction search
+                userQuery.reset();
+                userQuery.setSearchQuery(FieldNames.ID+":"+interactorAcs[0] + " AND " + FieldNames.ID+":" + interactorAcs[1] );
+                SolrQuery solrQuery = userQuery.createSolrQuery();
+                searchController.doBinarySearch( solrQuery );
             }
 
             this.numberInteractions = countInteractionNumbers();
+            ContextController contextController = (ContextController) getBean("contextController");
+            contextController.setActiveTabIndex(3);
         }
     }
 

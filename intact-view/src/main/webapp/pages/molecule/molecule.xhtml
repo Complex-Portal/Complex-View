@@ -10,8 +10,8 @@
 
     <ui:define name="metadata">
         <f:metadata>
-            <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(4)}"/>
             <f:viewParam name="interactorAc" value="#{moleculeViewBean.interactorAc}"/>
+            <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(4)}"/>
             <f:event type="preRenderView" listener="#{moleculeViewBean.loadInteractor}"/>
         </f:metadata>
     </ui:define>
