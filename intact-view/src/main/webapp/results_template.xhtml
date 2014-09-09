@@ -11,6 +11,16 @@
 
     <ui:define name="content">
 
+        <h:panelGroup rendered="#{sectionTitle eq 'IntAct Search Results'}">
+            <h2>
+                <strong><h:outputText value="#{searchBean.totalResults}">
+                    <f:convertNumber pattern="#,###"/>
+                </h:outputText></strong> binary interaction#{searchBean.totalResults != 1? 's found' : ' found'}
+                for search term <span class="searchterm" id="query"><h:outputText value="#{userQuery.searchQuery}"/></span>
+
+            </h2>
+        </h:panelGroup>
+
         <h:form id="mainForm" prependId="false">
             <h:panelGroup>
 
