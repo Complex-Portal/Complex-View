@@ -8,87 +8,66 @@
                 xmlns:iv="http://java.sun.com/jsf/composite/intactview"
                 xmlns:ot="http://myfaces.apache.org/orchestra">
 
-    <!-- Info section on top of the results -->
-    <section style="float:right">
-
-    </section>
-
     <section id="search-results" class="grid_24">
-        <div class='grid_20 alpha omega'>
-            <strong><h:outputText id="totalResultsOut" value="#{searchBean.totalResults}">
-                <f:convertNumber pattern="#,###"/>
-            </h:outputText></strong> binary interaction#{searchBean.totalResults != 1? 's were' : ' was'} found in #{intactViewConfiguration.webappName}.
-
+        <div class="grid_10 left-column search-filters">
             <ul>
-                <h:panelGroup rendered="#{facetController.expansionCount.spokeCount > 0}"
-                              inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
+                <h:panelGroup rendered="#{facetController.expansionCount.spokeCount > 0}">
                     <li>
-                        <strong><h:outputText value="#{facetController.expansionCount.spokeCount}">
-                            <f:convertNumber pattern="#,###"/>
-                        </h:outputText>
-                        </strong> of them are originated
-                        from&#160;
-                        <p:commandLink onclick="complexExpansionDialog.show()">spoke expanded co-complexes
-                            <h:graphicImage alt="helpIcon" url="/images/help.png"/>
-                        </p:commandLink> and you may want to&#160;
-                        <h:commandLink value="filter" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
+                        <h:commandLink value="Filter out" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
                             <f:attribute name="#{userQuery.filterSpokeParameterName}" value="true" />
                         </h:commandLink>
-                        &#160;them out.
-                    </li>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{userQuery.filterSpoke}"
-                              inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
-                    <li>
-                        Binary interactions originating
-                        from&#160;
-                        <p:commandLink onclick="complexExpansionDialog.show()">spoke expanded co-complexes
+                        <h:outputText value=" the spoke expanded co-complexes "/>
+                        <p:commandLink onclick="complexExpansionDialog.show()">
                             <h:graphicImage alt="helpIcon" url="/images/help.png"/>
-                        </p:commandLink> are filtered out from your results and you may want to&#160;
-                        <h:commandLink value="include" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
-                            <f:attribute name="#{userQuery.filterSpokeParameterName}" value="false" />
-                        </h:commandLink>
-                        &#160;them again.
-                    </li>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{facetController.negativeCount.negativeCount == 0 and searchBean.numberOfBinaryInteractionsToShow > 0}"
-                              inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
-                    <li>
-                        <strong><h:outputText value="#{searchBean.numberOfBinaryInteractionsToShow}">
+                        </p:commandLink>
+                        <strong><h:outputText value="(#{facetController.expansionCount.spokeCount})">
                             <f:convertNumber pattern="#,###"/>
                         </h:outputText>
-                        </strong> negative interactions could match the query and you may want to&#160;
-                        <h:commandLink value="include" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
-                            <f:attribute name="#{userQuery.includeNegativeParameterName}" value="true" />
-                        </h:commandLink>
-                        &#160; them in the results.
-                        <br/>They will appear in a <strong>pink row</strong> and will be excluded from MITAB 2.5, RDF,
-                        Biopax, XGMML export as well as from the graph view.
+                        </strong>
 
                     </li>
                 </h:panelGroup>
-                <h:panelGroup rendered="#{facetController.negativeCount.negativeCount > 0}"
-                              inlineStyle="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
+                <h:panelGroup rendered="#{userQuery.filterSpoke}">
                     <li>
-                        <strong><h:outputText value="#{facetController.negativeCount.negativeCount}">
+                        <h:commandLink value="Include" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
+                            <f:attribute name="#{userQuery.filterSpokeParameterName}" value="false" />
+                        </h:commandLink>
+                        <h:outputText value=" the spoke expanded co-complexes "/>
+                        <p:commandLink onclick="complexExpansionDialog.show()">
+                            <h:graphicImage alt="helpIcon" url="/images/help.png"/>
+                        </p:commandLink>
+                    </li>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{facetController.negativeCount.negativeCount == 0 and searchBean.numberOfBinaryInteractionsToShow > 0}">
+                    <li>
+                        <h:commandLink value="Include" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
+                            <f:attribute name="#{userQuery.includeNegativeParameterName}" value="true" />
+                        </h:commandLink>
+                        <strong><h:outputText value=" #{searchBean.numberOfBinaryInteractionsToShow}">
                             <f:convertNumber pattern="#,###"/>
-                        </h:outputText>
-                        </strong> negative interactions have been included in your results. You may want to&#160;
-                        <h:commandLink value="filter" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
+                        </h:outputText></strong>
+                        <h:outputText value=" negative interactions matching the query (pink row, not exported in MITAB 2.5, RDF, Biopax, XGMML) "/>
+
+                    </li>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{facetController.negativeCount.negativeCount > 0}">
+                    <li>
+                        <h:commandLink value="Filter out" actionListener="#{userQuery.setUpQueryParameters}" action="#{searchBean.doBinarySearchAction}">
                             <f:attribute name="#{userQuery.includeNegativeParameterName}" value="false" />
                         </h:commandLink>
-                        &#160;them out.
-                        <br/>They will appear in a <strong>pink row</strong> and will be excluded from MITAB 2.5, RDF,
-                        Biopax, XGMML export as well as from the graph view.
+                        <h:outputText value=" the negative interactions matching the query (pink row) "/>
+                        <strong><h:outputText value="(#{facetController.negativeCount.negativeCount})">
+                            <f:convertNumber pattern="#,###"/>
+                        </h:outputText></strong>
 
                     </li>
                 </h:panelGroup>
             </ul>
+        </div>
+        <div class='grid_10 alpha omega'>
             <h:panelGroup id="countedComplex"
-                          style="margin-top:-10px; margin-left: 10px; margin-bottom:30px"
                           rendered="#{searchBean.complexSearchManager.complexServiceResponding and searchBean.complexSearchManager.complexCount gt 0}">
-                <br/>
-                <strong><h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
+                <strong><h:outputText value="Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
 
                     <ot:separateConversationContext>
                         <h:outputLink value="#{intactViewConfiguration.complexViewUrl}/?q=#{userQuery.searchQuery}" target="_blank">
@@ -102,13 +81,12 @@
                     <p:commandLink type="button" onclick="complexDialog.show()">
                         <h:graphicImage alt="helpIcon" url="/images/help.png"/>
                     </p:commandLink></strong>
+                <br/>
             </h:panelGroup>
-            <h:panelGroup id="countedPsicquic"
-                          style="margin-top:-10px; margin-left: 10px; margin-bottom:30px">
+            <h:panelGroup id="countedPsicquic">
 
                 <h:panelGroup rendered="#{searchBean.psicquicSearchManager.countInOtherDatabases gt 0}">
-                    <br/>
-                    <h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
+                    <h:outputText value="Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
 
                     <ot:separateConversationContext>
                         <h:outputLink value="#{intactViewConfiguration.psicquicViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
@@ -124,11 +102,11 @@
                     <p:commandLink type="button" onclick="psicquicDialog.show()">
                         <h:graphicImage alt="helpIcon" url="/images/help.png"/>
                     </p:commandLink>
+                    <br/>
                 </h:panelGroup>
 
                 <h:panelGroup rendered="#{searchBean.psicquicSearchManager.countInOtherImexDatabases gt 0}">
-                    <br/>
-                    <h:outputText value="> Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
+                    <h:outputText value="Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
                     <ot:separateConversationContext>
                         <h:outputLink value="#{intactViewConfiguration.imexViewUrl}main.xhtml?query=#{userQuery.searchQuery}" target="_blank">
                             <h:outputText value="#{searchBean.psicquicSearchManager.countInOtherImexDatabases}" style="font-weight:bold">
@@ -143,20 +121,17 @@
                         <h:graphicImage alt="helpIcon" url="/images/help.png"/>
                     </p:commandLink>
 
-
+                    <br/>
                 </h:panelGroup>
 
                 <h:panelGroup rendered="#{searchBean.psicquicSearchManager.countInOtherDatabases == 0 and searchBean.psicquicSearchManager.countInOtherImexDatabases == 0}">
-
-                    <br/>
-                    > No results in other databases.
+                    No results in other databases.
                     <p:commandLink type="button" onclick="psicquicDialog.show()">
                         <h:graphicImage alt="helpIcon" url="/images/help.png"/>
                     </p:commandLink>
                 </h:panelGroup>
 
             </h:panelGroup>
-
         </div>
         <div class='grid_4 omega'>
             <p:commandLink onclick="whatIsInteractionsDialog.show()">
