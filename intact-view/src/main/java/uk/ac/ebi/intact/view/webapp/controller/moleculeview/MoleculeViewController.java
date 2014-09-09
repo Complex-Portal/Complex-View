@@ -49,6 +49,7 @@ public class MoleculeViewController extends JpaBaseController{
 
     private String interactorAc;
     private Interactor interactor;
+    private boolean keepMainSearchResults = false;
 
     public MoleculeViewController() {
 
@@ -68,13 +69,15 @@ public class MoleculeViewController extends JpaBaseController{
                 interactor = getDaoFactory().getInteractorDao().getByAc(interactorAc);
 
                 // Update interaction search
-                userQuery.reset();
-                userQuery.setSearchQuery(FieldNames.ID+":"+interactorAc );
-                SolrQuery solrQuery = userQuery.createSolrQuery();
-                searchController.doBinarySearch( solrQuery );
+                if (!keepMainSearchResults){
+                    userQuery.reset();
+                    userQuery.setSearchQuery(FieldNames.ID+":"+interactorAc );
+                    SolrQuery solrQuery = userQuery.createSolrQuery();
+                    searchController.doBinarySearch( solrQuery );
 
-                ContextController contextController = (ContextController) getBean("contextController");
-                contextController.setActiveTabIndex(4);
+                    ContextController contextController = (ContextController) getBean("contextController");
+                    contextController.setActiveTabIndex(4);
+                }
             }
         }
     }
@@ -98,5 +101,13 @@ public class MoleculeViewController extends JpaBaseController{
 
     public void setInteractor(Interactor interactor) {
         this.interactor = interactor;
+    }
+
+    public boolean isKeepMainSearchResults() {
+        return keepMainSearchResults;
+    }
+
+    public void setKeepMainSearchResults(boolean keepMainSearchResults) {
+        this.keepMainSearchResults = keepMainSearchResults;
     }
 }
