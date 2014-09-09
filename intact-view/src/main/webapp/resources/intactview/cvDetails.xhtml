@@ -17,30 +17,37 @@
     <!-- IMPLEMENTATION -->
     <composite:implementation>
 
-        <p:panel style="width:#{cc.attrs.width}px;">
-            <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
-                <h:outputText value="#{cc.attrs.cv.ac}"/>
-            </iv:panelLabelAndMessage>
+        <section>
+            <p:panel style="width:#{cc.attrs.width}px;">
+                <iv:panelLabelAndMessage label="Accession: " labelStyle="font-weight:bold;">
+                    <h:outputText value="#{cc.attrs.cv.ac}"/>
+                </iv:panelLabelAndMessage>
+                <br/>
+                <br/>
+                <iv:panelLabelAndMessage label="Name: " labelStyle="font-weight:bold;">
+                    <h:outputText value="#{cc.attrs.cv.shortLabel}"/>
+                </iv:panelLabelAndMessage>
+                <br/>
+                <br/>
+                <iv:panelLabelAndMessage label="Description: " labelStyle="font-weight:bold;"
+                                         visible="#{cc.attrs.cv.shortLabel != cc.attrs.cv.fullName}">
+                    <h:outputText value="#{(cc.attrs.cv.fullName == null ? '-' : cc.attrs.cv.fullName )}"/>
+                </iv:panelLabelAndMessage>
+                <br/>
+                <br/>
+                <iv:panelLabelAndMessage label="Cross References: " labelStyle="font-weight:bold;"
+                                         visible="true">
+                    <iv:xrefTable xrefs="#{cc.attrs.cv.xrefs}" />
+                </iv:panelLabelAndMessage>
+                <br/>
+                <br/>
+                <iv:panelLabelAndMessage label="Annotations: " labelStyle="font-weight:bold;"
+                                         visible="true">
+                    <iv:annotationTable annotations="#{cc.attrs.cv.annotations}" />
+                </iv:panelLabelAndMessage>
 
-            <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
-                <h:outputText value="#{cc.attrs.cv.shortLabel}"/>
-            </iv:panelLabelAndMessage>
-
-            <iv:panelLabelAndMessage label="Description:" labelStyle="font-weight:bold;"
-                                     visible="#{cc.attrs.cv.shortLabel != cc.attrs.cv.fullName}">
-                <h:outputText value="#{(cc.attrs.cv.fullName == null ? '-' : cc.attrs.cv.fullName )}"/>
-            </iv:panelLabelAndMessage>
-
-            <iv:panelLabelAndMessage label="Cross References:" labelStyle="font-weight:bold;"
-                                     visible="true">
-                <iv:xrefTable xrefs="#{cc.attrs.cv.xrefs}" />
-            </iv:panelLabelAndMessage>
-            <iv:panelLabelAndMessage label="Annotations:" labelStyle="font-weight:bold;"
-                                     visible="true">
-                <iv:annotationTable annotations="#{cc.attrs.cv.annotations}" />
-            </iv:panelLabelAndMessage>
-
-        </p:panel>
+            </p:panel>
+        </section>
 
     </composite:implementation>
 

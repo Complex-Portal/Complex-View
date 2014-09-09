@@ -64,7 +64,7 @@
                 </h:panelGroup>
             </ul>
         </div>
-        <div class='grid_10 alpha omega'>
+        <div class='grid_10 alpha omega' style="overflow-y: auto">
             <h:panelGroup id="countedComplex"
                           rendered="#{searchBean.complexSearchManager.complexServiceResponding and searchBean.complexSearchManager.complexCount gt 0}">
                 <strong><h:outputText value="Your query #{searchBean.totalResults > 0? 'also ' : ''}matches "/>
@@ -133,7 +133,7 @@
 
             </h:panelGroup>
         </div>
-        <div class='grid_4 omega'>
+        <div class='grid_4 omega' style="overflow-y: auto">
             <p:commandLink onclick="whatIsInteractionsDialog.show()">
                 What is this view?
                 <h:graphicImage alt="helpIcon" url="/images/help.png"/>
