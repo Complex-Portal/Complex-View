@@ -52,19 +52,14 @@
 /*text-align: center;*/
 /*}*/
 
-
-.newInteractionRow {
-  border-top: 1px solid !important;
-  border-left: 1px solid !important;
-  border-right: 1px solid !important;
-  border-bottom: 0 none;
-}
-
-.sameInteractionRow {
-  border-top: 0 none !important;
-  border-left: 1px solid !important;
-  border-right: 1px solid !important;
-  border-bottom: 0 none;
+/* interaction table, no border */
+.ui-datatable .ui-datatable-data td, .ui-datatable .ui-datatable-data-empty td {
+    border-color: inherit;
+    border-style: solid;
+    border-width: 0 !important;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
 }
 
 .negativeInteractionRow {

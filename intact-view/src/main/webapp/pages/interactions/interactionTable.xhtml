@@ -97,7 +97,7 @@
              paginatorPosition="top"
              paginatorAlwaysVisible="true"
              paginator="#{searchBean.results.rowCount gt userQuery.pageSize}"
-             rowStyleClass="#{not searchBean.results.sameThanPrevious? 'newInteractionRow' : 'sameInteractionRow'} #{searchBean.results.negative? ', negativeInteractionRow' : ''}"
+             rowStyleClass="#{searchBean.results.negative? ', negativeInteractionRow' : ''}"
              rendered="#{searchBean.results != null and searchBean.results.rowCount > 0}"
         >
 
