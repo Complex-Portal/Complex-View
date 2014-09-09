@@ -119,7 +119,7 @@
         <!-- NB: if you do not have a local-search, delete the following div, and drop the class="grid_12 alpha" class from local-title above -->
 
         <div class="grid_12 omega">
-            <h:form id="local-search" prependId="false">
+            <h:form id="local-search" prependId="false" rendered="#{sectionTitle ne 'Home' and sectionTitle ne 'Advanced Search'}">
 
                 <fieldset>
 
@@ -225,8 +225,6 @@
         <h:panelGroup class="grid_6 omega shortcuts expander" id="search-extras" rendered="#{sectionTitle eq 'IntAct Search Results'}">
             <div id="ebi_search_results"><h3 class="slideToggle icon icon-functional" data-icon="u">Show more data from EMBL-EBI</h3>
             </div>
-            <br/>
-            <br/>
         </h:panelGroup>
     </div>
 
