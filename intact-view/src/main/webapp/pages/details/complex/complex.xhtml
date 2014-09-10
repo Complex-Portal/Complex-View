@@ -69,98 +69,101 @@
             </div>
 
             <div class="grid_24">
-                <div class="grid_24">
 
-                    <div class="push_12 grid_12">
+                <div class="grid_6">
+                    <div class="grid_6">
                         <h:outputText value="Legend: " style="font-weight:bold;"/>
+                    </div>
 
-                        <div class="grid_6">
-                           <h:outputText value="x/y" style="font-weight:bold; color:#a7cf9b;"/>
-                       </div>
-                        <div class="grid_6">
-                            <h:outputText value="Count of matching molecules / Total count of participants in this interaction"/>
-                        </div>
+                    <div class="grid_6">
+                        <h:outputText value="x/y" style="font-weight:bold; color:#a7cf9b;"/>
+                    </div>
+                    <div class="grid_6">
+                        <h:outputText value="Count of matching molecules / Total count of participants in this interaction"/>
                     </div>
                 </div>
-                <table border="0" cellSpacing="0" cellPadding="0">
 
-                    <!-- Table Header-->
-                    <tr>
-                        <td valign="bottom" style="border-bottom: solid 1px #cdcdcd;font-weight:bold; text-align: right;">
-                            <h:outputText value="Interactions" />
-                        </td>
+                <div class="grid_18">
+                    <table border="0" cellSpacing="0" cellPadding="0">
 
-                        <td colspan="#{fn:length( matrix.members ) + 1}" style="border-bottom: solid 1px #cdcdcd;">
-                            <!--TODO try color management later (eg. &amp;tc=&#35;000000")-->
-                            <h:graphicImage url="/tableHeader?time=#{iam:currentTimeMillis()}&amp;s=31&amp;fs=12&amp;h=100&amp;st=true&amp;lc=%23cdcdcd" alt="header" />
-                        </td>
-
-                        <td valign="bottom" style="font-weight:bold; border-bottom: solid 1px #cdcdcd;">Other participants</td>
-                    </tr>
-
-                    <!-- Table Body-->
-                    <ui:repeat value="#{matrix.similarInteractions}" var="si" varStatus="status">
-
+                        <!-- Table Header-->
                         <tr>
-                            <td align="right">
-                                <h:commandLink action="details?faces-redirect=true">
-                                    <h:outputText value="#{si.shortLabel}" shortDesc="#{si.fullName}" />
-                                    <f:setPropertyActionListener value="#{si.ac}" target="#{detailsBean.interactionAc}"/>
-                                </h:commandLink>
-                                <!--<tr:spacer width="10" />-->
+                            <td valign="bottom" style="border-bottom: solid 1px #cdcdcd;font-weight:bold; text-align: right;">
+                                <h:outputText value="Interactions" />
                             </td>
 
-                            <ui:repeat value="#{matrix.members}" var="member" varStatus="index">
-
-                                <ui:param name="style" value="#{(index.index eq fn:length(matrix.members) ? 'border-left: solid 1px #cdcdcd; border-right: solid 1px #cdcdcd;' : 'border-left: solid 1px #cdcdcd;')}" />
-
-                                <td align="center" width="30" style="#{style}">
-
-                                    <ui:param name="display" value="#{iam:isMemberPresent( si, member )}" />
-
-                                    <h:outputText value=" " rendered="#{!display}" />
-
-                                    <h:graphicImage url="/images/ok.gif" rendered="#{display}" alt="x"
-                                                    shortDesc="#{member.shortLabel} is present in this interaction"/>
-
-                                </td>
-
-                            </ui:repeat>
-
-                            <td align="left">
-                                <!-- Cell necessary to cope with the end of the table header-->
-                                <h:panelGroup>
-                                    <!--<tr:spacer width="7"/>-->
-                                    <h:outputText value="#{si.memberCount}"
-                                                  inlineStyle="color:#a7cf9b;font-weight:bold;"
-                                                  shortDesc="Count of matching molecules" /> <!-- green -->
-                                    <h:outputText value=" / " />
-                                    <h:outputText value="#{si.totalParticipantCount}"
-                                                  inlineStyle="color:#a7cf9b;font-weight:bold;"
-                                                  shortDesc="Total count of participants in this interaction" />   <!-- red -->
-                                </h:panelGroup>
+                            <td colspan="#{fn:length( matrix.members ) + 1}" style="border-bottom: solid 1px #cdcdcd;">
+                                <!--TODO try color management later (eg. &amp;tc=&#35;000000")-->
+                                <h:graphicImage url="/tableHeader?time=#{iam:currentTimeMillis()}&amp;s=31&amp;fs=12&amp;h=100&amp;st=true&amp;lc=%23cdcdcd" alt="header" />
                             </td>
 
-                            <td>
-                                <iam:collapsibleIterator id="mtx_participant_#{status.index}"
-                                                         disclosed="false"
-                                                         value="#{si.others}"
-                                                         maxShown="3">
-
-                                    <h:commandLink action="molecule?faces-redirect=true">
-                                        <f:setPropertyActionListener value="#{item.ac}" target="#{moleculeViewBean.interactorAc}"/>
-                                        <h:outputText value="#{item.shortLabel}" />
-                                    </h:commandLink>
-
-                                </iam:collapsibleIterator>
-                            </td>
-
+                            <td valign="bottom" style="font-weight:bold; border-bottom: solid 1px #cdcdcd;">Other participants</td>
                         </tr>
 
-                    </ui:repeat>
-                </table>
+                        <!-- Table Body-->
+                        <ui:repeat value="#{matrix.similarInteractions}" var="si" varStatus="status">
+
+                            <tr>
+                                <td align="right">
+                                    <h:commandLink action="details?faces-redirect=true">
+                                        <h:outputText value="#{si.shortLabel}" shortDesc="#{si.fullName}" />
+                                        <f:setPropertyActionListener value="#{si.ac}" target="#{detailsBean.interactionAc}"/>
+                                    </h:commandLink>
+                                    <!--<tr:spacer width="10" />-->
+                                </td>
+
+                                <ui:repeat value="#{matrix.members}" var="member" varStatus="index">
+
+                                    <ui:param name="style" value="#{(index.index eq fn:length(matrix.members) ? 'border-left: solid 1px #cdcdcd; border-right: solid 1px #cdcdcd;' : 'border-left: solid 1px #cdcdcd;')}" />
+
+                                    <td align="center" width="30" style="#{style}">
+
+                                        <ui:param name="display" value="#{iam:isMemberPresent( si, member )}" />
+
+                                        <h:outputText value=" " rendered="#{!display}" />
+
+                                        <h:graphicImage url="/images/ok.gif" rendered="#{display}" alt="x"
+                                                        shortDesc="#{member.shortLabel} is present in this interaction"/>
+
+                                    </td>
+
+                                </ui:repeat>
+
+                                <td align="left">
+                                    <!-- Cell necessary to cope with the end of the table header-->
+                                    <h:panelGroup>
+                                        <!--<tr:spacer width="7"/>-->
+                                        <h:outputText value="#{si.memberCount}"
+                                                      inlineStyle="color:#a7cf9b;font-weight:bold;"
+                                                      shortDesc="Count of matching molecules" /> <!-- green -->
+                                        <h:outputText value=" / " />
+                                        <h:outputText value="#{si.totalParticipantCount}"
+                                                      inlineStyle="color:#a7cf9b;font-weight:bold;"
+                                                      shortDesc="Total count of participants in this interaction" />   <!-- red -->
+                                    </h:panelGroup>
+                                </td>
+
+                                <td>
+                                    <iam:collapsibleIterator id="mtx_participant_#{status.index}"
+                                                             disclosed="false"
+                                                             value="#{si.others}"
+                                                             maxShown="3">
+
+                                        <h:commandLink action="molecule?faces-redirect=true">
+                                            <f:setPropertyActionListener value="#{item.ac}" target="#{moleculeViewBean.interactorAc}"/>
+                                            <h:outputText value="#{item.shortLabel}" />
+                                        </h:commandLink>
+
+                                    </iam:collapsibleIterator>
+                                </td>
+
+                            </tr>
+
+                        </ui:repeat>
+                    </table>
+                </div>
             </div>
-       </section>
+        </section>
 
     </ui:define>
 
