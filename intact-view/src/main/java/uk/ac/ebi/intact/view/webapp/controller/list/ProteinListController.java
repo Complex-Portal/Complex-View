@@ -114,8 +114,7 @@ public class ProteinListController extends InteractorListController {
     }
 
     public void openInArrayExpress(ActionEvent evt) {
-        String url = "http://www.ebi.ac.uk/gxa/qrs?gprop_0=&gval_0="+StringUtils.join(getSelectedUniprotIds(), "+")+
-                "&fexp_0=UP_DOWN&fact_0=&specie_0=&fval_0=&view=h";
+        String url = "http://www.ebi.ac.uk/gxa/query?geneQuery="+StringUtils.join(getSelectedUniprotIds(), "+");
         executeUrlRedirection(url);
     }
 
