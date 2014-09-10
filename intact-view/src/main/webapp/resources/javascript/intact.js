@@ -33,7 +33,7 @@ function ia_submitToReactome(selectedIds) {
     reactomeForm.appendChild(inputDb);
     reactomeForm.appendChild(inputSubmit);
 
-    document.getElementById('intactForm').parentNode.appendChild(reactomeForm);
+    document.getElementById('mainForm').parentNode.appendChild(reactomeForm);
     reactomeForm.submit();
 }
 
