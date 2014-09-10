@@ -9,26 +9,32 @@
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
                 xmlns:iaf="http://intact.ebi.ac.uk/functions" >
 
-    <h2>Molecule info</h2>
-
     <ui:param name="uniprotAc" value="#{iaf:getIdentifierForDasty(moleculeViewBean.interactor)}"/>
 
-    <h:panelGrid columns="2">
-        <h:outputLabel for="acTxt" value="#{intactView['webapp.name']} AC: "/>
-        <h:outputText id="acTxt" value="#{moleculeViewBean.interactor.ac}"/>
+    <section class="grid_6 alpha">
+        <h2>Molecule info</h2>
 
-        <h:outputLabel for="labelTxt" value="Short label: "/>
-        <h:outputText id="labelTxt" value="#{moleculeViewBean.interactor.shortLabel}"/>
+        <p>
+            <strong><h:outputText value="#{intactView['webapp.name']} AC: "/></strong>
+            <h:outputText id="acTxt" value="#{moleculeViewBean.interactor.ac}"/>
+        </p>
+        <p>
+            <strong><h:outputText value="Short label: "/></strong>
+            <h:outputText id="labelTxt" value="#{moleculeViewBean.interactor.shortLabel}"/>
+        </p>
+         <p>
+            <strong><h:outputText value="Uniprot AC: "/></strong>
+            <h:outputText id="uniprotTxt" value="#{uniprotAc}"/>
+        </p>
+    </section>
 
-        <h:outputLabel for="uniprotTxt" value="Uniprot AC: "/>
-        <h:outputText id="uniprotTxt" value="#{uniprotAc}"/>
-    </h:panelGrid>
+    <section class="grid_18 omega">
+        <h2>Dasty2 visualization</h2>
 
-    <h2>Dasty2 visualization</h2>
-
-         <iframe frameborder="0" width="100%" height="3450"
-            src="#{requestConfigBean.absoluteContextPath}/dasty/client/interactorview.html?q=#{uniprotAc}&amp;label=any&amp;t=3&amp;path=#{sf:urlEncode(requestConfigBean.absoluteContextPath)}#{sf:urlEncode('/dasty')}">
+        <iframe frameborder="0" width="100%" height="3450"
+                src="#{requestConfigBean.absoluteContextPath}/dasty/client/interactorview.html?q=#{uniprotAc}&amp;label=any&amp;t=3&amp;path=#{sf:urlEncode(requestConfigBean.absoluteContextPath)}#{sf:urlEncode('/dasty')}">
             Loading Dasty visualization...
         </iframe>
+    </section>
 
 </ui:composition>
