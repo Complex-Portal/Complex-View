@@ -43,6 +43,7 @@ import uk.ac.ebi.intact.view.webapp.model.ParticipantLazyDataModel;
 
 import javax.faces.context.FacesContext;
 import javax.persistence.Query;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -285,7 +286,16 @@ public class DetailsController extends JpaBaseController {
         if (interaction == null) {
             interaction = getDaoFactory().getInteractionDao().getByXref( interactionAc );
         }
+
         if ( interaction == null ) addErrorMessage( "No interaction found in the database for ac: " + interactionAc, "" );
+        // found a complex
+        else if (AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel(interaction, CvTopic.CURATED_COMPLEX) != null){
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("http://www.ebi.ac.uk/intact/complex/details/" + interactionAc);
+            } catch (IOException e) {
+                addErrorMessage( "No interaction found in the database for ac: " + interactionAc, "" );
+            }
+        }
         else{
             loadParticipants();
             loadNumberOfInteractorsInExperiment();

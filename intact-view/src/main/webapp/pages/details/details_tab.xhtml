@@ -16,8 +16,6 @@
                 xmlns:iax="http://intact.ebi.ac.uk/extlinks"
         >
 
-<h:panelGroup id="experimentPanel" rendered="#{detailsBean.experiment != null}">
-
 <ui:param name="experiment" value="#{detailsBean.experiment}"/>
 <ui:param name="interactionCount" value="#{detailsBean.numberInteractions}"/>
 <ui:param name="publication" value="#{experiment.publication}"/>
@@ -26,187 +24,217 @@
 <ui:param name="participantCount" value="#{detailsBean.numberParticipants}"/>
 <ui:param name="text" value="s (#{participantCount})"/>
 
-<h2>Publication</h2>
+<section id="experiment_section" class="grid_24">
+    <h:panelGroup id="experimentPanel" rendered="#{detailsBean.experiment != null}">
 
-<table id="publicationTable" width="100%">
-    <tr>
-        <td width="80%">
+        <section class="grid_24">
+            <h2>Publication</h2>
+            <div class="grid_20">
+                <div class="grid_20">
+                    <div class="grid_6">
+                        <p>
+                            <strong><h:outputText value="PubMed Id: " rendered="#{pmid != null}"/></strong>
+                            <h:outputText value="#{pmid}" rendered="#{pmid != null}"/>
+                        </p>
+                        <p>
+                            <strong><h:outputText value="Journal: "/></strong>
+                            <h:outputText value="#{detailsBean.journal}"/>
+                        </p>
+                        <p>
+                            <strong><h:outputText value="Year of Publication: "/></strong>
+                            <h:outputText value="#{detailsBean.publicationYear}"/>
+                        </p>
+                    </div>
+                    <div class="grid_14">
+                        <p>
+                            <strong><h:outputText value="Title: "/></strong>
+                            <h:outputText value="#{detailsBean.publicationTitle}"/>
+                        </p>
+                        <p>
+                            <strong><h:outputText value="Author List: "/></strong>
+                            <h:outputText value="#{detailsBean.authorList}"/>
+                        </p>
+                    </div>
+                </div>
+                <div class="grid_20">
+                    <div class="grid_10">
+                        <p>
+                            <h:panelGroup rendered="#{not empty publication.xrefs}">
+                                <strong><h:outputText value="Cross References: "/></strong>
+                                <iv:xrefTable id="publicationXrefTable" xrefs="#{publication.xrefs}"/>
+                            </h:panelGroup>
 
-            <iv:panelLabelAndMessage label="Author List:" labelStyleClass="textLabel">
-                <h:outputText value="#{detailsBean.authorList}"/>
-            </iv:panelLabelAndMessage>
+                        </p>
+                    </div>
+                    <div class="grid_10">
+                        <p>
+                            <h:panelGroup rendered="#{not empty detailsBean.publicationAnnotations}">
+                                <strong><h:outputText value="Annotations: "/></strong>
+                                <iv:annotationTable id="publicationAnnotTable" annotations="#{detailsBean.publicationAnnotations}"/>
+                            </h:panelGroup>
 
-            <iv:panelLabelAndMessage label="Title:" labelStyleClass="textLabel" visible="experiment.publication ">
-                <h:outputText value="#{detailsBean.publicationTitle}"/>
-            </iv:panelLabelAndMessage>
-
-            <iv:panelLabelAndMessage label="Journal:" labelStyleClass="textLabel">
-                <h:outputText value="#{detailsBean.journal}"/>
-            </iv:panelLabelAndMessage>
-
-            <iv:panelLabelAndMessage label="Year of Publication:" labelStyleClass="textLabel">
-                <h:outputText value="#{detailsBean.publicationYear}"/>
-            </iv:panelLabelAndMessage>
-
-            <iv:panelLabelAndMessage label="PubMed Id:" visible="#{pmid != null}" labelStyleClass="textLabel">
-                <h:outputText value="#{pmid}"/>
-            </iv:panelLabelAndMessage>
-
-            <iv:panelLabelAndMessage label="Cross References:" labelStyleClass="textLabel" visible="#{not empty publication.xrefs}">
-                <iv:xrefTable id="publicationXrefTable" xrefs="#{publication.xrefs}"/>
-            </iv:panelLabelAndMessage>
-
-            <iv:panelLabelAndMessage label="Annotations:" labelStyleClass="textLabel" visible="#{not empty detailsBean.publicationAnnotations}">
-                <iv:annotationTable id="publicationAnnotTable" annotations="#{detailsBean.publicationAnnotations}"/>
-            </iv:panelLabelAndMessage>
-
-        </td>
-
-        <td width="20%" style="text-align: right; vertical-align: top;">
-
-            <p:panel id="publicationLinks" header="Links">
-                <h:commandLink value="Show all interactions" action="#{searchBean.doBinarySearchAction}"
-                               onclick="_gaq.push(['_trackEvent', 'Details', 'Show all interactions', '#{pmid}'])">
-                    <f:setPropertyActionListener value="pubid:#{pmid}" target="#{userQuery.searchQuery}"/>
-                </h:commandLink>
-            </p:panel>
-
-        </td>
-    </tr>
-</table>
-
-<h2>Experiment (#{interactionCount} interaction#{interactionCount > 1 ? 's' : ''})</h2>
-
-<h:panelGroup>
-    <table border="0">
-        <tr>
-            <td style="vertical-align:top;">
-
-                <iv:panelLabelAndMessage label="Accession:" labelStyleClass="textLabel">
-                    <h:outputText value="#{experiment.ac}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Name:" labelStyleClass="textLabel">
-                    <h:outputText value="#{experiment.shortLabel}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Host organism:" labelStyleClass="textLabel">
-                    <iv:biosourcePopup bioSource="#{experiment.bioSource}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Interaction Detection Method:" labelStyleClass="textLabel">
-                    <p:commandLink id="interaction_detection_method" type="button" onclick="interactionDetectionMethodDlg.show();" value="#{experiment.cvInteraction.shortLabel}" />
-
-                    <p:dialog widgetVar="interactionDetectionMethodDlg" header="Interaction detection method: #{experiment.cvInteraction.shortLabel}"
-                              height="400" width="750">
-
-                        <iv:cvDetails cv="#{experiment.cvInteraction}"/>
-                    </p:dialog>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Participant Identification Method:" labelStyleClass="textLabel">
-                    <p:commandLink id="participant_identification_method" type="button" onclick="participantIdentMethodDlg.show();" value="#{experiment.cvIdentification.shortLabel}" />
-
-                    <p:dialog widgetVar="participantIdentMethodDlg" header="Participant identification method: #{experiment.cvIdentification.shortLabel}"
-                              height="400" width="750">
-
-                        <iv:cvDetails cv="#{experiment.cvIdentification}"/>
-                    </p:dialog>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Cross References:" labelStyleClass="textLabel" visible="#{not empty experiment.xrefs}">
-                    <iv:xrefTable id="experimentXrefTable" xrefs="#{experiment.xrefs}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Annotations:" labelStyleClass="textLabel" visible="#{not empty detailsBean.experimentAnnotations}">
-                    <iv:annotationTable id="experimentAnnotsTable" annotations="#{detailsBean.experimentAnnotations}"/>
-                </iv:panelLabelAndMessage>
-
-            </td>
-            <!--Display experiment network if less than 251 interactors-->
-
-            <h:panelGroup rendered="#{detailsBean.experimentDynamicAnnotations.size() gt 0 and detailsBean.jsonExperimentInteractions != null}">
-                <h:panelGroup rendered="#{detailsBean.numberOfInteractorsInExperiment lt 251}">
-                    <td style="text-align:right;vertical-align:top;width:590px;height:#{detailsBean.numberOfInteractorsInExperiment gt 80 ? 800 : 300}px;">
-                        <iv:experimentNetwork height="#{detailsBean.numberOfInteractorsInExperiment gt 80 ? 790 : 290}" width="590" url="/intact/dynamicNetwork/index.html?height=#{detailsBean.numberOfInteractorsInExperiment gt 80 ? 787 : 287}&amp;width=585&amp;biojsvariables=#{detailsBean.jsonExperimentInteractions}" />
-                    </td>
-                </h:panelGroup>
-            </h:panelGroup>
-        </tr>
-    </table>
-
-</h:panelGroup>
-
-<h:panelGroup id="interactionPanel" rendered="#{interaction != null}">
-    <h2>Interaction</h2>
-
-    <table width="100%">
-        <tr>
-            <td width="80%">
-                <iv:panelLabelAndMessage label="Accession:" labelStyleClass="textLabel">
-                    <h:outputText value="#{interaction.ac}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Name:" labelStyleClass="textLabel">
-                    <h:outputText value="#{interaction.shortLabel}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Description:" labelStyleClass="textLabel">
-                    <h:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Type:" labelStyleClass="textLabel">
-                    <p:commandLink id="interaction_type" type="button" onclick="interactionTypeDlg.show();" value="#{interaction.cvInteractionType.shortLabel}" />
-
-                    <p:dialog widgetVar="interactionTypeDlg" header="Interaction type: #{interaction.cvInteractionType.shortLabel}"
-                              height="400" width="750">
-
-                        <iv:cvDetails cv="#{interaction.cvInteractionType}"/>
-                    </p:dialog>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Cross References:" labelStyleClass="textLabel" visible="#{not empty interaction.xrefs}">
-                    <iv:xrefTable id="interactionXrefTable" xrefs="#{interaction.xrefs}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Annotations:" labelStyleClass="textLabel" visible="#{not empty interaction.annotations}">
-                    <iv:annotationTable id="interactionAnnotsTable" annotations="#{interaction.annotations}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Interaction Parameters:" labelStyleClass="textLabel" visible="#{not empty interaction.parameters}">
-                    <iv:parametersTable id="interactionParamTable" parameters="#{interaction.parameters}"/>
-                </iv:panelLabelAndMessage>
-
-                <iv:panelLabelAndMessage label="Interaction Confidences:" labelStyleClass="textLabel" visible="#{not empty interaction.confidences}">
-                    <iv:confidencesTable id="interactionConfTable" confidences="#{interaction.confidences}"/>
-                </iv:panelLabelAndMessage>
-            </td>
-
-            <td style="text-align: right; vertical-align: top;" width="20%">
-
-                <p:panel id="interactionLinks" header="Links">
-
-                    <h:commandLink value="Find similar interactions" action="browse.complex"
-                                   onclick="document.getElementById('mainPanels:progress_image').style.display = 'block'; document.getElementById('mainPanels:progress_text').style.display = 'block'; _gaq.push(['_trackEvent', 'Details', 'Find similar interactions', '#{interaction.ac}'])"/>
-
-                    <br/>
-
-                    <p:panel style="border: 0px">
-                        <h:graphicImage id="progress_image" alt="progress" style="display:none;"
-                                        url="/images/wait_red_indicator.gif"/>
-                        <h:outputText id="progress_text" style="display:none;"
-                                      value="This search may take up to a few minutes when the number of participant is high. Please be patient."/>
-                    </p:panel>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="grid_4">
+                <p:panel id="publicationLinks" header="Links">
+                    <h:commandLink value="Show all interactions" action="#{searchBean.doBinarySearchAction}"
+                                   onclick="_gaq.push(['_trackEvent', 'Details', 'Show all interactions', '#{pmid}'])">
+                        <f:setPropertyActionListener value="pubid:#{pmid}" target="#{userQuery.searchQuery}"/>
+                    </h:commandLink>
                 </p:panel>
+            </div>
+        </section>
 
-            </td>
-        </tr>
-    </table>
+        <section class="grid_24">
+            <h2>Experiment (#{interactionCount} interaction#{interactionCount > 1 ? 's' : ''})</h2>
+
+            <div class="grid_20">
+                <div class="grid_20">
+                    <div class="grid_5">
+                        <p>
+                            <strong><h:outputText value="Accession: "/></strong>
+                            <h:outputText value="#{experiment.ac}"/>
+                        </p>
+                        <p>
+                            <strong><h:outputText value="Name: "/></strong>
+                            <h:outputText value="#{experiment.shortLabel}"/>
+                        </p>
+                    </div>
+                    <div class="grid_15">
+                        <p>
+                            <strong><h:outputText value="Host organism: "/></strong>
+                            <iv:biosourcePopup bioSource="#{experiment.bioSource}"/>
+                        </p>
+                        <p>
+                            <strong><h:outputText value="Interaction Detection Method: "/></strong>
+                            <p:commandLink id="interaction_detection_method" type="button" onclick="interactionDetectionMethodDlg.show();"
+                                           value="#{experiment.cvInteraction.shortLabel}" />
+
+                            <p:dialog widgetVar="interactionDetectionMethodDlg" header="Interaction detection method: #{experiment.cvInteraction.shortLabel}"
+                                      height="400" width="750">
+
+                                <iv:cvDetails cv="#{experiment.cvInteraction}"/>
+                            </p:dialog>
+                        </p>
+                        <p>
+                            <strong><h:outputText value="Participant Identification Method: "/></strong>
+                            <p:commandLink id="participant_identification_method" type="button" onclick="participantIdentMethodDlg.show();"
+                                           value="#{experiment.cvIdentification.shortLabel}" />
+
+                            <p:dialog widgetVar="participantIdentMethodDlg" header="Participant identification method: #{experiment.cvIdentification.shortLabel}"
+                                      height="400" width="750">
+
+                                <iv:cvDetails cv="#{experiment.cvIdentification}"/>
+                            </p:dialog>
+                        </p>
+                    </div>
+                </div>
+                <div class="grid_20">
+                    <div class="grid_10">
+                        <p>
+                            <strong><h:outputText value="Cross References: "/></strong>
+                            <iv:xrefTable id="experimentXrefTable" xrefs="#{experiment.xrefs}"/>
+                        </p>
+                    </div>
+                    <div class="grid_10">
+                        <p>
+                            <strong><h:outputText value="Annotations: "/></strong>
+                            <iv:annotationTable id="experimentAnnotsTable" annotations="#{detailsBean.experimentAnnotations}"/>
+                        </p>
+                    </div>
+                </div>
+                <div class="grid_20">
+                    <h:panelGroup rendered="#{detailsBean.experimentDynamicAnnotations.size() gt 0 and detailsBean.jsonExperimentInteractions != null}">
+                        <h:panelGroup rendered="#{detailsBean.numberOfInteractorsInExperiment lt 251}">
+                            <td style="text-align:right;vertical-align:top;width:590px;height:#{detailsBean.numberOfInteractorsInExperiment gt 80 ? 800 : 300}px;">
+                                <iv:experimentNetwork height="#{detailsBean.numberOfInteractorsInExperiment gt 80 ? 790 : 290}" width="590" url="/intact/dynamicNetwork/index.html?height=#{detailsBean.numberOfInteractorsInExperiment gt 80 ? 787 : 287}&amp;width=585&amp;biojsvariables=#{detailsBean.jsonExperimentInteractions}" />
+                            </td>
+                        </h:panelGroup>
+                    </h:panelGroup>
+                </div>
+            </div>
+        </section>
+
+    </h:panelGroup>
+
+</section>
+
+<section id="interaction_section" class="grid_24">
+<h:panelGroup id="interactionPanel" rendered="#{interaction != null}">
+    <section>
+        <h2>Interaction</h2>
+
+        <table width="100%">
+            <tr>
+                <td width="80%">
+                    <iv:panelLabelAndMessage label="Accession:" labelStyleClass="textLabel">
+                        <h:outputText value="#{interaction.ac}"/>
+                    </iv:panelLabelAndMessage>
+
+                    <iv:panelLabelAndMessage label="Name:" labelStyleClass="textLabel">
+                        <h:outputText value="#{interaction.shortLabel}"/>
+                    </iv:panelLabelAndMessage>
+
+                    <iv:panelLabelAndMessage label="Description:" labelStyleClass="textLabel">
+                        <h:outputText value="#{(interaction.fullName == null ? '-' : interaction.fullName )}"/>
+                    </iv:panelLabelAndMessage>
+
+                    <iv:panelLabelAndMessage label="Type:" labelStyleClass="textLabel">
+                        <p:commandLink id="interaction_type" type="button" onclick="interactionTypeDlg.show();" value="#{interaction.cvInteractionType.shortLabel}" />
+
+                        <p:dialog widgetVar="interactionTypeDlg" header="Interaction type: #{interaction.cvInteractionType.shortLabel}"
+                                  height="400" width="750">
+
+                            <iv:cvDetails cv="#{interaction.cvInteractionType}"/>
+                        </p:dialog>
+                    </iv:panelLabelAndMessage>
+
+                    <iv:panelLabelAndMessage label="Cross References:" labelStyleClass="textLabel" visible="#{not empty interaction.xrefs}">
+                        <iv:xrefTable id="interactionXrefTable" xrefs="#{interaction.xrefs}"/>
+                    </iv:panelLabelAndMessage>
+
+                    <iv:panelLabelAndMessage label="Annotations:" labelStyleClass="textLabel" visible="#{not empty interaction.annotations}">
+                        <iv:annotationTable id="interactionAnnotsTable" annotations="#{interaction.annotations}"/>
+                    </iv:panelLabelAndMessage>
+
+                    <iv:panelLabelAndMessage label="Interaction Parameters:" labelStyleClass="textLabel" visible="#{not empty interaction.parameters}">
+                        <iv:parametersTable id="interactionParamTable" parameters="#{interaction.parameters}"/>
+                    </iv:panelLabelAndMessage>
+
+                    <iv:panelLabelAndMessage label="Interaction Confidences:" labelStyleClass="textLabel" visible="#{not empty interaction.confidences}">
+                        <iv:confidencesTable id="interactionConfTable" confidences="#{interaction.confidences}"/>
+                    </iv:panelLabelAndMessage>
+                </td>
+
+                <td style="text-align: right; vertical-align: top;" width="20%">
+
+                    <p:panel id="interactionLinks" header="Links">
+
+                        <h:commandLink value="Find similar interactions" action="browse.complex"
+                                       onclick="document.getElementById('mainPanels:progress_image').style.display = 'block'; document.getElementById('mainPanels:progress_text').style.display = 'block'; _gaq.push(['_trackEvent', 'Details', 'Find similar interactions', '#{interaction.ac}'])"/>
+
+                        <br/>
+
+                        <p:panel style="border: 0px">
+                            <h:graphicImage id="progress_image" alt="progress" style="display:none;"
+                                            url="/images/wait_red_indicator.gif"/>
+                            <h:outputText id="progress_text" style="display:none;"
+                                          value="This search may take up to a few minutes when the number of participant is high. Please be patient."/>
+                        </p:panel>
+                    </p:panel>
+
+                </td>
+            </tr>
+        </table>
+    </section>
 
 </h:panelGroup>
 
 <h:panelGroup rendered="#{interaction != null}">
 
+<section>
 <h2>Participant#{(participantCount > 1 ? text : '')}</h2>
 
 <p:dataTable id="participantDetailsTable" var="participant" value="#{detailsBean.participants}"
@@ -607,13 +635,14 @@
     <div class="ia-feature" style="display: inline; border: 1px solid gray;">F</div>Experimental Feature
     <div class="ia-confidence" style="display: inline; border: 1px solid gray;">C</div>Participant Confidence
 </div>
-
 <h:panelGroup rendered="#{detailsBean.featuresAvailable}">
     <h2>Graphical Representation of Experimental Features</h2>
     <iv:interactionRepresentation url="/intact/json?ac=#{interaction.ac}" />
 </h:panelGroup>
-</h:panelGroup>
+</section>
 
 </h:panelGroup>
+</section>
+
 
 </ui:composition>

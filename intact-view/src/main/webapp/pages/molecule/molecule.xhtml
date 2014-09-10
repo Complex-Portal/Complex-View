@@ -11,7 +11,7 @@
     <ui:define name="metadata">
         <f:metadata>
             <f:viewParam name="interactorAc" value="#{moleculeViewBean.interactorAc}"/>
-            <f:viewParam name="keepMainSearchResults" value="#{moleculeViewBean.keepMainSearchResults}"/>
+            <f:viewParam name="kmr" value="#{moleculeViewBean.keepMainSearchResults}"/>
             <f:event type="preRenderView" listener="#{contextController.setActiveTabIndex(4)}"/>
             <f:event type="preRenderView" listener="#{moleculeViewBean.loadInteractor}"/>
         </f:metadata>
