@@ -21,7 +21,7 @@
         <f:event type="preRenderView" listener="#{cvObjectController.load}"/>
     </f:metadata>
 
-     <ui:define name="detailsTabContent">
+    <ui:define name="detailsTabContent">
 
         <h:panelGroup>
             <h:graphicImage alt="Back" url="/images/back_arrow.gif" />
@@ -29,31 +29,33 @@
         </h:panelGroup>
 
         <br/>
+        <section class="grid_24">
+            <h2>CV Term: #{cvObjectController.cv.shortLabel}</h2>
 
-        <h2>CV Term: #{cvObjectController.cv.shortLabel}</h2>
+            <p>
+                <strong><h:outputText value="Identifier: "/></strong>
+                <h:outputText value="#{cvObjectController.cv.identifier}"/>
+            </p>
+            <p>
+                <strong><h:outputText value="Description: "/></strong>
+                <h:outputText value="#{cvObjectController.cvDescription != null? cvObjectController.cvDescription : '-'}"/>
+            </p>
 
-         <h:panelGrid columns="2" columnClasses="labelColumn,none">
-             <h:outputLabel for="identTxt" value="Identifier: "/>
-             <h:outputText id="identTxt" value="#{cvObjectController.cv.identifier}"/>
+            <h:panelGroup rendered="#{not empty cvObjectController.cv.xrefs}">
 
-             <h:outputLabel for="fullNameTxt" value="Description: "/>
-             <h:outputText id="fullNameTxt" value="#{cvObjectController.cvDescription != null? cvObjectController.cvDescription : '-'}"/>
+                <p>
+                    <strong><h:outputText value="Cross references: "/></strong>
+                    <iv:xrefTable xrefs="#{cvObjectController.cv.xrefs}"/>
+                </p>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{not empty cvObjectController.cvAnnotations}">
+                <p>
+                    <strong><h:outputText value="Annotations: "/></strong>
+                    <iv:annotationTable annotations="#{cvObjectController.cvAnnotations}"/>
+                </p>
+            </h:panelGroup>
 
-             <h:outputLabel for="fullNameTxt" value="Cross References: "/>
-
-             <h:panelGroup rendered="#{not empty cvObjectController.cv.xrefs}">
-                <iv:xrefTable xrefs="#{cvObjectController.cv.xrefs}"/>
-             </h:panelGroup>
-             <h:outputText value="None" rendered="#{empty cvObjectController.cv.xrefs}"/>
-
-             <h:outputLabel for="fullNameTxt" value="Annotations: "/>
-             <h:panelGroup rendered="#{not empty cvObjectController.cvAnnotations}">
-                <iv:annotationTable annotations="#{cvObjectController.cvAnnotations}"/>
-             </h:panelGroup>
-
-             <h:outputText value="None" rendered="#{empty cvObjectController.cvAnnotations}"/>
-         </h:panelGrid>
-
+        </section>
 
     </ui:define>
 
