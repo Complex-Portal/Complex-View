@@ -20,7 +20,7 @@
     </section>
 
     <section class="grid_24">
-        <section class="grid_12">
+        <section class="push_2 grid_11">
             <h3>Browse by Uniprot taxonomy</h3>
 
             <p:tree var="otw" value="#{taxonomyBrowser.ontologyTreeNode}"
@@ -35,7 +35,7 @@
                 </p:treeNode>
             </p:tree>
         </section>
-        <section class="grid_12">
+        <section class="grid_11">
             <h3>Browse by Gene Ontology</h3>
 
             <p:tree id="goTree" var="otw" value="#{goBrowser.ontologyTreeNode}"
@@ -50,7 +50,9 @@
                 </p:treeNode>
             </p:tree>
         </section>
-        <section class="grid_12">
+    </section>
+    <section class="grid_24">
+        <section class="push_2 grid_11">
             <h3>Browse by CHEBI ontology</h3>
 
             <p:tree var="otw" value="#{chebiBrowser.ontologyTreeNode}"
@@ -65,95 +67,41 @@
                 </p:treeNode>
             </p:tree>
         </section>
-    </section>
-    <section class="grid_24">
-
-        <section class="grid_12">
-            <h3>Proteins (#{searchBean.proteinTotalResults})</h3>
-
-            <p:panel header="Numerous interactors available"
-                     rendered="#{displayWarning}" style="float:right; width: 300px">
-                <h:outputText value="Please be aware that due to the number of interaction currently available in
-                                      your dataset, only the first #{browseBean.maxSize} interactor identifiers will be passed on to
-                                      third party resources (only the first #{browseBean.maxSizeRNAExpression} for mRNA expression ). In order to make this clear, we will display the icon"/>
-                &#160;
-                <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"/>
-                &#160;
-                <h:outputText value="whenever this restriction applies."/>
-            </p:panel>
-
-            <h:panelGroup style="text-align:left; vertical-align:top">
-
-                <table style="text-align:left" border="0" cellSpacing="5" cellPadding="0" width="300">
-
-                    <tr>
-                        <td style="text-align: center" width="15">
-
-                        </td>
-                        <td>
-                            <p:commandLink value="List All" action="/pages/list/protein_list?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="text-align: center" width="15">
-
-                        </td>
-                        <td>
-                            <p:commandLink value="By Gene Ontology (GO)" action="/pages/browse/gobrowser?faces-redirect=true&amp;includeViewParams=true" ajax="false"/>
-                        </td>
-                    </tr>
-
-                    <!-- DISABLED because not working anymore <tr>
-                        <td style="text-align: center" width="15">
-                            <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
-                                            rendered="#{displayWarning}" title="Numerous interactors available"/>
-                        </td>
-                        <td>
-                            <h:outputLink target="_blank"
-                                          value="http://www.ebi.ac.uk/interpro/IProtein?ac=#{browseBean.interproIdentifierList}&amp;sort=ac">By Interpro Domain</h:outputLink>
-                        </td>
-                    </tr>-->
-
-                    <tr>
-                        <td style="text-align: center" width="15">
-                            <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
-                                            rendered="#{displayWarning}" title="Numerous interactors available"/>
-                        </td>
-                        <td>
-
-                            <h:outputLink value="javascript:void(0)" onclick="ia_submitToReactome('#{fn:join(browseBean.reactomeIdentifierList,',')}')">
-                                <h:outputText value="By Reactome Pathway"/>
-                            </h:outputLink>
-
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="text-align: center" width="15">
-                            <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
-                                            rendered="#{displayWarning}" title="Numerous interactors available"/>
-                        </td>
-                        <td>
-                            <h:outputLink target="_blank"
-                                          value="http://www.ensembl.org/Homo_sapiens/featureview?type=ProteinAlignFeature;id=#{browseBean.chromosomalLocationIdentifierList}">By Chromosomal Location</h:outputLink>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="text-align: center" width="15">
-                            <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
-                                            rendered="#{displayWarning}" title="Numerous interactors available"/>
-                        </td>
-                        <td>
-                            <h:outputLink target="_blank"
-                                          value="http://www.ebi.ac.uk/gxa/query?geneQuery=#{browseBean.MRNAExpressionIdentifierList}">By mRNA expression</h:outputLink>
-                        </td>
-                    </tr>
-
-                </table>
-
-            </h:panelGroup>
+        <section class="grid_11">
+            <h3>Third party resources</h3>
+            <!-- DISABLED because not working anymore <tr>
+                  <td style="text-align: center" width="15">
+                      <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
+                                      rendered="#{displayWarning}" title="Numerous interactors available"/>
+                  </td>
+                  <td>
+                      <h:outputLink target="_blank"
+                                    value="http://www.ebi.ac.uk/interpro/IProtein?ac=#{browseBean.interproIdentifierList}&amp;sort=ac">By Interpro Domain</h:outputLink>
+                  </td>
+              </tr>-->
+            <div>
+                <ul>
+                    <li>
+                        <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
+                                        rendered="#{displayWarning}" title="Numerous interactors available"/>
+                        <h:outputLink value="javascript:void(0)" onclick="ia_submitToReactome('#{fn:join(browseBean.reactomeIdentifierList,',')}')">
+                            <h:outputText value="By Reactome Pathway"/>
+                        </h:outputLink>
+                    </li>
+                    <li>
+                        <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
+                                        rendered="#{displayWarning}" title="Numerous interactors available"/>
+                        <h:outputLink target="_blank"
+                                      value="http://www.ensembl.org/Homo_sapiens/featureview?type=ProteinAlignFeature;id=#{browseBean.chromosomalLocationIdentifierList}">By Chromosomal Location</h:outputLink>
+                    </li>
+                    <li>
+                        <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
+                                        rendered="#{displayWarning}" title="Numerous interactors available"/>
+                        <h:outputLink target="_blank"
+                                      value="http://www.ebi.ac.uk/gxa/query?geneQuery=#{browseBean.MRNAExpressionIdentifierList}">By mRNA expression</h:outputLink>
+                    </li>
+                </ul>
+            </div>
         </section>
     </section>
 
