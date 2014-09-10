@@ -302,7 +302,7 @@
         <h:panelGroup rendered="#{xref.cvDatabase.shortLabel == 'uniprotkb'}">
             <iax:goUniprot query="#{xref.primaryId}" onlyLogo="true"/>
             <br/>
-            <h:link outcome="/pages/molecule/molecule.xhtml?faces-redirect=true&amp;includeViewParams=true&amp;interactorAc=#{participant.interactorAc}">
+            <h:link outcome="/pages/molecule/molecule.xhtml?faces-redirect=true&amp;includeViewParams=true&amp;interactorAc=#{participant.interactorAc}&amp;kmr=true">
                 <h:graphicImage alt="dastyLogo" url="/images/logos/dasty2_logo_50.png" style="border-width:0"/>
             </h:link>
         </h:panelGroup>
