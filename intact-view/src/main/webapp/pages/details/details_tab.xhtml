@@ -490,70 +490,68 @@
                 <h:outputText value="A" style="font-weight:bold; color:white;"/>
             </p:commandLink>
 
-            <p:dialog header="Participant: #{participant.interactorFullName}"
-                      widgetVar="annotDlg_#{row+1}" height="400" width="750" fixedCenter="true"
-                      constrainToViewport="true" modal="false">
-
-                <h3>Participant: #{participant.interactorFullName}</h3>
-
-                <p>
-                    <strong><h:outputText value="Accession: "/></strong>
-                    <h:outputText value="#{participant.participantAc}"/>
-                </p>
-                <p>
-                    <strong><h:outputText value="Name: "/></strong>
-                    <h:outputText value="#{participant.interactorShortLabel}"/>
-                </p>
-                <h:panelGroup rendered="#{not empty participant.participantXrefs}">
-                    <p>
-                        <strong><h:outputText value="Cross References: "/></strong>
-                        <iv:xrefTable xrefs="#{participant.participantXrefs}"/>
-
-                    </p>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{not empty participant.participantAnnotations}">
-                    <p>
-                        <strong><h:outputText value="Annotations: "/></strong>
-                        <iv:annotationTable annotations="#{participant.participantAnnotations}"/>
-
-                    </p>
-                </h:panelGroup>
-
-            </p:dialog>
-
             <h:outputText value="A" shortDesc="#{annotationCount} Annotation" rendered="#{annotationCount == 0}"
                           style="font-weight:bold; color:white;"/>
         </div>
+        <p:dialog header="Participant: #{participant.interactorFullName}"
+                  widgetVar="annotDlg_#{row+1}" height="400" width="750" fixedCenter="true"
+                  constrainToViewport="true" modal="false">
+
+            <h3>Participant: #{participant.interactorFullName}</h3>
+
+            <p>
+                <strong><h:outputText value="Accession: "/></strong>
+                <h:outputText value="#{participant.participantAc}"/>
+            </p>
+            <p>
+                <strong><h:outputText value="Name: "/></strong>
+                <h:outputText value="#{participant.interactorShortLabel}"/>
+            </p>
+            <h:panelGroup rendered="#{not empty participant.participantXrefs}">
+                <p>
+                    <strong><h:outputText value="Cross References: "/></strong>
+                    <iv:xrefTable xrefs="#{participant.participantXrefs}"/>
+
+                </p>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{not empty participant.participantAnnotations}">
+                <p>
+                    <strong><h:outputText value="Annotations: "/></strong>
+                    <iv:annotationTable annotations="#{participant.participantAnnotations}"/>
+
+                </p>
+            </h:panelGroup>
+
+        </p:dialog>
         <div class="#{parameterCount>0 ? 'ia-parameter' : 'ia-legend-gray'}" style="width:20px; display: inline; border: 1px solid gray;" align="center">
             <p:commandLink id="parameterLink_${row+1}" type="button" onclick="parameterDlg_#{row+1}.show();" rendered="#{parameterCount>0}">
                 <h:outputText value="P" style="font-weight:bold; color:white;"/>
             </p:commandLink>
 
-            <p:dialog header="Participant: #{participant.interactorFullName}"
-                      widgetVar="parameterDlg_#{row+1}" height="400" width="750" fixedCenter="true"
-                      constrainToViewport="true" modal="false">
-
-                <h3>Participant: #{participant.interactorFullName}</h3>
-
-                <p>
-                    <strong><h:outputText value="Accession: "/></strong>
-                    <h:outputText value="#{participant.participantAc}"/>
-                </p>
-                <p>
-                    <strong><h:outputText value="Name: "/></strong>
-                    <h:outputText value="#{participant.interactorShortLabel}"/>
-                </p>
-                <p>
-                    <strong><h:outputText value="Parameters: "/></strong>
-                    <iv:parametersTable parameters="#{participant.parameters}"/>
-
-                </p>
-
-            </p:dialog>
-
             <h:outputText value="P" shortDesc="#{parameterCount} Parameter" rendered="#{parameterCount == 0}"
                           style="font-weight:bold;color:white;"/>
         </div>
+        <p:dialog header="Participant: #{participant.interactorFullName}"
+                  widgetVar="parameterDlg_#{row+1}" height="400" width="750" fixedCenter="true"
+                  constrainToViewport="true" modal="false">
+
+            <h3>Participant: #{participant.interactorFullName}</h3>
+
+            <p>
+                <strong><h:outputText value="Accession: "/></strong>
+                <h:outputText value="#{participant.participantAc}"/>
+            </p>
+            <p>
+                <strong><h:outputText value="Name: "/></strong>
+                <h:outputText value="#{participant.interactorShortLabel}"/>
+            </p>
+            <p>
+                <strong><h:outputText value="Parameters: "/></strong>
+                <iv:parametersTable parameters="#{participant.parameters}"/>
+
+            </p>
+
+        </p:dialog>
     </div>
     <br/>
     <div id="extraDiv2" class="extra" style="border: 0px; width:100px; ">
@@ -562,91 +560,88 @@
                 <h:outputText value="S" style="font-weight:bold; color:white;"/>
             </p:commandLink>
 
-            <p:dialog header="Participant: #{participant.interactorFullName}"
-                      widgetVar="stcDlg_#{row+1}" height="400" width="750" fixedCenter="true"
-                      constrainToViewport="true" modal="false">
-
-                <h3>Participant: #{participant.interactorFullName}</h3>
-
-                <p>
-                    <strong><h:outputText value="Accession: "/></strong>
-                    <h:outputText value="#{participant.participantAc}"/>
-                </p>
-                <p>
-                    <strong><h:outputText value="Name: "/></strong>
-                    <h:outputText value="#{participant.interactorShortLabel}"/>
-                </p>
-                <p>
-                    <strong><h:outputText value="Stoichiometry: "/></strong>
-                    <h:outputText value="#{participant.participantStoichiometry}"/>
-
-                </p>
-
-            </p:dialog>
-
             <h:outputText value="S" shortDesc="Stoichiometry: none" rendered="#{participant.participantStoichiometry eq 0}"
                           style="font-weight:bold;color:white;"/>
         </div>
+        <p:dialog header="Participant: #{participant.interactorFullName}"
+                  widgetVar="stcDlg_#{row+1}" height="400" width="750" fixedCenter="true"
+                  constrainToViewport="true" modal="false">
+
+            <h3>Participant: #{participant.interactorFullName}</h3>
+
+            <p>
+                <strong><h:outputText value="Accession: "/></strong>
+                <h:outputText value="#{participant.participantAc}"/>
+            </p>
+            <p>
+                <strong><h:outputText value="Name: "/></strong>
+                <h:outputText value="#{participant.interactorShortLabel}"/>
+            </p>
+            <p>
+                <strong><h:outputText value="Stoichiometry: "/></strong>
+                <h:outputText value="#{participant.participantStoichiometry}"/>
+
+            </p>
+
+        </p:dialog>
         <div class="#{domainCount>0 ? 'ia-feature' : 'ia-legend-gray'}" style="width:20px; display: inline; border: 1px solid gray;" align="center">
             <p:commandLink id="featureLink_${row+1}" type="button" onclick="featureDlg_#{row+1}.show();" rendered="#{domainCount > 0}">
                 <h:outputText value="F" style="font-weight:bold; color:white;"/>
             </p:commandLink>
 
-            <p:dialog header="Participant: #{participant.interactorFullName}"
-                      widgetVar="featureDlg_#{row+1}" height="400" width="750" fixedCenter="true"
-                      constrainToViewport="true" modal="false">
-
-                <h3>Participant: #{participant.interactorFullName}</h3>
-
-                <p>
-                    <strong><h:outputText value="Accession: "/></strong>
-                    <h:outputText value="#{participant.participantAc}"/>
-                </p>
-                <p>
-                    <strong><h:outputText value="Name: "/></strong>
-                    <h:outputText value="#{participant.interactorShortLabel}"/>
-                </p>
-                <p>
-                    <strong><h:outputText value="Features: "/></strong>
-                    <iv:featureTable features="#{participant.features}"/>
-
-                </p>
-
-            </p:dialog>
-
             <h:outputText value="F" shortDesc="#{domainCount} feature" rendered="#{domainCount == 0}"
                           style="font-weight:bold; color:white;"/>
         </div>
+        <p:dialog header="Participant: #{participant.interactorFullName}"
+                  widgetVar="featureDlg_#{row+1}" height="400" width="750" fixedCenter="true"
+                  constrainToViewport="true" modal="false">
+
+            <h3>Participant: #{participant.interactorFullName}</h3>
+
+            <p>
+                <strong><h:outputText value="Accession: "/></strong>
+                <h:outputText value="#{participant.participantAc}"/>
+            </p>
+            <p>
+                <strong><h:outputText value="Name: "/></strong>
+                <h:outputText value="#{participant.interactorShortLabel}"/>
+            </p>
+            <p>
+                <strong><h:outputText value="Features: "/></strong>
+                <iv:featureTable features="#{participant.features}"/>
+
+            </p>
+
+        </p:dialog>
         <div class="#{confidenceCount>0 ? 'ia-confidence' : 'ia-legend-gray'}" style="width:20px; display: inline; border: 1px solid gray;" align="center">
             <p:commandLink id="confidenceLink_${row+1}" type="button" onclick="confidenceDlg_#{row+1}.show();" rendered="#{confidenceCount > 0}">
                 <h:outputText value="C" style="font-weight:bold; color:white;"/>
             </p:commandLink>
 
-            <p:dialog header="Participant: #{participant.interactorFullName}"
-                      widgetVar="confidenceDlg_#{row+1}" height="400" width="750" fixedCenter="true"
-                      constrainToViewport="true" modal="false">
-
-                <h3>Participant: #{participant.interactorFullName}</h3>
-
-                <p>
-                    <strong><h:outputText value="Accession: "/></strong>
-                    <h:outputText value="#{participant.participantAc}"/>
-                </p>
-                <p>
-                    <strong><h:outputText value="Name: "/></strong>
-                    <h:outputText value="#{participant.interactorShortLabel}"/>
-                </p>
-                <p>
-                    <strong><h:outputText value="Confidences: "/></strong>
-                    <iv:confidencesTable confidences="#{participant.confidences}"/>
-
-                </p>
-
-            </p:dialog>
-
             <h:outputText value="C" shortDesc="#{confidenceCount} confidence" rendered="#{confidenceCount == 0}"
                           style="font-weight:bold; color:white;"/>
         </div>
+        <p:dialog header="Participant: #{participant.interactorFullName}"
+                  widgetVar="confidenceDlg_#{row+1}" height="400" width="750" fixedCenter="true"
+                  constrainToViewport="true" modal="false">
+
+            <h3>Participant: #{participant.interactorFullName}</h3>
+
+            <p>
+                <strong><h:outputText value="Accession: "/></strong>
+                <h:outputText value="#{participant.participantAc}"/>
+            </p>
+            <p>
+                <strong><h:outputText value="Name: "/></strong>
+                <h:outputText value="#{participant.interactorShortLabel}"/>
+            </p>
+            <p>
+                <strong><h:outputText value="Confidences: "/></strong>
+                <iv:confidencesTable confidences="#{participant.confidences}"/>
+
+            </p>
+
+        </p:dialog>
     </div>
 </p:column>
 

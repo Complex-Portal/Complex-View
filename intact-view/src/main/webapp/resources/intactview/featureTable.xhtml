@@ -19,49 +19,55 @@
     <!-- IMPLEMENTATION -->
     <composite:implementation>
         <ul>
-            <ui:repeat var="feature" value="#{cc.attrs.features}" varStatus="rowStatus">
+            <p:dataTable id="#{cc.id}" dynamic="false" var="feature" value="#{cc.attrs.features}" style="width: 100%">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Feature Name"/>
+                    </f:facet>
+                    <h:outputText value=" #{feature.shortLabel}" />
 
-                <p><h:outputText value=" #{feature.shortLabel}" /></p>
-                <p>
-                    <strong><h:outputText value="Feature Type: "/></strong>
-                    <h:outputText value="#{feature.cvFeatureType.shortLabel}"/>
-                </p>
-                <h:panelGroup rendered="#{feature.cvFeatureIdentification != null}">
-                    <p>
-                        <strong><h:outputText value="Detection Method: "/></strong>
-                        <h:outputLink value="#{request.contextPath}/cv/#{feature.cvFeatureIdentification.ac}">
-                            <h:outputText value=" #{feature.cvFeatureIdentification.shortLabel}" />
-                        </h:outputLink>                        </p>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{not empty feature.xrefs}">
-                    <p>
-                        <strong><h:outputText value="Cross References: "/></strong>
-                        <iv:xrefTable xrefs="#{feature.xrefs}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Feature Type"/>
+                    </f:facet>
+                    <h:outputLink value="#{request.contextPath}/cv/#{feature.cvFeatureType.ac}">
+                        <h:outputText value="#{feature.cvFeatureType.shortLabel}"/>
+                    </h:outputLink>
 
-                    </p>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{not empty feature.annotations}">
-                    <p>
-                        <strong><h:outputText value="Annotations: "/></strong>
-                        <iv:annotationTable annotations="#{feature.annotations}"/>
-
-                    </p>
-                </h:panelGroup>
-                <p>
-                    <strong><h:outputText value="Feature Type: "/></strong>
-                    <h:outputText value="#{feature.cvFeatureType.shortLabel}"/>
-                </p>
-                <p>
-                    <strong><h:outputText value="Feature range positions: "/></strong>
-                </p>
-                <ul>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Detection Method"/>
+                    </f:facet>
+                    <ui:param name="isUrl" value="#{annot.cvTopic.identifier == 'MI:0614'}" />
+                    <h:outputLink value="#{request.contextPath}/cv/#{feature.cvFeatureIdentification.ac}">
+                        <h:outputText value=" #{feature.cvFeatureIdentification.shortLabel}" />
+                    </h:outputLink>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Range positions"/>
+                    </f:facet>
                     <ui:repeat value="#{feature.ranges}" var="range">
                         <li>
                             <h:outputText value="#{range}" />
                         </li>
                     </ui:repeat>
-                </ul>
-            </ui:repeat>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Cross references"/>
+                    </f:facet>
+                    <iv:xrefTable xrefs="#{feature.xrefs}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Annotations"/>
+                    </f:facet>
+                    <iv:annotationTable annotations="#{feature.annotations}"/>
+                </p:column>
+            </p:dataTable>
         </ul>
 
         <br/>
