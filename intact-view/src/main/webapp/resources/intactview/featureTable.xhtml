@@ -18,57 +18,98 @@
 
     <!-- IMPLEMENTATION -->
     <composite:implementation>
-        <ul>
-            <p:dataTable id="#{cc.id}" dynamic="false" var="feature" value="#{cc.attrs.features}" style="width: 100%">
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Feature Name"/>
-                    </f:facet>
-                    <h:outputText value=" #{feature.shortLabel}" />
+        <div class="legend push_5 grid_24">
+            <b>Legend:</b>
+            <div class="ia-annotation" style="display: inline; border: 1px solid gray;">A</div>Annotation and Cross Reference&#160;&#160;
+            <div class="ia-parameter" style="display: inline; border: 1px solid gray;">P</div>Experimental Parameter &#160;&#160;
+            <div class="ia-stoichiometry" style="display: inline; border: 1px solid gray;">S</div>Stoichiometry &#160;&#160;
+            <div class="ia-feature" style="display: inline; border: 1px solid gray;">F</div>Experimental Feature
+            <div class="ia-confidence" style="display: inline; border: 1px solid gray;">C</div>Participant Confidence
+        </div>
+        <p:dataTable id="#{cc.id}" dynamic="false" var="feature" value="#{cc.attrs.features}" style="width: 100%">
+            <ui:param name="fannotationCount"
+                      value="#{fn:length(features.xrefs) + fn:length(features.annotations)}"/>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Feature Name"/>
+                </f:facet>
+                <h:outputText value=" #{feature.shortLabel}" />
 
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Feature Type"/>
-                    </f:facet>
-                    <h:outputLink value="#{request.contextPath}/cv/#{feature.cvFeatureType.ac}">
-                        <h:outputText value="#{feature.cvFeatureType.shortLabel}"/>
-                    </h:outputLink>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Feature Type"/>
+                </f:facet>
+                <h:outputLink value="#{request.contextPath}/cv/#{feature.cvFeatureType.ac}">
+                    <h:outputText value="#{feature.cvFeatureType.shortLabel}"/>
+                </h:outputLink>
 
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Detection Method"/>
-                    </f:facet>
-                    <ui:param name="isUrl" value="#{annot.cvTopic.identifier == 'MI:0614'}" />
-                    <h:outputLink value="#{request.contextPath}/cv/#{feature.cvFeatureIdentification.ac}">
-                        <h:outputText value=" #{feature.cvFeatureIdentification.shortLabel}" />
-                    </h:outputLink>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Range positions"/>
-                    </f:facet>
-                    <ui:repeat value="#{feature.ranges}" var="range">
-                        <li>
-                            <h:outputText value="#{range}" />
-                        </li>
-                    </ui:repeat>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Cross references"/>
-                    </f:facet>
-                    <iv:xrefTable xrefs="#{feature.xrefs}"/>
-                </p:column>
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Annotations"/>
-                    </f:facet>
-                    <iv:annotationTable annotations="#{feature.annotations}"/>
-                </p:column>
-            </p:dataTable>
-        </ul>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Detection Method"/>
+                </f:facet>
+                <ui:param name="isUrl" value="#{annot.cvTopic.identifier == 'MI:0614'}" />
+                <h:outputLink value="#{request.contextPath}/cv/#{feature.cvFeatureIdentification.ac}">
+                    <h:outputText value=" #{feature.cvFeatureIdentification.shortLabel}" />
+                </h:outputLink>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Range positions"/>
+                </f:facet>
+                <ui:repeat value="#{feature.ranges}" var="range">
+                    <li>
+                        <h:outputText value="#{range}" />
+                    </li>
+                </ui:repeat>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="More..."/>
+                </f:facet>
+                <div id="extraDiv1" class="extra" style="border: 0px; width:100px; ">
+                    <div class="#{fannotationCount>0 ? 'ia-annotation' : 'ia-legend-gray'}" style="width:20px; display: inline; border: 1px solid gray;" align="center">
+                        <p:commandLink id="fannotationLink_${row+1}" type="button" onclick="fannotDlg_#{row+1}.show();" rendered="#{fannotationCount>0}">
+                            <h:outputText value="A" style="font-weight:bold; color:white;"/>
+                        </p:commandLink>
+
+                        <h:outputText value="A" shortDesc="#{fannotationCount} Annotation" rendered="#{fannotationCount == 0}"
+                                      style="font-weight:bold; color:white;"/>
+                    </div>
+                    <p:dialog header="Feature: #{feature.ac}"
+                              widgetVar="annotDlg_#{row+1}" height="400" width="750" fixedCenter="true"
+                              constrainToViewport="true" modal="false">
+
+                        <h3>Feature: #{feature.shortLabel}</h3>
+
+                        <p>
+                            <strong><h:outputText value="Accession: "/></strong>
+                            <h:outputText value="#{feature.ac}"/>
+                        </p>
+                        <p>
+                            <strong><h:outputText value="Name: "/></strong>
+                            <h:outputText value="#{feature.shortLabel}"/>
+                        </p>
+                        <h:panelGroup rendered="#{not empty feature.xrefs}">
+                            <p>
+                                <strong><h:outputText value="Cross References: "/></strong>
+                                <iv:xrefTable xrefs="#{feature.xrefs}"/>
+
+                            </p>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{not empty feature.annotations}">
+                            <p>
+                                <strong><h:outputText value="Annotations: "/></strong>
+                                <iv:annotationTable annotations="#{feature.annotations}"/>
+
+                            </p>
+                        </h:panelGroup>
+
+                    </p:dialog>
+                </div>
+            </p:column>
+        </p:dataTable>
 
         <br/>
         <div class="legend" style="margin-top: 5px;" align="left">
