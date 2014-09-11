@@ -30,35 +30,35 @@
                       constrainToViewport="true" modal="false">
 
                 <p:panel rendered="#{cc.attrs.visible}" style="width:#{cc.attrs.width}px;">
-                    <iv:panelLabelAndMessage label="Accession: " labelStyle="font-weight:bold;">
+                    <p>
+                        <strong><h:outputText value="Accession: "/></strong>
                         <h:outputText value="#{cc.attrs.bioSource.ac}"/>
-                    </iv:panelLabelAndMessage>
-                    <br/>
-                    <iv:panelLabelAndMessage label="Name: " labelStyle="font-weight:bold;">
+                    </p>
+                    <p>
+                        <strong><h:outputText value="Name: "/></strong>
                         <h:outputText value="#{cc.attrs.bioSource.shortLabel}"/>
-                    </iv:panelLabelAndMessage>
-                    <br/>
-                    <iv:panelLabelAndMessage label="Description: "
-                                             visible="#{cc.attrs.bioSource.shortLabel != cc.attrs.bioSource.fullName}"
-                                             labelStyle="font-weight:bold;">
-                        <h:outputText
-                                value="#{(cc.attrs.bioSource.fullName == null ? '-' : cc.attrs.bioSource.fullName )}"/>
-                    </iv:panelLabelAndMessage>
-                    <br/>
-                    <iv:panelLabelAndMessage label="Cross References: "
-                                             visible="#{not empty cc.attrs.bioSource.xrefs}"
-                                             labelStyle="font-weight:bold;">
-                        <iv:xrefTable xrefs="#{cc.attrs.bioSource.xrefs}"/>
+                    </p>
+                    <h:panelGroup rendered="#{cc.attrs.bioSource.shortLabel != cc.attrs.bioSource.fullName}">
+                        <p>
+                            <strong><h:outputText value="Description: "/></strong>
+                            <h:outputText
+                                    value="#{(cc.attrs.bioSource.fullName == null ? '-' : cc.attrs.bioSource.fullName )}"/>
+                        </p>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{not empty cc.attrs.bioSource.xrefs}">
+                        <p>
+                            <strong><h:outputText value="Cross References: "/></strong>
+                            <iv:xrefTable xrefs="#{cc.attrs.bioSource.xrefs}"/>
 
-                    </iv:panelLabelAndMessage>
-                    <br/>
-                    <iv:panelLabelAndMessage label="Annotations: "
-                                             visible="#{not empty cc.attrs.bioSource.annotations}"
-                                             labelStyle="font-weight:bold;">
-                        <iv:annotationTable annotations="#{cc.attrs.bioSource.annotations}"/>
+                        </p>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{not empty cc.attrs.bioSource.annotations}">
+                        <p>
+                            <strong><h:outputText value="Annotations: "/></strong>
+                            <iv:annotationTable annotations="#{cc.attrs.bioSource.annotations}"/>
 
-                    </iv:panelLabelAndMessage>
-
+                        </p>
+                    </h:panelGroup>
                 </p:panel>
 
             </p:dialog>

@@ -21,41 +21,46 @@
         <ul>
             <ui:repeat var="feature" value="#{cc.attrs.features}" varStatus="rowStatus">
 
-                    <li><h:outputText value=" #{feature.shortLabel}" />
-                <br/>
-                <br/>
-                <iv:panelLabelAndMessage label="Feature type: " labelStyleClass="textLabel">
-                    <h:outputText value=" #{feature.cvFeatureType.shortLabel}" />
-                </iv:panelLabelAndMessage>
-                <br/>
-                <iv:panelLabelAndMessage label="Detection Method: " labelStyleClass="textLabel">
-                    <h:panelGroup rendered="#{feature.cvFeatureIdentification != null}">
+                <p><h:outputText value=" #{feature.shortLabel}" /></p>
+                <p>
+                    <strong><h:outputText value="Feature Type: "/></strong>
+                    <h:outputText value="#{feature.cvFeatureType.shortLabel}"/>
+                </p>
+                <h:panelGroup rendered="#{feature.cvFeatureIdentification != null}">
+                    <p>
+                        <strong><h:outputText value="Detection Method: "/></strong>
                         <h:outputLink value="#{request.contextPath}/cv/#{feature.cvFeatureIdentification.ac}">
                             <h:outputText value=" #{feature.cvFeatureIdentification.shortLabel}" />
-                        </h:outputLink>
-                    </h:panelGroup>
-                    <h:outputText value=" Not Specified" rendered="#{feature.cvFeatureIdentification == null}"/>
-                </iv:panelLabelAndMessage>
-                <br/>
-                <iv:panelLabelAndMessage label="Feature range positions: " labelStyleClass="textLabel">
-                    <br/>
-                    <ul>
-                        <ui:repeat value="#{feature.ranges}" var="range">
-                            <li>
-                                <h:outputText value="#{range}" />
-                            </li>
-                        </ui:repeat>
-                    </ul>
-                </iv:panelLabelAndMessage>
-                <br/>
-                <iv:panelLabelAndMessage label="Feature annotations: " labelStyleClass="textLabel" visible="#{not empty feature.annotations}">
-                    <iv:annotationTable annotations="#{feature.annotations}"/>
-                    <br/>
-                </iv:panelLabelAndMessage>
-                <iv:panelLabelAndMessage label="Feature cross references: " labelStyleClass="textLabel" visible="#{not empty feature.xrefs}">
-                    <iv:xrefTable xrefs="#{feature.xrefs}"/>
-                    <br/>
-                </iv:panelLabelAndMessage></li>
+                        </h:outputLink>                        </p>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not empty feature.xrefs}">
+                    <p>
+                        <strong><h:outputText value="Cross References: "/></strong>
+                        <iv:xrefTable xrefs="#{feature.xrefs}"/>
+
+                    </p>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not empty feature.annotations}">
+                    <p>
+                        <strong><h:outputText value="Annotations: "/></strong>
+                        <iv:annotationTable annotations="#{feature.annotations}"/>
+
+                    </p>
+                </h:panelGroup>
+                <p>
+                    <strong><h:outputText value="Feature Type: "/></strong>
+                    <h:outputText value="#{feature.cvFeatureType.shortLabel}"/>
+                </p>
+                <p>
+                    <strong><h:outputText value="Feature range positions: "/></strong>
+                </p>
+                <ul>
+                    <ui:repeat value="#{feature.ranges}" var="range">
+                        <li>
+                            <h:outputText value="#{range}" />
+                        </li>
+                    </ui:repeat>
+                </ul>
             </ui:repeat>
         </ul>
 

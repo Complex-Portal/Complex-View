@@ -351,41 +351,42 @@
     <f:facet name="header">
         <h:outputText value="Species"/>
     </f:facet>
-    <p:commandLink id="speciesLink_${row + 1}" rendered="#{participant.bioSourceAc != null}" type="button" onclick="speciesDlg_#{row + 1}.show();" value="#{participant.bioSourceFullName}"/>
+    <p:commandLink id="speciesLink_${row + 1}" rendered="#{participant.bioSourceAc != null}" type="button"
+                   onclick="speciesDlg_#{row + 1}.show();" value="#{participant.bioSourceFullName}"/>
 
     <p:dialog header="Organism Details"
               widgetVar="speciesDlg_#{row + 1}" height="300" width="750">
 
         <p:panel style="width:690px;">
-            <iv:panelLabelAndMessage label="Accession: " labelStyle="font-weight:bold;">
+            <p>
+                <strong><h:outputText value="Accession: "/></strong>
                 <h:outputText value="#{participant.bioSourceAc}"/>
-            </iv:panelLabelAndMessage>
-            <br/>
-            <iv:panelLabelAndMessage label="Name: " labelStyle="font-weight:bold;">
+            </p>
+            <p>
+                <strong><h:outputText value="Name: "/></strong>
                 <h:outputText value="#{participant.bioSourceShortLabel}"/>
-            </iv:panelLabelAndMessage>
-            <br/>
-            <iv:panelLabelAndMessage label="Description: "
-                                     visible="#{participant.bioSourceShortLabel != participant.bioSourceFullName}"
-                                     labelStyle="font-weight:bold;">
-                <h:outputText
-                        value="#{(participant.bioSourceFullName == null ? '-' : participant.bioSourceFullName )}"/>
-            </iv:panelLabelAndMessage>
-            <br/>
-            <iv:panelLabelAndMessage label="Cross References: "
-                                     visible="#{not empty participant.bioSourceXrefs}"
-                                     labelStyle="font-weight:bold;">
-                <iv:xrefTable xrefs="#{participant.bioSourceXrefs}"/>
+            </p>
+            <h:panelGroup rendered="#{participant.bioSourceShortLabel != participant.bioSourceFullName}">
+                <p>
+                    <strong><h:outputText value="Description: "/></strong>
+                    <h:outputText
+                            value="#{(participant.bioSourceFullName == null ? '-' : participant.bioSourceFullName )}"/>
+                </p>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{not empty participant.bioSourceXrefs}">
+                <p>
+                    <strong><h:outputText value="Cross References: "/></strong>
+                    <iv:xrefTable xrefs="#{participant.bioSourceXrefs}"/>
 
-            </iv:panelLabelAndMessage>
-            <br/>
-            <iv:panelLabelAndMessage label="Annotations: "
-                                     visible="#{not empty participant.bioSourceAnnotations}"
-                                     labelStyle="font-weight:bold;">
-                <iv:annotationTable annotations="#{participant.bioSourceAnnotations}"/>
+                </p>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{not empty participant.bioSourceAnnotations}">
+                <p>
+                    <strong><h:outputText value="Annotations: "/></strong>
+                    <iv:annotationTable annotations="#{participant.bioSourceAnnotations}"/>
 
-            </iv:panelLabelAndMessage>
-
+                </p>
+            </h:panelGroup>
         </p:panel>
 
     </p:dialog>
@@ -402,35 +403,35 @@
               widgetVar="expressedDlg_#{row + 1}" height="300" width="750">
 
         <p:panel style="width:690px;">
-            <iv:panelLabelAndMessage label="Accession: " labelStyle="font-weight:bold;">
+            <p>
+                <strong><h:outputText value="Accession: "/></strong>
                 <h:outputText value="#{participant.expressedInAc}"/>
-            </iv:panelLabelAndMessage>
-            <br/>
-            <iv:panelLabelAndMessage label="Name: " labelStyle="font-weight:bold;">
+            </p>
+            <p>
+                <strong><h:outputText value="Name: "/></strong>
                 <h:outputText value="#{participant.expressedInShortLabel}"/>
-            </iv:panelLabelAndMessage>
-            <br/>
-            <iv:panelLabelAndMessage label="Description: "
-                                     visible="#{participant.expressedInShortLabel != participant.expressedInFullName}"
-                                     labelStyle="font-weight:bold;">
-                <h:outputText
-                        value="#{(participant.expressedInFullName == null ? '-' : participant.expressedInFullName )}"/>
-            </iv:panelLabelAndMessage>
-            <br/>
-            <iv:panelLabelAndMessage label="Cross References: "
-                                     visible="#{not empty participant.expressedInXrefs}"
-                                     labelStyle="font-weight:bold;">
-                <iv:xrefTable xrefs="#{participant.expressedInXrefs}"/>
+            </p>
+            <h:panelGroup rendered="#{participant.expressedInShortLabel != participant.expressedInFullName}">
+                <p>
+                    <strong><h:outputText value="Description: "/></strong>
+                    <h:outputText
+                            value="#{(participant.expressedInFullName == null ? '-' : participant.expressedInFullName )}"/>
+                </p>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{not empty participant.expressedInXrefs}">
+                <p>
+                    <strong><h:outputText value="Cross References: "/></strong>
+                    <iv:xrefTable xrefs="#{participant.expressedInXrefs}"/>
 
-            </iv:panelLabelAndMessage>
-            <br/>
-            <iv:panelLabelAndMessage label="Annotations: "
-                                     visible="#{not empty participant.expressedInAnnotations}"
-                                     labelStyle="font-weight:bold;">
-                <iv:annotationTable annotations="#{participant.expressedInAnnotations}"/>
+                </p>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{not empty participant.expressedInAnnotations}">
+                <p>
+                    <strong><h:outputText value="Annotations: "/></strong>
+                    <iv:annotationTable annotations="#{participant.expressedInAnnotations}"/>
 
-            </iv:panelLabelAndMessage>
-
+                </p>
+            </h:panelGroup>
         </p:panel>
 
     </p:dialog>
@@ -495,26 +496,28 @@
 
                 <h3>Participant: #{participant.interactorFullName}</h3>
 
-                <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                <p>
+                    <strong><h:outputText value="Accession: "/></strong>
                     <h:outputText value="#{participant.participantAc}"/>
-                </iv:panelLabelAndMessage>
-                <br/>
-
-                <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                </p>
+                <p>
+                    <strong><h:outputText value="Name: "/></strong>
                     <h:outputText value="#{participant.interactorShortLabel}"/>
-                </iv:panelLabelAndMessage>
-                <br/>
+                </p>
+                <h:panelGroup rendered="#{not empty participant.participantXrefs}">
+                    <p>
+                        <strong><h:outputText value="Cross References: "/></strong>
+                        <iv:xrefTable xrefs="#{participant.participantXrefs}"/>
 
-                <iv:panelLabelAndMessage label="Cross References:" visible="#{not empty participant.participantXrefs}"
-                                         labelStyle="font-weight:bold;">
-                    <iv:xrefTable xrefs="#{participant.participantXrefs}" />
-                </iv:panelLabelAndMessage>
-                <br/>
+                    </p>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not empty participant.participantAnnotations}">
+                    <p>
+                        <strong><h:outputText value="Annotations: "/></strong>
+                        <iv:annotationTable annotations="#{participant.participantAnnotations}"/>
 
-                <iv:panelLabelAndMessage label="Annotations:" visible="#{not empty participant.participantAnnotations}"
-                                         labelStyle="font-weight:bold;">
-                    <iv:annotationTable annotations="#{participant.participantAnnotations}" />
-                </iv:panelLabelAndMessage>
+                    </p>
+                </h:panelGroup>
 
             </p:dialog>
 
@@ -532,21 +535,19 @@
 
                 <h3>Participant: #{participant.interactorFullName}</h3>
 
-                <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                <p>
+                    <strong><h:outputText value="Accession: "/></strong>
                     <h:outputText value="#{participant.participantAc}"/>
-                </iv:panelLabelAndMessage>
-                <br/>
-
-                <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                </p>
+                <p>
+                    <strong><h:outputText value="Name: "/></strong>
                     <h:outputText value="#{participant.interactorShortLabel}"/>
-                </iv:panelLabelAndMessage>
-                <br/>
+                </p>
+                <p>
+                    <strong><h:outputText value="Parameters: "/></strong>
+                    <iv:parametersTable parameters="#{participant.parameters}"/>
 
-                <iv:panelLabelAndMessage label="Parameters:"
-                                         labelStyle="font-weight:bold;">
-                    <br/>
-                    <iv:parametersTable parameters="#{participant.parameters}" />
-                </iv:panelLabelAndMessage>
+                </p>
 
             </p:dialog>
 
@@ -567,20 +568,19 @@
 
                 <h3>Participant: #{participant.interactorFullName}</h3>
 
-                <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                <p>
+                    <strong><h:outputText value="Accession: "/></strong>
                     <h:outputText value="#{participant.participantAc}"/>
-                </iv:panelLabelAndMessage>
-                <br/>
-
-                <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                </p>
+                <p>
+                    <strong><h:outputText value="Name: "/></strong>
                     <h:outputText value="#{participant.interactorShortLabel}"/>
-                </iv:panelLabelAndMessage>
-                <br/>
-
-                <iv:panelLabelAndMessage label="Stoichiometry:"
-                                         labelStyle="font-weight:bold;">
+                </p>
+                <p>
+                    <strong><h:outputText value="Stoichiometry: "/></strong>
                     <h:outputText value="#{participant.participantStoichiometry}"/>
-                </iv:panelLabelAndMessage>
+
+                </p>
 
             </p:dialog>
 
@@ -598,21 +598,19 @@
 
                 <h3>Participant: #{participant.interactorFullName}</h3>
 
-                <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                <p>
+                    <strong><h:outputText value="Accession: "/></strong>
                     <h:outputText value="#{participant.participantAc}"/>
-                </iv:panelLabelAndMessage>
-                <br/>
-
-                <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                </p>
+                <p>
+                    <strong><h:outputText value="Name: "/></strong>
                     <h:outputText value="#{participant.interactorShortLabel}"/>
-                </iv:panelLabelAndMessage>
-                <br/>
-
-                <iv:panelLabelAndMessage label="Features:"
-                                         labelStyle="font-weight:bold;">
-                    <br/>
+                </p>
+                <p>
+                    <strong><h:outputText value="Features: "/></strong>
                     <iv:featureTable features="#{participant.features}"/>
-                </iv:panelLabelAndMessage>
+
+                </p>
 
             </p:dialog>
 
@@ -630,21 +628,19 @@
 
                 <h3>Participant: #{participant.interactorFullName}</h3>
 
-                <iv:panelLabelAndMessage label="Accession:" labelStyle="font-weight:bold;">
+                <p>
+                    <strong><h:outputText value="Accession: "/></strong>
                     <h:outputText value="#{participant.participantAc}"/>
-                </iv:panelLabelAndMessage>
-                <br/>
-
-                <iv:panelLabelAndMessage label="Name:" labelStyle="font-weight:bold;">
+                </p>
+                <p>
+                    <strong><h:outputText value="Name: "/></strong>
                     <h:outputText value="#{participant.interactorShortLabel}"/>
-                </iv:panelLabelAndMessage>
-                <br/>
-
-                <iv:panelLabelAndMessage label="Confidences:"
-                                         labelStyle="font-weight:bold;">
-                    <br/>
+                </p>
+                <p>
+                    <strong><h:outputText value="Confidences: "/></strong>
                     <iv:confidencesTable confidences="#{participant.confidences}"/>
-                </iv:panelLabelAndMessage>
+
+                </p>
 
             </p:dialog>
 
