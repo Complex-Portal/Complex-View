@@ -107,7 +107,7 @@
 
         <!-- local-title -->
         <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
-        <div class="grid_12 alpha logo-only" id="local-title">
+        <div class="first #{sectionTitle ne 'Home' and sectionTitle ne 'Advanced Search' ? 'grid_12 alpha' : null} logo-only" id="local-title">
             <h1 class="visuallyhidden"> #{intactView['webapp.name']}</h1>
             <a href="#{requestConfigBean.absoluteContextPath}" title="Back to #{intactView['webapp.name']} homepage">
                 <img src="#{intactView['webapp.logo.url']}" alt="#{intactView['webapp.name']} logo" height="64"/>
@@ -118,17 +118,18 @@
         <!-- local-search -->
         <!-- NB: if you do not have a local-search, delete the following div, and drop the class="grid_12 alpha" class from local-title above -->
 
-        <div class="grid_12 omega">
-            <h:form id="local-search" prependId="false" rendered="#{sectionTitle ne 'Home' and sectionTitle ne 'Advanced Search'}">
+        <h:panelGroup rendered="#{sectionTitle ne 'Home' and sectionTitle ne 'Advanced Search'}">
+            <div class="grid_12 omega">
+                <h:form id="local-search" prependId="false">
 
-                <fieldset>
+                    <fieldset>
 
-                    <div class="left">
-                        <label>
-                            <h:inputText value="#{userQuery.searchQuery}" id="local-searchbox"/>
-                        </label>
-                        <!--&lt;!&ndash; Include some example searchterms - keep them short and few! &ndash;&gt;-->
-                        <ot:separateConversationContext>
+                        <div class="left">
+                            <label>
+                                <h:inputText value="#{userQuery.searchQuery}" id="local-searchbox"/>
+                            </label>
+                            <!--&lt;!&ndash; Include some example searchterms - keep them short and few! &ndash;&gt;-->
+                            <ot:separateConversationContext>
         <span class="examples">Examples:
             <h:link id="example-1" value="BRCA2" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
                 <f:param name="query" value="BRCA2"/>
@@ -142,72 +143,76 @@
             <h:link id="example-4" value="10831611" outcome="/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true">
                 <f:param name="query" value="10831611" />
             </h:link></span>
-                        </ot:separateConversationContext>
-                    </div>
+                            </ot:separateConversationContext>
+                        </div>
 
-                    <div class="right">
-                        <h:commandButton id="search-submit-button" value="Search" action="#{searchBean.doBinarySearchAction}"
-                                         style="display: inline"
-                                         styleClass="submit"/>
-                        <!--&lt;!&ndash; If your search is more complex than just a keyword search, you can link to an Advanced Search,-->
-                        <!--with whatever features you want available &ndash;&gt;-->
+                        <div class="right">
+                            <h:commandButton id="search-submit-button" value="Search" action="#{searchBean.doBinarySearchAction}"
+                                             style="display: inline"
+                                             styleClass="submit"/>
+                            <!--&lt;!&ndash; If your search is more complex than just a keyword search, you can link to an Advanced Search,-->
+                            <!--with whatever features you want available &ndash;&gt;-->
                         <span class="adv">
                             <h:link id="adv-search" value="Advanced" outcome="search" title="Advanced"/>
                         </span>
-                    </div>
+                        </div>
 
-                </fieldset>
+                    </fieldset>
 
-            </h:form>
-        </div>
+                </h:form>
+            </div>
+
+        </h:panelGroup>
 
         <!-- /local-search -->
 
         <!-- local-nav -->
 
         <nav>
-            <div id="local-nav" class="grid_24">
-                <ul>
-                    <ot:separateConversationContext>
-                        <li class="#{sectionTitle eq 'Home' ? 'active' : null} first"><h:link value="Home" outcome="home"/></li>
-                        <li class="#{sectionTitle eq 'Advanced Search' or sectionTitle eq 'Browse' ? 'active' : null}"><h:link value="Search and browse" outcome="search"/></li>
-                        <li class="#{sectionTitle eq 'Data Submission' ? 'active' : null}"><h:link value="Data Submission" outcome="documentation.data_submission"/></li>
-                        <li class="#{sectionTitle eq 'Downloads' ? 'active' : null}"><h:link value="Downloads" outcome="documentation.downloads"/></li>
-                        <li class="#{sectionTitle eq 'Datasets' ? 'active' : null}"><h:link value="Datasets" outcome="documentation.dataset"/></li>
-                        <li class="#{sectionTitle eq 'Statistics' ? 'active' : null}"><h:link value="Statistics" outcome="documentation.statistics"/></li>
-                        <li class="#{sectionTitle eq 'FAQ' ? 'active' : null}"><h:link value="FAQ" outcome="documentation.faq"/></li>
-                        <li class="#{sectionTitle eq 'Developer Resources' ? 'active' : null}"><h:link value="Developer Resources" outcome="documentation.tools"/></li>
-                        <li class="#{sectionTitle eq 'Contact Us' ? 'active' : null}"><h:link value="Contact Us" outcome="documentation.contactus"/></li>
-                        <li class="#{sectionTitle eq 'About IntAct' ? 'active' : null} last"><h:link value="About IntAct" outcome="documentation.about"/></li>
+            <ul id="local-nav" class="grid_24">
+                <ot:separateConversationContext>
+                    <li class="#{sectionTitle eq 'Home' ? 'active' : null} first"><h:link value="Home" outcome="home"/></li>
+                    <li class="#{sectionTitle eq 'Advanced Search' or sectionTitle eq 'Browse' ? 'active' : null}"><h:link value="Search and browse" outcome="search"/></li>
+                    <li class="#{sectionTitle eq 'Data Submission' ? 'active' : null}"><h:link value="Data Submission" outcome="documentation.data_submission"/></li>
+                    <li class="#{sectionTitle eq 'Downloads' ? 'active' : null}"><h:link value="Downloads" outcome="documentation.downloads"/></li>
+                    <li class="#{sectionTitle eq 'Datasets' ? 'active' : null}"><h:link value="Datasets" outcome="documentation.dataset"/></li>
+                    <li class="#{sectionTitle eq 'Statistics' ? 'active' : null}"><h:link value="Statistics" outcome="documentation.statistics"/></li>
+                    <li class="#{sectionTitle eq 'FAQ' ? 'active' : null}"><h:link value="FAQ" outcome="documentation.faq"/></li>
+                    <li class="#{sectionTitle eq 'Developer Resources' ? 'active' : null}"><h:link value="Developer Resources" outcome="documentation.tools"/></li>
+                    <li class="#{sectionTitle eq 'Contact Us' ? 'active' : null}"><h:link value="Contact Us" outcome="documentation.contactus"/></li>
+                    <li class="#{sectionTitle eq 'About IntAct' ? 'active' : null} last"><h:link value="About IntAct" outcome="documentation.about"/></li>
 
-                    </ot:separateConversationContext>
+                </ot:separateConversationContext>
 
-                    <!--<li class="first active"><a href="#">Home</a></li>-->
-                    <!--<li><a href="">Advanced Search</a></li>-->
-                    <!--<li><a href="#">Tools</a></li>-->
-                    <!--<li><a href="#">Data Submission</a></li>-->
-                    <!--<li><a href="#">Downloads</a></li>-->
-                    <!--<li><a href="#">Documentation</a></li>-->
-                    <!--<li><a href="#">Acknowledgements</a></li>-->
-                    <!--<li class="last"><a href="#">About #{intactView['webapp.name']}</a></li>-->
-                    <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
-                         add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
-                         whichever one will show up last...
-                         For example: -->
-                    <!--<li class="functional"><a href="#" class="icon icon-functional" data-icon="l">Login</a></li>-->
-                    <li class="functional last"><a href="http://www.ebi.ac.uk/support/index.php?query=intact" class="icon icon-generic" data-icon="\">Feedback</a></li>
-                    <!--<li class="functional"><a href="#" class="icon icon-functional" data-icon="r">Share</a></li>-->
-                </ul>
-            </div>
+                <!--<li class="first active"><a href="#">Home</a></li>-->
+                <!--<li><a href="">Advanced Search</a></li>-->
+                <!--<li><a href="#">Tools</a></li>-->
+                <!--<li><a href="#">Data Submission</a></li>-->
+                <!--<li><a href="#">Downloads</a></li>-->
+                <!--<li><a href="#">Documentation</a></li>-->
+                <!--<li><a href="#">Acknowledgements</a></li>-->
+                <!--<li class="last"><a href="#">About #{intactView['webapp.name']}</a></li>-->
+                <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
+                     add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
+                     whichever one will show up last...
+                     For example: -->
+                <!--<li class="functional"><a href="#" class="icon icon-functional" data-icon="l">Login</a></li>-->
+                <li class="functional"><a href="http://www.ebi.ac.uk/support/index.php?query=intact" class="icon icon-generic" data-icon="\">Feedback</a></li>
+                <!--<li class="functional"><a href="#" class="icon icon-functional" data-icon="r">Share</a></li>-->
+            </ul>
         </nav>
+
+        <style type="text/css">
+            #subnav-search {display: block;}
+        </style>
 
         <!-- /local-nav -->
         <h:panelGroup rendered="#{sectionTitle eq 'Advanced Search' or sectionTitle eq 'Browse'}">
             <div id="subnav-search" class="grid_24">
                 <ul>
                     <ot:separateConversationContext>
-                    <li class="#{sectionTitle eq 'Advanced Search' ? 'active-trail' : null}"><h:link value="Advanced Search" outcome="search"/></li>
-                    <li class="#{sectionTitle eq 'Browse' ? 'active-trail' : null}"><h:link value="Browse" outcome="browse"/></li>
+                        <li class="#{sectionTitle eq 'Advanced Search' ? 'active-trail' : null}"><h:link value="Advanced Search" outcome="search"/></li>
+                        <li class="#{sectionTitle eq 'Browse' ? 'active-trail' : null}"><h:link value="Browse" outcome="browse"/></li>
                     </ot:separateConversationContext>
                 </ul>
             </div>

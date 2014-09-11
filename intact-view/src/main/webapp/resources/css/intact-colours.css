@@ -125,6 +125,10 @@ div#local-masthead ul li a:active {
     border-bottom: 3px solid #0A4F4F;
 }
 
+#subnav-search {
+    background-color: #D5E3E3 !important;
+}
+
 /*div#local-masthead {*/
 /*background-color: #4c9191;*/
 /*background-image: -moz-linear-gradient(top, #c8dede, #0e5353);*/
