@@ -100,38 +100,6 @@
 	<navigation-rule>
         <from-view-id>*</from-view-id>
 		<navigation-case>
-			<from-outcome>list.proteins</from-outcome>
-			<to-view-id>/pages/list/protein_list.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-        <from-view-id>*</from-view-id>
-		<navigation-case>
-			<from-outcome>list.compounds</from-outcome>
-			<to-view-id>/pages/list/compound_list.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-        <from-view-id>*</from-view-id>
-		<navigation-case>
-			<from-outcome>list.nucleicacids</from-outcome>
-			<to-view-id>/pages/list/nucleicacid_list.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-    <navigation-rule>
-        <from-view-id>*</from-view-id>
-        <navigation-case>
-            <from-outcome>list.genes</from-outcome>
-            <to-view-id>/pages/list/gene_list.xhtml</to-view-id>
-        </navigation-case>
-    </navigation-rule>
-
-	<navigation-rule>
-        <from-view-id>*</from-view-id>
-		<navigation-case>
 			<from-outcome>molecule</from-outcome>
 			<to-view-id>/pages/molecule/molecule.xhtml</to-view-id>
 		</navigation-case>
