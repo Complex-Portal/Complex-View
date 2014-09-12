@@ -60,7 +60,10 @@ public class Functions {
      */
     public static String getIdentifierForDasty(Interactor interactor) {
         if (interactor instanceof Protein && ProteinUtils.isFromUniprot((Protein) interactor)) {
-            return ProteinUtils.getUniprotXref((Protein)interactor).getPrimaryId();
+            InteractorXref ref = ProteinUtils.getUniprotXref((Protein)interactor);
+            if (ref != null){
+                return ref.getPrimaryId();
+            }
         }
 
         if (interactor == null) return null;

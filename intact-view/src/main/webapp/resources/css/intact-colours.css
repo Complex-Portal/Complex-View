@@ -126,8 +126,39 @@ div#local-masthead ul li a:active {
 }
 
 #subnav-search {
-    background-color: #D5E3E3 !important;
+    background-color: #444050;
+    border: 0 solid red;
+    display: none;
+    float: left;
+    width: 100%;
 }
+div#local-masthead #subnav-search ul {
+    background-color: transparent;
+}
+
+div#local-masthead ul li a, div#local-masthead ul li a:link, div#local-masthead ul li a:visited {
+    border-bottom: 0 solid transparent;
+}
+
+div#local-masthead #subnav-search ul li.active-trail a:link, div#local-masthead #subnav-search ul li.active-trail a, div#local-masthead #subnav-help ul li.active-trail a:link, div#local-masthead #subnav-help ul li.active-trail a {
+    background-color: white;
+    border-bottom: 1px solid white;
+    color: black;
+}
+
+div#local-masthead {
+    border-bottom: 0 solid #eee;
+    z-index: 10;
+}
+
+div#local-masthead ul {
+    margin-top: 0;
+}
+
+/*div#local-masthead ul li a, div#local-masthead ul li a:link, div#local-masthead ul li a:visited {
+    border-bottom: 3px solid transparent;
+    color: #f6f6f6;
+}*/
 
 /*div#local-masthead {*/
 /*background-color: #4c9191;*/
