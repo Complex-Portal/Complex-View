@@ -172,7 +172,7 @@
             <ul id="local-nav" class="grid_24">
                 <ot:separateConversationContext>
                     <li class="#{sectionTitle eq 'Home' ? 'active' : null} first"><h:link value="Home" outcome="home"/></li>
-                    <li class="#{sectionTitle eq 'Advanced Search' or sectionTitle eq 'IntAct content' ? 'active' : null}"><h:link value="Search and Browse" outcome="search"/></li>
+                    <li class="#{sectionTitle eq 'Advanced Search' or sectionTitle eq 'IntAct Search Results' ? 'active' : null}"><h:link value="Search and Browse" outcome="search"/></li>
                     <li class="#{sectionTitle eq 'Data Submission' ? 'active' : null}"><h:link value="Data Submission" outcome="documentation.data_submission"/></li>
                     <li class="#{sectionTitle eq 'Downloads' ? 'active' : null}"><h:link value="Downloads" outcome="documentation.downloads"/></li>
                     <li class="#{sectionTitle eq 'Datasets' ? 'active' : null}"><h:link value="Datasets" outcome="documentation.dataset"/></li>
@@ -207,12 +207,12 @@
         </style>
 
         <!-- /local-nav -->
-        <h:panelGroup rendered="#{sectionTitle eq 'Advanced Search' or sectionTitle eq 'IntAct content'}">
+        <h:panelGroup rendered="#{sectionTitle eq 'Advanced Search' or sectionTitle eq 'IntAct Search Results'}">
             <div id="subnav-search">
                 <ul>
                     <ot:separateConversationContext>
                         <li class="#{sectionTitle eq 'Advanced Search' ? 'active-trail' : null}"><h:link value="Advanced Search" outcome="search"/></li>
-                        <li class="#{sectionTitle eq 'IntAct content' ? 'active-trail' : null}"><h:link value="Browse" outcome="main"/></li>
+                        <li class="#{sectionTitle eq 'IntAct Search Results' ? 'active-trail' : null}"><h:link value="Browse" outcome="interactions"/></li>
                     </ot:separateConversationContext>
                 </ul>
             </div>
