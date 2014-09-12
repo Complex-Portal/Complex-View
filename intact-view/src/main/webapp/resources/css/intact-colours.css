@@ -125,14 +125,14 @@ div#local-masthead ul li a:active {
     border-bottom: 3px solid #0A4F4F;
 }
 
-#subnav-search {
+#subnav-search, #subnav-help {
     background-color: #444050;
     border: 0 solid red;
     display: none;
     float: left;
     width: 100%;
 }
-div#local-masthead #subnav-search ul {
+div#local-masthead #subnav-search ul, div#local-masthead #subnav-help ul {
     background-color: transparent;
 }
 
