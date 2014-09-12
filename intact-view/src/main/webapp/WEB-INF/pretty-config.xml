@@ -39,10 +39,54 @@
         <view-id>/pages/details/details.xhtml</view-id>
     </url-mapping>
 
-
     <url-mapping id="cvobject">
         <pattern value="/cv/#{ac}" />
         <view-id>/pages/details/cv.xhtml</view-id>
+    </url-mapping>
+
+    <url-mapping id="search">
+        <pattern value="/search"/>
+        <view-id>/pages/search/search.xhtml</view-id>
+    </url-mapping>
+
+    <url-mapping id="documentation.data_submission">
+        <pattern value="/submission"/>
+        <view-id>/pages/documentation/data_submission.xhtml</view-id>
+    </url-mapping>
+
+    <url-mapping id="documentation.downloads">
+        <pattern value="/downloads"/>
+        <view-id>/pages/documentation/downloads.xhtml</view-id>
+    </url-mapping>
+
+    <url-mapping id="documentation.dataset">
+        <pattern value="/datasets"/>
+        <view-id>/pages/documentation/dataset.xhtml</view-id>
+    </url-mapping>
+
+    <url-mapping id="documentation.statistics">
+        <pattern value="/statistics"/>
+        <view-id>/pages/documentation/statistics.xhtml</view-id>
+    </url-mapping>
+
+    <url-mapping id="documentation.faq">
+        <pattern value="/faq"/>
+        <view-id>/pages/faq/faq.xhtml</view-id>
+    </url-mapping>
+
+    <url-mapping id="documentation.tools">
+        <pattern value="/developer_resources"/>
+        <view-id>/pages/documentation/tools.xhtml</view-id>
+    </url-mapping>
+
+    <url-mapping id="documentation.contactus">
+        <pattern value="/contactus"/>
+        <view-id>/pages/documentation/contact_content.xhtml</view-id>
+    </url-mapping>
+
+    <url-mapping id="documentation.about">
+        <pattern value="/about"/>
+        <view-id>/pages/documentation/about/about.xhtml</view-id>
     </url-mapping>
 
 </pretty-config>
