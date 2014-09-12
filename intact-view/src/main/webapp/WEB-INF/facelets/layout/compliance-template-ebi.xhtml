@@ -107,7 +107,7 @@
 
         <!-- local-title -->
         <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
-        <div class="first #{sectionTitle ne 'Home' and sectionTitle ne 'Advanced Search' ? 'grid_12 alpha' : null} logo-only" id="local-title">
+        <div class="first grid_12 alpha logo-only" id="local-title">
             <h1 class="visuallyhidden"> #{intactView['webapp.name']}</h1>
             <a href="#{requestConfigBean.absoluteContextPath}" title="Back to #{intactView['webapp.name']} homepage">
                 <img src="#{intactView['webapp.logo.url']}" alt="#{intactView['webapp.name']} logo" height="64"/>
@@ -118,7 +118,7 @@
         <!-- local-search -->
         <!-- NB: if you do not have a local-search, delete the following div, and drop the class="grid_12 alpha" class from local-title above -->
 
-        <h:panelGroup rendered="#{sectionTitle ne 'Home' and sectionTitle ne 'Advanced Search'}">
+        <h:panelGroup style="#{sectionTitle eq 'Home' or sectionTitle eq 'Advanced Search' ? 'visibility: hidden;' : ''}">
             <div class="grid_12 omega">
                 <h:form id="local-search" prependId="false">
 
