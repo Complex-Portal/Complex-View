@@ -36,14 +36,6 @@
 	<navigation-rule>
         <from-view-id>*</from-view-id>
 		<navigation-case>
-			<from-outcome>news.archive</from-outcome>
-			<to-view-id>/pages/news/news_archive.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-        <from-view-id>*</from-view-id>
-		<navigation-case>
 			<from-outcome>search</from-outcome>
 			<to-view-id>/pages/search/search.xhtml</to-view-id>
 		</navigation-case>
