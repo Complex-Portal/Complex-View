@@ -203,3 +203,16 @@
 }
 
 
+span.searchterm{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+    white-space: nowrap;
+    width: 500px;
+}
+
+span.searchterm:hover {
+    overflow: visible;
+    white-space: normal;
+    width: 90%;
+}
