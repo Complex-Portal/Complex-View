@@ -133,40 +133,6 @@ public class RestConnection {
         return query.toString();
     }
 
-//    protected JSONObject getDataFromWS( String query ) throws ComplexPortalException {
-//        JSONObject response = null;
-//        StringBuilder info = new StringBuilder();
-//        String aux = null;
-//        BufferedReader reader = null;
-//        try{
-//            reader = new BufferedReader(
-//                    new InputStreamReader(
-//                            new URL(query)
-//                                    .openConnection()
-//                                    .getInputStream()
-//                    )
-//            );
-//            while ( ( aux = reader.readLine()) != null )
-//                info.append(aux);
-//            response = (JSONObject) JSONValue.parse(info.toString());
-//        }
-//        catch (IOException e){
-//            if ( log.isInfoEnabled() )
-//                log.info("RestConnection error, it could not retrieve information from the web service", e);
-//            e.printStackTrace();
-//        }
-//        finally {
-//            if( reader != null ){
-//                try {
-//                    reader.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        return response;
-//    }
-
     protected JSONObject getDataFromWS( String query ) throws Exception {
         HttpClient client = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(query);

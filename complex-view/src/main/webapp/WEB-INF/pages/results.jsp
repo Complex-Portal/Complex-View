@@ -69,10 +69,10 @@
         <p>Showing <strong><c:choose><c:when test="${sessionScope.pageInfo.totalNumberOfElements > 10}">10</c:when><c:otherwise><c:out value="${sessionScope.pageInfo.totalNumberOfElements}"/></c:otherwise></c:choose></strong> results from a total of <strong><c:out value="${sessionScope.pageInfo.totalNumberOfElements}"/></strong></p>
     </section>
 
-    <%--<aside class="grid_6 omega shortcuts expander" id="search-extras">--%>
-        <%--<div id="ebi_search_results"><h3 class="slideToggle icon icon-functional" data-icon="u">Show more data from EMBL-EBI</h3>--%>
-        <%--</div>--%>
-    <%--</aside>--%>
+    <aside class="grid_6 omega shortcuts expander" id="search-extras">
+        <div id="ebi_search_results"><h3 class="slideToggle icon icon-functional" data-icon="u">Show more data from EMBL-EBI</h3>
+        </div>
+    </aside>
 
     <section class="grid_18 push_6" id="search-results">
     <div class="results grid_24">
