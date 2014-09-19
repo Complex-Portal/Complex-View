@@ -172,14 +172,14 @@
             <ul id="local-nav" class="grid_24">
                 <ot:separateConversationContext>
                     <li class="#{sectionTitle eq 'Home' ? 'active' : null} first"><h:link value="Home" outcome="home"/></li>
-                    <li class="#{sectionTitle eq 'Advanced Search' or sectionTitle eq 'IntAct Search Results' ? 'active' : null}"><h:link value="Search and Browse" outcome="search"/></li>
+                    <li class="#{sectionTitle eq 'Advanced Search' ? 'active' : null}"><h:link value="Search" outcome="search"/></li>
+                    <li class="#{sectionTitle eq 'IntAct Search Results' ? 'active' : null}"><h:link value="Browse" outcome="interactions"/></li>
                     <li class="#{sectionTitle eq 'Data Submission' ? 'active' : null}"><h:link value="Data Submission" outcome="documentation.data_submission"/></li>
                     <li class="#{sectionTitle eq 'Downloads' ? 'active' : null}"><h:link value="Downloads" outcome="documentation.downloads"/></li>
                     <li class="#{sectionTitle eq 'Datasets' ? 'active' : null}"><h:link value="Datasets" outcome="documentation.dataset"/></li>
                     <li class="#{sectionTitle eq 'Statistics' ? 'active' : null}"><h:link value="Statistics" outcome="documentation.statistics"/></li>
-                    <li class="#{sectionTitle eq 'FAQ' or sectionTitle eq 'Developer Resources' ? 'active' : null}"><h:link value="Help" outcome="documentation.faq"/></li>
-                    <!--<li class="#{sectionTitle eq 'FAQ' ? 'active' : null}"><h:link value="FAQ" outcome="documentation.faq"/></li>-->
-                    <!--<li class="#{sectionTitle eq 'Developer Resources' ? 'active' : null}"><h:link value="Developer Resources" outcome="documentation.tools"/></li>-->
+                    <li class="#{sectionTitle eq 'FAQ' ? 'active' : null}"><h:link value="FAQ" outcome="documentation.faq"/></li>
+                    <li class="#{sectionTitle eq 'Developer Resources' ? 'active' : null}"><h:link value="Developer Resources" outcome="documentation.tools"/></li>
                     <li class="#{sectionTitle eq 'Contact Us' ? 'active' : null}"><h:link value="Contact Us" outcome="documentation.contactus"/></li>
                     <li class="#{sectionTitle eq 'About IntAct' ? 'active' : null} last"><h:link value="About IntAct" outcome="documentation.about"/></li>
 
@@ -202,195 +202,160 @@
                 <!--<li class="functional"><a href="#" class="icon icon-functional" data-icon="r">Share</a></li>-->
             </ul>
         </nav>
-
-        <style type="text/css">
-            #subnav-search {display: block;}
-        </style>
-
-        <!-- /local-nav -->
-        <h:panelGroup rendered="#{sectionTitle eq 'Advanced Search' or sectionTitle eq 'IntAct Search Results'}">
-            <div id="subnav-search">
-                <ul>
-                    <ot:separateConversationContext>
-                        <li class="#{sectionTitle eq 'Advanced Search' ? 'active-trail' : null}"><h:link value="Advanced Search" outcome="search"/></li>
-                        <li class="#{sectionTitle eq 'IntAct Search Results' ? 'active-trail' : null}"><h:link value="Browse" outcome="interactions"/></li>
-                    </ot:separateConversationContext>
-                </ul>
-            </div>
-        </h:panelGroup>
-
-        <style type="text/css">
-            #subnav-help {display: block;}
-        </style>
-
-        <!-- /local-nav -->
-        <h:panelGroup rendered="#{sectionTitle eq 'FAQ' or sectionTitle eq 'Developer Resources'}">
-            <div id="subnav-help">
-                <ul>
-                    <ot:separateConversationContext>
-                        <li class="#{sectionTitle eq 'FAQ' ? 'active-trail' : null}"><h:link value="FAQ" outcome="documentation.faq"/></li>
-                        <li class="#{sectionTitle eq 'Developer Resources' ? 'active-trail' : null}"><h:link value="Developer Resources" outcome="documentation.tools"/></li>
-                    </ot:separateConversationContext>
-                </ul>
-            </div>
-        </h:panelGroup>
-
-
-
     </div>
 </header>
 
 <div id="content" role="main" class="grid_24 clearfix">
 
-    <!-- If you require a breadcrumb trail, its root should be your service.
-    You don't need a breadcrumb trail on the homepage of your service... -->
+<!-- If you require a breadcrumb trail, its root should be your service.
+You don't need a breadcrumb trail on the homepage of your service... -->
 
-    <div class="grid_24 clearfix">
-        <div class="grid_18 alpha">
-            <nav id="breadcrumb">
-                <p>
-                    <h:link value="#{intactView['webapp.name']}" outcome="/home.xhtml?faces-redirect=true" rendered="#{sectionTitle ne 'Home'}"/>
-                    <h:outputText value=" &gt; #{sectionTitle}" rendered="#{sectionTitle ne 'Home'}"/>
-                </p>
-            </nav>
-        </div>
-
-        <h:panelGroup class="grid_6 omega shortcuts expander" id="search-extras" rendered="#{sectionTitle eq 'IntAct Search Results'}">
-            <div id="ebi_search_results"><h3 class="slideToggle icon icon-functional" data-icon="u">Show more data from EMBL-EBI</h3>
-            </div>
-        </h:panelGroup>
+<div class="grid_24 clearfix">
+    <div class="grid_18 alpha">
+        <nav id="breadcrumb">
+            <p>
+                <h:link value="#{intactView['webapp.name']}" outcome="/home.xhtml?faces-redirect=true" rendered="#{sectionTitle ne 'Home'}"/>
+                <h:outputText value=" &gt; #{sectionTitle}" rendered="#{sectionTitle ne 'Home'}"/>
+            </p>
+        </nav>
     </div>
 
-    <div class="grid_24">
+    <h:panelGroup class="grid_6 omega shortcuts expander" id="search-extras" rendered="#{sectionTitle eq 'IntAct Search Results'}">
+        <div id="ebi_search_results"><h3 class="slideToggle icon icon-functional" data-icon="u">Show more data from EMBL-EBI</h3>
+        </div>
+    </h:panelGroup>
+</div>
 
-        <!--////////////OLD ONE//////////////-->
-        <div id="statusIndicator" class="status-normal"></div>
+<div class="grid_24">
 
-        <p:ajaxStatus onstart="document.getElementById('statusIndicator').setAttribute('class', 'status-busy')"
-                      oncomplete="document.getElementById('statusIndicator').setAttribute('class', 'status-normal')">
-            <f:facet name="start">
-                <div class="busyStatus">
-                    <h:graphicImage alt="busy" url="#{request.contextPath}/resources/css/ebi/images/status_busy_redback.gif"
-                                    style="vertical-align:middle;"/>
-                    &#160;
-                    <h:outputText value="Loading..."/>
-                </div>
-            </f:facet>
+    <!--////////////OLD ONE//////////////-->
+    <div id="statusIndicator" class="status-normal"></div>
 
-            <f:facet name="complete">
-                <div>
-                    <h:outputText value=""/>
-                </div>
-            </f:facet>
-
-            <f:facet name="success">
-                <div>
-                    <h:outputText value=""/>
-                </div>
-            </f:facet>
-
-            <f:facet name="error">
-                <div class="busyStatus">
-                    <h:graphicImage alt="busy" url="#{request.contextPath}/resources/css/ebi/images/status_busy_redback.gif"
-                                    style="vertical-align:middle;"/>
-                    &#160;
-                    <h:outputText value="Error :("/>
-                </div>
-            </f:facet>
-        </p:ajaxStatus>
-
-
-        <!--Dialogs-->
-        <p:dialog modal="true" widgetVar="statusDialog" header="Please wait..."
-                  draggable="false" closable="false" zindex="200" height="30" >
-            <h:graphicImage alt="loading" url="/images/wait_black_indicator.gif"
-                            style="vertical-align:middle;"/>
-            &#160;
-            <h:outputText value="Loading..."/>
-        </p:dialog>
-
-        <p:dialog header="What is this view?" widgetVar="whatIsInteractionsDialog"
-                  width="700" height="500" modal="true" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/whatis_interactions.xhtml"/>
+    <p:ajaxStatus onstart="document.getElementById('statusIndicator').setAttribute('class', 'status-busy')"
+                  oncomplete="document.getElementById('statusIndicator').setAttribute('class', 'status-normal')">
+        <f:facet name="start">
+            <div class="busyStatus">
+                <h:graphicImage alt="busy" url="#{request.contextPath}/resources/css/ebi/images/status_busy_redback.gif"
+                                style="vertical-align:middle;"/>
+                &#160;
+                <h:outputText value="Loading..."/>
             </div>
-        </p:dialog>
+        </f:facet>
 
-        <p:dialog header="What is this view?" widgetVar="whatIsBrowseDialog"
-                  width="700" height="500" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/whatis_browser.xhtml"/>
+        <f:facet name="complete">
+            <div>
+                <h:outputText value=""/>
             </div>
-        </p:dialog>
+        </f:facet>
 
-        <p:dialog header="What is this view?" widgetVar="whatIsSearchDialog"
-                  width="700" height="500" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/whatis_search.xhtml"/>
+        <f:facet name="success">
+            <div>
+                <h:outputText value=""/>
             </div>
-        </p:dialog>
+        </f:facet>
 
-        <p:dialog header="Complex Expansion" widgetVar="complexExpansionDialog"
-                  width="700" height="500" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/complex_expansion.xhtml"/>
+        <f:facet name="error">
+            <div class="busyStatus">
+                <h:graphicImage alt="busy" url="#{request.contextPath}/resources/css/ebi/images/status_busy_redback.gif"
+                                style="vertical-align:middle;"/>
+                &#160;
+                <h:outputText value="Error :("/>
             </div>
-        </p:dialog>
+        </f:facet>
+    </p:ajaxStatus>
 
-        <p:dialog header="PSICQUIC" widgetVar="psicquicDialog"
-                  width="700" height="500" modal="true" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/psicquic.xhtml"/>
-            </div>
-        </p:dialog>
 
-        <p:dialog header="IMEx" widgetVar="psicquicImexDialog"
-                  width="700" height="500" modal="true" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/psicquic_imex.xhtml"/>
-            </div>
-        </p:dialog>
+    <!--Dialogs-->
+    <p:dialog modal="true" widgetVar="statusDialog" header="Please wait..."
+              draggable="false" closable="false" zindex="200" height="30" >
+        <h:graphicImage alt="loading" url="/images/wait_black_indicator.gif"
+                        style="vertical-align:middle;"/>
+        &#160;
+        <h:outputText value="Loading..."/>
+    </p:dialog>
 
-        <p:dialog header="What is this view?" widgetVar="whatIsFeaturesDialog"
-                  width="700" height="500" draggable="true" closable="true">
-            <div style="width:670px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/whatis_features.xhtml"/>
-            </div>
-        </p:dialog>
-        <p:dialog header="What is this view?" widgetVar="whatIsDynamicNetworkDialog"
-                  width="450" height="170">
-            <div style="width:430px; overflow:auto;">
-                <ui:include src="/pages/documentation/contextual/whatis_dynamicnetwork.xhtml"/>
-            </div>
-        </p:dialog>
+    <p:dialog header="What is this view?" widgetVar="whatIsInteractionsDialog"
+              width="700" height="500" modal="true" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/whatis_interactions.xhtml"/>
+        </div>
+    </p:dialog>
 
+    <p:dialog header="What is this view?" widgetVar="whatIsBrowseDialog"
+              width="700" height="500" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/whatis_browser.xhtml"/>
+        </div>
+    </p:dialog>
+
+    <p:dialog header="What is this view?" widgetVar="whatIsSearchDialog"
+              width="700" height="500" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/whatis_search.xhtml"/>
+        </div>
+    </p:dialog>
+
+    <p:dialog header="Complex Expansion" widgetVar="complexExpansionDialog"
+              width="700" height="500" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/complex_expansion.xhtml"/>
+        </div>
+    </p:dialog>
+
+    <p:dialog header="PSICQUIC" widgetVar="psicquicDialog"
+              width="700" height="500" modal="true" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/psicquic.xhtml"/>
+        </div>
+    </p:dialog>
+
+    <p:dialog header="IMEx" widgetVar="psicquicImexDialog"
+              width="700" height="500" modal="true" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/psicquic_imex.xhtml"/>
+        </div>
+    </p:dialog>
+
+    <p:dialog header="What is this view?" widgetVar="whatIsFeaturesDialog"
+              width="700" height="500" draggable="true" closable="true">
+        <div style="width:670px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/whatis_features.xhtml"/>
+        </div>
+    </p:dialog>
+    <p:dialog header="What is this view?" widgetVar="whatIsDynamicNetworkDialog"
+              width="450" height="170">
+        <div style="width:430px; overflow:auto;">
+            <ui:include src="/pages/documentation/contextual/whatis_dynamicnetwork.xhtml"/>
+        </div>
+    </p:dialog>
+
+
+    <h:panelGroup>
 
         <h:panelGroup>
-
-            <h:panelGroup>
-                <p:panel header="Important notice"
-                         rendered="#{not empty intactViewConfiguration.warningMessage}">
-                    <h:outputText value="#{intactViewConfiguration.warningMessage}"/>
-                </p:panel>
-            </h:panelGroup>
-
+            <p:panel header="Important notice"
+                     rendered="#{not empty intactViewConfiguration.warningMessage}">
+                <h:outputText value="#{intactViewConfiguration.warningMessage}"/>
+            </p:panel>
         </h:panelGroup>
 
-        <!--Place for the content in the template-->
-        <ui:insert name="content"/>
+    </h:panelGroup>
 
-        <!-- To avoid expired sessions, poll every 25 mins -->
-        <h:form id="pollForm" prependId="false">
+    <!--Place for the content in the template-->
+    <ui:insert name="content"/>
 
-            <p:poll interval="#{25*60*1000}" process="@this"/>
+    <!-- To avoid expired sessions, poll every 25 mins -->
+    <h:form id="pollForm" prependId="false">
 
-        </h:form>
+        <p:poll interval="#{25*60*1000}" process="@this"/>
 
-        <!--/////////////////////////-->
+    </h:form>
 
-        <div class="scrollup">Scroll</div>
+    <!--/////////////////////////-->
 
-    </div>
+    <div class="scrollup">Scroll</div>
+
+</div>
 </div>
 
 

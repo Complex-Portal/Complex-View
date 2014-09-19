@@ -125,7 +125,7 @@ div#local-masthead ul li a:active {
     border-bottom: 3px solid #0A4F4F;
 }
 
-#subnav-search, #subnav-help {
+/*#subnav-search, #subnav-help {
     background-color: #444050;
     border: 0 solid red;
     display: none;
@@ -153,7 +153,7 @@ div#local-masthead {
 
 div#local-masthead ul {
     margin-top: 0;
-}
+}*/
 
 /*div#local-masthead ul li a, div#local-masthead ul li a:link, div#local-masthead ul li a:visited {
     border-bottom: 3px solid transparent;
