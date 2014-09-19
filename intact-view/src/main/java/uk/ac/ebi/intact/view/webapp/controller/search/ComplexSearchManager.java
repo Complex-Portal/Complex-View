@@ -239,6 +239,7 @@ public class ComplexSearchManager {
 
         try {
             encodedQuery = URLEncoder.encode(query, "UTF-8");
+            encodedQuery = encodedQuery.replaceAll("%22", "&quot;");
             encodedQuery = encodedQuery.replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("UTF-8 should be supported");
