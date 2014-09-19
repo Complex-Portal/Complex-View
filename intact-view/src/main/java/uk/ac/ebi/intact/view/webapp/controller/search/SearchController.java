@@ -170,7 +170,7 @@ public class SearchController extends JpaBaseController {
 
         doBinarySearch(solrQuery);
 
-        return "/pages/interactions/interactions.xhtml?faces-redirect=true";
+        return "/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true&amp;query=" + userQuery.getUrlFriendlyQuery();
     }
 
     public String doBinarySearchWithInteractorFilterAction() {
@@ -185,7 +185,7 @@ public class SearchController extends JpaBaseController {
             doBinarySearch(solrQuery);
         }
 
-        return "/pages/interactions/interactions.xhtml?faces-redirect=true";
+        return "/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true&amp;query=" + userQuery.getUrlFriendlyQuery();
     }
 
     private void resetDetailControllers() {
