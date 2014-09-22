@@ -18,6 +18,10 @@
             <base-name>uk.ac.ebi.faces.EbiTest</base-name>
             <var>ebiTest</var>
         </resource-bundle>
+        <resource-bundle>
+            <base-name>validator.BuildInfo</base-name>
+            <var>buildInfo</var>
+        </resource-bundle>
     </application>
 
     <!-- ====================== -->

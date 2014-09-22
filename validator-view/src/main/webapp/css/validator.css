@@ -37,3 +37,9 @@
 .unSelectAllImexRules {
     halign: right;
 }
+
+#ebiForm table, #ebiForm td, #ebiForm th {
+    border-style: none;
+    background-color: #f7f7f7;
+}
+

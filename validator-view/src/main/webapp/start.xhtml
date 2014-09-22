@@ -50,164 +50,123 @@
             format.
         </dd>
     </tr:group>
+    <br/>
 </section>
 
 <!-- File upload -->
 <section class="grid_24">
     <h2>PSI-MI validation</h2>
 
-    <tr:form id="ebiForm" usesUpload="true">
+    <tr:form id="ebiForm" usesUpload="true" styleClass="grid_24">
+        <div class="grid_24">
+            <fieldset id="loadFileFld">
+                <legend>File upload</legend>
+                <!-- source -->
+                <div class="grid_8">
+                    <tr:selectOneRadio id="sourceSelector" value="#{psiValidatorController.uploadLocalFile}"
+                                       label="Source:"
+                                       inlineStyle="width:auto" onclick="displayFileUpload()">
+                        <tr:selectItem label="From local file" value="true"/>
+                        <tr:selectItem label="From URL" value="false"/>
 
-        <tr:panelGroupLayout layout="vertical">
+                    </tr:selectOneRadio>
+                </div>
+                <div class="grid_16">
+                    <!-- File/URL input -->
+                    <tr:inputFile id="my_input_file" columns="40" label="File:"
+                                  value="#{psiValidatorController.psiFile}" styleClass="localFileUpload"/>
+                    <tr:inputText id="inputUrl" label="URL:"
+                                  columns="40" value="#{psiValidatorController.psiUrl}"
+                                  styleClass="urlUpload"/>
+                    <tr:panelList>
+                        <tr:outputText value="Single MI file"/>
+                        <tr:outputText value="ZIP file containing one MI file (if several MI files, only one will be validated)"/>
+                        <tr:commandLink action="#{psiValidatorController.loadExample}"><tr:outputText value="Load an example"/></tr:commandLink>
+                    </tr:panelList>
+                </div>
+            </fieldset>
+        </div>
+        <div class="grid_24">
+            <fieldset id="scopePanelFld">
+                <legend>Model and scope selection</legend>
 
-            <f:facet name="separator">
-                <tr:spacer height="15"/>
-            </f:facet>
+                <div class="grid_8">
+                    <tr:selectOneRadio id="modelSelector" value="#{psiValidatorController.selectDefaultModel}"
+                                       label="Model:"
+                                       inlineStyle="width:auto" onclick="displayModel()">
+                        <tr:selectItem label="Molecular Interactions" value="true"/>
+                        <tr:selectItem label="Protein Affinity Reagents" value="false"/>
 
-            <trh:tableLayout width="600">
+                    </tr:selectOneRadio>
+                </div>
+                <div class="grid_16">
+                    <div class="miScopes">
+                        <div class="grid_16">
+                            <tr:selectOneRadio id="scopeSelector" value="#{psiValidatorController.validationScope}" styleClass="validatorScopes">
+                                <tr:selectItem label="File Syntax Only" value="SYNTAX"/>
+                                <tr:selectItem label="Controlled Vocabulary Usage" value="CV_ONLY"/>
+                                <tr:selectItem label="PSI-MI" shortDesc="Basic checks for PSI-MI" value="PSI_MI"/>
+                                <tr:selectItem label="MIMIx" shortDesc="Minimum Information about a Molecular Interaction guidelines" value="MIMIX"/>
+                                <tr:selectItem label="IMEx" shortDesc="International Molecular Exchange guidelines" value="IMEX"/>
+                                <tr:selectItem label="Customized rules" value="CUSTOMIZED"/>
+                            </tr:selectOneRadio>
+                        </div>
+                        <div class="grid_16">
+                            <div class="grid_10">
+                                <tr:selectManyCheckbox id="psimiRules" styleClass="customizeRules" value="#{psiValidatorController.psiMiCustomizedRules}" rendered="#{psiValidatorController.numberOfPsiMiRules > 0}" layout="pageDirection" label="PSI-MI">
+                                    <f:selectItems value="#{psiValidatorController.psiMiItemRules}"/>
+                                </tr:selectManyCheckbox>
+                            </div>
+                            <div class="push_15 grid_6">
+                                <tr:goButton styleClass="selectAllRules customizeRules" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}" text="Select All"/>
+                                <tr:goButton styleClass="unSelectAllRules customizeRules" text="Unselect all" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}"/>
+                            </div>
+                        </div>
+                        <div class="grid_16">
+                            <div class="grid_10">
+                                <tr:selectManyCheckbox id="mimixRules" styleClass="customizeRules" value="#{psiValidatorController.mimixCustomizedRules}" rendered="#{psiValidatorController.numberOfMimixRules > 0}" layout="pageDirection" label="MIMIx">
+                                    <f:selectItems value="#{psiValidatorController.mimixItemRules}" />
+                                </tr:selectManyCheckbox>
+                            </div>
+                            <div class="push_15 grid_6">
+                                <tr:goButton styleClass="selectAllRules customizeRules" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}" text="Select All"/>
+                                <tr:goButton styleClass="unSelectAllRules customizeRules" text="Unselect all" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}"/>
+                            </div>
+                        </div>
+                        <div class="grid_16">
+                            <div class="grid_10">
+                                <tr:selectManyCheckbox id="imexRules" styleClass="customizeRules" value="#{psiValidatorController.imexCustomizedRules}" rendered="#{psiValidatorController.numberOfImexRules > 0}" layout="pageDirection" label="IMEx">
+                                    <f:selectItems value="#{psiValidatorController.imexItemRules}"/>
+                                </tr:selectManyCheckbox>
+                            </div>
+                            <div class="push_15 grid_6">
+                                <tr:goButton styleClass="selectAllRules customizeRules" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}" text="Select All"/>
+                                <tr:goButton styleClass="unSelectAllRules customizeRules" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}" text="Unselect all"/>
+                            </div>
+                        </div>
 
-                <trh:rowLayout>
-                    <trh:cellFormat width="10%">
-                        <tr:panelHeader text="File upload"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat >
-                        <tr:spacer width="60"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat width="20%">
-                        <tr:panelHeader text="Model and scope selection"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat width="70%">
-                    </trh:cellFormat>
-                </trh:rowLayout>
-                <trh:rowLayout>
-                    <trh:cellFormat width="10%" valign="top" halign="left">
-                        <!-- source -->
-                        <tr:selectOneRadio id="sourceSelector" value="#{psiValidatorController.uploadLocalFile}"
-                                           label="Source:"
-                                           inlineStyle="width:auto" onclick="displayFileUpload()">
-                            <tr:selectItem label="From local file" value="true"/>
-                            <tr:selectItem label="From URL" value="false"/>
-
+                    </div>
+                    <div class="parScopes grid_16">
+                        <tr:selectOneRadio id="scopeSelector2" value="#{psiValidatorController.validationScope}">
+                            <tr:selectItem label="File Syntax Only" value="SYNTAX"/>
+                            <tr:selectItem label="Controlled Vocabulary Usage" value="CV_ONLY"/>
                         </tr:selectOneRadio>
+                    </div>
+                </div>
 
-                        <!-- File/URL input -->
-                        <tr:inputFile id="my_input_file" columns="40" label="File:"
-                                      value="#{psiValidatorController.psiFile}" styleClass="localFileUpload"/>
-                        <tr:inputText id="inputUrl" label="URL:"
-                                      columns="50" value="#{psiValidatorController.psiUrl}"
-                                      styleClass="urlUpload"/>
-                        <tr:panelList>
-                            <tr:outputText value="Single MI file"/>
-                            <tr:outputText value="ZIP file containing one MI file (if several MI files, only one will be validated)"/>
-                            <tr:commandLink action="#{psiValidatorController.loadExample}"><tr:outputText value="Load an example"/></tr:commandLink>
-                        </tr:panelList>
-                    </trh:cellFormat>
-                    <trh:cellFormat >
-                        <tr:spacer width="70"/>
-                    </trh:cellFormat>
-                    <trh:cellFormat width="30%" halign="left" valign="top">
-                        <!-- model & scope -->
-                        <tr:panelTabbed position="above">
-                            <tr:showDetailItem text="Molecular Interactions"
-                                               disclosureListener="#{psiValidatorController.validationModelChangedMI}">
+            </fieldset>
+        </div>
 
-                                <trh:tableLayout width="100%">
-                                    <trh:rowLayout>
-                                        <trh:cellFormat>
-                                            <tr:outputText value="Validation scope " />
-
-                                            <tr:commandLink action="dialog:miDocumentation" partialSubmit="true"
-                                                            useWindow="true" windowHeight="400" windowWidth="500">
-                                                <tr:image source="images/icon_help.gif"/>
-                                            </tr:commandLink>
-
-                                            <tr:selectOneRadio id="scopeSelector" value="#{psiValidatorController.validationScope}" styleClass="validatorScopes">
-                                                <tr:selectItem label="File Syntax Only" value="SYNTAX"/>
-                                                <tr:selectItem label="Controlled Vocabulary Usage" value="CV_ONLY"/>
-                                                <tr:selectItem label="PSI-MI" shortDesc="Basic checks for PSI-MI" value="PSI_MI"/>
-                                                <tr:selectItem label="MIMIx" shortDesc="Minimum Information about a Molecular Interaction guidelines" value="MIMIX"/>
-                                                <tr:selectItem label="IMEx" shortDesc="International Molecular Exchange guidelines" value="IMEX"/>
-                                                <tr:selectItem label="Customized rules" value="CUSTOMIZED"/>
-                                            </tr:selectOneRadio>
-                                        </trh:cellFormat>
-                                    </trh:rowLayout>
-                                    <trh:rowLayout>
-                                        <trh:cellFormat halign="left">
-                                            <tr:selectManyCheckbox id="psimiRules" styleClass="customizeRules" value="#{psiValidatorController.psiMiCustomizedRules}" rendered="#{psiValidatorController.numberOfPsiMiRules > 0}" layout="pageDirection" label="PSI-MI">
-                                                <f:selectItems value="#{psiValidatorController.psiMiItemRules}"/>
-                                            </tr:selectManyCheckbox>
-                                        </trh:cellFormat>
-                                        <trh:cellFormat halign="right" valign="top">
-                                            <tr:panelHorizontalLayout valign="top">
-                                                <tr:goButton styleClass="selectAllRules customizeRules" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}" text="Select All"/>
-                                                <tr:goButton styleClass="unSelectAllRules customizeRules" text="Unselect all" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}"/>
-                                            </tr:panelHorizontalLayout>
-                                        </trh:cellFormat>
-                                    </trh:rowLayout>
-                                    <trh:rowLayout>
-                                        <trh:cellFormat halign="left">
-                                            <tr:selectManyCheckbox id="mimixRules" styleClass="customizeRules" value="#{psiValidatorController.mimixCustomizedRules}" rendered="#{psiValidatorController.numberOfMimixRules > 0}" layout="pageDirection" label="MIMIx">
-                                                <f:selectItems value="#{psiValidatorController.mimixItemRules}" />
-                                            </tr:selectManyCheckbox>
-                                        </trh:cellFormat>
-                                        <trh:cellFormat halign="right" valign="top">
-                                            <tr:panelHorizontalLayout valign="top">
-                                                <tr:goButton styleClass="selectAllRules customizeRules" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}" text="Select All"/>
-                                                <tr:goButton styleClass="unSelectAllRules customizeRules" text="Unselect all" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}"/>
-                                            </tr:panelHorizontalLayout>
-                                        </trh:cellFormat>
-                                    </trh:rowLayout>
-                                    <trh:rowLayout>
-                                        <trh:cellFormat halign="left">
-                                            <tr:selectManyCheckbox id="imexRules" styleClass="customizeRules" value="#{psiValidatorController.imexCustomizedRules}" rendered="#{psiValidatorController.numberOfImexRules > 0}" layout="pageDirection" label="IMEx">
-                                                <f:selectItems value="#{psiValidatorController.imexItemRules}"/>
-                                            </tr:selectManyCheckbox>
-                                        </trh:cellFormat>
-                                        <trh:cellFormat halign="right" valign="top">
-                                            <tr:panelHorizontalLayout valign="top">
-                                                <tr:goButton styleClass="selectAllRules customizeRules" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}" text="Select All"/>
-                                                <tr:goButton styleClass="unSelectAllRules customizeRules" rendered="#{psiValidatorController.numberOfPsiMiRules > 1}" text="Unselect all"/>
-                                            </tr:panelHorizontalLayout>
-                                        </trh:cellFormat>
-                                    </trh:rowLayout>
-                                </trh:tableLayout>
-
-                            </tr:showDetailItem>
-
-                            <tr:showDetailItem text="Protein Affinity Reagents (beta)"
-                                               disclosureListener="#{psiValidatorController.validationModelChangedPAR}" >
-
-                                <tr:panelHorizontalLayout valign="top">
-                                    <tr:outputText value="Validation scope " />
-
-                                    <tr:commandLink action="dialog:parDocumentation" partialSubmit="true"
-                                                    useWindow="true" windowHeight="400" windowWidth="500">
-                                        <tr:image source="images/icon_help.gif"/>
-                                    </tr:commandLink>
-
-                                    <tr:selectOneRadio id="scopeSelector2" value="#{psiValidatorController.validationScope}">
-                                        <tr:selectItem label="File Syntax Only" value="SYNTAX"/>
-                                        <tr:selectItem label="Controlled Vocabulary Usage" value="CV_ONLY"/>
-                                    </tr:selectOneRadio>
-                                </tr:panelHorizontalLayout>
-
-                            </tr:showDetailItem>
-                        </tr:panelTabbed>
-                    </trh:cellFormat>
-                    <trh:cellFormat width="60%">
-                    </trh:cellFormat>
-                </trh:rowLayout>
-                <trh:rowLayout>
-                    <trh:cellFormat halign="left" valign="top">
-                        <tr:commandButton id="submit_button" text="Validate" action="#{psiValidatorController.validate}"
-                                          onclick="document.getElementById('progress_image').style.display = 'block';
-                                       document.getElementById('submit_button').disabled=true" inlineStyle="float:left;"/>
-                        <tr:image id="progress_image" inlineStyle="display:none; float:left" source="/images/wait_red_indicator.gif"/>
-
-                    </trh:cellFormat>
-                </trh:rowLayout>
-            </trh:tableLayout>
-        </tr:panelGroupLayout>
+        <div class="grid_12">
+            <h:commandButton id="submit_button" style="display: inline"
+                             styleClass="submit"
+                             onclick="document.getElementById('progress_image').style.display = 'block';
+                                       document.getElementById('submit_button').disabled=true"
+                             value="Validate"
+                             action="#{psiValidatorController.validate}">
+            </h:commandButton>
+            <tr:image id="progress_image" inlineStyle="display:none; float:left" source="/images/wait_red_indicator.gif"/>
+        </div>
     </tr:form>
 </section>
 

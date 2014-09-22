@@ -120,6 +120,8 @@ public class PsiValidatorController extends BaseController {
      */
     private Map<Integer, ObjectRule> mapOfRules;
 
+    private boolean selectDefaultModel=true;
+
     /**
      * Constructor
      */
@@ -1000,5 +1002,25 @@ public class PsiValidatorController extends BaseController {
         }
 
         return psimiRules.size();
+    }
+
+    public boolean isSelectDefaultModel() {
+        return selectDefaultModel;
+    }
+
+    public void setSelectDefaultModel(boolean selectDefaultModel) {
+        if (this.selectDefaultModel != selectDefaultModel){
+            if (selectDefaultModel){
+                model = DataModel.PSI_MI;
+                validationScope = ValidationScope.MIMIX; // set to default
+                if ( log.isDebugEnabled() ) log.debug( "Data model set to '" + model + "'" );
+            }
+            else{
+                model = DataModel.PSI_PAR;
+                validationScope = ValidationScope.CV_ONLY; // set to default
+                if ( log.isDebugEnabled() ) log.debug( "Data model set to '" + model + "'" );
+            }
+        }
+        this.selectDefaultModel = selectDefaultModel;
     }
 }

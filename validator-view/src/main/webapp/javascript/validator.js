@@ -11,6 +11,17 @@ function displayFileUpload(){
     }
 }
 
+function displayModel(){
+    if (document.forms['ebiForm']['modelSelector'][0].checked){
+        dojo.query('.parScopes').style('display', 'none');
+        dojo.query('.miScopes').style('display', 'block');
+    }
+    else{
+        dojo.query('.parScopes').style('display', 'block');
+        dojo.query('.miScopes').style('display', 'none');
+    }
+}
+
 function displayRuleCustomization(){
     if (document.forms['ebiForm']['scopeSelector'][5].checked){
         dojo.query('.customizeRules').style('display', 'block');
@@ -56,5 +67,6 @@ dojo.addOnLoad(function(){
     dojo.query('.validatorScopes').onclick(displayRuleCustomization);
 
     displayFileUpload();
+    displayModel();
     displayRuleCustomization();
 });

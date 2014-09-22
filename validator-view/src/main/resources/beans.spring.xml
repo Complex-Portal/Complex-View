@@ -9,6 +9,7 @@
     <context:component-scan base-package="uk.ac.ebi.intact.services.validator"/>
 
     <context:property-placeholder location="classpath:/ValidatorConfig.properties"/>
+    <context:property-placeholder location="classpath:/validator/BuildInfo.properties"/>
 
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
 
