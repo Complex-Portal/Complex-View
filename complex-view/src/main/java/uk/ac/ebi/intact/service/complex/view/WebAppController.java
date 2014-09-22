@@ -217,8 +217,7 @@ public class WebAppController {
     }
 
     private String cleanQuery(String query) {
-        query = new HtmlToPlainText().getPlainText(Jsoup.parse(query));
-        return query.trim();
+        return Jsoup.parse(query).text();
     }
 
     private String buildFilters( String[] species, String[] complexType, String[] sources ){
