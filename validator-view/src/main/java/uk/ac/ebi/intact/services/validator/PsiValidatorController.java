@@ -444,7 +444,7 @@ public class PsiValidatorController extends BaseController {
             context.addMessage( null, message );
         }
 
-        return "start";
+        return "results";
     }
 
     /*private void initializeProgressModel() {
