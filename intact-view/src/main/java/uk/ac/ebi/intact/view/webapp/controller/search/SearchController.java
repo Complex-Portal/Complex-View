@@ -170,7 +170,8 @@ public class SearchController extends JpaBaseController {
 
         doBinarySearch(solrQuery);
 
-        return "/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true&amp;query=" + userQuery.getUrlFriendlyQuery();
+        return "/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true&amp;query="
+                + userQuery.getUrlFriendlyQuery() == null ? "*" : userQuery.getUrlFriendlyQuery();
     }
 
     public String doBinarySearchWithInteractorFilterAction() {
@@ -185,7 +186,8 @@ public class SearchController extends JpaBaseController {
             doBinarySearch(solrQuery);
         }
 
-        return "/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true&amp;query=" + userQuery.getUrlFriendlyQuery();
+        return "/pages/interactions/interactions.xhtml?faces-redirect=true&amp;includeViewParams=true&amp;query="
+                + userQuery.getUrlFriendlyQuery() == null ? "*" : userQuery.getUrlFriendlyQuery();
     }
 
     private void resetDetailControllers() {
