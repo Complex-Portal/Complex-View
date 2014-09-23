@@ -48,7 +48,7 @@ dojo.addOnLoad(function(){
     dojo.query('.selectAllRules').onclick(function(){
         var thisList = new dojo.NodeList(this);
 
-        var field = thisList.parent().parent().parent().parent().parent().closest('tr').query('input[type="checkbox"]')
+        var field = thisList.parent().parent().query('input[type="checkbox"]')
         for (i = 0; i < field.length; i++)
             field[i].checked = true ;
 
@@ -57,7 +57,7 @@ dojo.addOnLoad(function(){
     dojo.query('.unSelectAllRules').onclick(function(){
         var thisList = new dojo.NodeList(this);
 
-        var field = thisList.parent().parent().parent().parent().parent().closest('tr').query('input[type="checkbox"]')
+        var field = thisList.parent().parent().query('input[type="checkbox"]')
         for (i = 0; i < field.length; i++)
             field[i].checked = false ;
 
