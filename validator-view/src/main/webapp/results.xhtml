@@ -109,23 +109,21 @@
                     <tr:switcher facetName="#{msg.rule['class'].simpleName}" defaultFacet="default" >
 
                         <f:facet name="default">
-                            <h:outputText value="Name: " style="font-weight: bold;"/>
-                            <h:outputText value="#{msg.rule.name}"/>
-                            <!--<tr:panelFormLayout>
+                            <tr:panelFormLayout>
 
-                                <tr:panelLabelAndMessage label="Name:">
+                                <tr:panelLabelAndMessage label="Name:" labelStyle="font-weight: bold" >
                                     <tr:outputText value="#{msg.rule.name}"/>
                                 </tr:panelLabelAndMessage>
 
-                                <tr:panelLabelAndMessage label="Scope:">
+                                <tr:panelLabelAndMessage label="Scope:" labelStyle="font-weight: bold">
                                     <tr:outputText value="#{msg.rule.scope}"/>
                                 </tr:panelLabelAndMessage>
 
-                                <tr:panelLabelAndMessage label="Description:">
+                                <tr:panelLabelAndMessage label="Description:" labelStyle="font-weight: bold">
                                     <tr:outputText value="#{msg.rule.description}"/>
                                 </tr:panelLabelAndMessage>
 
-                                <tr:panelLabelAndMessage label="Tips:" inlineStyle="vertical-align:top;" >
+                                <tr:panelLabelAndMessage label="Tips:" labelStyle="font-weight: bold" >
                                     <tr:panelList>
                                         <tr:iterator value="#{msg.rule.howToFixTips}" var="tip"
                                                      rendered="#{msg.rule.howToFixTips != null and not empty msg.rule.howToFixTips}">
@@ -133,20 +131,20 @@
                                         </tr:iterator>
                                     </tr:panelList>
                                 </tr:panelLabelAndMessage>
-                            </tr:panelFormLayout>-->
+                            </tr:panelFormLayout>
                         </f:facet >
 
                         <f:facet name="CvRuleImpl">
                             <tr:panelFormLayout>
-                                <tr:panelLabelAndMessage label="Type:">
+                                <tr:panelLabelAndMessage label="Type:" labelStyle="font-weight: bold">
                                     <tr:outputText value="Controlled vocabulary usage rule"/>
                                 </tr:panelLabelAndMessage>
 
-                                <tr:panelLabelAndMessage label="Scope:">
+                                <tr:panelLabelAndMessage label="Scope:" labelStyle="font-weight: bold">
                                     <tr:outputText value="#{msg.rule.name}"/>
                                 </tr:panelLabelAndMessage>
 
-                                <tr:panelLabelAndMessage label="Requirement:">
+                                <tr:panelLabelAndMessage label="Requirement:" labelStyle="font-weight: bold">
                                     <tr:outputText value="#{msg.rule.requirementLevel}"/>
                                 </tr:panelLabelAndMessage>
                             </tr:panelFormLayout>

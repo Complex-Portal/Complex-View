@@ -62,4 +62,11 @@
     vertical-align: top;
 }
 
+#ebiForm2 div.af_panelFormLayout{
+    float:left;
+}
+
+#ebiForm2 div.af_panelFormLayout table, #ebiForm2 div.af_panelFormLayout tr, #ebiForm2 div.af_panelFormLayout td{
+    background-color: #EDF6F5;
+}
 
