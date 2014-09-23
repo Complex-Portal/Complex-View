@@ -199,8 +199,8 @@
                         </tr:iterator>
                     </tr:iterator>
                     <!-- behavior for these links is in validator.js, listeners are bound dynamically -->
-                    <tr:goLink styleClass="showErrorContextDetails" rendered="#{msg.context.numberOfContexts > 3}"><tr:outputText value="Show all contexts" /></tr:goLink>
-                    <tr:goLink styleClass="hideErrorContextDetails errorContextDetails"><tr:outputText value="Hide" /></tr:goLink>
+                    <tr:goLink styleClass="showErrorContextDetails" rendered="#{msg.context.numberOfContexts > 3}"><tr:outputText value="Show all contexts" inlineStyle="font-weight: bold"/></tr:goLink>
+                    <tr:goLink styleClass="hideErrorContextDetails errorContextDetails"><tr:outputText value="Hide" inlineStyle="font-weight: bold"/></tr:goLink>
                 </tr:column>
             </tr:table>
         </tr:form>
