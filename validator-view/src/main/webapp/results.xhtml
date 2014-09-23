@@ -134,7 +134,7 @@
                             </tr:panelFormLayout>
                         </f:facet >
 
-                        <f:facet name="CvRuleImpl">
+                        <f:facet name="MICvRule">
                             <tr:panelFormLayout>
                                 <tr:panelLabelAndMessage label="Type:" labelStyle="font-weight: bold">
                                     <tr:outputText value="Controlled vocabulary usage rule"/>
@@ -212,8 +212,6 @@
 <section class="grid_24">
     <a name="html_view"/>
     <tr:group rendered="#{psiValidatorController.currentPsiReport != null and psiValidatorController.currentPsiReport.syntaxValid}">
-        <h2>HTML View</h2>
-
         <div>
             <tr:outputText value="#{psiValidatorController.currentPsiReport.htmlView}" escape="false"/>
         </div>
