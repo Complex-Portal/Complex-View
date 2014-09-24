@@ -89,6 +89,26 @@
     <p>To do a search you can use the Complex Query Language (CQL), which is based on <a href="http://lucene.apache.org/core/3_6_0/queryparsersyntax.html?conversationContext=3#Terms" target="_blank">Lucene's syntax.</a></p>
 
     <ul>
+        <%--<li>Search will recognize ontologies and synonyms.--%>
+            <%--<ul>--%>
+                <%--<li><i>Eukaryota</i> will retrieve all children of <i>Eukaryota</i> using the Uniprot taxonomy</li>--%>
+                <%--<li><i>affinity techniques</i> will match <i>affinity technology</i> because it is affinity techniques is a synonym of affinity technology in the PSI-MI ontology</li>--%>
+            <%--</ul>--%>
+        <%--</li>--%>
+        <li>Free text search will look by default for:</li>
+            <ul>
+                <li type="square">Identifiers, names and synonyms of molecules (protein, gene, small molecule).</li>
+                <li type="square">Identifiers, names and synonyms of complexes.</li>
+                <li type="square">Cross-references of complexes.</li>
+                <li type="square">Species</li>
+            </ul>
+        <li>Search for groups of complexes by using the Gene Ontology. For example, <a href="<c:url value="${complex_search_form}?q=GO:0016491"/>">GO:0016491</a> will search for all complexes annotated with &quot;oxidoreductase activity&quot; and all downstream child terms of this.</li>
+        <li>Narrow your initial search result by using the filters on the results page for:</li>
+            <ul>
+                <li type="square">Species.</li>
+                <li type="square">Molecule type.</li>
+                <li type="square">Biological role.</li>
+            </ul>
         <li>Search based on exact word matches.
             <ul>
                 <li><i>Ndc8</i> will not match <i>Ndc80</i></li>
@@ -96,38 +116,29 @@
                 <%--<li>To retrieve all isoforms of <i>P12345</i>, use <i>P12345*</i></li>--%>
             </ul>
         </li>
-        <%--<li>Search will recognize ontologies and synonyms.--%>
-            <%--<ul>--%>
-                <%--<li><i>Eukaryota</i> will retrieve all children of <i>Eukaryota</i> using the Uniprot taxonomy</li>--%>
-                <%--<li><i>affinity techniques</i> will match <i>affinity technology</i> because it is affinity techniques is a synonym of affinity technology in the PSI-MI ontology</li>--%>
-            <%--</ul>--%>
-        <%--</li>--%>
         <li>Default fields are used when no field is specified (simple search) :
             <ul>
-                <li>Interactor identifier(s)</li>
-                <li>Interactor alias(es)</li>
-                <li>Interaction identifier(s)</li>
-                <li>Interaction alias(es)</li>
-                <li>Interaction Xref(s)</li>
-                <li>Interaction species</li>
-            </ul>.
-            <br />For instance, if you put
-            <i>'PCNA'</i> in the simple query box,
-            this will mean the same as <i>complex_id:PCNA OR id:PCNA OR complex_name:PCNA OR alias:PCNA OR species:PCNA OR complex_xref:PCNA</i></li>
+                <li type="square">Interactor identifier(s)</li>
+                <li type="square">Interactor alias(es)</li>
+                <li type="square">Interaction identifier(s)</li>
+                <li type="square">Interaction alias(es)</li>
+                <li type="square">Interaction Xref(s)</li>
+                <li type="square">Interaction species</li>
+            </ul>
+            For instance, if you put <i>'PCNA'</i> in the simple query box, this will mean the same as <i>complex_id:PCNA OR id:PCNA OR complex_name:PCNA OR alias:PCNA OR species:PCNA OR complex_xref:PCNA</i></li>
         <li>Use OR or space ' ' to search for ANY of the terms in a field</li>
         <li>Use AND if you want to search for those interactions where ALL of your terms are found</li>
         <li>Use quotes (&quot;) if you look for a specific phrase (group of terms that must be searched together) or terms
             containing special characters that may otherwise be interpreted by our query engine (eg. ':' in a GO term)
         </li>
         <li>Use parenthesis for complex queries (e.g. '(XXX OR YYY) AND ZZZ')</li>
-        <li>Wildcards (*,?) can be used between letters in a term or at the end of terms to do fuzzy queries,
-            <br />but never at the beginning of a term
+        <li>Wildcards (*,?) can be used between letters in a term or at the end of terms to do fuzzy queries, but never at the beginning of a term
         </li>
         <li>Optionally, you can prepend a symbol in from of your term.
             <ul>
-                <li>+ (plus): include this term. Equivalent to AND. e.g. +Ndc80</li>
-                <li>- (minus): do not include this term. Equivalent to NOT. e.g. -Ndc80</li>
-                <li>Nothing in front of the term. Equivalent to OR. e.g. Ndc80</li>
+                <li type="square">+ (plus): include this term. Equivalent to AND. e.g. +Ndc80</li>
+                <li type="square">- (minus): do not include this term. Equivalent to NOT. e.g. -Ndc80</li>
+                <li type="square">Nothing in front of the term. Equivalent to OR. e.g. Ndc80</li>
             </ul>
         </li>
     </ul>

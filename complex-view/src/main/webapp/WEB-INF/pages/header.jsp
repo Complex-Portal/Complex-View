@@ -51,7 +51,8 @@
             /* You have the option of setting a maximum width for your page, and making sure everything is centered */
             /* body { max-width: 1600px; margin: 0 auto; } */
     </style>
-    <link href="<c:url value="/resources/css/main.css" />" rel="stylesheet"> <%--Added by Oscar--%>
+    <link href="<c:url value="/resources/css/complex-portal.css" />" rel="stylesheet"> <%--Added by Oscar--%>
+    <link href="<c:url value="/resources/css/intact-colours.css" />" rel="stylesheet"> <%--Added by Oscar--%>
     <!-- end CSS-->
     <%--Begin JS--%>
     <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/ga.js"/>"></script>
