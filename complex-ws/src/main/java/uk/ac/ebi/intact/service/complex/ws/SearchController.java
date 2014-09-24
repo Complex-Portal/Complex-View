@@ -1,5 +1,7 @@
 package uk.ac.ebi.intact.service.complex.ws;
 
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -86,7 +88,13 @@ public class SearchController {
     }
     @RequestMapping(value = "/count/{query}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
     public String count(@PathVariable String query, ModelMap model) throws SolrServerException {
-        long total = query(query, null, null, null, null).getTotalNumberOfResults();
+        String q = null;
+        try {
+            q = URIUtil.decode(query);
+        } catch (URIException e) {
+            e.printStackTrace();
+        }
+        long total = query(q, null, null, null, null).getTotalNumberOfResults();
         model.addAttribute("count", total);
         return "count";
     }
