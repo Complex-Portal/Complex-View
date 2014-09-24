@@ -103,7 +103,7 @@
             <!-- local-title -->
 
             <div class="grid_12 alpha" id="local-title">
-                <h1><a href="${complex_home_url}" title="Back to ${complex_portal_name} homepage"><img src="<c:url value="/resources/img/logo.png"/>"/> Complex Portal</a></h1>
+                <h1><a href="${complex_home_url}" title="Back to ${complex_portal_name} homepage"><img src="<c:url value="/resources/img/logo.png"/>" style="width: 43px; height: 63px;"/> Complex Portal</a></h1>
             </div>
 
             <!-- /local-title -->
