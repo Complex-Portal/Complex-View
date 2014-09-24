@@ -1,6 +1,7 @@
 package uk.ac.ebi.intact.service.complex.ws;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class AppTests extends IntactBasicTestCase {
         this.mockMvc = webAppContextSetup(this.wac).build();
     }
 
+    @Ignore
     @Test
     public void searchHeader() throws Exception {
         // Without Header -> It must be a Json response
@@ -58,6 +60,7 @@ public class AppTests extends IntactBasicTestCase {
         ;
     }
 
+    @Ignore
     @Test
     public void searchFormatParameter() throws Exception {
         // Test Parameter Json
@@ -74,6 +77,7 @@ public class AppTests extends IntactBasicTestCase {
         ;
     }
 
+    @Ignore
     @Test
     public void searchFirstParameter() throws Exception {
         int offset = 21; // random value
@@ -87,6 +91,7 @@ public class AppTests extends IntactBasicTestCase {
         ;
     }
 
+    @Ignore
     @Test
     public void searchNumberParameter() throws Exception {
         int number = 50; // random value
@@ -100,6 +105,7 @@ public class AppTests extends IntactBasicTestCase {
         ;
     }
 
+    @Ignore
     @Test
     public void searchFirstAndNumberParameters() throws Exception {
         int offset = 21;
@@ -170,6 +176,7 @@ public class AppTests extends IntactBasicTestCase {
         ;
     }
 
+    @Ignore
     @Test
     public void testDetails() throws Exception {
         mockMvc.perform(get("/details/EBI-1245484?format=json"))
