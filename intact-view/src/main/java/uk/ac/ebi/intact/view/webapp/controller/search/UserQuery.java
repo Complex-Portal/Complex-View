@@ -458,9 +458,9 @@ public class UserQuery extends BaseController {
 
         if (searchQuery.length() > 200) {
             friendlyQuery = "longquery:" + System.nanoTime();
-            longQueriesMap.put(friendlyQuery, searchQuery);
+            longQueriesMap.put(friendlyQuery, searchQuery.trim());
         } else {
-            friendlyQuery = searchQuery;
+            friendlyQuery = searchQuery.trim();
         }
 
         return friendlyQuery;
