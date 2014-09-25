@@ -32,8 +32,9 @@
         <%--<li><a href="${complex_advanced_search_url}">Advanced Search</a></li>--%>
         <%--<li><a href="${complex_downloads_url}">Downloads</a></li>--%>
         <li><a href="${complex_help_url}">Help</a></li>
-        <li class="active"><a href="${complex_download_url}">Download</a></li>
-        <li class="last"><a href="${complex_contact_url}">Contact Us</a></li>
+        <li class="active last"><a href="${complex_download_url}">Download</a></li>
+        <%--<li class="last"><a href="${complex_contact_url}">Contact Us</a></li>--%>
+        <li class="functional last first"><a class="icon icon-generic" data-icon="\" href="http://www.ebi.ac.uk/support/intact">Feedback</a></li>
         <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
              add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
              whichever one will show up last...

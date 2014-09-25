@@ -57,6 +57,7 @@
     <%--Begin JS--%>
     <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/ga.js"/>"></script>
     <script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> <%--Added by Oscar--%>
+    <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/Chart.js"/>"></script> <%--Added by Oscar--%>
     <%--<script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> &lt;%&ndash;Added by Oscar&ndash;%&gt;--%>
     <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/main.js"/>"></script> <%--Added by Oscar--%>
     <!-- All JavaScript at the bottom, except for Modernizr / Respond.
