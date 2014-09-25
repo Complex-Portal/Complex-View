@@ -73,19 +73,18 @@
             <%--<h5 class="subtitleHome">The Complex Portal is a manually curate, encyclopaedic resource of macromolecular complexes from a number of key model organisms. All data is freely available for search and download. To perform a search for macromolecular complexes use the search box below.</h5>--%>
         <%--</div>--%>
             <p class="intro">The Complex Portal is a manually curated, encyclopaedic resource of macromolecular complexes from a number of key model organisms. All data is freely available for search and download. To perform a search for macromolecular complexes use the search box below.</p>
-        <br>
-        <br>
-        <div class="grid_18 alpha">
-            <div class="grid_15 alpha">
-                <form class="searchForm" method="GET" action="">
-                    <textarea name="q" rows="10" id="querySearchBox"  type="text"   class="searchBox"    placeholder="Enter search term(s)..."></textarea>
-                    <br>
-                    <%--<input name="facets" id="facets" type="hidden" value="${facetFields}" />--%>
-                    <input type="submit" class="searchButton submit" value="Search" />
-                </form>
-                <br>
-                <br>
-            </div>
+        <%--<br>--%>
+        <%--<br>--%>
+        <div class="grid_12 alpha">
+            <form class="searchForm" method="GET" action="">
+                <fieldset id="searchFormField">
+                    <legend>Search in Complex Portal</legend>
+                        <textarea name="q" rows="10" id="querySearchBox"  type="text"   class="searchBox"    placeholder="Enter search term(s)..."></textarea>
+                        <br>
+                        <input type="submit" class="searchButton submit" value="Search" />
+                </fieldset>
+            </form>
+        </div>
             <div class="grid_6 exampleDiv">
                 <label class="searchExamples">Examples:</label>
                 <ul class="exampleList">
@@ -99,17 +98,13 @@
                 <%--<a href="JavaScript:newPopup('<c:url value="/help/"/>');">Help</a>--%>
                 <p rel="tooltip" title="You can search for one or several of the following types of terms: complex_id, complex_alias, species, complex_xref, udate, id, alias, ptype, stc, pbiorole, ftype, source and number_participants. By default, we search for entries that contain ANY of your search terms. If you would like to restrict your search, please link your terms with 'AND' or use the filters available once you have made an initial search.">Help</p>
             </div>
+        <div class="grid_19 alpha">
+            <ul class="helpList">
+                <li>To search for a list of terms copy/paste all terms into the search box using either spaces or line breaks to separate them.</li>
+                <li>By default we search for entries containing ANY of the search terms, if you want to be more specific add AND between your search terms.</li>
+                <li>Search for isoforms of '<a href="<c:url value="${complex_search_form}?q=Q07817"/>">Q07817</a>' by using '<a href="<c:url value="${complex_search_form}?q=Q07817*"/>">Q07817*</a>'</li>
+            </ul>
         </div>
-            <div class="grid_6 omega">
-                <canvas id="speciesChart" width="250" height="250"></canvas>
-            </div>
-            <div class="grid_19 alpha">
-                <ul class="helpList">
-                    <li>To search for a list of terms copy/paste all terms into the search box using either spaces or line breaks to separate them.</li>
-                    <li>By default we search for entries containing ANY of the search terms, if you want to be more specific add AND between your search terms.</li>
-                    <li>Search for isoforms of '<a href="<c:url value="${complex_search_form}?q=Q07817"/>">Q07817</a>' by using '<a href="<c:url value="${complex_search_form}?q=Q07817*"/>">Q07817*</a>'</li>
-                </ul>
-            </div>
     </section>
 </div>
 
