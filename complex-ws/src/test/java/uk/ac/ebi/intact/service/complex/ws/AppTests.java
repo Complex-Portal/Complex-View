@@ -183,5 +183,4 @@ public class AppTests extends IntactBasicTestCase {
                .andExpect(status().isOk())
                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
-
 }
