@@ -81,7 +81,7 @@ public class ExportServlet extends HttpServlet {
         String ontology = request.getParameter(PARAM_ONTOLOGY_QUERY);
 
         boolean includeNegative = negative != null ? Boolean.parseBoolean(negative) : false;
-        boolean filterSpoke = negative != null ? Boolean.parseBoolean(spoke) : false;
+        boolean filterSpoke = spoke != null ? Boolean.parseBoolean(spoke) : false;
         boolean ontologyQuery = ontology != null ? Boolean.parseBoolean(ontology) : false;
 
         if( searchQuery != null ) {

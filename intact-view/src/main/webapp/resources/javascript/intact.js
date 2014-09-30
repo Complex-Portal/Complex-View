@@ -21,12 +21,12 @@ function ia_submitToReactome(selectedIds) {
 
     var reactomeForm = document.createElement('form');
     reactomeForm.method='post';
-    reactomeForm.action='http://www.reactome.org/cgi-bin/skypainter2';
+    reactomeForm.action='www.reactome.org/AnalysisService/identifiers';
     reactomeForm.enctype='multipart/form-data';
-    reactomeForm.name='skypainter';
+    reactomeForm.name='analysisService';
     reactomeForm.target='_blank';
 
-    var inputQuery = ia_createHiddenInput('QUERY', ids);
+    var inputQuery = ia_createHiddenInput('input', ids);
     var inputDb = ia_createHiddenInput('DB', 'gk_current');
     var inputSubmit = ia_createHiddenInput('SUBMIT', 'Paint!');
     reactomeForm.appendChild(inputQuery);

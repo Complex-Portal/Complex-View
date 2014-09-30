@@ -767,6 +767,14 @@ public class SearchController extends JpaBaseController {
         }
     }
 
+    public String getListNegativeParameters(){
+        return Boolean.toString(getUserQuery().isIncludeNegative());
+    }
+
+    public String getListSpokeParameters(){
+        return Boolean.toString(getUserQuery().isFilterSpoke());
+    }
+
     public String getSelectedInteractor() {
         return selectedInteractor;
     }

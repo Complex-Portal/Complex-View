@@ -464,6 +464,16 @@
         <url-pattern>/export</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>list</servlet-name>
+        <servlet-class>uk.ac.ebi.intact.view.webapp.servlet.ListServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>list</servlet-name>
+        <url-pattern>/list</url-pattern>
+    </servlet-mapping>
+
     <!-- Health check Servlet -->
     <servlet>
         <servlet-name>health</servlet-name>
