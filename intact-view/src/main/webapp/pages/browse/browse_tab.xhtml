@@ -85,8 +85,8 @@
                         <h:graphicImage alt="warnIcon" url="/images/warning_icon.png"
                                         rendered="#{displayWarning}" title="Numerous interactors available"/>
 
-                        <h:outputLink onclick="reactomeAnalysis(this, '#{userQuery.urlFriendlyQuery}','#{searchBean.listNegativeParameters}', '#{searchBean.listSpokeParameters}', false)"
-                                      class="reactome-analyse">
+                        <h:outputLink value="javascript:void(0)" onclick="reactomeAnalysis(this, '#{userQuery.urlFriendlyQuery}','#{searchBean.listNegativeParameters}', '#{searchBean.listSpokeParameters}', false)"
+                                      styleClass="reactome-analyse">
                             <h:outputText value="By Reactome Pathway"/>
                         </h:outputLink>
 

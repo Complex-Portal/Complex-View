@@ -27,11 +27,11 @@ function ia_submitToReactome(selectedIds) {
     reactomeForm.target='_blank';
 
     var inputQuery = ia_createHiddenInput('input', ids);
-    var inputDb = ia_createHiddenInput('DB', 'gk_current');
-    var inputSubmit = ia_createHiddenInput('SUBMIT', 'Paint!');
+    var order = ia_createHiddenInput('order','ASC');
+    var resource = ia_createHiddenInput('resource','TOTAL')
     reactomeForm.appendChild(inputQuery);
-    reactomeForm.appendChild(inputDb);
-    reactomeForm.appendChild(inputSubmit);
+    reactomeForm.appendChild(order);
+    reactomeForm.appendChild(resource);
 
     document.getElementById('mainForm').parentNode.appendChild(reactomeForm);
     reactomeForm.submit();

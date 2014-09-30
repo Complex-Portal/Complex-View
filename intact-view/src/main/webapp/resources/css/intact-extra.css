@@ -216,3 +216,31 @@ span.searchterm:hover {
     width: 90%;
     display: block;
 }
+
+.reactome-analyse {
+    background-color: azure;
+    border-color: blue;
+    color: blue;
+    border-radius: 5px;
+}
+
+.reactome-loading {
+    background: url('../../images/spinner.gif') no-repeat;
+    background-position: left center;
+    color: blue;
+}
+
+.reactome-results {
+    background-color: mintcream;
+    border-color: green;
+    color: green;
+    border-radius: 5px;
+}
+
+.reactome-no-results {
+    color: red;
+}
+
+.reactome-error {
+    color: red;
+}

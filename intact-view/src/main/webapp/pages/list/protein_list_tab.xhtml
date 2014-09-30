@@ -23,7 +23,9 @@
             &#160;|&#160;
             <!--<p:commandLink value="Domains" actionListener="#{proteinListController.openInInterpro}"/>
             &#160;|&#160;-->
-            <p:commandLink value="Pathways" actionListener="#{proteinListController.openInReactome}" process="@this proteinListResults"/>
+            <p:commandLink value="Pathways" process="@this proteinListResults"
+                           styleClass="reactome-analyse"
+                           actionListener="#{proteinListController.openInReactome}"/>
 
             &#160;|&#160;
             <p:commandLink value="Chromosome Location" actionListener="#{proteinListController.openInEnsembl}" process="@this proteinListResults"/>
