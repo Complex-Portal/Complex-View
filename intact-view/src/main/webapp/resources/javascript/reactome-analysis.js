@@ -52,34 +52,42 @@ var reactomeAnalysis = function(btn, query, negative, spoke, projection) {
     });
 };
 
-var reactomeAnalysisList = function(selectedIds) {
+var reactomeAnalysisList = function() {
 
     var reactomeCorsURI = 'http://www.reactome.org/AnalysisService/identifiers/?pageSize=0&page=1&sortBy=ENTITIES_PVALUE&order=ASC&resource=TOTAL';
 
-    var parent = $('.reactome-analyse').parent();
-    var btn = $('.reactome-analyse');
+    var parent = $('.reactomeResults');
+    var btn = $('.viewReactome');
+    var btn2 = $('.resetReactome');
     parent.text("Loading...");
-    parent.removeClass().addClass("reactome-loading");
+    parent.addClass("reactome-loading");
 
+    var dataList = "";
+
+    for (i = 0; i < arguments[0].length; i++) {
+        dataList+=arguments[0][i]+"\n";
+    }
     $.ajax({
         type: "POST",
         contentType: "text/plain",
         dataType: "json",
         url: reactomeCorsURI,
-        data: selectedIds,
+        data: dataList,
         success: null //needs to be defined, but null is "something" xD
     })
         .done(function(data) {
+            parent.setText("");
             if (data.pathwaysFound > 0) {// results in Reactome
-                btn.innerHTML = "View";
                 btn.onclick = function(){
                     window.open("http://www.reactome.org/PathwayBrowser/#DTAB=AN&TOOL=AT&ANALYSIS=" + data.summary.token, "_blank");
                 };
 //                window.open("http://www.reactome.org/PathwayBrowser/#DTAB=AN&TOOL=AT&ANALYSIS=" + data.summary.token, "_blank");
-                $(btn).removeClass().addClass("reactome-results");
-                parent.removeClass().empty().append(btn);
+                $(btn).removeClass("reactome-results-hidden").addClass("reactome-results");
+                parent.removeClass("reactome-loading").addClass("reactome-results");
+                btn2.removeClass("reactome-results-hidden").addClass("reactome-results");
             } else {// no results in Reactome
-                parent.removeClass().addClass("reactome-no-results");
+                parent.removeClass("reactome-loading").addClass("reactome-no-results");
+                btn2.removeClass("reactome-results-hidden").addClass("reactome-no-results");
                 parent.text("No results");
             }
         })
@@ -94,6 +102,20 @@ var reactomeAnalysisList = function(selectedIds) {
                 default: //Reactome service accessible?
                     parent.text("Service not available in this moment");
             }
-            parent.removeClass().addClass("reactome-error");
+            parent.removeClass("reactome-loading").addClass("reactome-error");
+            btn2.removeClass("reactome-results-hidden").addClass("reactome-error");
         });
 };
+
+var clearReactomeResults = function() {
+
+    var parent = $('.reactomeResults');
+    parent.removeClass("reactome-error").removeClass("reactome-no-results").removeClass("reactome-results");
+    parent.text("");
+    var btn2 = $('.resetReactome');
+    btn2.removeClass("reactome-error").removeClass("reactome-no-results").removeClass("reactome-results").addClass("reactome-results-hidden");
+    var btn = $('.viewReactome');
+    btn.removeClass("reactome-results").addClass("reactome-results-hidden");
+    btn.onclick = null;
+};
+

@@ -244,3 +244,11 @@ span.searchterm:hover {
 .reactome-error {
     color: red;
 }
+
+.reactome-results-hidden{
+    visibility: hidden;
+}
+
+.reactome-clear-hidden{
+    visibility: hidden;
+}

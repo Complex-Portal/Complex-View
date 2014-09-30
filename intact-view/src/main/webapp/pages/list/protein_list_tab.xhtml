@@ -21,16 +21,24 @@
                              actionListener="#{searchBean.doSearchInteractionsFromProteinListSelection}"
                              action="/pages/interactions/interactions.xhtml?faces-redirect=true" ajax="false"/>
             &#160;|&#160;
+            <p:commandLink value="Chromosome Location" actionListener="#{proteinListController.openInEnsembl}" process="@this proteinListResults"/>
+            &#160;|&#160;
+            <p:commandLink value="mRNA Expression" actionListener="#{proteinListController.openInArrayExpress}" process="@this proteinListResults"/>
+            &#160;|&#160;
             <!--<p:commandLink value="Domains" actionListener="#{proteinListController.openInInterpro}"/>
             &#160;|&#160;-->
             <p:commandLink value="Pathways" process="@this proteinListResults"
                            styleClass="reactome-analyse"
                            actionListener="#{proteinListController.openInReactome}"/>
+            <h:outputText styleClass="reactomeResults"/>
 
-            &#160;|&#160;
-            <p:commandLink value="Chromosome Location" actionListener="#{proteinListController.openInEnsembl}" process="@this proteinListResults"/>
-            &#160;|&#160;
-            <p:commandLink value="mRNA Expression" actionListener="#{proteinListController.openInArrayExpress}" process="@this proteinListResults"/>
+            <button class="viewReactome reactome-results-hidden">
+                View Pathways
+            </button>
+
+            <a class="resetReactome reactome-results-hidden" onclick="clearReactomeResults()" href="javascript:void(0)">
+                Reset
+            </a>
         </h:panelGroup>
     </p:panel>
 

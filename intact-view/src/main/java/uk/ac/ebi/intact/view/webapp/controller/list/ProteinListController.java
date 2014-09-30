@@ -92,15 +92,10 @@ public class ProteinListController extends InteractorListController {
         RequestContext context = RequestContext.getCurrentInstance();
 
         if (getSelected().length > 0) {
-            context.execute("reactomeAnalysisList('"+ StringUtils.join(getSelectedUniprotIds(), ",")+"')");
+            context.execute("reactomeAnalysisList(['"+ StringUtils.join(getSelectedUniprotIds(), "','")+"'])");
         } else {
             alertNoSelection();
         }
-    }
-
-    public void collectProteinSelection(ActionEvent evt){
-       // nothing to do, just to force so action in server side
-        System.out.println("coucou");
     }
 
     private void alertNoSelection() {
