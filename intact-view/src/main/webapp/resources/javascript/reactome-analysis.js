@@ -76,7 +76,7 @@ var reactomeAnalysisList = function() {
         success: null //needs to be defined, but null is "something" xD
     })
         .done(function(data) {
-            parent.setText("");
+            parent.text("");
             if (data.pathwaysFound > 0) {// results in Reactome
                 btn.onclick = function(){
                     window.open("http://www.reactome.org/PathwayBrowser/#DTAB=AN&TOOL=AT&ANALYSIS=" + data.summary.token, "_blank");
