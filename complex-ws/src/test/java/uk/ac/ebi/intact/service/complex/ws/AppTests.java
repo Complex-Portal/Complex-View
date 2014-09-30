@@ -182,5 +182,5 @@ public class AppTests extends IntactBasicTestCase {
         mockMvc.perform(get("/details/EBI-1245484?format=json"))
                .andExpect(status().isOk())
                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
+    //}
 }
