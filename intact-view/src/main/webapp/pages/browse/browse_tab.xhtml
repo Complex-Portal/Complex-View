@@ -86,9 +86,19 @@
                                         rendered="#{displayWarning}" title="Numerous interactors available"/>
 
                         <h:outputLink value="javascript:void(0)" onclick="reactomeAnalysis(this, '#{userQuery.urlFriendlyQuery}','#{searchBean.listNegativeParameters}', '#{searchBean.listSpokeParameters}', false)"
-                                      styleClass="reactome-analyse">
+                                      >
                             <h:outputText value="By Reactome Pathway"/>
                         </h:outputLink>
+
+                        <h:outputText styleClass="reactomeResults"/>
+
+                        <button class="viewReactome reactome-results-hidden">
+                            View Pathways
+                        </button>
+
+                        <a class="resetReactome reactome-results-hidden" onclick="clearReactomeResults()" href="javascript:void(0)">
+                            Reset
+                        </a>
 
                     </li>
                     <li>

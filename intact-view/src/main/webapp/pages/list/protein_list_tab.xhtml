@@ -28,7 +28,6 @@
             <!--<p:commandLink value="Domains" actionListener="#{proteinListController.openInInterpro}"/>
             &#160;|&#160;-->
             <p:commandLink value="Pathways" process="@this proteinListResults"
-                           styleClass="reactome-analyse"
                            actionListener="#{proteinListController.openInReactome}"/>
             <h:outputText styleClass="reactomeResults"/>
 
@@ -36,9 +35,9 @@
                 View Pathways
             </button>
 
-            <a class="resetReactome reactome-results-hidden" onclick="clearReactomeResults()" href="javascript:void(0)">
+            <button class="resetReactome reactome-results-hidden" onclick="clearReactomeResults(); return false;">
                 Reset
-            </a>
+            </button>
         </h:panelGroup>
     </p:panel>
 

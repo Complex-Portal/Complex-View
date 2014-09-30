@@ -11,9 +11,10 @@ var reactomeAnalysis = function(btn, query, negative, spoke, projection) {
     // ToDo: make this URI configurable to support local testing. perhaps pass in as argument
     var dataURI = "http://www.ebi.ac.uk/intact/list?query="+ query+"&negative="+negative+"&spoke="+spoke;
 
-    var parent = $(btn).parent();
+    var parent =  $('.reactomeResults');
     parent.text("Loading...");
     parent.removeClass().addClass("reactome-loading");
+    var btn2 = $('.resetReactome');
 
     $.ajax({
         type: "POST",
@@ -23,33 +24,36 @@ var reactomeAnalysis = function(btn, query, negative, spoke, projection) {
         data: dataURI,
         success: null //needs to be defined, but null is "something" xD
     })
-    .done(function(data) {
+        .done(function(data) {
             if (data.pathwaysFound > 0) {// results in Reactome
                 btn.innerHTML = "View";
                 btn.onclick = function(){
                     window.open("http://www.reactome.org/PathwayBrowser/#DTAB=AN&TOOL=AT&ANALYSIS=" + data.summary.token, "_blank");
                 };
 //                window.open("http://www.reactome.org/PathwayBrowser/#DTAB=AN&TOOL=AT&ANALYSIS=" + data.summary.token, "_blank");
-                $(btn).removeClass().addClass("reactome-results");
-                parent.removeClass().empty().append(btn);
+                $(btn).removeClass("reactome-results-hidden").addClass("reactome-results");
+                parent.removeClass("reactome-loading").addClass("reactome-results");
+                btn2.removeClass("reactome-results-hidden").addClass("reactome-results");
             } else {// no results in Reactome
-                parent.removeClass().addClass("reactome-no-results");
+                parent.removeClass("reactome-loading").addClass("reactome-no-results");
+                btn2.removeClass("reactome-results-hidden").addClass("reactome-no-results");
                 parent.text("No results");
             }
-    })
-    .fail(function(response, status) {
-        parent.empty();
-        switch (response.status){
-            case 413: //The file size is larger than the maximum configured size (10MB)
-            case 415: //Unsupported Media Type (only 'text/plain')
-            case 422: //The provided URL is not processable
-                parent.text(response.statusText);
-                break;
-            default: //Reactome service accessible?
-                parent.text("Service not available in this moment");
-        }
-        parent.removeClass().addClass("reactome-error");
-    });
+        })
+        .fail(function(response, status) {
+            parent.empty();
+            switch (response.status){
+                case 413: //The file size is larger than the maximum configured size (10MB)
+                case 415: //Unsupported Media Type (only 'text/plain')
+                case 422: //The provided URL is not processable
+                    parent.text(response.statusText);
+                    break;
+                default: //Reactome service accessible?
+                    parent.text("Service not available in this moment");
+            }
+            parent.removeClass("reactome-loading").addClass("reactome-error");
+            btn2.removeClass("reactome-results-hidden").addClass("reactome-error");
+        });
 };
 
 var reactomeAnalysisList = function() {
@@ -78,11 +82,12 @@ var reactomeAnalysisList = function() {
         .done(function(data) {
             parent.text("");
             if (data.pathwaysFound > 0) {// results in Reactome
-                btn.onclick = function(){
+                btn.get(0).onclick = function(){
                     window.open("http://www.reactome.org/PathwayBrowser/#DTAB=AN&TOOL=AT&ANALYSIS=" + data.summary.token, "_blank");
+                    return false;
                 };
 //                window.open("http://www.reactome.org/PathwayBrowser/#DTAB=AN&TOOL=AT&ANALYSIS=" + data.summary.token, "_blank");
-                $(btn).removeClass("reactome-results-hidden").addClass("reactome-results");
+                btn.removeClass("reactome-results-hidden").addClass("reactome-results");
                 parent.removeClass("reactome-loading").addClass("reactome-results");
                 btn2.removeClass("reactome-results-hidden").addClass("reactome-results");
             } else {// no results in Reactome

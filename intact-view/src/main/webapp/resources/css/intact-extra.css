@@ -217,13 +217,6 @@ span.searchterm:hover {
     display: block;
 }
 
-.reactome-analyse {
-    background-color: azure;
-    border-color: blue;
-    color: blue;
-    border-radius: 5px;
-}
-
 .reactome-loading {
     background: url('../../images/spinner.gif') no-repeat;
     background-position: left center;
