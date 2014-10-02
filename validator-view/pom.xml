@@ -4,10 +4,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <parent>
+    <!--<parent>
         <groupId>uk.ac.ebi.intact.service</groupId>
         <artifactId>service-master</artifactId>
         <version>3.0.1-SNAPSHOT</version>
+    </parent> -->
+    <parent>
+        <groupId>uk.ac.ebi.intact.maven</groupId>
+        <artifactId>intact-hibernate-master</artifactId>
+        <version>43</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -70,14 +75,14 @@
         <dependency>
             <groupId>psidev.psi.mi</groupId>
             <artifactId>psimi-schema-validator</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
+            <version>3.0.0</version>
         </dependency>
 
         <!-- JAMI html view-->
         <dependency>
             <groupId>psidev.psi.mi.jami</groupId>
             <artifactId>jami-html</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- Spring -->
