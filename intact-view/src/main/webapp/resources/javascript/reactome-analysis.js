@@ -15,6 +15,7 @@ var reactomeAnalysis = function(btn, query, negative, spoke, projection) {
     parent.text("Loading...");
     parent.removeClass().addClass("reactome-loading");
     var btn2 = $('.resetReactome');
+    var btn3 = $('.viewReactome');
 
     $.ajax({
         type: "POST",
@@ -25,13 +26,13 @@ var reactomeAnalysis = function(btn, query, negative, spoke, projection) {
         success: null //needs to be defined, but null is "something" xD
     })
         .done(function(data) {
+            parent.text("");
             if (data.pathwaysFound > 0) {// results in Reactome
-                btn.innerHTML = "View";
-                btn.onclick = function(){
+                btn3.get(0).onclick = function(){
                     window.open("http://www.reactome.org/PathwayBrowser/#DTAB=AN&TOOL=AT&ANALYSIS=" + data.summary.token, "_blank");
                 };
 //                window.open("http://www.reactome.org/PathwayBrowser/#DTAB=AN&TOOL=AT&ANALYSIS=" + data.summary.token, "_blank");
-                $(btn).removeClass("reactome-results-hidden").addClass("reactome-results");
+                btn3.removeClass("reactome-results-hidden").addClass("reactome-results");
                 parent.removeClass("reactome-loading").addClass("reactome-results");
                 btn2.removeClass("reactome-results-hidden").addClass("reactome-results");
             } else {// no results in Reactome
