@@ -205,16 +205,16 @@
             </p:outputPanel>
         </p:tab>
 
-        <ui:decorate template="propertiesTabs.xhtml">
-            <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.interactionTopicSelectItems}"/>
+        <ui:decorate template="basicPropertiesTabs.xhtml">
+            <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.publicationTopicSelectItems}"/>
             <ui:param name="updateOnChange" value=":editorForm:basic"/>
 
             <ui:define name="annotationSyncValues">
                 <ed:syncValue with=":editorForm:figLegendTxt"
                               rendered="#{annotation.cvTopic != null and annotation.cvTopic.identifier == 'MI:0599'}"/>
             </ui:define>
-        </ui:decorate>
 
+        </ui:decorate>
 
         <p:tab id="parametersTab" title="Parameters (#{interaction.parameters.size()})">
 
