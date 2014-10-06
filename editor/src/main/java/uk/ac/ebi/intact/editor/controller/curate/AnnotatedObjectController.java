@@ -860,29 +860,31 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
                 xref.setId(xref.getId().toUpperCase());
 
-                try {
-                    GoTerm goTerm = goServerProxy.query(xref.getId());
+                if (xref.getAc() == null){
+                    try {
+                        GoTerm goTerm = goServerProxy.query(xref.getId());
 
-                    if (goTerm != null) {
-                        if (goDb == null)
-                            goDb = getIntactDao().getCvTermDao().getByMIIdentifier(CvDatabase.GO_MI_REF, IntactUtils.DATABASE_OBJCLASS);
+                        if (goTerm != null) {
+                            if (goDb == null)
+                                goDb = getIntactDao().getCvTermDao().getByMIIdentifier(CvDatabase.GO_MI_REF, IntactUtils.DATABASE_OBJCLASS);
 
-                        xref.setDatabase(goDb);
-                        xref.setSecondaryId(goTerm.getName());
+                            xref.setDatabase(goDb);
+                            xref.setSecondaryId(goTerm.getName());
 
-                        GoTerm goCategory = goTerm.getCategory();
-                        // we have a root term
-                        if (goCategory == null) {
-                            goCategory = goTerm;
+                            GoTerm goCategory = goTerm.getCategory();
+                            // we have a root term
+                            if (goCategory == null) {
+                                goCategory = goTerm;
+                            }
+                            CvTerm qualifier = calculateCvQualifier(goCategory);
+                            xref.setQualifier(qualifier);
                         }
-                        CvTerm qualifier = calculateCvQualifier(goCategory);
-                        xref.setQualifier(qualifier);
+                    } catch (GoServerProxy.GoIdNotFoundException notFoundExc) {
+                        continue;
+                    } catch (Throwable e) {
+                        handleException(e);
+                        return;
                     }
-                } catch (GoServerProxy.GoIdNotFoundException notFoundExc) {
-                    continue;
-                } catch (Throwable e) {
-                    handleException(e);
-                    return;
                 }
             }
         }
