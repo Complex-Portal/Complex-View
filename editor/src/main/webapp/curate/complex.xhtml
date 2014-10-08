@@ -373,7 +373,7 @@
             <h:outputLabel value="Reviewer: " rendered="#{interaction.currentReviewer != null}"/>
 
             <h:outputText value="#{interaction.currentReviewer.login}"
-                          rendered="#{userSessionController.hasRole('ADMIN') and interaction.currentReviewer != null}"/>
+                          rendered="#{interaction.currentReviewer != null}"/>
 
             <h:selectOneMenu value="#{complexController.complex.currentReviewer}" hideNoSelectionOption="true"
                              rendered="#{(userSessionController.hasRole('ADMIN') and interaction.currentReviewer != null)}"

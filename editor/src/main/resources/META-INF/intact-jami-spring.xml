@@ -88,11 +88,11 @@
     </bean>
 
     <!-- INTACT more specific beans -->
-    <bean id="jamiUserContext" class="uk.ac.ebi.intact.jami.context.UserContext">
+    <bean id="jamiUserContext" class="uk.ac.ebi.intact.jami.context.UserContext" scope="prototype">
         <property name="userId" value="${jami.user.context.id}"/>
     </bean>
 
-    <bean id="intactJamiConfiguration" class="uk.ac.ebi.intact.jami.context.IntactConfiguration">
+    <bean id="intactJamiConfiguration" class="uk.ac.ebi.intact.jami.context.IntactConfiguration" scope="prototype">
         <property name="acPrefix" value="${jami.ac.prefix}"/>
         <property name="defaultInstitution" ref="${jami.default.source}"/>
     </bean>
