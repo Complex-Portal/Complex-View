@@ -690,4 +690,20 @@ public class ModelledFeatureController extends AnnotatedObjectController {
             modelledParticipantController.setAc(((IntactModelledParticipant)feature.getParticipant()).getAc());
         }
     }
+
+    @Override
+    protected boolean isParentJamiObjectNotSaved() {
+        if (this.feature != null){
+            if (this.feature.getParticipant() instanceof IntactModelledParticipant
+                    && ((IntactModelledParticipant)this.feature.getParticipant()).getAc() == null){
+                 return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected AnnotatedObjectController getJamiParentController() {
+        return this.modelledParticipantController;
+    }
 }

@@ -716,4 +716,19 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         }
     }
 
+    @Override
+    protected boolean isParentJamiObjectNotSaved() {
+        if (this.participant != null){
+            if (this.participant.getInteraction() instanceof IntactComplex
+                    && ((IntactComplex)this.participant.getInteraction()).getAc() == null){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected AnnotatedObjectController getJamiParentController() {
+        return this.interactionController;
+    }
+
 }

@@ -338,25 +338,35 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             saved = true;
         }
 
-        IntactPrimaryObject annotatedObject = getJamiObject();
-
-        if (!currentAnnotatedObjectDeleted) {
-            saved = persistenceController.doSave(annotatedObject, getDbSynchronizer(), this, getIntactDao());
-            if (saved) {
-                // saves specific elements for each annotated object (e.g. components in interactions)
-                boolean detailsSaved = doSaveDetails();
-
-                if (detailsSaved) saved = true;
+        // only save object if parent saved otherwise, call the save method on parent object
+        if (isParentJamiObjectNotSaved()){
+            AnnotatedObjectController parent = getJamiParentController();
+            if (parent != null){
+                parent.doSaveJami(refreshCurrentView, changesController, persistenceController);
             }
         }
+        else{
 
-        if (saved) {
-            lastSaved = new Date();
-            changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject(), getDbSynchronizer(), getIntactDao());
-        }
+            IntactPrimaryObject annotatedObject = getJamiObject();
 
-        if (annotatedObject != null) {
-            addInfoMessage("Saved", annotatedObject.getAc());
+            if (!currentAnnotatedObjectDeleted) {
+                saved = persistenceController.doSave(annotatedObject, getDbSynchronizer(), this, getIntactDao());
+                if (saved) {
+                    // saves specific elements for each annotated object (e.g. components in interactions)
+                    boolean detailsSaved = doSaveDetails();
+
+                    if (detailsSaved) saved = true;
+                }
+            }
+
+            if (saved) {
+                lastSaved = new Date();
+                changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject(), getDbSynchronizer(), getIntactDao());
+            }
+
+            if (annotatedObject != null) {
+                addInfoMessage("Saved", annotatedObject.getAc());
+            }
         }
 
         if (refreshCurrentView) {
@@ -1284,6 +1294,14 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         helper.setAnnotatedObject(annotatedObject);
 
         return helper;
+    }
+
+    protected boolean isParentJamiObjectNotSaved() {
+        return false;
+    }
+
+    protected AnnotatedObjectController getJamiParentController() {
+        return null;
     }
 
     private static class EmptyAnnotatedObjectHelper extends AnnotatedObjectHelper {
