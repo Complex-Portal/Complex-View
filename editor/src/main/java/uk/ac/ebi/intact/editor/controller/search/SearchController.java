@@ -445,7 +445,7 @@ public class SearchController extends AnnotatedObjectController {
         final HashMap<String, String> params = Maps.<String, String>newHashMap();
         params.put( "query", query );
         params.put( "ac", originalQuery );
-        params.put( "evidence", "evidence" );
+        params.put( "evidence", "interaction_evidence" );
 
         // all molecules but interactions
         molecules = LazyDataModelFactory.createLazyDataModel( getCoreEntityManager(),
