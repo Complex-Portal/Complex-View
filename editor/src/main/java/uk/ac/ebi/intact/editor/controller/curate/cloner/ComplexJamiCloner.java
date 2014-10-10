@@ -137,6 +137,9 @@ public class ComplexJamiCloner {
         clone.setUpdated(clone.getCreated());
         clone.setOrganism(complex.getOrganism());
         clone.setEvidenceType(complex.getEvidenceType());
+        clone.setInteractionType(complex.getInteractionType());
+        clone.setInteractorType(complex.getInteractorType());
+        clone.setFullName(complex.getFullName());
 
         UserSessionController userSessionController = ApplicationContextProvider.getBean("userSessionController");
         clone.setSource(userSessionController.getUserSource());
