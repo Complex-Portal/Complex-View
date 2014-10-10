@@ -618,14 +618,14 @@ public class SearchController extends AnnotatedObjectController {
                                                                 "select distinct e " +
                                                                 "from Experiment e left join e.xrefs as x " +
                                                                         "left join e.cvInteraction as d " +
-                                                                "where  d.identifier = :inferred and  (e.ac = :ac " +
+                                                                "where  d.identifier <> :inferred and  (e.ac = :ac " +
                                                                 "      or lower(e.shortLabel) like :query " +
                                                                 "      or lower(x.primaryId) like :query)) ",
 
                                                                 "select count(distinct e) " +
                                                                 "from Experiment e left join e.xrefs as x " +
                                                                         "left join e.cvInteraction as d " +
-                                                                "where  d.identifier = :inferred and (e.ac = :ac " +
+                                                                "where  d.identifier <> :inferred and (e.ac = :ac " +
                                                                 "      or lower(e.shortLabel) like :query " +
                                                                 "      or lower(x.primaryId) like :query) ",
 
