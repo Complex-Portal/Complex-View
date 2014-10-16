@@ -326,53 +326,56 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         String currentAc = getJamiObject() != null ? getJamiObject().getAc() : null;
         boolean currentAnnotatedObjectDeleted = false;
 
-        // annotated objects specific tasks to prepare the save/delete
-        doPreSave();
+        // if the annotated object does not have an ac, check if another one similar exists in the db
+        if (!getPersistenceController().isJamiObjectDuplicate(getJamiObject(), getDbSynchronizer())) {
+            // annotated objects specific tasks to prepare the save/delete
+            doPreSave();
 
-        boolean saved = false;
+            boolean saved = false;
 
-        // delete from the unsaved manager
-        // delete from the unsaved manager
-        currentAnnotatedObjectDeleted = processDeleteEvents(currentAc);
-        if (currentAnnotatedObjectDeleted){
-            saved = true;
-        }
-
-        // only save object if parent saved otherwise, call the save method on parent object
-        if (isParentJamiObjectNotSaved()){
-            AnnotatedObjectController parent = getJamiParentController();
-            if (parent != null){
-                parent.doSaveJami(refreshCurrentView, changesController, persistenceController);
+            // delete from the unsaved manager
+            // delete from the unsaved manager
+            currentAnnotatedObjectDeleted = processDeleteEvents(currentAc);
+            if (currentAnnotatedObjectDeleted){
+                saved = true;
             }
-        }
-        else{
 
-            IntactPrimaryObject annotatedObject = getJamiObject();
+            // only save object if parent saved otherwise, call the save method on parent object
+            if (isParentJamiObjectNotSaved()){
+                AnnotatedObjectController parent = getJamiParentController();
+                if (parent != null){
+                    parent.doSaveJami(refreshCurrentView, changesController, persistenceController);
+                }
+            }
+            else{
 
-            if (!currentAnnotatedObjectDeleted) {
-                saved = persistenceController.doSave(annotatedObject, getDbSynchronizer(), this, getIntactDao());
+                IntactPrimaryObject annotatedObject = getJamiObject();
+
+                if (!currentAnnotatedObjectDeleted) {
+                    saved = persistenceController.doSave(annotatedObject, getDbSynchronizer(), this, getIntactDao());
+                    if (saved) {
+                        // saves specific elements for each annotated object (e.g. components in interactions)
+                        boolean detailsSaved = doSaveDetails();
+
+                        if (detailsSaved) saved = true;
+                    }
+                }
+
                 if (saved) {
-                    // saves specific elements for each annotated object (e.g. components in interactions)
-                    boolean detailsSaved = doSaveDetails();
+                    lastSaved = new Date();
+                    changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject(), getDbSynchronizer(), getIntactDao());
+                }
 
-                    if (detailsSaved) saved = true;
+                if (annotatedObject != null) {
+                    addInfoMessage("Saved", annotatedObject.getAc());
                 }
             }
 
-            if (saved) {
-                lastSaved = new Date();
-                changesController.removeFromUnsaved(annotatedObject, collectParentAcsOfCurrentAnnotatedObject(), getDbSynchronizer(), getIntactDao());
+            if (refreshCurrentView) {
+                refreshCurrentViewObject();
             }
-
-            if (annotatedObject != null) {
-                addInfoMessage("Saved", annotatedObject.getAc());
-            }
+            doPostSave();
         }
-
-        if (refreshCurrentView) {
-            refreshCurrentViewObject();
-        }
-        doPostSave();
     }
 
     protected void doSaveIntact(boolean refreshCurrentView, ChangesController changesController, PersistenceController persistenceController) {

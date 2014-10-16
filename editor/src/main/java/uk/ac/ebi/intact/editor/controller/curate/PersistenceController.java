@@ -387,4 +387,23 @@ public class PersistenceController extends JpaAwareController {
             }
         }
     }
+
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    public boolean isJamiObjectDuplicate(IntactPrimaryObject jamiObject, IntactDbSynchronizer dbSynchronizer){
+        // if the annotated object does not have an ac, check if another one similar exists in the db
+        if (jamiObject.getAc() == null) {
+            try {
+                dbSynchronizer.synchronizeProperties(jamiObject);
+                if (dbSynchronizer.find(jamiObject) != null){
+                    addErrorMessage("An identical object exists: " + jamiObject.toString(), "Cannot save identical objects");
+                    FacesContext.getCurrentInstance().renderResponse();
+                    return true;
+                }
+            } catch (Throwable t) {
+                handleException(t);
+                return true;
+            }
+        }
+        return false;
+    }
 }
