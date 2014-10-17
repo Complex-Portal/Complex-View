@@ -18,6 +18,8 @@ package uk.ac.ebi.intact.editor.batch.admin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.model.*;
 
@@ -37,8 +39,13 @@ public class PublicationSyncWriter implements ItemWriter<Publication> {
     private EntityManager entityManager;
 
     @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void write( List<? extends Publication> items ) throws Exception {
-        for ( Publication pub : items ) {
+        for ( Publication pubItem : items ) {
+            Publication pub = pubItem;
+            if (!entityManager.contains(pubItem)){
+                pub = entityManager.merge(pubItem);
+            }
 
             // copy xrefs
             if ( !pub.getExperiments().isEmpty() ) {

@@ -18,6 +18,8 @@ package uk.ac.ebi.intact.editor.batch.admin;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.model.Experiment;
 
@@ -37,10 +39,14 @@ public class ExperimentSyncWriter implements ItemWriter<Experiment> {
     private EntityManager entityManager;
 
     @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void write( List<? extends Experiment> items ) throws Exception {
-        for ( Experiment exp : items ) {
-             if ( log.isDebugEnabled() ) log.debug( "Processing experiment: " + exp.getShortLabel() );
-
+        for ( Experiment expItem : items ) {
+             if ( log.isDebugEnabled() ) log.debug( "Processing experiment: " + expItem.getShortLabel() );
+            Experiment exp = expItem;
+            if (!entityManager.contains(expItem)){
+                exp = entityManager.merge(expItem);
+            }
             CurateUtils.copyPublicationAnnotationsToExperiment(exp);
         }
     }
