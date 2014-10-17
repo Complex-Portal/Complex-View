@@ -60,6 +60,7 @@ public class HqlRunnerController extends JpaAwareController {
     }
 
     @SuppressWarnings({"unchecked"})
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void runQuery(ActionEvent evt) {
         maxResults = Math.min(maxResults, MAX_RESULTS);
 
@@ -84,6 +85,7 @@ public class HqlRunnerController extends JpaAwareController {
     }
 
     @SuppressWarnings({"unchecked"})
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void runNativeQuery(ActionEvent evt) {
         maxResults = Math.min(maxResults, MAX_RESULTS);
 
