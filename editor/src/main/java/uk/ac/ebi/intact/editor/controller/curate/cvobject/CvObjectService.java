@@ -147,6 +147,7 @@ public class CvObjectService extends JpaAwareController {
     }
 
     @PostConstruct
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void loadData() {
         createAdditionalCVs();
 
@@ -157,7 +158,7 @@ public class CvObjectService extends JpaAwareController {
          createCvTopicIfNecessary(CvTopic.TO_BE_REVIEWED);
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.NEVER, readOnly = true)
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public synchronized void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading Controlled Vocabularies" );
 
