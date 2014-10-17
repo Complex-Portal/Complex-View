@@ -3,6 +3,8 @@ package uk.ac.ebi.intact.editor.controller.admin;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.config.ConfigurationHandler;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.DbInfoDao;
@@ -43,6 +45,7 @@ public class ApplicationInfoController extends JpaAwareController {
     }
 
     @PostConstruct
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, readOnly = true)
     public void init() {
         uniprotJapiVersion = UniProtJAPI.factory.getVersion();
 
@@ -61,6 +64,7 @@ public class ApplicationInfoController extends JpaAwareController {
         application = IntactContext.getCurrentInstance().getApplication();
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void saveApplicationProperties(ActionEvent evt) {
         for (ApplicationProperty prop : application.getProperties()) {
             getDaoFactory().getApplicationPropertyDao().saveOrUpdate(prop);
@@ -72,6 +76,7 @@ public class ApplicationInfoController extends JpaAwareController {
         addInfoMessage("Preferences saved", "");
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void persistConfig(ActionEvent evt) {
         getConfigurationHandler().persistConfiguration();
         application = getDaoFactory().getApplicationDao().getByAc(application.getAc());
@@ -88,6 +93,7 @@ public class ApplicationInfoController extends JpaAwareController {
         return value;
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, readOnly = true)
     public List<Institution> getAvailableInstitutions() {        
         return getDaoFactory().getInstitutionDao().getAll();
     }
