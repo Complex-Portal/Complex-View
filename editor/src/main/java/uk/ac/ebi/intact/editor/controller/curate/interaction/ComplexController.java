@@ -123,7 +123,12 @@ public class ComplexController extends AnnotatedObjectController {
     }
 
     @Override
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED, readOnly = true)
     public void setJamiObject(IntactPrimaryObject annotatedObject) {
+        // reload object if necessary
+        if (!getJamiEntityManager().contains(annotatedObject)){
+            annotatedObject = getJamiEntityManager().merge(annotatedObject);
+        }
         setComplex((IntactComplex) annotatedObject);
     }
 

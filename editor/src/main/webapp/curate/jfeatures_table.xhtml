@@ -54,16 +54,14 @@
                 </ui:include>
             </p:column>
             <p:column headerText="Shortlabel">
-                <h:panelGroup rendered="#{not changesController.isDeletedAc(featureWrapper.feature.ac)}">
-                    <h:link outcome="/curate/cfeature" value="#{featureWrapper.feature.shortName}" includeViewParams="true"
-                            rendered="#{featurewrapper.feature.ac != null}">
-                        <f:param name="ac" value="#{featureWrapper.feature.ac}"/>
-                    </h:link>
-                    <p:commandLink onclick="load_feature.show()" action="#{curateController.editJami(featureWrapper.feature)}"
-                                   style="#{'color:blue'}"
-                                   value="#{featureWrapper.feature.shortName}" ajax="false"
-                                   rendered="#{featureWrapper.feature.ac == null}"/>
-                </h:panelGroup>
+                <h:link outcome="/curate/cfeature" value="#{featureWrapper.feature.shortName}" includeViewParams="true"
+                        rendered="#{featureWrapper.feature.ac != null}">
+                    <f:param name="ac" value="#{featureWrapper.feature.ac}"/>
+                </h:link>
+                <p:commandLink onclick="load_feature.show()" action="#{curateController.editJami(featureWrapper.feature)}"
+                               style="#{'color:blue'}"
+                               value="#{featureWrapper.feature.shortName}" ajax="false"
+                               rendered="#{featureWrapper.feature.ac == null}"/>
                 <h:panelGroup rendered="#{changesController.isDeletedAc(featureWrapper.feature.ac)}">                                     .
                     <h:outputText value="#{featureWrapper.feature.shortName}" style="color:red; text-decoration:line-through"/>
                 </h:panelGroup>
