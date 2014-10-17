@@ -19,6 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.BaseController;
 import uk.ac.ebi.intact.editor.controller.curate.organism.BioSourceService;
@@ -68,6 +70,7 @@ public class InputBioSourceController extends BaseController {
     }
 
     @SuppressWarnings({"JpaQlInspection", "unchecked"})
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void search(ActionEvent evt) {
         String query = getQuery();
 
