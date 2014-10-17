@@ -135,7 +135,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED, readOnly = true)
     public void setJamiObject(IntactPrimaryObject annotatedObject) {
         // reload object if necessary
-        if (!getJamiEntityManager().contains(annotatedObject)){
+        if (annotatedObject.getAc() != null && !getJamiEntityManager().contains(annotatedObject)){
             annotatedObject = getJamiEntityManager().merge(annotatedObject);
         }
         setFeature((IntactModelledFeature)annotatedObject);
