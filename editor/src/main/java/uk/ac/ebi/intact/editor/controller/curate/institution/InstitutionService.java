@@ -20,11 +20,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.intact.core.context.DataContext;
-import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.InstitutionDao;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.Institution;
@@ -56,13 +53,9 @@ public class InstitutionService extends JpaAwareController {
         refresh( null );
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.NEVER, readOnly = true)
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, readOnly = true)
     public void refresh( ActionEvent evt ) {
         if ( log.isDebugEnabled() ) log.debug( "Loading Institutions" );
-
-        final DataContext dataContext = IntactContext.getCurrentInstance().getDataContext();
-
-        final TransactionStatus transactionStatus = dataContext.beginTransaction(getClass().getSimpleName());
 
         allInstitutions = institutionDao.getAllSorted(0,Integer.MAX_VALUE, "shortLabel", true);
 
@@ -71,8 +64,6 @@ public class InstitutionService extends JpaAwareController {
         for (Institution institution : allInstitutions) {
             institutionSelectItems.add(new SelectItem(institution, institution.getShortLabel(), institution.getFullName()));
         }
-
-        dataContext.commitTransaction(transactionStatus);
     }
 
 

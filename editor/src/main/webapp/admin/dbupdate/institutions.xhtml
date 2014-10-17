@@ -16,10 +16,10 @@
 
     <ui:define name="adminContent">
 
-        <p:tabView dynamic="true">
+        <p:tabView dynamic="true" id="institutionTab">
             <p:tab title="Institutions">
                 <p:commandButton value="New institution"
-                                 action="#{institutionController.newInstitution()}" ajax="false"/>
+                                 action="#{institutionController.newInstitution}" ajax="false"/>
 
                 <br/><br/>
 
@@ -34,7 +34,7 @@
                                 <f:selectItems value="#{institutionService.getInstitutionSelectItems(false)}"/>
                             </h:selectOneMenu>
                             <p:commandButton value="Merge" actionListener="#{institutionAdminController.mergeSelected}"
-                                             ajax="false"/>
+                                             update=":editorForm:messagesComponent, :editorForm:institutionTab"/>
                             &#160;|&#160;
                             <p:commandButton value="Delete" onclick="confirmation.show()" type="button"/>
 
@@ -42,10 +42,10 @@
                                              modal="true"
                                              header="Institution deletion" severity="alert" widgetVar="confirmation">
 
-                                <p:commandButton value="Yes Sure" update=":editorForm:messageComponent"
+                                <p:commandButton value="Yes Sure" update=":editorForm:messagesComponent, :editorForm:institutionTab"
                                                  oncomplete="confirmation.hide()"
                                                  actionListener="#{institutionAdminController.deleteSelected}"
-                                                 ajax="false"/>
+                                                 />
                                 <p:commandButton value="Not Yet" onclick="confirmation.hide()" type="button"/>
 
                             </p:confirmDialog>
@@ -86,7 +86,7 @@
                             itemLabel="#{user.firstName} #{user.lastName} (#{userAdminController.getInstitutionNameForUser(user)})" itemValue="#{user}">
                 </p:pickList>
 
-                <p:commandButton value="Fix" actionListener="#{institutionAdminController.fixAnnotatedObjectOwners}" ajax="false"/>
+                <p:commandButton value="Fix" actionListener="#{institutionAdminController.fixAnnotatedObjectOwners}" update=":editorForm:messagesComponent, :editorForm:institutionTab"/>
             </p:tab>
         </p:tabView>
 

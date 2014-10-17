@@ -135,7 +135,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED, readOnly = true)
     public void setJamiObject(IntactPrimaryObject annotatedObject) {
         // reload object if necessary
-        if (annotatedObject.getAc() != null && !getJamiEntityManager().contains(annotatedObject)){
+        if (annotatedObject != null && annotatedObject.getAc() != null && !getJamiEntityManager().contains(annotatedObject)){
             annotatedObject = getJamiEntityManager().merge(annotatedObject);
         }
         setFeature((IntactModelledFeature)annotatedObject);
@@ -343,15 +343,21 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     }
 
     private String getSequence() {
-        psidev.psi.mi.jami.model.Interactor interactor = feature.getParticipant().getInteractor();
+        if (feature != null){
+            if (feature.getParticipant() != null){
+                psidev.psi.mi.jami.model.Interactor interactor = feature.getParticipant().getInteractor();
 
-        String sequence = null;
+                String sequence = null;
 
-        if (interactor instanceof psidev.psi.mi.jami.model.Polymer) {
-            psidev.psi.mi.jami.model.Polymer polymer = (psidev.psi.mi.jami.model.Polymer) interactor;
-            sequence = polymer.getSequence();
+                if (interactor instanceof psidev.psi.mi.jami.model.Polymer) {
+                    psidev.psi.mi.jami.model.Polymer polymer = (psidev.psi.mi.jami.model.Polymer) interactor;
+                    sequence = polymer.getSequence();
+                }
+                return sequence;
+            }
+            return null;
         }
-        return sequence;
+        return null;
     }
 
     public void markRangeToDelete(ModelledRange range) {
