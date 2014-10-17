@@ -17,6 +17,7 @@ package uk.ac.ebi.intact.editor.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Hibernate;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.annotation.Scope;
@@ -54,9 +55,12 @@ public class UserSessionController extends JpaAwareController implements Disposa
         return getCurrentUser(false);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public User getCurrentUser(boolean refresh) {
         if (refresh) {
             currentUser = getDaoFactory().getUserDao().getByLogin(currentUser.getLogin());
+            Hibernate.initialize(currentUser.getRoles());
+            Hibernate.initialize(currentUser.getPreferences());
         }
 
         return currentUser;
@@ -104,6 +108,11 @@ public class UserSessionController extends JpaAwareController implements Disposa
         String dateTimeStr = dateTime.toString("dd/MM/yyyy HH:mm");
 
         if (currentUser != null) {
+            // merge current user because detached
+            if (!getCoreEntityManager().contains(currentUser)){
+                currentUser = getCoreEntityManager().merge(currentUser);
+            }
+
             Preference pref = currentUser.getPreference("last.activity");
 
             if (pref == null) {
@@ -118,6 +127,7 @@ public class UserSessionController extends JpaAwareController implements Disposa
         }
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, readOnly = true)
     public Institution getUserInstitution() {
         Preference instiPref = currentUser.getPreference(AbstractUserController.INSTITUTION_AC);
 
