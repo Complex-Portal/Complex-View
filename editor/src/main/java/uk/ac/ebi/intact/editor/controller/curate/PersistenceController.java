@@ -400,6 +400,8 @@ public class PersistenceController extends JpaAwareController {
                     return true;
                 }
             } catch (Throwable t) {
+                addErrorMessage("Identical object(s) exist(s): " + t.getMessage(), "Cannot save identical objects");
+                FacesContext.getCurrentInstance().renderResponse();
                 handleException(t);
                 return true;
             }
