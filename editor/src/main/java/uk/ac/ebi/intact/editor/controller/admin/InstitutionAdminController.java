@@ -78,6 +78,7 @@ public class InstitutionAdminController extends JpaAwareController {
 
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void mergeSelected(ActionEvent evt) {
         if (mergeDestinationInstitution == null) {
             addErrorMessage("Destination institution not selected", "Select one in the drop down list");
