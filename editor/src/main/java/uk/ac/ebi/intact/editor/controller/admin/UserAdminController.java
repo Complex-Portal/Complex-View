@@ -86,6 +86,7 @@ public class UserAdminController extends AbstractUserController {
 
     ///////////////
     // Actions
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadUserToUpdate( ComponentSystemEvent event ) {
 
         log.info( "AbstractUserController.loadUserToUpdate" );
@@ -133,6 +134,7 @@ public class UserAdminController extends AbstractUserController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData() {
         log.debug( "AbstractUserController.loadParticipants" );
 
@@ -196,6 +198,7 @@ public class UserAdminController extends AbstractUserController {
         return "/admin/users/edit?faces-redirect=true";
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadRoles( ComponentSystemEvent event ) {
 
         log.info( "AbstractUserController.loadRoles" );
@@ -326,6 +329,7 @@ public class UserAdminController extends AbstractUserController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void upload() {
         usersToImport = new ArrayList<UserWrapper>();
         try {
@@ -356,6 +360,7 @@ public class UserAdminController extends AbstractUserController {
             addWarningMessage( "Failed", "Could not parse user file: " + uploadedFile.getFileName() );
         }
     }
+
 
     public void importSelectedUsers() {
         if( selectedUsersToImport == null || selectedUsersToImport.length == 0 ) {
