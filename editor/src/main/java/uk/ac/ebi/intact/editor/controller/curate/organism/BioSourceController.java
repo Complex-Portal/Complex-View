@@ -1,22 +1,25 @@
 package uk.ac.ebi.intact.editor.controller.curate.organism;
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.bridges.taxonomy.TaxonomyTerm;
 import uk.ac.ebi.intact.bridges.taxonomy.UniprotTaxonomyService;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.BiosourceIntactCloner;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
-import uk.ac.ebi.intact.model.AnnotatedObject;
-import uk.ac.ebi.intact.model.BioSource;
-import uk.ac.ebi.intact.model.BioSourceAlias;
-import uk.ac.ebi.intact.model.CvAliasType;
+import uk.ac.ebi.intact.model.*;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -54,11 +57,14 @@ public class BioSourceController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData(ComponentSystemEvent evt) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             if (ac != null) {
                 bioSource = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getBioSourceDao(), ac);
+                // initialise aliases
+                Hibernate.initialize(bioSource.getAliases());
             } else {
                 bioSource = new BioSource();
             }
@@ -75,8 +81,16 @@ public class BioSourceController extends AnnotatedObjectController {
     }
 
     @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
-        return clone(bioSource, new BiosourceIntactCloner());
+        if (!getCoreEntityManager().contains(bioSource)){
+            setBioSource(getCoreEntityManager().merge(this.bioSource));
+        }
+        String value = clone(bioSource, new BiosourceIntactCloner());
+
+        getJamiEntityManager().detach(this.bioSource);
+
+        return value;
     }
 
     public String newOrganism() {
@@ -176,5 +190,41 @@ public class BioSourceController extends AnnotatedObjectController {
     @Override
     public boolean isAliasDisabled() {
         return false;
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public void doSave(boolean refreshCurrentView) {
+        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+        PersistenceController persistenceController = getPersistenceController();
+
+        doSaveIntact(refreshCurrentView, changesController, persistenceController);
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String doSave() {
+        return super.doSave();
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public void doSaveIfNecessary(ActionEvent evt) {
+        super.doSaveIfNecessary(evt);
+    }
+
+    @Override
+    public List collectAliases() {
+        return super.collectAliases();
+    }
+
+    @Override
+    public String getCautionMessage() {
+        return null;
+    }
+
+    @Override
+    public String getCautionMessage(AnnotatedObject ao) {
+        return null;
     }
 }

@@ -143,11 +143,6 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
             return new EmptyAnnotatedObjectHelper();
         }
 
-        if (!IntactCore.isInitialized(ao.getAnnotations())) {
-            ao = getDaoFactory().getEntityManager().find(ao.getClass(), ao.getAc());
-            setAnnotatedObject(ao);
-        }
-
         return newAnnotatedObjectHelper(ao);
     }
 
@@ -985,6 +980,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         setUnsavedChanges(true);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String findXrefPrimaryId(String databaseId, String qualifierId) {
         return getAnnotatedObjectHelper().findXrefPrimaryId(databaseId, qualifierId);
     }
@@ -1031,6 +1027,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return ref.getId().matches(annotation.getValue());
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isXrefValid(Xref xref) {
         if (xref == null) return false;
         if (xref.getPrimaryId() == null) return false;
@@ -1053,6 +1050,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return xref.getPrimaryId().matches(annotation.getAnnotationText());
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String externalLink(Xref xref) {
         if (xref == null) return null;
         if (xref.getPrimaryId() == null) return null;
@@ -1125,6 +1123,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         getAnnotatedObjectHelper().setAnnotation(topicIdOrLabel, value);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String findAnnotationText(String topicId) {
         return getAnnotatedObjectHelper().findAnnotationText(topicId);
     }
@@ -1133,6 +1132,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return getAnnotatedObjectHelper().getAnnotations();
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public List<AnnotatedObject> collectParentsByAnnotationAc(String annotationAc) {
         return getDaoFactory().getAnnotationDao().getParentsWithAnnotationAc(annotationAc);
     }
@@ -1166,6 +1166,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return getAnnotatedObjectHelper().getAliases();
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String findAliasName(String aliasTypeId) {
         return getAnnotatedObjectHelper().findAliasName(aliasTypeId);
     }
