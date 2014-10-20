@@ -24,10 +24,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ExperimentIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.publication.PublicationController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
@@ -43,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -101,12 +103,13 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     @SuppressWarnings("unchecked")
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             if ( ac != null ) {
                 if ( experiment == null || !ac.equals( experiment.getAc() ) ) {
-                    experiment = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getExperimentDao(), ac);
+                    experiment = loadByAc(getDaoFactory().getExperimentDao(), ac);
                     resetToNullIfComplexExperiment();
                 }
                 if (experiment == null) {
@@ -144,9 +147,49 @@ public class ExperimentController extends AnnotatedObjectController {
         if (experiment != null){
             if (experiment.getCvInteraction() != null &&
                     CvInteraction.INFERRED_BY_CURATOR_MI_REF.equals(experiment.getCvInteraction().getIdentifier())){
-                 experiment = null;
+                experiment = null;
             }
         }
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String clone() {
+        if (!getCoreEntityManager().contains(experiment)){
+            setExperiment(getCoreEntityManager().merge(this.experiment));
+        }
+        String value = clone(experiment, new ExperimentIntactCloner(false));
+
+        getCoreEntityManager().detach(this.experiment);
+
+        return value;
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String cloneWithInteractions() {
+
+        if (!getCoreEntityManager().contains(experiment)){
+            setExperiment(getCoreEntityManager().merge(this.experiment));
+        }
+        String value = clone(experiment, new ExperimentIntactCloner(true));
+
+        getCoreEntityManager().detach(this.experiment);
+
+        return value;
+    }
+
+    @Override
+    public void modifyClone(AnnotatedObject clone) {
+        clone.setShortLabel(createExperimentShortLabel());
+
+        setExperiment((Experiment) clone);
+        refreshInteractions();
+        refreshTabs();
+
+        experiment.setPublication(publicationController.getPublication());
+
+        // don't add the experiment to the oublication so when it reverts, the publication was not changed and the experiment can vanish
+        //publicationController.getPublication().addExperiment(experiment);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -165,6 +208,24 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     @Override
+    public void doSave(boolean refreshCurrentView) {
+        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+        PersistenceController persistenceController = getPersistenceController();
+
+        doSaveIntact(refreshCurrentView, changesController, persistenceController);
+    }
+
+    @Override
+    public String doSave() {
+        return super.doSave();
+    }
+
+    @Override
+    public void doSaveIfNecessary(ActionEvent evt) {
+        super.doSaveIfNecessary(evt);
+    }
+
+    @Override
     public boolean doSaveDetails() {
         if (experiment.getAc() == null) {
             experiment.setShortLabel(createExperimentShortLabel());
@@ -179,33 +240,6 @@ public class ExperimentController extends AnnotatedObjectController {
         refreshInteractions();
     }
 
-    @Override
-    public void modifyClone(AnnotatedObject clone) {
-        clone.setShortLabel(createExperimentShortLabel());
-
-        setExperiment((Experiment) clone);
-        refreshInteractions();
-        refreshTabs();
-
-        experiment.setPublication(publicationController.getPublication());
-
-        // don't add the experiment to the oublication so when it reverts, the publication was not changed and the experiment can vanish
-        //publicationController.getPublication().addExperiment(experiment);
-    }
-
-    @Override
-    public String clone() {
-        return clone(experiment, new ExperimentIntactCloner(false));
-    }
-
-    public String cloneWithInteractions() {
-        if (!getDaoFactory().getEntityManager().contains(experiment) && !IntactCore.isInitialized(experiment.getInteractions())){
-             getDaoFactory().getEntityManager().merge(experiment);
-        }
-
-        return clone(experiment, new ExperimentIntactCloner(true));
-    }
-
     public void doPreSave() {
         // new object, add it to the list of experiments of its publication before saving
         if (experiment.getPublication() != null && experiment.getAc() == null) {
@@ -213,7 +247,11 @@ public class ExperimentController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, readOnly = true)
     public String newExperiment(Publication publication) {
+        if (!getCoreEntityManager().contains(publication)){
+            publication = getCoreEntityManager().merge(publication);
+        }
         Experiment experiment = new Experiment(userSessionController.getUserInstitution(), createExperimentShortLabel(), null);
         setExperiment(experiment);
         experiment.setPublication(publication);
@@ -235,7 +273,8 @@ public class ExperimentController extends AnnotatedObjectController {
 
         refreshInteractions();
 
-        //getUnsavedChangeManager().markAsUnsaved(experiment);
+        // detach publication
+        getCoreEntityManager().detach(publication);
 
         return navigateToObject(experiment);
     }
@@ -290,10 +329,12 @@ public class ExperimentController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public int countInteractionsByExperimentAc( String ac ) {
         return getDaoFactory().getExperimentDao().countInteractionsForExperimentWithAc(ac);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean getParticipantsAvailable(Experiment experiment){
         if(countInteractionsByExperimentAc(experiment.getAc()) == 0){
             return false;
@@ -309,7 +350,12 @@ public class ExperimentController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void acceptExperiment(ActionEvent actionEvent) {
+        if (!Hibernate.isInitialized(this.experiment.getAnnotations())){
+            setExperiment(getCoreEntityManager().merge(this.experiment));
+        }
+
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
         setAcceptedMessage("Accepted "+new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase()+" by "+userSessionController.getCurrentUser().getLogin().toUpperCase());
@@ -325,8 +371,12 @@ public class ExperimentController extends AnnotatedObjectController {
         globalPublicationDecision();
     }
 
-
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void rejectExperiment(ActionEvent actionEvent) {
+        if (!Hibernate.isInitialized(this.experiment.getAnnotations())){
+            setExperiment(getCoreEntityManager().merge(this.experiment));
+        }
+
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
         if (reasonForRejection.startsWith("Rejected")) {
@@ -379,23 +429,31 @@ public class ExperimentController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void addCorrectionComment(ActionEvent evt) {
         addInfoMessage("Added correction comment", correctedComment);
         setCorrectionComment(correctedComment);
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void setToBeReviewed(String toBeReviewed) {
+        if (!Hibernate.isInitialized(experiment.getAnnotations())){
+            setExperiment(getCoreEntityManager().merge(experiment));
+        }
         if (toBeReviewed == null) {
             removeAnnotation(CvTopic.TO_BE_REVIEWED);
         }
 
         updateAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
+        getCoreEntityManager().detach(experiment);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getToBeReviewed() {
         return findAnnotationText(CvTopic.TO_BE_REVIEWED);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getToBeReviewed(Experiment exp) {
         final Collection<Annotation> annotations = IntactCore.ensureInitializedAnnotations(exp);
 
@@ -410,10 +468,16 @@ public class ExperimentController extends AnnotatedObjectController {
         return null;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void clearToBeReviewed(ActionEvent evt) {
+        if (!Hibernate.isInitialized(experiment.getAnnotations())){
+            setExperiment(getCoreEntityManager().merge(experiment));
+        }
         removeAnnotation(CvTopic.TO_BE_REVIEWED);
+        getCoreEntityManager().detach(experiment);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isAccepted() {
         Experiment exp;
 
@@ -425,8 +489,14 @@ public class ExperimentController extends AnnotatedObjectController {
         return ExperimentUtils.isAccepted(exp);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isRejected() {
-        return isToBeReviewed(experiment);
+        if (!Hibernate.isInitialized(experiment.getAnnotations())){
+            setExperiment(getCoreEntityManager().merge(experiment));
+        }
+        boolean reviewed = isToBeReviewed(experiment);
+        getCoreEntityManager().detach(experiment);
+        return reviewed;
     }
 
     /**
@@ -440,21 +510,27 @@ public class ExperimentController extends AnnotatedObjectController {
         refreshInteractions();
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getAcceptedMessage() {
         return findAnnotationText( CvTopic.ACCEPTED );
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setAcceptedMessage( String message ) {
+        if (!Hibernate.isInitialized(experiment.getAnnotations())){
+            setExperiment(getCoreEntityManager().merge(experiment));
+        }
         updateAnnotation(CvTopic.ACCEPTED, message);
+        getCoreEntityManager().detach(experiment);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isAccepted(Experiment exp) {
         Experiment e = refreshIfNeeded(exp);
         return ExperimentUtils.isAccepted(e);
     }
 
-
-
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isToBeReviewed(Experiment exp) {
         Experiment e = refreshIfNeeded(exp);
         return ExperimentUtils.isToBeReviewed(e);
@@ -469,25 +545,40 @@ public class ExperimentController extends AnnotatedObjectController {
         return e;
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void copyPublicationAnnotations(ActionEvent evt) {
+        if (!Hibernate.isInitialized(experiment.getAnnotations())
+                || !Hibernate.isInitialized(experiment.getPublication().getAnnotations())){
+            setExperiment(getCoreEntityManager().merge(experiment));
+        }
         CurateUtils.copyPublicationAnnotationsToExperiment(experiment);
 
         addInfoMessage("Annotations copied from publication", "");
 
         setUnsavedChanges(true);
+        getCoreEntityManager().detach(experiment);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getOnHold() {
         return findAnnotationText( CvTopic.ON_HOLD );
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setOnHold( String reason ) {
+        if (!Hibernate.isInitialized(experiment.getAnnotations())){
+            setExperiment(getCoreEntityManager().merge(experiment));
+        }
         updateAnnotation(CvTopic.ON_HOLD, reason);
+        getCoreEntityManager().detach(experiment);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String moveToPublication() {
         if (publicationToMoveTo != null && !publicationToMoveTo.isEmpty()) {
+            if (!getCoreEntityManager().contains(experiment)){
+                setExperiment(getCoreEntityManager().merge(experiment));
+            }
             Publication publication = findPublicationByAcOrLabel(publicationToMoveTo);
 
             if (publication == null) {
@@ -510,6 +601,7 @@ public class ExperimentController extends AnnotatedObjectController {
             copyPublicationAnnotations(null);
 
             // update the shortlabel
+            // update the shortlabel
             String newShortLabel = createExperimentShortLabel();
             if (newShortLabel != null){
                 experiment.setShortLabel(newShortLabel);
@@ -526,6 +618,8 @@ public class ExperimentController extends AnnotatedObjectController {
         setUnsavedChanges(true);
 
         addInfoMessage("Moved experiment", "To publication: "+publicationToMoveTo);
+
+        getCoreEntityManager().detach(experiment);
 
         return null;
     }
@@ -612,12 +706,18 @@ public class ExperimentController extends AnnotatedObjectController {
         getChangesController().revertExperiment(experiment, parentAcs);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCorrectionComment() {
-         return findAnnotationText(CvTopic.CORRECTION_COMMENT);
+        return findAnnotationText(CvTopic.CORRECTION_COMMENT);
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void setCorrectionComment(String correctionComment) {
+        if (!Hibernate.isInitialized(experiment.getAnnotations())){
+            setExperiment(getCoreEntityManager().merge(experiment));
+        }
         updateAnnotation(CvTopic.CORRECTION_COMMENT, correctionComment);
+        getCoreEntityManager().detach(experiment);
     }
 
     public String getCorrectedComment() {
@@ -626,5 +726,33 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public void setCorrectedComment(String correctedComment) {
         this.correctedComment = correctedComment;
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAnnotations() {
+        if (!Hibernate.isInitialized(this.experiment.getAnnotations())){
+            Experiment reloadedExperiment = getCoreEntityManager().merge(this.experiment);
+            setExperiment(reloadedExperiment);
+        }
+
+        List aliases = super.collectAnnotations();
+
+        getCoreEntityManager().detach(this.experiment);
+        return aliases;
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectXrefs() {
+        if (!Hibernate.isInitialized(this.experiment.getXrefs())){
+            Experiment reloadedExperiment = getCoreEntityManager().merge(this.experiment);
+            setExperiment(reloadedExperiment);
+        }
+
+        List xrefs = super.collectXrefs();
+
+        getCoreEntityManager().detach(this.experiment);
+        return xrefs;
     }
 }

@@ -62,7 +62,7 @@ public class BioSourceController extends AnnotatedObjectController {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             if (ac != null) {
-                bioSource = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getBioSourceDao(), ac);
+                bioSource = loadByAc(getDaoFactory().getBioSourceDao(), ac);
                 // initialise aliases
                 Hibernate.initialize(bioSource.getAliases());
             } else {

@@ -73,7 +73,7 @@ public class PersistenceController extends JpaAwareController {
         }
 
         try {
-            getIntactContext().getCorePersister().saveOrUpdate( annotatedObject );
+            getCorePersister().saveOrUpdate( annotatedObject );
 
             return true;
 

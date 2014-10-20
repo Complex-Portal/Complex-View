@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
 import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
 import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
@@ -113,7 +112,7 @@ public class CvObjectController extends AnnotatedObjectController {
     public void loadData(ComponentSystemEvent evt) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if (ac != null) {
-                cvObject = (CvDagObject) loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(), ac);
+                cvObject = (CvDagObject) loadByAc(getDaoFactory().getCvObjectDao(), ac);
                 // initialise xrefs
                 Hibernate.initialize(cvObject.getXrefs());
             } else if (cvClassName != null) {
