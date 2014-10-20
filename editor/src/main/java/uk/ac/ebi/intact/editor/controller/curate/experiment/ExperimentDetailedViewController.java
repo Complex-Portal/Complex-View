@@ -19,6 +19,8 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
@@ -61,12 +63,13 @@ public class ExperimentDetailedViewController extends JpaAwareController {
     public ExperimentDetailedViewController() {
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if (experimentController.getExperiment() != null) {
                 Experiment experiment = experimentController.getExperiment();
 
-                this.experimentWrapper = new ExperimentWrapper(experiment, getDaoFactory().getEntityManager());
+                this.experimentWrapper = new ExperimentWrapper(experiment, getCoreEntityManager());
                 ac = experiment.getAc();
             }
             else if (ac != null) {
@@ -76,7 +79,7 @@ public class ExperimentDetailedViewController extends JpaAwareController {
                 }
 
                 if (experiment != null) {
-                    this.experimentWrapper = new ExperimentWrapper(experiment, getDaoFactory().getEntityManager());
+                    this.experimentWrapper = new ExperimentWrapper(experiment, getCoreEntityManager());
                     experimentController.setExperiment(experiment);
                 } else {
                     addErrorMessage("No experiment with this AC", "Verify the URL");

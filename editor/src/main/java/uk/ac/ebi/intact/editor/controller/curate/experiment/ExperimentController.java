@@ -243,6 +243,11 @@ public class ExperimentController extends AnnotatedObjectController {
     public void doPreSave() {
         // new object, add it to the list of experiments of its publication before saving
         if (experiment.getPublication() != null && experiment.getAc() == null) {
+            // avoid lazy initialisation when opening experiment and clone if the publication does not have initialised experiments
+            if (!Hibernate.isInitialized(publicationController.getPublication().getExperiments())){
+                publicationController.setPublication(getDaoFactory().getPublicationDao().getByAc(experiment.getPublication().getAc()));
+                experiment.setPublication(publicationController.getPublication());
+            }
             publicationController.getPublication().addExperiment(experiment);
         }
     }
