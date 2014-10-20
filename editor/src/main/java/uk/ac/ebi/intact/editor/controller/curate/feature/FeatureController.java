@@ -18,14 +18,19 @@ package uk.ac.ebi.intact.editor.controller.curate.feature;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.primefaces.event.TabChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.IntactObjectDao;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
@@ -90,10 +95,16 @@ public class FeatureController extends AnnotatedObjectController {
     }
 
     @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
+        if (!getCoreEntityManager().contains(feature)){
+            setFeature(getCoreEntityManager().merge(this.feature));
+        }
         String value = clone(getAnnotatedObject(), newClonerInstance());
 
         refreshRangeWrappers();
+
+        getCoreEntityManager().detach(this.feature);
 
         return value;
     }
@@ -123,12 +134,15 @@ public class FeatureController extends AnnotatedObjectController {
         return "/curate/participant?faces-redirect=true&includeViewParams=true";
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             if ( ac != null ) {
                 if ( feature == null || !ac.equals( feature.getAc() ) ) {
-                    feature = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getFeatureDao(), ac);
+                    feature = loadByAc(getDaoFactory().getFeatureDao(), ac);
+                    // initialise ranges
+                    Hibernate.initialize(feature.getRanges());
                 }
             } else {
                 if ( feature != null ) ac = feature.getAc();
@@ -483,5 +497,26 @@ public class FeatureController extends AnnotatedObjectController {
         else {
             isRangeDisabled = true;
         }
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void doSave(boolean refreshCurrentView) {
+        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+        PersistenceController persistenceController = getPersistenceController();
+
+        doSaveIntact(refreshCurrentView, changesController, persistenceController);
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public String doSave() {
+        return super.doSave();
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void doSaveIfNecessary(ActionEvent evt) {
+        super.doSaveIfNecessary(evt);
     }
 }

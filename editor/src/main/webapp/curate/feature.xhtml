@@ -129,8 +129,7 @@
 
                         <p:commandButton id="newRangeBtn" value="New range" actionListener="#{featureController.newRange}"
                                 process="newRangeTxt"
-                                update=":editorForm:messagesComponent">
-                            <ed:curation/>
+                                update=":editorForm:messagesComponent :editorForm:featureTabs :editorForm:changesPanel :editorForm:unsavedChangesInfo">
                         </p:commandButton>
                      </div>
 
