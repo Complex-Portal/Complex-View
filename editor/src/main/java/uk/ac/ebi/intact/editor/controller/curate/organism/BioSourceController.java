@@ -88,7 +88,7 @@ public class BioSourceController extends AnnotatedObjectController {
         }
         String value = clone(bioSource, new BiosourceIntactCloner());
 
-        getJamiEntityManager().detach(this.bioSource);
+        getCoreEntityManager().detach(this.bioSource);
 
         return value;
     }
@@ -193,7 +193,7 @@ public class BioSourceController extends AnnotatedObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSave(boolean refreshCurrentView) {
         ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
         PersistenceController persistenceController = getPersistenceController();
@@ -202,20 +202,29 @@ public class BioSourceController extends AnnotatedObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public String doSave() {
         return super.doSave();
     }
 
     @Override
-    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSaveIfNecessary(ActionEvent evt) {
         super.doSaveIfNecessary(evt);
     }
 
     @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public List collectAliases() {
-        return super.collectAliases();
+        if (!Hibernate.isInitialized(this.bioSource.getAliases())){
+            BioSource reloadedBiosource = getCoreEntityManager().merge(this.bioSource);
+            setBioSource(reloadedBiosource);
+        }
+
+        List aliases = super.collectAliases();
+
+        getCoreEntityManager().detach(this.bioSource);
+        return aliases;
     }
 
     @Override
@@ -227,4 +236,10 @@ public class BioSourceController extends AnnotatedObjectController {
     public String getCautionMessage(AnnotatedObject ao) {
         return null;
     }
+
+    @Override
+    public String getInternalRemarkMessage() {
+        return null;
+    }
+
 }

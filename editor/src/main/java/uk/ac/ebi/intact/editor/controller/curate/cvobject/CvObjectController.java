@@ -3,6 +3,7 @@ package uk.ac.ebi.intact.editor.controller.curate.cvobject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -11,12 +12,15 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.CvObjectIntactCloner;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.model.*;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import java.util.*;
 
@@ -93,8 +97,16 @@ public class CvObjectController extends AnnotatedObjectController {
     }
 
     @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
-        return clone(cvObject, new CvObjectIntactCloner());
+        if (!getCoreEntityManager().contains(cvObject)){
+            setCvObject(getCoreEntityManager().merge(this.cvObject));
+        }
+        String value = clone(cvObject, new CvObjectIntactCloner());
+
+        getCoreEntityManager().detach(this.cvObject);
+
+        return value;
     }
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
@@ -102,6 +114,8 @@ public class CvObjectController extends AnnotatedObjectController {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if (ac != null) {
                 cvObject = (CvDagObject) loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getCvObjectDao(), ac);
+                // initialise xrefs
+                Hibernate.initialize(cvObject.getXrefs());
             } else if (cvClassName != null) {
                 cvObject = newInstance(cvClassName);
             }
@@ -122,6 +136,9 @@ public class CvObjectController extends AnnotatedObjectController {
 
             List<CvObject> cvObjectsByClass = new ArrayList<CvObject>(cvObjectService.getCvObjectsByClass(cvObject.getClass()));
             List<CvObject> existingParents = new ArrayList<CvObject>(cvObject.getParents());
+
+            Collections.sort( existingParents, new CvObjectService.CvObjectComparator() );
+            Collections.sort( cvObjectsByClass, new CvObjectService.CvObjectComparator() );
 
             parents = new DualListModel<CvObject>(cvObjectsByClass, existingParents);
 
@@ -280,5 +297,54 @@ public class CvObjectController extends AnnotatedObjectController {
 
     public void setNewCvObjectType(String newCvObjectType) {
         this.newCvObjectType = newCvObjectType;
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void doSave(boolean refreshCurrentView) {
+        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+        PersistenceController persistenceController = getPersistenceController();
+
+        doSaveIntact(refreshCurrentView, changesController, persistenceController);
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public String doSave() {
+        return super.doSave();
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void doSaveIfNecessary(ActionEvent evt) {
+        super.doSaveIfNecessary(evt);
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAliases() {
+        if (!Hibernate.isInitialized(this.cvObject.getAliases())){
+            CvDagObject reloadedCv = getCoreEntityManager().merge(this.cvObject);
+            setCvObject(reloadedCv);
+        }
+
+        List aliases = super.collectAliases();
+
+        getCoreEntityManager().detach(this.cvObject);
+        return aliases;
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAnnotations() {
+        if (!Hibernate.isInitialized(this.cvObject.getAnnotations())){
+            CvDagObject reloadedCv = getCoreEntityManager().merge(this.cvObject);
+            setCvObject(reloadedCv);
+        }
+
+        List aliases = super.collectAnnotations();
+
+        getCoreEntityManager().detach(this.cvObject);
+        return aliases;
     }
 }

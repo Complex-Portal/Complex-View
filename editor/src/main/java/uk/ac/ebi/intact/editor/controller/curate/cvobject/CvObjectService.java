@@ -664,7 +664,7 @@ public class CvObjectService extends JpaAwareController {
         return defaultBiologicalRole;
     }
 
-    private class CvObjectComparator implements Comparator<CvObject> {
+    public static class CvObjectComparator implements Comparator<CvObject> {
         @Override
         public int compare( CvObject o1, CvObject o2 ) {
             if ( o1 == null || o1.getShortLabel() == null ) {
