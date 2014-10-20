@@ -33,6 +33,8 @@ import psidev.psi.mi.jami.utils.AnnotationUtils;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.admin.UserManagerController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedJamiChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ComplexJamiCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantJamiCloner;
@@ -1505,5 +1507,14 @@ public class ComplexController extends AnnotatedObjectController {
     public void removeCorrectionComment(ActionEvent evt) {
         addInfoMessage("Removed correction comment", correctionComment);
         this.complex.removeCorrectionComment();
+    }
+
+    @Override
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    public void doSave(boolean refreshCurrentView) {
+        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+        PersistenceController persistenceController = getPersistenceController();
+
+        doSaveJami(refreshCurrentView, changesController, persistenceController);
     }
 }

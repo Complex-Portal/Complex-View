@@ -30,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedJamiChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantJamiCloner;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.*;
@@ -736,4 +738,12 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         return this.interactionController;
     }
 
+    @Override
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    public void doSave(boolean refreshCurrentView) {
+        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+        PersistenceController persistenceController = getPersistenceController();
+
+        doSaveJami(refreshCurrentView, changesController, persistenceController);
+    }
 }

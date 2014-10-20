@@ -28,6 +28,8 @@ import psidev.psi.mi.jami.model.*;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import psidev.psi.mi.jami.utils.RangeUtils;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.FeatureJamiCloner;
 import uk.ac.ebi.intact.editor.controller.curate.interaction.ComplexController;
@@ -716,5 +718,14 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Override
     protected AnnotatedObjectController getJamiParentController() {
         return this.modelledParticipantController;
+    }
+
+    @Override
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
+    public void doSave(boolean refreshCurrentView) {
+        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+        PersistenceController persistenceController = getPersistenceController();
+
+        doSaveJami(refreshCurrentView, changesController, persistenceController);
     }
 }
