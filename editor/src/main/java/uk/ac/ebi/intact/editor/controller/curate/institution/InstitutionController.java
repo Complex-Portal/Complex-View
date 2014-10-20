@@ -3,14 +3,18 @@ package uk.ac.ebi.intact.editor.controller.curate.institution;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.core.context.IntactContext;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Institution;
 
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 
 /**
@@ -49,11 +53,12 @@ public class InstitutionController extends AnnotatedObjectController {
         // nothing to do
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData(ComponentSystemEvent evt) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             if (ac != null) {
-                institution = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInstitutionDao(), ac);
+                institution = loadByAc(getDaoFactory().getInstitutionDao(), ac);
             } else {
                 institution = new Institution();
             }
@@ -114,5 +119,26 @@ public class InstitutionController extends AnnotatedObjectController {
 
     public void setUrl(String address) {
         updateAnnotation(CvTopic.URL_MI_REF, address);
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void doSave(boolean refreshCurrentView) {
+        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+        PersistenceController persistenceController = getPersistenceController();
+
+        doSaveIntact(refreshCurrentView, changesController, persistenceController);
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public String doSave() {
+        return super.doSave();
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void doSaveIfNecessary(ActionEvent evt) {
+        super.doSaveIfNecessary(evt);
     }
 }

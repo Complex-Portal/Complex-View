@@ -318,32 +318,4 @@ public class CvObjectController extends AnnotatedObjectController {
     public void doSaveIfNecessary(ActionEvent evt) {
         super.doSaveIfNecessary(evt);
     }
-
-    @Override
-    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public List collectAliases() {
-        if (!Hibernate.isInitialized(this.cvObject.getAliases())){
-            CvDagObject reloadedCv = getCoreEntityManager().merge(this.cvObject);
-            setCvObject(reloadedCv);
-        }
-
-        List aliases = super.collectAliases();
-
-        getCoreEntityManager().detach(this.cvObject);
-        return aliases;
-    }
-
-    @Override
-    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public List collectAnnotations() {
-        if (!Hibernate.isInitialized(this.cvObject.getAnnotations())){
-            CvDagObject reloadedCv = getCoreEntityManager().merge(this.cvObject);
-            setCvObject(reloadedCv);
-        }
-
-        List aliases = super.collectAnnotations();
-
-        getCoreEntityManager().detach(this.cvObject);
-        return aliases;
-    }
 }

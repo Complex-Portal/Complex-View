@@ -44,7 +44,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -731,33 +730,5 @@ public class ExperimentController extends AnnotatedObjectController {
 
     public void setCorrectedComment(String correctedComment) {
         this.correctedComment = correctedComment;
-    }
-
-    @Override
-    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public List collectAnnotations() {
-        if (!Hibernate.isInitialized(this.experiment.getAnnotations())){
-            Experiment reloadedExperiment = getCoreEntityManager().merge(this.experiment);
-            setExperiment(reloadedExperiment);
-        }
-
-        List aliases = super.collectAnnotations();
-
-        getCoreEntityManager().detach(this.experiment);
-        return aliases;
-    }
-
-    @Override
-    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
-    public List collectXrefs() {
-        if (!Hibernate.isInitialized(this.experiment.getXrefs())){
-            Experiment reloadedExperiment = getCoreEntityManager().merge(this.experiment);
-            setExperiment(reloadedExperiment);
-        }
-
-        List xrefs = super.collectXrefs();
-
-        getCoreEntityManager().detach(this.experiment);
-        return xrefs;
     }
 }
