@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.intact.core.context.IntactContext;
+import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.model.Interaction;
 
 import javax.faces.context.FacesContext;
@@ -22,7 +22,7 @@ import java.util.List;
 @Controller
 @Scope( "conversation.access" )
 @ConversationName("search")
-public class SearchInteractionsMoleculeController {
+public class SearchInteractionsMoleculeController extends JpaAwareController {
 
 	private String ac;
 	private List<Interaction> interactions = null;
@@ -42,7 +42,7 @@ public class SearchInteractionsMoleculeController {
 		if (!FacesContext.getCurrentInstance().isPostback()) {
 
 			if (ac != null) {
-				interactions = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getInteractionsByInteractorAc(ac);
+				interactions = getDaoFactory().getInteractionDao().getInteractionsByInteractorAc(ac);
 			}
 		}
 	}

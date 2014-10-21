@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.InteractorImpl;
@@ -47,7 +46,7 @@ public class SearchInteractorOrganismController extends JpaAwareController {
 
 			if (ac != null) {
 				interactors = LazyDataModelFactory.createLazyDataModel(
-						IntactContext.getCurrentInstance().getDaoFactory().getInteractorDao().getByBioSourceAc(ac)
+						getDaoFactory().getInteractorDao().getByBioSourceAc(ac)
 				);
 			}
 		}

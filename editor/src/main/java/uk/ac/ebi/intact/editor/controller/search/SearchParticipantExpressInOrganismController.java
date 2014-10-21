@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.Component;
@@ -64,7 +63,7 @@ public class SearchParticipantExpressInOrganismController extends JpaAwareContro
 
 			if (ac != null) {
 				participants = LazyDataModelFactory.createLazyDataModel(
-						IntactContext.getCurrentInstance().getDaoFactory().getComponentDao().getByExpressedIn(ac)
+						getDaoFactory().getComponentDao().getByExpressedIn(ac)
 				);
 			}
 		}
