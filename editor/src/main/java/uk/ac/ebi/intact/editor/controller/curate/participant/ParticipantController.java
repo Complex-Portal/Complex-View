@@ -19,15 +19,20 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.SelectableDataModelWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.IntactObjectDao;
 import uk.ac.ebi.intact.core.persister.IntactCore;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
@@ -130,12 +135,13 @@ public class ParticipantController extends ParameterizableObjectController {
         return "/curate/interaction?faces-redirect=true&includeViewParams=true";
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             if ( ac != null ) {
                 if ( participant == null || !ac.equals( participant.getAc() ) ) {
-                    participant = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getComponentDao(), ac);
+                    participant = loadByAc(getDaoFactory().getComponentDao(), ac);
                 }
             } else {
                 if ( participant != null ) ac = participant.getAc();
@@ -147,7 +153,7 @@ public class ParticipantController extends ParameterizableObjectController {
             }
 
             if (!IntactCore.isInitialized(participant.getFeatures())){
-                IntactCore.initialize(participant.getFeatures());
+                Hibernate.initialize(participant.getFeatures());
             }
             featuresDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<Feature>(participant.getFeatures()), participant.getFeatures());
 
@@ -155,10 +161,10 @@ public class ParticipantController extends ParameterizableObjectController {
             // participant page is loaded directly using a URL)
 
             if (!IntactCore.isInitialized(participant.getExperimentalPreparations())){
-                IntactCore.initialize(participant.getExperimentalPreparations());
+                Hibernate.initialize(participant.getExperimentalPreparations());
             }
             if (!IntactCore.isInitialized(participant.getParticipantDetectionMethods())){
-                IntactCore.initialize(participant.getParticipantDetectionMethods());
+                Hibernate.initialize(participant.getParticipantDetectionMethods());
             }
             if (participant.getInteraction() != null){
                 if (interactionController.getInteraction() == null || !interactionController.getInteraction().getAc().equalsIgnoreCase(participant.getInteraction().getAc())){
@@ -172,7 +178,7 @@ public class ParticipantController extends ParameterizableObjectController {
                         experiments = getDaoFactory().getExperimentDao().getByInteractionAc(participant.getInteraction().getAc());
                     }
                     if (!IntactCore.isInitialized(participant.getInteraction().getComponents())){
-                        IntactCore.initialize(participant.getInteraction().getComponents());
+                        Hibernate.initialize(participant.getInteraction().getComponents());
                     }
                     if( experiments.isEmpty()) {
                         addWarningMessage( "The parent interaction of this participant isn't attached to an experiment",
@@ -523,12 +529,18 @@ public class ParticipantController extends ParameterizableObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getAuthorGivenName() {
         return findAliasName( CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF );
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setAuthorGivenName( String name ) {
+        if (!Hibernate.isInitialized(participant.getAnnotations())){
+            setParticipant(getCoreEntityManager().merge(participant));
+        }
         addOrReplace(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF, name  );
+        getCoreEntityManager().detach(participant);
     }
 
     public CvExperimentalPreparation getFirstExperimentalPreparation( Component participant ) {
@@ -540,7 +552,7 @@ public class ParticipantController extends ParameterizableObjectController {
 
         return null;
     }
-    
+
     public String participantPrimaryId(Component component) {
         if (component == null) return null;
         if (component.getInteractor() == null) return null;
@@ -753,5 +765,38 @@ public class ParticipantController extends ParameterizableObjectController {
 
     public void setIdentificationToAdd(CvIdentification identificationToAdd) {
         this.identificationToAdd = identificationToAdd;
+    }
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void doSave(boolean refreshCurrentView) {
+        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+        PersistenceController persistenceController = getPersistenceController();
+
+        doSaveIntact(refreshCurrentView, changesController, persistenceController);
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public String doSave() {
+        return super.doSave();
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void doSaveIfNecessary(ActionEvent evt) {
+        super.doSaveIfNecessary(evt);
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String clone() {
+        if (!getCoreEntityManager().contains(participant)){
+            setParticipant(getCoreEntityManager().merge(this.participant));
+        }
+        String value = super.clone(getAnnotatedObject(), newClonerInstance());
+
+        getCoreEntityManager().detach(this.participant);
+
+        return value;
     }
 }
