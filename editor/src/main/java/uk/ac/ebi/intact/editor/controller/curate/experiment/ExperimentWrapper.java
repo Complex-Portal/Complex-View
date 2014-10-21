@@ -16,9 +16,9 @@
 package uk.ac.ebi.intact.editor.controller.curate.experiment;
 
 import uk.ac.ebi.intact.model.*;
+import uk.ac.ebi.intact.model.util.FeatureUtils;
 import uk.ac.ebi.intact.model.util.XrefUtils;
 
-import javax.persistence.EntityManager;
 import java.util.*;
 
 /**
@@ -34,8 +34,9 @@ public class ExperimentWrapper {
     private Map<String, List<Parameter>> interactionsParameters;
 
     private Map<String, List<Component>> componentsMap;
-    
-    public ExperimentWrapper(Experiment experiment, EntityManager entityManager) {
+    private Map<String, List<String>> componentFeatures;
+
+    public ExperimentWrapper(Experiment experiment) {
         this.experiment = experiment;
 
         interactions = new ArrayList<Interaction>(experiment.getInteractions());
@@ -45,6 +46,7 @@ public class ExperimentWrapper {
         interactionXrefs = new HashMap<String, List<Xref>>(interactions.size());
         interactionsParameters = new HashMap<String, List<Parameter>>(interactions.size());
         componentsMap = new HashMap<String, List<Component>>(interactions.size());
+        componentFeatures = new HashMap<String, List<String>>(interactions.size() * 2);
 
         for (Interaction inter : interactions){
             String ac = inter.getAc() != null ? inter.getAc() : Integer.toString(inter.hashCode());
@@ -52,9 +54,44 @@ public class ExperimentWrapper {
             interactionsParameters.put(ac, new ArrayList<Parameter>(inter.getParameters()));
             interactionXrefs.put(ac, new ArrayList<Xref>(inter.getXrefs()));
             componentsMap.put(ac, new ArrayList<Component>(sortedParticipants(inter)));
+
+            for (Component comp : inter.getComponents()){
+                String compAc = comp.getAc() != null ? comp.getAc() : Integer.toString(inter.hashCode());
+
+                List<String> features = new ArrayList<String>(comp.getFeatures().size());
+                componentFeatures.put(compAc, features);
+                for (Feature f : comp.getFeatures()){
+                    features.add(featureAsString(f));
+                }
+            }
         }
     }
-    
+
+    public String featureAsString(Feature feature) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(feature.getShortLabel());
+
+        final Collection<Range> ranges = feature.getRanges();
+        final Iterator<Range> iterator = ranges.iterator();
+
+        while (iterator.hasNext()) {
+            Range next = iterator.next();
+            sb.append("[");
+            sb.append(FeatureUtils.convertRangeIntoString(next));
+            sb.append("]");
+
+            if (iterator.hasNext()) sb.append(", ");
+        }
+
+        if (feature.getCvFeatureType() != null) {
+            sb.append(" ");
+            sb.append(feature.getCvFeatureType().getShortLabel());
+        }
+
+        return sb.toString();
+    }
+
+
     public List<Component> sortedParticipants(Interaction interaction) {
         if (interaction == null ) return Collections.EMPTY_LIST;
 
@@ -93,6 +130,12 @@ public class ExperimentWrapper {
         String ac = interaction.getAc() != null ? interaction.getAc() : Integer.toString(interaction.hashCode());
 
         return componentsMap.get(ac);
+    }
+
+    public List<String> getFeatures(Component component){
+        String ac = component.getAc() != null ? component.getAc() : Integer.toString(component.hashCode());
+
+        return componentFeatures.get(ac);
     }
 
     private class InteractionAlphabeticalOrder implements Comparator<Interaction> {
