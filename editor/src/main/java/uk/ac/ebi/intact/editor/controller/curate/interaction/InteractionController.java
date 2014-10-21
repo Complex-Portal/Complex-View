@@ -31,7 +31,9 @@ import uk.ac.ebi.intact.core.persistence.dao.IntactObjectDao;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
 import uk.ac.ebi.intact.editor.controller.curate.ParameterizableObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.UnsavedChange;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.InteractionIntactCloner;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.ParticipantIntactCloner;
@@ -134,12 +136,18 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
+        if (!getCoreEntityManager().contains(interaction)){
+            setInteraction(getCoreEntityManager().merge(this.interaction));
+        }
         String value = clone(getAnnotatedObject(), newClonerInstance());
 
         refreshParticipants();
         refreshExperimentLists();
         refreshParentControllers();
+
+        getCoreEntityManager().detach(this.interaction);
 
         return value;
     }
@@ -164,12 +172,13 @@ public class InteractionController extends ParameterizableObjectController {
 //  Check in future with other interactions that are onHold. At least commenting @Transactional
 //  we don't have the JPA Several DataSource Exception
 //  Issue 925.
-    public void loadData( ComponentSystemEvent event ) {
+@Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             if ( ac != null ) {
                 if ( interaction == null || !ac.equals( interaction.getAc() ) || !Hibernate.isInitialized(interaction.getExperiments())) {
-                    interaction = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao(), ac);
+                    interaction = loadByAc(getDaoFactory().getInteractionDao(), ac);
                 }
             } else {
                 ac = interaction.getAc();
@@ -313,12 +322,13 @@ public class InteractionController extends ParameterizableObjectController {
                 (e.getBioSource() != null? e.getBioSource().getShortLabel() : "");
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void forceRefreshCurrentViewObject(){
         super.forceRefreshCurrentViewObject();
 
         if (interaction != null) {
             if (!Hibernate.isInitialized(interaction.getComponents())) {
-                interaction = IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao().getByAc( interaction.getAc() );
+                interaction = getDaoFactory().getInteractionDao().getByAc( interaction.getAc() );
             }
             refreshExperimentLists();
             refreshParticipants();
@@ -351,7 +361,7 @@ public class InteractionController extends ParameterizableObjectController {
 
         // Reload experiments
         if (!Hibernate.isInitialized(interaction.getExperiments())){
-            interaction = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractionDao(), interaction.getAc());
+            interaction = loadByAc(getDaoFactory().getInteractionDao(), interaction.getAc());
         }
 
         Collection<Experiment> experiments = new ArrayList<Experiment>( interaction.getExperiments() );
@@ -434,6 +444,7 @@ public class InteractionController extends ParameterizableObjectController {
         return saved;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void experimentChanged(AjaxBehaviorEvent evt) {
 
         Experiment newExp = reload(experiment);
@@ -602,6 +613,7 @@ public class InteractionController extends ParameterizableObjectController {
         getChangesController().revertInteraction(interaction, parentAcs);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String copyToExperiment() {
         Interaction newInteraction = null;
 
@@ -639,6 +651,7 @@ public class InteractionController extends ParameterizableObjectController {
         return getCurateController().edit(newInteraction);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String moveToExperiment() {
         if (experimentToMoveTo != null && !experimentToMoveTo.isEmpty()) {
             Experiment experiment = findExperimentByAcOrLabel(experimentToMoveTo);
@@ -700,6 +713,9 @@ public class InteractionController extends ParameterizableObjectController {
 
         if (experiment == null) {
             experiment = getDaoFactory().getExperimentDao().getByShortLabel(acOrLabel);
+            if (experiment == null) {
+                return null;
+            }
         }
 
         // WARNING : load the annotations when reloading an experiment because it is used to calculate the CRC64 of the interaction.
@@ -718,10 +734,12 @@ public class InteractionController extends ParameterizableObjectController {
         return ac;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public int countParticipantsByInteractionAc( String ac ) {
         return getDaoFactory().getInteractionDao().countInteractorsByInteractionAc( ac );
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public int countParticipantsByInteraction( Interaction interaction) {
         if (interaction.getAc() != null) return countParticipantsByInteractionAc(interaction.getAc());
 
@@ -768,6 +786,7 @@ public class InteractionController extends ParameterizableObjectController {
         addInfoMessage("Participant marked to be removed.", participantInfo.toString());
     }*/
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void updateShortLabel() {
         try {
             updateShortLabel(getInteraction());
@@ -836,8 +855,9 @@ public class InteractionController extends ParameterizableObjectController {
         refreshParentControllers();
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void cloneParticipant(ParticipantWrapper participantWrapper) {
-        Component participant = participantWrapper.getParticipant();
+        Component participant = getCoreEntityManager().merge(participantWrapper.getParticipant());
 
         IntactCloner cloner = new ParticipantIntactCloner();
 
@@ -848,6 +868,7 @@ public class InteractionController extends ParameterizableObjectController {
             addErrorMessage("Problem cloning participant", e.getMessage());
             handleException(e);
         }
+        getCoreEntityManager().detach(participant);
     }
 
     public void linkSelectedFeatures(ActionEvent evt) {
@@ -899,12 +920,18 @@ public class InteractionController extends ParameterizableObjectController {
         feature.setBoundDomain(null);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getImexId() {
         return findXrefPrimaryId(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setImexId(String imexId) {
+        if (!Hibernate.isInitialized(interaction.getAnnotations())){
+            setInteraction(getCoreEntityManager().merge(interaction));
+        }
         updateXref(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId);
+        getCoreEntityManager().detach(interaction);
     }
 
     public void setAc( String ac ) {
@@ -979,6 +1006,7 @@ public class InteractionController extends ParameterizableObjectController {
     //////////////////////////////////
     // Participant related methods
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInteractorIdentity(Interactor interactor) {
         if (interactor == null) return null;
 
@@ -1098,5 +1126,26 @@ public class InteractionController extends ParameterizableObjectController {
             isConfidenceDisabled = true;
             isAdvancedDisabled = true;
         }
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void doSave(boolean refreshCurrentView) {
+        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+        PersistenceController persistenceController = getPersistenceController();
+
+        doSaveIntact(refreshCurrentView, changesController, persistenceController);
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public String doSave() {
+        return super.doSave();
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void doSaveIfNecessary(ActionEvent evt) {
+        super.doSaveIfNecessary(evt);
     }
 }
