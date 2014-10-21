@@ -115,13 +115,13 @@
                                     <p:column headerText="Features">
                                         <ui:repeat value="#{experimentDetailedViewController.experimentWrapper.getFeatures(participant)}" var="feature">
                                             <h:outputText
-                                                    value="#{feature}"
+                                                    value="#{feature.feature}"
                                                     styleClass="feature-for-#{participantController.participantPrimaryId(participant)}"/>
 
-                                            <h:panelGroup rendered="#{feature.boundDomain != null}">
+                                            <h:panelGroup rendered="#{feature.bindDomain != null}">
                                                 <div class="ui-icon ui-icon-link linked-feature-for-#{participantController.participantPrimaryId(participant)}"
                                                      style="display:inline-block"
-                                                     title="Linked to #{feature.boundDomain.shortLabel}"></div>
+                                                     title="Linked to #{feature.bindDomain}"></div>
                                             </h:panelGroup>
                                             <br/>
                                         </ui:repeat>

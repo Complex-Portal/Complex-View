@@ -34,7 +34,7 @@ public class ExperimentWrapper {
     private Map<String, List<Parameter>> interactionsParameters;
 
     private Map<String, List<Component>> componentsMap;
-    private Map<String, List<String>> componentFeatures;
+    private Map<String, List<FeatureSummary>> componentFeatures;
 
     public ExperimentWrapper(Experiment experiment) {
         this.experiment = experiment;
@@ -46,7 +46,7 @@ public class ExperimentWrapper {
         interactionXrefs = new HashMap<String, List<Xref>>(interactions.size());
         interactionsParameters = new HashMap<String, List<Parameter>>(interactions.size());
         componentsMap = new HashMap<String, List<Component>>(interactions.size());
-        componentFeatures = new HashMap<String, List<String>>(interactions.size() * 2);
+        componentFeatures = new HashMap<String, List<FeatureSummary>>(interactions.size() * 2);
 
         for (Interaction inter : interactions){
             String ac = inter.getAc() != null ? inter.getAc() : Integer.toString(inter.hashCode());
@@ -58,10 +58,11 @@ public class ExperimentWrapper {
             for (Component comp : inter.getComponents()){
                 String compAc = comp.getAc() != null ? comp.getAc() : Integer.toString(inter.hashCode());
 
-                List<String> features = new ArrayList<String>(comp.getFeatures().size());
+                List<FeatureSummary> features = new ArrayList<FeatureSummary>(comp.getFeatures().size());
                 componentFeatures.put(compAc, features);
                 for (Feature f : comp.getFeatures()){
-                    features.add(featureAsString(f));
+                    features.add(new FeatureSummary(featureAsString(f),
+                            f.getBoundDomain() != null ? f.getBoundDomain().getShortLabel():null));
                 }
             }
         }
@@ -132,7 +133,7 @@ public class ExperimentWrapper {
         return componentsMap.get(ac);
     }
 
-    public List<String> getFeatures(Component component){
+    public List<FeatureSummary> getFeatures(Component component){
         String ac = component.getAc() != null ? component.getAc() : Integer.toString(component.hashCode());
 
         return componentFeatures.get(ac);
