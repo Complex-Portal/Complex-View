@@ -167,7 +167,7 @@ public class PublicationController extends AnnotatedObjectController {
                             "unassigned638".equals(publication.getShortLabel()) ||
                             "24288376".equals(publication.getShortLabel()) ||
                             "24214965".equals(publication.getShortLabel())
-                    )){
+            )){
                 this.publication = null;
             }
         }
@@ -749,7 +749,6 @@ public class PublicationController extends AnnotatedObjectController {
         return new DateTime().isBefore(eventTime.plusMinutes(getEditorConfig().getRevertDecisionTime()));
     }
 
-    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void doSaveAndClose(ActionEvent evt) {
         doSave(evt);
         doClose(evt);
@@ -1331,6 +1330,7 @@ public class PublicationController extends AnnotatedObjectController {
         publication.setFullName(publicationTitle);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getFirstAuthor() {
         final String authors = getAuthors();
 

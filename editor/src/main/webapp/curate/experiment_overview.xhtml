@@ -60,13 +60,13 @@
         <br/>
 
         <p:dataList id="interactionReviewTable" var="interaction" itemType="none"
-                    value="#{experimentDetailedViewController.experimentWrapper.experiment.interactions}"
+                    value="#{experimentDetailedViewController.experimentWrapper.interactions}"
                     paginator="true" paginatorAlwaysVisible="false" rows="10"
                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                     rowsPerPageTemplate="10,20,50,100">
 
             <f:facet name="header">
-                <h:outputText>Interactions: #{experimentDetailedViewController.experimentWrapper.experiment.interactions.size()}</h:outputText>
+                <h:outputText>Interactions: #{experimentDetailedViewController.experimentWrapper.interactions.size()}</h:outputText>
             </f:facet>
 
             <!--Div created for Selenium Test-->

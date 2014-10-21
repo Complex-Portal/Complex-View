@@ -122,192 +122,206 @@
 
 <p:panel id="basic" header="Complex Details">
 
-    <p:outputPanel id="infoPanels">
-        <h:panelGroup rendered="#{complexController.complexToBeReviewed}">
-            <ia:panelMessage level="warn">
-                <b>To be reviewed: </b> #{complexController.toBeReviewed}
-            </ia:panelMessage>
-        </h:panelGroup>
-
-        <h:panelGroup rendered="#{complexController.complexWithCorrectionComment}">
-            <ia:panelMessage level="info">
-                <b>Correction comment: </b>#{complexController.correctionComment}
-            </ia:panelMessage>
-        </h:panelGroup>
-
-        <h:panelGroup rendered="#{complexController.complexOnHold}">
-            <ia:panelMessage level="warn">
-                This Complex is <b>on-hold</b>. Reason: #{complexController.onHold}
-            </ia:panelMessage>
-        </h:panelGroup>
-
-        <ui:include src="common_info_panels.xhtml">
-            <ui:param name="annotatedObjectController" value="#{complexController}"/>
-        </ui:include>
-    </p:outputPanel>
-
-    <h:panelGroup rendered="#{interaction != null}">
-        <div id="auditInfo" class="intact-auditPanel">
-            <ia:jcreatorUpdator annotatedObject="#{interaction}" />
-        </div>
+<p:outputPanel id="infoPanels">
+    <h:panelGroup rendered="#{complexController.complexToBeReviewed}">
+        <ia:panelMessage level="warn">
+            <b>To be reviewed: </b> #{complexController.toBeReviewed}
+        </ia:panelMessage>
     </h:panelGroup>
 
-    <table class="intact-tableBasicForm">
-        <tr>
+    <h:panelGroup rendered="#{complexController.complexWithCorrectionComment}">
+        <ia:panelMessage level="info">
+            <b>Correction comment: </b>#{complexController.correctionComment}
+        </ia:panelMessage>
+    </h:panelGroup>
+
+    <h:panelGroup rendered="#{complexController.complexOnHold}">
+        <ia:panelMessage level="warn">
+            This Complex is <b>on-hold</b>. Reason: #{complexController.onHold}
+        </ia:panelMessage>
+    </h:panelGroup>
+
+    <ui:include src="common_info_panels.xhtml">
+        <ui:param name="annotatedObjectController" value="#{complexController}"/>
+    </ui:include>
+</p:outputPanel>
+
+<h:panelGroup rendered="#{interaction != null}">
+    <div id="auditInfo" class="intact-auditPanel">
+        <ia:jcreatorUpdator annotatedObject="#{interaction}" />
+    </div>
+</h:panelGroup>
+
+<table class="intact-tableBasicForm">
+    <tr>
+        <td class="firstCell">
+            <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
+        </td>
+        <td>
+            <p:inputText id="shortlabelTxt" value="#{interaction.shortName}" size="30"
+                         validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
+                         required="true" requiredMessage="Shortlabel is required">
+                <p:ajax event="change" update=":editorForm:messagesComponent,:editorForm:changesPanel,:editorForm:unsavedChangesInfo" async="true" process="@this" oncomplete="markAsUnsaved()"/>
+            </p:inputText>
+        </td>
+        <td style="padding-left: 50px;">
+            <h:outputLabel value="AC: " for="acTxt" styleClass="intact-disabled"/>
+            <p:inputText id="acTxt" value="#{interaction.ac}"
+                         size="10" readonly="true"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="firstCell">
+            <h:outputLabel value="Recommended name: " for="recommendedNameTxt"/>
+        </td>
+        <td>
+            <h:panelGroup>
+                <p:inputText id="recommendedNameTxt" value="#{complexController.recommendedName}" size="70"
+                             valueChangeListener="#{complexController.onRecommendedNameChanged}">
+                    <ed:curation/>
+                </p:inputText>
+            </h:panelGroup>
+        </td>
+    </tr>
+    <tr>
+        <td class="firstCell">
+            <h:outputLabel value="Systematic name: " for="systematicNameTxt"/>
+        </td>
+        <td>
+            <h:panelGroup>
+                <p:inputText id="systematicNameTxt" value="#{complexController.systematicName}" size="70"
+                             valueChangeListener="#{complexController.onSystematicNameChanged}">
+                    <ed:curation/>
+                </p:inputText>
+            </h:panelGroup>
+        </td>
+    </tr>
+    <tr>
+        <td class="firstCell">
+            <h:outputLabel value="Complex type: " for="complexTypeTxt"/>
+        </td>
+        <td>
+            <ia:inputCvTerm id="complexTypeTxt" cvIdentifier="MI:0314"
+                            cvClass="uk.ac.ebi.intact.model.CvInteractorType"
+                            value="#{interaction.interactorType}"
+                            selectItems="#{editorCvTermService.interactorTypeSelectItems}"
+                            required="true" requiredMessage="Complex type is required"
+                            oncomplete="ia_enableSave()"
+                            update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
+                            valueChangeAwareObject="#{complexController}"/>
+        </td>
+        <td class="firstCell">
+            <h:outputLabel value="Organism: " for="organismTxt"/>
+        </td>
+        <td>
+            <ia:inputOrganism id="organismTxt" value="#{interaction.organism}"
+                              valueChangeAwareObject="#{complexController}"
+                              oncomplete="ia_enableSave()"
+                              update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
+                              selectItems="#{editorOrganismService.organismSelectItems}">
+                <ed:curation/>
+            </ia:inputOrganism>
+        </td>
+    </tr>
+    <tr>
+        <td class="firstCell">
+            <h:outputLabel value="Interaction type: " for="interactionTypeTxt"/>
+        </td>
+        <td>
+            <ia:inputCvTerm id="interactionTypeTxt" cvIdentifier="MI:0190"
+                            cvClass="uk.ac.ebi.intact.model.CvInteractionType"
+                            value="#{interaction.interactionType}"
+                            selectItems="#{editorCvTermService.interactionTypeSelectItems}"
+                            required="true" requiredMessage="Interaction type is required"
+                            oncomplete="ia_enableSave()"
+                            update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
+                            valueChangeAwareObject="#{complexController}"/>
+        </td>
+    </tr>
+    <tr>
+        <td class="firstCell">
+            <h:outputLabel value="ECO code: " for="ecoCodeTxt"/>
+        </td>
+        <td>
+            <ia:inputCvTerm id="ecoCodeTxt" cvIdentifier="MI:1331"
+                            cvClass="uk.ac.ebi.intact.model.CvTopic"
+                            value="#{interaction.evidenceType}"
+                            selectItems="#{editorCvTermService.evidenceTypeSelectItems}"
+                            required="true" requiredMessage="ECO code is required"
+                            oncomplete="ia_enableSave()"
+                            update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
+                            valueChangeAwareObject="#{complexController}"/>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="firstCell">
+            <h:outputLabel value="Description: " for="curatedComplexTxt"/>
+        </td>
+        <td>
+            <h:panelGroup>
+                <p:inputTextarea id="curatedComplexTxt" value="#{complexController.description}"
+                                 valueChangeListener="#{complexController.onDescriptionChanged}" rows="5" cols="60">
+                    <ed:curation/>
+                </p:inputTextarea>
+            </h:panelGroup>
+        </td>
+        <td class="firstCell">
+            <h:outputLabel value="Complex properties: " for="complexPropertiesTxt"/>
+        </td>
+        <td>
+            <h:panelGroup>
+                <p:inputTextarea id="complexPropertiesTxt" value="#{complexController.complexProperties}" rows="5" cols="60"
+                                 valueChangeListener="#{complexController.onComplexPropertiesChanged}">
+                    <ed:curation/>
+                </p:inputTextarea>
+            </h:panelGroup>
+        </td>
+    </tr>
+
+    <tr>
+        <h:panelGroup rendered="#{complexController.complexOnHold}">
+
             <td class="firstCell">
-                <h:outputLabel value="Shortlabel: " for="shortlabelTxt"/>
+                <h:outputLabel value="On hold: " for="onHoldTxt"/>
             </td>
-            <td>
-                <p:inputText id="shortlabelTxt" value="#{interaction.shortName}" size="30"
-                             validator="#{annotatedObjectController.validateAnnotatedObject}" converter="trimmingConverter"
-                             required="true" requiredMessage="Shortlabel is required">
-                    <p:ajax event="change" update=":editorForm:messagesComponent,:editorForm:changesPanel,:editorForm:unsavedChangesInfo" async="true" process="@this" oncomplete="markAsUnsaved()"/>
+            <td colspan="3">
+                <p:inputText id="onHoldTxt" value="#{complexController.onHold}" size="70"
+                             valueChangeListener="#{complexController.onHoldChanged}">
+                    <ed:curation/>
                 </p:inputText>
             </td>
-            <td style="padding-left: 50px;">
-                <h:outputLabel value="AC: " for="acTxt" styleClass="intact-disabled"/>
-                <p:inputText id="acTxt" value="#{interaction.ac}"
-                             size="10" readonly="true"/>
-            </td>
-        </tr>
-        <tr>
-            <td class="firstCell">
-                <h:outputLabel value="Recommended name: " for="recommendedNameTxt"/>
-            </td>
-            <td>
-                <h:panelGroup>
-                    <p:inputText id="recommendedNameTxt" value="#{complexController.recommendedName}" size="70"
-                                 valueChangeListener="#{complexController.onRecommendedNameChanged}">
-                        <ed:curation/>
-                    </p:inputText>
-                </h:panelGroup>
-            </td>
-        </tr>
-        <tr>
-            <td class="firstCell">
-                <h:outputLabel value="Systematic name: " for="systematicNameTxt"/>
-            </td>
-            <td>
-                <h:panelGroup>
-                    <p:inputText id="systematicNameTxt" value="#{complexController.systematicName}" size="70"
-                                 valueChangeListener="#{complexController.onSystematicNameChanged}">
-                        <ed:curation/>
-                    </p:inputText>
-                </h:panelGroup>
-            </td>
-        </tr>
-        <tr>
-            <td class="firstCell">
-                <h:outputLabel value="Complex type: " for="complexTypeTxt"/>
-            </td>
-            <td>
-                <ia:inputCvTerm id="complexTypeTxt" cvIdentifier="MI:0314"
-                                cvClass="uk.ac.ebi.intact.model.CvInteractorType"
-                                value="#{interaction.interactorType}"
-                                selectItems="#{editorCvTermService.interactorTypeSelectItems}"
-                                required="true" requiredMessage="Complex type is required"
-                                oncomplete="ia_enableSave()"
-                                update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
-                                valueChangeAwareObject="#{complexController}"/>
-            </td>
-            <td class="firstCell">
-                <h:outputLabel value="Organism: " for="organismTxt"/>
-            </td>
-            <td>
-                <ia:inputOrganism id="organismTxt" value="#{interaction.organism}"
-                                  valueChangeAwareObject="#{complexController}"
-                                  oncomplete="ia_enableSave()"
-                                  update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
-                                  selectItems="#{editorOrganismService.organismSelectItems}">
-                    <ed:curation/>
-                </ia:inputOrganism>
-            </td>
-        </tr>
-        <tr>
-            <td class="firstCell">
-                <h:outputLabel value="Interaction type: " for="interactionTypeTxt"/>
-            </td>
-            <td>
-                <ia:inputCvTerm id="interactionTypeTxt" cvIdentifier="MI:0190"
-                                cvClass="uk.ac.ebi.intact.model.CvInteractionType"
-                                value="#{interaction.interactionType}"
-                                selectItems="#{editorCvTermService.interactionTypeSelectItems}"
-                                required="true" requiredMessage="Interaction type is required"
-                                oncomplete="ia_enableSave()"
-                                update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
-                                valueChangeAwareObject="#{complexController}"/>
-            </td>
-        </tr>
-        <tr>
-            <td class="firstCell">
-                <h:outputLabel value="ECO code: " for="ecoCodeTxt"/>
-            </td>
-            <td>
-                <ia:inputCvTerm id="ecoCodeTxt" cvIdentifier="MI:1331"
-                                cvClass="uk.ac.ebi.intact.model.CvTopic"
-                                value="#{interaction.evidenceType}"
-                                selectItems="#{editorCvTermService.evidenceTypeSelectItems}"
-                                required="true" requiredMessage="ECO code is required"
-                                oncomplete="ia_enableSave()"
-                                update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"
-                                valueChangeAwareObject="#{complexController}"/>
-            </td>
-        </tr>
+        </h:panelGroup>
+    </tr>
+    <tr>
+        <h:panelGroup rendered="#{complexController.complexToBeReviewed}">
 
-        <tr>
             <td class="firstCell">
-                <h:outputLabel value="Description: " for="curatedComplexTxt"/>
+                <h:outputLabel value="To be reviewed: " for="toBeReviewedTxt"/>
             </td>
-            <td>
-                <h:panelGroup>
-                    <p:inputTextarea id="curatedComplexTxt" value="#{complexController.description}"
-                                     valueChangeListener="#{complexController.onDescriptionChanged}" rows="5" cols="60">
-                        <ed:curation/>
-                    </p:inputTextarea>
-                </h:panelGroup>
-            </td>
-            <td class="firstCell">
-                <h:outputLabel value="Complex properties: " for="complexPropertiesTxt"/>
-            </td>
-            <td>
-                <h:panelGroup>
-                    <p:inputTextarea id="complexPropertiesTxt" value="#{complexController.complexProperties}" rows="5" cols="60"
-                                 valueChangeListener="#{complexController.onComplexPropertiesChanged}">
-                        <ed:curation/>
-                    </p:inputTextarea>
-                </h:panelGroup>
-            </td>
-        </tr>
-
-        <tr>
-            <h:panelGroup rendered="#{complexController.complexOnHold}">
-
-                <td class="firstCell">
-                    <h:outputLabel value="On hold: " for="onHoldTxt"/>
-                </td>
-                <td colspan="3">
-                    <p:inputText id="onHoldTxt" value="#{complexController.onHold}" size="70"
-                                 valueChangeListener="#{complexController.onHoldChanged}">
-                        <ed:curation/>
-                    </p:inputText>
-                </td>
-            </h:panelGroup>
-        </tr>
-        <tr>
-            <h:panelGroup rendered="#{complexController.complexToBeReviewed}">
-
-                <td class="firstCell">
-                    <h:outputLabel value="To be reviewed: " for="toBeReviewedTxt"/>
-                </td>
-                <td colspan="3">
-                    <p:inputTextarea id="toBeReviewedTxt" value="#{complexController.toBeReviewed}" size="70"
+            <td colspan="3">
+                <p:inputTextarea id="toBeReviewedTxt" value="#{complexController.toBeReviewed}" size="70"
                                  valueChangeListener="#{complexController.onToBeReviewedChanged}">
-                        <ed:curation/>
-                    </p:inputTextarea>
-                </td>
-            </h:panelGroup>
-        </tr>
-    </table>
+                    <ed:curation/>
+                </p:inputTextarea>
+            </td>
+        </h:panelGroup>
+    </tr>
+    <tr>
+        <h:panelGroup rendered="#{complexController.complexWithCorrectionComment}">
+
+            <td class="firstCell">
+                <h:outputLabel value="Correction comment: " for="correctionCommentTxt"/>
+            </td>
+            <td colspan="3">
+                <p:inputTextarea id="correctionCommentTxt" value="#{complexController.correctionComment}" size="70"
+                                 valueChangeListener="#{complexController.onCorrectionCommentChanged}">
+                    <ed:curation/>
+                </p:inputTextarea>
+            </td>
+        </h:panelGroup>
+    </tr>
+</table>
 </p:panel>
 
 <br/>

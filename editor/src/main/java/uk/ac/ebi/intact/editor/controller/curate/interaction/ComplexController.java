@@ -1041,6 +1041,15 @@ public class ComplexController extends AnnotatedObjectController {
         }
     }
 
+    public void onCorrectionCommentChanged(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+        String newValue = (String) evt.getNewValue();
+        if (newValue != null && newValue.length() > 0){
+            this.complex.onCorrectionComment(newValue);
+            this.correctionComment = newValue;
+        }
+    }
+
     public String getRecommendedName() {
         return recommendedName;
     }

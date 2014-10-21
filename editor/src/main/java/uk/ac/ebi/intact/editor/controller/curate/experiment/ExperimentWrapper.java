@@ -15,11 +15,9 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate.experiment;
 
-import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.XrefUtils;
 
-import javax.faces.model.DataModel;
 import javax.persistence.EntityManager;
 import java.util.*;
 
@@ -30,20 +28,13 @@ import java.util.*;
 public class ExperimentWrapper {
     
     private Experiment experiment;
-    private DataModel interactionsDataModel;
+    private List<Interaction> interactions;
     
     public ExperimentWrapper(Experiment experiment, EntityManager entityManager) {
         this.experiment = experiment;
-        
-        if (experiment.getAc() != null) {
-            this.interactionsDataModel = LazyDataModelFactory.createLazyDataModel(entityManager,
-                    "select i from InteractionImpl i join i.experiments as exp where exp.ac = '"+experiment.getAc()+"' order by i.shortLabel",
-                    "select count(i) from InteractionImpl i join i.experiments as exp where exp.ac = '"+experiment.getAc()+"'");
-        } else {
-            List<Interaction> sortedInteractions = new ArrayList<Interaction>(experiment.getInteractions());
-            Collections.sort(sortedInteractions, new InteractionAlphabeticalOrder());
-            this.interactionsDataModel = LazyDataModelFactory.createLazyDataModel(experiment.getInteractions());
-        }
+
+        interactions = new ArrayList<Interaction>(experiment.getInteractions());
+        Collections.sort(interactions, new InteractionAlphabeticalOrder());
     }
     
     public List<Component> sortedParticipants(Interaction interaction) {
@@ -58,8 +49,8 @@ public class ExperimentWrapper {
         return experiment;
     }
 
-    public DataModel getInteractionsDataModel() {
-        return interactionsDataModel;
+    public List<Interaction> getInteractions() {
+        return interactions;
     }
 
     private class InteractionAlphabeticalOrder implements Comparator<Interaction> {
