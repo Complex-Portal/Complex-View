@@ -15,6 +15,7 @@
     <ui:define name="metadata">
         <f:metadata>
             <f:event type="preRenderView" listener="#{dashboardController.loadData}"/>
+            <f:event type="preRenderView" listener="#{dashboardController.loadJamiData}"/>
         </f:metadata>
     </ui:define>
 
@@ -56,7 +57,7 @@
                         <f:selectItem itemLabel="Ready for release" itemValue="PL:0011"/>
                         <f:selectItem itemLabel="Released" itemValue="PL:0012"/>
                     </h:selectManyCheckbox>
-                    <p:commandButton value="Refresh" actionListener="#{dashboardController.refreshTables()}" ajax="false"/>
+                    <p:commandButton value="Refresh" actionListener="#{dashboardController.refreshAllTables()}" ajax="false"/>
                 </h:panelGrid>
             </p>
 

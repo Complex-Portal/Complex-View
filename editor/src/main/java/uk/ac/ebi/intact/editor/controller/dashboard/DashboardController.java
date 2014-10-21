@@ -18,6 +18,8 @@ package uk.ac.ebi.intact.editor.controller.dashboard;
 import org.primefaces.model.LazyDataModel;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
@@ -59,6 +61,7 @@ public class DashboardController extends JpaAwareController {
     }
 
     @SuppressWarnings("unchecked")
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             UserSessionController userSessionController = ApplicationContextProvider.getBean("userSessionController");
@@ -72,6 +75,22 @@ public class DashboardController extends JpaAwareController {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public void loadJamiData( ComponentSystemEvent event ) {
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            UserSessionController userSessionController = ApplicationContextProvider.getBean("userSessionController");
+            if (userSessionController.hasRole("CURATOR") || userSessionController.hasRole("REVIEWER") ){
+                isPublicationTableEnabled = true;
+            }
+            if (userSessionController.hasRole("COMPLEX_CURATOR") || userSessionController.hasRole("COMPLEX_REVIEWER") ){
+                isComplexTableEnabled = true;
+            }
+            refreshJamiTables();
+        }
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void refreshTables() {
         if (isPublicationTableEnabled){
             UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
@@ -109,10 +128,14 @@ public class DashboardController extends JpaAwareController {
                     "select count(distinct p.ac) from Publication p where upper(p.currentReviewer.login) = '"+userId+"'"+
                             " and ("+additionalSql+")","p", "updated", false);
         }
+    }
 
+    public void refreshAllTables() {
+        refreshTables();
         refreshJamiTables();
     }
 
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void refreshJamiTables() {
         if (isComplexTableEnabled){
             UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
