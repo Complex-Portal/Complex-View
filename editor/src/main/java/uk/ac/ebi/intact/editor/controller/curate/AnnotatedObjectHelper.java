@@ -261,6 +261,25 @@ public class AnnotatedObjectHelper implements Serializable {
         getAnnotatedObject().addAnnotation( annotation );
     }
 
+    public void addAnnotation( AnnotatedObject ao, String topicIdOrLabel, String text ) {
+
+        if (topicIdOrLabel == null){
+            throw new IllegalArgumentException("The topic must be set before creating an annotation.");
+        }
+
+        CvTopic dataset = getCvObjectService().findCvObject( CvTopic.class, topicIdOrLabel );
+
+        if (dataset == null){
+            throw new IllegalArgumentException("The topic " +topicIdOrLabel + " does not exist in the database. You must create it first before being able to create an annotation with this topic.");
+        }
+
+        Annotation annotation = new Annotation( getIntactContext().getInstitution(), dataset );
+        annotation.setAnnotationText( text );
+        initAudit(annotation);
+
+        ao.addAnnotation( annotation );
+    }
+
     public void replaceOrCreateAnnotation( String topicOrShortLabel, String text ) {
         AnnotatedObject parent = getAnnotatedObject();
         if (topicOrShortLabel == null){
@@ -289,6 +308,36 @@ public class AnnotatedObjectHelper implements Serializable {
         // create if not exists
         if ( !exists ) {
             addAnnotation( topicOrShortLabel, text );
+        }
+    }
+
+    public void replaceOrCreateAnnotation( AnnotatedObject parent, String topicOrShortLabel, String text ) {
+        if (topicOrShortLabel == null){
+            throw new IllegalArgumentException("The topic must be set before creating or replacing an annotation.");
+        }
+
+        // modify if exists
+        boolean exists = false;
+
+        for ( Annotation annotation : parent.getAnnotations() ) {
+            if ( annotation.getCvTopic() != null ) {
+                if ( topicOrShortLabel.equals( annotation.getCvTopic().getIdentifier() )
+                        || topicOrShortLabel.equals( annotation.getCvTopic().getShortLabel() ) ) {
+                    if ((text == null && annotation.getAnnotationText() != null) || (text != null && annotation.getAnnotationText() == null)){
+                        annotation.setAnnotationText( text );
+                    }
+                    else if (text != null && !text.equals( annotation.getAnnotationText() )){
+                        annotation.setAnnotationText( text );
+                    }
+
+                    exists = true;
+                }
+            }
+        }
+
+        // create if not exists
+        if ( !exists ) {
+            addAnnotation( parent, topicOrShortLabel, text );
         }
     }
 
@@ -334,6 +383,25 @@ public class AnnotatedObjectHelper implements Serializable {
         }
     }
 
+    public void removeAnnotation( AnnotatedObject ao, String topicIdOrLabel) {
+        Iterator<Annotation> iterator = ao.getAnnotations().iterator();
+
+        if (topicIdOrLabel == null){
+            throw new IllegalArgumentException("The topic must be set before removing an annotation.");
+        }
+
+        while ( iterator.hasNext() ) {
+            Annotation annotation = iterator.next();
+            String topicId = annotation.getCvTopic() != null ? annotation.getCvTopic().getIdentifier() : null;
+            String topicShortLabel = annotation.getCvTopic() != null ? annotation.getCvTopic().getShortLabel() : null;
+
+            if ( topicIdOrLabel.equals( topicId ) ||
+                    topicIdOrLabel.equals( topicShortLabel ) ) {
+                iterator.remove();
+            }
+        }
+    }
+
     public void removeAnnotation( Annotation annotation ) {
         getAnnotatedObject().removeAnnotation( annotation );
 
@@ -348,6 +416,18 @@ public class AnnotatedObjectHelper implements Serializable {
             replaceOrCreateAnnotation( topicIdOrLabel, value.toString() );
         } else {
             removeAnnotation( topicIdOrLabel );
+        }
+    }
+
+    public void setAnnotation( AnnotatedObject ao, String topicIdOrLabel, Object value ) {
+        if (topicIdOrLabel == null){
+            throw new IllegalArgumentException("The topic must be set before creating an annotation.");
+        }
+
+        if ( value != null && !value.toString().isEmpty() ) {
+            replaceOrCreateAnnotation( ao, topicIdOrLabel, value.toString() );
+        } else {
+            removeAnnotation( ao, topicIdOrLabel );
         }
     }
 

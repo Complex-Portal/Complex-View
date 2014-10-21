@@ -1364,6 +1364,10 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    public LifecycleManager getLifecycleManager() {
+        return lifecycleManager;
+    }
+
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void assignNewImex(ActionEvent evt) {
         // save publication changes first
@@ -1561,7 +1565,6 @@ public class PublicationController extends AnnotatedObjectController {
         getCoreEntityManager().detach(publication);
     }
 
-    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void copyAnnotationsToExperiments(ActionEvent evt) {
         for (Experiment exp : publication.getExperiments()) {
             CurateUtils.copyPublicationAnnotationsToExperiment(exp);
@@ -1590,7 +1593,6 @@ public class PublicationController extends AnnotatedObjectController {
         addInfoMessage("Publication title copied", publication.getExperiments().size() + " experiments were modified");
     }
 
-    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void copyPrimaryIdentifierToExperiments() {
         Collection<Experiment> experiments = publication.getExperiments();
 

@@ -36,6 +36,7 @@ import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.util.ExperimentUtils;
+import uk.ac.ebi.intact.model.util.PublicationUtils;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -284,30 +285,35 @@ public class ExperimentController extends AnnotatedObjectController {
     }
 
     private String createExperimentShortLabel() {
-        String author;
+        String author=null;
 
-        if (publicationController.getFirstAuthor() == null) {
+        String authors = getAnnotatedObjectHelper().findAnnotationText(publicationController.getPublication(), CvTopic.AUTHOR_LIST_MI_REF, getDaoFactory());
+        if (authors != null) {
+            author = authors.split(" ")[0];
+        }
+
+        if (author == null) {
             addWarningMessage("The current publication does not have the authors annotation.","Created anonymous short label.");
 
             author = "anonymous";
 
         } else {
             // clean reserved characters
-            Matcher matcher = EXP_SHORTLABEL_PATTERN.matcher(publicationController.getFirstAuthor().trim().toLowerCase());
+            Matcher matcher = EXP_SHORTLABEL_PATTERN.matcher(author.trim().toLowerCase());
 
             author = matcher.replaceAll("_");
             /*author = author.replaceAll("-", "_");
             author = author.replaceAll(" ", "_");*/
         }
 
-        String year;
+        String year = getAnnotatedObjectHelper().findAnnotationText(publicationController.getPublication(), CvTopic.PUBLICATION_YEAR_MI_REF, getDaoFactory());
 
-        if (publicationController.getYear() == null) {
+        if (year == null) {
             addWarningMessage("The current publication does not have the year annotation.","Correct the label if necessary and add a year it to the publication.");
 
             year = new SimpleDateFormat("yyyy").format(new Date());
         } else {
-            year = String.valueOf(publicationController.getYear());
+            year = String.valueOf(year);
         }
 
         String shortLabel = author+"-"+year;
@@ -422,8 +428,29 @@ public class ExperimentController extends AnnotatedObjectController {
         boolean allRejected = expRejected == experiments.size();
 
         if (allAccepted) {
-            publicationController.acceptPublication(null);
-            publicationController.doSave();
+            UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
+
+            getAnnotatedObjectHelper().setAnnotation(publicationController.getPublication(), CvTopic.ACCEPTED,
+                    "Accepted " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase());
+
+            addInfoMessage("Publication accepted", "");
+
+            //clear to-be-reviewed
+            getAnnotatedObjectHelper().removeAnnotation(publicationController.getPublication(), CvTopic.TO_BE_REVIEWED);
+
+
+            // refresh experiments with possible changes in publication title, annotations and publication identifier
+            publicationController.copyAnnotationsToExperiments(null);
+            publicationController.copyPublicationTitleToExperiments(null);
+            publicationController.copyPrimaryIdentifierToExperiments();
+
+            publicationController.getLifecycleManager().getReadyForCheckingStatus().accept(publicationController.getPublication(), null);
+
+            if (!PublicationUtils.isOnHold(publicationController.getPublication())) {
+                publicationController.getLifecycleManager().getAcceptedStatus().readyForRelease(publicationController.getPublication(), "Accepted and not on-hold");
+            }
+
+            getPersistenceController().doSave(publicationController.getPublication());
 
             addInfoMessage("Publication accepted", "All of its experiments have been accepted");
 
