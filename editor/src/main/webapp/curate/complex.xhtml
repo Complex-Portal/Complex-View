@@ -280,34 +280,30 @@
         </tr>
 
         <tr>
-            <h:panelGroup rendered="#{complexController.onHold}">
+            <h:panelGroup rendered="#{complexController.complexOnHold}">
 
                 <td class="firstCell">
                     <h:outputLabel value="On hold: " for="onHoldTxt"/>
                 </td>
                 <td colspan="3">
-                    <h:panelGroup rendered="#{complexController.onHold}">
-                        <p:inputText id="onHoldTxt" value="#{complexController.onHold}" size="70"
-                                     valueChangeListener="#{complexController.onHoldChanged}" disabled="#{!complexController.onHold}">
-                            <ed:curation/>
-                        </p:inputText>
-                    </h:panelGroup>
+                    <p:inputText id="onHoldTxt" value="#{complexController.onHold}" size="70"
+                                 valueChangeListener="#{complexController.onHoldChanged}">
+                        <ed:curation/>
+                    </p:inputText>
                 </td>
             </h:panelGroup>
         </tr>
         <tr>
-            <h:panelGroup rendered="#{complexController.toBeReviewed}">
+            <h:panelGroup rendered="#{complexController.complexToBeReviewed}">
 
                 <td class="firstCell">
                     <h:outputLabel value="To be reviewed: " for="toBeReviewedTxt"/>
                 </td>
                 <td colspan="3">
-                    <h:panelGroup rendered="#{complexController.toBeReviewed}">
-                        <p:inputText id="toBeReviewedTxt" value="#{complexController.toBeReviewed}" size="70"
-                                     valueChangeListener="#{complexController.onToBeReviewedChanged}" disabled="#{!complexController.toBeReviewed}">
-                            <ed:curation/>
-                        </p:inputText>
-                    </h:panelGroup>
+                    <p:inputText id="toBeReviewedTxt" value="#{complexController.toBeReviewed}" size="70"
+                                 valueChangeListener="#{complexController.onToBeReviewedChanged}">
+                        <ed:curation/>
+                    </p:inputText>
                 </td>
             </h:panelGroup>
         </tr>
