@@ -1032,6 +1032,15 @@ public class ComplexController extends AnnotatedObjectController {
         }
     }
 
+    public void onToBeReviewedChanged(ValueChangeEvent evt) {
+        setUnsavedChanges(true);
+        String newValue = (String) evt.getNewValue();
+        if (newValue != null && newValue.length() > 0){
+            this.complex.onToBeReviewed(newValue);
+            this.toBeReviewed = newValue;
+        }
+    }
+
     public String getRecommendedName() {
         return recommendedName;
     }
