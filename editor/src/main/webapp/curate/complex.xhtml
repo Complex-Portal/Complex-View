@@ -300,10 +300,10 @@
                     <h:outputLabel value="To be reviewed: " for="toBeReviewedTxt"/>
                 </td>
                 <td colspan="3">
-                    <p:inputText id="toBeReviewedTxt" value="#{complexController.toBeReviewed}" size="70"
+                    <p:inputTextarea id="toBeReviewedTxt" value="#{complexController.toBeReviewed}" size="70"
                                  valueChangeListener="#{complexController.onToBeReviewedChanged}">
                         <ed:curation/>
-                    </p:inputText>
+                    </p:inputTextarea>
                 </td>
             </h:panelGroup>
         </tr>
