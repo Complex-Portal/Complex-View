@@ -29,12 +29,30 @@ public class ExperimentWrapper {
     
     private Experiment experiment;
     private List<Interaction> interactions;
+    private Map<String, List<Annotation>> interactionAnnotations;
+    private Map<String, List<Xref>> interactionXrefs;
+    private Map<String, List<Parameter>> interactionsParameters;
+
+    private Map<String, List<Component>> componentsMap;
     
     public ExperimentWrapper(Experiment experiment, EntityManager entityManager) {
         this.experiment = experiment;
 
         interactions = new ArrayList<Interaction>(experiment.getInteractions());
         Collections.sort(interactions, new InteractionAlphabeticalOrder());
+
+        interactionAnnotations = new HashMap<String, List<Annotation>>(interactions.size());
+        interactionXrefs = new HashMap<String, List<Xref>>(interactions.size());
+        interactionsParameters = new HashMap<String, List<Parameter>>(interactions.size());
+        componentsMap = new HashMap<String, List<Component>>(interactions.size());
+
+        for (Interaction inter : interactions){
+            String ac = inter.getAc() != null ? inter.getAc() : Integer.toString(inter.hashCode());
+            interactionAnnotations.put(ac, new ArrayList<Annotation>(inter.getAnnotations()));
+            interactionsParameters.put(ac, new ArrayList<Parameter>(inter.getParameters()));
+            interactionXrefs.put(ac, new ArrayList<Xref>(inter.getXrefs()));
+            componentsMap.put(ac, new ArrayList<Component>(sortedParticipants(inter)));
+        }
     }
     
     public List<Component> sortedParticipants(Interaction interaction) {
@@ -51,6 +69,30 @@ public class ExperimentWrapper {
 
     public List<Interaction> getInteractions() {
         return interactions;
+    }
+
+    public List<Annotation> getInteractionAnnotations(Interaction interaction) {
+        String ac = interaction.getAc() != null ? interaction.getAc() : Integer.toString(interaction.hashCode());
+
+        return interactionAnnotations.get(ac);
+    }
+
+    public List<Xref> getInteractionXrefs(Interaction interaction) {
+        String ac = interaction.getAc() != null ? interaction.getAc() : Integer.toString(interaction.hashCode());
+
+        return interactionXrefs.get(ac);
+    }
+
+    public List<Parameter> getInteractionParameters(Interaction interaction) {
+        String ac = interaction.getAc() != null ? interaction.getAc() : Integer.toString(interaction.hashCode());
+
+        return interactionsParameters.get(ac);
+    }
+
+    public List<Component> getParticipants(Interaction interaction){
+        String ac = interaction.getAc() != null ? interaction.getAc() : Integer.toString(interaction.hashCode());
+
+        return componentsMap.get(ac);
     }
 
     private class InteractionAlphabeticalOrder implements Comparator<Interaction> {

@@ -39,7 +39,7 @@
 
         <p:accordionPanel id="experimentAccPanel" autoHeight="false" multiple="true">
             <ui:param name="filteredExperimentAnnotations"
-                      value="#{experimentDetailedViewController.experimentAnnotationsByOverviewCriteria(experimentDetailedViewController.experimentWrapper.experiment)}"/>
+                      value="#{experimentDetailedViewController.annotations}"/>
             <p:tab title="Relevant annotations for the experiment: #{filteredExperimentAnnotations != null ? filteredExperimentAnnotations.size(): ''}"
                    rendered="#{filteredExperimentAnnotations != null ? filteredExperimentAnnotations.size() gt 0 : 'false'}">
 
@@ -89,10 +89,10 @@
 
                         <p:accordionPanel id="interactionsAccPanel" autoHeight="false" multiple="true"
                                           activeIndex="0,1">
-                            <p:tab title="Participants: #{interaction.components.size()}">
+                            <p:tab title="Participants: #{experimentDetailedViewController.experimentWrapper.getParticipants(interaction).size()}">
 
                                 <p:dataTable var="participant"
-                                value="#{experimentDetailedViewController.experimentWrapper.sortedParticipants(interaction)}">
+                                value="#{experimentDetailedViewController.experimentWrapper.getParticipants(interaction)}">
                                     <p:column headerText="Identity">
                                         <h:outputLink value="#{request.contextPath}/participant/#{participant.ac}">
                                             <h:outputText
@@ -140,11 +140,11 @@
 
                             </p:tab>
 
-                            <p:tab title="Annotations: #{interaction.annotations.size()}"
-                                   rendered="#{interaction.annotations.size() gt 0}">
+                            <p:tab title="Annotations: #{experimentDetailedViewController.experimentWrapper.getInteractionAnnotations(interaction).size()}"
+                                   rendered="#{experimentDetailedViewController.experimentWrapper.getInteractionAnnotations(interaction).size() gt 0}">
 
                                 <p:dataTable id="sumViewAnnotations" var="annotation"
-                                             value="#{interaction.annotations}">
+                                             value="#{experimentDetailedViewController.experimentWrapper.getInteractionAnnotations(interaction)}">
 
                                     <p:column headerText="Topic" style="width: 20%">
                                         <h:outputText id="annotation-topic"
@@ -157,10 +157,10 @@
                                 </p:dataTable>
                             </p:tab>
 
-                            <p:tab title="Xrefs: #{interaction.xrefs.size()}"
-                                   rendered="#{interaction.xrefs.size() gt 0}">
+                            <p:tab title="Xrefs: #{experimentDetailedViewController.experimentWrapper.getInteractionXrefs(interaction).size()}"
+                                   rendered="#{experimentDetailedViewController.experimentWrapper.getInteractionXrefs(interaction).size() gt 0}">
 
-                                <p:dataTable id="xrefsTable" var="xref" value="#{interaction.xrefs}"
+                                <p:dataTable id="xrefsTable" var="xref" value="#{experimentDetailedViewController.experimentWrapper.getInteractionXrefs(interaction)}"
                                              rowIndexVar="xrefIndex"
                                              style="width:100%">
                                     <p:column headerText="Database">
@@ -180,10 +180,10 @@
                                 </p:dataTable>
                             </p:tab>
 
-                            <p:tab title="Parameters: #{interaction.parameters.size()}"
-                                   rendered="#{interaction.parameters.size() > 0}">
+                            <p:tab title="Parameters: #{experimentDetailedViewController.experimentWrapper.getInteractionParameters(interaction).size()}"
+                                   rendered="#{experimentDetailedViewController.experimentWrapper.getInteractionParameters(interaction).size() > 0}">
                                 <p:column headerText="Parameters">
-                                    <ui:repeat value="#{interaction.parameters}" var="parameter">
+                                    <ui:repeat value="#{experimentDetailedViewController.experimentWrapper.getInteractionParameters(interaction)}" var="parameter">
                                         <h:panelGroup>
                                             <strong><h:outputText
                                                     value="#{parameter.cvParameterType != null ? parameter.cvParameterType.shortLabel : ''}"

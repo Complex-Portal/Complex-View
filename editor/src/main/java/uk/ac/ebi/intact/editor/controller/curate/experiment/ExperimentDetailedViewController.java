@@ -60,10 +60,12 @@ public class ExperimentDetailedViewController extends JpaAwareController {
     @Autowired
     private ExperimentController experimentController;
 
+    private List<Annotation> annotations;
+
     public ExperimentDetailedViewController() {
     }
 
-    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
             if (experimentController.getExperiment() != null) {
@@ -85,6 +87,8 @@ public class ExperimentDetailedViewController extends JpaAwareController {
                     addErrorMessage("No experiment with this AC", "Verify the URL");
                 }
             }
+
+            annotations = experimentAnnotationsByOverviewCriteria(experimentWrapper.getExperiment());
         }
 
     }
@@ -119,7 +123,7 @@ public class ExperimentDetailedViewController extends JpaAwareController {
 //        return findAnnotationText(interaction, CvTopic.COMMENT_MI_REF);
 //    }
 
-	public List<Annotation> experimentAnnotationsByOverviewCriteria(Experiment experiment) {
+	private List<Annotation> experimentAnnotationsByOverviewCriteria(Experiment experiment) {
 
 		if (experiment == null) return null;
 
@@ -132,6 +136,10 @@ public class ExperimentDetailedViewController extends JpaAwareController {
 		}
 		return annotations;
 	}
+
+    public List<Annotation> getAnnotations() {
+        return annotations;
+    }
 
 
 	public static String parameterAsString(Parameter param){
