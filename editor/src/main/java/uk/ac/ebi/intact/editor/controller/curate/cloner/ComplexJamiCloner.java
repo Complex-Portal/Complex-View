@@ -20,6 +20,7 @@ import psidev.psi.mi.jami.utils.AnnotationUtils;
 import psidev.psi.mi.jami.utils.XrefUtils;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.admin.UserManagerController;
+import uk.ac.ebi.intact.editor.controller.curate.cvobject.EditorCvTermService;
 import uk.ac.ebi.intact.editor.controller.curate.organism.EditorOrganismService;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.IntactDao;
@@ -29,6 +30,7 @@ import uk.ac.ebi.intact.jami.model.lifecycle.Releasable;
 import uk.ac.ebi.intact.jami.synchronizer.FinderException;
 import uk.ac.ebi.intact.jami.synchronizer.PersisterException;
 import uk.ac.ebi.intact.jami.synchronizer.SynchronizerException;
+import uk.ac.ebi.intact.jami.utils.IntactUtils;
 
 import java.util.Date;
 
@@ -76,9 +78,31 @@ public class ComplexJamiCloner {
         UserSessionController userSessionController = ApplicationContextProvider.getBean("userSessionController");
         clone.setSource(userSessionController.getUserSource());
 
-        for (Object obj : evidence.getIdentifiers()){
-            Xref ref = (Xref)obj;
-            clone.getIdentifiers().add(new InteractorXref(ref.getDatabase(), ref.getId(), ref.getVersion(), ref.getQualifier()));
+        // get exp evidences
+        if (!evidence.getIdentifiers().isEmpty()){
+            EditorCvTermService editorCvTermService = ApplicationContextProvider.getBean("editorCvTermService");
+            IntactCvTerm expEvidence = intactDao.getCvTermDao().getByShortName("exp-evidence", IntactUtils.QUALIFIER_OBJCLASS);
+            if (expEvidence == null){
+                IntactTransactionSynchronization afterCommitExecutor = ApplicationContextProvider.getBean("intactTransactionSynchronization");
+                afterCommitExecutor.registerDaoForSynchronization(intactDao);
+                intactDao.getCvTermDao().persist(new IntactCvTerm("exp-evidence"));
+            }
+
+            for (Object obj : evidence.getIdentifiers()){
+                Xref ref = (Xref)obj;
+
+                CvTerm db = ref.getDatabase();
+                if (!(db instanceof IntactCvTerm)){
+                    db = intactDao.getCvTermDao().getByShortName(ref.getDatabase().getShortName(), IntactUtils.DATABASE_OBJCLASS);
+                    if (db == null){
+                        IntactTransactionSynchronization afterCommitExecutor = ApplicationContextProvider.getBean("intactTransactionSynchronization");
+                        afterCommitExecutor.registerDaoForSynchronization(intactDao);
+                        intactDao.getCvTermDao().persist(new IntactCvTerm(ref.getDatabase().getShortName()));
+                    }
+                }
+                clone.getIdentifiers().add(new InteractorXref(db, ref.getId(), ref.getVersion(),
+                        editorCvTermService.findCvByAc(expEvidence.getAc())));
+            }
         }
 
         for (Object obj : evidence.getXrefs()){
@@ -149,11 +173,7 @@ public class ComplexJamiCloner {
             clone.getAliases().add(new InteractorAlias(alias.getType(), alias.getName()));
         }
 
-        for (Object obj : complex.getIdentifiers()){
-            Xref ref = (Xref)obj;
-            clone.getIdentifiers().add(new InteractorXref(ref.getDatabase(), ref.getId(), ref.getVersion(), ref.getQualifier()));
-        }
-
+        // do not clone identifiers, only xrefs
         for (Object obj : complex.getXrefs()){
             Xref ref = (Xref)obj;
             if (XrefUtils.isXrefFromDatabase(ref, Xref.IMEX_MI, Xref.IMEX)
