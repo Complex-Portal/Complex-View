@@ -5,9 +5,12 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import uk.ac.ebi.intact.core.context.IntactContext;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.cloner.InteractorIntactCloner;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.model.*;
@@ -16,6 +19,7 @@ import uk.ac.ebi.intact.model.util.CvObjectUtils;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.validator.ValidatorException;
@@ -60,8 +64,15 @@ public class InteractorController extends AnnotatedObjectController {
     }
 
     @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
-        return clone(interactor, new InteractorIntactCloner());
+        if (!getCoreEntityManager().contains(interactor)){
+            setInteractor(getCoreEntityManager().merge(this.interactor));
+        }
+        String value = clone(interactor, new InteractorIntactCloner());
+
+        getCoreEntityManager().detach(this.interactor);
+        return value;
     }
 
     @Override
@@ -69,12 +80,13 @@ public class InteractorController extends AnnotatedObjectController {
         setInteractor((Interactor) annotatedObject);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData( ComponentSystemEvent event ) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
             if ( ac != null ) {
                 if ( interactor == null || !ac.equals(interactor.getAc())) {
-                    interactor = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getInteractorDao(), ac);
+                    interactor = loadByAc(getDaoFactory().getInteractorDao(), ac);
                 }
             } else {
                 if ( interactor != null ) ac = interactor.getAc();
@@ -110,6 +122,7 @@ public class InteractorController extends AnnotatedObjectController {
         cleanSequence(null);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String newInteractor() {
         Interactor interactor = newInstance(newInteractorType);
         interactor.setOwner(userSessionController.getUserInstitution());
@@ -123,6 +136,7 @@ public class InteractorController extends AnnotatedObjectController {
     }
 
     // TODO migrate to intact core as this is generic functionality
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public Interactor newInstance(CvInteractorType interactorType) {
         // re-attach xrefs
         interactorType = getDaoFactory().getCvObjectDao(CvInteractorType.class).getByAc(interactorType.getAc());
@@ -260,5 +274,26 @@ public class InteractorController extends AnnotatedObjectController {
 
     public boolean isNoUniprotUpdate() {
         return super.isNoUniprotUpdate((Interactor)getAnnotatedObject());
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void doSave(boolean refreshCurrentView) {
+        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
+        PersistenceController persistenceController = getPersistenceController();
+
+        doSaveIntact(refreshCurrentView, changesController, persistenceController);
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public String doSave() {
+        return super.doSave();
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    public void doSaveIfNecessary(ActionEvent evt) {
+        super.doSaveIfNecessary(evt);
     }
 }
