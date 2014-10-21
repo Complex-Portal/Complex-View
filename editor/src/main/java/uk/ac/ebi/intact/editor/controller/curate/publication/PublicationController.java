@@ -44,6 +44,8 @@ import uk.ac.ebi.intact.dataexchange.imex.idassigner.ImexCentralManager;
 import uk.ac.ebi.intact.dataexchange.imex.idassigner.actions.PublicationImexUpdaterException;
 import uk.ac.ebi.intact.editor.controller.UserSessionController;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
+import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
+import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController;
 import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
@@ -141,6 +143,7 @@ public class PublicationController extends AnnotatedObjectController {
         // nothing to do
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void loadData(ComponentSystemEvent event) {
         if (!FacesContext.getCurrentInstance().isPostback()) {
 
@@ -174,7 +177,9 @@ public class PublicationController extends AnnotatedObjectController {
 
         if (ac != null) {
             if (publication == null || !ac.equals(publication.getAc())) {
-                publication = loadByAc(IntactContext.getCurrentInstance().getDaoFactory().getPublicationDao(), ac);
+                publication = loadByAc(getDaoFactory().getPublicationDao(), ac);
+                // initialise annotations
+                Hibernate.initialize(publication.getAnnotations());
                 resetToNullIfComplexPublication();
 
                 if (publication == null) {
@@ -251,6 +256,7 @@ public class PublicationController extends AnnotatedObjectController {
         return true;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String newAutocomplete() {
         identifier = identifierToImport;
 
@@ -301,6 +307,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void createNewPublication(ActionEvent evt) {
 
         if (identifier == null) {
@@ -315,6 +322,7 @@ public class PublicationController extends AnnotatedObjectController {
         identifierToImport = null;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void createNewEmptyPublication(ActionEvent evt) {
 
         if (identifier == null) {
@@ -328,12 +336,14 @@ public class PublicationController extends AnnotatedObjectController {
         identifierToImport = null;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void doFormAutocomplete(ActionEvent evt) {
         if (publication.getShortLabel() != null) {
             autocomplete(publication, publication.getShortLabel());
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void autocomplete(Publication publication, String id) {
         CitexploreClient citexploreClient = null;
 
@@ -403,7 +413,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String newEmptyUnassigned() {
         SequenceManager sequenceManager = (SequenceManager) getSpringContext().getBean("sequenceManager");
         try {
@@ -460,7 +470,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void newEmpty() {
 
         Publication publication = new Publication(userSessionController.getUserInstitution(), identifier);
@@ -492,6 +502,7 @@ public class PublicationController extends AnnotatedObjectController {
         getChangesController().markAsUnsaved(publication);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void openByPmid(ActionEvent evt) {
         identifier = identifierToOpen;
 
@@ -545,6 +556,7 @@ public class PublicationController extends AnnotatedObjectController {
         return publication.getStatus().getIdentifier().equals(CvPublicationStatusType.RELEASED.identifier());
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void claimOwnership(ActionEvent evt) {
         lifecycleManager.getGlobalStatus().changeOwnership(publication, getCurrentUser(), null);
 
@@ -556,6 +568,7 @@ public class PublicationController extends AnnotatedObjectController {
         addInfoMessage("Claimed publication ownership", "You are now the owner of this publication");
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void markAsAssignedToMe(ActionEvent evt) {
         lifecycleManager.getNewStatus().assignToCurator(publication, getCurrentUser());
 
@@ -564,6 +577,7 @@ public class PublicationController extends AnnotatedObjectController {
         markAsCurationInProgress(evt);
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void markAsCurationInProgress(ActionEvent evt) {
         if (!userSessionController.isItMe(publication.getCurrentOwner())) {
             addErrorMessage("Cannot mark as curation in progress", "You are not the owner of this publication");
@@ -584,6 +598,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void markAsReadyForChecking(ActionEvent evt) {
         if (!userSessionController.isItMe(publication.getCurrentOwner())) {
             addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this publication");
@@ -706,10 +721,12 @@ public class PublicationController extends AnnotatedObjectController {
         return ExperimentUtils.areAllAccepted(publication.getExperiments());
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isBackToCurationButtonRendered() {
         return isButtonRendered(CvLifecycleEventType.READY_FOR_CHECKING);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isBackToCheckingButtonRendered() {
         boolean render = isButtonRendered(CvLifecycleEventType.READY_FOR_RELEASE);
 
@@ -732,6 +749,7 @@ public class PublicationController extends AnnotatedObjectController {
         return new DateTime().isBefore(eventTime.plusMinutes(getEditorConfig().getRevertDecisionTime()));
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void doSaveAndClose(ActionEvent evt) {
         doSave(evt);
         doClose(evt);
@@ -768,6 +786,7 @@ public class PublicationController extends AnnotatedObjectController {
         return super.doDelete();
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void addDataset(ActionEvent evt) {
         if (datasetToAdd != null) {
             datasetsSelectItems.add(getDatasetPopulator().createSelectItem(datasetToAdd));
@@ -798,6 +817,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void createAndAddNewDataset(ActionEvent evt) {
         if (newDatasetDescriptionToCreate == null) {
             addErrorMessage("A short sentence describing the dataset is required", "dataset description required");
@@ -853,6 +873,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void removeDatasets(ActionEvent evt) {
         if (datasetsToRemove != null) {
             for (String datasetToRemove : datasetsToRemove) {
@@ -897,6 +918,7 @@ public class PublicationController extends AnnotatedObjectController {
         return getFirstAuthor() + "-" + getYear();
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public int countExperiments(Publication pub) {
         if (Hibernate.isInitialized(pub.getExperiments())) {
             return pub.getExperiments().size();
@@ -907,6 +929,7 @@ public class PublicationController extends AnnotatedObjectController {
         return -1;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public int countInteractions(Publication pub) {
         if (pub.getAc() != null) {
             return getDaoFactory().getPublicationDao().countInteractionsForPublicationAc(pub.getAc());
@@ -967,41 +990,64 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getJournal() {
         final String annot = findAnnotationText(CvTopic.JOURNAL_MI_REF);
         return annot;
     }
 
-
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setJournal(String journal) {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         updateAnnotation(CvTopic.JOURNAL_MI_REF, journal);
+        getCoreEntityManager().detach(publication);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getContactEmail() {
         return findAnnotationText(CvTopic.CONTACT_EMAIL_MI_REF);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setContactEmail(String contactEmail) {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         updateAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, contactEmail);
+        getCoreEntityManager().detach(publication);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getSubmitted() {
         return findAnnotationText(SUBMITTED);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setSubmitted(String submitted) {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         updateAnnotation(SUBMITTED, submitted);
+        getCoreEntityManager().detach(publication);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCurationRequest() {
         return findAnnotationText(CURATION_REQUEST);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setCurationRequest(String requestedCuration) {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         updateAnnotation(CURATION_REQUEST, requestedCuration);
+        getCoreEntityManager().detach(publication);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public Short getYear() {
         String strYear = findAnnotationText(CvTopic.PUBLICATION_YEAR_MI_REF);
 
@@ -1012,10 +1058,16 @@ public class PublicationController extends AnnotatedObjectController {
         return null;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setYear(Short year) {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         updateAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, year);
+        getCoreEntityManager().detach(publication);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getIdentifier() {
         if (publication != null) {
             String id = getPrimaryReference();
@@ -1028,6 +1080,7 @@ public class PublicationController extends AnnotatedObjectController {
         return identifier;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
 
@@ -1053,30 +1106,49 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getPrimaryReference() {
         return findXrefPrimaryId(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setPrimaryReference(String id) {
+        if (!Hibernate.isInitialized(publication.getXrefs())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         updateXref(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id);
+        getCoreEntityManager().detach(publication);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getAuthors() {
         return findAnnotationText(CvTopic.AUTHOR_LIST_MI_REF);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setAuthors(String authors) {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         updateAnnotation(CvTopic.AUTHOR_LIST_MI_REF, authors);
+        getCoreEntityManager().detach(publication);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getOnHold() {
         return findAnnotationText(CvTopic.ON_HOLD);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setOnHold(String reason) {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         updateAnnotation(CvTopic.ON_HOLD, reason);
+        getCoreEntityManager().detach(publication);
     }
 
+    @Transactional(value= "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setExperimentAnnotation(String topic, String text) {
 
         Collection<Experiment> experiments = publication.getExperiments();
@@ -1098,12 +1170,14 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void onHoldChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
         setExperimentAnnotation(CvTopic.ON_HOLD, (String) evt.getNewValue());
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void curationDepthChanged() {
         setUnsavedChanges(true);
 
@@ -1111,30 +1185,35 @@ public class PublicationController extends AnnotatedObjectController {
         setExperimentAnnotation(CURATION_DEPTH, curationDepth);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void contactEmailChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
         setExperimentAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, (String) evt.getNewValue());
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void publicationYearChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
         setExperimentAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, Short.toString((Short) evt.getNewValue()));
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void publicationTitleChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
         copyPublicationTitleToExperiments(null);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void publicationIdentifierChanged(ValueChangeEvent evt) {
         setUnsavedChanges(true);
 
         setIdentifier((String) evt.getNewValue());
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getAcceptedMessage() {
         return findAnnotationText(CvTopic.ACCEPTED);
     }
@@ -1143,6 +1222,7 @@ public class PublicationController extends AnnotatedObjectController {
         return this.curationDepth;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCurationDepthAnnotation() {
         return findAnnotationText(CURATION_DEPTH);
     }
@@ -1159,8 +1239,13 @@ public class PublicationController extends AnnotatedObjectController {
         this.curationDepth = curationDepth;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setCurationDepthAnnot(String curationDepth) {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         updateAnnotation(CURATION_DEPTH, curationDepth);
+        getCoreEntityManager().detach(publication);
     }
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
@@ -1202,10 +1287,16 @@ public class PublicationController extends AnnotatedObjectController {
         return PublicationUtils.isAccepted(pub);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setAcceptedMessage(String message) {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         updateAnnotation(CvTopic.ACCEPTED, message);
+        getCoreEntityManager().detach(publication);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isToBeReviewed(Publication pub) {
         if (!IntactCore.isInitialized(pub.getExperiments())) {
             pub = getDaoFactory().getPublicationDao().getByAc(pub.getAc());
@@ -1218,12 +1309,18 @@ public class PublicationController extends AnnotatedObjectController {
         return PublicationUtils.isToBeReviewed(pub);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getImexId() {
         return findXrefPrimaryId(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setImexId(String imexId) {
+        if (!Hibernate.isInitialized(publication.getXrefs())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         updateXref(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId);
+        getCoreEntityManager().detach(publication);
     }
 
     public String getPublicationTitle() {
@@ -1234,7 +1331,7 @@ public class PublicationController extends AnnotatedObjectController {
         publication.setFullName(publicationTitle);
     }
 
-
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getFirstAuthor() {
         final String authors = getAuthors();
 
@@ -1245,6 +1342,7 @@ public class PublicationController extends AnnotatedObjectController {
         return null;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void acceptPublication(ActionEvent evt) {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
@@ -1267,6 +1365,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void assignNewImex(ActionEvent evt) {
         // save publication changes first
         getCorePersister().saveOrUpdate(publication);
@@ -1334,6 +1433,7 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void rejectPublication(ActionEvent evt) {
 
         List<String> rejectionComments = new ArrayList<String>();
@@ -1349,6 +1449,7 @@ public class PublicationController extends AnnotatedObjectController {
 
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void rejectPublication(String reasonForRejection) {
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
         String date = "Rejected " + new SimpleDateFormat("yyyy-MMM-dd").format(new Date()).toUpperCase() + " by " + userSessionController.getCurrentUser().getLogin().toUpperCase();
@@ -1365,6 +1466,7 @@ public class PublicationController extends AnnotatedObjectController {
         lifecycleManager.getReadyForCheckingStatus().reject(publication, reasonForRejection);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isRejected(Publication publication) {
         return PublicationUtils.isRejected(publication);
     }
@@ -1379,6 +1481,7 @@ public class PublicationController extends AnnotatedObjectController {
         return null;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String calculateStatusStyle(Publication publication) {
         if (isAccepted(publication)) {
             return "ia-accepted";
@@ -1404,6 +1507,7 @@ public class PublicationController extends AnnotatedObjectController {
         return "";
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isBeenRejectedBefore() {
         for (LifecycleEvent evt : IntactCore.ensureInitializedLifecycleEvents(publication)) {
             if (CvLifecycleEventType.REJECTED.identifier().equals(evt.getEvent().getIdentifier())) {
@@ -1414,19 +1518,29 @@ public class PublicationController extends AnnotatedObjectController {
         return false;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setToBeReviewed(String toBeReviewed) {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         if (toBeReviewed == null) {
             removeAnnotation(CvTopic.TO_BE_REVIEWED);
         }
 
         updateAnnotation(CvTopic.TO_BE_REVIEWED, toBeReviewed);
+        getCoreEntityManager().detach(publication);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getToBeReviewed() {
         return findAnnotationText(CvTopic.TO_BE_REVIEWED);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void clearToBeReviewed(ActionEvent evt) {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getCoreEntityManager().merge(publication));
+        }
         removeAnnotation(CvTopic.TO_BE_REVIEWED);
 
         Collection<Experiment> experiments = publication.getExperiments();
@@ -1445,8 +1559,10 @@ public class PublicationController extends AnnotatedObjectController {
                 getChangesController().markAsUnsaved(experiment, parentAcs);
             }
         }
+        getCoreEntityManager().detach(publication);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void copyAnnotationsToExperiments(ActionEvent evt) {
         for (Experiment exp : publication.getExperiments()) {
             CurateUtils.copyPublicationAnnotationsToExperiment(exp);
@@ -1475,6 +1591,7 @@ public class PublicationController extends AnnotatedObjectController {
         addInfoMessage("Publication title copied", publication.getExperiments().size() + " experiments were modified");
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void copyPrimaryIdentifierToExperiments() {
         Collection<Experiment> experiments = publication.getExperiments();
 
@@ -1651,5 +1768,18 @@ public class PublicationController extends AnnotatedObjectController {
 
     public void setNewDatasetNameToCreate(String newDatasetNameToCreate) {
         this.newDatasetNameToCreate = newDatasetNameToCreate;
+    }
+
+    @Override
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String clone() {
+        if (!getCoreEntityManager().contains(publication)){
+            setPublication(getCoreEntityManager().merge(this.publication));
+        }
+        String value = super.clone(getAnnotatedObject(), newClonerInstance());
+
+        getCoreEntityManager().detach(this.publication);
+
+        return value;
     }
 }

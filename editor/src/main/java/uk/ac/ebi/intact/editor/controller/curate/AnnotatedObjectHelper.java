@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.AnnotatedObjectDao;
+import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
 import uk.ac.ebi.intact.core.persister.IntactCore;
 import uk.ac.ebi.intact.editor.controller.curate.cvobject.CvObjectService;
 import uk.ac.ebi.intact.editor.controller.curate.util.IntactObjectComparator;
@@ -235,14 +236,7 @@ public class AnnotatedObjectHelper implements Serializable {
     ///////////////////////////////////////////////
 
     public void newAnnotation() {
-        Annotation annotationWithNullTopic = new Annotation() {
-            @Override
-            public void setCvTopic( CvTopic cvTopic ) {
-                if ( cvTopic != null ) {
-                    super.setCvTopic( cvTopic );
-                }
-            }
-        };
+        Annotation annotationWithNullTopic = new Annotation();
         initAudit(annotationWithNullTopic);
         getAnnotatedObject().addAnnotation( annotationWithNullTopic );
 
@@ -369,6 +363,60 @@ public class AnnotatedObjectHelper implements Serializable {
         if (!IntactCore.isInitialized(ao.getAnnotations())) {
             ao = IntactContext.getCurrentInstance().getDaoFactory().getAnnotatedObjectDao(ao.getClass())
                     .getByAc(getAnnotatedObject().getAc());
+        }
+
+        if (ao == null) { // this can happen if the object has been removed in the same request just before
+            return null;
+        }
+
+        Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( ao, topicId );
+
+        if ( annotation != null ) {
+            return annotation.getAnnotationText();
+        }
+
+        return null;
+
+    }
+
+    public String findAnnotationText( String topicId, DaoFactory factory) {
+        if (getAnnotatedObject() == null) return null;
+
+        if (topicId == null){
+            return null;
+        }
+
+        AnnotatedObject ao = getAnnotatedObject();
+
+        if (!IntactCore.isInitialized(ao.getAnnotations())) {
+            ao = factory.getAnnotatedObjectDao(ao.getClass())
+                    .getByAc(getAnnotatedObject().getAc());
+        }
+
+        if (ao == null) { // this can happen if the object has been removed in the same request just before
+            return null;
+        }
+
+        Annotation annotation = AnnotatedObjectUtils.findAnnotationByTopicMiOrLabel( ao, topicId );
+
+        if ( annotation != null ) {
+            return annotation.getAnnotationText();
+        }
+
+        return null;
+
+    }
+
+    public String findAnnotationText( AnnotatedObject ao, String topicId, DaoFactory factory) {
+        if (ao == null) return null;
+
+        if (topicId == null){
+            return null;
+        }
+
+        if (!IntactCore.isInitialized(ao.getAnnotations())) {
+            ao = factory.getAnnotatedObjectDao(ao.getClass())
+                    .getByAc(ao.getAc());
         }
 
         if (ao == null) { // this can happen if the object has been removed in the same request just before

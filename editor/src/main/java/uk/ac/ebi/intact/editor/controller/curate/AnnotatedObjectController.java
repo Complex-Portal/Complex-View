@@ -232,7 +232,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
                     addWarningMessage("Publication under review", "This publication is being reviewed by '" + publication.getCurrentReviewer().getLogin() + "'");
                 }
             } else if (CvPublicationStatusType.ACCEPTED_ON_HOLD.identifier().equals(publication.getStatus().getIdentifier())) {
-                addWarningMessage("Publication on-hold", "Reason: " + publicationController.getOnHold());
+                addWarningMessage("Publication on-hold", "Reason: " + getAnnotatedObjectHelper().findAnnotationText(publication, CvTopic.ON_HOLD, getDaoFactory()));
             } else if (CvPublicationStatusType.RELEASED.identifier().equals(publication.getStatus().getIdentifier())) {
                 LifecycleEvent event = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.RELEASED.identifier());
 
@@ -1125,7 +1125,7 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String findAnnotationText(String topicId) {
-        return getAnnotatedObjectHelper().findAnnotationText(topicId);
+        return getAnnotatedObjectHelper().findAnnotationText(topicId, getDaoFactory());
     }
 
     public List collectAnnotations() {
