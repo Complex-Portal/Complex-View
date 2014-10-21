@@ -21,6 +21,8 @@ import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.ComponentDao;
 import uk.ac.ebi.intact.core.persistence.dao.InteractorDao;
@@ -109,6 +111,7 @@ public class ParticipantImportController extends BaseController {
         this.proteinService.setBiosourceService(bioSourceService);
     }
 
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void importParticipants(ActionEvent evt) {
         importCandidates = new ArrayList<ImportCandidate>();
         queriesNoResults = new ArrayList<String>();
@@ -162,7 +165,7 @@ public class ParticipantImportController extends BaseController {
         }
     }
 
-
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public Set<ImportCandidate> importParticipant(String participantToImport) {
         if (participantToImport == null) {
             addErrorMessage("No participant to import", "Provide one or more accessions");
