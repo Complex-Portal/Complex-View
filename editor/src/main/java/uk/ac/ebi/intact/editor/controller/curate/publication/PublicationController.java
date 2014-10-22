@@ -180,6 +180,8 @@ public class PublicationController extends AnnotatedObjectController {
                 publication = loadByAc(getDaoFactory().getPublicationDao(), ac);
                 // initialise annotations
                 Hibernate.initialize(publication.getAnnotations());
+                // initialise lifecycle events
+                Hibernate.initialize(publication.getLifecycleEvents());
                 resetToNullIfComplexPublication();
 
                 if (publication == null) {
@@ -717,8 +719,11 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isAllExperimentsAccepted() {
-        return ExperimentUtils.areAllAccepted(publication.getExperiments());
+        final Collection<Experiment> experiments = IntactCore.ensureInitializedExperiments(publication);
+
+        return ExperimentUtils.areAllAccepted(experiments);
     }
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)

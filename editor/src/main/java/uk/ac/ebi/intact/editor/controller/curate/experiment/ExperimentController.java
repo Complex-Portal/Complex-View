@@ -360,11 +360,7 @@ public class ExperimentController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void acceptExperiment(ActionEvent actionEvent) {
-        if (!Hibernate.isInitialized(this.experiment.getAnnotations())){
-            setExperiment(getCoreEntityManager().merge(this.experiment));
-        }
 
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
@@ -381,11 +377,7 @@ public class ExperimentController extends AnnotatedObjectController {
         globalPublicationDecision();
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void rejectExperiment(ActionEvent actionEvent) {
-        if (!Hibernate.isInitialized(this.experiment.getAnnotations())){
-            setExperiment(getCoreEntityManager().merge(this.experiment));
-        }
 
         UserSessionController userSessionController = (UserSessionController) getSpringContext().getBean("userSessionController");
 
@@ -449,6 +441,8 @@ public class ExperimentController extends AnnotatedObjectController {
             if (!PublicationUtils.isOnHold(publicationController.getPublication())) {
                 publicationController.getLifecycleManager().getAcceptedStatus().readyForRelease(publicationController.getPublication(), "Accepted and not on-hold");
             }
+
+            publicationController.doSave();
 
             addInfoMessage("Publication accepted", "All of its experiments have been accepted");
 
