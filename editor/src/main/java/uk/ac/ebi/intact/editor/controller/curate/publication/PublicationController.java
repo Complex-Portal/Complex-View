@@ -1459,12 +1459,26 @@ public class PublicationController extends AnnotatedObjectController {
         for (Experiment exp : IntactCore.ensureInitializedExperiments(publication)) {
             if (ExperimentUtils.isToBeReviewed(exp)) {
                 ExperimentController experimentController = (ExperimentController) getSpringContext().getBean("experimentController");
-                rejectionComments.add("[" + exp.getShortLabel() + ": " + experimentController.getToBeReviewed(exp) + "]");
+                rejectionComments.add("[" + exp.getShortLabel() + ": " + getToBeReviewed(exp) + "]");
             }
         }
 
         rejectPublication(reasonForRejection + (rejectionComments.isEmpty() ? "" : " - " + StringUtils.join(rejectionComments, ", ")));
 
+    }
+
+    private String getToBeReviewed(Experiment exp) {
+        final Collection<Annotation> annotations = IntactCore.ensureInitializedAnnotations(exp);
+
+        for (Annotation annot : annotations) {
+            if (annot != null && annot.getCvTopic() != null) {
+                if (CvTopic.TO_BE_REVIEWED.equals(annot.getCvTopic().getShortLabel())) {
+                    return annot.getAnnotationText();
+                }
+            }
+        }
+
+        return null;
     }
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
