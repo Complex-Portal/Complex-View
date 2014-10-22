@@ -236,7 +236,7 @@
         <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.participantTopicSelectItems}"/>
     </ui:decorate>
 
-    <p:tab id="parametersTab" title="Parameters (#{participantController.ParameterSize})">
+    <p:tab id="parametersTab" title="Parameters (#{participantController.parameterSize})">
 
         <p:outputPanel id="paramsPanel" autoUpdate="true">
 
@@ -251,7 +251,7 @@
 
     </p:tab>
 
-    <p:tab id="confidencesTab" title="Confidences (#{participantController.ConfidenceSize})">
+    <p:tab id="confidencesTab" title="Confidences (#{participantController.confidenceSize})">
 
         <p:outputPanel id="confidencesPanel" autoUpdate="true">
             <ui:decorate template="confidences_table.xhtml">
