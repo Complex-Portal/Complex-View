@@ -214,8 +214,8 @@ public class PublicationController extends AnnotatedObjectController {
             loadFormFields();
         }
 
-        if (!Hibernate.isInitialized(publication.getAnnotations()) || !Hibernate.isInitialized(publication.getLifecycleEvents())
-                || !Hibernate.isInitialized(publication.getExperiments())) {
+        if (publication != null && (!Hibernate.isInitialized(publication.getAnnotations()) || !Hibernate.isInitialized(publication.getLifecycleEvents())
+                || !Hibernate.isInitialized(publication.getExperiments()))) {
             publication = getDaoFactory().getPublicationDao().getByAc( ac );
             Hibernate.initialize(publication.getAnnotations());
             Hibernate.initialize(publication.getLifecycleEvents());
