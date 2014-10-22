@@ -450,8 +450,6 @@ public class ExperimentController extends AnnotatedObjectController {
                 publicationController.getLifecycleManager().getAcceptedStatus().readyForRelease(publicationController.getPublication(), "Accepted and not on-hold");
             }
 
-            getCorePersister().saveOrUpdate(publicationController.getPublication());
-
             addInfoMessage("Publication accepted", "All of its experiments have been accepted");
 
         } else if (allActedUpon) {
