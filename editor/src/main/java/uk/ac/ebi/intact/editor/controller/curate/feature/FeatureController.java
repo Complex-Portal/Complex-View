@@ -539,7 +539,7 @@ public class FeatureController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public int getFeatureRangeSize() {
         if (feature != null && Hibernate.isInitialized(feature.getRanges())){
-            return feature.getAnnotations().size();
+            return feature.getRanges().size();
         }
         else if (feature != null){
             return getDaoFactory().getRangeDao().getByFeatureAc(feature.getAc()).size();
