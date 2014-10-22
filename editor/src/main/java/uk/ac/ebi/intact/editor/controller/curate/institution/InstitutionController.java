@@ -1,6 +1,7 @@
 package uk.ac.ebi.intact.editor.controller.curate.institution;
 
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
@@ -59,6 +60,7 @@ public class InstitutionController extends AnnotatedObjectController {
 
             if (ac != null) {
                 institution = loadByAc(getDaoFactory().getInstitutionDao(), ac);
+                Hibernate.initialize(institution.getAnnotations());
             } else {
                 institution = new Institution();
             }
@@ -140,5 +142,21 @@ public class InstitutionController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSaveIfNecessary(ActionEvent evt) {
         super.doSaveIfNecessary(evt);
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String getCautionMessage() {
+        if (!Hibernate.isInitialized(institution.getAnnotations())){
+            setInstitution(getDaoFactory().getInstitutionDao().getByAc(institution.getAc()));
+        }
+        return findAnnotationText(CvTopic.CAUTION_MI_REF);
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String getInternalRemarkMessage() {
+        if (!Hibernate.isInitialized(institution.getAnnotations())){
+            setInstitution(getDaoFactory().getInstitutionDao().getByAc(institution.getAc()));
+        }
+        return findAnnotationText(CvTopic.INTERNAL_REMARK);
     }
 }

@@ -2,6 +2,7 @@ package uk.ac.ebi.intact.editor.controller.curate.interactor;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.orchestra.conversation.annotations.ConversationName;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -295,5 +296,21 @@ public class InteractorController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSaveIfNecessary(ActionEvent evt) {
         super.doSaveIfNecessary(evt);
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String getCautionMessage() {
+        if (!Hibernate.isInitialized(interactor.getAnnotations())){
+            setInteractor(getDaoFactory().getInteractionDao().getByAc(interactor.getAc()));
+        }
+        return findAnnotationText(CvTopic.CAUTION_MI_REF);
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String getInternalRemarkMessage() {
+        if (!Hibernate.isInitialized(interactor.getAnnotations())){
+            setInteractor(getDaoFactory().getInteractionDao().getByAc(interactor.getAc()));
+        }
+        return findAnnotationText(CvTopic.INTERNAL_REMARK);
     }
 }

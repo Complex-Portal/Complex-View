@@ -799,4 +799,20 @@ public class ParticipantController extends ParameterizableObjectController {
 
         return value;
     }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String getCautionMessage() {
+        if (!Hibernate.isInitialized(participant.getAnnotations())){
+            setParticipant(getDaoFactory().getComponentDao().getByAc(participant.getAc()));
+        }
+        return findAnnotationText(CvTopic.CAUTION_MI_REF);
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String getInternalRemarkMessage() {
+        if (!Hibernate.isInitialized(participant.getAnnotations())){
+            setParticipant(getDaoFactory().getComponentDao().getByAc(participant.getAc()));
+        }
+        return findAnnotationText(CvTopic.INTERNAL_REMARK);
+    }
 }

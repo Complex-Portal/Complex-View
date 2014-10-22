@@ -15,6 +15,7 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate;
 
+import org.hibernate.Hibernate;
 import org.primefaces.event.TabChangeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1189,8 +1190,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return findAnnotationText(CvTopic.CAUTION_MI_REF);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage(AnnotatedObject ao) {
         if (ao == null) return null;
+        if (!Hibernate.isInitialized(ao.getAnnotations())){
+            setAnnotatedObject(getDaoFactory().getAnnotatedObjectDao(ao.getClass()).getByAc(ao.getAc()));
+        }
         return newAnnotatedObjectHelper(ao).findAnnotationText(CvTopic.CAUTION_MI_REF);
     }
 

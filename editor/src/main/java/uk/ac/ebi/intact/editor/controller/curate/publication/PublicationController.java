@@ -1798,4 +1798,20 @@ public class PublicationController extends AnnotatedObjectController {
 
         return value;
     }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String getCautionMessage() {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getDaoFactory().getPublicationDao().getByAc(publication.getAc()));
+        }
+        return findAnnotationText(CvTopic.CAUTION_MI_REF);
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String getInternalRemarkMessage() {
+        if (!Hibernate.isInitialized(publication.getAnnotations())){
+            setPublication(getDaoFactory().getPublicationDao().getByAc(publication.getAc()));
+        }
+        return findAnnotationText(CvTopic.INTERNAL_REMARK);
+    }
 }

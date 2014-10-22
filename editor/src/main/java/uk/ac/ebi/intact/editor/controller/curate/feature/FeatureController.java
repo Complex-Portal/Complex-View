@@ -519,4 +519,20 @@ public class FeatureController extends AnnotatedObjectController {
     public void doSaveIfNecessary(ActionEvent evt) {
         super.doSaveIfNecessary(evt);
     }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String getCautionMessage() {
+        if (!Hibernate.isInitialized(feature.getAnnotations())){
+            setFeature(getDaoFactory().getFeatureDao().getByAc(feature.getAc()));
+        }
+        return findAnnotationText(CvTopic.CAUTION_MI_REF);
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String getInternalRemarkMessage() {
+        if (!Hibernate.isInitialized(feature.getAnnotations())){
+            setFeature(getDaoFactory().getFeatureDao().getByAc(feature.getAc()));
+        }
+        return findAnnotationText(CvTopic.INTERNAL_REMARK);
+    }
 }
