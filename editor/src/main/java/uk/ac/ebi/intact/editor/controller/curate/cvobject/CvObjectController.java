@@ -133,7 +133,7 @@ public class CvObjectController extends AnnotatedObjectController {
     private void prepareView() {
         if (cvObject != null) {
 
-            List<CvObject> cvObjectsByClass = new ArrayList<CvObject>(cvObjectService.getCvObjectsByClass(cvObject.getClass()));
+            List<CvObject> cvObjectsByClass = new ArrayList<CvObject>(getDaoFactory().getCvObjectDao(cvObject.getClass()).getAll());
             List<CvObject> existingParents = new ArrayList<CvObject>(cvObject.getParents());
 
             Collections.sort( existingParents, new CvObjectService.CvObjectComparator() );
