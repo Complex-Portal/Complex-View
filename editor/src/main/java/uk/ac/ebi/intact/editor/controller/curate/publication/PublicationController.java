@@ -183,6 +183,7 @@ public class PublicationController extends AnnotatedObjectController {
                 // initialise lifecycle events
                 Hibernate.initialize(publication.getLifecycleEvents());
                 Hibernate.initialize(publication.getExperiments());
+                Hibernate.initialize(publication.getXrefs());
 
                 resetToNullIfComplexPublication();
 
@@ -193,6 +194,7 @@ public class PublicationController extends AnnotatedObjectController {
                     // initialise lifecycle events
                     Hibernate.initialize(publication.getLifecycleEvents());
                     Hibernate.initialize(publication.getExperiments());
+                    Hibernate.initialize(publication.getXrefs());
 
                     if (publication != null) {
                         ac = publication.getAc();
@@ -214,12 +216,15 @@ public class PublicationController extends AnnotatedObjectController {
             loadFormFields();
         }
 
-        if (publication != null && (!Hibernate.isInitialized(publication.getAnnotations()) || !Hibernate.isInitialized(publication.getLifecycleEvents())
-                || !Hibernate.isInitialized(publication.getExperiments()))) {
+        if (publication != null && (!Hibernate.isInitialized(publication.getAnnotations())
+                || !Hibernate.isInitialized(publication.getLifecycleEvents())
+                || !Hibernate.isInitialized(publication.getExperiments())
+                || !Hibernate.isInitialized(publication.getXrefs()))) {
             publication = getDaoFactory().getPublicationDao().getByAc( ac );
             Hibernate.initialize(publication.getAnnotations());
             Hibernate.initialize(publication.getLifecycleEvents());
             Hibernate.initialize(publication.getExperiments());
+            Hibernate.initialize(publication.getXrefs());
         }
     }
 

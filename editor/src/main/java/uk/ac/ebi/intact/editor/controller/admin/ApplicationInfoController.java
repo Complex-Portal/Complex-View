@@ -49,7 +49,7 @@ public class ApplicationInfoController extends JpaAwareController {
     public void init() {
         uniprotJapiVersion = UniProtJAPI.factory.getVersion();
 
-        final DbInfoDao infoDao = IntactContext.getCurrentInstance().getDaoFactory().getDbInfoDao();
+        final DbInfoDao infoDao = getDaoFactory().getDbInfoDao();
 
         schemaVersion = getDbInfoValue(infoDao, DbInfo.SCHEMA_VERSION);
         lastUniprotUpdate = getDbInfoValue(infoDao, DbInfo.LAST_PROTEIN_UPDATE);
@@ -57,9 +57,14 @@ public class ApplicationInfoController extends JpaAwareController {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream(256);
         PrintStream ps = new PrintStream(baos);
-        DebugUtil.printDatabaseCounts(ps);
-
-        databaseCounts = baos.toString().replaceAll("\n","<br/>");
+        try{
+            DebugUtil.printDatabaseCounts(ps);
+            databaseCounts = baos.toString().replaceAll("\n","<br/>");
+        }
+        finally {
+            ps.close();
+            databaseCounts = "";
+        }
 
         application = IntactContext.getCurrentInstance().getApplication();
     }
