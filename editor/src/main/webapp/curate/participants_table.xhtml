@@ -28,7 +28,7 @@
                      rows="10" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="both"
                      rowStyleClass="#{wrapper.participant.ac == null? 'intact-new' : wrapper.deleted? 'intact-deleted' : null}"
                      widgetVar="participantsTableWidget"
-                     >
+                >
 
             <ui:param name="participant" value="#{wrapper.participant}" />
             <ui:param name="interactor" value="#{participant.interactor}" />
@@ -133,7 +133,7 @@
                         <div id="feature_#{featureWrapper.feature.ac}"
                              onmouseover="this.style.fontWeight = '#{featureWrapper.feature.boundDomain != null? 'bold' : 'inherit'}'; document.getElementById('feature_#{featureWrapper.feature.boundDomain.ac}').style.fontWeight = '#{featureWrapper.feature.boundDomain != null? 'bold' : 'inherit'}'"
                              onmouseout="this.style.fontWeight = 'inherit'; document.getElementById('feature_#{featureWrapper.feature.boundDomain.ac}').style.fontWeight = 'inherit'">
-                            <h:outputText value="#{featureWrapper.feature.shortLabel} #{featureWrapper.feature.ranges}"/>
+                            <h:outputText value="#{featureWrapper.feature.shortLabel} #{featureWrapper.ranges}"/>
 
 
                             <h:panelGroup rendered="#{featureWrapper.feature.boundDomain != null}">

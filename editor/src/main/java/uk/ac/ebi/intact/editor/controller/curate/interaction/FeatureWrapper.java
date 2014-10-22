@@ -18,18 +18,20 @@ package uk.ac.ebi.intact.editor.controller.curate.interaction;
 import uk.ac.ebi.intact.model.Feature;
 
 /**
-* TODO comment this class header.
-*
-* @author Bruno Aranda (baranda@ebi.ac.uk)
-* @version $Id$
-*/
+ * TODO comment this class header.
+ *
+ * @author Bruno Aranda (baranda@ebi.ac.uk)
+ * @version $Id$
+ */
 public class FeatureWrapper {
 
     private Feature feature;
     private boolean selected;
+    private String ranges;
 
     public FeatureWrapper(Feature feature) {
         this.feature = feature;
+        this.ranges = feature.getRanges().toString();
     }
 
     public Feature getFeature() {
@@ -46,5 +48,9 @@ public class FeatureWrapper {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public String getRanges() {
+        return ranges;
     }
 }
