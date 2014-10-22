@@ -1207,8 +1207,12 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
         return findAnnotationText(CvTopic.INTERNAL_REMARK);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isNoUniprotUpdate(Interactor interactor) {
         if (interactor == null) return false;
+        if (!Hibernate.isInitialized(interactor.getAnnotations())){
+            interactor = getDaoFactory().getInteractorDao().getByAc(interactor.getAc());
+        }
 
         return newAnnotatedObjectHelper(interactor).findAnnotationText(CvTopic.NON_UNIPROT) != null;
     }

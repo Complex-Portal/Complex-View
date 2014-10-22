@@ -273,6 +273,7 @@ public class InteractorController extends AnnotatedObjectController {
         this.ac = ac;
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public boolean isNoUniprotUpdate() {
         return super.isNoUniprotUpdate((Interactor)getAnnotatedObject());
     }
