@@ -746,4 +746,14 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
         doSaveJami(refreshCurrentView, changesController, persistenceController);
     }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getFeatureSize() {
+        if (this.participant.areFeaturesInitialized()){
+            return this.participant.getFeatures().size();
+        }
+        else{
+            return getIntactDao().getModelledParticipantDao().countFeaturesForParticipant(this.ac);
+        }
+    }
 }

@@ -709,7 +709,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         if (this.feature != null){
             if (this.feature.getParticipant() instanceof IntactModelledParticipant
                     && ((IntactModelledParticipant)this.feature.getParticipant()).getAc() == null){
-                 return true;
+                return true;
             }
         }
         return false;
@@ -727,5 +727,10 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         PersistenceController persistenceController = getPersistenceController();
 
         doSaveJami(refreshCurrentView, changesController, persistenceController);
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getFeatureRangeSize() {
+        return this.feature.getRanges().size();
     }
 }

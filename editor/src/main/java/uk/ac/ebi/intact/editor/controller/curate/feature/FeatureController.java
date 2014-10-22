@@ -535,4 +535,17 @@ public class FeatureController extends AnnotatedObjectController {
         }
         return findAnnotationText(CvTopic.INTERNAL_REMARK);
     }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getFeatureRangeSize() {
+        if (feature != null && Hibernate.isInitialized(feature.getRanges())){
+            return feature.getAnnotations().size();
+        }
+        else if (feature != null){
+            return getDaoFactory().getRangeDao().getByFeatureAc(feature.getAc()).size();
+        }
+        else {
+            return 0;
+        }
+    }
 }

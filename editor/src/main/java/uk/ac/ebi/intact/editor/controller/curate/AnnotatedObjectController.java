@@ -1571,4 +1571,43 @@ public abstract class AnnotatedObjectController extends JpaAwareController imple
     public String getAc(){
         return null;
     }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getObjectXrefsSize() {
+        if (getAnnotatedObject() != null && Hibernate.isInitialized(getAnnotatedObject().getXrefs())){
+            return getAnnotatedObject().getXrefs().size();
+        }
+        else if (getAnnotatedObject() != null){
+            return getDaoFactory().getXrefDao().getByParentAc(getAnnotatedObject().getAc()).size();
+        }
+        else {
+            return 0;
+        }
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getObjectAliasesSize() {
+        if (getAnnotatedObject() != null && Hibernate.isInitialized(getAnnotatedObject().getAliases())){
+            return getAnnotatedObject().getAliases().size();
+        }
+        else if (getAnnotatedObject() != null){
+            return getDaoFactory().getAliasDao().getByParentAc(getAnnotatedObject().getAc()).size();
+        }
+        else {
+            return 0;
+        }
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getObjectAnnotationsSize() {
+        if (getAnnotatedObject() != null && Hibernate.isInitialized(getAnnotatedObject().getAnnotations())){
+            return getAnnotatedObject().getAnnotations().size();
+        }
+        else if (getAnnotatedObject() != null){
+            return getDaoFactory().getAnnotationDao().getByParentAc(getAnnotatedObject().getClass(), getAnnotatedObject().getAc()).size();
+        }
+        else {
+            return 0;
+        }
+    }
 }

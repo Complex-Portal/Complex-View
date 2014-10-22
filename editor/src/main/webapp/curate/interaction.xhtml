@@ -183,7 +183,7 @@
 <p:tabView id="interactionTabs" dynamic="true">
     <p:ajax event="tabChange" listener="#{interactionController.onTabChanged}" />
 
-    <p:tab id="participantsTab" title="Participants (#{interactionController.participants.size()})">
+    <p:tab id="participantsTab" title="Participants (#{interactionController.participantSize})">
 
         <p:panel style="padding:0">
             Participants:&#160;
@@ -216,7 +216,7 @@
 
     </ui:decorate>
 
-    <p:tab id="parametersTab" title="Parameters (#{interaction.parameters.size()})">
+    <p:tab id="parametersTab" title="Parameters (#{interactionController.parameterSize})">
 
         <p:outputPanel id="parametersPanel" autoUpdate="true">
             <ui:decorate template="parameters_table.xhtml">
@@ -230,7 +230,7 @@
 
     </p:tab>
 
-    <p:tab id="confidencesTab" title="Confidences (#{interaction.confidences.size()})">
+    <p:tab id="confidencesTab" title="Confidences (#{interactionController.confidenceSize})">
 
         <p:outputPanel id="confidencesPanel" autoUpdate="true">
             <ui:decorate template="confidences_table.xhtml">

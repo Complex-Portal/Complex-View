@@ -96,8 +96,8 @@
                                             cvClass="uk.ac.ebi.intact.model.CvFeatureType"
                                             selectItems="#{editorCvTermService.featureTypeSelectItems}"
                                             required="true" requiredMessage="Feature type is required"
-                                           update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
-                                           valueChangeAwareObject="#{annotatedObjectController}"/>
+                                            update=":editorForm:changesPanel :editorForm:unsavedChangesInfo"
+                                            valueChangeAwareObject="#{annotatedObjectController}"/>
                         </td>
                     </tr>
                     <tr>
@@ -118,22 +118,22 @@
 
             <br/>
 
-             <p:tabView id="featureTabs" dynamic="true" cache="false">
-                 <p:ajax event="tabChange" listener="#{modelledFeatureController.onTabChanged}" onstart="loadDialog.show()" oncomplete="loadDialog.hide()"/>
+            <p:tabView id="featureTabs" dynamic="true" cache="false">
+                <p:ajax event="tabChange" listener="#{modelledFeatureController.onTabChanged}" onstart="loadDialog.show()" oncomplete="loadDialog.hide()"/>
 
-                <p:tab id="rangesTab" title="Ranges (#{feature.ranges.size()})">
+                <p:tab id="rangesTab" title="Ranges (#{modelledFeatureController.featureRangeSize})">
 
                     <p:outputPanel id="rangesPanel" autoUpdate="true">
 
-                    <div class="intact-buttonBar">
-                        <p:inputText id="newRangeTxt" value="#{modelledFeatureController.newRangeValue}" converter="trimmingConverter"/>
-                        <p:tooltip value="Type a range (e.g. '23-25') and then click the 'New Range' button" for="newRangeTxt" />
+                        <div class="intact-buttonBar">
+                            <p:inputText id="newRangeTxt" value="#{modelledFeatureController.newRangeValue}" converter="trimmingConverter"/>
+                            <p:tooltip value="Type a range (e.g. '23-25') and then click the 'New Range' button" for="newRangeTxt" />
 
-                        <p:commandButton id="newRangeBtn" value="New range" actionListener="#{modelledFeatureController.newRange}"
-                                process="newRangeTxt"
-                                update=":editorForm:messagesComponent :editorForm:featureTabs :editorForm:changesPanel :editorForm:unsavedChangesInfo">
-                        </p:commandButton>
-                     </div>
+                            <p:commandButton id="newRangeBtn" value="New range" actionListener="#{modelledFeatureController.newRange}"
+                                             process="newRangeTxt"
+                                             update=":editorForm:messagesComponent :editorForm:featureTabs :editorForm:changesPanel :editorForm:unsavedChangesInfo">
+                            </p:commandButton>
+                        </div>
 
 
 
@@ -156,12 +156,12 @@
 
                 </p:tab>
 
-                    <ui:decorate template="jpropertiesTabs.xhtml">
-                            <ui:param name="annotatedObjectSelectItems" value="#{editorCvTermService.featureTopicSelectItems}"/>
-                        <ui:param name="aliasTypeSelectItems" value="#{editorCvTermService.aliasTypeSelectItems}"/>
-                        <ui:param name="databaseSelectItems" value="#{editorCvTermService.featureDatabaseSelectItems}"/>
-                        <ui:param name="qualifierSelectItems" value="#{editorCvTermService.qualifierSelectItems}"/>
-                    </ui:decorate>
+                <ui:decorate template="jpropertiesTabs.xhtml">
+                    <ui:param name="annotatedObjectSelectItems" value="#{editorCvTermService.featureTopicSelectItems}"/>
+                    <ui:param name="aliasTypeSelectItems" value="#{editorCvTermService.aliasTypeSelectItems}"/>
+                    <ui:param name="databaseSelectItems" value="#{editorCvTermService.featureDatabaseSelectItems}"/>
+                    <ui:param name="qualifierSelectItems" value="#{editorCvTermService.qualifierSelectItems}"/>
+                </ui:decorate>
 
             </p:tabView>
 

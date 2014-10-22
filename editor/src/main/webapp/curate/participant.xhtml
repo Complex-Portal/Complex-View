@@ -218,7 +218,7 @@
 <p:tabView id="participantTabs" dynamic="true">
     <p:ajax event="tabChange" listener="#{participantController.onTabChanged}" />
 
-    <p:tab title="Features (#{participant.bindingDomains.size()})">
+    <p:tab title="Features (#{participantController.featureSize})">
 
         <div class="intact-buttonBar">
             <p:commandButton id="newFeatureBtn" value="New feature" action="#{featureController.newFeature(participantController.participant)}"
@@ -236,7 +236,7 @@
         <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.participantTopicSelectItems}"/>
     </ui:decorate>
 
-    <p:tab id="parametersTab" title="Parameters (#{participant.parameters.size()})">
+    <p:tab id="parametersTab" title="Parameters (#{participantController.ParameterSize})">
 
         <p:outputPanel id="paramsPanel" autoUpdate="true">
 
@@ -251,7 +251,7 @@
 
     </p:tab>
 
-    <p:tab id="confidencesTab" title="Confidences (#{participant.confidences.size()})">
+    <p:tab id="confidencesTab" title="Confidences (#{participantController.ConfidenceSize})">
 
         <p:outputPanel id="confidencesPanel" autoUpdate="true">
             <ui:decorate template="confidences_table.xhtml">

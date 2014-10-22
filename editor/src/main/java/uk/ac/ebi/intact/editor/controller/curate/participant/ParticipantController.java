@@ -341,7 +341,7 @@ public class ParticipantController extends ParameterizableObjectController {
     public void removeIdentificationMethod(CvIdentification prep){
         if (prep != null){
             if(participant.getParticipantDetectionMethods().remove(prep)){
-            changed();
+                changed();
             }
             else{
                 addWarningMessage("The identification method " + prep.getFullName() + " has not been removed.", "The identification method " + prep.getFullName() + " has not been removed because was not attached to this participant.");
@@ -713,15 +713,15 @@ public class ParticipantController extends ParameterizableObjectController {
 
     private void updateParametersExperiment(Component component) {
         if (component.getInteraction() != null){
-           if (!component.getInteraction().getExperiments().isEmpty()){
-               Experiment exp = component.getInteraction().getExperiments().iterator().next();
-               // update component parameters if any
-               if (!component.getParameters().isEmpty()){
-                   for (ComponentParameter param : component.getParameters()){
-                       param.setExperiment(exp);
-                   }
-               }
-           }
+            if (!component.getInteraction().getExperiments().isEmpty()){
+                Experiment exp = component.getInteraction().getExperiments().iterator().next();
+                // update component parameters if any
+                if (!component.getParameters().isEmpty()){
+                    for (ComponentParameter param : component.getParameters()){
+                        param.setExperiment(exp);
+                    }
+                }
+            }
         }
     }
 
@@ -814,5 +814,45 @@ public class ParticipantController extends ParameterizableObjectController {
             setParticipant(getDaoFactory().getComponentDao().getByAc(participant.getAc()));
         }
         return findAnnotationText(CvTopic.INTERNAL_REMARK);
+    }
+
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getFeatureSize() {
+        if (participant != null && Hibernate.isInitialized(participant.getFeatures())){
+            return participant.getFeatures().size();
+        }
+        else if (participant != null){
+            return getDaoFactory().getFeatureDao().getByComponentAc(participant.getAc()).size();
+        }
+        else {
+            return 0;
+        }
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getParameterSize() {
+        if (participant != null && Hibernate.isInitialized(participant.getParameters())){
+            return participant.getParameters().size();
+        }
+        else if (participant != null){
+            return getDaoFactory().getComponentParameterDao().getByComponentAc(participant.getAc()).size();
+        }
+        else {
+            return 0;
+        }
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getConfidenceSize() {
+        if (participant != null && Hibernate.isInitialized(participant.getConfidences())){
+            return participant.getConfidences().size();
+        }
+        else if (participant != null){
+            return getDaoFactory().getComponentConfidenceDao().getByComponentAc(participant.getAc()).size();
+        }
+        else {
+            return 0;
+        }
     }
 }
