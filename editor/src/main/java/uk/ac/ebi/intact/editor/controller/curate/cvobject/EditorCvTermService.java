@@ -149,7 +149,7 @@ public class EditorCvTermService extends JpaAwareController {
         // TODO when we have a better hierarchy use ontology only
         //IntactCvTerm typeParent = cvDao.getByMIIdentifier("MI:0116", IntactUtils.FEATURE_TYPE_OBJCLASS);
         //if (typeParent != null){
-            //loadChildren(typeParent, featureTypeSelectItems, false);
+        //loadChildren(typeParent, featureTypeSelectItems, false);
         //}
         if (!featureTypes.isEmpty()){
             loadCollectionCv(featureTypes, featureTypeSelectItems, false);
@@ -185,7 +185,7 @@ public class EditorCvTermService extends JpaAwareController {
         // TODO when we have a better hierarchy use ontology only
         //IntactCvTerm databaseParent = cvDao.getByMIIdentifier("MI:0447", IntactUtils.DATABASE_OBJCLASS);
         //if (databaseParent != null){
-            //loadChildren(databaseParent, featureDatabaseSelectItems, false);
+        //loadChildren(databaseParent, featureDatabaseSelectItems, false);
         //}
         if (!databases.isEmpty()){
             loadCollectionCv(databases, featureDatabaseSelectItems, false);
@@ -231,9 +231,6 @@ public class EditorCvTermService extends JpaAwareController {
         processTopicAcs = new ArrayList<String>();
         if (complexTopicParent != null){
             processTopicAcs.addAll(loadChildren(complexTopicParent, complexTopicSelectItems, false));
-        }
-        if (participantTopicParent != null){
-            processTopicAcs.addAll(loadChildren(participantTopicParent, complexTopicSelectItems, false));
         }
         loadMissingCvsFromIntactCvService(intactCvService, cvDao, processTopicAcs, complexTopicSelectItems, IntactComplex.class.getCanonicalName());
 
@@ -337,7 +334,7 @@ public class EditorCvTermService extends JpaAwareController {
             if (!processTopicAcs.contains(topic.getAc())){
                 SelectItem topicItem = createSelectItem(cvDao.getByAc(topic.getAc()), false);
                 if (topicItem != null){
-                   items.add(topicItem);
+                    items.add(topicItem);
                 }
             }
         }
@@ -349,7 +346,7 @@ public class EditorCvTermService extends JpaAwareController {
             SelectItem item = createSelectItem(term, ignoreHidden);
             if (item != null){
                 list.add(term.getAc());
-                 items.add(item);
+                items.add(item);
             }
         }
     }
