@@ -186,6 +186,10 @@ public class PublicationController extends AnnotatedObjectController {
 
                 if (publication == null) {
                     publication = getDaoFactory().getPublicationDao().getByPubmedId(ac);
+                    // initialise annotations
+                    Hibernate.initialize(publication.getAnnotations());
+                    // initialise lifecycle events
+                    Hibernate.initialize(publication.getLifecycleEvents());
                     if (publication != null) {
                         ac = publication.getAc();
                     } else {
@@ -204,6 +208,12 @@ public class PublicationController extends AnnotatedObjectController {
         } else if (publication != null) {
             ac = publication.getAc();
             loadFormFields();
+        }
+
+        if (!Hibernate.isInitialized(publication.getAnnotations()) || !Hibernate.isInitialized(publication.getLifecycleEvents())) {
+            publication = getDaoFactory().getPublicationDao().getByAc( ac );
+            Hibernate.initialize(publication.getAnnotations());
+            Hibernate.initialize(publication.getLifecycleEvents());
         }
     }
 
