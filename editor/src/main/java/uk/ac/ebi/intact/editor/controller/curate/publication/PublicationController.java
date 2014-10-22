@@ -595,7 +595,6 @@ public class PublicationController extends AnnotatedObjectController {
         markAsCurationInProgress(evt);
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void markAsCurationInProgress(ActionEvent evt) {
         if (!userSessionController.isItMe(publication.getCurrentOwner())) {
             addErrorMessage("Cannot mark as curation in progress", "You are not the owner of this publication");
@@ -616,7 +615,6 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void markAsReadyForChecking(ActionEvent evt) {
         if (!userSessionController.isItMe(publication.getCurrentOwner())) {
             addErrorMessage("Cannot mark as Ready for checking", "You are not the owner of this publication");
@@ -657,7 +655,6 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void revertReadyForChecking(ActionEvent evt) {
         LifecycleEvent event = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.READY_FOR_CHECKING.identifier());
         publication.removeLifecycleEvent(event);
@@ -673,7 +670,6 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void revertAccepted(ActionEvent evt) {
         LifecycleEvent readyForReleaseEvt = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.READY_FOR_RELEASE.identifier());
         LifecycleEvent acceptedEvt = PublicationUtils.getLastEventOfType(publication, CvLifecycleEventType.ACCEPTED.identifier());
@@ -697,7 +693,6 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void putOnHold(ActionEvent evt) {
         setOnHold(reasonForOnHoldFromDialog);
 
@@ -720,7 +715,6 @@ public class PublicationController extends AnnotatedObjectController {
         }
     }
 
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void readyForReleaseFromOnHold(ActionEvent evt) {
         removeAnnotation(CvTopic.ON_HOLD);
 
@@ -1389,7 +1383,6 @@ public class PublicationController extends AnnotatedObjectController {
         return lifecycleManager;
     }
 
-    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void assignNewImex(ActionEvent evt) {
         // save publication changes first
         getCorePersister().saveOrUpdate(publication);
