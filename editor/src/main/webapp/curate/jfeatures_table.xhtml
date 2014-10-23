@@ -53,11 +53,10 @@
                 </ui:include>
             </p:column>
             <p:column headerText="Shortlabel">
-                <h:link outcome="/curate/cfeature" value="#{featureWrapper.feature.shortName}" includeViewParams="true"
-                        rendered="#{featureWrapper.feature.ac != null}">
-                    <f:param name="ac" value="#{featureWrapper.feature.ac}"/>
-                </h:link>
-                <p:commandLink onclick="load_feature.show()" action="#{curateController.editJami(featureWrapper.feature)}"
+                <p:commandLink onclick="load_feature.show()" action="#{modelledFeatureController.loadFeature(featureWrapper.feature)}"
+                               value="#{featureWrapper.feature.shortName}" ajax="false"
+                               rendered="#{featureWrapper.feature.ac != null}"/>
+                <p:commandLink onclick="load_feature.show()" action="#{modelledFeatureController.loadFeature(featureWrapper.feature)}"
                                style="#{'color:blue'}"
                                value="#{featureWrapper.feature.shortName}" ajax="false"
                                rendered="#{featureWrapper.feature.ac == null}"/>

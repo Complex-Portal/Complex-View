@@ -231,6 +231,10 @@ public class ComplexController extends AnnotatedObjectController {
                 return;
             }
 
+            if (!getJamiEntityManager().contains(complex)){
+                setComplex(getJamiEntityManager().merge(complex));
+            }
+
             refreshTabsAndFocusXref();
             generalJamiLoadChecks();
         }

@@ -43,11 +43,10 @@
                       sortBy="#{interactor.shortName}"
                       filterBy="#{interactor.shortName}"
                       filterMatchMode="contains">
-                <h:link outcome="/curate/cparticipant" value="#{interactor.shortName}" includeViewParams="true"
-                        rendered="#{participant.ac != null}">
-                    <f:param name="ac" value="#{participant.ac}"/>
-                </h:link>
-                <p:commandLink onclick="load_participant.show()" action="#{curateController.editJami(participant)}"
+                <p:commandLink onclick="load_participant.show()" action="#{modelledParticipantController.loadParticipant(participant)}"
+                               value="#{interactor.shortName}" rendered="#{participant.ac != null}"
+                               ajax="false"/>
+                <p:commandLink onclick="load_participant.show()" action="#{modelledParticipantController.loadParticipant(participant)}"
                                value="#{interactor.shortName}" rendered="#{participant.ac == null}"
                                styleClass="#{'intact-new'}"
                                ajax="false"/>

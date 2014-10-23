@@ -131,31 +131,11 @@ public class ModelledParticipantController extends AnnotatedObjectController {
                 return;
             }
 
-            // in case the participant is newly loaded and is not attached to parent complex
-            if (participant.getInteraction() != interactionController.getComplex()){
-                // new interaction
-                if (participant.getInteraction() != null && ((IntactComplex)participant.getInteraction()).getAc() == null){
-                    interactionController.setComplex((IntactComplex)participant.getInteraction());
-                }
-                // existing interaction
-                else if (participant.getInteraction() != null && ((IntactComplex)participant.getInteraction()).getAc() != null) {
-                    // same complex, initialise parent of participant
-                    if (((IntactComplex)participant.getInteraction()).getAc().equals(interactionController.getAc())) {
-                        participant.setInteraction(interactionController.getComplex());
-                    }
-                    // parent is not newly created but is not attached to the session
-                    else if (!getJamiEntityManager().contains(participant.getInteraction())){
-                        interactionController.setComplex((IntactComplex)getJamiEntityManager().merge(participant.getInteraction()));
-                        if (interactionController.getComplex() != null){
-                            participant.setInteraction(interactionController.getComplex());
-                        }
-                    }
-                    // parent is attached to the session
-                    else{
-                        interactionController.setComplex((IntactComplex)participant.getInteraction());
-                    }
-                }
+            if (!getJamiEntityManager().contains(participant)){
+                setParticipant(getJamiEntityManager().merge(participant));
             }
+
+            refreshParentControllers();
 
             if (participant.getInteractor() != null) {
                 interactor = participant.getInteractor().getShortName();
@@ -163,6 +143,12 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
             refreshTabsAndFocusXref();
             generalJamiLoadChecks();
+        }
+    }
+
+    protected void refreshParentControllers() {
+        if (participant.getInteraction() != interactionController.getComplex()){
+            interactionController.setComplex((IntactComplex) participant.getInteraction());
         }
     }
 
@@ -414,6 +400,17 @@ public class ModelledParticipantController extends AnnotatedObjectController {
         else{
             this.ac = null;
         }
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String loadParticipant(IntactModelledParticipant participant){
+        if (!getJamiEntityManager().contains(participant)){
+            setParticipant(getJamiEntityManager().merge(participant));
+        }
+        else{
+            setParticipant(participant);
+        }
+        return "/curate/cparticipant"+(participant.getAc() != null ? "?faces-redirect=true&includeViewParams=true" : "");
     }
 
     public String getParticipantPrimaryId() {

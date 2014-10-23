@@ -189,58 +189,11 @@ public class ModelledFeatureController extends AnnotatedObjectController {
                 return;
             }
 
-            final ModelledParticipant participant = (ModelledParticipant)feature.getParticipant();
-
-            if (modelledParticipantController.getParticipant() != feature.getParticipant()) {
-                // new participant
-                if (participant != null && ((IntactModelledParticipant)participant).getAc() == null){
-                    modelledParticipantController.setParticipant((IntactModelledParticipant)participant);
-                }
-                // existing interaction
-                else if (participant != null && ((IntactModelledParticipant)participant).getAc() != null) {
-                    // same complex, initialise parent of participant
-                    if (((IntactModelledParticipant)participant).getAc().equals(modelledParticipantController.getAc())) {
-                        feature.setParticipant(modelledParticipantController.getParticipant());
-                    }
-                    // parent is not newly created but is not attached to the session
-                    else if (!getJamiEntityManager().contains(participant)){
-                        modelledParticipantController.setParticipant((IntactModelledParticipant)getJamiEntityManager().merge(participant));
-                        if (modelledParticipantController.getParticipant() != null){
-                            feature.setParticipant(modelledParticipantController.getParticipant());
-                        }
-                    }
-                    // parent is attached to the session
-                    else{
-                        modelledParticipantController.setParticipant((IntactModelledParticipant)participant);
-                    }
-                }
+            if (!getJamiEntityManager().contains(feature)){
+                setFeature(getJamiEntityManager().merge(feature));
             }
 
-            // in case the participant is newly loaded and is not attached to parent complex
-            if (participant.getInteraction() != complexController.getComplex()){
-                // new interaction
-                if (participant.getInteraction() != null && ((IntactComplex)participant.getInteraction()).getAc() == null){
-                    complexController.setComplex((IntactComplex)participant.getInteraction());
-                }
-                // existing interaction
-                else if (participant.getInteraction() != null && ((IntactComplex)participant.getInteraction()).getAc() != null) {
-                    // same complex, initialise parent of participant
-                    if (((IntactComplex)participant.getInteraction()).getAc().equals(complexController.getAc())) {
-                        participant.setInteraction(complexController.getComplex());
-                    }
-                    // parent is not newly created but is not attached to the session
-                    else if (!getJamiEntityManager().contains(participant.getInteraction())){
-                        complexController.setComplex((IntactComplex)getJamiEntityManager().merge(participant.getInteraction()));
-                        if (complexController.getComplex() != null){
-                            participant.setInteraction(complexController.getComplex());
-                        }
-                    }
-                    // parent is attached to the session
-                    else{
-                        complexController.setComplex((IntactComplex)participant.getInteraction());
-                    }
-                }
-            }
+            refreshParentControllers();
 
             refreshTabsAndFocusXref();
             if (containsInvalidRanges) {
@@ -248,6 +201,20 @@ public class ModelledFeatureController extends AnnotatedObjectController {
             }
 
             generalJamiLoadChecks();
+        }
+    }
+
+    protected void refreshParentControllers() {
+        final ModelledEntity participant = feature.getParticipant();
+
+        if (modelledParticipantController.getParticipant() != feature.getParticipant()) {
+            modelledParticipantController.setParticipant((IntactModelledParticipant)participant);
+        }
+
+        if( feature.getParticipant() != null &&
+                ((ModelledParticipant)feature.getParticipant()).getInteraction() != complexController.getComplex() ) {
+            final Complex interaction = (Complex)((IntactModelledParticipant)participant).getInteraction();
+            complexController.setComplex((IntactComplex) interaction);
         }
     }
 
@@ -773,5 +740,16 @@ public class ModelledFeatureController extends AnnotatedObjectController {
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public int getFeatureRangeSize() {
         return this.feature.getRanges().size();
+    }
+
+    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public String loadFeature(IntactModelledFeature feature){
+        if (!getJamiEntityManager().contains(feature)){
+            setFeature(getJamiEntityManager().merge(feature));
+        }
+        else{
+            setFeature(feature);
+        }
+        return "/curate/cfeature"+(feature.getAc() != null ? "?faces-redirect=true&includeViewParams=true" : "");
     }
 }
