@@ -153,6 +153,7 @@ public class ParticipantController extends ParameterizableObjectController {
                         Hibernate.initialize(participant.getFeatures());
                         Hibernate.initialize(participant.getExperimentalPreparations());
                         Hibernate.initialize(participant.getParticipantDetectionMethods());
+                        Hibernate.initialize(participant.getExperimentalRoles());
                     }
 
                 }
@@ -171,7 +172,8 @@ public class ParticipantController extends ParameterizableObjectController {
                     || !Hibernate.isInitialized(participant.getFeatures())
                     || !Hibernate.isInitialized(participant.getXrefs())
                     || !Hibernate.isInitialized(participant.getExperimentalPreparations())
-                    || !Hibernate.isInitialized(participant.getParticipantDetectionMethods())){
+                    || !Hibernate.isInitialized(participant.getParticipantDetectionMethods())
+                    || !Hibernate.isInitialized(participant.getExperimentalRoles())){
                 participant = loadByAc(getDaoFactory().getComponentDao(), participant.getAc());
                 // initialise xrefs
                 Hibernate.initialize(participant.getXrefs());
@@ -182,6 +184,7 @@ public class ParticipantController extends ParameterizableObjectController {
                 Hibernate.initialize(participant.getFeatures());
                 Hibernate.initialize(participant.getExperimentalPreparations());
                 Hibernate.initialize(participant.getParticipantDetectionMethods());
+                Hibernate.initialize(participant.getExperimentalRoles());
             }
 
             featuresDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<Feature>(participant.getFeatures()), participant.getFeatures());
@@ -571,6 +574,8 @@ public class ParticipantController extends ParameterizableObjectController {
             Hibernate.initialize(participant.getFeatures());
             Hibernate.initialize(participant.getExperimentalPreparations());
             Hibernate.initialize(participant.getParticipantDetectionMethods());
+            Hibernate.initialize(participant.getExperimentalRoles());
+
             featuresDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<Feature>(participant.getFeatures()), participant.getFeatures());
             if (participant.getInteraction() != null){
                 Collection<Experiment> experiments = participant.getInteraction().getExperiments();

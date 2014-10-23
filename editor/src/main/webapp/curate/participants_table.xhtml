@@ -104,7 +104,7 @@
                             oncomplete="markAsUnsaved()"
                             listener="#{wrapper.onExperimentalRoleChanged()}" update=":editorForm:shortlabelTxt,:editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent, participantsTable"/>
                 </h:selectOneMenu>
-                <h:outputText value="#{wrapper.participant.cvExperimentalRole != null? wrapper.participant.cvExperimentalRole.shortLabel : ''}"
+                <h:outputText value="#{wrapper.experimentalRole != null? wrapper.experimentalRole.shortLabel : ''}"
                               rendered="#{value.size() ge 5}"/>
             </p:column>
 
