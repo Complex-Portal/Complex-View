@@ -168,15 +168,8 @@ public class ExperimentController extends AnnotatedObjectController {
     @Override
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
-        if (!getCoreEntityManager().contains(experiment)){
-            setExperiment(getCoreEntityManager().merge(this.experiment));
-        }
-
-        Experiment originalExperiment = this.experiment;
 
         String value = clone(experiment, new ExperimentIntactCloner(false));
-
-        getCoreEntityManager().detach(originalExperiment);
 
         return value;
     }
@@ -184,14 +177,7 @@ public class ExperimentController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String cloneWithInteractions() {
 
-        if (!getCoreEntityManager().contains(experiment)){
-            setExperiment(getCoreEntityManager().merge(this.experiment));
-        }
-        Experiment originalExperiment = this.experiment;
-
         String value = clone(experiment, new ExperimentIntactCloner(true));
-
-        getCoreEntityManager().detach(originalExperiment);
 
         return value;
     }

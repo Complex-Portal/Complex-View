@@ -68,14 +68,10 @@ public class InteractorController extends AnnotatedObjectController {
     @Override
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
-        if (!getCoreEntityManager().contains(interactor)){
-            setInteractor(getCoreEntityManager().merge(this.interactor));
-        }
-        Interactor originalInteractor = this.interactor;
+
 
         String value = clone(interactor, new InteractorIntactCloner());
 
-        getCoreEntityManager().detach(originalInteractor);
         return value;
     }
 

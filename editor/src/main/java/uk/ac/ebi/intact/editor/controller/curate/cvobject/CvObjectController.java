@@ -98,16 +98,8 @@ public class CvObjectController extends AnnotatedObjectController {
     @Override
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
-        if (!getCoreEntityManager().contains(cvObject)){
-            setCvObject(getCoreEntityManager().merge(this.cvObject));
-        }
-        CvObject originalObject = this.cvObject;
 
-        String value = clone(cvObject, new CvObjectIntactCloner());
-
-        getCoreEntityManager().detach(originalObject);
-
-        return value;
+        return clone(cvObject, new CvObjectIntactCloner());
     }
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)

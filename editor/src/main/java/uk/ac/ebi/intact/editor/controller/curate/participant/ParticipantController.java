@@ -852,14 +852,8 @@ public class ParticipantController extends ParameterizableObjectController {
     @Override
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
-        if (!getCoreEntityManager().contains(participant)){
-            setParticipant(getCoreEntityManager().merge(this.participant));
-        }
-        Component originalParticipant = this.participant;
 
         String value = super.clone(getAnnotatedObject(), newClonerInstance());
-
-        getCoreEntityManager().detach(originalParticipant);
 
         return value;
     }

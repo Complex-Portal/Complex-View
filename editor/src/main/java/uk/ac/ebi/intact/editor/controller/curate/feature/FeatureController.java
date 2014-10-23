@@ -97,17 +97,10 @@ public class FeatureController extends AnnotatedObjectController {
     @Override
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
-        if (!getCoreEntityManager().contains(feature)){
-            setFeature(getCoreEntityManager().merge(this.feature));
-        }
-
-        Feature originalFeature = this.feature;
 
         String value = clone(getAnnotatedObject(), newClonerInstance());
 
         refreshRangeWrappers();
-
-        getCoreEntityManager().detach(originalFeature);
 
         return value;
     }

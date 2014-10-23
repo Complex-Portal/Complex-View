@@ -138,19 +138,12 @@ public class InteractionController extends ParameterizableObjectController {
     @Override
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
-        if (!getCoreEntityManager().contains(interaction)){
-            setInteraction(getCoreEntityManager().merge(this.interaction));
-        }
-
-        Interaction originalInteraction = this.interaction;
 
         String value = clone(getAnnotatedObject(), newClonerInstance());
 
         refreshParticipants();
         refreshExperimentLists();
         refreshParentControllers();
-
-        getCoreEntityManager().detach(originalInteraction);
 
         return value;
     }

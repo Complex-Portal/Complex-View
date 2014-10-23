@@ -93,15 +93,8 @@ public class BioSourceController extends AnnotatedObjectController {
     @Override
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
-        if (!getCoreEntityManager().contains(bioSource)){
-            setBioSource(getCoreEntityManager().merge(this.bioSource));
-        }
-
-        BioSource originalBiosource = this.bioSource;
 
         String value = clone(bioSource, new BiosourceIntactCloner());
-
-        getCoreEntityManager().detach(originalBiosource);
 
         return value;
     }
