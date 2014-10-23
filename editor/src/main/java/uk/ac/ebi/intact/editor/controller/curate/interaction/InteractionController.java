@@ -870,18 +870,16 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void cloneParticipant(ParticipantWrapper participantWrapper) {
-        Component participant = getCoreEntityManager().merge(participantWrapper.getParticipant());
 
         IntactCloner cloner = new ParticipantIntactCloner();
 
         try {
-            Component clone = cloner.clone(participant);
+            Component clone = cloner.clone(participantWrapper.getParticipant());
             addParticipant(clone);
         } catch (IntactClonerException e) {
             addErrorMessage("Problem cloning participant", e.getMessage());
             handleException(e);
         }
-        getCoreEntityManager().detach(participant);
     }
 
     public void linkSelectedFeatures(ActionEvent evt) {
@@ -940,16 +938,7 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setImexId(String imexId) {
-        if (!getCoreEntityManager().contains(interaction) &&
-                !Hibernate.isInitialized(interaction.getAnnotations())){
-            setInteraction(getCoreEntityManager().merge(interaction));
-
-            refreshParentControllers();
-            refreshExperimentLists();
-            refreshParticipants();
-        }
         updateXref(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId);
-        getCoreEntityManager().detach(interaction);
     }
 
     public void setAc( String ac ) {

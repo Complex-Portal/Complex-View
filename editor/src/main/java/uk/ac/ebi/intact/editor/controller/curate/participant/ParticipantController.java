@@ -562,49 +562,7 @@ public class ParticipantController extends ParameterizableObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setAuthorGivenName( String name ) {
-        if (!getCoreEntityManager().contains(participant)
-                && !Hibernate.isInitialized(participant.getAliases())){
-            setParticipant(getCoreEntityManager().merge(participant));
-            // initialise xrefs
-            Hibernate.initialize(participant.getXrefs());
-            // initialise xrefs
-            Hibernate.initialize(participant.getAnnotations());
-            // initialise xrefs
-            Hibernate.initialize(participant.getAliases());
-            Hibernate.initialize(participant.getFeatures());
-            Hibernate.initialize(participant.getExperimentalPreparations());
-            Hibernate.initialize(participant.getParticipantDetectionMethods());
-            Hibernate.initialize(participant.getExperimentalRoles());
-
-            featuresDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<Feature>(participant.getFeatures()), participant.getFeatures());
-            if (participant.getInteraction() != null){
-                Collection<Experiment> experiments = participant.getInteraction().getExperiments();
-
-                if (!Hibernate.isInitialized(participant.getInteraction().getExperiments())){
-                    experiments = getDaoFactory().getExperimentDao().getByInteractionAc(participant.getInteraction().getAc());
-                }
-                if (!Hibernate.isInitialized(participant.getInteraction().getComponents())){
-                    Hibernate.initialize(participant.getInteraction().getComponents());
-                }
-
-                if( experiments.isEmpty()) {
-                    addWarningMessage( "The parent interaction of this participant isn't attached to an experiment",
-                            "Abort experiment loading." );
-                    return;
-                }
-                else{
-                    if ( publicationController.getPublication() == null ) {
-                        Publication publication = experiments.iterator().next().getPublication();
-                        publicationController.setPublication( publication );
-                    }
-                    if ( experimentController.getExperiment() == null ) {
-                        experimentController.setExperiment( experiments.iterator().next() );
-                    }
-                }
-            }
-        }
         addOrReplace(CvAliasType.AUTHOR_ASSIGNED_NAME_MI_REF, name  );
-        getCoreEntityManager().detach(participant);
     }
 
     public CvExperimentalPreparation getFirstExperimentalPreparation( Component participant ) {
