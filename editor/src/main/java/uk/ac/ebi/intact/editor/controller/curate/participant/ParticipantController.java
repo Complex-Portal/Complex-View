@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import psidev.psi.mi.jami.model.CvTerm;
 import uk.ac.ebi.intact.core.context.IntactContext;
 import uk.ac.ebi.intact.core.persistence.dao.IntactObjectDao;
 import uk.ac.ebi.intact.core.persister.IntactCore;
@@ -893,5 +894,47 @@ public class ParticipantController extends ParameterizableObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public List collectXrefs() {
         return super.collectXrefs();
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List<CvExperimentalPreparation> getExperimentalPreparations() {
+        if (participant == null){
+            return Collections.EMPTY_LIST;
+        }
+        return new ArrayList<CvExperimentalPreparation>(IntactCore.ensureInitializedExperimentalPreparations(participant));
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List<CvIdentification> getIdentificationMethods() {
+        if (participant == null){
+            return Collections.EMPTY_LIST;
+        }
+        return new ArrayList<CvIdentification>(IntactCore.ensureInitializedParticipantIdentificationMethods(participant));
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public boolean isExperimentalPreparationsListEmpty() {
+        if (participant == null){
+            return true;
+        }
+        else if (Hibernate.isInitialized(participant.getExperimentalPreparations())){
+            return participant.getExperimentalPreparations().isEmpty();
+        }
+        else {
+            return getDaoFactory().getComponentDao().getExperimentalPreparationsForComponentAc(participant.getAc()).isEmpty();
+        }
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public boolean isIdentificationMethodsListEmpty() {
+        if (participant == null){
+            return true;
+        }
+        else if (Hibernate.isInitialized(participant.getParticipantDetectionMethods())){
+            return participant.getParticipantDetectionMethods().isEmpty();
+        }
+        else {
+            return getDaoFactory().getComponentDao().getParticipantIdentificationMethodsForComponentAc(participant.getAc()).isEmpty();
+        }
     }
 }
