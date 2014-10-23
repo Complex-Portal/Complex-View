@@ -50,6 +50,7 @@ import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentController
 import uk.ac.ebi.intact.editor.util.CurateUtils;
 import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
+import uk.ac.ebi.intact.jami.model.lifecycle.LifeCycleEvent;
 import uk.ac.ebi.intact.model.*;
 import uk.ac.ebi.intact.model.user.Preference;
 import uk.ac.ebi.intact.model.util.AnnotatedObjectUtils;
@@ -1017,8 +1018,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setJournal(String journal) {
-        if (!Hibernate.isInitialized(publication.getAnnotations())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getAnnotations())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         updateAnnotation(CvTopic.JOURNAL_MI_REF, journal);
         getCoreEntityManager().detach(publication);
@@ -1031,8 +1034,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setContactEmail(String contactEmail) {
-        if (!Hibernate.isInitialized(publication.getAnnotations())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getAnnotations())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         updateAnnotation(CvTopic.CONTACT_EMAIL_MI_REF, contactEmail);
         getCoreEntityManager().detach(publication);
@@ -1045,8 +1050,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setSubmitted(String submitted) {
-        if (!Hibernate.isInitialized(publication.getAnnotations())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getAnnotations())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         updateAnnotation(SUBMITTED, submitted);
         getCoreEntityManager().detach(publication);
@@ -1059,8 +1066,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setCurationRequest(String requestedCuration) {
-        if (!Hibernate.isInitialized(publication.getAnnotations())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getAnnotations())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         updateAnnotation(CURATION_REQUEST, requestedCuration);
         getCoreEntityManager().detach(publication);
@@ -1079,8 +1088,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setYear(Short year) {
-        if (!Hibernate.isInitialized(publication.getAnnotations())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getAnnotations())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         updateAnnotation(CvTopic.PUBLICATION_YEAR_MI_REF, year);
         getCoreEntityManager().detach(publication);
@@ -1132,8 +1143,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setPrimaryReference(String id) {
-        if (!Hibernate.isInitialized(publication.getXrefs())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getXrefs())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         updateXref(CvDatabase.PUBMED_MI_REF, CvXrefQualifier.PRIMARY_REFERENCE_MI_REF, id);
         getCoreEntityManager().detach(publication);
@@ -1146,8 +1159,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setAuthors(String authors) {
-        if (!Hibernate.isInitialized(publication.getAnnotations())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getAnnotations())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         updateAnnotation(CvTopic.AUTHOR_LIST_MI_REF, authors);
         getCoreEntityManager().detach(publication);
@@ -1160,8 +1175,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setOnHold(String reason) {
-        if (!Hibernate.isInitialized(publication.getAnnotations())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getAnnotations())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         updateAnnotation(CvTopic.ON_HOLD, reason);
         getCoreEntityManager().detach(publication);
@@ -1260,8 +1277,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setCurationDepthAnnot(String curationDepth) {
-        if (!Hibernate.isInitialized(publication.getAnnotations())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getAnnotations())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         updateAnnotation(CURATION_DEPTH, curationDepth);
         getCoreEntityManager().detach(publication);
@@ -1308,8 +1327,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setAcceptedMessage(String message) {
-        if (!Hibernate.isInitialized(publication.getAnnotations())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getAnnotations())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         updateAnnotation(CvTopic.ACCEPTED, message);
         getCoreEntityManager().detach(publication);
@@ -1335,8 +1356,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setImexId(String imexId) {
-        if (!Hibernate.isInitialized(publication.getXrefs())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getAnnotations())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         updateXref(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId);
         getCoreEntityManager().detach(publication);
@@ -1556,8 +1579,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setToBeReviewed(String toBeReviewed) {
-        if (!Hibernate.isInitialized(publication.getAnnotations())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getAnnotations())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         if (toBeReviewed == null) {
             removeAnnotation(CvTopic.TO_BE_REVIEWED);
@@ -1574,8 +1599,10 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void clearToBeReviewed(ActionEvent evt) {
-        if (!Hibernate.isInitialized(publication.getAnnotations())){
+        if (!getCoreEntityManager().contains(publication)
+                && !Hibernate.isInitialized(publication.getAnnotations())){
             setPublication(getCoreEntityManager().merge(publication));
+            loadByAc();
         }
         removeAnnotation(CvTopic.TO_BE_REVIEWED);
 
@@ -1810,9 +1837,12 @@ public class PublicationController extends AnnotatedObjectController {
         if (!getCoreEntityManager().contains(publication)){
             setPublication(getCoreEntityManager().merge(this.publication));
         }
+
+        Publication original = this.publication;
+
         String value = super.clone(getAnnotatedObject(), newClonerInstance());
 
-        getCoreEntityManager().detach(this.publication);
+        getCoreEntityManager().detach(original);
 
         return value;
     }
@@ -1820,7 +1850,8 @@ public class PublicationController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
         if (!Hibernate.isInitialized(publication.getAnnotations())){
-            setPublication(getDaoFactory().getPublicationDao().getByAc(publication.getAc()));
+            return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getComponentDao().getByAc(publication.getAc()),
+                    CvTopic.CAUTION_MI_REF, getDaoFactory());
         }
         return findAnnotationText(CvTopic.CAUTION_MI_REF);
     }
@@ -1828,8 +1859,42 @@ public class PublicationController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
         if (!Hibernate.isInitialized(publication.getAnnotations())){
-            setPublication(getDaoFactory().getPublicationDao().getByAc(publication.getAc()));
+            return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getComponentDao().getByAc(publication.getAc()),
+                    CvTopic.INTERNAL_REMARK, getDaoFactory());
         }
         return findAnnotationText(CvTopic.INTERNAL_REMARK);
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAnnotations() {
+        return super.collectAnnotations();
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAliases() {
+        return super.collectAliases();
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectXrefs() {
+        return super.collectXrefs();
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List<LifecycleEvent> collectLifeCycleEvents() {
+        return new ArrayList<LifecycleEvent>(IntactCore.ensureInitializedLifecycleEvents(this.publication));
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public int getExperimentSize() {
+        if (publication != null && Hibernate.isInitialized(publication.getExperiments())){
+            return publication.getExperiments().size();
+        }
+        else if (publication != null){
+            return getDaoFactory().getPublicationDao().countExperimentsForPublicationAc(publication.getAc());
+        }
+        else {
+            return 0;
+        }
     }
 }

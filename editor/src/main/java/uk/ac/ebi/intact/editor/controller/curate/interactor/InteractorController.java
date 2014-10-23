@@ -24,6 +24,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.validator.ValidatorException;
+import java.util.List;
 
 /**
  * Interactor controller.
@@ -70,9 +71,11 @@ public class InteractorController extends AnnotatedObjectController {
         if (!getCoreEntityManager().contains(interactor)){
             setInteractor(getCoreEntityManager().merge(this.interactor));
         }
+        Interactor originalInteractor = this.interactor;
+
         String value = clone(interactor, new InteractorIntactCloner());
 
-        getCoreEntityManager().detach(this.interactor);
+        getCoreEntityManager().detach(originalInteractor);
         return value;
     }
 
@@ -279,7 +282,6 @@ public class InteractorController extends AnnotatedObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSave(boolean refreshCurrentView) {
         ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
         PersistenceController persistenceController = getPersistenceController();
@@ -288,13 +290,11 @@ public class InteractorController extends AnnotatedObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public String doSave() {
         return super.doSave();
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSaveIfNecessary(ActionEvent evt) {
         super.doSaveIfNecessary(evt);
     }
@@ -302,7 +302,8 @@ public class InteractorController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
         if (!Hibernate.isInitialized(interactor.getAnnotations())){
-            setInteractor(getDaoFactory().getInteractionDao().getByAc(interactor.getAc()));
+            return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getInteractorDao().getByAc(interactor.getAc()),
+                    CvTopic.CAUTION_MI_REF, getDaoFactory());
         }
         return findAnnotationText(CvTopic.CAUTION_MI_REF);
     }
@@ -310,8 +311,24 @@ public class InteractorController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
         if (!Hibernate.isInitialized(interactor.getAnnotations())){
-            setInteractor(getDaoFactory().getInteractionDao().getByAc(interactor.getAc()));
+            return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getInteractorDao().getByAc(interactor.getAc()),
+                    CvTopic.INTERNAL_REMARK, getDaoFactory());
         }
         return findAnnotationText(CvTopic.INTERNAL_REMARK);
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAnnotations() {
+        return super.collectAnnotations();
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAliases() {
+        return super.collectAliases();
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectXrefs() {
+        return super.collectXrefs();
     }
 }

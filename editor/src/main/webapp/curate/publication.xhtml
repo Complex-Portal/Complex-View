@@ -345,7 +345,7 @@
 <p:tabView id="publicationTabs" dynamic="true">
     <p:ajax event="tabChange" listener="#{publicationController.onTabChanged}" update=":editorForm:publicationTabs,:editorForm:messagesComponent" />
 
-    <p:tab title="Experiments (#{fn:length(publicationController.publication.experiments)})">
+    <p:tab title="Experiments (#{publicationController.experimentSize})">
         <div class="intact-buttonBar">
             <p:commandButton value="New experiment" action="#{experimentController.newExperiment(publicationController.publication)}" ajax="false"/>
         </div>

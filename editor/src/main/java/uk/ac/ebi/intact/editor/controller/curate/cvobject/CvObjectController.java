@@ -92,7 +92,7 @@ public class CvObjectController extends AnnotatedObjectController {
 
     @Override
     public void setJamiObject(IntactPrimaryObject annotatedObject) {
-         // nothing to do
+        // nothing to do
     }
 
     @Override
@@ -101,9 +101,11 @@ public class CvObjectController extends AnnotatedObjectController {
         if (!getCoreEntityManager().contains(cvObject)){
             setCvObject(getCoreEntityManager().merge(this.cvObject));
         }
+        CvObject originalObject = this.cvObject;
+
         String value = clone(cvObject, new CvObjectIntactCloner());
 
-        getCoreEntityManager().detach(this.cvObject);
+        getCoreEntityManager().detach(originalObject);
 
         return value;
     }
@@ -115,6 +117,10 @@ public class CvObjectController extends AnnotatedObjectController {
                 cvObject = (CvDagObject) loadByAc(getDaoFactory().getCvObjectDao(), ac);
                 // initialise xrefs
                 Hibernate.initialize(cvObject.getXrefs());
+                // initialise xrefs
+                Hibernate.initialize(cvObject.getAnnotations());
+                // initialise xrefs
+                Hibernate.initialize(cvObject.getAliases());
             } else if (cvClassName != null) {
                 cvObject = newInstance(cvClassName);
             }
@@ -169,7 +175,7 @@ public class CvObjectController extends AnnotatedObjectController {
             if (this.classMap.containsKey(cvClass)){
                 CvDagObject parent = (CvDagObject)getDaoFactory().getCvObjectDao(cvClass).getByIdentifier(this.classMap.get(cvClass));
                 if (parent != null){
-                     obj.getParents().add(parent);
+                    obj.getParents().add(parent);
                 }
             }
         } catch (Exception e) {
@@ -186,7 +192,7 @@ public class CvObjectController extends AnnotatedObjectController {
     public boolean doSaveDetails() {
         cvObjectService.refresh(null);
         cvTermService.clearAll();
-        
+
         Collection<CvObject> parentsToRemove = CollectionUtils.subtract(cvObject.getParents(), parents.getTarget());
         Collection<CvObject> parentsToAdd = CollectionUtils.subtract(parents.getTarget(), cvObject.getParents());
 
@@ -299,7 +305,6 @@ public class CvObjectController extends AnnotatedObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSave(boolean refreshCurrentView) {
         ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
         PersistenceController persistenceController = getPersistenceController();
@@ -308,13 +313,11 @@ public class CvObjectController extends AnnotatedObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public String doSave() {
         return super.doSave();
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSaveIfNecessary(ActionEvent evt) {
         super.doSaveIfNecessary(evt);
     }
@@ -322,7 +325,8 @@ public class CvObjectController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
         if (!Hibernate.isInitialized(cvObject.getAnnotations())){
-            setCvObject(getDaoFactory().getCvObjectDao().getByAc(cvObject.getAc()));
+            return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getCvObjectDao().getByAc(cvObject.getAc()),
+                    CvTopic.CAUTION_MI_REF, getDaoFactory());
         }
         return findAnnotationText(CvTopic.CAUTION_MI_REF);
     }
@@ -330,8 +334,24 @@ public class CvObjectController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
         if (!Hibernate.isInitialized(cvObject.getAnnotations())){
-            setCvObject(getDaoFactory().getCvObjectDao().getByAc(cvObject.getAc()));
+            return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getCvObjectDao().getByAc(cvObject.getAc()),
+                    CvTopic.INTERNAL_REMARK, getDaoFactory());
         }
         return findAnnotationText(CvTopic.INTERNAL_REMARK);
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAnnotations() {
+        return super.collectAnnotations();
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAliases() {
+        return super.collectAliases();
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectXrefs() {
+        return super.collectXrefs();
     }
 }

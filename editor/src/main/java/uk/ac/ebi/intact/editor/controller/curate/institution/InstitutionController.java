@@ -7,16 +7,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.editor.controller.curate.AnnotatedObjectController;
-import uk.ac.ebi.intact.editor.controller.curate.ChangesController;
-import uk.ac.ebi.intact.editor.controller.curate.PersistenceController;
 import uk.ac.ebi.intact.jami.model.IntactPrimaryObject;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.CvTopic;
 import uk.ac.ebi.intact.model.Institution;
 
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -37,7 +35,7 @@ public class InstitutionController extends AnnotatedObjectController {
 
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-       this.institution = (Institution) annotatedObject;
+        this.institution = (Institution) annotatedObject;
 
         if (institution != null){
             this.ac = annotatedObject.getAc();
@@ -123,31 +121,11 @@ public class InstitutionController extends AnnotatedObjectController {
         updateAnnotation(CvTopic.URL_MI_REF, address);
     }
 
-    @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
-    public void doSave(boolean refreshCurrentView) {
-        ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
-        PersistenceController persistenceController = getPersistenceController();
-
-        doSaveIntact(refreshCurrentView, changesController, persistenceController);
-    }
-
-    @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
-    public String doSave() {
-        return super.doSave();
-    }
-
-    @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
-    public void doSaveIfNecessary(ActionEvent evt) {
-        super.doSaveIfNecessary(evt);
-    }
-
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
         if (!Hibernate.isInitialized(institution.getAnnotations())){
-            setInstitution(getDaoFactory().getInstitutionDao().getByAc(institution.getAc()));
+            return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getInstitutionDao().getByAc(institution.getAc()),
+                    CvTopic.CAUTION_MI_REF, getDaoFactory());
         }
         return findAnnotationText(CvTopic.CAUTION_MI_REF);
     }
@@ -155,8 +133,24 @@ public class InstitutionController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
         if (!Hibernate.isInitialized(institution.getAnnotations())){
-            setInstitution(getDaoFactory().getInstitutionDao().getByAc(institution.getAc()));
+            return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getInstitutionDao().getByAc(institution.getAc()),
+                    CvTopic.INTERNAL_REMARK, getDaoFactory());
         }
         return findAnnotationText(CvTopic.INTERNAL_REMARK);
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAnnotations() {
+        return super.collectAnnotations();
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAliases() {
+        return super.collectAliases();
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectXrefs() {
+        return super.collectXrefs();
     }
 }

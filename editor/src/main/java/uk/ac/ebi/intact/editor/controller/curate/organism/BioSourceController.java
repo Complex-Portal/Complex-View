@@ -22,6 +22,8 @@ import uk.ac.ebi.intact.model.CvAliasType;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Bruno Aranda (baranda@ebi.ac.uk)
@@ -52,7 +54,7 @@ public class BioSourceController extends AnnotatedObjectController {
 
     @Override
     public void setAnnotatedObject(AnnotatedObject annotatedObject) {
-       this.bioSource = (BioSource) annotatedObject;
+        this.bioSource = (BioSource) annotatedObject;
 
         if (bioSource != null){
             this.ac = annotatedObject.getAc();
@@ -88,9 +90,12 @@ public class BioSourceController extends AnnotatedObjectController {
         if (!getCoreEntityManager().contains(bioSource)){
             setBioSource(getCoreEntityManager().merge(this.bioSource));
         }
+
+        BioSource originalBiosource = this.bioSource;
+
         String value = clone(bioSource, new BiosourceIntactCloner());
 
-        getCoreEntityManager().detach(this.bioSource);
+        getCoreEntityManager().detach(originalBiosource);
 
         return value;
     }
@@ -195,7 +200,6 @@ public class BioSourceController extends AnnotatedObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSave(boolean refreshCurrentView) {
         ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
         PersistenceController persistenceController = getPersistenceController();
@@ -204,13 +208,11 @@ public class BioSourceController extends AnnotatedObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public String doSave() {
         return super.doSave();
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSaveIfNecessary(ActionEvent evt) {
         super.doSaveIfNecessary(evt);
     }
@@ -228,6 +230,19 @@ public class BioSourceController extends AnnotatedObjectController {
     @Override
     public String getInternalRemarkMessage() {
         return null;
+    }
+
+    public List collectAnnotations() {
+        return Collections.EMPTY_LIST;
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAliases() {
+        return super.collectAliases();
+    }
+
+    public List collectXrefs() {
+        return Collections.EMPTY_LIST;
     }
 
 }

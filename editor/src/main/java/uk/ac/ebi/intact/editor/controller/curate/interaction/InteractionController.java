@@ -141,13 +141,16 @@ public class InteractionController extends ParameterizableObjectController {
         if (!getCoreEntityManager().contains(interaction)){
             setInteraction(getCoreEntityManager().merge(this.interaction));
         }
+
+        Interaction originalInteraction = this.interaction;
+
         String value = clone(getAnnotatedObject(), newClonerInstance());
 
         refreshParticipants();
         refreshExperimentLists();
         refreshParentControllers();
 
-        getCoreEntityManager().detach(this.interaction);
+        getCoreEntityManager().detach(originalInteraction);
 
         return value;
     }
@@ -927,8 +930,13 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setImexId(String imexId) {
-        if (!Hibernate.isInitialized(interaction.getAnnotations())){
+        if (!getCoreEntityManager().contains(interaction) &&
+                !Hibernate.isInitialized(interaction.getAnnotations())){
             setInteraction(getCoreEntityManager().merge(interaction));
+
+            refreshParentControllers();
+            refreshExperimentLists();
+            refreshParticipants();
         }
         updateXref(CvDatabase.IMEX_MI_REF, CvXrefQualifier.IMEX_PRIMARY_MI_REF, imexId);
         getCoreEntityManager().detach(interaction);
@@ -1044,10 +1052,11 @@ public class InteractionController extends ParameterizableObjectController {
         interaction.addConfidence(confidence);
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public List<Confidence> getConfidences() {
         if (interaction == null) return Collections.EMPTY_LIST;
 
-        final List<Confidence> confidences = new ArrayList<Confidence>( interaction.getConfidences() );
+        final List<Confidence> confidences = new ArrayList<Confidence>( IntactCore.ensureInitializedConfidences(interaction) );
         Collections.sort( confidences, new IntactObjectComparator() );
         return confidences;
     }
@@ -1130,7 +1139,6 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSave(boolean refreshCurrentView) {
         ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
         PersistenceController persistenceController = getPersistenceController();
@@ -1139,13 +1147,11 @@ public class InteractionController extends ParameterizableObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public String doSave() {
         return super.doSave();
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSaveIfNecessary(ActionEvent evt) {
         super.doSaveIfNecessary(evt);
     }
@@ -1153,7 +1159,8 @@ public class InteractionController extends ParameterizableObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
         if (!Hibernate.isInitialized(interaction.getAnnotations())){
-            setInteraction(getDaoFactory().getInteractionDao().getByAc(interaction.getAc()));
+            return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getInteractionDao().getByAc(interaction.getAc()),
+                    CvTopic.CAUTION_MI_REF, getDaoFactory());
         }
         return findAnnotationText(CvTopic.CAUTION_MI_REF);
     }
@@ -1161,7 +1168,8 @@ public class InteractionController extends ParameterizableObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
         if (!Hibernate.isInitialized(interaction.getAnnotations())){
-            setInteraction(getDaoFactory().getInteractionDao().getByAc(interaction.getAc()));
+            return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getInteractionDao().getByAc(interaction.getAc()),
+                    CvTopic.INTERNAL_REMARK, getDaoFactory());
         }
         return findAnnotationText(CvTopic.INTERNAL_REMARK);
     }
@@ -1203,5 +1211,19 @@ public class InteractionController extends ParameterizableObjectController {
         else {
             return 0;
         }
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAnnotations() {
+        return super.collectAnnotations();
+    }
+
+    public List collectAliases() {
+        return Collections.EMPTY_LIST;
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectXrefs() {
+        return super.collectXrefs();
     }
 }

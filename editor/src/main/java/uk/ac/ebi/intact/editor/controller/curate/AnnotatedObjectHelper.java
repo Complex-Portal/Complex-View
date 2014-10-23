@@ -518,7 +518,7 @@ public class AnnotatedObjectHelper implements Serializable {
             return Collections.EMPTY_LIST;
         }
 
-        final ArrayList<Annotation> annotations = new ArrayList<Annotation>( getAnnotatedObject().getAnnotations() );
+        final ArrayList<Annotation> annotations = new ArrayList<Annotation>( IntactCore.ensureInitializedAnnotations(getAnnotatedObject()) );
         Collections.sort( annotations, new IntactObjectComparator() );
         return annotations;
     }
@@ -628,7 +628,7 @@ public class AnnotatedObjectHelper implements Serializable {
             return Collections.EMPTY_LIST;
         }
 
-        final ArrayList<Alias> aliases = new ArrayList<Alias>( getAnnotatedObject().getAliases() );
+        final ArrayList<Alias> aliases = new ArrayList<Alias>( IntactCore.ensureInitializedAliases(getAnnotatedObject()) );
         Collections.sort( aliases, new IntactObjectComparator() );
         return aliases;
     }

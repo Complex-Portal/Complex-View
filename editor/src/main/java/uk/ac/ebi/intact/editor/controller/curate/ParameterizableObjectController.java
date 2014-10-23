@@ -15,6 +15,8 @@
  */
 package uk.ac.ebi.intact.editor.controller.curate;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.intact.model.Parameter;
 import uk.ac.ebi.intact.model.Parameterizable;
 
@@ -34,6 +36,7 @@ public abstract class ParameterizableObjectController extends AnnotatedObjectCon
         getParameterizableObjectHelper().newParameter();
     }
 
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public List<Parameter> getParameters() {
         return getParameterizableObjectHelper().getParameters();
     }

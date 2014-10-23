@@ -92,7 +92,9 @@ public class ParameterizableObjectHelper {
             return Collections.EMPTY_LIST;
         }
 
-        final List<Parameter> parameters = new ArrayList<Parameter>( annotatedObject.getParameters() );
+        final List<Parameter> parameters = new ArrayList<Parameter>(
+                annotatedObject instanceof Interaction ? IntactCore.ensureInitializedInteractionParameters((Interaction)annotatedObject) :
+                        IntactCore.ensureInitializedComponentParameters((Component)annotatedObject) );
         Collections.sort( parameters, new IntactObjectComparator() );
         return parameters;
     }

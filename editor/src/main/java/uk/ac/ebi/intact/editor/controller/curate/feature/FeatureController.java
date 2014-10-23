@@ -100,11 +100,14 @@ public class FeatureController extends AnnotatedObjectController {
         if (!getCoreEntityManager().contains(feature)){
             setFeature(getCoreEntityManager().merge(this.feature));
         }
+
+        Feature originalFeature = this.feature;
+
         String value = clone(getAnnotatedObject(), newClonerInstance());
 
         refreshRangeWrappers();
 
-        getCoreEntityManager().detach(this.feature);
+        getCoreEntityManager().detach(originalFeature);
 
         return value;
     }
@@ -500,7 +503,6 @@ public class FeatureController extends AnnotatedObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSave(boolean refreshCurrentView) {
         ChangesController changesController = (ChangesController) getSpringContext().getBean("changesController");
         PersistenceController persistenceController = getPersistenceController();
@@ -509,13 +511,11 @@ public class FeatureController extends AnnotatedObjectController {
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public String doSave() {
         return super.doSave();
     }
 
     @Override
-    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
     public void doSaveIfNecessary(ActionEvent evt) {
         super.doSaveIfNecessary(evt);
     }
@@ -523,7 +523,8 @@ public class FeatureController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
         if (!Hibernate.isInitialized(feature.getAnnotations())){
-            setFeature(getDaoFactory().getFeatureDao().getByAc(feature.getAc()));
+            return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getFeatureDao().getByAc(feature.getAc()),
+                    CvTopic.CAUTION_MI_REF, getDaoFactory());
         }
         return findAnnotationText(CvTopic.CAUTION_MI_REF);
     }
@@ -531,11 +532,11 @@ public class FeatureController extends AnnotatedObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
         if (!Hibernate.isInitialized(feature.getAnnotations())){
-            setFeature(getDaoFactory().getFeatureDao().getByAc(feature.getAc()));
+            return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getFeatureDao().getByAc(feature.getAc()),
+                    CvTopic.INTERNAL_REMARK, getDaoFactory());
         }
         return findAnnotationText(CvTopic.INTERNAL_REMARK);
     }
-
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public int getFeatureRangeSize() {
         if (feature != null && Hibernate.isInitialized(feature.getRanges())){
@@ -547,5 +548,21 @@ public class FeatureController extends AnnotatedObjectController {
         else {
             return 0;
         }
+    }
+
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAnnotations() {
+        return super.collectAnnotations();
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectAliases() {
+        return super.collectAliases();
+    }
+
+    @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    public List collectXrefs() {
+        return super.collectXrefs();
     }
 }
