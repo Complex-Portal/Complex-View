@@ -563,7 +563,7 @@ public class ParticipantController extends ParameterizableObjectController {
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public void setAuthorGivenName( String name ) {
         if (!getCoreEntityManager().contains(participant)
-                && !Hibernate.isInitialized(participant.getAnnotations())){
+                && !Hibernate.isInitialized(participant.getAliases())){
             setParticipant(getCoreEntityManager().merge(participant));
             // initialise xrefs
             Hibernate.initialize(participant.getXrefs());
