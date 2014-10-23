@@ -108,9 +108,6 @@ public class InteractorController extends AnnotatedObjectController {
                 return;
             }
 
-            reset();
-            refreshTabsAndFocusXref();
-
             if (!Hibernate.isInitialized(interactor.getXrefs())
                     || !Hibernate.isInitialized(interactor.getAnnotations())
                     || !Hibernate.isInitialized(interactor.getAliases())){
@@ -126,6 +123,9 @@ public class InteractorController extends AnnotatedObjectController {
                     Hibernate.initialize(((Polymer) interactor).getSequenceChunks());
                 }
             }
+
+            reset();
+            refreshTabsAndFocusXref();
         }
 
         generalLoadChecks();

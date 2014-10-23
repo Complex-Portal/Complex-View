@@ -157,6 +157,21 @@ public class FeatureController extends AnnotatedObjectController {
                 return;
             }
 
+            if (!Hibernate.isInitialized(feature.getRanges())
+                    || !Hibernate.isInitialized(feature.getAnnotations())
+                    || !Hibernate.isInitialized(feature.getXrefs())
+                    || !Hibernate.isInitialized(feature.getAliases())){
+                feature = loadByAc(getDaoFactory().getFeatureDao(), feature.getAc());
+                // initialise ranges
+                Hibernate.initialize(feature.getRanges());
+                // initialise xrefs
+                Hibernate.initialize(feature.getXrefs());
+                // initialise aliases
+                Hibernate.initialize(feature.getAliases());
+                // initialise annotations
+                Hibernate.initialize(feature.getAnnotations());
+            }
+
             final Component participant = feature.getComponent();
 
             if (participantController.getParticipant() == null) {
@@ -178,21 +193,6 @@ public class FeatureController extends AnnotatedObjectController {
             }
 
             refreshTabsAndFocusXref();
-
-            if (!Hibernate.isInitialized(feature.getRanges())
-                    || !Hibernate.isInitialized(feature.getAnnotations())
-                    || !Hibernate.isInitialized(feature.getXrefs())
-                    || !Hibernate.isInitialized(feature.getAliases())){
-                feature = loadByAc(getDaoFactory().getFeatureDao(), feature.getAc());
-                // initialise ranges
-                Hibernate.initialize(feature.getRanges());
-                // initialise xrefs
-                Hibernate.initialize(feature.getXrefs());
-                // initialise aliases
-                Hibernate.initialize(feature.getAliases());
-                // initialise annotations
-                Hibernate.initialize(feature.getAnnotations());
-            }
         }
 
         refreshRangeWrappers();

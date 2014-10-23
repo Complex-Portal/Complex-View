@@ -124,9 +124,6 @@ public class CvObjectController extends AnnotatedObjectController {
                 return;
             }
 
-            prepareView();
-            refreshTabsAndFocusXref();
-
             if (!Hibernate.isInitialized(cvObject.getXrefs())
                     || !Hibernate.isInitialized(cvObject.getAnnotations())
                     || !Hibernate.isInitialized(cvObject.getAliases())){
@@ -138,6 +135,9 @@ public class CvObjectController extends AnnotatedObjectController {
                 // initialise xrefs
                 Hibernate.initialize(cvObject.getAliases());
             }
+
+            prepareView();
+            refreshTabsAndFocusXref();
         }
         generalLoadChecks();
     }

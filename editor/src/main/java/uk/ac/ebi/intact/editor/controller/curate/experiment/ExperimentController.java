@@ -126,6 +126,15 @@ public class ExperimentController extends AnnotatedObjectController {
                 ac = experiment.getAc();
             }
 
+            if (experiment != null && (!Hibernate.isInitialized(experiment.getXrefs())
+                    || !Hibernate.isInitialized(experiment.getAnnotations()))){
+                experiment = loadByAc(getDaoFactory().getExperimentDao(), experiment.getAc());
+                // initialise xrefs
+                Hibernate.initialize(experiment.getXrefs());
+                // initialise xrefs
+                Hibernate.initialize(experiment.getAnnotations());
+            }
+
             if ( experiment != null && publicationController.getPublication() == null ) {
                 publicationController.setPublication( experiment.getPublication() );
             }
@@ -138,15 +147,6 @@ public class ExperimentController extends AnnotatedObjectController {
             }
 
             refreshTabsAndFocusXref();
-
-            if (experiment != null && (!Hibernate.isInitialized(experiment.getXrefs())
-                    || !Hibernate.isInitialized(experiment.getAnnotations()))){
-                experiment = loadByAc(getDaoFactory().getExperimentDao(), experiment.getAc());
-                // initialise xrefs
-                Hibernate.initialize(experiment.getXrefs());
-                // initialise xrefs
-                Hibernate.initialize(experiment.getAnnotations());
-            }
         }
 
         generalLoadChecks();

@@ -207,6 +207,17 @@ public class PublicationController extends AnnotatedObjectController {
                 }
             }
 
+            if (publication != null && (!Hibernate.isInitialized(publication.getAnnotations())
+                    || !Hibernate.isInitialized(publication.getLifecycleEvents())
+                    || !Hibernate.isInitialized(publication.getExperiments())
+                    || !Hibernate.isInitialized(publication.getXrefs()))) {
+                publication = getDaoFactory().getPublicationDao().getByAc( ac );
+                Hibernate.initialize(publication.getAnnotations());
+                Hibernate.initialize(publication.getLifecycleEvents());
+                Hibernate.initialize(publication.getExperiments());
+                Hibernate.initialize(publication.getXrefs());
+            }
+
             refreshDataModels();
             if (publication != null) {
                 loadFormFields();
@@ -216,18 +227,17 @@ public class PublicationController extends AnnotatedObjectController {
 
         } else if (publication != null) {
             ac = publication.getAc();
+            if (publication != null && (!Hibernate.isInitialized(publication.getAnnotations())
+                    || !Hibernate.isInitialized(publication.getLifecycleEvents())
+                    || !Hibernate.isInitialized(publication.getExperiments())
+                    || !Hibernate.isInitialized(publication.getXrefs()))) {
+                publication = getDaoFactory().getPublicationDao().getByAc( ac );
+                Hibernate.initialize(publication.getAnnotations());
+                Hibernate.initialize(publication.getLifecycleEvents());
+                Hibernate.initialize(publication.getExperiments());
+                Hibernate.initialize(publication.getXrefs());
+            }
             loadFormFields();
-        }
-
-        if (publication != null && (!Hibernate.isInitialized(publication.getAnnotations())
-                || !Hibernate.isInitialized(publication.getLifecycleEvents())
-                || !Hibernate.isInitialized(publication.getExperiments())
-                || !Hibernate.isInitialized(publication.getXrefs()))) {
-            publication = getDaoFactory().getPublicationDao().getByAc( ac );
-            Hibernate.initialize(publication.getAnnotations());
-            Hibernate.initialize(publication.getLifecycleEvents());
-            Hibernate.initialize(publication.getExperiments());
-            Hibernate.initialize(publication.getXrefs());
         }
     }
 
