@@ -131,8 +131,30 @@ public class ModelledParticipantController extends AnnotatedObjectController {
                 return;
             }
 
+            // in case the participant is newly loaded and is not attached to parent complex
             if (participant.getInteraction() != interactionController.getComplex()){
-                interactionController.setComplex((IntactComplex) participant.getInteraction());
+                // new interaction
+                if (participant.getInteraction() != null && ((IntactComplex)participant.getInteraction()).getAc() == null){
+                    interactionController.setComplex((IntactComplex)participant.getInteraction());
+                }
+                // existing interaction
+                else if (participant.getInteraction() != null && ((IntactComplex)participant.getInteraction()).getAc() != null) {
+                    // same complex, initialise parent of participant
+                    if (((IntactComplex)participant.getInteraction()).getAc().equals(interactionController.getAc())) {
+                        participant.setInteraction(interactionController.getComplex());
+                    }
+                    // parent is not newly created but is not attached to the session
+                    else if (!getJamiEntityManager().contains(participant.getInteraction())){
+                        interactionController.setComplex((IntactComplex)getJamiEntityManager().merge(participant.getInteraction()));
+                        if (interactionController.getComplex() != null){
+                            participant.setInteraction(interactionController.getComplex());
+                        }
+                    }
+                    // parent is attached to the session
+                    else{
+                        interactionController.setComplex((IntactComplex)participant.getInteraction());
+                    }
+                }
             }
 
             if (participant.getInteractor() != null) {
