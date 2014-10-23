@@ -58,9 +58,11 @@ public class InstitutionController extends AnnotatedObjectController {
 
             if (ac != null) {
                 institution = loadByAc(getDaoFactory().getInstitutionDao(), ac);
-                Hibernate.initialize(institution.getAnnotations());
-                Hibernate.initialize(institution.getXrefs());
-                Hibernate.initialize(institution.getAliases());
+                if (institution != null){
+                    Hibernate.initialize(institution.getAnnotations());
+                    Hibernate.initialize(institution.getXrefs());
+                    Hibernate.initialize(institution.getAliases());
+                }
             } else {
                 institution = new Institution();
             }

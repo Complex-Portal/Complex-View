@@ -143,15 +143,17 @@ public class ParticipantController extends ParameterizableObjectController {
             if ( ac != null ) {
                 if ( participant == null || !ac.equals( participant.getAc() ) ) {
                     participant = loadByAc(getDaoFactory().getComponentDao(), ac);
-                    // initialise xrefs
-                    Hibernate.initialize(participant.getXrefs());
-                    // initialise xrefs
-                    Hibernate.initialize(participant.getAnnotations());
-                    // initialise xrefs
-                    Hibernate.initialize(participant.getAliases());
-                    Hibernate.initialize(participant.getFeatures());
-                    Hibernate.initialize(participant.getExperimentalPreparations());
-                    Hibernate.initialize(participant.getParticipantDetectionMethods());
+                    if (participant != null){
+                        // initialise xrefs
+                        Hibernate.initialize(participant.getXrefs());
+                        // initialise xrefs
+                        Hibernate.initialize(participant.getAnnotations());
+                        // initialise xrefs
+                        Hibernate.initialize(participant.getAliases());
+                        Hibernate.initialize(participant.getFeatures());
+                        Hibernate.initialize(participant.getExperimentalPreparations());
+                        Hibernate.initialize(participant.getParticipantDetectionMethods());
+                    }
 
                 }
             } else {

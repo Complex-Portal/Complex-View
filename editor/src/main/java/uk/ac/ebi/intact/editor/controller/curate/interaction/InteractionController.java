@@ -182,10 +182,12 @@ public class InteractionController extends ParameterizableObjectController {
             if ( ac != null ) {
                 if ( interaction == null || !ac.equals( interaction.getAc() ) || !Hibernate.isInitialized(interaction.getExperiments())) {
                     interaction = loadByAc(getDaoFactory().getInteractionDao(), ac);
-                    Hibernate.initialize(interaction.getParameters());
-                    Hibernate.initialize(interaction.getConfidences());
-                    Hibernate.initialize(interaction.getAnnotations());
-                    Hibernate.initialize(interaction.getXrefs());
+                    if (interaction != null){
+                        Hibernate.initialize(interaction.getParameters());
+                        Hibernate.initialize(interaction.getConfidences());
+                        Hibernate.initialize(interaction.getAnnotations());
+                        Hibernate.initialize(interaction.getXrefs());
+                    }
                 }
             } else {
                 ac = interaction.getAc();

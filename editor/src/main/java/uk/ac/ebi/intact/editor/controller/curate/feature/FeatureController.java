@@ -144,14 +144,16 @@ public class FeatureController extends AnnotatedObjectController {
             if ( ac != null ) {
                 if ( feature == null || !ac.equals( feature.getAc() ) ) {
                     feature = loadByAc(getDaoFactory().getFeatureDao(), ac);
-                    // initialise ranges
-                    Hibernate.initialize(feature.getRanges());
-                    // initialise xrefs
-                    Hibernate.initialize(feature.getXrefs());
-                    // initialise aliases
-                    Hibernate.initialize(feature.getAliases());
-                    // initialise annotations
-                    Hibernate.initialize(feature.getAnnotations());
+                    if (feature != null){
+                        // initialise ranges
+                        Hibernate.initialize(feature.getRanges());
+                        // initialise xrefs
+                        Hibernate.initialize(feature.getXrefs());
+                        // initialise aliases
+                        Hibernate.initialize(feature.getAliases());
+                        // initialise annotations
+                        Hibernate.initialize(feature.getAnnotations());
+                    }
                 }
             } else {
                 if ( feature != null ) ac = feature.getAc();

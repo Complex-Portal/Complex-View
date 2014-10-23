@@ -91,14 +91,16 @@ public class InteractorController extends AnnotatedObjectController {
             if ( ac != null ) {
                 if ( interactor == null || !ac.equals(interactor.getAc())) {
                     interactor = loadByAc(getDaoFactory().getInteractorDao(), ac);
-                    // initialise xrefs
-                    Hibernate.initialize(interactor.getXrefs());
-                    // initialise xrefs
-                    Hibernate.initialize(interactor.getAnnotations());
-                    // initialise xrefs
-                    Hibernate.initialize(interactor.getAliases());
-                    if (interactor instanceof Polymer){
-                        Hibernate.initialize(((Polymer) interactor).getSequenceChunks());
+                    if (interactor != null){
+                        // initialise xrefs
+                        Hibernate.initialize(interactor.getXrefs());
+                        // initialise xrefs
+                        Hibernate.initialize(interactor.getAnnotations());
+                        // initialise xrefs
+                        Hibernate.initialize(interactor.getAliases());
+                        if (interactor instanceof Polymer){
+                            Hibernate.initialize(((Polymer) interactor).getSequenceChunks());
+                        }
                     }
                 }
             } else {

@@ -179,17 +179,23 @@ public class PublicationController extends AnnotatedObjectController {
         if (ac != null) {
             if (publication == null || !ac.equals(publication.getAc())) {
                 publication = loadByAc(getDaoFactory().getPublicationDao(), ac);
-                // initialise annotations
-                Hibernate.initialize(publication.getAnnotations());
-                // initialise lifecycle events
-                Hibernate.initialize(publication.getLifecycleEvents());
-                Hibernate.initialize(publication.getExperiments());
-                Hibernate.initialize(publication.getXrefs());
-
-                resetToNullIfComplexPublication();
 
                 if (publication == null) {
                     publication = getDaoFactory().getPublicationDao().getByPubmedId(ac);
+
+                    if (publication != null) {
+                        ac = publication.getAc();
+                        // initialise annotations
+                        Hibernate.initialize(publication.getAnnotations());
+                        // initialise lifecycle events
+                        Hibernate.initialize(publication.getLifecycleEvents());
+                        Hibernate.initialize(publication.getExperiments());
+                        Hibernate.initialize(publication.getXrefs());
+                    } else {
+                        super.addErrorMessage("No publication with this AC", ac);
+                    }
+                }
+                else{
                     // initialise annotations
                     Hibernate.initialize(publication.getAnnotations());
                     // initialise lifecycle events
@@ -197,11 +203,7 @@ public class PublicationController extends AnnotatedObjectController {
                     Hibernate.initialize(publication.getExperiments());
                     Hibernate.initialize(publication.getXrefs());
 
-                    if (publication != null) {
-                        ac = publication.getAc();
-                    } else {
-                        super.addErrorMessage("No publication with this AC", ac);
-                    }
+                    resetToNullIfComplexPublication();
                 }
             }
 

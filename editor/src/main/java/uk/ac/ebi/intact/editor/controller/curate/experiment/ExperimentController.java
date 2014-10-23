@@ -108,11 +108,13 @@ public class ExperimentController extends AnnotatedObjectController {
             if ( ac != null ) {
                 if ( experiment == null || !ac.equals( experiment.getAc() ) ) {
                     experiment = loadByAc(getDaoFactory().getExperimentDao(), ac);
+                    if (experiment != null){
+                        // initialise xrefs
+                        Hibernate.initialize(experiment.getXrefs());
+                        // initialise xrefs
+                        Hibernate.initialize(experiment.getAnnotations());
+                    }
                     resetToNullIfComplexExperiment();
-                    // initialise xrefs
-                    Hibernate.initialize(experiment.getXrefs());
-                    // initialise xrefs
-                    Hibernate.initialize(experiment.getAnnotations());
                 }
                 if (experiment == null) {
                     addErrorMessage("No Experiment with this AC", ac);
@@ -137,8 +139,8 @@ public class ExperimentController extends AnnotatedObjectController {
 
             refreshTabsAndFocusXref();
 
-            if (!Hibernate.isInitialized(experiment.getXrefs())
-                    || !Hibernate.isInitialized(experiment.getAnnotations())){
+            if (experiment != null && (!Hibernate.isInitialized(experiment.getXrefs())
+                    || !Hibernate.isInitialized(experiment.getAnnotations()))){
                 experiment = loadByAc(getDaoFactory().getExperimentDao(), experiment.getAc());
                 // initialise xrefs
                 Hibernate.initialize(experiment.getXrefs());
