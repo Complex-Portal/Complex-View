@@ -182,6 +182,10 @@ public class InteractionController extends ParameterizableObjectController {
             if ( ac != null ) {
                 if ( interaction == null || !ac.equals( interaction.getAc() ) || !Hibernate.isInitialized(interaction.getExperiments())) {
                     interaction = loadByAc(getDaoFactory().getInteractionDao(), ac);
+                    Hibernate.initialize(interaction.getParameters());
+                    Hibernate.initialize(interaction.getConfidences());
+                    Hibernate.initialize(interaction.getAnnotations());
+                    Hibernate.initialize(interaction.getXrefs());
                 }
             } else {
                 ac = interaction.getAc();
@@ -212,6 +216,17 @@ public class InteractionController extends ParameterizableObjectController {
             }
 
             refreshTabsAndFocusXref();
+
+            if (!Hibernate.isInitialized(interaction.getXrefs())
+                    || !Hibernate.isInitialized(interaction.getAnnotations())
+                    || !Hibernate.isInitialized(interaction.getParameters())
+                    || !Hibernate.isInitialized(interaction.getConfidences())){
+                interaction = loadByAc(getDaoFactory().getInteractionDao(), interaction.getAc());
+                Hibernate.initialize(interaction.getParameters());
+                Hibernate.initialize(interaction.getConfidences());
+                Hibernate.initialize(interaction.getAnnotations());
+                Hibernate.initialize(interaction.getXrefs());
+            }
         }
 
         generalLoadChecks();
@@ -1158,6 +1173,9 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
+        if (interaction == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(interaction.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getInteractionDao().getByAc(interaction.getAc()),
                     CvTopic.CAUTION_MI_REF, getDaoFactory());
@@ -1167,6 +1185,9 @@ public class InteractionController extends ParameterizableObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
+        if (interaction == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(interaction.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getInteractionDao().getByAc(interaction.getAc()),
                     CvTopic.INTERNAL_REMARK, getDaoFactory());

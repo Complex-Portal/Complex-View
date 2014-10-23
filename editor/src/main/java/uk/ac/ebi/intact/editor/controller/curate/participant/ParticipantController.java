@@ -143,6 +143,16 @@ public class ParticipantController extends ParameterizableObjectController {
             if ( ac != null ) {
                 if ( participant == null || !ac.equals( participant.getAc() ) ) {
                     participant = loadByAc(getDaoFactory().getComponentDao(), ac);
+                    // initialise xrefs
+                    Hibernate.initialize(participant.getXrefs());
+                    // initialise xrefs
+                    Hibernate.initialize(participant.getAnnotations());
+                    // initialise xrefs
+                    Hibernate.initialize(participant.getAliases());
+                    Hibernate.initialize(participant.getFeatures());
+                    Hibernate.initialize(participant.getExperimentalPreparations());
+                    Hibernate.initialize(participant.getParticipantDetectionMethods());
+
                 }
             } else {
                 if ( participant != null ) ac = participant.getAc();
@@ -153,20 +163,30 @@ public class ParticipantController extends ParameterizableObjectController {
                 return;
             }
 
-            if (!IntactCore.isInitialized(participant.getFeatures())){
+            if (!Hibernate.isInitialized(participant.getXrefs())
+                    || !Hibernate.isInitialized(participant.getAnnotations())
+                    || !Hibernate.isInitialized(participant.getAliases())
+                    || !Hibernate.isInitialized(participant.getFeatures())
+                    || !Hibernate.isInitialized(participant.getXrefs())
+                    || !Hibernate.isInitialized(participant.getExperimentalPreparations())
+                    || !Hibernate.isInitialized(participant.getParticipantDetectionMethods())){
+                participant = loadByAc(getDaoFactory().getComponentDao(), participant.getAc());
+                // initialise xrefs
+                Hibernate.initialize(participant.getXrefs());
+                // initialise xrefs
+                Hibernate.initialize(participant.getAnnotations());
+                // initialise xrefs
+                Hibernate.initialize(participant.getAliases());
                 Hibernate.initialize(participant.getFeatures());
+                Hibernate.initialize(participant.getExperimentalPreparations());
+                Hibernate.initialize(participant.getParticipantDetectionMethods());
             }
+
             featuresDataModel = new SelectableDataModelWrapper(new SelectableCollectionDataModel<Feature>(participant.getFeatures()), participant.getFeatures());
 
             // check if the publication, experiment and interaction are null in their controllers (this happens when the
             // participant page is loaded directly using a URL)
 
-            if (!IntactCore.isInitialized(participant.getExperimentalPreparations())){
-                Hibernate.initialize(participant.getExperimentalPreparations());
-            }
-            if (!IntactCore.isInitialized(participant.getParticipantDetectionMethods())){
-                Hibernate.initialize(participant.getParticipantDetectionMethods());
-            }
             if (participant.getInteraction() != null){
                 if (interactionController.getInteraction() == null || !interactionController.getInteraction().getAc().equalsIgnoreCase(participant.getInteraction().getAc())){
                     if( interactionController.getInteraction() == null ) {
@@ -540,6 +560,12 @@ public class ParticipantController extends ParameterizableObjectController {
         if (!getCoreEntityManager().contains(participant)
                 && !Hibernate.isInitialized(participant.getAnnotations())){
             setParticipant(getCoreEntityManager().merge(participant));
+            // initialise xrefs
+            Hibernate.initialize(participant.getXrefs());
+            // initialise xrefs
+            Hibernate.initialize(participant.getAnnotations());
+            // initialise xrefs
+            Hibernate.initialize(participant.getAliases());
             Hibernate.initialize(participant.getFeatures());
             Hibernate.initialize(participant.getExperimentalPreparations());
             Hibernate.initialize(participant.getParticipantDetectionMethods());
@@ -833,6 +859,9 @@ public class ParticipantController extends ParameterizableObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
+        if (participant == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(participant.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getComponentDao().getByAc(participant.getAc()),
                     CvTopic.CAUTION_MI_REF, getDaoFactory());
@@ -842,6 +871,9 @@ public class ParticipantController extends ParameterizableObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
+        if (participant == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(participant.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getComponentDao().getByAc(participant.getAc()),
                     CvTopic.INTERNAL_REMARK, getDaoFactory());

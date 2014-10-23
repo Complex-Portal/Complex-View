@@ -59,6 +59,8 @@ public class InstitutionController extends AnnotatedObjectController {
             if (ac != null) {
                 institution = loadByAc(getDaoFactory().getInstitutionDao(), ac);
                 Hibernate.initialize(institution.getAnnotations());
+                Hibernate.initialize(institution.getXrefs());
+                Hibernate.initialize(institution.getAliases());
             } else {
                 institution = new Institution();
             }
@@ -69,6 +71,19 @@ public class InstitutionController extends AnnotatedObjectController {
             }
 
             refreshTabsAndFocusXref();
+
+            if (!Hibernate.isInitialized(institution.getAnnotations())
+                    || !Hibernate.isInitialized(institution.getXrefs())
+                    || !Hibernate.isInitialized(institution.getAliases())){
+                institution = loadByAc(getDaoFactory().getInstitutionDao(), institution.getAc());
+
+                // initialise xrefs
+                Hibernate.initialize(institution.getXrefs());
+                // initialise aliases
+                Hibernate.initialize(institution.getAliases());
+                // initialise annotations
+                Hibernate.initialize(institution.getAnnotations());
+            }
         }
 
         generalLoadChecks();
@@ -123,6 +138,9 @@ public class InstitutionController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
+        if (institution == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(institution.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getInstitutionDao().getByAc(institution.getAc()),
                     CvTopic.CAUTION_MI_REF, getDaoFactory());
@@ -132,6 +150,9 @@ public class InstitutionController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
+        if (institution == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(institution.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getInstitutionDao().getByAc(institution.getAc()),
                     CvTopic.INTERNAL_REMARK, getDaoFactory());

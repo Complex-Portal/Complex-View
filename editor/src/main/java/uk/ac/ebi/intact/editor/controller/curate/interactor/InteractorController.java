@@ -91,6 +91,15 @@ public class InteractorController extends AnnotatedObjectController {
             if ( ac != null ) {
                 if ( interactor == null || !ac.equals(interactor.getAc())) {
                     interactor = loadByAc(getDaoFactory().getInteractorDao(), ac);
+                    // initialise xrefs
+                    Hibernate.initialize(interactor.getXrefs());
+                    // initialise xrefs
+                    Hibernate.initialize(interactor.getAnnotations());
+                    // initialise xrefs
+                    Hibernate.initialize(interactor.getAliases());
+                    if (interactor instanceof Polymer){
+                        Hibernate.initialize(((Polymer) interactor).getSequenceChunks());
+                    }
                 }
             } else {
                 if ( interactor != null ) ac = interactor.getAc();
@@ -103,6 +112,22 @@ public class InteractorController extends AnnotatedObjectController {
 
             reset();
             refreshTabsAndFocusXref();
+
+            if (!Hibernate.isInitialized(interactor.getXrefs())
+                    || !Hibernate.isInitialized(interactor.getAnnotations())
+                    || !Hibernate.isInitialized(interactor.getAliases())){
+                interactor = loadByAc(getDaoFactory().getInteractorDao(), interactor.getAc());
+
+                // initialise xrefs
+                Hibernate.initialize(interactor.getXrefs());
+                // initialise xrefs
+                Hibernate.initialize(interactor.getAnnotations());
+                // initialise xrefs
+                Hibernate.initialize(interactor.getAliases());
+                if (interactor instanceof Polymer){
+                    Hibernate.initialize(((Polymer) interactor).getSequenceChunks());
+                }
+            }
         }
 
         generalLoadChecks();
@@ -301,6 +326,9 @@ public class InteractorController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
+        if (interactor == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(interactor.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getInteractorDao().getByAc(interactor.getAc()),
                     CvTopic.CAUTION_MI_REF, getDaoFactory());
@@ -310,6 +338,9 @@ public class InteractorController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
+        if (interactor == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(interactor.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getInteractorDao().getByAc(interactor.getAc()),
                     CvTopic.INTERNAL_REMARK, getDaoFactory());

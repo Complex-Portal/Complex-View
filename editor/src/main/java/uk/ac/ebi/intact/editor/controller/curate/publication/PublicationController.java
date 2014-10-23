@@ -1849,6 +1849,9 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
+        if (publication == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(publication.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getComponentDao().getByAc(publication.getAc()),
                     CvTopic.CAUTION_MI_REF, getDaoFactory());
@@ -1858,6 +1861,9 @@ public class PublicationController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
+        if (publication == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(publication.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getComponentDao().getByAc(publication.getAc()),
                     CvTopic.INTERNAL_REMARK, getDaoFactory());

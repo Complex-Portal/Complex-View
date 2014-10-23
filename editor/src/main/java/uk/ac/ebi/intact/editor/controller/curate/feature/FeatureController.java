@@ -146,6 +146,12 @@ public class FeatureController extends AnnotatedObjectController {
                     feature = loadByAc(getDaoFactory().getFeatureDao(), ac);
                     // initialise ranges
                     Hibernate.initialize(feature.getRanges());
+                    // initialise xrefs
+                    Hibernate.initialize(feature.getXrefs());
+                    // initialise aliases
+                    Hibernate.initialize(feature.getAliases());
+                    // initialise annotations
+                    Hibernate.initialize(feature.getAnnotations());
                 }
             } else {
                 if ( feature != null ) ac = feature.getAc();
@@ -177,6 +183,21 @@ public class FeatureController extends AnnotatedObjectController {
             }
 
             refreshTabsAndFocusXref();
+
+            if (!Hibernate.isInitialized(feature.getRanges())
+                    || !Hibernate.isInitialized(feature.getAnnotations())
+                    || !Hibernate.isInitialized(feature.getXrefs())
+                    || !Hibernate.isInitialized(feature.getAliases())){
+                feature = loadByAc(getDaoFactory().getFeatureDao(), feature.getAc());
+                // initialise ranges
+                Hibernate.initialize(feature.getRanges());
+                // initialise xrefs
+                Hibernate.initialize(feature.getXrefs());
+                // initialise aliases
+                Hibernate.initialize(feature.getAliases());
+                // initialise annotations
+                Hibernate.initialize(feature.getAnnotations());
+            }
         }
 
         refreshRangeWrappers();
@@ -522,6 +543,9 @@ public class FeatureController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
+        if (feature == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(feature.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getFeatureDao().getByAc(feature.getAc()),
                     CvTopic.CAUTION_MI_REF, getDaoFactory());
@@ -531,6 +555,9 @@ public class FeatureController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
+        if (feature == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(feature.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getFeatureDao().getByAc(feature.getAc()),
                     CvTopic.INTERNAL_REMARK, getDaoFactory());

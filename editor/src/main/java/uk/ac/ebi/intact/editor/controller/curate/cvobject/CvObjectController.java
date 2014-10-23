@@ -132,6 +132,18 @@ public class CvObjectController extends AnnotatedObjectController {
 
             prepareView();
             refreshTabsAndFocusXref();
+
+            if (!Hibernate.isInitialized(cvObject.getXrefs())
+                    || !Hibernate.isInitialized(cvObject.getAnnotations())
+                    || !Hibernate.isInitialized(cvObject.getAliases())){
+                cvObject = (CvDagObject) loadByAc(getDaoFactory().getCvObjectDao(), cvObject.getAc());
+                // initialise xrefs
+                Hibernate.initialize(cvObject.getXrefs());
+                // initialise xrefs
+                Hibernate.initialize(cvObject.getAnnotations());
+                // initialise xrefs
+                Hibernate.initialize(cvObject.getAliases());
+            }
         }
         generalLoadChecks();
     }
@@ -324,6 +336,9 @@ public class CvObjectController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getCautionMessage() {
+        if (cvObject == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(cvObject.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getCvObjectDao().getByAc(cvObject.getAc()),
                     CvTopic.CAUTION_MI_REF, getDaoFactory());
@@ -333,6 +348,9 @@ public class CvObjectController extends AnnotatedObjectController {
 
     @Transactional(value = "transactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String getInternalRemarkMessage() {
+        if (cvObject == null){
+            return null;
+        }
         if (!Hibernate.isInitialized(cvObject.getAnnotations())){
             return getAnnotatedObjectHelper().findAnnotationText(getDaoFactory().getCvObjectDao().getByAc(cvObject.getAc()),
                     CvTopic.INTERNAL_REMARK, getDaoFactory());
