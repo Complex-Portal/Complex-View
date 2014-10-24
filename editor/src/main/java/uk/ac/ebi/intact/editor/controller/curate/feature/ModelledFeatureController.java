@@ -189,7 +189,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
                 return;
             }
 
-            if (!getJamiEntityManager().contains(feature)){
+            if (feature.getAc() != null && !getJamiEntityManager().contains(feature)){
                 setFeature(getJamiEntityManager().merge(feature));
             }
 
@@ -744,7 +744,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String loadFeature(IntactModelledFeature feature){
-        if (!getJamiEntityManager().contains(feature)){
+        if (feature != null && feature.getAc() != null && !getJamiEntityManager().contains(feature)){
             setFeature(getJamiEntityManager().merge(feature));
         }
         else{

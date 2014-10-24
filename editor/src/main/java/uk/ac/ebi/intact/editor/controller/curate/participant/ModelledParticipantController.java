@@ -131,7 +131,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
                 return;
             }
 
-            if (!getJamiEntityManager().contains(participant)){
+            if (participant.getAc() != null && !getJamiEntityManager().contains(participant)){
                 setParticipant(getJamiEntityManager().merge(participant));
             }
 
@@ -225,7 +225,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
     @Override
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String clone() {
-        if (!getJamiEntityManager().contains(getParticipant())){
+        if (participant.getAc() != null && !getJamiEntityManager().contains(getParticipant())){
             IntactModelledParticipant reloadedParticipant = getJamiEntityManager().merge(this.participant);
             setParticipant(reloadedParticipant);
         }
@@ -404,7 +404,7 @@ public class ModelledParticipantController extends AnnotatedObjectController {
 
     @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
     public String loadParticipant(IntactModelledParticipant participant){
-        if (!getJamiEntityManager().contains(participant)){
+        if (participant != null && participant.getAc() != null && !getJamiEntityManager().contains(participant)){
             setParticipant(getJamiEntityManager().merge(participant));
         }
         else{
