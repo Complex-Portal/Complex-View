@@ -86,7 +86,8 @@
                             <p:pickList id="parentsPick" value="#{cvObjectController.parents}"
                                         var="p"
                                         itemLabel="#{p.shortLabel}"
-                                        itemValue="#{p}" onTransfer="markAsUnsaved()" converter="cvObjectConverter"/>
+                                        itemValue="#{p}" converter="cvObjectConverter"
+                                        valueChangeListener="cvObjectController.changed"/>
                         </td>
                     </tr>
 
@@ -125,15 +126,15 @@
             <p:tabView id="cvobjectTabs" dynamic="true">
                 <p:ajax event="tabChange" listener="#{cvObjectController.onTabChanged}" />
 
-               <ui:decorate template="propertiesTabs.xhtml">
-                     <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.cvObjectTopicSelectItems}"/>
-               </ui:decorate>
+                <ui:decorate template="propertiesTabs.xhtml">
+                    <ui:param name="annotatedObjectSelectItems" value="#{cvObjectService.cvObjectTopicSelectItems}"/>
+                </ui:decorate>
 
                 <p:tab id="advancedTab" title="Advanced">
                     <h:panelGrid columns="2">
                         <h:outputLabel for="idTxt" value="Identifier: "/>
                         <p:inputText id="idTxt" value="#{cvObjectController.cvObject.identifier}" size="8"
-                                 onchange="markAsUnsaved()" converter="trimmingConverter"/>
+                                     onchange="markAsUnsaved()" converter="trimmingConverter"/>
                     </h:panelGrid>
                 </p:tab>
 

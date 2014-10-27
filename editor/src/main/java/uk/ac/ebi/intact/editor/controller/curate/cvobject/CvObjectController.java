@@ -196,8 +196,6 @@ public class CvObjectController extends AnnotatedObjectController {
 
     @Override
     public boolean doSaveDetails() {
-        cvObjectService.refresh(null);
-        cvTermService.clearAll();
 
         Collection<CvObject> parentsToRemove = CollectionUtils.subtract(cvObject.getParents(), parents.getTarget());
         Collection<CvObject> parentsToAdd = CollectionUtils.subtract(parents.getTarget(), cvObject.getParents());
@@ -215,6 +213,9 @@ public class CvObjectController extends AnnotatedObjectController {
             getDaoFactory().getCvObjectDao().update(refreshedParent);
             getDaoFactory().getCvObjectDao().update(cvObject);
         }
+
+        cvObjectService.refresh(null);
+        cvTermService.clearAll();
 
         return super.doSaveDetails();
     }
@@ -366,4 +367,9 @@ public class CvObjectController extends AnnotatedObjectController {
     public List collectXrefs() {
         return super.collectXrefs();
     }
+
+    public void changed(ActionEvent evt) {
+        setUnsavedChanges(true);
+    }
+
 }
