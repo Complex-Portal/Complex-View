@@ -31,7 +31,7 @@
 
     <!-- Cv manager -->
     <bean id="cvUpdateManager" class="uk.ac.ebi.intact.dbupdate.cv.CvUpdateManager">
-
+        <property name="basicParentUpdater" ref="basicParentUpdater"/>
         <property name="cvImporter" ref="cvImporter"/>
         <property name="cvUpdater" ref="cvUpdater"/>
         <property name="cvRemapper" ref="obsoleteRemapper"/>
