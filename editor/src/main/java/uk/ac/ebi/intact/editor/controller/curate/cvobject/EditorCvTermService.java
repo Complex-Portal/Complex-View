@@ -163,7 +163,7 @@ public class EditorCvTermService extends JpaAwareController {
             featureRoleSelectItems.add(item2);
         }
         if (roleParent != null){
-            loadChildren(roleParent, featureRoleSelectItems, false);
+            loadChildren(roleParent, featureRoleSelectItems, false, new HashSet<String>());
         }
 
         Collection<IntactCvTerm> aliaseTypes = cvDao.getByObjClass(IntactUtils.ALIAS_TYPE_OBJCLASS);
@@ -179,7 +179,7 @@ public class EditorCvTermService extends JpaAwareController {
         IntactCvTerm featureTopicParent = cvDao.getByMIIdentifier("MI:0668", IntactUtils.TOPIC_OBJCLASS);
         List<String> processTopicAcs = Collections.EMPTY_LIST;
         if (featureTopicParent != null){
-            processTopicAcs = loadChildren(featureTopicParent, featureTopicSelectItems, false);
+            processTopicAcs = loadChildren(featureTopicParent, featureTopicSelectItems, false, new HashSet<String>());
         }
         loadMissingCvsFromIntactCvService(intactCvService, cvDao, processTopicAcs, featureTopicSelectItems, Feature.class.getCanonicalName());
 
@@ -205,12 +205,12 @@ public class EditorCvTermService extends JpaAwareController {
 
         IntactCvTerm statusParent = cvDao.getByMIIdentifier("MI:0333", IntactUtils.RANGE_STATUS_OBJCLASS);
         if (statusParent != null){
-            loadChildren(statusParent, fuzzyTypeSelectItems, false);
+            loadChildren(statusParent, fuzzyTypeSelectItems, false, new HashSet<String>());
         }
 
         IntactCvTerm participantTopicParent = cvDao.getByMIIdentifier("MI:0666", IntactUtils.TOPIC_OBJCLASS);
         if (participantTopicParent != null){
-            processTopicAcs = loadChildren(participantTopicParent, participantTopicSelectItems, false);
+            processTopicAcs = loadChildren(participantTopicParent, participantTopicSelectItems, false, new HashSet<String>());
         }
         loadMissingCvsFromIntactCvService(intactCvService, cvDao, processTopicAcs, participantTopicSelectItems, Component.class.getCanonicalName());
 
@@ -225,14 +225,14 @@ public class EditorCvTermService extends JpaAwareController {
 
         IntactCvTerm bioRoleParent = cvDao.getByMIIdentifier("MI:0500", IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
         if (bioRoleParent != null){
-            loadChildren(bioRoleParent, biologicalRoleSelectItems, false);
+            loadChildren(bioRoleParent, biologicalRoleSelectItems, false, new HashSet<String>());
         }
 
         // TODO when we have a better hierarchy use ontology only
         IntactCvTerm complexTopicParent = cvDao.getByMIIdentifier("MI:0664", IntactUtils.TOPIC_OBJCLASS);
         processTopicAcs = new ArrayList<String>();
         if (complexTopicParent != null){
-            processTopicAcs.addAll(loadChildren(complexTopicParent, complexTopicSelectItems, false));
+            processTopicAcs.addAll(loadChildren(complexTopicParent, complexTopicSelectItems, false, new HashSet<String>()));
         }
         loadMissingCvsFromIntactCvService(intactCvService, cvDao, processTopicAcs, complexTopicSelectItems, IntactComplex.class.getCanonicalName());
 
@@ -252,7 +252,7 @@ public class EditorCvTermService extends JpaAwareController {
 
         IntactCvTerm interactionTypeParent = cvDao.getByMIIdentifier("MI:0190", IntactUtils.INTERACTION_TYPE_OBJCLASS);
         if (interactionTypeParent != null){
-            loadChildren(interactionTypeParent, interactionTypeSelectItems, false);
+            loadChildren(interactionTypeParent, interactionTypeSelectItems, false, new HashSet<String>());
         }
 
         IntactCvTerm interactorTypeParent = cvDao.getByMIIdentifier("MI:0314", IntactUtils.INTERACTOR_TYPE_OBJCLASS);
@@ -261,12 +261,13 @@ public class EditorCvTermService extends JpaAwareController {
             interactorTypeSelectItems.add(item);
         }
         if (interactorTypeParent != null){
-            loadChildren(interactorTypeParent, interactorTypeSelectItems, false);
+            loadChildren(interactorTypeParent, interactorTypeSelectItems, false, new HashSet<String>());
         }
 
         IntactCvTerm evidenceTypeParent = cvDao.getByMIIdentifier("MI:1331", IntactUtils.DATABASE_OBJCLASS);
+        processTopicAcs.clear();
         if (evidenceTypeParent != null){
-            loadChildren(evidenceTypeParent, evidenceTypeSelectItems, false);
+            loadChildren(evidenceTypeParent, evidenceTypeSelectItems, false, new HashSet<String>());
         }
 
         Collection<IntactCvTerm> confidenceTypes = cvDao.getByObjClass(IntactUtils.CONFIDENCE_TYPE_OBJCLASS);
@@ -363,17 +364,21 @@ public class EditorCvTermService extends JpaAwareController {
         }
     }
 
-    private List<String> loadChildren(IntactCvTerm parent, List<SelectItem> selectItems, boolean ignoreHidden){
+    private List<String> loadChildren(IntactCvTerm parent, List<SelectItem> selectItems, boolean ignoreHidden, Set<String> processedAcs){
         List<String> list = new ArrayList<String>(parent.getChildren().size());
         for (OntologyTerm child : parent.getChildren()){
             IntactCvTerm cv = (IntactCvTerm)child;
-            SelectItem item = createSelectItem(cv, ignoreHidden);
-            if (item != null){
-                list.add(cv.getAc());
-                selectItems.add(item);
+            if (!processedAcs.contains(cv.getAc())){
+                processedAcs.add(cv.getAc());
+                SelectItem item = createSelectItem(cv, ignoreHidden);
+                if (item != null){
+                    list.add(cv.getAc());
+                    selectItems.add(item);
+                }
             }
+
             if (!cv.getChildren().isEmpty()){
-                list.addAll(loadChildren(cv, selectItems, ignoreHidden));
+                list.addAll(loadChildren(cv, selectItems, ignoreHidden, processedAcs));
             }
         }
         return list;
