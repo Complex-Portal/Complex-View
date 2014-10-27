@@ -19,11 +19,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -155,7 +153,7 @@ public class CvObjectService extends JpaAwareController {
     }
 
     private void createAdditionalCVs() {
-         createCvTopicIfNecessary(CvTopic.TO_BE_REVIEWED);
+        createCvTopicIfNecessary(CvTopic.TO_BE_REVIEWED);
     }
 
     @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED)
@@ -288,7 +286,7 @@ public class CvObjectService extends JpaAwareController {
         bioSourceTopicSelectItems.add(noClassSelectItemGroup);
 
         databases = getSortedList( CvDatabase.class, cvObjectsByClass);
-        databaseSelectItems = createSelectItems( databases, "-- Select database --" );
+        databaseSelectItems = createSelectItems(databases, "-- Select database --", "ECO:");
 
         qualifiers = getSortedList( CvXrefQualifier.class, cvObjectsByClass);
         qualifierSelectItems = createSelectItems( qualifiers, "-- Select qualifier --" );
@@ -398,6 +396,23 @@ public class CvObjectService extends JpaAwareController {
 
         for ( CvObject cvObject : cvObjects ) {
             selectItems.add( createSelectItem( cvObject ) );
+        }
+
+        return selectItems;
+    }
+
+    public List<SelectItem> createSelectItems(Collection<? extends CvObject> cvObjects, String noSelectionText, String idPrefixToIgnore) {
+        List<SelectItem> selectItems = new CopyOnWriteArrayList<SelectItem>();
+
+        if ( noSelectionText != null ) {
+            selectItems.add( new SelectItem( null, noSelectionText, noSelectionText, false, false, true ) );
+        }
+
+        for ( CvObject cvObject : cvObjects ) {
+            if (!cvObject.getIdentifier().startsWith(idPrefixToIgnore)){
+                selectItems.add( createSelectItem( cvObject ) );
+
+            }
         }
 
         return selectItems;

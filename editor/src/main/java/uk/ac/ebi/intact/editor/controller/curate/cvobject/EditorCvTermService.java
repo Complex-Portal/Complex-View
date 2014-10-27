@@ -22,7 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import psidev.psi.mi.jami.model.OntologyTerm;
+import psidev.psi.mi.jami.model.Xref;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
+import psidev.psi.mi.jami.utils.XrefUtils;
 import uk.ac.ebi.intact.editor.controller.JpaAwareController;
 import uk.ac.ebi.intact.jami.ApplicationContextProvider;
 import uk.ac.ebi.intact.jami.dao.CvTermDao;
@@ -188,7 +190,7 @@ public class EditorCvTermService extends JpaAwareController {
         //loadChildren(databaseParent, featureDatabaseSelectItems, false);
         //}
         if (!databases.isEmpty()){
-            loadCollectionCv(databases, featureDatabaseSelectItems, false);
+            loadCollectionCv(databases, featureDatabaseSelectItems, false, "MI:1331", "evidence ontology");
         }
 
         Collection<IntactCvTerm> qualifiers = cvDao.getByObjClass(IntactUtils.QUALIFIER_OBJCLASS);
@@ -218,7 +220,7 @@ public class EditorCvTermService extends JpaAwareController {
         //    loadChildren(participantDbParent, participantDatabaseSelectItems, false);
         //}
         if (!databases.isEmpty()){
-            loadCollectionCv(databases, participantDatabaseSelectItems, false);
+            loadCollectionCv(databases, participantDatabaseSelectItems, false, "MI:1331", "evidence ontology");
         }
 
         IntactCvTerm bioRoleParent = cvDao.getByMIIdentifier("MI:0500", IntactUtils.BIOLOGICAL_ROLE_OBJCLASS);
@@ -245,7 +247,7 @@ public class EditorCvTermService extends JpaAwareController {
         //    loadChildren(complexDatabaseParent2, complexDatabaseSelectItems, false);
         //}
         if (!databases.isEmpty()){
-            loadCollectionCv(databases, complexDatabaseSelectItems, false);
+            loadCollectionCv(databases, complexDatabaseSelectItems, false, "MI:1331", "evidence ontology");
         }
 
         IntactCvTerm interactionTypeParent = cvDao.getByMIIdentifier("MI:0190", IntactUtils.INTERACTION_TYPE_OBJCLASS);
@@ -263,12 +265,8 @@ public class EditorCvTermService extends JpaAwareController {
         }
 
         IntactCvTerm evidenceTypeParent = cvDao.getByMIIdentifier("MI:1331", IntactUtils.DATABASE_OBJCLASS);
-        SelectItem item3 = evidenceTypeParent != null ? createSelectItem(evidenceTypeParent, true):null;
-        if (item3 != null){
-            evidenceTypeSelectItems.add(item3);
-        }
         if (evidenceTypeParent != null){
-            loadChildren(evidenceTypeParent, evidenceTypeSelectItems, true);
+            loadChildren(evidenceTypeParent, evidenceTypeSelectItems, false);
         }
 
         Collection<IntactCvTerm> confidenceTypes = cvDao.getByObjClass(IntactUtils.CONFIDENCE_TYPE_OBJCLASS);
@@ -347,6 +345,20 @@ public class EditorCvTermService extends JpaAwareController {
             if (item != null){
                 list.add(term.getAc());
                 items.add(item);
+            }
+        }
+    }
+
+    protected void loadCollectionCv(Collection<IntactCvTerm> featureTypes, List<SelectItem> items, boolean ignoreHidden, String dbMIToIgnore, String dbToIgnore) {
+        List<String> list = new ArrayList<String>(featureTypes.size());
+        for (IntactCvTerm term : featureTypes){
+            Collection<Xref> identifiers = XrefUtils.collectAllXrefsHavingDatabase(term.getIdentifiers(), dbMIToIgnore, dbToIgnore);
+            if (identifiers.isEmpty()){
+                SelectItem item = createSelectItem(term, ignoreHidden);
+                if (item != null){
+                    list.add(term.getAc());
+                    items.add(item);
+                }
             }
         }
     }
