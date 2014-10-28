@@ -61,6 +61,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.DataModel;
+import javax.faces.model.ListDataModel;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -79,7 +81,7 @@ public class ComplexController extends AnnotatedObjectController {
     private IntactComplex complex;
     private String ac;
 
-    private LinkedList<ModelledParticipantWrapper> participantWrappers;
+    private DataModel<ModelledParticipantWrapper> participantWrappers;
 
     @Autowired
     private UserSessionController userSessionController;
@@ -292,18 +294,19 @@ public class ComplexController extends AnnotatedObjectController {
     public void refreshParticipants() {
         final Collection<ModelledParticipant> components = complex.getParticipants();
 
-        participantWrappers = new LinkedList<ModelledParticipantWrapper>();
+        List<ModelledParticipantWrapper> participantWrappers = new LinkedList<ModelledParticipantWrapper>();
 
         for ( ModelledParticipant component : components ) {
             participantWrappers.add( new ModelledParticipantWrapper( (IntactModelledParticipant)component, getChangesController(), this ) );
         }
+
+        this.participantWrappers = new ListDataModel<ModelledParticipantWrapper>(participantWrappers);
     }
 
     public void addParticipant(IntactModelledParticipant component) {
         complex.addParticipant(component);
 
-//        participantWrappers.addFirst(new ParticipantWrapper(component, getChangesController(), this));
-        participantWrappers.add(new ModelledParticipantWrapper(component, getChangesController(), null));
+        refreshParticipants();
 
         setUnsavedChanges(true);
     }
@@ -528,7 +531,7 @@ public class ComplexController extends AnnotatedObjectController {
         this.complexProperties = complexProperties;
     }
 
-    public Collection<ModelledParticipantWrapper> getParticipants() {
+    public DataModel<ModelledParticipantWrapper> getParticipants() {
         return participantWrappers;
     }
 

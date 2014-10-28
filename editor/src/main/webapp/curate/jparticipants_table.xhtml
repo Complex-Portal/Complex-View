@@ -21,28 +21,16 @@
         </h:panelGroup>
 
         <p:dataTable id="participantsTable" var="wrapper" value="#{value}"
-                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                      rowsPerPageTemplate="10,20,50,100"
                      rows="10" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="both"
                      rowStyleClass="#{wrapper.participant.ac == null? 'intact-new' : null}"
-                     widgetVar="participantsTableWidget"
-                     >
+                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                >
 
             <ui:param name="participant" value="#{wrapper.participant}" />
             <ui:param name="interactor" value="#{participant.interactor}" />
 
-            <p:column style="width:16px">
-                <p:rowToggler/>
-            </p:column>
-
-            <p:rowExpansion>
-                <h:outputText value="AC: #{participant.ac}"/>
-            </p:rowExpansion>
-
-            <p:column id="shortLabel" headerText="Name"
-                      sortBy="#{interactor.shortName}"
-                      filterBy="#{interactor.shortName}"
-                      filterMatchMode="contains">
+            <p:column id="shortLabel" headerText="Name">
                 <p:commandLink onclick="load_participant.show()" action="#{modelledParticipantController.loadParticipant(participant)}"
                                value="#{interactor.shortName}" rendered="#{participant.ac != null}"
                                ajax="false"/>
@@ -62,10 +50,7 @@
                 </ui:include>
             </p:column>
 
-            <p:column id="identity" headerText="Identity"
-                      sortBy="#{wrapper.interactorIdentity}"
-                      filterBy="#{wrapper.interactorIdentity}"
-                      filterMatchMode="contains">
+            <p:column id="identity" headerText="Identity">
                 <h:outputText id="participantId" value="#{wrapper.interactorIdentity}"
                               styleClass="#{changesController.isDeletedAc(participant.ac)? 'intact-deleted' : ''}"/>
             </p:column>
@@ -73,13 +58,13 @@
             <p:column id="bioRoleCol" headerText="Biological role">
 
                 <h:selectOneMenu id="bioRoleCv" value="#{wrapper.participant.biologicalRole}"
-                                 rendered="#{value.size() lt 5}" disabled="#{complexController.isParticipantDisabled()}"
+                                 rendered="#{value.rowCount lt 5}" disabled="#{complexController.isParticipantDisabled()}"
                                  converter="cvTermConverter">
                     <f:selectItems value="#{editorCvTermService.biologicalRoleSelectItems}" />
                     <p:ajax event="change" process="@this" oncomplete="markAsUnsaved()" update=":editorForm:changesPanel,:editorForm:unsavedChangesInfo,:editorForm:messagesComponent"/>
                 </h:selectOneMenu>
                 <h:outputText value="#{wrapper.participant.biologicalRole != null? wrapper.participant.biologicalRole.shortName : ''}"
-                              rendered="#{value.size() ge 5}"/>
+                              rendered="#{value.rowCount ge 5}"/>
             </p:column>
 
             <p:column headerText="Features">
