@@ -22,6 +22,7 @@ import org.primefaces.model.LazyDataModel;
 import uk.ac.ebi.intact.core.util.DebugUtil;
 import uk.ac.ebi.intact.editor.controller.curate.experiment.ExperimentWrapper;
 import uk.ac.ebi.intact.editor.it.BaseIT;
+import uk.ac.ebi.intact.editor.util.LazyDataModelFactory;
 import uk.ac.ebi.intact.model.AnnotatedObject;
 import uk.ac.ebi.intact.model.Component;
 import uk.ac.ebi.intact.model.Experiment;
@@ -51,14 +52,14 @@ public class ExperimentWrapperIT extends BaseIT{
 
         assertThat(expren20111, is(notNullValue()));
         
-        experimentWrapper = new ExperimentWrapper(expren20111, getEntityManager());
+        experimentWrapper = new ExperimentWrapper(expren20111);
     }
 
     @Test
     public void interactionsOrder() throws Exception {
         // Given interactions are sorted alphanumerically
         // When I am in the detailed page for experiment with label ren-2011-1
-        LazyDataModel dataModel = (LazyDataModel) experimentWrapper.getInteractionsDataModel();
+        LazyDataModel dataModel = LazyDataModelFactory.createLazyDataModel(experimentWrapper.getInteractions());
         List<Interaction> interactions = dataModel.load(0, 350, null, null, Collections.EMPTY_MAP);
         
         // Then they should be sorted alphanumerically: cwf8-prp46, dre4-luc7, prp17-sap61
