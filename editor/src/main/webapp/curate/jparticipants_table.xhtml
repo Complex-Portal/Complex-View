@@ -155,7 +155,7 @@
                 <div style="float:left">
                     <p:commandLink id="duplicateBtn" process="duplicateBtn" title="Duplicate" styleClass="ui-icon ui-icon-newwin"
                                    actionListener="#{complexController.cloneParticipant(wrapper)}"
-                                   update=":editorForm:unsavedChangesInfo,:editorForm:changesPanel,:editorForm:messagesComponent"
+                                   update=":editorForm:unsavedChangesInfo,:editorForm:changesPanel,:editorForm:messagesComponent, :editorForm:complexTabs:participantsTable"
                                    rendered="#{not changesController.isDeletedAc(participant.ac)}"/>
                 </div>
             </p:column>
