@@ -374,6 +374,12 @@
         </dependency>
 
         <dependency>
+            <groupId>psidev.psi.mi.jami</groupId>
+            <artifactId>jami-core</artifactId>
+            <version>${jami.core.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>psidev.psi.mi.jami.bridges</groupId>
             <artifactId>jami-uniprot</artifactId>
             <version>${jami.version}</version>
