@@ -36,6 +36,7 @@
         <psimi.version>1.8.6-SNAPSHOT</psimi.version>
         <jami.version>1.0.1-SNAPSHOT</jami.version>
         <jami.core.version>1.1.2-SNAPSHOT</jami.core.version>
+        <intact.jami.version>1.1.1-SNAPSHOT</intact.jami.version>
         <dataexchange.version>2.1.11-SNAPSHOT</dataexchange.version>
         <h2.version>1.3.162</h2.version>
 
@@ -369,7 +370,7 @@
         <dependency>
             <groupId>uk.ac.ebi.intact.jami</groupId>
             <artifactId>intact-jami</artifactId>
-            <version>${jami.core.version}</version>
+            <version>${intact.jami.version}</version>
         </dependency>
 
         <dependency>
