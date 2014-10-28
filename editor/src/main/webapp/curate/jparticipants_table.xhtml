@@ -21,7 +21,7 @@
         </h:panelGroup>
 
         <p:dataTable id="participantsTable" var="wrapper" value="#{value}"
-                     paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
                      rowsPerPageTemplate="10,20,50,100"
                      rows="10" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="both"
                      rowStyleClass="#{wrapper.participant.ac == null? 'intact-new' : null}"

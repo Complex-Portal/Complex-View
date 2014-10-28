@@ -286,7 +286,7 @@ public class ModelledFeatureController extends AnnotatedObjectController {
         return navigateToJamiObject(feature);
     }
 
-    @Transactional(value = "jamiTransactionManager", readOnly = true, propagation = Propagation.REQUIRED)
+    @Transactional(value = "jamiTransactionManager", propagation = Propagation.REQUIRED)
     public void newRange(ActionEvent evt) {
         if (newRangeValue == null || newRangeValue.isEmpty()) {
             addErrorMessage("Range value field is empty", "Please provide a range value before clicking on the New Range button");
