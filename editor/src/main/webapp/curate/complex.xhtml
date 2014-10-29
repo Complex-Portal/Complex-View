@@ -344,7 +344,7 @@
 
         <ui:include src="jdialog_import_participant.xhtml"/>
 
-        <p:outputPanel id="jparticipantsPanel" autoUpdate="true">
+        <p:outputPanel id="jparticipantsPanel" autoUpdate="false">
             <ui:include src="jparticipants_table.xhtml">
                 <ui:param name="value" value="#{complexController.participants}"/>
             </ui:include>
