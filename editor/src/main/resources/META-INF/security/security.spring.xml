@@ -32,7 +32,7 @@
         <intercept-url pattern="/feature/**" access="ROLE_CURATOR,ROLE_ADMIN, ROLE_REVIEWER"/>
         <intercept-url pattern="/complex/**" access="ROLE_COMPLEX_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_REVIEWER"/>
         <intercept-url pattern="/cparticipant/**" access="ROLE_COMPLEX_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_REVIEWER"/>
-        <intercept-url pattern="/cfeature/**" access="ROLE_ADMIN, ROLE_COMPLEX_REVIEWER"/>
+        <intercept-url pattern="/cfeature/**" access="ROLE_ADMIN, ROLE_COMPLEX_REVIEWER, ROLE_COMPLEX_CURATOR"/>
         <intercept-url pattern="/organism/**" access="ROLE_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_CURATOR, ROLE_REVIEWER, ROLE_COMPLEX_REVIEWER"/>
         <intercept-url pattern="/interactor/**" access="ROLE_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_CURATOR, ROLE_REVIEWER, ROLE_COMPLEX_REVIEWER"/>
         <intercept-url pattern="/cv/**" access="ROLE_CURATOR, ROLE_ADMIN, ROLE_COMPLEX_CURATOR, ROLE_REVIEWER, ROLE_COMPLEX_REVIEWER"/>
