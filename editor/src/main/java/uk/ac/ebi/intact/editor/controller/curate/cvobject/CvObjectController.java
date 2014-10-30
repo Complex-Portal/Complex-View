@@ -114,6 +114,8 @@ public class CvObjectController extends AnnotatedObjectController {
                     Hibernate.initialize(cvObject.getAnnotations());
                     // initialise xrefs
                     Hibernate.initialize(cvObject.getAliases());
+                    // initialise xrefs
+                    Hibernate.initialize(cvObject.getParents());
                 }
             } else if (cvClassName != null) {
                 cvObject = newInstance(cvClassName);
@@ -126,7 +128,8 @@ public class CvObjectController extends AnnotatedObjectController {
 
             if (!Hibernate.isInitialized(cvObject.getXrefs())
                     || !Hibernate.isInitialized(cvObject.getAnnotations())
-                    || !Hibernate.isInitialized(cvObject.getAliases())){
+                    || !Hibernate.isInitialized(cvObject.getAliases())
+                    || !Hibernate.isInitialized(cvObject.getParents())){
                 cvObject = (CvDagObject) loadByAc(getDaoFactory().getCvObjectDao(), cvObject.getAc());
                 // initialise xrefs
                 Hibernate.initialize(cvObject.getXrefs());
@@ -134,6 +137,8 @@ public class CvObjectController extends AnnotatedObjectController {
                 Hibernate.initialize(cvObject.getAnnotations());
                 // initialise xrefs
                 Hibernate.initialize(cvObject.getAliases());
+                // initialise xrefs
+                Hibernate.initialize(cvObject.getParents());
             }
 
             prepareView();
