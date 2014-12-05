@@ -1,11 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <!--<parent>-->
-        <!--<groupId>uk.ac.ebi.intact.service</groupId>-->
-        <!--<artifactId>service-master</artifactId>-->
-        <!--&lt;!&ndash;<version>3.0.1-SNAPSHOT</version>&ndash;&gt;-->
-    <!--</parent>-->
     <parent>
         <groupId>uk.ac.ebi.intact.maven</groupId>
         <artifactId>intact-hibernate-master</artifactId>
@@ -13,7 +8,7 @@
     </parent>
     <artifactId>complex-ws</artifactId>
     <packaging>war</packaging>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.2</version>
     <name>complex-ws</name>
 
     <properties>
@@ -155,13 +150,6 @@
             <artifactId>xercesImpl</artifactId>
             <version>2.11.0</version>
         </dependency>
-
-        <!-- Solr -->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.solr</groupId>-->
-            <!--<artifactId>solr-solrj</artifactId>-->
-            <!--<version>3.6.2</version>-->
-        <!--</dependency>-->
 
         <!-- Complexes DataBase -->
         <dependency>
