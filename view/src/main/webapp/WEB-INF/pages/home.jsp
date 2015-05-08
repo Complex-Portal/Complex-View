@@ -8,7 +8,10 @@
 <html>
 
 <%@include file="header.jsp"%>
-
+<jsp:useBean id="stats_total" type="java.lang.Integer" scope="session"/>
+<jsp:useBean id="stats_species" type="java.lang.Integer" scope="session"/>
+<jsp:useBean id="stats_interactor" type="java.lang.Integer" scope="session"/>
+<jsp:useBean id="stats_biorole" type="java.lang.Integer" scope="session"/>
 
 <nav>
     <ul class="grid_24" id="local-nav">
@@ -19,6 +22,7 @@
         <%--<li><a href="${complex_advanced_search_url}">Advanced Search</a></li>--%>
         <%--<li><a href="${complex_downloads_url}">Downloads</a></li>--%>
         <li><a href="${complex_help_url}">Help</a></li>
+        <li><a href="${complex_stats_url}">Statistics</a></li>
         <li class="last"><a href="${complex_download_url}">Download</a></li>
         <%--<li class="last"><a href="${complex_contact_url}">Contact Us</a></li>--%>
         <li class="functional last first"><a class="icon icon-generic" data-icon="\" href="http://www.ebi.ac.uk/support/intact">Feedback</a></li>
@@ -75,36 +79,59 @@
             <p class="intro">The Complex Portal is a manually curated, encyclopaedic resource of macromolecular complexes from a number of key model organisms. All data is freely available for search and download. To perform a search for macromolecular complexes use the search box below.</p>
         <%--<br>--%>
         <%--<br>--%>
-        <div class="grid_12 alpha">
-            <form class="searchForm" method="GET" action="">
-                <fieldset id="searchFormField">
-                    <legend>Search in Complex Portal</legend>
-                        <textarea name="q" rows="10" id="querySearchBox"  type="text"   class="searchBox"    placeholder="Enter search term(s)..."></textarea>
-                        <br>
-                        <input type="submit" class="searchButton submit" value="Search" />
-                </fieldset>
-            </form>
-        </div>
-            <div class="grid_6 exampleDiv">
-                <label class="searchExamples">Examples:</label>
-                <ul class="exampleList">
-                    <li>GO term(s): <form class="exampleForm" id="example4form" action="" method="GET"><input type="hidden" name="q" value="GO:0016491"/> <a href="<c:out value="#"/>" onclick="document.getElementById('example4form').submit();">GO:0016491</a></form></li>
-                    <li>Gene name(s): <form class="exampleForm" id="example1form" action="" method="GET"><input type="hidden" name="q" value="Ndc80"/>    <a href="<c:out value="#"/>" onclick="document.getElementById('example1form').submit();">Ndc80</a></form></li>
-                    <li>UniProt AC(s): <form class="exampleForm" id="example3form" action="" method="GET"><input type="hidden" name="q" value="Q05471"/>  <a href="<c:out value="#"/>" onclick="document.getElementById('example3form').submit();">Q05471</a></form></li>
-                    <li>Protein name(s): <form class="exampleForm" id="example2form" action="" method="GET"><input type="hidden" name="q" value="PCNA"/>  <a href="<c:out value="#"/>" onclick="document.getElementById('example2form').submit();">PCNA</a></form></li>
-                    <li>Complex AC: <form class="exampleForm" id="example5form" action="" method="GET"><input type="hidden" name="q" value="EBI-9008420"/><a href="<c:out value="#"/>" onclick="document.getElementById('example5form').submit();">EBI-9008420</a></form></li>
-                    <%--<li>Pubmed ID: 22540012</li>--%>
-                </ul>
-                <%--<a href="JavaScript:newPopup('<c:url value="/help/"/>');">Help</a>--%>
-                <p rel="tooltip" title="You can search for one or several of the following types of terms: complex_id, complex_alias, species, complex_xref, udate, id, alias, ptype, stc, pbiorole, ftype, source and number_participants. By default, we search for entries that contain ANY of your search terms. If you would like to restrict your search, please link your terms with 'AND' or use the filters available once you have made an initial search.">Help</p>
+            <div class="grid_18 alpha">
+                <div class="grid_18">
+                    <form class="searchForm" method="GET" action="">
+                        <fieldset id="searchFormField">
+                            <legend>Search in Complex Portal</legend>
+                                <textarea name="q" rows="10" id="querySearchBox"  type="text"   class="searchBox"    placeholder="Enter search term(s)..."></textarea>
+                                <br>
+                                <input type="submit" class="searchButton submit" value="Search" />
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="grid_6 exampleDiv">
+                    <h3 class="icon icon-generic searchExamples">Examples</h3>
+                    <ul class="exampleList">
+                        <li>GO term(s): <form class="exampleForm" id="example4form" action="" method="GET"><input type="hidden" name="q" value="GO:0016491"/> <a href="<c:out value="#"/>" onclick="document.getElementById('example4form').submit();">GO:0016491</a></form></li>
+                        <li>Gene name(s): <form class="exampleForm" id="example1form" action="" method="GET"><input type="hidden" name="q" value="Ndc80"/>    <a href="<c:out value="#"/>" onclick="document.getElementById('example1form').submit();">Ndc80</a></form></li>
+                        <li>UniProt AC(s): <form class="exampleForm" id="example3form" action="" method="GET"><input type="hidden" name="q" value="Q05471"/>  <a href="<c:out value="#"/>" onclick="document.getElementById('example3form').submit();">Q05471</a></form></li>
+                        <li>Protein name(s): <form class="exampleForm" id="example2form" action="" method="GET"><input type="hidden" name="q" value="PCNA"/>  <a href="<c:out value="#"/>" onclick="document.getElementById('example2form').submit();">PCNA</a></form></li>
+                        <li>Complex AC: <form class="exampleForm" id="example5form" action="" method="GET"><input type="hidden" name="q" value="EBI-9008420"/><a href="<c:out value="#"/>" onclick="document.getElementById('example5form').submit();">EBI-9008420</a></form></li>
+                        <%--<li>Pubmed ID: 22540012</li>--%>
+                    </ul>
+                    <%--<a href="JavaScript:newPopup('<c:url value="/help/"/>');">Help</a>--%>
+                    <p rel="tooltip" title="You can search for one or several of the following types of terms: complex_id, complex_alias, species, complex_xref, udate, id, alias, ptype, stc, pbiorole, ftype, source and number_participants. By default, we search for entries that contain ANY of your search terms. If you would like to restrict your search, please link your terms with 'AND' or use the filters available once you have made an initial search.">Help</p>
+                </div>
+                <div class="grid_24">
+                    <ul class="helpList">
+                        <li>To search for a list of terms copy/paste all terms into the search box using either spaces or line breaks to separate them.</li>
+                        <li>By default we search for entries containing ANY of the search terms, if you want to be more specific add AND between your search terms.</li>
+                        <li>Search for isoforms of '<a href="<c:url value="${complex_search_form}?q=Q07817"/>">Q07817</a>' by using '<a href="<c:url value="${complex_search_form}?q=Q07817*"/>">Q07817*</a>'</li>
+                    </ul>
+                </div>
             </div>
-        <div class="grid_19 alpha">
-            <ul class="helpList">
-                <li>To search for a list of terms copy/paste all terms into the search box using either spaces or line breaks to separate them.</li>
-                <li>By default we search for entries containing ANY of the search terms, if you want to be more specific add AND between your search terms.</li>
-                <li>Search for isoforms of '<a href="<c:url value="${complex_search_form}?q=Q07817"/>">Q07817</a>' by using '<a href="<c:url value="${complex_search_form}?q=Q07817*"/>">Q07817*</a>'</li>
-            </ul>
-        </div>
+            <div class="grid_6 stats">
+                <section>
+                    <h3 class="icon icon-generic" data-icon="g">Data Content</h3>
+                    <ul>
+                        <li>Complexes: <span style="font-weight: bold;"><c:out value="${stats_total}"/></span></li>
+                        <li>Species: <span style="font-weight: bold;"><c:out value="${stats_species}"/></span></li>
+                        <li>Interactor types: <span style="font-weight: bold;"><c:out value="${stats_interactor}"/></span></li>
+                        <li>Biological role types: <span style="font-weight: bold;"><c:out value="${stats_biorole}"/></span></li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Contributors</h3>
+                    <p>Manually curated content is added to IntAct Complex Portal by curators at the EMBL-EBI and the following organisations:</p>
+                    <p>
+                        <a href="http://www.ceitec.eu/"><img src="<c:url value="/resources/img/Ceitec.png"/>" style="width: 140px; height: 50px;"/></a>
+                        <a href="http://mint.bio.uniroma2.it/"><img src="<c:url value="/resources/img/Mint.png"/>" style="width: 140px; height: 50px;"/></a>
+                        <a href="http://www.yeastgenome.org/"><img src="<c:url value="/resources/img/SGD.png"/>" style="width: 140px; height: 50px;"/></a>
+                    </p>
+
+                </section>
+            </div>
     </section>
 </div>
 

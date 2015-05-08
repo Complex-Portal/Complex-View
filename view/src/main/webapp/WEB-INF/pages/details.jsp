@@ -33,6 +33,7 @@
         <%--<li><a href="${complex_advanced_search_url}">Advanced Search</a></li>--%>
         <%--<li><a href="${complex_downloads_url}">Downloads</a></li>--%>
         <li><a href="${complex_help_url}">Help</a></li>
+        <li><a href="${complex_stats_url}">Statistics</a></li>
         <li class="last"><a href="${complex_download_url}">Download</a></li>
         <%--<li class="last"><a href="${complex_contact_url}">Contact Us</a></li>--%>
         <li class="functional last first"><a class="icon icon-generic" data-icon="\" href="http://www.ebi.ac.uk/support/intact">Feedback</a></li>
@@ -93,12 +94,12 @@
     <br>Accession number: <c:choose><c:when test="${not empty sessionScope.details.ac}"><c:out value="${sessionScope.details.ac}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
     <div class="grid_24">
         <c:if test="${not empty sessionScope.details.systematicName || not empty sessionScope.details.synonyms || not empty sessionScope.details.function || not empty sessionScope.details.properties || not empty sessionScope.details.ligand || not empty sessionScope.details.disease || not empty sessionScope.details.complexAssembly}">
-            <div class="grid_24">
+            <div class="grid_12">
                 <h4>Summary</h4>
                 <br>
                 <c:if test="${not empty sessionScope.details.systematicName}">
                     <h5>Systematic Name:</h5>
-                    <p style="text-align: justify;"><c:out value="${sessionScope.details.systematicName}"/></p>
+                    <p style="text-align: justify; word-break: break-all;"><c:out value="${sessionScope.details.systematicName}"/></p>
                 </c:if>
                 <c:if test="${not empty sessionScope.details.synonyms}">
                     <%--  OLD WAY  --%>
@@ -115,7 +116,7 @@
                         <tbody>
                             <c:forEach var="synonym" items="${sessionScope.details.synonyms}" varStatus="status">
                                 <td><c:out value="${synonym}"/></td>
-                                <c:if test="${status.count % 3 == 0}">
+                                <c:if test="${status.count % 2 == 0}">
                                     </tr>
                                 </c:if>
                             </c:forEach>
@@ -143,6 +144,21 @@
                     <p style="text-align: justify;"><c:out value="${sessionScope.details.complexAssembly}"/></p>
                 </c:if>
             </div>
+            <div class="grid_12" style="height: 50%; width: 45%;">
+                <div id="networkContainer" style="border: 0px;"></div>
+                <script type="text/javascript">
+                    var data = '${json_rest}';
+                    var targetDiv = document.getElementById('networkContainer');
+                    xlv = new xiNET(targetDiv);
+                    xlv.readMIJSON(data, true);
+                    xlv.autoLayout();
+                </script>
+                <div id="networkControls" class="networkControls">
+                    <button id="AutoLayout" class="submit networkButton" onclick="xlv.autoLayout();">Auto layout</button>
+                    <button id="ResetZoom" class="submit networkButton" onclick="xlv.resetZoom();">Reset Zoom</button>
+                    <button id="ExportSVG" class="submit networkButton" onclick="xlv.exportSVG('networkSVG');">Export SVG</button>
+                </div>
+            </div>
             <br>
         </c:if>
         <div class="grid_24">
@@ -156,7 +172,7 @@
                         <td>Stochiometry</td>
                         <td>Biological Role</td>
                         <td>Interactor Type</td>
-                        <td>Linked Features</td>
+                        <%--<td>Linked Features</td>--%>
                         <td>Other Features</td>
                     </tr>
                 </thead>
@@ -170,20 +186,18 @@
                             <td><c:if test="${not empty part.stochiometry}"><c:out value="${part.stochiometry}"/></c:if></td>
                             <td><c:if test="${not empty part.bioRole}"><c:out value="${part.bioRole}"/></c:if></td>
                             <td><c:if test="${not empty part.interactorType}"><c:out value="${part.interactorType}"/></c:if></td>
-                            <td><div class="detailsTable" rel="tooltip" data-placement="left" title="<c:if test="${not empty part.linkedFeatures}"><c:forEach var="linked" items="${part.linkedFeatures}"><c:out value="${linked.featureType}"/><c:out value="${linked.participantId}"/><c:forEach var="range" items="${linked.ranges}">[<c:out value="${range}"/>]</c:forEach>
-</c:forEach></c:if>">
-                                <c:if test="${not empty part.linkedFeatures}">
-                                <c:forEach var="linked" items="${part.linkedFeatures}">
-                                    <c:out value="${linked.featureType}"/> <c:out value="${linked.participantId}"/>
-                                        <c:forEach var="range" items="${linked.ranges}">
-                                            [<c:out value="${range}"/>]
-                                        </c:forEach>
-                                        <br/>
-                                    </c:forEach>
-                                </c:if>
-                            </div></td>
-                            <td><div class="detailsTable" rel="tooltip" data-placement="right" title="<c:if test="${not empty part.otherFeatures}"><c:forEach var="other" items="${part.otherFeatures}"><c:out value="${other.featureType}"/><c:out value="${other.participantId}"/><c:forEach var="range" items="${other.ranges}">[<c:out value="${range}"/>]</c:forEach>
-</c:forEach></c:if>">
+                            <%--<td><div class="detailsTable" rel="tooltip" data-placement="left" title="<c:if test="${not empty part.linkedFeatures}"><c:forEach var="linked" items="${part.linkedFeatures}"><c:out value="${linked.featureType}"/><c:out value="${linked.participantId}"/><c:forEach var="range" items="${linked.ranges}">[<c:out value="${range}"/>]</c:forEach></c:forEach></c:if>">--%>
+                                <%--<c:if test="${not empty part.linkedFeatures}">--%>
+                                <%--<c:forEach var="linked" items="${part.linkedFeatures}">--%>
+                                    <%--<c:out value="${linked.featureType}"/> <c:out value="${linked.participantId}"/>--%>
+                                        <%--<c:forEach var="range" items="${linked.ranges}">--%>
+                                            <%--[<c:out value="${range}"/>]--%>
+                                        <%--</c:forEach>--%>
+                                        <%--<br/>--%>
+                                    <%--</c:forEach>--%>
+                                <%--</c:if>--%>
+                            <%--</div></td>--%>
+                            <td><div class="detailsTable" rel="tooltip" data-placement="right" title="<c:if test="${not empty part.otherFeatures}"><c:forEach var="other" items="${part.otherFeatures}"><c:out value="${other.featureType}"/><c:out value="${other.participantId}"/><c:forEach var="range" items="${other.ranges}">[<c:out value="${range}"/>]</c:forEach></c:forEach></c:if>">
                                 <c:if test="${not empty part.otherFeatures}">
                                     <c:forEach var="other" items="${part.otherFeatures}">
                                         <c:out value="${other.featureType}"/> <c:out value="${other.participantId}"/>
@@ -234,7 +248,6 @@
         </div>
     </div>
 </div>
-
 
 <%@include file="footer.jsp"%>
 </html>

@@ -1,8 +1,6 @@
 package uk.ac.ebi.intact.service.complex.view;
 
-import org.apache.solr.client.solrj.SolrServerException;
 import org.jsoup.Jsoup;
-import org.jsoup.examples.HtmlToPlainText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,7 +12,6 @@ import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexFieldNames;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +29,7 @@ public class WebAppController {
     /***   Public functions   ***/
     /****************************/
 
-    // SEARCH
+    // POST SEARCH
     @RequestMapping(value = "/", method = RequestMethod.POST)
 	public String search(@RequestParam String query,
                                    @RequestParam ( required = false ) String page,
@@ -87,7 +84,7 @@ public class WebAppController {
         return "home";
 	}
 
-    // GET PARTIAL SEARCH
+    // GET SEARCH
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String search(@RequestParam ( required = false ) String q,
                          @RequestParam ( required = false ) String page,
@@ -103,9 +100,7 @@ public class WebAppController {
         if ( q !=null && !q.equals("") && q.length()> 0 ) {
             model.addAttribute("page_title", "Complex Search");
             q = cleanQuery(q);
-//            String[] speciesFilter  = species  != null ? species.split(",")  : null;
-//            String[] typesFilter    = types    != null ? types.split(",")    : null;
-//            String[] biorolesFilter = bioroles != null ? bioroles.split(",") : null;
+            session.setAttribute("htmlOriginalQuery", HtmlUtils.htmlEscape(q));
             String filters = buildFilters(species, types, bioroles);
             Page pageInfo = restConnection.getPage(page, q, filters, facets);
             if (pageInfo.getTotalNumberOfElements() != 0) {
@@ -113,7 +108,6 @@ public class WebAppController {
                 session.setAttribute("pageInfo", pageInfo);
                 session.setAttribute("results", results);
                 if (results != null) {
-                    session.setAttribute("htmlOriginalQuery", HtmlUtils.htmlEscape(results.getOriginaQuery()));
                     Map<String, List<ComplexFacetResults>> facetResults = results.getFacets();
                     session.setAttribute("species", facetResults.get(ComplexFieldNames.COMPLEX_ORGANISM_F));
                     session.setAttribute("types", facetResults.get(ComplexFieldNames.INTERACTOR_TYPE_F));
@@ -143,6 +137,20 @@ public class WebAppController {
             }
         }
         model.addAttribute("page_title", "Complex Home");
+        Page total = restConnection.getPage(null, "*", null, this.facets);
+        ComplexRestResult result = restConnection.query("*", total, null, this.facets, null);
+        session.setAttribute("stats_total", total.getTotalNumberOfElements());
+        for (String key : result.getFacets().keySet()) {
+            if (key.equalsIgnoreCase(ComplexFieldNames.COMPLEX_ORGANISM_F)) {
+                session.setAttribute("stats_species", result.getFacets().get(key).size());
+            }
+            if (key.equalsIgnoreCase(ComplexFieldNames.INTERACTOR_TYPE_F)) {
+                session.setAttribute("stats_interactor", result.getFacets().get(key).size());
+            }
+            if (key.equalsIgnoreCase(ComplexFieldNames.BIOROLE_F)) {
+                session.setAttribute("stats_biorole", result.getFacets().get(key).size());
+            }
+        }
         return "home";
     }
 
@@ -154,6 +162,8 @@ public class WebAppController {
                                     HttpServletRequest request) throws Exception {
         ComplexDetails details = restConnection.getDetails(cleanQuery(ac), QueryTypes.DETAILS.value);
         session.setAttribute("details", details);
+        String json = restConnection.getJsonToVisualize(ac);
+        model.addAttribute("json_rest", json);
         setDefaultModelMapValues(model, request);
         model.addAttribute("complex_search_form", request.getRequestURL().toString().split("details/")[0]);
         model.addAttribute("page_title", "Complex Details");
@@ -190,6 +200,31 @@ public class WebAppController {
         return "about";
     }
 
+    // STATISTICS
+    @RequestMapping(value = "/stats/", method = RequestMethod.GET)
+    public String goStatistics(ModelMap model,
+                               HttpServletRequest request,
+                               HttpSession session) throws Exception {
+        setDefaultModelMapValues(model, request);
+        Page total = restConnection.getPage(null, "*", null, this.facets);
+        ComplexRestResult result = restConnection.query("*", total, null, this.facets, null);
+//        session.setAttribute("stats_total", total.getTotalNumberOfElements());
+        for (String key : result.getFacets().keySet()) {
+            if (key.equalsIgnoreCase(ComplexFieldNames.COMPLEX_ORGANISM_F)) {
+                session.setAttribute("stats_species", result.getFacets().get(key));
+            }
+            if (key.equalsIgnoreCase(ComplexFieldNames.INTERACTOR_TYPE_F)) {
+                session.setAttribute("stats_interactor", result.getFacets().get(key));
+            }
+            if (key.equalsIgnoreCase(ComplexFieldNames.BIOROLE_F)) {
+                session.setAttribute("stats_biorole", result.getFacets().get(key));
+            }
+        }
+        model.addAttribute("page_title", "Complex Statistics");
+        model.addAttribute("complex_search_form", request.getRequestURL().toString().split("stats/")[0]);
+        return "stats";
+    }
+
     // DOWNLOAD
     @RequestMapping(value = "/download/", method = RequestMethod.GET)
     public String goDownload(ModelMap model,
@@ -210,10 +245,12 @@ public class WebAppController {
         model.addAttribute("complex_download_url", request.getContextPath() + "/download/");
         model.addAttribute("complex_help_url", request.getContextPath() + "/help/");
         model.addAttribute("complex_documentation_url", request.getContextPath() + "/documentation/");
-        model.addAttribute("complex_contact_url", "http://www.ebi.ac.uk/support/index.php?query=intact");//"mailto:intact-help@ebi.ac.uk?Subject=Complex%20Portal");
+        model.addAttribute("complex_contact_url", "http://www.ebi.ac.uk/support/index.php?query=intact");
         model.addAttribute("complex_about_url", request.getContextPath() + "/about/" );
+        model.addAttribute("complex_stats_url", request.getContextPath() + "/stats/");
         model.addAttribute("intact_url", "http://www.ebi.ac.uk/intact/");
         model.addAttribute("complex_ftp_url", this.restConnection.getFtpUrl());
+        model.addAttribute("complex_download_form", this.restConnection.getWSUrl() + "export/");
     }
 
     private String cleanQuery(String query) {
@@ -252,14 +289,14 @@ public class WebAppController {
     }
 
     @ExceptionHandler(ComplexPortalException.class)
-    public ModelAndView handleComplexPortalException(ComplexPortalException e, HttpServletResponse response, HttpServletRequest request){
+    public ModelAndView handleComplexPortalException(ComplexPortalException e, HttpServletResponse response, HttpServletRequest request, HttpSession session){
         ModelAndView model = new ModelAndView("error/503");
         setDefaultModelMapValues(model.getModelMap(), request);
         return model;
     }
 
     @ExceptionHandler(Exception.class)
-    public ModelAndView allExceptions(Exception e, HttpServletResponse response, HttpServletRequest request){
+    public ModelAndView allExceptions(Exception e, HttpServletResponse response, HttpServletRequest request, HttpSession session){
         ModelAndView model = new ModelAndView("error/404");
         setDefaultModelMapValues(model.getModelMap(), request);
         return model;

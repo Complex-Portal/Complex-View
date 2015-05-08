@@ -40,6 +40,7 @@
         <%--<li><a href="${complex_advanced_search_url}">Advanced Search</a></li>--%>
         <%--<li><a href="${complex_downloads_url}">Downloads</a></li>--%>
         <li><a href="${complex_help_url}">Help</a></li>
+        <li><a href="${complex_stats_url}">Statistics</a></li>
         <li class="last"><a href="${complex_download_url}">Download</a></li>
         <%--<li class="last"><a href="${complex_contact_url}">Contact Us</a></li>--%>
         <li class="functional last first"><a class="icon icon-generic" data-icon="\" href="http://www.ebi.ac.uk/support/intact">Feedback</a></li>
@@ -77,6 +78,17 @@
 
     <section class="grid_18 push_6" id="search-results">
     <div class="results grid_24">
+        <div style="float: left">
+            <form name="downloads" method="get">
+                <select name="downloadType" onchange="changedDownloadType();">
+                    <option value="xml25">XML 2.5</option>
+                    <option value="xml30">XML 3.0</option>
+                    <option value="json">MI-Json</option>
+                </select>
+                <input type="text" name="format" hidden="true" value="xml25"/>
+                <input type="button" name="download" value="Download" onclick="downloadFromRest('${complex_download_form}');">
+            </form>
+        </div>
     <div class="pages">
         <c:if test="${sessionScope.pageInfo.prevPage != -1 || sessionScope.pageInfo.nextPage != -1}">
             <c:if test="${sessionScope.pageInfo.prevPage != -1}">

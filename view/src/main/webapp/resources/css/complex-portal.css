@@ -181,3 +181,25 @@ table.synosymsTable
     border-right: none;
     border-top: none;
 }
+
+div#networkContainer{
+    clear: both;
+    border: 1px solid black;
+    /*position:absolute;*/
+    /*bottom:0px;*/
+    /*top:0px;*/
+    /*width:65%;*/
+    /*height: 65%;*/
+    /*width: 65%;*/
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+    max-height: 800px;
+    /*margin: 8px;*/
+    /*margin-right:35%;*/
+}
+div#networkControls {
+    clear: both;
+    float: left;
+    margin-left: 5%;
+}
