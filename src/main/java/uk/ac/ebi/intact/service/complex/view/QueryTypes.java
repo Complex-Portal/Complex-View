@@ -7,9 +7,7 @@ package uk.ac.ebi.intact.service.complex.view;
  */
 public enum QueryTypes {
     DEFAULT("search"),
-    INTERACTOR("interactor"),
-    COMPLEX("complex"),
-    ORGANISM("organism"),
+    EXPORT("export"),
     DETAILS("details");
 
     String value;

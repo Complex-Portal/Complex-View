@@ -2,13 +2,14 @@
 
 <%@include file="header.jsp"%>
 <jsp:useBean id="results"  class="uk.ac.ebi.intact.service.complex.view.ComplexRestResult"      scope="session"/>
+<jsp:useBean id="htmlOriginalQuery" class="java.lang.String"    scope="session"/>
 
 <div class="grid_12 omega">
     <form id="local-search" name="local-search" action="${complex_search_form}" method="get">
         <fieldset>
             <div class="left">
                 <label>
-                    <input type="text" name="q" id="local-searchbox" value="<c:out value="${sessionScope.results.originaQuery}"/>">
+                    <input type="text" name="q" id="local-searchbox" value="<c:out value="${sessionScope.htmlOriginalQuery}"/>">
                 </label>
                 <!-- Include some example searchterms - keep them short and few! -->
                 <span class="examples">Examples: <a href="<c:url value="${complex_search_form}?q=GO:0016491"/>">GO:0016491</a>, <a href="<c:url value="${complex_search_form}?q=Ndc80"/>">Ndc80</a>, <a href="<c:url value="${complex_search_form}?q=Q05471"/>">Q05471</a></span>
@@ -32,6 +33,7 @@
         <%--<li><a href="${complex_advanced_search_url}">Advanced Search</a></li>--%>
         <%--<li><a href="${complex_downloads_url}">Downloads</a></li>--%>
         <li><a href="${complex_help_url}">Help</a></li>
+        <li><a href="${complex_stats_url}">Statistics</a></li>
         <li class="last"><a href="${complex_download_url}">Download</a></li>
         <%--<li class="last"><a href="${complex_contact_url}">Contact Us</a></li>--%>
         <li class="functional last first"><a class="icon icon-generic" data-icon="\" href="http://www.ebi.ac.uk/support/intact">Feedback</a></li>
@@ -54,7 +56,7 @@
     <!-- Suggested layout containers -->
 
     <h2>No ${complex_portal_name} results found</h2>
-    <p class="alert">We're sorry but we couldn't find anything that matched your search for <c:out value="${sessionScope.results.originaQuery}"/></p>
+    <p class="alert">We're sorry but we couldn't find anything that matched your search for <c:out value="${sessionScope.htmlOriginalQuery}"/></p>
 
     <section class="grid_24 alpha">
         <%--<h3>Try the advanced search</h3>--%>

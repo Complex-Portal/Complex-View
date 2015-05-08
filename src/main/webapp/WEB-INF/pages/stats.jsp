@@ -1,6 +1,10 @@
 <html>
 
 <%@include file="header.jsp"%>
+<%--<jsp:useBean id="stats_total"       class="java.lang.Integer"   type="java.lang.Integer"    scope="session"/>--%>
+<jsp:useBean id="stats_species"     class="java.util.ArrayList" type="java.util.List"       scope="session"/>
+<jsp:useBean id="stats_interactor"  class="java.util.ArrayList" type="java.util.List"       scope="session"/>
+<jsp:useBean id="stats_biorole"     class="java.util.ArrayList" type="java.util.List"       scope="session"/>
 
 <div class="grid_12 omega">
     <form id="local-search" name="local-search" action="${complex_search_form}" method="get">
@@ -26,13 +30,13 @@
 <nav>
     <ul class="grid_24" id="local-nav">
         <li class="first"><a href="${complex_home_url}">Home</a></li>
-        <li class="active"><a href="${complex_about_url}">About</a></li>
+        <li><a href="${complex_about_url}">About</a></li>
         <li><a href="${complex_documentation_url}">Documentation</a></li>
         <li><a href="${complex_search_url}">Search</a></li>
         <%--<li><a href="${complex_advanced_search_url}">Advanced Search</a></li>--%>
         <%--<li><a href="${complex_downloads_url}">Downloads</a></li>--%>
         <li><a href="${complex_help_url}">Help</a></li>
-        <li><a href="${complex_stats_url}">Statistics</a></li>
+        <li class="active"><a href="${complex_stats_url}">Statistics</a></li>
         <li class="last"><a href="${complex_download_url}">Download</a></li>
         <%--<li class="last"><a href="${complex_contact_url}">Contact Us</a></li>--%>
         <li class="functional last first"><a class="icon icon-generic" data-icon="\" href="http://www.ebi.ac.uk/support/intact">Feedback</a></li>
@@ -84,14 +88,28 @@
     <nav id="breadcrumb">
         <p>
             <a href="${complex_home_url}">${complex_portal_name}</a> &gt;
-            About
+            Statistics
         </p>
     </nav>
-    <p>The Complex Portal is a manually curated, encyclopaedic resource of macromolecular complexes from a number of key model organisms, entered into the <a href="${intact_url}">IntAct</a> molecular interaction database. Data includes protein-only complexes as well as protein-small molecule and protein-nucleic acid complexes. All complexes are derived from physical molecular interaction evidences extracted from the literature, and cross-referenced in the entry, or by curator inference from information on orthologues in closely related species. Any complex which currently lacks direct experimental evidence is tagged as such, using controlled vocabulary terms from the <a href="${complex_documentation_url}#evidences">Evidence Code Ontology</a>.</p>
-    <p>The number of complexes available is currently limited, but will be added to over time. If you wish to request the curation of one or more complexes, or to amend or contribute to an existing entry, please contact us on <a href="${complex_contact_url}">intact-help</a>.</p>
-    <p>To read more on complex curation, go to <a href="${complex_documentation_url}">Documentation</a>.</p>
-    <p>To find out more about the search algorithms, go to <a href="${complex_help_url}">Help</a>.</p>
-    <p>Complexes can be downloaded in PSI-MI <a href="http://www.psidev.info/mif">XML 2.5.4</a> format from our <a href="${complex_ftp_url}">ftp site</a>. Individual complex files are grouped by species.</p>
+    <h2>Statistics:</h2>
+    <h3>Species:</h3>
+    <ul>
+    <c:forEach var="species" items="${sessionScope.stats_species}">
+        <li><c:out value="${species.name}"/>: <c:out value="${species.count}"/></li>
+    </c:forEach>
+    </ul>
+    <h3>Interactor type:</h3>
+    <ul>
+        <c:forEach var="interactor" items="${sessionScope.stats_interactor}">
+            <li><c:out value="${interactor.name}"/>: <c:out value="${interactor.count}"/></li>
+        </c:forEach>
+    </ul>
+    <h3>Participant's biological role:</h3>
+    <ul>
+        <c:forEach var="biorole" items="${sessionScope.stats_biorole}">
+            <li><c:out value="${biorole.name}"/>: <c:out value="${biorole.count}"/></li>
+        </c:forEach>
+    </ul>
 </div>
 
 

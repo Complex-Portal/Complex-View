@@ -67,3 +67,15 @@ $(document).on({
         $(this).tooltip('hide');
     }
 }, '*[rel=tooltip]');
+
+function downloadFromRest(restURI) {
+    var format = document.forms['downloads']['format'].value;
+    var query = document.forms['local-search']['q'].value;
+    var newWindow = window.open(restURI + query + '?format=' + format, '_blank');
+    newWindow.focus();
+}
+
+function changedDownloadType() {
+    var type = document.forms['downloads']["downloadType"];
+    document.forms['downloads']['format'].value = type.options[type.selectedIndex].value;
+}
