@@ -148,6 +148,7 @@
                 <div id="networkContainer" style="border: 0px;"></div>
                 <script type="text/javascript">
                     var data = '${json_rest}';
+                    console.log('${json_rest}');
                     var targetDiv = document.getElementById('networkContainer');
                     xlv = new xiNET(targetDiv);
                     xlv.readMIJSON(data, true);
@@ -180,7 +181,7 @@
                     <c:forEach var="part" items="${sessionScope.details.participants}">
                         <tr>
                             <td><c:if test="${not empty part.identifier}"><a target="_blank" href="<c:out value="${part.identifierLink}"/>"><c:out value="${part.identifier}"/></a><br/></c:if>
-                                <c:if test="${not empty part.interactorAC}"><a target="_blank" href="http://www.ebi.ac.uk/intact/molecule/<c:out value="${part.interactorAC}"/>"><c:out value="${part.interactorAC}"/></a></c:if></td>
+                                <c:if test="${not empty part.interactorAC}"><c:out value="${part.interactorAC}"/></c:if></td>
                             <td><c:if test="${not empty part.name}"><c:out value="${part.name}"/></c:if></td>
                             <td><c:if test="${not empty part.description}"><c:out value="${part.description}"/></c:if></td>
                             <td><c:if test="${not empty part.stochiometry}"><c:out value="${part.stochiometry}"/></c:if></td>
