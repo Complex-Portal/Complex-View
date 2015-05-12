@@ -164,7 +164,7 @@
 <%--<tr><td>param</td><td>Boolean value to know if the Interaction has some parameters</td><td>param:true</td></tr>--%>
 <%--Other Fields (PSICQUIC, IntAct)--%>
 <tr><td>pbiorole</td><td>Biological role(s)</td><td><form id="example11form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="pbiorole:enzyme"/><a href="javascript: document.getElementById('example11form').submit();">pbiorole:enzyme</a></form></td></tr>
-<tr><td>ftype</td><td>Feature type(s)</td><td><form id="example12form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="ftype:&quot;binding site&quot;"/><a href="javascript: document.getElementById('example12form').submit();">ftype:&quot;binding site&quot;</a></form></td></tr>
+<tr><td>ftype</td><td>Feature type(s)</td><td><form id="example12form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="ftype:&quot;binding region&quot;"/><a href="javascript: document.getElementById('example12form').submit();">ftype:&quot;binding region&quot;</a></form></td></tr>
 <tr><td>source</td><td>Source database(s)</td><td><form id="example13form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="source:intact"/><a href="javascript: document.getElementById('example13form').submit();">source:intact</a></form></td></tr>
 <tr><td>number_participants</td><td>Number of participants</td><td><form id="example14form" action="${complex_search_form}" method="GET"><input type="hidden" name="q" value="number_participants:3"/><a href="javascript: document.getElementById('example14form').submit();">number_participants:3</a></form></td></tr>
 </tbody>
