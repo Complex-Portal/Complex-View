@@ -110,6 +110,15 @@
                         <li>Search for isoforms of '<a href="<c:url value="${complex_search_form}?q=Q07817"/>">Q07817</a>' by using '<a href="<c:url value="${complex_search_form}?q=Q07817*"/>">Q07817*</a>'</li>
                     </ul>
                 </div>
+                <section class="grid_12">
+                    <h3>News</h3>
+
+                    <p><!-- TWITTER -->
+                        <ui>
+                            <%@include file="news_twitter.jsp"%>
+                        </ui>
+                    </p>
+                </section>
             </div>
             <div class="grid_6 stats">
                 <section>

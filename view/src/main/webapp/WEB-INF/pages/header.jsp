@@ -70,6 +70,10 @@
 
     <!-- custom build (lacks most of the "advanced" HTML5 support -->
     <script src="//www.ebi.ac.uk/web_guidelines/js/libs/modernizr.custom.49274.js"></script>
+    
+    <!--Twitter-->
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
 </head>
 <body class="level2"><!-- add any of your classes or IDs -->
 <div id="skip-to">
