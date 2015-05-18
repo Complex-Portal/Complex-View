@@ -64,7 +64,6 @@
     <!-- All JavaScript at the bottom, except for Modernizr / Respond.
          Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
          For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-    <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/complexviewer.js"/>"></script>
 
     <!-- Full build -->
     <!-- <script src="//www.ebi.ac.uk/web_guidelines/js/libs/modernizr.minified.2.1.6.js"></script> -->
