@@ -30,6 +30,12 @@ form input.searchButton
 {
     float: right;
 }
+
+form a.helpLink
+{
+    float: right;
+}
+
 form input.clearButton
 {
     float: right;
