@@ -52,6 +52,7 @@
             /* body { max-width: 1600px; margin: 0 auto; } */
     </style>
     <link href="<c:url value="/resources/css/complex-portal.css" />" rel="stylesheet"> <%--Added by Oscar--%>
+    <link href="<c:url value="/resources/css/intact-extra.css" />" rel="stylesheet"> <%--Added by Oscar--%>
     <link href="<c:url value="/resources/css/intact-colours.css" />" rel="stylesheet"> <%--Added by Oscar--%>
     <link href="<c:url value="/resources/css/XLV.css" />" rel="stylesheet">
     <!-- end CSS-->

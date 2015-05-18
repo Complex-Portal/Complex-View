@@ -142,6 +142,19 @@
                 </section>
             </div>
     </section>
+    <section class="grid_24 publication">
+        <h3>Citing Complex Portal</h3>
+
+        <p>
+            <strong>The complex portal--an encyclopaedia of macromolecular complexes.</strong>
+            Meldal BH et al [PMID: 25313161]
+            <br/>
+            <span style="font-style: italic">Nucl. Acids Res. (2014) doi: 10.1093/nar/gku975</span>
+            <br/>
+            <a href="http://europepmc.org/abstract/MED/25313161" target="_blank">[Abstract]</a>
+            <a href="http://nar.oxfordjournals.org/content/early/2014/10/13/nar.gku975.long" target="_blank">[Full Text]</a>
+        </p>
+    </section>
 </div>
 
 
