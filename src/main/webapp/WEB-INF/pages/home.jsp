@@ -137,6 +137,7 @@
                         <a href="http://www.ceitec.eu/"><img src="<c:url value="/resources/img/Ceitec.png"/>" style="width: 140px; height: 50px;"/></a>
                         <a href="http://mint.bio.uniroma2.it/"><img src="<c:url value="/resources/img/Mint.png"/>" style="width: 140px; height: 50px;"/></a>
                         <a href="http://www.yeastgenome.org/"><img src="<c:url value="/resources/img/SGD.png"/>" style="width: 140px; height: 50px;"/></a>
+                        <a href="http://www.ucl.ac.uk/cardiovasculargeneontology/"><img src="<c:url value="/resources/img/imex_acg_s.png"/>" style="width: 140px; height: 50px;"/></a>
                     </p>
 
                 </section>
