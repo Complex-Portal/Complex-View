@@ -59,12 +59,20 @@
         <p>A stable set of (two or more) interacting macromolecules such as proteins which can be co-purified by an acceptable method and have been shown to exist as an isolated, functional unit in vivo. Any interacting non-protein molecular (e.g. small molecules, nucleic acids) will also be included.</p>
         <p>What should not be captured:</p>
         <blockquote>
-        <lu>
-            <li>Enzyme/substrate, receptor/ligand or any similar transient interactions unless these are a critical part of the complex assembly.</li>
+        <ul>
+            <li>Enzyme/substrate, receptor/ligand or any similar transient interactions unless these are a critical part of the complex assembly (e.g. PDGF receptors only become 'dimeric' when linked by the dimeric ligand forming a tetramer).</li>
             <li>Proteins associated in a pulldown/coimmunoprecipitation with no functional link or any evidence that this is a defined biological entity rather than a loose affinity complex.</li>
-            <li>Proteins with the same function but with either no demonstrable physical link or one that can be inferred by sequence homology.</li>
             <li>Any literature complex where the only evidence is based on genetic interaction data.</li>
-        </lu>
+            <li>Partial complexes</li>
+        </ul>
+        </blockquote>
+        <p>Tricky cases we DO capture:</p>
+        <blockquote>
+            <ul>
+                <li>Substrates or ligands if the enzyme or receptor complex only forms in their presence (see PDGF receptors above, e.g. EBI-9082861).</li>
+                <li>Homologous proteins, with the same functionality, which would be inferred by sequence similarity to form a complex but for which no physical link has been demonstrated, e.g. proteins A and B have been shown to physically interact and form a functional complex, protein C is a homologue of protein B by sequence similarity and is know to have the same function as B but protein A-C interaction has not been demonstrated experimentally (E.g. SUMO - E1 ligase complexes where there is interaction evidence for binding with SUMO1 (EBI-9349603) but not with SUMO2 (EBI-9345927)).</li>
+                <li>Complexes that lack full experimental evidence but are commonly regarded as existing, e.g. transmembrane receptors (e.g EBI-9008426, GABA receptors) for which only pharmacological evidence exists. These complexes are tagged with ECO:0000306 - inferred from background scientific knowledge by manual assertion.</li>
+            </ul>
         </blockquote>
         <h2>Complex Nomenclature</h2>
         <p><b>Complex recommended name</b> - the most informative, well accepted name in the literature, that is intuitive to the user. Where possible, this will be the same as the equivalent component term in GO. The term should always end in the word 'complex' or homo'n'mer. The recommended name is kept consistent when a complex is conserved across a taxonomic range.</p>
@@ -99,12 +107,12 @@
         <p><b>Electron microscopy</b> - representative EMDB cross-references will be added when the complex has been visualised by electron microscopy in its entirety</p>
         <p><a id="evidences"><b>Evidence codes</b></a> - the following ECO codes will be used to indicate the strength of evidence that a complex exists:</p>
         <blockquote>
-        <lu>
+        <ul>
             <li>ECO:0000353 (physical interaction evidence used in manual assertion) indicates that full experimental evidence for the complexes has been added to the entry. This will consist of either a cross-reference to experimental data in an IMEx database, PDB or EMDB.</li>
             <li>ECO:0000266 (sequence orthology evidence used in manual assertion) indicates only limited experimental evidence exists for a complex in one species (e.g. mouse) but it is desirable to curate the complex which has been curated in another species (e.g. human) and orthologous gene products exist. The complex with the experimental evidence has to be cross-referenced with the qualifier = &quot;inferred-from&quot; and must have the ECO:0000353 tag.</li>
             <li>ECO:0000250 (sequence similarity evidence used in manual assertion) indicates only limited experimental evidence exists for one complex but full experimental evidence exists for a similar complex of the same species. A sequence similarity analysis may involve a gene or a gene product, and it could be based on similarity to a single other gene or to a group of other genes. The complex with the experimental evidence has to be cross-referenced with the qualifier = &quot;inferred-from&quot; and must have the ECO:0000353 tag.</li>
             <li>ECO:0000306 (inference from background scientific knowledge used in manual assertion) if no experimental or only partial evidence is present but the complexes are generally assumed to exist.</li>
-        </lu>
+        </ul>
         </blockquote>
         <p><b>Enzymatic activity</b> - the E.C. number linked to IntEnz will be added when an enzyme complex is described.</p>
         <p><b>Additional literature</b> - review articles or experimental data not appropriate for entering into IntAct are added.</p>
