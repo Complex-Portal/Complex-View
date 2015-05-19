@@ -1,102 +1,96 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:jee="http://www.springframework.org/schema/jee"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
-        http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
-        http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
-        http://www.springframework.org/schema/jee
-        http://www.springframework.org/schema/jee/spring-jee-3.2.xsd">
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
 
-    <context:component-scan base-package="uk.ac.ebi.intact"/>
+    <context:component-scan base-package="uk.ac.ebi.intact.jami" />
+    <context:component-scan base-package="uk.ac.ebi.intact.service.complex.ws" />
 
-    <mvc:annotation-driven />
+    <tx:annotation-driven proxy-target-class="true"/>
 
-    <!--<bean id="contentManager"-->
-          <!--class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">-->
-        <!--<property name="favorParameter" value="true" />-->
-        <!--<property name="defaultContentType" value="application/json" />-->
-        <!--&lt;!&ndash;<property name="ignoreAcceptHeader" value="true"/>&ndash;&gt;-->
-        <!--<property name="mediaTypes">-->
-            <!--<map>-->
-                <!--<entry key="json"  value="application/json" />-->
-                <!--<entry key="xml"   value="application/xml"  />-->
-            <!--</map>-->
-        <!--</property>-->
-    <!--</bean>-->
+    <!-- so the @Transactional annotations work -->
+    <tx:annotation-driven transaction-manager="jamiTransactionManager"/>
 
-    <!--<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">-->
-        <!--<property name="order" value="1" />-->
-        <!--<property name="contentNegotiationManager" ref="contentManager"/>-->
-        <!--<property name="defaultViews">-->
-            <!--<list>-->
-                <!--&lt;!&ndash; JSON View &ndash;&gt;-->
-                <!--<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">-->
-                <!--</bean>-->
-
-                <!--&lt;!&ndash;  XML view &ndash;&gt;-->
-                <!--<bean class="org.springframework.web.servlet.view.xml.MarshallingView">-->
-                    <!--<constructor-arg>-->
-                        <!--<bean class="org.springframework.oxm.castor.CastorMarshaller">-->
-                        <!--</bean>-->
-                    <!--</constructor-arg>-->
-                <!--</bean>-->
-            <!--</list>-->
-        <!--</property>-->
-    <!--</bean>-->
-
-
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="order"  value="1"/>
-        <property name="prefix" value="/WEB-INF/pages/"/>
-        <property name="suffix" value=".jsp"/>
-    </bean>
-
-    <!--JPA config for IntAct database-->
-
+    <!--
+        Post-processor to perform exception translation on @Repository classes
+        (from native exceptions such as JPA PersistenceExceptions to
+        Spring&rsquo;s DataAccessException hierarchy).
+    -->
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+    <!--  BeanPostProcessor that processes PersistenceUnit and PersistenceContext annotations,
+    for injection of the corresponding JPA resources EntityManagerFactory and EntityManager.
+    Any such annotated fields or methods in any Spring-managed object will automatically be injected.
+    This post-processor will inject sub-interfaces of EntityManagerFactory and EntityManager if the annotated
+    fields or methods are declared as such. The actual type will be verified early, with the exception of
+    a shared ("transactional") EntityManager reference, where type mismatches might be detected as late as on
+    the first actual invocation. -->
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory"/>
-        <property name="dataSource" ref="intactComplexDataSourceJNDI"/>
+
+    <!-- for autowired annotations to work propertly -->
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+
+    <!-- JPATransactionManager is not dependent on hibernate. It is a more global platform -->
+    <!-- We use entity manager because it is JPA and not just specific to hibernate -->
+    <bean id="jamiTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="intactEntityManagerFactory"/>
+        <property name="dataSource" ref="jamiCoreDataSource"/>
+        <qualifier value="jamiTransactionManager"/>
     </bean>
 
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="intact-core-default"/>
-        <property name="dataSource" ref="intactComplexDataSourceJNDI"/>
+    <!-- The LocalContainerEntityManagerFactoryBean gives full control over EntityManagerFactory configuration
+    and is appropriate for environments where fine-grained customization is required-->
+    <bean id="intactEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="intact-jami"/>
+        <property name="persistenceXmlLocation" value="classpath*:/META-INF/jami-persistence.xml"/>
+        <property name="dataSource" ref="jamiCoreDataSource"/>
         <property name="jpaProperties">
             <props>
                 <prop key="hibernate.generate_statistics">true</prop>
                 <prop key="hibernate.format_sql">false</prop>
-                <prop key="hibernate.hbm2ddl.auto">${intact.db.hbm2ddl}</prop> <!-- ${intact.db.hbm2ddl} -->
+                <prop key="hibernate.hbm2ddl.auto">${db.hbm2ddl}</prop>
+                <prop key="hibernate.connection.release_mode">after_transaction</prop>
             </props>
         </property>
-
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="databasePlatform" value="${intact.db.dialect}"/> <!-- ${intact.db.dialect} -->
+                <property name="databasePlatform" value="${db.dialect}"/>
                 <property name="showSql" value="false"/>
                 <property name="generateDdl" value="false"/>
             </bean>
         </property>
     </bean>
-
-    <bean id="intactComplexDataSourceJNDI" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:comp/env/${db.jndi}"/>
+    <!-- Intact core basic datasource -->
+    <bean id="jamiCoreDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${db.driver}"/>
+        <property name="url" value="${db.url}"/>
+        <property name="username" value="${db.user}"/>
+        <property name="password" value="${db.password}"/>
     </bean>
 
+    <!-- INTACT more specific beans -->
+    <bean id="jamiUserContext" class="uk.ac.ebi.intact.jami.context.UserContext" scope="prototype">
+        <property name="userId" value="COMPLEX_WS"/>
+    </bean>
+
+    <bean id="intactJamiConfiguration" class="uk.ac.ebi.intact.jami.context.IntactConfiguration" scope="prototype">
+        <property name="acPrefix" value="${ac.prefix}"/>
+        <property name="defaultInstitution" ref="sourceIntact"/>
+    </bean>
+
+    <!-- Default institutions -->
+    <bean id="sourceIntact" class="uk.ac.ebi.intact.jami.model.extension.IntactSource">
+        <constructor-arg index="0" value="intact"/>
+        <property name="fullName" value="European Bioinformatics Institute"/>
+        <property name="MIIdentifier" value="MI:0469"/>
+        <property name="url" value="http://www.ebi.ac.uk/intact/"/>
+        <property name="postalAddress" value="European Bioinformatics Institute; Wellcome Trust Genome Campus; Hinxton, Cambridge; CB10 1SD; United Kingdom"/>
+    </bean>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
@@ -106,95 +100,6 @@
                 <value>classpath:solr.properties</value>
             </list>
         </property>
-    </bean>
-    <aop:aspectj-autoproxy/>
-    <!-- Spring specific -->
-    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
-
-    <!--- IntAct -->
-    <bean id="intactInitializer" class="uk.ac.ebi.intact.core.context.IntactInitializer" init-method="init">
-        <property name="autoPersist" value="${intact.init.autoPersist}"/> <!-- ${intact.init.autoPersist} -->
-    </bean>
-
-    <bean id="intactConfig" class="uk.ac.ebi.intact.core.config.IntactConfiguration">
-        <property name="acPrefix" value="${intact.acprefix}"/> <!-- ${intact.acprefix} -->
-        <property name="defaultInstitution" ref="institutionIntact"/>
-        <property name="skipSchemaCheck" value="true"/>
-    </bean>
-
-    <bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext">
-        <property name="userId" value="INTACT_VIEW_USER"/>
-        <aop:scoped-proxy/>
-    </bean>
-
-    <bean id="schemaVersion" class="uk.ac.ebi.intact.core.config.SchemaVersion">
-        <constructor-arg value="2"/>
-        <constructor-arg value="5"/>
-        <constructor-arg value="0"/>
-    </bean>
-
-    <bean id="persisterHelper" class="uk.ac.ebi.intact.core.persister.PersisterHelperImpl" />
-
-    <bean id="corePersister" class="uk.ac.ebi.intact.core.persister.CorePersisterImpl" scope="prototype">
-        <constructor-arg ref="intactContext"/>
-        <constructor-arg ref="finder"/>
-    </bean>
-
-    <bean id="coreDeleter" class="uk.ac.ebi.intact.core.persister.CoreDeleterImpl" scope="prototype">
-        <constructor-arg ref="intactContext"/>
-    </bean>
-
-    <bean id="finder" class="uk.ac.ebi.intact.core.persister.finder.DefaultFinder" scope="prototype">
-        <constructor-arg ref="intactContext"/>
-    </bean>
-
-    <!-- Default institutions -->
-    <bean id="institutionIntact" class="uk.ac.ebi.intact.model.util.InstitutionFactoryBean">
-        <property name="name" value="intact"/>
-        <property name="description" value="European Bioinformatics Institute"/>
-        <property name="miAc" value="MI:0469"/>
-        <property name="pubmed" value="14681455"/>
-        <property name="url" value="http://www.ebi.ac.uk/intact/"/>
-        <property name="address" value="European Bioinformatics Institute; Wellcome Trust Genome Campus; Hinxton, Cambridge; CB10 1SD; United Kingdom"/>
-        <property name="aliases">
-            <list>
-                <value>ebi</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="institutionMint" class="uk.ac.ebi.intact.model.util.InstitutionFactoryBean">
-        <property name="name" value="mint"/>
-        <property name="description" value="MINT, Dpt of Biology, University of Rome Tor Vergata"/>
-        <property name="miAc" value="MI:0471"/>
-        <property name="pubmed" value="14681455"/>
-        <property name="url" value="http://mint.bio.uniroma2.it/mint"/>
-    </bean>
-
-    <bean id="institutionDip" class="uk.ac.ebi.intact.model.util.InstitutionFactoryBean">
-        <property name="name" value="dip"/>
-        <property name="description" value="Database of Interacting Proteins"/>
-        <property name="miAc" value="MI:0465"/>
-        <property name="pubmed" value="14681454"/>
-        <property name="url" value="http://dip.doe-mbi.ucla.edu/"/>
-        <property name="address" value="611 Young Drive East; Los Angeles CA 90095; USA"/>
-        <property name="email" value="dip@mbi.ucla.edu"/>
-        <property name="aliases">
-            <list>
-                <value>ucla</value>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="institutionUndefined" class="uk.ac.ebi.intact.model.util.InstitutionFactoryBean">
-        <property name="name" value="unknown"/>
-        <property name="description" value="Undefined institution"/>
-    </bean>
-
-    <!-- Default application - Users should override this bean in specific applications -->
-    <bean id="defaultApp" class="uk.ac.ebi.intact.model.meta.Application">
-        <property name="key" value="default"/>
-        <property name="description" value="Application generated automatically by intact-core"/>
     </bean>
 
     <!-- solr configuration-->
@@ -210,5 +115,182 @@
     <bean id="dataProvider" class="uk.ac.ebi.intact.service.complex.ws.DataProvider">
         <constructor-arg index="0" name="size"  value="500" />
     </bean>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="order"  value="1"/>
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <context:annotation-config/>
+
+    <!--<bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"></bean>-->
+    <!--<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">-->
+        <!--<property name="messageConverters">-->
+            <!--<list>-->
+                <!--<ref bean="jacksonMessageConverter"/>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+
+    <!--<bean id="contentManager"-->
+          <!--class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">-->
+        <!--<property name="favorParameter" value="true" />-->
+        <!--<property name="defaultContentType" value="application/json" />-->
+        <!--<property name="ignoreAcceptHeader" value="true"/>-->
+        <!--<property name="mediaTypes">-->
+            <!--<map>-->
+                <!--<entry key="json"  value="application/json" />-->
+                <!--<entry key="xml"   value="application/xml"  />-->
+            <!--</map>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">-->
+        <!--<property name="order" value="1" />-->
+        <!--<property name="contentNegotiationManager" ref="contentManager"/>-->
+        <!--<property name="defaultViews">-->
+            <!--<list>-->
+                <!-- JSON View -->
+                <!--<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">-->
+                <!--</bean>-->
+
+                <!--  XML view -->
+                <!--<bean class="org.springframework.web.servlet.view.xml.MarshallingView">-->
+                    <!--<constructor-arg>-->
+                        <!--<bean class="org.springframework.oxm.castor.CastorMarshaller">-->
+                        <!--</bean>-->
+                    <!--</constructor-arg>-->
+                <!--</bean>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+
+    <!--JPA config for IntAct database-->
+
+    <!--<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>-->
+    <!--<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>-->
+    <!--<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">-->
+        <!--<property name="entityManagerFactory" ref="entityManagerFactory"/>-->
+        <!--<property name="dataSource" ref="intactComplexDataSourceJNDI"/>-->
+    <!--</bean>-->
+
+    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
+
+    <!--<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">-->
+        <!--<property name="persistenceUnitName" value="intact-core-default"/>-->
+        <!--<property name="dataSource" ref="intactComplexDataSourceJNDI"/>-->
+        <!--<property name="jpaProperties">-->
+            <!--<props>-->
+                <!--<prop key="hibernate.generate_statistics">true</prop>-->
+                <!--<prop key="hibernate.format_sql">false</prop>-->
+                <!--<prop key="hibernate.hbm2ddl.auto">${intact.db.hbm2ddl}</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+
+        <!--<property name="jpaVendorAdapter">-->
+            <!--<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">-->
+                <!--<property name="databasePlatform" value="${intact.db.dialect}"/>-->
+                <!--<property name="showSql" value="false"/>-->
+                <!--<property name="generateDdl" value="false"/>-->
+            <!--</bean>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="intactComplexDataSourceJNDI" class="org.springframework.jndi.JndiObjectFactoryBean">-->
+        <!--<property name="jndiName" value="java:comp/env/${db.jndi}"/>-->
+    <!--</bean>-->
+
+    <!-- Spring specific -->
+    <!--<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>-->
+
+    <!--- IntAct -->
+    <!--<bean id="intactInitializer" class="uk.ac.ebi.intact.core.context.IntactInitializer" init-method="init">-->
+        <!--<property name="autoPersist" value="${intact.init.autoPersist}"/>
+    </bean>
+
+    <bean id="intactConfig" class="uk.ac.ebi.intact.core.config.IntactConfiguration">-->
+        <!--<property name="acPrefix" value="${intact.acprefix}"/>-->
+        <!--<property name="defaultInstitution" ref="institutionIntact"/>-->
+        <!--<property name="skipSchemaCheck" value="true"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="userContext" class="uk.ac.ebi.intact.core.context.UserContext">-->
+        <!--<property name="userId" value="INTACT_VIEW_USER"/>-->
+        <!--<aop:scoped-proxy/>-->
+    <!--</bean>-->
+
+    <!--<bean id="schemaVersion" class="uk.ac.ebi.intact.core.config.SchemaVersion">-->
+        <!--<constructor-arg value="2"/>-->
+        <!--<constructor-arg value="5"/>-->
+        <!--<constructor-arg value="0"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="persisterHelper" class="uk.ac.ebi.intact.core.persister.PersisterHelperImpl" />-->
+
+    <!--<bean id="corePersister" class="uk.ac.ebi.intact.core.persister.CorePersisterImpl" scope="prototype">-->
+        <!--<constructor-arg ref="intactContext"/>-->
+        <!--<constructor-arg ref="finder"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="coreDeleter" class="uk.ac.ebi.intact.core.persister.CoreDeleterImpl" scope="prototype">-->
+        <!--<constructor-arg ref="intactContext"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="finder" class="uk.ac.ebi.intact.core.persister.finder.DefaultFinder" scope="prototype">-->
+        <!--<constructor-arg ref="intactContext"/>-->
+    <!--</bean>-->
+
+    <!-- Default institutions -->
+    <!--<bean id="institutionIntact" class="uk.ac.ebi.intact.model.util.InstitutionFactoryBean">-->
+        <!--<property name="name" value="intact"/>-->
+        <!--<property name="description" value="European Bioinformatics Institute"/>-->
+        <!--<property name="miAc" value="MI:0469"/>-->
+        <!--<property name="pubmed" value="14681455"/>-->
+        <!--<property name="url" value="http://www.ebi.ac.uk/intact/"/>-->
+        <!--<property name="address" value="European Bioinformatics Institute; Wellcome Trust Genome Campus; Hinxton, Cambridge; CB10 1SD; United Kingdom"/>-->
+        <!--<property name="aliases">-->
+            <!--<list>-->
+                <!--<value>ebi</value>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="institutionMint" class="uk.ac.ebi.intact.model.util.InstitutionFactoryBean">-->
+        <!--<property name="name" value="mint"/>-->
+        <!--<property name="description" value="MINT, Dpt of Biology, University of Rome Tor Vergata"/>-->
+        <!--<property name="miAc" value="MI:0471"/>-->
+        <!--<property name="pubmed" value="14681455"/>-->
+        <!--<property name="url" value="http://mint.bio.uniroma2.it/mint"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="institutionDip" class="uk.ac.ebi.intact.model.util.InstitutionFactoryBean">-->
+        <!--<property name="name" value="dip"/>-->
+        <!--<property name="description" value="Database of Interacting Proteins"/>-->
+        <!--<property name="miAc" value="MI:0465"/>-->
+        <!--<property name="pubmed" value="14681454"/>-->
+        <!--<property name="url" value="http://dip.doe-mbi.ucla.edu/"/>-->
+        <!--<property name="address" value="611 Young Drive East; Los Angeles CA 90095; USA"/>-->
+        <!--<property name="email" value="dip@mbi.ucla.edu"/>-->
+        <!--<property name="aliases">-->
+            <!--<list>-->
+
+                <!-- Default application - Users should override this bean in specific applications -->
+                <!--<bean id="defaultApp" class="uk.ac.ebi.intact.model.meta.Application">-->
+                    <!--<property name="key" value="default"/>-->
+                    <!--<property name="description" value="Application generated automatically by intact-core"/>-->
+                <!--</bean>-->
+                <!--<value>ucla</value>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="institutionUndefined" class="uk.ac.ebi.intact.model.util.InstitutionFactoryBean">-->
+        <!--<property name="name" value="unknown"/>-->
+        <!--<property name="description" value="Undefined institution"/>-->
+    <!--</bean>-->
+
 
 </beans>

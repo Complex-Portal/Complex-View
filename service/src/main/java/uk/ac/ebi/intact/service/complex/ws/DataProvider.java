@@ -6,6 +6,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexResultIterator;
 import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSolrSearcher;
+import uk.ac.ebi.intact.service.complex.ws.model.ComplexRestResult;
 
 /**
  * This class is the only one who has to query the searcher.

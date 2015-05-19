@@ -16,6 +16,7 @@ Methods available:
 <ul>
     <li><a href="<%= request.getContextPath() %>/search/"><%= request.getContextPath() %>/search/</a></li>
     <li><a href="<%= request.getContextPath() %>/details/"><%= request.getContextPath() %>/details/</a></li>
+    <li><a href="<%= request.getContextPath() %>/export/"><%= request.getContextPath() %>/export/</a></li>
 </ul>
 </body>
 </html>

@@ -4,11 +4,11 @@
     <parent>
         <groupId>uk.ac.ebi.intact.maven</groupId>
         <artifactId>intact-hibernate-master</artifactId>
-        <version>42</version>
+        <version>43</version>
     </parent>
     <artifactId>complex-ws</artifactId>
     <packaging>war</packaging>
-    <version>1.0.3</version>
+    <version>2.0.0-SNAPSHOT</version>
     <name>complex-ws</name>
 
     <properties>
@@ -17,24 +17,36 @@
 
     <dependencies>
 
-        <!-- IntAct Solr Home -->
-        <dependency>
-            <groupId>uk.ac.ebi.intact.core</groupId>
-            <artifactId>intact-core-readonly</artifactId>
-            <version>2.6.5</version>
-        </dependency>
-
         <!-- IntAct solr schema dependencies -->
         <dependency>
             <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
             <artifactId>intact-solr-core</artifactId>
-            <version>2.1.9.3</version>
+            <version>3.0.0-SNAPSHOT</version><!--3.0.0-SNAPSHOT-->
             <exclusions>
                 <exclusion>
                     <groupId>uk.ac.ebi.intact.core</groupId>
                     <artifactId>intact-core</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!-- JAMI -->
+        <dependency>
+            <groupId>uk.ac.ebi.intact.jami</groupId>
+            <artifactId>intact-jami</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>psidev.psi.mi.jami</groupId>
+            <artifactId>jami-interactionviewer-json</artifactId>
+            <version>1.1.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.ac.ebi.intact.dataexchange.psimi</groupId>
+            <artifactId>intact-jami-xml</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
         </dependency>
 
         <!-- Spring -->
@@ -207,7 +219,7 @@
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>8.1.14.v20131031</version>
+                <version>8.1.16.v20140903</version>
                 <configuration>
                     <webAppConfig>
                         <contextPath>/complex-ws</contextPath>
@@ -220,6 +232,8 @@
                         </connector>
                     </connectors>
                     <jettyConfig>${project.build.directory}/classes/META-INF/jetty.xml</jettyConfig>
+                    <stopPort>9009</stopPort>
+                    <stopKey/>
                 </configuration>
             </plugin>
         </plugins>

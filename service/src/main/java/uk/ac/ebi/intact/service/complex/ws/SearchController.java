@@ -5,28 +5,42 @@ import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.xpath.operations.Bool;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import uk.ac.ebi.intact.core.persistence.dao.DaoFactory;
-import uk.ac.ebi.intact.core.persistence.dao.InteractionDao;
-import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexFieldNames;
-import uk.ac.ebi.intact.model.*;
-import uk.ac.ebi.intact.model.util.*;
+import psidev.psi.mi.jami.commons.MIWriterOptionFactory;
+import psidev.psi.mi.jami.datasource.InteractionWriter;
+import psidev.psi.mi.jami.factory.InteractionWriterFactory;
+import psidev.psi.mi.jami.json.InteractionViewerJson;
+import psidev.psi.mi.jami.json.MIJsonOptionFactory;
+import psidev.psi.mi.jami.json.MIJsonType;
+import psidev.psi.mi.jami.model.ComplexType;
+import psidev.psi.mi.jami.model.InteractionCategory;
+import psidev.psi.mi.jami.xml.PsiXmlVersion;
+import uk.ac.ebi.intact.dataexchange.psimi.solr.complex.ComplexSearchResults;
+import uk.ac.ebi.intact.dataexchange.psimi.xml.IntactPsiXml;
+import uk.ac.ebi.intact.jami.dao.IntactDao;
+import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
+import uk.ac.ebi.intact.service.complex.ws.model.*;
+import uk.ac.ebi.intact.service.complex.ws.utils.IntactComplexUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class SearchController {
@@ -65,10 +79,9 @@ public class SearchController {
     /********************************/
     @Autowired
     private DataProvider dataProvider ;
-    @PersistenceContext(unitName="intact-core-default")
-    private EntityManager complexManager;
     @Autowired
-    private DaoFactory daoFactory;
+    @Qualifier("intactDao")
+    private IntactDao intactDao;
     private static final Log log = LogFactory.getLog(SearchController.class);
 
     /****************************/
@@ -85,6 +98,10 @@ public class SearchController {
     @RequestMapping(value = "/details/", method = RequestMethod.GET)
     public String showDetailsHelp(){
         return "details";
+    }
+    @RequestMapping(value = "/export/", method = RequestMethod.GET)
+    public String showExportHelp(){
+        return "export";
     }
     @RequestMapping(value = "/count/{query}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
     public String count(@PathVariable String query, ModelMap model) throws SolrServerException {
@@ -108,85 +125,19 @@ public class SearchController {
      - Does not change the query.
      */
     @RequestMapping(value = "/search/{query}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ComplexRestResult search(@PathVariable String query,
+	public ResponseEntity<String> search(@PathVariable String query,
                                     @RequestParam (required = false) String first,
                                     @RequestParam (required = false) String number,
                                     @RequestParam (required = false) String filters,
-                                    @RequestParam (required = false) String facets) throws SolrServerException {
-        return query(query, first, number, filters, facets);
+                                    @RequestParam (required = false) String facets) throws SolrServerException, IOException {
+        ComplexRestResult searchResult = query(query, first, number, filters, facets);
+        StringWriter writer = new StringWriter();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(writer, searchResult);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        return new ResponseEntity<String>(writer.toString(), headers, HttpStatus.OK);
 	}
-
-    /*
-     - We can access to that method using:
-         http://<servername>:<port>/interactor/<something to query>
-       and
-         http://<servername>:<port>/interactor/<something to query>?format=<type>
-     - If we do not use the format parameter we will receive the answer in json
-     - Only listen request via GET never via POST.
-     - Force to query only in the id, alias and pxref fields.
-     */
-    @RequestMapping(value = "/interactor/{query}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody ComplexRestResult searchInteractor(@PathVariable String query,
-                                              @RequestParam (required = false) String first,
-                                              @RequestParam (required = false) String number) throws SolrServerException {
-
-        // Query improvement. Force to query only in the id, alias and pxref
-        // fields.
-        List<String> fields = new ArrayList<String>();
-        fields.add(ComplexFieldNames.INTERACTOR_ID);
-        fields.add(ComplexFieldNames.INTERACTOR_ALIAS);
-        fields.add(ComplexFieldNames.INTERACTOR_XREF);
-        // Retrieve data using that parameters and return it
-        return query(improveQuery(query, fields), first, number, null, null);
-    }
-
-    /*
-     - We can access to that method using:
-         http://<servername>:<port>/complex/<something to query>
-       and
-         http://<servername>:<port>/complex/<something to query>?format=<type>
-     - If we do not use the format parameter we will receive the answer in json
-     - Only listen request via GET never via POST.
-     - Force to query only in the complex_id, complex_alias and complex_xref
-       fields.
-     */
-    @RequestMapping(value = "/complex/{query}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody ComplexRestResult searchInteraction(@PathVariable String query,
-                                               @RequestParam (required = false) String first,
-                                               @RequestParam (required = false) String number) throws SolrServerException {
-
-        // Query improvement. Force to query only in the complex_id,
-        // complex_alias and complex_xref fields.
-        List<String> fields = new ArrayList<String>();
-        fields.add(ComplexFieldNames.COMPLEX_ID);
-        fields.add(ComplexFieldNames.COMPLEX_ALIAS);
-        fields.add(ComplexFieldNames.COMPLEX_XREF);
-        // Retrieve data using that parameters and return it
-        return query(improveQuery(query, fields), first, number, null, null);
-    }
-
-    /*
-     - We can access to that method using:
-         http://<servername>:<port>/organism/<something to query>
-       and
-         http://<servername>:<port>/organism/<something to query>?format=<type>
-     - If we do not use the format parameter we will receive the answer in json
-     - Only listen request via GET never via POST.
-     - Force to query only in the organism_name and species fields.
-     */
-    @RequestMapping(value = "/organism/{query}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody ComplexRestResult searchOrganism(@PathVariable String query,
-                                            @RequestParam (required = false) String first,
-                                            @RequestParam (required = false) String number) throws SolrServerException {
-
-        // Query improvement. Force to query only in the organism_name and
-        // species (complex_organism) fields.
-        List<String> fields = new ArrayList<String>();
-        fields.add(ComplexFieldNames.ORGANISM_NAME);
-        fields.add(ComplexFieldNames.COMPLEX_ORGANISM);
-        // Retrieve data using that parameters and return it
-        return query(improveQuery(query, fields), first, number, null, null);
-    }
 
     /*
      - We can access to that method using:
@@ -198,60 +149,148 @@ public class SearchController {
      - Query the information in our database about the ac of the complex.
      */
     @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
-    public @ResponseBody ComplexDetails retrieveComplex(@PathVariable String ac) throws Exception {
-        InteractionDao interactionDao = daoFactory.getInteractionDao();
-        InteractionImpl complex = interactionDao.getByAc(ac);
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRED, value = "jamiTransactionManager")
+    public ResponseEntity<String> retrieveComplex(@PathVariable String ac) throws Exception {
+        IntactComplex complex = intactDao.getComplexDao().getByAc(ac);
         ComplexDetails details = null;
         // Function
         if ( complex != null ) {
             details = new ComplexDetails();
             details.setAc(complex.getAc());
-            details.setFunction         ( ComplexUtils.getFunction          ( complex ) );
-            details.setProperties       ( ComplexUtils.getProperties        ( complex ) );
-            details.setDisease          ( ComplexUtils.getDisease           ( complex ) );
-            details.setLigand           ( ComplexUtils.getLigand            ( complex ) );
-            details.setComplexAssembly  ( ComplexUtils.getComplexAssembly   ( complex ) );
-            details.setName             ( getComplexName                    ( complex ) );
-            details.setSynonyms         ( getComplexSynonyms                ( complex ) );
-            details.setSystematicName   ( ComplexUtils.getSystematicName    ( complex ) );
-            details.setSpecies          ( ComplexUtils.getSpeciesName       ( complex ) + "; " +
-                                          ComplexUtils.getSpeciesTaxId      ( complex ) );
+            details.setFunction         ( IntactComplexUtils.getFunction        (complex) );
+            details.setProperties       ( IntactComplexUtils.getProperties      (complex) );
+            details.setDisease          ( IntactComplexUtils.getDisease         (complex) );
+            details.setLigand           ( IntactComplexUtils.getLigand          (complex) );
+            details.setComplexAssembly  ( IntactComplexUtils.getComplexAssembly (complex) );
+            details.setName             ( IntactComplexUtils.getComplexName     (complex) );
+            details.setSynonyms         ( IntactComplexUtils.getComplexSynonyms (complex) );
+            details.setSystematicName   ( IntactComplexUtils.getSystematicName  (complex) );
+            details.setSpecies          ( IntactComplexUtils.getSpeciesName     (complex) + "; " +
+                                          IntactComplexUtils.getSpeciesTaxId    (complex) );
 
-            setParticipants(complex, details);
-            setCrossReferences(complex, details);
+            IntactComplexUtils.setParticipants(complex, details);
+            IntactComplexUtils.setCrossReferences(complex, details);
         }
         else{
             throw new Exception();
         }
-        return details;
+        StringWriter writer = new StringWriter();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(writer, details);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        return new ResponseEntity<String>(writer.toString(), headers, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/export/{query}", method = RequestMethod.GET)
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRED, value = "jamiTransactionManager")
+    public ResponseEntity<String> exportComplex(@PathVariable String query,
+                                                @RequestParam (required = false) String filters,
+                                                @RequestParam (required = false) String format) throws Exception {
+        Boolean exportAsFile = false;
+        List<IntactComplex> complexes;
+        if(isQueryASingleId(query)) {
+            complexes = new ArrayList<IntactComplex>(1);
+            IntactComplex complex = intactDao.getComplexDao().getByAc(query);
+            if (complex != null)
+                complexes.add(complex);
+        }
+        else {
+            ComplexRestResult searchResult = query(query, null, null, filters, null);
+            complexes = new ArrayList<IntactComplex>(searchResult.getElements().size());
+            for (ComplexSearchResults result : searchResult.getElements()) {
+                IntactComplex complex = intactDao.getComplexDao().getByAc(result.getComplexAC());
+                if (complex != null)
+                    complexes.add(complex);
+            }
+            exportAsFile = true;
+        }
+        ResponseEntity<String> responseEntity = null;
+        if (!complexes.isEmpty()) {
+            InteractionWriterFactory writerFactory = InteractionWriterFactory.getInstance();
+            if (format != null) {
+                switch (ComplexExportFormat.formatOf(format)) {
+                    case XML25:
+                        responseEntity = createXml25Response(complexes, writerFactory, exportAsFile);
+                        break;
+                    case XML30:
+                        responseEntity = createXml30Response(complexes, writerFactory, exportAsFile);
+                        break;
+                    case JSON:
+                    default:
+                        responseEntity = createJsonResponse(complexes, writerFactory, exportAsFile);
+                        break;
+                }
+            }
+            else {
+                responseEntity = createJsonResponse(complexes, writerFactory, exportAsFile);
+            }
+            return responseEntity;
+        }
+        throw new Exception("Export failed " + query + ". No complexes result");
+    }
+
+    private boolean isQueryASingleId(String query) {
+        return query.startsWith("EBI-") && query.trim().split(" ").length == 1;
+    }
+
+    private ResponseEntity<String> createXml25Response(List<IntactComplex> complexes, InteractionWriterFactory writerFactory, Boolean exportAsFile) {
+        return createXmlResponse(complexes, writerFactory, PsiXmlVersion.v2_5_4, exportAsFile);
+    }
+
+    private ResponseEntity<String> createXml30Response(List<IntactComplex> complexes, InteractionWriterFactory writerFactory, Boolean exportAsFile) {
+        return createXmlResponse(complexes, writerFactory, PsiXmlVersion.v3_0_0, exportAsFile);
+    }
+
+    private ResponseEntity<String> createXmlResponse(List<IntactComplex> complexes, InteractionWriterFactory writerFactory, PsiXmlVersion version, Boolean exportAsFile) {
+        IntactPsiXml.initialiseAllIntactXmlWriters();
+        MIWriterOptionFactory optionFactory = MIWriterOptionFactory.getInstance();
+        StringWriter answer = new StringWriter();
+        Map<String, Object> options = optionFactory.getDefaultCompactXmlOptions(answer, InteractionCategory.complex, ComplexType.n_ary, version);
+        InteractionWriter writer = writerFactory.getInteractionWriterWith(options) ;
+        try {
+            writer.start();
+            writer.write(complexes);
+            writer.end();
+        }
+        finally {
+            writer.close();
+        }
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Type", MediaType.APPLICATION_XML_VALUE);
+        enableCORS(httpHeaders);
+        if (exportAsFile) {
+            httpHeaders.set("Content-Disposition", "attachment; filename=" + complexes.toString());
+        }
+        return new ResponseEntity<String>(answer.toString(), httpHeaders, HttpStatus.OK);
+    }
+
+    private ResponseEntity<String> createJsonResponse(List<IntactComplex> complexes, InteractionWriterFactory writerFactory, Boolean exportAsFile) {
+        InteractionViewerJson.initialiseAllMIJsonWriters();
+        MIJsonOptionFactory optionFactory = MIJsonOptionFactory.getInstance();
+        StringWriter answer = new StringWriter();
+        Map<String, Object> options = optionFactory.getJsonOptions(answer, InteractionCategory.modelled, null, MIJsonType.n_ary_only, null, null);
+        InteractionWriter writer = writerFactory.getInteractionWriterWith(options);
+        try {
+            writer.start();
+            writer.write(complexes);
+            writer.end();
+        }
+        finally {
+            writer.close();
+        }
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        enableCORS(httpHeaders);
+        if (exportAsFile) {
+            httpHeaders.set("Content-Disposition", "attachment; filename=" + complexes.toString());
+        }
+        return new ResponseEntity<String>(answer.toString(), httpHeaders, HttpStatus.OK);
     }
 
     /*******************************/
     /*      Protected methods      */
     /*******************************/
-    protected static List<String> getComplexSynonyms(InteractionImpl complex) {
-        List<String> synosyms = new ArrayList<String>();
-        for (Alias alias : complex.getAliases()) {
-            if (alias.getName() != null && alias.getCvAliasType() != null && alias.getCvAliasType().getIdentifier().equals(CvAliasType.COMPLEX_SYNONYM_NAME_MI_REF)) {
-                synosyms.add(alias.getName());
-            }
-        }
-        return synosyms;
-    }
-
-    protected String getComplexName(InteractionImpl complex){
-        String name = ComplexUtils.getRecommendedName(complex);
-        if (name != null) return name;
-        name = ComplexUtils.getSystematicName(complex);
-        if (name != null) return name;
-        List<String> synonyms = getComplexSynonyms(complex);
-        if (! synonyms.isEmpty()) return synonyms.get(0);
-        name = ComplexUtils.getFirstAlias(complex);
-        if (name != null) return name;
-        return complex.getShortLabel();
-    }
-
     // This method controls the first and number parameters and retrieve data
     protected ComplexRestResult query(String query, String first, String number, String filters, String facets) throws SolrServerException {
         // Get parameters (if we have them)
@@ -280,179 +319,11 @@ public class SearchController {
         return improvedQuery.toString();
     }
 
-    // This method fills the cross references table for the view
-    protected void setCrossReferences(InteractionImpl complex, ComplexDetails details) {
-        Collection<ComplexDetailsCrossReferences> crossReferences = details.getCrossReferences();
-        ComplexDetailsCrossReferences cross;
-        for ( Xref xref : complex.getXrefs()) {
-            cross = new ComplexDetailsCrossReferences();
-            CvDatabase cvDatabase = xref.getCvDatabase();
-            CvXrefQualifier cvXrefQualifier = xref.getCvXrefQualifier();
-            String primaryId = xref.getPrimaryId();
-            String secondayId = xref.getSecondaryId();
-            cross.setIdentifier(primaryId);
-            cross.setDescription(secondayId);
-            cross.setDatabase(cvDatabase.getFullName() != null ? cvDatabase.getFullName() : cvDatabase.getShortLabel());
-            cross.setDbMI(cvDatabase.getIdentifier());
-            for ( Annotation annotation : cvDatabase.getAnnotations() ) {
-                if ( annotation.getCvTopic() != null && CvTopic.SEARCH_URL_MI_REF.equals(annotation.getCvTopic().getIdentifier()) ) {
-                    cross.setSearchURL(annotation.getAnnotationText().replaceAll("\\$*\\{ac\\}",primaryId));
-                }
-                else if( annotation.getCvTopic().getShortLabel().equalsIgnoreCase(CvTopic.DEFINITION) ){
-                    cross.setDbdefinition(annotation.getAnnotationText());
-                }
-            }
-            if( cvXrefQualifier != null ) {
-                setXrefQualifier(cross, cvXrefQualifier);
-            }
-            crossReferences.add(cross);
-        }
-    }
-
-    // This method fills the participants table for the view
-    protected void setParticipants(InteractionImpl complex, ComplexDetails details) {
-        Collection<ComplexDetailsParticipants> participants = details.getParticipants();
-        ComplexDetailsParticipants part;
-        for ( Component component : complex.getComponents() ) {
-            part = new ComplexDetailsParticipants();
-            Interactor interactor = component.getInteractor();
-            if ( interactor != null ) {
-                part.setInteractorAC(interactor.getAc());
-                part.setDescription(interactor.getFullName());
-                Xref xref = null;
-                if (CvObjectUtils.isProteinType(interactor.getCvInteractorType())) {
-                    xref = ProteinUtils.getUniprotXref(interactor);
-
-                    String geneName = null;
-                    for (Alias alias : interactor.getAliases()) {
-                        if ( alias.getCvAliasType() != null && CvAliasType.GENE_NAME_MI_REF.equals(alias.getCvAliasType().getIdentifier())) {
-                            geneName = alias.getName();
-                            break;
-                        }
-                    }
-                    part.setName(geneName !=null ? geneName : interactor.getShortLabel());
-
-                }
-                else if( CvObjectUtils.isSmallMoleculeType(interactor.getCvInteractorType()) || CvObjectUtils.isPolysaccharideType(interactor.getCvInteractorType()) ){
-                    xref = SmallMoleculeUtils.getChebiXref(interactor);
-                    part.setName(interactor.getShortLabel());
-                }
-                else {
-                    part.setName(interactor.getShortLabel());
-                    xref = XrefUtils.getIdentityXref(interactor, CvDatabase.ENSEMBL_MI_REF);
-                    xref = xref != null ? xref : XrefUtils.getIdentityXref(interactor, "MI:1013");
-                }
-                if (xref != null) {
-                    part.setIdentifier(xref.getPrimaryId());
-                    for ( Annotation annotation : xref.getCvDatabase().getAnnotations() ) {
-                        if ( annotation.getCvTopic() != null && CvTopic.SEARCH_URL_MI_REF.equals(annotation.getCvTopic().getIdentifier()) ) {
-                            part.setIdentifierLink(annotation.getAnnotationText().replaceAll("\\$*\\{ac\\}", xref.getPrimaryId()));
-                        }
-                    }
-                }
-                setInteractorType(part, interactor.getCvInteractorType());
-            }
-            part.setStochiometry(component.getStoichiometry() == 0.0f ? null : Float.toString(component.getStoichiometry()));
-            if (component.getCvBiologicalRole() != null) {
-                setBiologicalRole(part, component.getCvBiologicalRole());
-            }
-
-            setFeatures(part, component);
-
-            participants.add(part);
-        }
-    }
-
-    // this method fills the linked features and the other features cells in the participants table
-    protected void setFeatures(ComplexDetailsParticipants part, Component component) {
-        for( Feature feature : component.getFeatures() ) {
-            ComplexDetailsFeatures complexDetailsFeatures = new ComplexDetailsFeatures();
-            if ( feature.getBoundDomain() != null ) {
-                part.getLinkedFeatures().add(complexDetailsFeatures);
-                Component featureComponent = feature.getBoundDomain().getComponent();
-                if (featureComponent != null) {
-                    Interactor linkedInteractor = featureComponent.getInteractor();
-                    if ( linkedInteractor != null ) {
-                        Xref xref = null;
-                        if (CvObjectUtils.isProteinType(linkedInteractor.getCvInteractorType())) {
-                            xref = ProteinUtils.getUniprotXref(linkedInteractor);
-                        }
-                        else if( CvObjectUtils.isSmallMoleculeType(linkedInteractor.getCvInteractorType()) || CvObjectUtils.isPolysaccharideType(linkedInteractor.getCvInteractorType()) ){
-                            xref = SmallMoleculeUtils.getChebiXref(linkedInteractor);
-                        }
-                        else {
-                            xref = XrefUtils.getIdentityXref(linkedInteractor, CvDatabase.ENSEMBL_MI_REF);
-                            xref = xref != null ? xref : XrefUtils.getIdentityXref(linkedInteractor, "MI:1013");
-                        }
-                        if (xref != null) {
-                            complexDetailsFeatures.setParticipantId(xref.getPrimaryId());
-                        }
-                    }
-                }
-            }
-            else {
-                part.getOtherFeatures().add(complexDetailsFeatures);
-            }
-            if (feature.getCvFeatureType() != null) {
-                setFeatureType(complexDetailsFeatures, feature.getCvFeatureType(), component);
-            }
-            for ( Range range : feature.getRanges() ) {
-                complexDetailsFeatures.getRanges().add(FeatureUtils.convertRangeIntoString(range));
-            }
-        }
-    }
-
-
-    // This method is a generic method to get the annotations of a CvDagObject
-    protected String getAnnotation(CvDagObject cv) {
-        if (cv != null){
-            for ( Annotation annotation : cv.getAnnotations() ) {
-                if( annotation.getCvTopic().getShortLabel().equalsIgnoreCase(CvTopic.DEFINITION) ){
-                    return annotation.getAnnotationText();
-                }
-            }
-        }
-        return null;
-    }
-
-    // This method sets the interactor type information
-    protected void setInteractorType(ComplexDetailsParticipants part, CvInteractorType cvInteractorType) {
-        part.setInteractorType(cvInteractorType.getFullName() != null ? cvInteractorType.getFullName() : cvInteractorType.getShortLabel());
-        part.setInteractorTypeMI(cvInteractorType.getIdentifier());
-        String annotation = getAnnotation(cvInteractorType);
-        if (annotation != null) {
-            part.setInteractorTypeDefinition(annotation);
-        }
-    }
-
-    // This method sets the biological role information
-    protected void setBiologicalRole(ComplexDetailsParticipants part, CvBiologicalRole cvBiologicalRole) {
-        part.setBioRole(cvBiologicalRole.getFullName() != null ? cvBiologicalRole.getFullName() : cvBiologicalRole.getShortLabel());
-        part.setBioRoleMI(cvBiologicalRole.getIdentifier());
-        String annotation = getAnnotation(cvBiologicalRole);
-        if (annotation != null) {
-            part.setBioRoleDefinition(annotation);
-        }
-    }
-
-    // This method sets the feature type information
-    protected void setFeatureType(ComplexDetailsFeatures complexDetailsFeatures, CvFeatureType feature, Component component) {
-        complexDetailsFeatures.setFeatureType(feature.getFullName() != null ? feature.getFullName() : feature.getShortLabel());
-        complexDetailsFeatures.setFeatureTypeMI(feature.getIdentifier());
-        String annotation = getAnnotation(component.getCvBiologicalRole());
-        if (annotation != null) {
-            complexDetailsFeatures.setFeatureTypeDefinition(annotation);
-        }
-    }
-
-    // This method sets the xref qualifier information
-    protected void setXrefQualifier(ComplexDetailsCrossReferences cross, CvXrefQualifier cvXrefQualifier) {
-        cross.setQualifier(cvXrefQualifier.getFullName() != null ? cvXrefQualifier.getFullName() : cvXrefQualifier.getShortLabel());
-        cross.setQualifierMI(cvXrefQualifier.getIdentifier());
-        String annotation = getAnnotation(cvXrefQualifier);
-        if (annotation != null) {
-            cross.setQualifierDefinition(annotation);
-        }
+    protected void enableCORS(HttpHeaders headers) {
+        headers.add("Access-Control-Allow-Origin", "*");
+        headers.add("Access-Control-Allow-Methods", "GET");
+        headers.add("Access-Control-Max-Age", "3600");
+        headers.add("Access-Control-Allow-Headers", "x-requested-with");
     }
 
     @ExceptionHandler(SolrServerException.class)

@@ -5,7 +5,7 @@
          <Arg>jdbc/IntactDS</Arg>
          <Arg>
               <New class="org.apache.commons.dbcp.BasicDataSource">
-                    <Set name="Url">jdbc:oracle:thin:@krug.ebi.ac.uk:1551:enzrls</Set>
+                    <Set name="Url">jdbc:oracle:thin:@ora-hxvm-003.ebi.ac.uk:1531:intacrel</Set>
                     <Set name="DriverClassName">oracle.jdbc.OracleDriver</Set>
                     <Set name="Username">intactweb</Set>
                     <Set name="Password">reading</Set>
