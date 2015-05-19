@@ -197,7 +197,7 @@
         <h3>Citing Complex Portal</h3>
 
         <p>
-            <strong>The complex portal--an encyclopaedia of macromolecular complexes.</strong>
+            <strong>The complex portal - an encyclopaedia of macromolecular complexes.</strong>
             Meldal BH et al [PMID: 25313161]
             <br/>
             <span style="font-style: italic">Nucl. Acids Res. (2014) doi: 10.1093/nar/gku975</span>
