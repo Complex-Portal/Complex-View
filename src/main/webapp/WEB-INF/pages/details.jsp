@@ -94,7 +94,7 @@
     <br>Accession number: <c:choose><c:when test="${not empty sessionScope.details.ac}"><c:out value="${sessionScope.details.ac}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
     <div class="grid_24">
         <c:if test="${not empty sessionScope.details.systematicName || not empty sessionScope.details.synonyms || not empty sessionScope.details.function || not empty sessionScope.details.properties || not empty sessionScope.details.ligand || not empty sessionScope.details.disease || not empty sessionScope.details.complexAssembly}">
-            <div class="grid_24">
+            <div class="grid_12">
                 <h4>Summary</h4>
                 <br>
                 <c:if test="${not empty sessionScope.details.systematicName}">
@@ -144,6 +144,21 @@
                     <p style="text-align: justify;"><c:out value="${sessionScope.details.complexAssembly}"/></p>
                 </c:if>
             </div>
+            <div class="grid_12" style="height: 50%; width: 45%;">
+                <div id="networkContainer" style="border: 0px;"></div>
+                <script type="text/javascript">
+                    var data = '${json_rest}';
+                    var targetDiv = document.getElementById('networkContainer');
+                    xlv = new xiNET(targetDiv);
+                    xlv.readMIJSON(data, true);
+                    xlv.autoLayout();
+                </script>
+                <div id="networkControls" class="networkControls">
+                    <button id="AutoLayout" class="submit networkButton" onclick="xlv.autoLayout();">Auto layout</button>
+                    <button id="ResetZoom" class="submit networkButton" onclick="xlv.resetZoom();">Reset Zoom</button>
+                    <button id="ExportSVG" class="submit networkButton" onclick="xlv.exportSVG('networkSVG');">Export SVG</button>
+                </div>
+            </div>
             <br>
         </c:if>
         <div class="grid_24">
@@ -165,7 +180,7 @@
                     <c:forEach var="part" items="${sessionScope.details.participants}">
                         <tr>
                             <td><c:if test="${not empty part.identifier}"><a target="_blank" href="<c:out value="${part.identifierLink}"/>"><c:out value="${part.identifier}"/></a><br/></c:if>
-                                <c:if test="${not empty part.interactorAC}"><c:out value="${part.interactorAC}"/></c:if></td>
+                                <c:if test="${not empty part.interactorAC}"><a target="_blank" href="http://www.ebi.ac.uk/intact/molecule/<c:out value="${part.interactorAC}"/>"><c:out value="${part.interactorAC}"/></a></c:if></td>
                             <td><c:if test="${not empty part.name}"><c:out value="${part.name}"/></c:if></td>
                             <td><c:if test="${not empty part.description}"><c:out value="${part.description}"/></c:if></td>
                             <td><c:if test="${not empty part.stochiometry}"><c:out value="${part.stochiometry}"/></c:if></td>

@@ -52,7 +52,6 @@
             /* body { max-width: 1600px; margin: 0 auto; } */
     </style>
     <link href="<c:url value="/resources/css/complex-portal.css" />" rel="stylesheet"> <%--Added by Oscar--%>
-    <link href="<c:url value="/resources/css/intact-extra.css" />" rel="stylesheet"> <%--Added by Oscar--%>
     <link href="<c:url value="/resources/css/intact-colours.css" />" rel="stylesheet"> <%--Added by Oscar--%>
     <link href="<c:url value="/resources/css/XLV.css" />" rel="stylesheet">
     <!-- end CSS-->
@@ -64,16 +63,13 @@
     <!-- All JavaScript at the bottom, except for Modernizr / Respond.
          Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
          For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+    <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/complexviewer.js"/>"></script>
 
     <!-- Full build -->
     <!-- <script src="//www.ebi.ac.uk/web_guidelines/js/libs/modernizr.minified.2.1.6.js"></script> -->
 
     <!-- custom build (lacks most of the "advanced" HTML5 support -->
     <script src="//www.ebi.ac.uk/web_guidelines/js/libs/modernizr.custom.49274.js"></script>
-    
-    <!--Twitter-->
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-
 </head>
 <body class="level2"><!-- add any of your classes or IDs -->
 <div id="skip-to">
