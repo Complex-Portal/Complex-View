@@ -1,8 +1,8 @@
 // Popup window code
 function newPopup(url) {
-    popupWindow = window.open(
-        url,'popUpWindow','height=700,width=800,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes')
-};
+    var popupWindow = window.open(
+        url, 'popUpWindow', 'height=250,width=500,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes')
+}
 
 // Check page number
 function checkPageNumberTop(){
@@ -78,4 +78,9 @@ function downloadFromRest(restURI) {
 function changedDownloadType() {
     var type = document.forms['downloads']["downloadType"];
     document.forms['downloads']['format'].value = type.options[type.selectedIndex].value;
+}
+
+function changeAnnotations(){
+    var annotationSelect = document.getElementById('annotationsSelect');
+    xlv.setAnnotations(annotationSelect.options[annotationSelect.selectedIndex].value);
 }

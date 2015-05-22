@@ -235,6 +235,16 @@ public class WebAppController {
         return "download";
     }
 
+    // LEGEND
+    @RequestMapping(value = "/legend/", method = RequestMethod.GET)
+    public String goLegend(ModelMap model,
+                             HttpServletRequest request) {
+        setDefaultModelMapValues(model, request);
+        model.addAttribute("page_title", "Complex Legend");
+        model.addAttribute("complex_search_form", request.getRequestURL().toString().split("legend/")[0]);
+        return "legend";
+    }
+
     /*****************************/
     /***   Private functions   ***/
     /*****************************/
@@ -244,6 +254,7 @@ public class WebAppController {
         model.addAttribute("complex_search_url", request.getContextPath());
         model.addAttribute("complex_download_url", request.getContextPath() + "/download/");
         model.addAttribute("complex_help_url", request.getContextPath() + "/help/");
+        model.addAttribute("interactionviewer_url", request.getContextPath() + "/legend/");
         model.addAttribute("complex_documentation_url", request.getContextPath() + "/documentation/");
         model.addAttribute("complex_contact_url", "http://www.ebi.ac.uk/support/index.php?query=intact");
         model.addAttribute("complex_about_url", request.getContextPath() + "/about/" );
