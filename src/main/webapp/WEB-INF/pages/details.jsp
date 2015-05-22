@@ -1,6 +1,6 @@
 <html>
 
-<%@include file="header.jsp"%>
+<%@include file="header.jsp" %>
 <jsp:useBean id="details" class="uk.ac.ebi.intact.service.complex.view.ComplexDetails" scope="session"/>
 
 
@@ -9,10 +9,13 @@
         <fieldset>
             <div class="left">
                 <label>
-                    <input type="text" name="q" id="local-searchbox" value="<c:out value="${sessionScope.results.originaQuery}"/>">
+                    <input type="text" name="q" id="local-searchbox"
+                           value="<c:out value="${sessionScope.results.originaQuery}"/>">
                 </label>
                 <!-- Include some example searchterms - keep them short and few! -->
-                <span class="examples">Examples: <a href="<c:url value="${complex_search_form}?q=GO:0016491"/>">GO:0016491</a>, <a href="<c:url value="${complex_search_form}?q=Ndc80"/>">Ndc80</a>, <a href="<c:url value="${complex_search_form}?q=Q05471"/>">Q05471</a></span>
+                <span class="examples">Examples: <a href="<c:url value="${complex_search_form}?q=GO:0016491"/>">GO:0016491</a>, <a
+                        href="<c:url value="${complex_search_form}?q=Ndc80"/>">Ndc80</a>, <a
+                        href="<c:url value="${complex_search_form}?q=Q05471"/>">Q05471</a></span>
             </div>
             <%--<input name="facets" id="facets" type="hidden" value="${facetFields}" />--%>
             <div class="right">
@@ -36,7 +39,8 @@
         <li><a href="${complex_stats_url}">Statistics</a></li>
         <li class="last"><a href="${complex_download_url}">Download</a></li>
         <%--<li class="last"><a href="${complex_contact_url}">Contact Us</a></li>--%>
-        <li class="functional last first"><a class="icon icon-generic" data-icon="\" href="http://www.ebi.ac.uk/support/intact">Feedback</a></li>
+        <li class="functional last first"><a class="icon icon-generic" data-icon="\"
+                                             href="http://www.ebi.ac.uk/support/intact">Feedback</a></li>
         <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
              add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
              whichever one will show up last...
@@ -89,115 +93,158 @@
         </p>
     </nav>
 
-    <h2><c:choose><c:when test="${not empty sessionScope.details.name}"><c:out value="${sessionScope.details.name}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h2>
-    <h3>Species: <c:choose><c:when test="${not empty sessionScope.details.species}"><c:out value="${sessionScope.details.species}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose>
-    <br>Accession number: <c:choose><c:when test="${not empty sessionScope.details.ac}"><c:out value="${sessionScope.details.ac}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h3>
     <div class="grid_24">
-        <c:if test="${not empty sessionScope.details.systematicName || not empty sessionScope.details.synonyms || not empty sessionScope.details.function || not empty sessionScope.details.properties || not empty sessionScope.details.ligand || not empty sessionScope.details.disease || not empty sessionScope.details.complexAssembly}">
-            <div class="grid_12">
-                <h4>Summary</h4>
-                <br>
-                <c:if test="${not empty sessionScope.details.systematicName}">
-                    <h5>Systematic Name:</h5>
-                    <p style="text-align: justify; word-break: break-all;"><c:out value="${sessionScope.details.systematicName}"/></p>
-                </c:if>
-                <c:if test="${not empty sessionScope.details.synonyms}">
-                    <%--  OLD WAY  --%>
-                    <%--<h5>Synonyms:</h5>--%>
-                    <%--<p style="text-align: justify;">--%>
-                    <%--<c:forEach var="synonym" items="${sessionScope.details.synonyms}">--%>
-                        <%--<c:out value="${synonym}"/><br>--%>
-                    <%--</c:forEach>--%>
-                    <%--</p>--%>
+        <div class="grid_12">
+            <h2><c:choose><c:when test="${not empty sessionScope.details.name}"><c:out
+                    value="${sessionScope.details.name}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h2>
 
-                    <%--  NEW WAY  --%>
-                    <h5>Synonyms:</h5>
-                    <table id="synosyms" class="synosymsTable">
-                        <tbody>
-                            <c:forEach var="synonym" items="${sessionScope.details.synonyms}" varStatus="status">
-                                <td><c:out value="${synonym}"/></td>
-                                <c:if test="${status.count % 2 == 0}">
-                                    </tr>
-                                </c:if>
-                            </c:forEach>
-                        </tbody>
-                    </table>
-                </c:if>
-                <c:if test="${not empty sessionScope.details.function}">
-                    <h5>Function:</h5>
-                    <p style="text-align: justify;"><c:out value="${sessionScope.details.function}"/></p>
-                </c:if>
-                <c:if test="${not empty sessionScope.details.properties}">
-                    <h5>Properties:</h5>
-                    <p style="text-align: justify;"><c:out value="${sessionScope.details.properties}"/></p>
-                </c:if>
-                <c:if test="${not empty sessionScope.details.ligand}">
-                    <h5>Ligand:</h5>
-                    <p style="text-align: justify;"><c:out value="${sessionScope.details.ligand}"/></p>
-                </c:if>
-                <c:if test="${not empty sessionScope.details.disease}">
-                    <h5>Disease:</h5>
-                    <p style="text-align: justify;"><c:out value="${sessionScope.details.disease}"/></p>
-                </c:if>
-                <c:if test="${not empty sessionScope.details.complexAssembly}">
-                    <h5>Complex Assembly:</h5>
-                    <p style="text-align: justify;"><c:out value="${sessionScope.details.complexAssembly}"/></p>
-                </c:if>
-            </div>
-            <div class="grid_12" style="height: 50%; width: 45%;">
-                <div id="networkContainer" style="border: 0px;"></div>
-                <script type="text/javascript">
-                    var data = '${json_rest}';
-                    var targetDiv = document.getElementById('networkContainer');
-                    xlv = new xiNET(targetDiv);
-                    xlv.readMIJSON(data, true);
-                    xlv.autoLayout();
-                </script>
-                <div id="networkControls" class="networkControls">
-                    <button id="AutoLayout" class="submit networkButton" onclick="xlv.autoLayout();">Auto layout</button>
-                    <button id="ResetZoom" class="submit networkButton" onclick="xlv.resetZoom();">Reset Zoom</button>
-                    <button id="ExportSVG" class="submit networkButton" onclick="xlv.exportSVG('networkSVG');">Export SVG</button>
-                </div>
+            <h3>Species: <c:choose><c:when test="${not empty sessionScope.details.species}"><c:out
+                    value="${sessionScope.details.species}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose>
+                <br>Accession number: <c:choose><c:when test="${not empty sessionScope.details.ac}"><c:out
+                        value="${sessionScope.details.ac}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose>
+            </h3>
+            <c:if test="${not empty sessionScope.details.systematicName || not empty sessionScope.details.synonyms || not empty sessionScope.details.function || not empty sessionScope.details.properties || not empty sessionScope.details.ligand || not empty sessionScope.details.disease || not empty sessionScope.details.complexAssembly}">
+
+            <h4>Summary</h4>
+            <br>
+            <c:if test="${not empty sessionScope.details.systematicName}">
+                <h5>Systematic Name:</h5>
+
+                <p style="text-align: justify; word-break: break-all;"><c:out
+                        value="${sessionScope.details.systematicName}"/></p>
+            </c:if>
+            <c:if test="${not empty sessionScope.details.synonyms}">
+                <%--  OLD WAY  --%>
+                <%--<h5>Synonyms:</h5>--%>
+                <%--<p style="text-align: justify;">--%>
+                <%--<c:forEach var="synonym" items="${sessionScope.details.synonyms}">--%>
+                <%--<c:out value="${synonym}"/><br>--%>
+                <%--</c:forEach>--%>
+                <%--</p>--%>
+
+                <%--  NEW WAY  --%>
+                <h5>Synonyms:</h5>
+                <table id="synosyms" class="synosymsTable">
+                    <tbody>
+                    <c:forEach var="synonym" items="${sessionScope.details.synonyms}" varStatus="status">
+                        <td><c:out value="${synonym}"/></td>
+                        <c:if test="${status.count % 2 == 0}">
+                            </tr>
+                        </c:if>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </c:if>
+        </div>
+        <div class="grid_12" style="height: 50%; width: 45%;">
+            <div id="networkControls" class="networkControls" style="margin: 0; padding: 0;">
+                <button id="AutoLayout" class="submit networkButton" onclick="xlv.autoLayout();">Auto
+                    layout
+                </button>
+                <button id="ResetZoom" class="submit networkButton" onclick="xlv.resetZoom();">Reset Zoom</button>
+                <button id="ExportSVG" class="submit networkButton" onclick="xlv.exportSVG('networkSVG');">Export
+                    SVG
+                </button>
+
+                <button id="Legend" class="submit networkButton" onclick="newPopup('${interactionviewer_url}');">
+                    Legend
+                </button>
+                <select id="annotationsSelect" onChange="changeAnnotations();">
+                    <option selected='selected'>MI features</option>
+                    <option>UniprotKB</option>
+                    <option>SuperFamily</option>
+                    <option>Interactor</option>
+                    <option>None</option>
+                </select>
             </div>
             <br>
-        </c:if>
+            <br>
+            <div id="networkContainer" style="border: 1px solid #f1f1f1;"></div>
+            <script type="text/javascript">
+                var data = '${json_rest}';
+                var targetDiv = document.getElementById('networkContainer');
+                xlv = new xiNET(targetDiv);
+                xlv.readMIJSON(data, true);
+                xlv.autoLayout();
+            </script>
+
+        </div>
+        <div class="grid_24">
+            <c:if test="${not empty sessionScope.details.function}">
+                <h5>Function:</h5>
+
+                <p style="text-align: justify;"><c:out value="${sessionScope.details.function}"/></p>
+            </c:if>
+            <c:if test="${not empty sessionScope.details.properties}">
+                <h5>Properties:</h5>
+
+                <p style="text-align: justify;"><c:out value="${sessionScope.details.properties}"/></p>
+            </c:if>
+            <c:if test="${not empty sessionScope.details.ligand}">
+                <h5>Ligand:</h5>
+
+                <p style="text-align: justify;"><c:out value="${sessionScope.details.ligand}"/></p>
+            </c:if>
+            <c:if test="${not empty sessionScope.details.disease}">
+                <h5>Disease:</h5>
+
+                <p style="text-align: justify;"><c:out value="${sessionScope.details.disease}"/></p>
+            </c:if>
+            <c:if test="${not empty sessionScope.details.complexAssembly}">
+                <h5>Complex Assembly:</h5>
+
+                <p style="text-align: justify;"><c:out value="${sessionScope.details.complexAssembly}"/></p>
+            </c:if>
+            </c:if>
+
+        </div>
+        <br>
+
         <div class="grid_24">
             <h4>Participants</h4>
             <table id="participants" class="tablesorter">
                 <thead>
-                    <tr class="trHead">
-                        <td>ID</td>
-                        <td>Name</td>
-                        <td>Description</td>
-                        <td>Stochiometry</td>
-                        <td>Biological Role</td>
-                        <td>Interactor Type</td>
-                        <%--<td>Linked Features</td>--%>
-                        <td>Other Features</td>
-                    </tr>
+                <tr class="trHead">
+                    <td>ID</td>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Stochiometry</td>
+                    <td>Biological Role</td>
+                    <td>Interactor Type</td>
+                    <%--<td>Linked Features</td>--%>
+                    <td>Other Features</td>
+                </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="part" items="${sessionScope.details.participants}">
-                        <tr>
-                            <td><c:if test="${not empty part.identifier}"><a target="_blank" href="<c:out value="${part.identifierLink}"/>"><c:out value="${part.identifier}"/></a><br/></c:if>
-                                <c:if test="${not empty part.interactorAC}"><a target="_blank" href="http://www.ebi.ac.uk/intact/molecule/<c:out value="${part.interactorAC}"/>"><c:out value="${part.interactorAC}"/></a></c:if></td>
-                            <td><c:if test="${not empty part.name}"><c:out value="${part.name}"/></c:if></td>
-                            <td><c:if test="${not empty part.description}"><c:out value="${part.description}"/></c:if></td>
-                            <td><c:if test="${not empty part.stochiometry}"><c:out value="${part.stochiometry}"/></c:if></td>
-                            <td><c:if test="${not empty part.bioRole}"><c:out value="${part.bioRole}"/></c:if></td>
-                            <td><c:if test="${not empty part.interactorType}"><c:out value="${part.interactorType}"/></c:if></td>
+                <c:forEach var="part" items="${sessionScope.details.participants}">
+                    <tr>
+                        <td><c:if test="${not empty part.identifier}"><a target="_blank"
+                                                                         href="<c:out value="${part.identifierLink}"/>"><c:out
+                                value="${part.identifier}"/></a><br/></c:if>
+                            <c:if test="${not empty part.interactorAC}"><a target="_blank"
+                                                                           href="http://www.ebi.ac.uk/intact/molecule/<c:out value="${part.interactorAC}"/>"><c:out
+                                    value="${part.interactorAC}"/></a></c:if></td>
+                        <td><c:if test="${not empty part.name}"><c:out value="${part.name}"/></c:if></td>
+                        <td><c:if test="${not empty part.description}"><c:out value="${part.description}"/></c:if></td>
+                        <td><c:if test="${not empty part.stochiometry}"><c:out
+                                value="${part.stochiometry}"/></c:if></td>
+                        <td><c:if test="${not empty part.bioRole}"><c:out value="${part.bioRole}"/></c:if></td>
+                        <td><c:if test="${not empty part.interactorType}"><c:out
+                                value="${part.interactorType}"/></c:if></td>
                             <%--<td><div class="detailsTable" rel="tooltip" data-placement="left" title="<c:if test="${not empty part.linkedFeatures}"><c:forEach var="linked" items="${part.linkedFeatures}"><c:out value="${linked.featureType}"/><c:out value="${linked.participantId}"/><c:forEach var="range" items="${linked.ranges}">[<c:out value="${range}"/>]</c:forEach></c:forEach></c:if>">--%>
-                                <%--<c:if test="${not empty part.linkedFeatures}">--%>
-                                <%--<c:forEach var="linked" items="${part.linkedFeatures}">--%>
-                                    <%--<c:out value="${linked.featureType}"/> <c:out value="${linked.participantId}"/>--%>
-                                        <%--<c:forEach var="range" items="${linked.ranges}">--%>
-                                            <%--[<c:out value="${range}"/>]--%>
-                                        <%--</c:forEach>--%>
-                                        <%--<br/>--%>
-                                    <%--</c:forEach>--%>
-                                <%--</c:if>--%>
+                            <%--<c:if test="${not empty part.linkedFeatures}">--%>
+                            <%--<c:forEach var="linked" items="${part.linkedFeatures}">--%>
+                            <%--<c:out value="${linked.featureType}"/> <c:out value="${linked.participantId}"/>--%>
+                            <%--<c:forEach var="range" items="${linked.ranges}">--%>
+                            <%--[<c:out value="${range}"/>]--%>
+                            <%--</c:forEach>--%>
+                            <%--<br/>--%>
+                            <%--</c:forEach>--%>
+                            <%--</c:if>--%>
                             <%--</div></td>--%>
-                            <td><div class="detailsTable" rel="tooltip" data-placement="right" title="<c:if test="${not empty part.otherFeatures}"><c:forEach var="other" items="${part.otherFeatures}"><c:out value="${other.featureType}"/><c:out value="${other.participantId}"/><c:forEach var="range" items="${other.ranges}">[<c:out value="${range}"/>]</c:forEach></c:forEach></c:if>">
+                        <td>
+                            <div class="detailsTable" rel="tooltip" data-placement="right"
+                                 title="<c:if test="${not empty part.otherFeatures}"><c:forEach var="other" items="${part.otherFeatures}"><c:out value="${other.featureType}"/><c:out value="${other.participantId}"/><c:forEach var="range" items="${other.ranges}">[<c:out value="${range}"/>]</c:forEach></c:forEach></c:if>">
                                 <c:if test="${not empty part.otherFeatures}">
                                     <c:forEach var="other" items="${part.otherFeatures}">
                                         <c:out value="${other.featureType}"/> <c:out value="${other.participantId}"/>
@@ -207,47 +254,50 @@
                                         <br/>
                                     </c:forEach>
                                 </c:if>
-                            </div></td>
-                        </tr>
-                    </c:forEach>
+                            </div>
+                        </td>
+                    </tr>
+                </c:forEach>
                 </tbody>
             </table>
         </div>
         <br>
+
         <div class="grid_24">
             <h4>Cross References</h4>
             <table id="crossReferences" class="tablesorter">
                 <thead>
-                    <tr class="trHead">
-                        <td>Type</td>
-                        <td>Database</td>
-                        <td>Identifier</td>
-                        <td>Description</td>
-                    </tr>
+                <tr class="trHead">
+                    <td>Type</td>
+                    <td>Database</td>
+                    <td>Identifier</td>
+                    <td>Description</td>
+                </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="cross" items="${sessionScope.details.crossReferences}">
-                        <tr>
-                            <td><c:if test="${not empty cross.qualifier}"><c:out value="${cross.qualifier}"/></c:if></td>
-                            <td><c:if test="${not empty cross.database}"><c:out value="${cross.database}"/></c:if></td>
-                            <td><c:if test="${not empty cross.identifier}">
-                                    <c:if test="${not empty cross.searchURL}">
-                                        <a target="_blank" href="<c:out value="${cross.searchURL}"/>">
-                                    </c:if>
-                                    <c:out value="${cross.identifier}"/>
-                                    <c:if test="${not empty cross.searchURL}">
-                                        </a>
-                                    </c:if>
-                                </c:if>
-                            </td>
-                            <td><c:if test="${not empty cross.description}"><c:out value="${cross.description}"/></c:if></td>
-                        </tr>
-                    </c:forEach>
+                <c:forEach var="cross" items="${sessionScope.details.crossReferences}">
+                    <tr>
+                        <td><c:if test="${not empty cross.qualifier}"><c:out value="${cross.qualifier}"/></c:if></td>
+                        <td><c:if test="${not empty cross.database}"><c:out value="${cross.database}"/></c:if></td>
+                        <td><c:if test="${not empty cross.identifier}">
+                            <c:if test="${not empty cross.searchURL}">
+                                <a target="_blank" href="<c:out value="${cross.searchURL}"/>">
+                            </c:if>
+                            <c:out value="${cross.identifier}"/>
+                            <c:if test="${not empty cross.searchURL}">
+                                </a>
+                            </c:if>
+                        </c:if>
+                        </td>
+                        <td><c:if test="${not empty cross.description}"><c:out
+                                value="${cross.description}"/></c:if></td>
+                    </tr>
+                </c:forEach>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<%@include file="footer.jsp"%>
+<%@include file="footer.jsp" %>
 </html>
