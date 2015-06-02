@@ -37,6 +37,8 @@
     <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/ebi-global.css" type="text/css" media="screen">
     <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/ebi-visual.css" type="text/css" media="screen">
     <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/984-24-col-fluid.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
 
     <!-- you can replace this with [projectname]-colours.css. See http://www.ebi.ac.uk/web/style/colour for details of how to do this -->
     <!-- also inform ES so we can host your colour palette file -->
@@ -58,7 +60,7 @@
     <%--Begin JS--%>
     <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/ga.js"/>"></script>
     <script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> <%--Added by Oscar--%>
-    <%--<script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> &lt;%&ndash;Added by Oscar&ndash;%&gt;--%>
+    <script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> <%--Added by Oscar--%>
     <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/main.js"/>"></script> <%--Added by Oscar--%>
     <!-- All JavaScript at the bottom, except for Modernizr / Respond.
          Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
