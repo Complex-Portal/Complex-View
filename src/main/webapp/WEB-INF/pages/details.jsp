@@ -4,6 +4,18 @@
 <jsp:useBean id="details" class="uk.ac.ebi.intact.service.complex.view.ComplexDetails" scope="session"/>
 
 
+<script>
+    $(function() {
+        $( "#dialog" ).dialog({
+            autoOpen: false,
+            position: { my: "right right", at: "left left", of: "#networkContainer" }
+        });
+        $( "#dialog_opener" ).click(function() {
+            $( "#dialog" ).dialog( "open" );
+        });
+    });
+</script>
+
 <div class="grid_12 omega">
     <form id="local-search" name="local-search" action="${complex_search_form}" method="get">
         <fieldset>
@@ -138,17 +150,12 @@
         </div>
         <div class="grid_12" style="height: 50%; width: 45%;">
             <div id="networkControls" class="networkControls" style="margin: 0; padding: 0;">
-                <button id="AutoLayout" class="submit networkButton" onclick="xlv.autoLayout();">Auto
-                    layout
-                </button>
-                <button id="ResetZoom" class="submit networkButton" onclick="xlv.resetZoom();">Reset Zoom</button>
-                <button id="ExportSVG" class="submit networkButton" onclick="xlv.exportSVG('networkSVG');">Export
-                    SVG
-                </button>
-
-                <button id="Legend" class="submit networkButton" onclick="newPopup('${interactionviewer_url}');">
-                    Legend
-                </button>
+                <button id="Reset" class="submit networkButton" onclick="xlv.reset();">Reset</button>
+                <button id="ExportSVG" class="submit networkButton" onclick="xlv.exportSVG('networkSVG');">Export SVG</button>
+                <button id="dialog_opener" class="submit networkButton">Legend</button>
+                <div id="dialog" title="Legend" style="">
+                    <%@include file="legend.jsp" %>
+                </div>
                 <select id="annotationsSelect" onChange="changeAnnotations();">
                     <option selected='selected'>MI features</option>
                     <option>UniprotKB</option>
@@ -218,12 +225,7 @@
                 <tbody>
                 <c:forEach var="part" items="${sessionScope.details.participants}">
                     <tr>
-                        <td><c:if test="${not empty part.identifier}"><a target="_blank"
-                                                                         href="<c:out value="${part.identifierLink}"/>"><c:out
-                                value="${part.identifier}"/></a><br/></c:if>
-                            <c:if test="${not empty part.interactorAC}"><a target="_blank"
-                                                                           href="http://www.ebi.ac.uk/intact/molecule/<c:out value="${part.interactorAC}"/>"><c:out
-                                    value="${part.interactorAC}"/></a></c:if></td>
+                        <td><c:if test="${not empty part.identifier}"><a target="_blank" href="<c:out value="${part.identifierLink}"/>"><c:out value="${part.identifier}"/></a><br/></c:if></td>
                         <td><c:if test="${not empty part.name}"><c:out value="${part.name}"/></c:if></td>
                         <td><c:if test="${not empty part.description}"><c:out value="${part.description}"/></c:if></td>
                         <td><c:if test="${not empty part.stochiometry}"><c:out
