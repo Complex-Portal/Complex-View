@@ -67,7 +67,7 @@ public class AppTests {
         page = "3";
         pageInfo = restConnection.getPage(page, "integrin AND homo", null, null);
         Assert.assertEquals(pageInfo.getPrevPage(), 2);
-        Assert.assertEquals(pageInfo.getPage(), 3);
+        Assert.assertEquals(pageInfo.getPage(), 2);
         Assert.assertEquals(pageInfo.getNextPage(), -1);
     }
     @Test
