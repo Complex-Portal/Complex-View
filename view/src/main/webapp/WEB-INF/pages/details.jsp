@@ -5,13 +5,13 @@
 
 
 <script>
-    $(function() {
-        $( "#dialog" ).dialog({
+    $(function () {
+        $("#dialog").dialog({
             autoOpen: false,
-            position: { my: "right right", at: "left left", of: "#networkContainer" }
+            position: {my: "right right", at: "left left", of: "#networkContainer"}
         });
-        $( "#dialog_opener" ).click(function() {
-            $( "#dialog" ).dialog( "open" );
+        $("#dialog_opener").click(function () {
+            $("#dialog").dialog("open");
         });
     });
 </script>
@@ -58,7 +58,6 @@
              whichever one will show up last...
              For example: -->
     </ul>
-
 </nav>
 
 <!-- /local-nav -->
@@ -151,7 +150,8 @@
         <div class="grid_12" style="height: 50%; width: 45%;">
             <div id="networkControls" class="networkControls" style="margin: 0; padding: 0;">
                 <button id="Reset" class="submit networkButton" onclick="xlv.reset();">Reset</button>
-                <button id="ExportSVG" class="submit networkButton" onclick="xlv.exportSVG('networkSVG');">Export SVG</button>
+                <button id="ExportSVG" class="submit networkButton" onclick="xlv.exportSVG('networkSVG');">Export SVG
+                </button>
                 <button id="dialog_opener" class="submit networkButton">Legend</button>
                 <div id="dialog" title="Legend" style="">
                     <%@include file="legend.jsp" %>
@@ -166,15 +166,42 @@
             </div>
             <br>
             <br>
+
             <div id="networkContainer" style="border: 1px solid #f1f1f1;"></div>
             <script type="text/javascript">
                 var data = '${json_rest}';
                 var targetDiv = document.getElementById('networkContainer');
                 xlv = new xiNET(targetDiv);
+                xlv.legendCallbacks.push(function (colourAssignment) {
+                    var coloursKeyDiv = document.getElementById('colours');
+
+                    var table = "<table><tr style='height:10px;'></tr><tr><td style='width:80px;margin:10px;"
+                            + "background:#70BDBD;opacity:0.3;border:none;'>"
+                            + "</td><td>your complex</td></tr>";
+
+                    if (colourAssignment) {
+                        var domain = colourAssignment.domain();
+                        //~ console.log("Domain:"+domain);
+                        var range = colourAssignment.range();
+                        //~ console.log("Range:"+range);
+                        table += "<tr style='height:10px;'></tr>";
+                        for (var i = 0; i < domain.length; i++) {
+                            //make transparent version of colour
+                            var temp = new RGBColor(range[i % 20]);
+                            var trans = "rgba(" + temp.r + "," + temp.g + "," + temp.b + ", 0.6)"
+                            table += "<tr><td style='width:75px;margin:10px;background:"
+                            + trans + ";border:1px solid "
+                            + range[i % 20] + ";'></td><td>"
+                            + domain[i] + "</td></tr>";
+                            //~ console.log(i + " "+ domain[i] + " " + range[i]);
+                        }
+                    }
+                    table = table += "</table>";
+                    coloursKeyDiv.innerHTML = table;
+                });
                 xlv.readMIJSON(data, true);
                 xlv.autoLayout();
             </script>
-
         </div>
         <div class="grid_24">
             <c:if test="${not empty sessionScope.details.function}">
@@ -225,7 +252,12 @@
                 <tbody>
                 <c:forEach var="part" items="${sessionScope.details.participants}">
                     <tr>
-                        <td><c:if test="${not empty part.identifier}"><a target="_blank" href="<c:out value="${part.identifierLink}"/>"><c:out value="${part.identifier}"/></a><br/></c:if></td>
+                        <td><c:if test="${not empty part.identifier}"><a target="_blank"
+                                                                         href="<c:out value="${part.identifierLink}"/>"><c:out
+                                value="${part.identifier}"/></a><br/></c:if>
+                            <c:if test="${not empty part.interactorAC}"><a target="_blank"
+                                                                           href="http://www.ebi.ac.uk/intact/molecule/<c:out value="${part.interactorAC}"/>"><c:out
+                                    value="${part.interactorAC}"/></a></c:if></td>
                         <td><c:if test="${not empty part.name}"><c:out value="${part.name}"/></c:if></td>
                         <td><c:if test="${not empty part.description}"><c:out value="${part.description}"/></c:if></td>
                         <td><c:if test="${not empty part.stochiometry}"><c:out
@@ -300,6 +332,5 @@
         </div>
     </div>
 </div>
-
 <%@include file="footer.jsp" %>
 </html>
