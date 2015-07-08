@@ -348,6 +348,12 @@
     <section class="grid_6 pull_18 alpha" id="search-filters">
         <div id="filtersDiv" class="filters grid_24">
             <form name="filtersForm" id="filtersForm" method="GET" action="${complex_search_form}">
+                <div id="filterButtons" class="filterButtons">
+                    <input type="submit" style="float: left;" class="submit filterButton" value="Filter" />
+                    <c:if test="${not empty sessionScope.speciesSelected or not empty sessionScope.typesSelected or not empty sessionScope.biorolesSelected}"><input type="submit" style="float: right;" class="submit clearButton" value="Reset filters" onclick="return clearFilters();" /></c:if>
+                </div>
+                <br>
+                <br>
                 <input name="q" type="hidden" value="${sessionScope.htmlOriginalQuery}" />
                 <strong>Species:</strong>
                 <br>
