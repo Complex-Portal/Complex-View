@@ -5,6 +5,7 @@ import psidev.psi.mi.jami.utils.AliasUtils;
 import psidev.psi.mi.jami.utils.AnnotationUtils;
 import psidev.psi.mi.jami.utils.RangeUtils;
 import uk.ac.ebi.intact.jami.model.extension.IntactComplex;
+import uk.ac.ebi.intact.jami.model.extension.IntactInteractor;
 import uk.ac.ebi.intact.jami.model.extension.IntactModelledParticipant;
 import uk.ac.ebi.intact.jami.model.extension.InteractorXref;
 import uk.ac.ebi.intact.service.complex.ws.model.ComplexDetails;
@@ -12,10 +13,7 @@ import uk.ac.ebi.intact.service.complex.ws.model.ComplexDetailsCrossReferences;
 import uk.ac.ebi.intact.service.complex.ws.model.ComplexDetailsFeatures;
 import uk.ac.ebi.intact.service.complex.ws.model.ComplexDetailsParticipants;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by maitesin on 09/12/2014.
@@ -115,7 +113,7 @@ public class IntactComplexUtils {
     public static void setParticipants(IntactComplex complex, ComplexDetails details) {
         Collection<ComplexDetailsParticipants> participants = details.getParticipants();
         ComplexDetailsParticipants part;
-        for (ModelledParticipant participant : complex.getParticipants()) { //Use ModelledParticipant
+        for (ModelledParticipant participant : mergeParticipants(complex.getParticipants())) { //Use ModelledParticipant
             part = new ComplexDetailsParticipants();
             Interactor interactor = participant.getInteractor();
 
@@ -152,6 +150,41 @@ public class IntactComplexUtils {
             }
             setFeatures(part, participant);
             participants.add(part);
+        }
+    }
+
+    private static Collection<ModelledParticipant> mergeParticipants(Collection<ModelledParticipant> participants) {
+        if (participants.size() > 1) {
+            Comparator<ModelledParticipant> comparator = new Comparator<ModelledParticipant>() {
+                @Override
+                public int compare(ModelledParticipant o1, ModelledParticipant o2) {
+                    return (((IntactInteractor)o1.getInteractor()).getAc().compareTo(((IntactInteractor)o2.getInteractor()).getAc()));
+                }
+            };
+            List<ModelledParticipant> participantList = (List<ModelledParticipant>) participants;
+            Collections.sort(participantList, comparator);
+            Collection<ModelledParticipant> merged = new ArrayList<ModelledParticipant>();
+            ModelledParticipant aux = participantList.get(0);
+            int stochiometry = 0;
+            for (ModelledParticipant participant : participantList) {
+                if (((IntactInteractor)aux.getInteractor()).getAc().equals(((IntactInteractor) participant.getInteractor()).getAc())) {
+                    //Same
+                    stochiometry += participant.getStoichiometry().getMinValue();
+                }
+                else {
+                    //Different
+                    aux.setStoichiometry(stochiometry);
+                    merged.add(aux);
+                    aux = participant;
+                    stochiometry = aux.getStoichiometry().getMinValue();
+                }
+            }
+            aux.setStoichiometry(stochiometry);
+            merged.add(aux);
+            return merged;
+        }
+        else {
+            return participants;
         }
     }
 

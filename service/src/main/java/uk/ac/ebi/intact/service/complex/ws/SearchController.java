@@ -5,7 +5,6 @@ import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.xpath.operations.Bool;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -88,23 +87,28 @@ public class SearchController {
     /*      Public methods      */
     /****************************/
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String showHomeHelp(){
+    public String showHomeHelp(HttpServletResponse response){
+        enableClacks(response);
         return "home";
     }
     @RequestMapping(value = "/search/", method = RequestMethod.GET)
-    public String showSearchHelp(){
+    public String showSearchHelp(HttpServletResponse response){
+        enableClacks(response);
         return "search";
     }
     @RequestMapping(value = "/details/", method = RequestMethod.GET)
-    public String showDetailsHelp(){
+    public String showDetailsHelp(HttpServletResponse response){
+        enableClacks(response);
         return "details";
     }
     @RequestMapping(value = "/export/", method = RequestMethod.GET)
-    public String showExportHelp(){
+    public String showExportHelp(HttpServletResponse response){
+        enableClacks(response);
         return "export";
     }
     @RequestMapping(value = "/count/{query}", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
-    public String count(@PathVariable String query, ModelMap model) throws SolrServerException {
+    public String count(@PathVariable String query, ModelMap model, HttpServletResponse response) throws SolrServerException {
+        enableClacks(response);
         String q = null;
         try {
             q = URIUtil.decode(query);
@@ -129,13 +133,15 @@ public class SearchController {
                                     @RequestParam (required = false) String first,
                                     @RequestParam (required = false) String number,
                                     @RequestParam (required = false) String filters,
-                                    @RequestParam (required = false) String facets) throws SolrServerException, IOException {
+                                    @RequestParam (required = false) String facets,
+                                    HttpServletResponse response) throws SolrServerException, IOException {
         ComplexRestResult searchResult = query(query, first, number, filters, facets);
         StringWriter writer = new StringWriter();
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(writer, searchResult);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("X-Clacks-Overhead", "GNU Terry Pratchett"); //In memory of Sir Terry Pratchett
         return new ResponseEntity<String>(writer.toString(), headers, HttpStatus.OK);
 	}
 
@@ -150,7 +156,7 @@ public class SearchController {
      */
     @RequestMapping(value = "/details/{ac}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED, value = "jamiTransactionManager")
-    public ResponseEntity<String> retrieveComplex(@PathVariable String ac) throws Exception {
+    public ResponseEntity<String> retrieveComplex(@PathVariable String ac, HttpServletResponse response) throws Exception {
         IntactComplex complex = intactDao.getComplexDao().getByAc(ac);
         ComplexDetails details = null;
         // Function
@@ -179,6 +185,7 @@ public class SearchController {
         mapper.writeValue(writer, details);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        headers.add("X-Clacks-Overhead", "GNU Terry Pratchett"); //In memory of Sir Terry Pratchett
         return new ResponseEntity<String>(writer.toString(), headers, HttpStatus.OK);
     }
 
@@ -186,7 +193,8 @@ public class SearchController {
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED, value = "jamiTransactionManager")
     public ResponseEntity<String> exportComplex(@PathVariable String query,
                                                 @RequestParam (required = false) String filters,
-                                                @RequestParam (required = false) String format) throws Exception {
+                                                @RequestParam (required = false) String format,
+                                                HttpServletResponse response) throws Exception {
         Boolean exportAsFile = false;
         List<IntactComplex> complexes;
         if(isQueryASingleId(query)) {
@@ -258,6 +266,7 @@ public class SearchController {
         }
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-Type", MediaType.APPLICATION_XML_VALUE);
+        httpHeaders.add("X-Clacks-Overhead", "GNU Terry Pratchett"); //In memory of Sir Terry Pratchett
         enableCORS(httpHeaders);
         if (exportAsFile) {
             httpHeaders.set("Content-Disposition", "attachment; filename=" + complexes.toString());
@@ -281,6 +290,7 @@ public class SearchController {
         }
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        httpHeaders.add("X-Clacks-Overhead", "GNU Terry Pratchett"); //In memory of Sir Terry Pratchett
         enableCORS(httpHeaders);
         if (exportAsFile) {
             httpHeaders.set("Content-Disposition", "attachment; filename=" + complexes.toString());
@@ -324,6 +334,10 @@ public class SearchController {
         headers.add("Access-Control-Allow-Methods", "GET");
         headers.add("Access-Control-Max-Age", "3600");
         headers.add("Access-Control-Allow-Headers", "x-requested-with");
+    }
+
+    private void enableClacks(HttpServletResponse response) {
+        response.addHeader("X-Clacks-Overhead","GNU Terry Pratchett"); //In memory of Sir Terry Pratchett
     }
 
     @ExceptionHandler(SolrServerException.class)
