@@ -78,17 +78,17 @@
 
     <section class="grid_18 push_6" id="search-results">
     <div class="results grid_24">
-        <div style="float: left">
-            <form name="downloads" method="get">
-                <select name="downloadType" onchange="changedDownloadType();">
-                    <option value="xml25">XML 2.5</option>
-                    <option value="xml30">XML 3.0</option>
-                    <option value="json">MI-Json</option>
-                </select>
-                <input type="text" name="format" hidden="true" value="xml25"/>
-                <input type="button" name="download" value="Download" onclick="downloadFromRest('${complex_download_form}');">
-            </form>
-        </div>
+        <%--<div style="float: left">--%>
+            <%--<form name="downloads" method="get">--%>
+                <%--<select name="downloadType" onchange="changedDownloadType();">--%>
+                    <%--<option value="xml25">XML 2.5</option>--%>
+                    <%--<option value="xml30">XML 3.0</option>--%>
+                    <%--<option value="json">MI-Json</option>--%>
+                <%--</select>--%>
+                <%--<input type="text" name="format" hidden="true" value="xml25"/>--%>
+                <%--<input type="button" name="download" value="Download" onclick="downloadFromRest('${complex_download_form}');">--%>
+            <%--</form>--%>
+        <%--</div>--%>
     <div class="pages">
         <c:if test="${sessionScope.pageInfo.prevPage != -1 || sessionScope.pageInfo.nextPage != -1}">
             <c:if test="${sessionScope.pageInfo.prevPage != -1}">
