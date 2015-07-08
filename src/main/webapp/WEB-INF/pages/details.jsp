@@ -257,9 +257,6 @@
                         <td><c:if test="${not empty part.identifier}"><a target="_blank"
                                                                          href="<c:out value="${part.identifierLink}"/>"><c:out
                                 value="${part.identifier}"/></a><br/></c:if>
-                            <c:if test="${not empty part.interactorAC}"><a target="_blank"
-                                                                           href="http://www.ebi.ac.uk/intact/molecule/<c:out value="${part.interactorAC}"/>"><c:out
-                                    value="${part.interactorAC}"/></a></c:if></td>
                         <td><c:if test="${not empty part.name}"><c:out value="${part.name}"/></c:if></td>
                         <td><c:if test="${not empty part.description}"><c:out value="${part.description}"/></c:if></td>
                         <td><c:if test="${not empty part.stochiometry}"><c:out
