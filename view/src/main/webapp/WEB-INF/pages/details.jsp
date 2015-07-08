@@ -105,7 +105,7 @@
     </nav>
 
     <div class="grid_24">
-        <div class="grid_12">
+        <div class="grid_12" style="margin-left: 0;">
             <h2><c:choose><c:when test="${not empty sessionScope.details.name}"><c:out
                     value="${sessionScope.details.name}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h2>
 
