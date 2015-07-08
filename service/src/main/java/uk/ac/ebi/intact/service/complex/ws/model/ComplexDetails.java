@@ -35,6 +35,7 @@ public class ComplexDetails {
     private String disease;
     private Collection<ComplexDetailsParticipants> participants;
     private Collection<ComplexDetailsCrossReferences> crossReferences;
+    private String institution;
 
     /*************************/
     /*      Constructor      */
@@ -86,5 +87,13 @@ public class ComplexDetails {
     }
     public Collection<ComplexDetailsCrossReferences> getCrossReferences() {
         return crossReferences;
+    }
+
+    public String getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(String institution) {
+        this.institution = institution;
     }
 }

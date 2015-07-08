@@ -331,6 +331,9 @@
             </table>
         </div>
     </div>
+    <c:if test="${not empty sessionScope.details.institution}">
+        <h6>Curated by: <c:out value="${sessionScope.details.institution}"/></h6>
+    </c:if>
 </div>
 <%@include file="footer.jsp" %>
 </html>

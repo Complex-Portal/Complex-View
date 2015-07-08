@@ -23,6 +23,7 @@ public class ComplexDetails {
     private String disease;
     private List<ComplexDetailsParticipants> participants;
     private List<ComplexDetailsCrossReferences> crossReferences;
+    private String institution;
 
     public ComplexDetails() {
         this.synonyms = new LinkedList<String>();
@@ -57,5 +58,13 @@ public class ComplexDetails {
     public Collection<ComplexDetailsCrossReferences> getCrossReferences() {
         Collections.sort(crossReferences);
         return crossReferences;
+    }
+
+    public String getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(String institution) {
+        this.institution = institution;
     }
 }
