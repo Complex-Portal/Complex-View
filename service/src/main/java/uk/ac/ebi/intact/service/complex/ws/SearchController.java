@@ -173,6 +173,7 @@ public class SearchController {
             details.setSystematicName   ( IntactComplexUtils.getSystematicName  (complex) );
             details.setSpecies          ( IntactComplexUtils.getSpeciesName     (complex) + "; " +
                                           IntactComplexUtils.getSpeciesTaxId    (complex) );
+            details.setInstitution      ( complex.getSource().getShortName());
 
             IntactComplexUtils.setParticipants(complex, details);
             IntactComplexUtils.setCrossReferences(complex, details);
@@ -337,7 +338,7 @@ public class SearchController {
     }
 
     private void enableClacks(HttpServletResponse response) {
-        response.addHeader("X-Clacks-Overhead","GNU Terry Pratchett"); //In memory of Sir Terry Pratchett
+        response.addHeader("X-Clacks-Overhead", "GNU Terry Pratchett"); //In memory of Sir Terry Pratchett
     }
 
     @ExceptionHandler(SolrServerException.class)
