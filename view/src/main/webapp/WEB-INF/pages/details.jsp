@@ -244,7 +244,7 @@
                     <td>ID</td>
                     <td>Name</td>
                     <td>Description</td>
-                    <td>Stochiometry</td>
+                    <td>Stoichiometry</td>
                     <td>Biological Role</td>
                     <td>Interactor Type</td>
                     <%--<td>Linked Features</td>--%>
