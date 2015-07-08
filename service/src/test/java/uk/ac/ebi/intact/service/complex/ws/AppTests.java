@@ -58,7 +58,7 @@ public class AppTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // this test is dependent on the number of indexed complexes
-                .andExpect(jsonPath("$.complexRestResult.size").value(numberOfComplexes))
+                .andExpect(jsonPath("$.size").value(numberOfComplexes))
         ;
         //TODO: Needs to be fixed in the feature, but for the moment it won't work!
         // Test Parameter XML
@@ -77,7 +77,7 @@ public class AppTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // this test is dependent on the number of indexed complexes
-                .andExpect(jsonPath("$.complexRestResult.size").value(numberOfComplexes - offset))
+                .andExpect(jsonPath("$.size").value(numberOfComplexes - offset))
         ;
     }
 
@@ -90,7 +90,7 @@ public class AppTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // this test is dependent on the number of indexed complexes
-                .andExpect(jsonPath("$.complexRestResult.size").value(number))
+                .andExpect(jsonPath("$.size").value(number))
         ;
     }
 
@@ -104,7 +104,7 @@ public class AppTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // this test is dependent on the number of indexed complexes
-                .andExpect(jsonPath("$.complexRestResult.size").value(number))
+                .andExpect(jsonPath("$.size").value(number))
         ;
 
         // Ask for two elements only
@@ -116,7 +116,7 @@ public class AppTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // this test is dependent on the number of indexed complexes
-                .andExpect(jsonPath("$.complexRestResult.size").value(number))
+                .andExpect(jsonPath("$.size").value(number))
         ;
         // Ask for two elements, but only return one
         offset = 1;
@@ -127,7 +127,7 @@ public class AppTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // this test is dependent on the number of indexed complexes
-                .andExpect(jsonPath("$.complexRestResult.size").value(1))
+                .andExpect(jsonPath("$.size").value(1))
         ;
         // Ask for three elements, but only return two
         offset = 0;
@@ -138,7 +138,7 @@ public class AppTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // this test is dependent on the number of indexed complexes
-                .andExpect(jsonPath("$.complexRestResult.size").value(2))
+                .andExpect(jsonPath("$.size").value(2))
         ;
         // Ask for three elements, but only return one
         offset = 1;
@@ -149,7 +149,7 @@ public class AppTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // this test is dependent on the number of indexed complexes
-                .andExpect(jsonPath("$.complexRestResult.size").value(1))
+                .andExpect(jsonPath("$.size").value(1))
         ;
         // Ask for two elements, but return nothing
         offset = 3;
@@ -160,7 +160,7 @@ public class AppTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 // this test is dependent on the number of indexed complexes
-                .andExpect(jsonPath("$.complexRestResult.size").value(0))
+                .andExpect(jsonPath("$.size").value(0))
         ;
     }
 
