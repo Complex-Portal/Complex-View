@@ -184,14 +184,15 @@ public class RestConnection {
             JSONObject j = json;
             if ( j != null) {
                 details.setSystematicName( (String) j.get("systematicName") );
-                details.setFunction( (String) j.get("function") );
-                details.setProperties( (String) j.get("properties") );
-                details.setAc( (String) j.get("ac") );
-                details.setName( (String) j.get("name") );
-                details.setSpecies( (String) j.get("species") );
-                details.setLigand( (String) j.get("ligand") );
-                details.setDisease( (String) j.get("disease") );
-                details.setComplexAssembly( (String) j.get("complexAssembly") );
+                details.setFunction((String) j.get("function"));
+                details.setProperties((String) j.get("properties"));
+                details.setAc((String) j.get("ac"));
+                details.setName((String) j.get("name"));
+                details.setSpecies((String) j.get("species"));
+                details.setLigand((String) j.get("ligand"));
+                details.setDisease((String) j.get("disease"));
+                details.setComplexAssembly((String) j.get("complexAssembly"));
+                details.setInstitution( (String) j.get("institution"));
                 JSONArray synonyms = (JSONArray) j.get("synonyms");
                 for ( int i = 0; i < synonyms.size(); ++i ) {
                     details.addSynonym((String) synonyms.get(i));
