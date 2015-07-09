@@ -56,6 +56,7 @@
     <link href="<c:url value="/resources/css/complex-portal.css" />" rel="stylesheet"> <%--Added by Oscar--%>
     <link href="<c:url value="/resources/css/intact-colours.css" />" rel="stylesheet"> <%--Added by Oscar--%>
     <link href="<c:url value="/resources/css/XLV.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/css/intact-tweet.css" />" rel="stylesheet">
     <!-- end CSS-->
     <%--Begin JS--%>
     <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/ga.js"/>"></script>
@@ -83,6 +84,10 @@
         <li><a href="#global-nav-expanded">Skip to expanded EBI global navigation menu (includes all sub-sections)</a></li>
     </ul>
 </div>
+
+<!-- Twitter widget -->
+<script type="text/javascript">!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
 
 <div id="wrapper" class="container_24">
     <header>
