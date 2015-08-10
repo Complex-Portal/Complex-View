@@ -62,9 +62,8 @@
     <h2>What can be described as a complex</h2>
 
     <p>A stable set of (two or more) interacting macromolecules such as proteins which can be co-purified by an
-        acceptable method and have been shown to exist as an isolated, functional unit in vivo. Any interacting
-        non-protein molecular (e.g. small molecules, nucleic acids) will also be included.</p>
-
+        acceptable method and have been shown to exist as an isolated, functional unit in vivo. Any interacting,
+        integral non-protein molecules (e.g. small molecules, nucleic acids) may also be included.</p>
     <p>What should not be captured:</p>
     <blockquote>
         <ul>
