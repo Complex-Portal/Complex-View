@@ -16,6 +16,12 @@
         <spring.version>3.2.4.RELEASE</spring.version>
     </properties>
 
+    <scm>
+        <connection>scm:git:https://bitbucket.org/intact-ebi/complex-view.git</connection>
+        <developerConnection>scm:git:https://bitbucket.org/intact-ebi/complex-view.git</developerConnection>
+        <url>https://bitbucket.org/intact-ebi/complex-indexer</url>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>javax.servlet</groupId>
