@@ -19,7 +19,7 @@
     <scm>
         <connection>scm:git:https://bitbucket.org/intact-ebi/complex-view.git</connection>
         <developerConnection>scm:git:https://bitbucket.org/intact-ebi/complex-view.git</developerConnection>
-        <url>https://bitbucket.org/intact-ebi/complex-indexer</url>
+        <url>https://bitbucket.org/intact-ebi/complex-view</url>
     </scm>
 
     <dependencies>
