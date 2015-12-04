@@ -262,6 +262,7 @@ public class WebAppController {
         model.addAttribute("intact_url", "http://www.ebi.ac.uk/intact/");
         model.addAttribute("complex_ftp_url", this.restConnection.getFtpUrl());
         model.addAttribute("complex_download_form", this.restConnection.getWSUrl() + "export/");
+        model.addAttribute("complex_ws_url", this.restConnection.getWSUrl());
     }
 
     private String cleanQuery(String query) {
