@@ -158,7 +158,7 @@
                 <select id="annotationsSelect" onChange="changeAnnotations();">
                     <option selected='selected'>MI features</option>
                     <option>UniprotKB</option>
-                    <option>SuperFamily</option>
+                    <option>Domains</option>
                     <option>Interactor</option>
                     <option>None</option>
                 </select>
