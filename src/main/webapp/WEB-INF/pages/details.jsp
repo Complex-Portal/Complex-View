@@ -2,8 +2,7 @@
 
 <%@include file="header.jsp" %>
 <jsp:useBean id="details" class="uk.ac.ebi.intact.service.complex.view.ComplexDetails" scope="session"/>
-
-
+<script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/d3.v3.min.js"/>"></script>
 <script>
     $(function () {
         $("#dialog").dialog({
