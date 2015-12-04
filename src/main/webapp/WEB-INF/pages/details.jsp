@@ -178,7 +178,7 @@
 
                         var table = "<table><tr style='height:10px;'></tr><tr><td style='width:80px;margin:10px;"
                                 + "background:#70BDBD;opacity:0.3;border:none;'>"
-                                + "</td><td>your complex</td></tr>";
+                                + "</td><td>${sessionScope.details.ac}</td></tr>";
 
                         if (colourAssignment) {
                             var domain = colourAssignment.domain();
