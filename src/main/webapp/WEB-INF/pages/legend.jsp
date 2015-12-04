@@ -16,7 +16,7 @@
                 <div style="float:right">
                     <img src="<c:url value="/resources/svg/smallMol.svg"/>">
                 </div>
-            <td>Small molecule</td>
+            <td>Bioactive entity</td>
         </tr>
         <tr>
             <td>
