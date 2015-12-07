@@ -149,8 +149,7 @@
         <div class="grid_12" style="height: 50%; width: 45%;">
             <div id="networkControls" class="networkControls" style="margin: 0; padding: 0;">
                 <button id="Reset" class="submit networkButton" onclick="xlv.reset();">Reset</button>
-                <button id="ExportSVG" class="submit networkButton" onclick="xlv.exportSVG('networkSVG');">Export SVG
-                </button>
+                <button id="ExportSVG" class="submit networkButton" onclick="exportSVG()">Export SVG</button>
                 <button id="dialog_opener" class="submit networkButton">Legend</button>
                 <div id="dialog" title="Legend" style="">
                     <%@include file="legend.jsp" %>
@@ -202,6 +201,12 @@
                     xlv.readMIJSON(data, true);
                     xlv.autoLayout();
                 });
+                function exportSVG() {
+                    var xml = xlv.getSVG();
+                    xmlAsUrl = 'data:image/svg;filename=xiNET-output.svg,';
+                    xmlAsUrl += encodeURIComponent(xml);
+                    var win = window.open(xmlAsUrl, 'xiNET-output.svg');
+                }
             </script>
         </div>
         <div class="grid_24">
