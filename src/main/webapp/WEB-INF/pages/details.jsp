@@ -151,6 +151,8 @@
                 <button id="Reset" class="submit networkButton" onclick="xlv.reset();">Reset</button>
                 <button id="ExportSVG" class="submit networkButton" onclick="xlv.exportSVG('networkSVG');">Export SVG
                 </button>
+                <button onclick="xlv.expandAll();">Expand All</button>
+                <button onclick="xlv.collapseAll();">Collapse All</button>
                 <button id="dialog_opener" class="submit networkButton">Legend</button>
                 <div id="dialog" title="Legend" style="">
                     <%@include file="legend.jsp" %>
