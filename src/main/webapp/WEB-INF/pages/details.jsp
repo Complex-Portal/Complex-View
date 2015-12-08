@@ -150,11 +150,11 @@
             <div id="networkControls" class="networkControls" style="margin: 0; padding: 0;">
                 <button id="dialog_opener" class="submit networkButton">Legend</button>
                 <select id="annotationsSelect" onChange="changeAnnotations();">
-                    <option selected='selected'>MI features</option>
-                    <option>UniprotKB</option>
-                    <option>Domains</option>
-                    <option>Interactor</option>
-                    <option>None</option>
+                    <option value="MI features" selected='selected'>MI features</option>
+                    <option value="UniprotKB">UniprotKB</option>
+                    <option value="SuperFamily">SuperFamily</option>
+                    <option value="Interactor">Interactor</option>
+                    <option value="None">None</option>
                 </select>
                 <button onclick="xlv.expandAll();">Expand All</button>
                 <button id="Reset" class="submit networkButton" onclick="xlv.reset();">Reset</button>
