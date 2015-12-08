@@ -148,14 +148,7 @@
         </div>
         <div class="grid_12" style="height: 50%; width: 45%;">
             <div id="networkControls" class="networkControls" style="margin: 0; padding: 0;">
-                <button id="Reset" class="submit networkButton" onclick="xlv.reset();">Reset</button>
-                <button id="ExportSVG" class="submit networkButton" onclick="exportSVG()">Export SVG</button>
-                <button onclick="xlv.expandAll();">Expand All</button>
-                <button onclick="xlv.collapseAll();">Collapse All</button>
                 <button id="dialog_opener" class="submit networkButton">Legend</button>
-                <div id="dialog" title="Legend" style="">
-                    <%@include file="legend.jsp" %>
-                </div>
                 <select id="annotationsSelect" onChange="changeAnnotations();">
                     <option selected='selected'>MI features</option>
                     <option>UniprotKB</option>
@@ -163,6 +156,12 @@
                     <option>Interactor</option>
                     <option>None</option>
                 </select>
+                <button onclick="xlv.expandAll();">Expand All</button>
+                <button id="Reset" class="submit networkButton" onclick="xlv.reset();">Reset</button>
+                <button id="ExportSVG" class="submit networkButton" onclick="exportSVG()">Export SVG</button>
+                <div id="dialog" title="Legend" style="">
+                    <%@include file="legend.jsp" %>
+                </div>
             </div>
             <br>
             <br>
