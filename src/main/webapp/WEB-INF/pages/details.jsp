@@ -211,33 +211,63 @@
             </script>
         </div>
         <div class="grid_24">
-            <c:if test="${not empty sessionScope.details.function}">
+            <c:if test="${not empty sessionScope.details.functions}">
                 <h5>Function:</h5>
-
-                <p style="text-align: justify;"><c:out value="${sessionScope.details.function}"/></p>
+                
+                <c:forEach var="function" items="${sessionScope.details.functions}">
+                    <p style="text-align: justify;"><c:out value="${function}"/></p>
+                </c:forEach>
             </c:if>
             <c:if test="${not empty sessionScope.details.properties}">
                 <h5>Properties:</h5>
-
-                <p style="text-align: justify;"><c:out value="${sessionScope.details.properties}"/></p>
+                
+                <c:forEach var="property" items="${sessionScope.details.properties}">
+                    <p style="text-align: justify;"><c:out value="${property}"/></p>
+                </c:forEach>
             </c:if>
-            <c:if test="${not empty sessionScope.details.ligand}">
+            <c:if test="${not empty sessionScope.details.agonists}">
+                <h5>Agonist:</h5>
+
+                <c:forEach var="agonist" items="${sessionScope.details.agonists}">
+                    <p style="text-align: justify;"><c:out value="${agonist}"/></p>
+                </c:forEach>
+            </c:if>
+            <c:if test="${not empty sessionScope.details.antagonists}">
+                <h5>Antagonist:</h5>
+
+                <c:forEach var="antagonist" items="${sessionScope.details.antagonists}">
+                    <p style="text-align: justify;"><c:out value="${antagonist}"/></p>
+                </c:forEach>
+            </c:if>
+            <c:if test="${not empty sessionScope.details.ligands}">
                 <h5>Ligand:</h5>
-
-                <p style="text-align: justify;"><c:out value="${sessionScope.details.ligand}"/></p>
+                
+                <c:forEach var="ligand" items="${sessionScope.details.ligands}">
+                    <p style="text-align: justify;"><c:out value="${ligand}"/></p>
+                </c:forEach>
             </c:if>
-            <c:if test="${not empty sessionScope.details.disease}">
+            <c:if test="${not empty sessionScope.details.comments}">
+                <h5>Comment:</h5>
+
+                <c:forEach var="comment" items="${sessionScope.details.comments}">
+                    <p style="text-align: justify;"><c:out value="${comment}"/></p>
+                </c:forEach>
+            </c:if>
+            <c:if test="${not empty sessionScope.details.diseases}">
                 <h5>Disease:</h5>
-
-                <p style="text-align: justify;"><c:out value="${sessionScope.details.disease}"/></p>
+                
+                <c:forEach var="disease" items="${sessionScope.details.diseases}">
+                    <p style="text-align: justify;"><c:out value="${disease}"/></p>
+                </c:forEach>
             </c:if>
-            <c:if test="${not empty sessionScope.details.complexAssembly}">
+            <c:if test="${not empty sessionScope.details.complexAssemblies}">
                 <h5>Complex Assembly:</h5>
-
-                <p style="text-align: justify;"><c:out value="${sessionScope.details.complexAssembly}"/></p>
+                
+                <c:forEach var="complexAssembly" items="${sessionScope.details.complexAssemblies}">
+                    <p style="text-align: justify;"><c:out value="${complexAssembly}"/></p>
+                </c:forEach>
             </c:if>
             </c:if>
-
         </div>
         <br>
 

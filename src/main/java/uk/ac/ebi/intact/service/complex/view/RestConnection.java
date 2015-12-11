@@ -184,18 +184,45 @@ public class RestConnection {
             JSONObject j = json;
             if ( j != null) {
                 details.setSystematicName( (String) j.get("systematicName") );
-                details.setFunction((String) j.get("function"));
-                details.setProperties((String) j.get("properties"));
                 details.setAc((String) j.get("ac"));
                 details.setName((String) j.get("name"));
                 details.setSpecies((String) j.get("species"));
-                details.setLigand((String) j.get("ligand"));
-                details.setDisease((String) j.get("disease"));
-                details.setComplexAssembly((String) j.get("complexAssembly"));
-                details.setInstitution( (String) j.get("institution"));
+                details.setInstitution((String) j.get("institution"));
+                JSONArray properties = (JSONArray) j.get("properties");
+                for ( int i = 0; i < properties.size(); ++i ) {
+                    details.addProperty((String) properties.get(i));
+                }
+                JSONArray ligands = (JSONArray) j.get("ligands");
+                for ( int i = 0; i < ligands.size(); ++i ) {
+                    details.addLigand((String) ligands.get(i));
+                }
+                JSONArray diseases = (JSONArray) j.get("diseases");
+                for ( int i = 0; i < diseases.size(); ++i ) {
+                    details.addDisease((String) diseases.get(i));
+                }
+                JSONArray complexAssemblies = (JSONArray) j.get("complexAssemblies");
+                for ( int i = 0; i < complexAssemblies.size(); ++i ) {
+                    details.addFunction((String) complexAssemblies.get(i));
+                }
+                JSONArray functions = (JSONArray) j.get("functions");
+                for ( int i = 0; i < functions.size(); ++i ) {
+                    details.addFunction((String) functions.get(i));
+                }
                 JSONArray synonyms = (JSONArray) j.get("synonyms");
                 for ( int i = 0; i < synonyms.size(); ++i ) {
                     details.addSynonym((String) synonyms.get(i));
+                }
+                JSONArray agonists = (JSONArray) j.get("agonists");
+                for ( int i = 0; i < agonists.size(); ++i ) {
+                    details.addAgonist((String) agonists.get(i));
+                }
+                JSONArray antagonists = (JSONArray) j.get("antagonists");
+                for ( int i = 0; i < antagonists.size(); ++i ) {
+                    details.addAntagonist((String) antagonists.get(i));
+                }
+                JSONArray comments = (JSONArray) j.get("comments");
+                for ( int i = 0; i < comments.size(); ++i ) {
+                    details.addComment((String) comments.get(i));
                 }
                 // Setting the participants information
                 JSONArray partArray = (JSONArray) j.get("participants");
