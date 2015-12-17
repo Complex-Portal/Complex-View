@@ -13257,599 +13257,303 @@
   }
 },{"./../../bower_components/d3/d3.js":2}],8:[function(require,module,exports){
 //    xiNET Interaction Viewer
-
 //    Copyright 2013 Rappsilber Laboratory
-
 //
-
 //    This product includes software developed at
-
 //    the Rappsilber Laboratory (http://www.rappsilberlab.org/).
-
 //
-
 //    author: Colin Combe
-
 //
-
 //    Rotator.js
-
 //    see http://stackoverflow.com/questions/1369004/this-keyword-in-event-methods-when-using-javascript-prototype-object
-
-
 
   "use strict";
 
-
-
   var Config = require('./Config');
-
-
 
   var MouseEventCodes = {}
 
-
-
   MouseEventCodes.MOUSE_UP = 0;//start state, also set when mouse up on svgElement
-
   MouseEventCodes.PANNING = 1;//set by mouse down on svgElement - left button, no shift or ctrl
-
   MouseEventCodes.DRAGGING = 2;//set by mouse down on Protein or Link
-
   MouseEventCodes.ROTATING = 3;//set by mouse down on Rotator, drag?
-
   MouseEventCodes.SELECTING = 4;//set by mouse down on svgElement- right button or left button shift or ctrl, drag
-
-
-
 
 
   function Rotator(proteinRegion, upperOrLower, xlvController) {
 
-
-
     var self = this;
-
     this.ctrl = xlvController;
-
     this.proteinOrPartThereof = proteinRegion;
-
     this.upperOrLower = upperOrLower;
 
-
-
     var RADIUS = 14;
-
     var SYMBOL_RADIUS = 20;// not really, gets scaled down
 
-
-
     this.svg = document.createElementNS(Config.svgns, "g");
-
     this.rotatorSymbol = document.createElementNS(Config.svgns, "g");
 
-
-
     var rotatorCircle = document.createElementNS(Config.svgns, "circle");
-
     rotatorCircle.setAttribute("r", RADIUS);
-
     rotatorCircle.setAttribute("stroke", "none");
-
     rotatorCircle.setAttribute("fill", "gray");
-
     rotatorCircle.setAttribute("fill-opacity", "0.0");
-
     this.svg.appendChild(rotatorCircle);
 
-
-
     var symbolCircle = document.createElementNS(Config.svgns, "circle");
-
     symbolCircle.setAttribute("r", SYMBOL_RADIUS);
-
     symbolCircle.setAttribute("stroke", "black");
-
     symbolCircle.setAttribute("stroke-width", "1");
-
     symbolCircle.setAttribute("fill", "none");
-
     this.rotatorSymbol.appendChild(symbolCircle);
 
-
-
     var arrow1 = document.createElementNS(Config.svgns, "path");
-
     //    arrow1.setAttribute("id","arrow");
-
     arrow1.setAttribute("d", "M 19.818182,-3 L 16,3.10345 L 23.636363,3.10345 L 19.818182,-3 z ");
-
     arrow1.setAttribute("stroke", "black");
-
     arrow1.setAttribute("stroke-width", "1");
-
     arrow1.setAttribute("fill", "black");
 
-
-
     this.rotatorSymbol.appendChild(arrow1);
-
     var arrow2 = document.createElementNS(Config.svgns, "path");
-
     //    arrow2.setAttribute("id","arrow");
-
     arrow2.setAttribute("d", "M 19.818182,-3 L 16,3.10345 L 23.636363,3.10345 L 19.818182,-3 z ");
-
     arrow2.setAttribute("stroke", "black");
-
     arrow2.setAttribute("stroke-width", "1");
-
     arrow2.setAttribute("fill", "black");
-
     arrow2.setAttribute("transform", "rotate(180)");
-
     this.rotatorSymbol.appendChild(arrow2);
-
     this.rotatorSymbol.setAttribute("transform", "rotate(45) scale (0.7, 0.7)");
 
-
-
     this.rotatorSymbol.setAttribute("display", "none");
-
-
 
     this.inner = document.createElementNS(Config.svgns, "g");
-
     this.inner.setAttribute("class","PV_rotator");
-
     this.inner.appendChild(this.rotatorSymbol);
 
-
-
     this.svg.appendChild(this.inner);
-
     //    this.svg.setAttribute("class","PV_rotator");
 
-
-
     //set the events for it
-
     this.svg.onmouseover = function(evt) {
-
       self.rotatorMouseOver(evt);
-
     };
-
     this.svg.onmouseout = function(evt) {
-
       self.rotatorMouseOut(evt);
-
     };
-
     this.svg.onmousedown = function(evt) {
-
       self.rotatorMouseDown(evt);
-
     };
-
   }
-
-
 
   Rotator.prototype.rotatorMouseOver = function (evt) {
-
 //    console.log("rotator mouseover (this = " + this.toString() + ')');
-
     if (!this.ctrl.rotating) {
-
       this.rotatorSymbol.setAttribute("display", "block");
-
     }
-
   }
-
-
 
   Rotator.prototype.rotatorMouseOut = function (evt) {
-
     //if (!rotateEnabled) {
-
     this.rotatorSymbol.setAttribute("display", "none");
-
 //}
-
   }
-
-
 
   Rotator.prototype.rotatorMouseDown = function (evt) {
-
     this.ctrl.state = MouseEventCodes.ROTATING;
-
     this.ctrl.dragElement = this.proteinOrPartThereof;
-
     var p = this.ctrl.getEventPoint(evt);// seems to be correct, see above
-
     var c = this.ctrl.mouseToSVG(p.x, p.y);
-
     this.ctrl.whichRotator = this.upperOrLower;
-
     return false;
-
   }
-
-
 
   module.exports = Rotator;
 
-
 },{"./Config":5}],9:[function(require,module,exports){
 //    xiNET Cross-link Viewer
-
 //    Copyright 2014 Rappsilber Laboratory
-
 //
-
 //    This product includes software developed at
-
 //    the Rappsilber Laboratory (http://www.rappsilberlab.org/).
-
 //
-
 //    author: Colin Combe
-
 //
-
 //    xiNET_Storage.js
-
-
 
   "use strict";
 
-
-
   function xiNET_Storage() {}
-
   var Annotation = require('../model/interactor/Annotation');
-
-
 
   xiNET_Storage.ns = "xiNET.";
 
-
-
   xiNET_Storage.accessionFromId = function (id){
-
     var idRegex;
-
     // i cant figure out way to do this purely with regex... who cares
-
     if (id.indexOf("(") !== -1){//id has participant number in it
-
       idRegex = /uniprotkb_(.*)(\()/;
-
     }
-
     else {
-
       idRegex = /uniprotkb_(.*)/;
-
     }
-
     var match = idRegex.exec(id);
-
     if (match){
-
       return match[1];
-
     }
-
     else if (id.indexOf('|') !== -1){
-
       //following reads swiss-prot style identifiers,
-
       //(keeps this class compatible with crosslink-viewer)
-
       return id.split('|')[1];
-
     } else {
-
       return id;
-
     }
-
   }
-
-
 
   xiNET_Storage.getUniProtTxt = function (id, callback){
-
     var accession = xiNET_Storage.accessionFromId(id);
-
     function uniprotWebService(){
-
       var url = "http://www.uniprot.org/uniprot/" + accession + ".txt";
-
       d3.text(url, function (txt){
-
         //~ console.log(accession + " retrieved from UniProt.");
-
         if(typeof(Storage) !== "undefined") {
-
           localStorage.setItem(xiNET_Storage.ns  + "UniProtKB."+ accession, txt);
-
           //~ console.log(accession + " UniProt added to local storage.");
-
         }
-
         callback(id, txt)
-
       });
-
     }
-
-
 
     if(typeof(Storage) !== "undefined") {
-
       // Code for localStorage/sessionStorage.
-
       //~ console.log("Local storage found.");
-
       // Retrieve
-
       var stored = localStorage.getItem(xiNET_Storage.ns + "UniProtKB." + accession);
-
       if (stored){
-
         //~ console.log(accession + " UniProt from local storage.");
-
         callback(id, stored);
-
       }
-
       else {
-
         //~ console.log(accession + " UniProt not in local storage.");
-
         uniprotWebService();
-
       }
-
     }
-
     else {
-
       //~ console.log("No local storage found.");
-
       uniprotWebService();
-
     }
-
   }
-
-
 
   xiNET_Storage.getSequence = function (id, callback){
-
     //~ var accession = xiNET_Storage.accessionFromId(id);
-
     xiNET_Storage.getUniProtTxt(id, function(noNeed, txt){
-
           var sequence = "";
-
           var lines = txt.split('\n');
-
           var lineCount = lines.length;
-
           for (var l = 0; l < lineCount; l++){
-
             var line = lines[l];
-
             if (line.indexOf("SQ") === 0){
-
               //sequence = line;
-
               l++;
-
               for (l; l < lineCount; l++){
-
                 line = lines[l];
-
                 sequence += line;
-
               }
-
             }
-
           }
-
           callback(id, sequence.replace(/[^A-Z]/g, ''));
-
         }
-
     );
-
   }
-
-
 
   xiNET_Storage.getUniProtFeatures = function (id, callback){
-
     var accession = xiNET_Storage.accessionFromId(id);
-
     xiNET_Storage.getUniProtTxt(id, function(id, txt){
-
           var features = new Array();
-
           var lines = txt.split('\n');
-
           var lineCount = lines.length;
-
           for (var l = 0; l < lineCount; l++){
-
             var line = lines[l];
-
             if (line.indexOf("FT") === 0){
-
               var fields = line.split(/\s{2,}/g);
-
               if (fields.length > 4 && fields[1] === 'DOMAIN') {
-
                 //console.log(fields[1]);fields[4].substring(0, fields[4].indexOf("."))
-
                 var name = fields[4].substring(0, fields[4].indexOf("."));
-
                 features.push(new Annotation (name, fields[2], fields[3], null, fields[4]));
-
               }
-
             }
-
           }
-
           callback(id, features);
-
         }
-
     );
-
   }
-
-
 
   xiNET_Storage.getSuperFamFeatures = function (id, callback){
-
     var accession = xiNET_Storage.accessionFromId(id);
-
     function superFamDAS(){
-
       var url = "http://supfam.org/SUPERFAMILY/cgi-bin/das/up/features?segment=" + accession;
-
       d3.xml(url, function (xml){
-
         xml = new XMLSerializer().serializeToString(xml);
-
         //~ console.log(accession + " SuperFamDAS  retrieved.");
-
         if(typeof(Storage) !== "undefined") {
-
           localStorage.setItem(xiNET_Storage.ns  + "SuperFamDAS." + accession, xml);
-
           //~ console.log(accession + " SuperFamDAS added to local storage.");
-
         }
-
         parseSuperFamDAS(xml);
-
       });
-
     }
-
-
 
     function parseSuperFamDAS (dasXml){
-
       //~ console.log(dasXml);
-
       if (window.DOMParser)
-
       {
-
         var parser=new DOMParser();
-
         var xmlDoc=parser.parseFromString(dasXml,"text/xml");
-
       }
-
       else // Internet Explorer
-
       {
-
         var xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
-
         xmlDoc.async=false;
-
         xmlDoc.loadXML(dasXml);
-
       }
-
       var features = new Array();
-
       var xmlFeatures = xmlDoc.getElementsByTagName('FEATURE');
-
       var featureCount = xmlFeatures.length;
-
       for (var f = 0; f < featureCount; f++) {
-
         var xmlFeature = xmlFeatures[f];
-
         var type = xmlFeature.getElementsByTagName('TYPE')[0];//might need to watch for text nodes getting mixed in here
-
         var category = type.getAttribute('category')
-
         if (category === 'miscellaneous') {
-
           var name = type.getAttribute('id');
-
           var start = xmlFeature.getElementsByTagName('START')[0].textContent;
-
           var end = xmlFeature.getElementsByTagName('END')[0].textContent;
-
           features.push(new Annotation(name, start, end));
-
         }
-
       }
-
       //~ console.log(JSON.stringify(features));
-
       callback(id, features);
-
     }
-
-
 
     if(typeof(Storage) !== "undefined") {
-
       //~ console.log("Local storage found.");
-
       // Retrieve
-
       var stored = localStorage.getItem(xiNET_Storage.ns + "SuperFamDAS."  + accession);
-
       if (stored){
-
         //~ console.log(accession + " SuperFamDAS from local storage.");
-
         parseSuperFamDAS(stored);
-
       }
-
       else {
-
         //~ console.log(accession + " SuperFamDAS not in local storage.");
-
         superFamDAS();
-
       }
-
     }
-
     else {
-
       //~ console.log("No local storage found.");
-
       superFamDAS();
-
     }
-
   }
 
-
-
   module.exports = xiNET_Storage;
-
 
 },{"../model/interactor/Annotation":10}],10:[function(require,module,exports){
 //    xiNET Interaction Viewer
@@ -15525,509 +15229,257 @@
 
 },{"../../controller/Config":5,"./Molecule":15}],20:[function(require,module,exports){
 //    xiNET interaction viewer
-
 //    Copyright 2013 Rappsilber Laboratory
-
 //
-
 //    This product includes software developed at
-
 //    the Rappsilber Laboratory (http://www.rappsilberlab.org/).
-
-
 
   "use strict";
 
-
-
   var Config = require('../../controller/Config');
-
   var Link = require('./Link');
-
   var SequenceLink = require('./SequenceLink');
-
 //josh - following are libraries and should be in 'vendor'?
-
 //  but I don't know how to set up the dependency if its there
-
   var Intersection = require('intersectionjs');
-
   var Point2D = require('point2d');
 
-
-
 // BinaryLink.js
-
 // the class representing a binary interaction
-
-
 
   BinaryLink.prototype = new Link();
 
-
-
   function BinaryLink(id, xlvController, fromI, toI) {
-
     this.id = id;
-
     this.evidences = d3.map();
-
     this.interactors = [fromI, toI];
-
     this.sequenceLinks = d3.map();
-
     this.controller = xlvController;
-
   }
-
-
 
 //~ BinaryLink.prototype.getToolTip = function(){
-
   //~ var tooltip = "", fromResidues = "", toResidues = "";
-
   //~ var seqLinks = this.sequenceLinks.values();
-
   //~ var seqLinkCount = seqLinks.length;
-
   //~ for (var sl = 0; sl < seqLinkCount; sl++){
-
   //~ if (sl > 0){
-
   //~ fromResidues += ",";
-
   //~ toResidues += ",";
-
   //~ }
-
   //~ var seqLink = seqLinks[sl];
-
   //~ for (var i = 0; i < seqLink.fromSequenceData.length; i++){
-
   //~ if (i > 0) tooltip += ",";
-
   //~ fromResidues += seqLink.fromSequenceData[i].toString();
-
   //~ }
-
   //~ for (var j = 0; j < seqLink.toSequenceData.length; j++){
-
   //~ if (j > 0) tooltip += ",";
-
   //~ toResidues += seqLink.toSequenceData[j].toString();
-
   //~ }
-
   //~ }
-
   //~ tooltip += this.interactors[0].labelText + " ";
-
   //~ tooltip += fromResidues;
-
   //~ tooltip += " TO ";
-
   //~ tooltip += this.interactors[1].labelText + " ";
-
   //~ tooltip += toResidues;
-
   //~ return tooltip;
-
 //~ }
 
-
-
   BinaryLink.prototype.initSVG = function() {
-
     this.line = document.createElementNS(Config.svgns, "line");
-
     this.highlightLine = document.createElementNS(Config.svgns, "line");
-
     this.thickLine = document.createElementNS(Config.svgns, "line");
 
-
-
     this.line.setAttribute("class", "link");
-
     this.line.setAttribute("fill", "none");
-
     this.line.setAttribute("stroke", "black");
-
     this.line.setAttribute("stroke-width", "1");
-
     this.line.setAttribute("stroke-linecap", "round");
-
     this.highlightLine.setAttribute("class", "link");
-
     this.highlightLine.setAttribute("fill", "none");
-
     this.highlightLine.setAttribute("stroke", Config.highlightColour);
-
     this.highlightLine.setAttribute("stroke-width", "10");
-
     this.highlightLine.setAttribute("stroke-linecap", "round");
-
     this.highlightLine.setAttribute("stroke-opacity", "0");
-
     this.thickLine.setAttribute("class", "link");
-
     this.thickLine.setAttribute("fill", "none");
-
     this.thickLine.setAttribute("stroke", "lightgray");
-
     this.thickLine.setAttribute("stroke-linecap", "round");
-
     this.thickLine.setAttribute("stroke-linejoin", "round");
-
     //set the events for it
-
     var self = this;
-
     this.line.onmousedown = function(evt) {
-
       self.mouseDown(evt);
-
     };
-
     this.line.onmouseover = function(evt) {
-
       self.mouseOver(evt);
-
     };
-
     this.line.onmouseout = function(evt) {
-
       self.mouseOut(evt);
-
     };
-
     this.line.ontouchstart = function(evt) {
-
       self.touchStart(evt);
-
     };
-
-
 
     this.highlightLine.onmousedown = function(evt) {
-
       self.mouseDown(evt);
-
     };
-
     this.highlightLine.onmouseover = function(evt) {
-
       self.mouseOver(evt);
-
     };
-
     this.highlightLine.onmouseout = function(evt) {
-
       self.mouseOut(evt);
-
     };
-
     this.highlightLine.ontouchstart = function(evt) {
-
       self.touchStart(evt);
-
     };
-
-
 
     this.thickLine.onmousedown = function(evt) {
-
       self.mouseDown(evt);
-
     };
-
     this.thickLine.onmouseover = function(evt) {
-
       self.mouseOver(evt);
-
     };
-
     this.thickLine.onmouseout = function(evt) {
-
       self.mouseOut(evt);
-
     };
-
     this.thickLine.ontouchstart = function(evt) {
-
       self.touchStart(evt);
-
     };
-
-
 
     this.isSelected = false;
-
   }
-
   ;
-
   BinaryLink.prototype.showHighlight = function(show) {
-
     if (this.notSubLink === true){
-
       this.highlightMolecules(show);
-
     }
-
     if (show) {
-
       //~ this.highlightLine.setAttribute("stroke", xiNET.highlightColour.toRGB());
-
       this.highlightLine.setAttribute("stroke-opacity", "1");
-
     } else {
-
       //~ this.highlightLine.setAttribute("stroke", xiNET.selectedColour.toRGB());
-
       //~ if (this.isSelected === false) {
-
       this.highlightLine.setAttribute("stroke-opacity", "0");
-
       //~ }
-
     }
-
   };
-
-
 
   BinaryLink.prototype.check = function() {
-
     if (this.interactors[0].form === 0 && this.interactors[1].form === 0) {
-
       this.show();
-
       return true;
-
     }
-
     else {//at least one end was in stick form
-
       this.hide();
-
       return false;
-
     }
-
   };
-
-
 
   BinaryLink.prototype.show = function() {
-
     if (typeof this.line === 'undefined') {
-
       this.initSVG();
-
     }
-
     this.line.setAttribute("stroke-width", this.controller.z * 1);
-
     this.highlightLine.setAttribute("stroke-width", this.controller.z * 10);
-
     this.setLinkCoordinates(this.interactors[0]);
-
     this.setLinkCoordinates(this.interactors[1]);
-
     if (this.thickLineShown) {
-
       this.controller.p_pLinksWide.appendChild(this.thickLine);
-
     }
-
     this.controller.highlights.appendChild(this.highlightLine);
-
     this.controller.p_pLinks.appendChild(this.line);
-
     if (this.thickLineShown) {
-
       this.thickLine.setAttribute("stroke-width", this.w);
-
     }
-
   };
-
-
 
   BinaryLink.prototype.hide = function() {
-
     var p_pLinksWide = []
-
     var highlights = []
-
     var p_pLinks = []
 
-
-
     for (var i = 0; i < this.controller.p_pLinksWide.childNodes.length; i++) {
-
       p_pLinksWide[i] = this.controller.p_pLinksWide.childNodes[i];
-
     }
-
-
 
     for (var i = 0; i < this.controller.highlights.childNodes.length; i++) {
-
       highlights[i] = this.controller.highlights.childNodes[i];
-
     }
-
-
 
     for (var i = 0; i < this.controller.p_pLinks.childNodes.length; i++) {
-
       p_pLinks[i] = this.controller.p_pLinks.childNodes[i];
-
     }
-
-
 
     if (p_pLinksWide.indexOf(this.thickLine) > -1) {
-
       this.controller.p_pLinksWide.removeChild(this.thickLine);
-
     }
-
     if (highlights.indexOf(this.highlightLine) > -1) {
-
       this.controller.highlights.removeChild(this.highlightLine);
-
     }
-
     if (p_pLinks.indexOf(this.line) > -1) {
-
       this.controller.p_pLinks.removeChild(this.line);
-
     }
-
   };
-
-
 
   BinaryLink.prototype.setLinkCoordinates = function() {
-
     var pos1 = this.interactors[0].getPosition();
-
     var pos2 = this.interactors[1].getPosition();
 
-
-
     if (this.interactors[0].type === 'complex'){
-
       var naryPath = this.interactors[0].naryLink.hull;
-
       var iPath = new Array();
-
       for (var pi = 0; pi < naryPath.length; pi++) {
-
         var p = naryPath[pi];
-
         iPath.push(new Point2D(p[0],p[1]));
-
       }
-
       var a1 = new Point2D(pos1[0], pos1[1]);
-
       var a2 = new Point2D(pos2[0], pos2[1]);
-
       var intersect = Intersection.intersectLinePolygon(a1, a2, iPath);
-
       var newPos;
-
       if (intersect.points[0]){
-
         pos1 = [intersect.points[0].x,intersect.points[0].y];
-
       }
-
     }
-
-
 
     if (this.interactors[1].type === 'complex'){
-
       var naryPath = this.interactors[0].naryLink.hull;
-
       var iPath = new Array();
-
       for (var pi = 0; pi < naryPath.length; pi++) {
-
         var p = naryPath[pi];
-
         iPath.push(new Point2D(p[0],p[1]));
-
       }
-
       var a1 = new Point2D(pos1[0], pos1[1]);
-
       var a2 = new Point2D(pos2[0], pos2[1]);
-
       var intersect = Intersection.intersectLinePolygon(a1, a2, iPath);
-
       var newPos;
-
       if (intersect.points[0]){
-
         pos2 = [intersect.points[0].x,intersect.points[0].y];
-
       }
-
     }
-
-
 
     this.line.setAttribute("x1", pos1[0]);
-
     this.line.setAttribute("y1", pos1[1]);
-
     this.highlightLine.setAttribute("x1", pos1[0]);
-
     this.highlightLine.setAttribute("y1", pos1[1]);
-
     if (this.thickLineShown) {
-
       this.thickLine.setAttribute("x1", pos1[0]);
-
       this.thickLine.setAttribute("y1", pos1[1]);
-
     }
-
     this.line.setAttribute("x2", pos2[0]);
-
     this.line.setAttribute("y2", pos2[1]);
-
     this.highlightLine.setAttribute("x2", pos2[0]);
-
     this.highlightLine.setAttribute("y2", pos2[1]);
-
     if (this.thickLineShown) {
-
       this.thickLine.setAttribute("x2", pos2[0]);
-
       this.thickLine.setAttribute("y2", pos2[1]);
-
     }
-
   };
-
-
 
   BinaryLink.prototype.getOtherEnd = function(interactor) {
-
     return ((this.interactors[0] === interactor) ? this.interactors[1] : this.interactors[0]);
-
   };
 
-
-
   module.exports = BinaryLink;
-
 
 },{"../../controller/Config":5,"./Link":21,"./SequenceLink":24,"intersectionjs":3,"point2d":4}],21:[function(require,module,exports){
 //    	xiNET Interaction Viewer
@@ -16184,291 +15636,148 @@
 
 },{"../../controller/Config":5}],22:[function(require,module,exports){
 //      xiNET interaction viewer
-
 //      Copyright 2014 Rappsilber Laboratory
-
 //
-
 //      This product includes software developed at
-
 //      the Rappsilber Laboratory (http://www.rappsilberlab.org/).
-
 //
-
 //      author: Colin Combe, Josh Heimbach
-
 //
-
 //		NaryLink.js
-
 //		graphically represents n-ary interactions
-
-
 
   "use strict";
 
-
-
   var colorbrewer = require("./../../../bower_components/colorbrewer/colorbrewer.js");
-
   var Link = require('./Link');
-
   var Config = require('../../controller/Config');
-
   var Molecule = require('../interactor/Molecule');
-
   var d3 = require("./../../../bower_components/d3/d3.js");
 
-
-
   NaryLink.naryColours = d3.scale.ordinal().range(colorbrewer.Paired[6]);//d3.scale.category20c();//d3.scale.ordinal().range(colorbrewer.Paired[12]);//
-
   NaryLink.orbitNodes = 16;
-
   NaryLink.orbitRadius = 20;
-
-
 
   NaryLink.prototype = new Link();
 
-
-
   function NaryLink(id, xlvController) {
-
     this.id = id;
-
     this.evidences = d3.map();
-
     this.interactors = new Array();
-
     this.sequenceLinks = d3.map();
-
     this.binaryLinks = d3.map();
-
     this.unaryLinks = d3.map();
-
     this.controller = xlvController;
-
     this.tooltip = this.id;
-
     //used to avoid some unnecessary manipulation of DOM
-
     this.initSVG();
-
   }
 
-
-
   NaryLink.prototype.initSVG = function() {
-
     this.path = document.createElementNS(Config.svgns, "path");
-
     if (this.controller.expand === false){
-
       this.path.setAttribute('fill', NaryLink.naryColours(this.id));
-
     }
-
     else {
-
       this.path.setAttribute('fill', '#70BDBD');
-
     }
-
     this.path.setAttribute('fill-opacity', 0.3);
 
-
-
     //set the events for it
-
     var self = this;
-
     this.path.onmousedown = function(evt) {
-
       self.mouseDown(evt);
-
     };
-
     this.path.onmouseover = function(evt) {
-
       self.mouseOver(evt);
-
     };
-
     this.path.onmouseout = function(evt) {
-
       self.mouseOut(evt);
-
     };
-
     this.path.ontouchstart = function(evt) {
-
       self.touchStart(evt);
-
     };
-
   };
-
-
 
   NaryLink.prototype.showHighlight = function(show) {
-
     this.highlightMolecules(show);
-
   };
-
-
-
 
 
   NaryLink.prototype.check = function() {
-
     this.show();
-
     return true;
-
   };
-
-
 
   NaryLink.prototype.show = function() {
-
     this.path.setAttribute("stroke-width", this.controller.z * 1);
-
     this.setLinkCoordinates();
-
     this.controller.naryLinks.appendChild(this.path);
-
   };
-
-
 
   NaryLink.prototype.hide = function() {};
 
-
-
   NaryLink.prototype.setLinkCoordinates = function() {
-
     // Uses d3.geom.hull to calculate a bounding path around an array of vertices
-
     var calculateHullPath = function(values) {
-
       var calced = d3.geom.hull(values);
-
       self.hull = calced;//hack?
-
       return "M" + calced.join("L") + "Z";
-
     };
-
     var self = this;// TODO: - tidy hack above?
-
     var mapped = this.orbitNodes(this.getMappedCoordinates());
-
     var hullValues = calculateHullPath(mapped);
-
     if (hullValues) {
-
       this.path.setAttribute('d', hullValues);
-
     }
-
     if (this.complex){
-
       this.complex.setAllLinkCoordinates();
-
     }
-
   };
 
-
-
   NaryLink.prototype.getMappedCoordinates = function() {
-
     var interactors = this.interactors;
-
     var mapped = new Array();
-
     var ic = interactors.length;
-
     for (var i = 0; i < ic; i ++) {
-
       var interactor = interactors[i];
-
       if (interactor.type == 'complex') {
-
         mapped = mapped.concat(this.orbitNodes(interactor.naryLink.getMappedCoordinates()));
-
       }
-
       else if (interactor.form === 1){
-
         var start = interactor.getResidueCoordinates(0);
-
         var end = interactor.getResidueCoordinates(interactor.size);
-
         if (!isNaN(start[0]) && !isNaN(start[1]) &&
-
             !isNaN(end[0]) && !isNaN(end[1])){
-
           mapped.push(start);
-
           mapped.push(end);
-
         } else {
-
           mapped.push(interactor.getPosition());
-
         }
-
       } else {
-
         mapped.push(interactor.getPosition());
-
       }
-
     }
-
     return mapped;
-
   }
-
-
 
 //'orbit' nodes - several nodes around interactor positions to give margin
-
   NaryLink.prototype.orbitNodes = function(mapped) {
-
     var orbitNodes = new Array();
-
     var mc = mapped.length;
-
     for (var mi = 0; mi < mc; mi++){
-
       var m = mapped[mi];
-
       for (var o = 0; o < NaryLink.orbitNodes; o++){
-
         var angle = (360 / NaryLink.orbitNodes) * o;
-
         var p = [m[0] + NaryLink.orbitRadius, m[1]];
-
         orbitNodes.push(Molecule.rotatePointAboutPoint(p, m, angle));
-
       }
-
     }
-
     return orbitNodes;
-
   }
-
-
-
 
 
   module.exports = NaryLink;
-
 
 },{"../../controller/Config":5,"../interactor/Molecule":15,"./../../../bower_components/colorbrewer/colorbrewer.js":1,"./../../../bower_components/d3/d3.js":2,"./Link":21}],23:[function(require,module,exports){
 //    xiNET interaction viewer
@@ -16572,1060 +15881,534 @@
 
 },{}],24:[function(require,module,exports){
 //    xiNET interaction viewer
-
 //    Copyright 2013 Rappsilber Laboratory
-
 //
-
 //    This product includes software developed at
-
 //    the Rappsilber Laboratory (http://www.rappsilberlab.org/).
-
-
 
   "use strict";
 
-
-
   var Link = require('./Link');
-
   var SequenceDatum = require('./SequenceDatum');
-
 //~ var BinaryLink = require('./BinaryLink');
-
 //~ var UnaryLink = require('./UnaryLink');
-
   var Config = require('../../controller/Config');
 
-
-
   SequenceLink.prototype = new Link();
-
   function SequenceLink(id, fromFeatPos, toFeatPos, xlvController) {
-
     this.id = id;
-
     this.controller = xlvController;
-
     this.fromSequenceData = fromFeatPos;
-
     this.toSequenceData = toFeatPos;
-
     this.interactors = [this.fromSequenceData[0].node, this.toSequenceData[0].node];//*
-
     // *potentially, this over simplifies the situation,
-
     // but there is a workaround in way ReadMiJson init's links so OK for now
 
-
-
   }
-
-
 
   SequenceLink.prototype.getToolTip = function(){
-
     var tooltip = "";
-
     tooltip += this.interactors[0].labelText + " ";
-
     for (var i = 0; i < this.fromSequenceData.length; i++){
-
       if (i > 0) tooltip += ",";
-
       tooltip += this.fromSequenceData[i].toString();
-
     }
-
     tooltip += " to ";
-
     tooltip += this.interactors[1].labelText + " ";
-
     for (var j = 0; j < this.toSequenceData.length; j++){
-
       if (j > 0) tooltip += ",";
-
       tooltip += this.toSequenceData[j].toString();
-
     }
-
     return tooltip;
-
   }
 
-
-
   SequenceLink.prototype.initSVG = function() {
-
     if (typeof this.glyph === 'undefined') {
-
       this.glyph = document.createElementNS(Config.svgns, "path");
-
       this.uncertainGlyph = document.createElementNS(Config.svgns, "path");
-
       this.highlightGlyph = document.createElementNS(Config.svgns, "path");
-
       this.glyph.setAttribute("stroke-linecap", "round");
-
       this.uncertainGlyph.setAttribute("stroke-linecap", "round");
-
       this.highlightGlyph.setAttribute("stroke-linecap", "round");
-
       this.glyph.setAttribute("class", "link");
-
       this.glyph.setAttribute("fill", "#E08214");
-
       this.glyph.setAttribute("opacity", "0.6");
-
       this.glyph.setAttribute("stroke", "#A08214");
-
       this.glyph.setAttribute("stroke-width", "2");
-
       this.uncertainGlyph.setAttribute("class", "link");
-
       this.uncertainGlyph.setAttribute("fill", "#A01284");
-
       this.uncertainGlyph.setAttribute("stroke", "#A01284");
-
       this.uncertainGlyph.setAttribute("stroke-opacity", "0.7");
-
       this.uncertainGlyph.setAttribute("fill-opacity", "0.3");
-
       this.highlightGlyph.setAttribute("class", "link");
-
       this.highlightGlyph.setAttribute("fill", "none");
-
       this.highlightGlyph.setAttribute("stroke", Config.highlightColour);
-
       this.highlightGlyph.setAttribute("stroke-width", "10");
-
       this.highlightGlyph.setAttribute("stroke-opacity", "0");
-
       if (typeof this.colour !== 'undefined') {
-
         this.glyph.setAttribute("fill", this.colour.toString());
-
       }
-
-
 
       //set the events for it
-
       var self = this;
-
       this.uncertainGlyph.onmousedown = function(evt) {
-
         self.mouseDown(evt);
-
       };
-
       this.uncertainGlyph.onmouseover = function(evt) {
-
         self.mouseOver(evt);
-
       };
-
       this.uncertainGlyph.onmouseout = function(evt) {
-
         self.mouseOut(evt);
-
       };
-
       this.glyph.onmousedown = function(evt) {
-
         self.mouseDown(evt);
-
       };
-
       this.glyph.onmouseover = function(evt) {
-
         self.mouseOver(evt);
-
       };
-
       this.glyph.onmouseout = function(evt) {
-
         self.mouseOut(evt);
-
       };
-
       this.highlightGlyph.onmousedown = function(evt) {
-
         self.mouseDown(evt);
-
       };
-
       this.highlightGlyph.onmouseover = function(evt) {
-
         self.mouseOver(evt);
-
       };
-
       this.highlightGlyph.onmouseout = function(evt) {
-
         self.mouseOut(evt);
-
       };
-
     }
-
   };
-
-
 
 //andAlternatives means highlight alternative links in case of site ambiguity
-
   SequenceLink.prototype.showHighlight = function(show) {
-
     if (show) {
-
       this.highlightGlyph.setAttribute("stroke-opacity", "1");
-
     } else {
-
       this.highlightGlyph.setAttribute("stroke-opacity", "0");
-
     }
-
   };
-
-
 
 //used when filter changed
-
   SequenceLink.prototype.check = function() {
-
     if (this.filteredEvidence().length > 0 && this.anyMoleculeIsBar() === true) {
-
       this.show();
-
       return true;
-
     } else {
-
       this.hide();
-
       return false;
-
     }
-
   };
-
-
 
   SequenceLink.prototype.anyMoleculeIsBar = function() {
-
     var ic = this.interactors.length;
-
     for (var i = 0; i < ic; i++) {
-
       if (this.interactors[i].form === 1) {
-
         return true;
-
       }
-
     }
-
     return false;
-
   };
-
-
 
   SequenceLink.prototype.show = function() {
-
     if (!this.glyph){
-
       this.initSVG();
-
     }
-
     //this.glyph.setAttribute("stroke-width", this.controller.z * xiNET.linkWidth);
-
     this.uncertainGlyph.setAttribute("stroke-width", this.controller.z * xiNET.linkWidth);
-
     this.highlightGlyph.setAttribute("stroke-width", this.controller.z * 10);
-
     this.setLinkCoordinates();
-
     var containingGroup = this.controller.res_resLinks;
-
     if (this.interactors[0] === this.interactors[1]){
-
       containingGroup = this.controller.selfRes_resLinks;
-
     }
-
     containingGroup.appendChild(this.highlightGlyph);
-
     containingGroup.appendChild(this.glyph);
-
     containingGroup.appendChild(this.uncertainGlyph);
-
   };
 
-
-
   SequenceLink.prototype.hide = function() {
-
     var containingGroup = this.controller.res_resLinks;
-
     if (this.interactors[0] === this.interactors[1]){
-
       containingGroup = this.controller.selfRes_resLinks;
-
     }
-
-
 
     var groupChildren = []
 
-
-
     for (var i = 0; i < containingGroup.childNodes.length; i++) {
-
       groupChildren[i] = containingGroup.childNodes[i];
-
     }
-
-
 
     if (groupChildren.indexOf(this.glyph) > -1) {
-
       containingGroup.removeChild(this.glyph);
-
       containingGroup.removeChild(this.uncertainGlyph);
-
       containingGroup.removeChild(this.highlightGlyph);
-
     }
-
   };
-
-
 
 // update the links(polygons/lines) to fit to the protein
-
   SequenceLink.prototype.setLinkCoordinates = function(interactor) {
-
     function isNumber(thing) {
-
       return (!isNaN(parseFloat(thing)) && isFinite(thing));
-
     }
-
-
 
     function getPathSegments(midPoint, controlPoint, startRes, endRes, interactor, yOffset) {
-
       var startPoint, endPoint;
-
       if (interactor.form === 0) {
-
         startPoint = interactor.getPosition();
-
         endPoint = startPoint;
-
       }
-
       else {
-
         startPoint = interactor.getResidueCoordinates(startRes, yOffset);
-
         endPoint = interactor.getResidueCoordinates(endRes, yOffset);
 
-
-
       }
-
       return ' Q' + controlPoint[0] + ',' + controlPoint[1] + ' ' + startPoint[0] + ',' + startPoint[1] +
-
           ' L' + endPoint[0] + ',' + endPoint[1] +
-
           ' Q' + controlPoint[0] + ',' + controlPoint[1] + ' ' + midPoint[0] + ',' + midPoint[1];
-
     }
-
-
 
     function sequenceDataMidPoint(sequenceData, interactor) {
-
       //get the smallest start and the biggest end
-
       var lowestLinkedRes = null, highestLinkedRes = null;
-
       var sdCount = sequenceData.length;
-
       for (var s = 0; s < sdCount; s++) {
-
         var seqDatum = sequenceData[s];
-
         if (!isNaN(parseFloat(seqDatum.start)) && isFinite(seqDatum.start)) {
-
           var start = seqDatum.start * 1;
-
           if (lowestLinkedRes === null || start < lowestLinkedRes) {
-
             lowestLinkedRes = start;
-
           }
-
         }
-
         if (!isNaN(parseFloat(seqDatum.uncertainStart)) && isFinite(seqDatum.uncertainStart)) {
-
           var uncertainStart = seqDatum.uncertainStart * 1;
-
           if (lowestLinkedRes === null || uncertainStart < lowestLinkedRes) {
-
             lowestLinkedRes = uncertainStart;
-
           }
-
         }
-
         if (!isNaN(parseFloat(seqDatum.end)) && isFinite(seqDatum.end)) {
-
           var end = seqDatum.end * 1;
-
           if (highestLinkedRes === null || end > highestLinkedRes) {
-
             highestLinkedRes = end;
-
           }
-
         }
-
         if (!isNaN(parseFloat(seqDatum.uncertainEnd)) && isFinite(seqDatum.uncertainEnd)) {
-
           var uncertainEnd = seqDatum.uncertainEnd * 1;
-
           if (highestLinkedRes === null || uncertainEnd > highestLinkedRes) {
-
             highestLinkedRes = uncertainEnd;
-
           }
-
         }
-
       }
-
       return interactor.getResidueCoordinates((lowestLinkedRes + highestLinkedRes) / 2, 0);
-
     }
-
     var fromMolecule = this.fromSequenceData[0].node;
-
     var toMolecule = this.toSequenceData[0].node;
-
     //calculate mid points of from and to sequence data
-
     var fMid, tMid;
-
     if (fromMolecule.form === 0) {
-
       fMid = fromMolecule.getPosition();
-
     }
-
     else {
-
       fMid = sequenceDataMidPoint(this.fromSequenceData, fromMolecule);
-
     }
-
     if (toMolecule.form === 0) {
-
       tMid = toMolecule.getPosition();
-
     }
-
     else {
-
       tMid = sequenceDataMidPoint(this.toSequenceData, toMolecule);
-
     }
-
-
 
     //calculate angle from fromMolecule mid point to toMolecule mid point
-
     var deltaX = fMid[0] - tMid[0];
-
     var deltaY = fMid[1] - tMid[1];
-
     var angleBetweenMidPoints = Math.atan2(deltaY, deltaX);
-
     //todo: tidy up trig code so eveything is always in radian
-
     var abmpDeg = angleBetweenMidPoints / (2 * Math.PI) * 360;
-
     if (abmpDeg < 0) {
-
       abmpDeg += 360;
-
     }
-
-
 
     //out is value we use to decide which side of bar the link glyph is drawn
-
     //first for 'from' interactor
-
     var out = (abmpDeg - fromMolecule.rotation);
-
     if (out < 0) {
-
       out += 360;
-
     }
-
     var fyOffset = 10;
-
     if (out < 180) {
-
       fyOffset = -10;
-
     }
-
     var fRotRad = (fromMolecule.rotation / 360) * Math.PI * 2;
-
     if (out > 180) {
-
       fRotRad = fRotRad - Math.PI;
-
     }
-
     //now for 'to' interactor
-
     out = (abmpDeg - toMolecule.rotation);
-
     if (out < 0) {
-
       out += 360;
-
     }
-
     var tyOffset = 10;
-
     if (out > 180) {
-
       tyOffset = -10;
-
     }
-
     var tRotRad = (toMolecule.rotation / 360) * Math.PI * 2;
-
     if (out < 180) {
-
       tRotRad = tRotRad - Math.PI;
-
     }
-
-
 
     var ftMid = [fMid[0] + (30 * Math.sin(fRotRad) * this.controller.z),
-
       fMid[1] - (30 * Math.cos(fRotRad) * this.controller.z)];
-
     if (fromMolecule.form === 0) {
-
       ftMid = fMid;
-
     }
-
-
 
     var ttMid = [tMid[0] + (30 * Math.sin(tRotRad) * this.controller.z),
-
       tMid[1] - (30 * Math.cos(tRotRad) * this.controller.z)];
-
     if (toMolecule.form === 0) {
-
       ttMid = tMid;
-
     }
-
-
 
     var triPointMid = [(ftMid[0] + ttMid[0]) / 2, (ftMid[1] + ttMid[1]) / 2];
-
     var fSDCount = this.fromSequenceData.length;
-
     var tSDCount = this.toSequenceData.length;
-
     var seqDatum, highlightStartRes, highlightEndRes;
-
     var glyphPath = 'M' + triPointMid[0] + ',' + triPointMid[1];
-
     var uncertainGlyphPath = 'M' + triPointMid[0] + ',' + triPointMid[1];
-
     var highlightGlyphPath = 'M' + triPointMid[0] + ',' + triPointMid[1];
-
     for (var f = 0; f < fSDCount; f++) {
-
       seqDatum = this.fromSequenceData[f];
-
       glyphPath += getPathSegments(triPointMid, ftMid, seqDatum.start, seqDatum.end, fromMolecule, fyOffset);
-
       highlightStartRes = seqDatum.start;
-
       highlightEndRes = seqDatum.end;
-
       if (isNumber(seqDatum.uncertainStart)) {
-
         uncertainGlyphPath += getPathSegments(triPointMid, ftMid,
-
             seqDatum.uncertainStart, seqDatum.start, fromMolecule, fyOffset);
-
         highlightStartRes = seqDatum.uncertainStart;
-
       }
-
       if (isNumber(seqDatum.uncertainEnd)) {
-
         uncertainGlyphPath += getPathSegments(triPointMid, ftMid,
-
             seqDatum.end, seqDatum.uncertainEnd, fromMolecule, fyOffset);
-
         highlightEndRes = seqDatum.uncertainEnd;
-
       }
-
       highlightGlyphPath += getPathSegments(triPointMid, ftMid,
-
           highlightStartRes, highlightEndRes, fromMolecule, fyOffset);
-
     }
-
     for (var t = 0; t < tSDCount; t++) {
-
       seqDatum = this.toSequenceData[t];
-
       glyphPath += getPathSegments(triPointMid, ttMid, seqDatum.start, seqDatum.end, toMolecule, tyOffset);
-
       highlightStartRes = seqDatum.start;
-
       highlightEndRes = seqDatum.end;
-
       if (isNumber(seqDatum.uncertainStart)) {
-
         uncertainGlyphPath += getPathSegments(triPointMid, ttMid,
-
             seqDatum.uncertainStart, seqDatum.start, toMolecule, tyOffset);
-
         highlightStartRes = seqDatum.uncertainStart;
-
       }
-
       if (isNumber(seqDatum.uncertainEnd)) {
-
         uncertainGlyphPath += getPathSegments(triPointMid, ttMid,
-
             seqDatum.end, seqDatum.uncertainEnd, toMolecule, tyOffset);
-
         highlightEndRes = seqDatum.uncertainEnd;
-
       }
-
       highlightGlyphPath += getPathSegments(triPointMid, ttMid,
-
           highlightStartRes, highlightEndRes, toMolecule, tyOffset);
-
     }
-
-
 
     if (!this.glyph){
-
       this.initSVG();
-
     }
 
-
-
     this.glyph.setAttribute("d", glyphPath);
-
     this.uncertainGlyph.setAttribute("d", uncertainGlyphPath);
-
     this.highlightGlyph.setAttribute("d", highlightGlyphPath);
-
   };
-
-
 
   module.exports = SequenceLink;
 
-
 },{"../../controller/Config":5,"./Link":21,"./SequenceDatum":23}],25:[function(require,module,exports){
 //    	xiNET Interaction Viewer
-
 //    	Copyright 2013 Rappsilber Laboratory
-
 //
-
 //    	This product includes software developed at
-
 //    	the Rappsilber Laboratory (http://www.rappsilberlab.org/).
-
 //
-
 //		author: Colin Combe
-
 //
-
 // 		UnaryLink.js
-
 // 		the class representing a self-link
-
-
 
   "use strict";
 
-
-
   var Config = require('../../controller/Config');
-
   var Link = require('./Link');
-
   var SequenceLink = require('./SequenceLink');
-
-
 
   UnaryLink.prototype = new Link();
 
-
-
   function UnaryLink(id, xlvController, interactor) {
-
     this.id = id;
-
     this.evidences = d3.map();
-
     this.interactors = [interactor];
-
     this.sequenceLinks = d3.map();
-
     this.controller = xlvController;
-
     this.initSVG();
-
   };
-
 
 //~ UnaryLink.prototype.getToolTip = function(){
-
   //~ var tooltip = "", fromResidues = "", toResidues = "";
-
   //~ var seqLinks = this.sequenceLinks.values();
-
   //~ var seqLinkCount = seqLinks.length;
-
   //~ for (var sl = 0; sl < seqLinkCount; sl++){
-
   //~ if (sl > 0){
-
   //~ fromResidues += ",";
-
   //~ toResidues += ",";
-
   //~ }
-
   //~ var seqLink = seqLinks[sl];
-
   //~ for (var i = 0; i < seqLink.fromSequenceData.length; i++){
-
   //~ if (i > 0) tooltip += ",";
-
   //~ fromResidues += seqLink.fromSequenceData[i].toString();
-
   //~ }
-
   //~ for (var j = 0; j < seqLink.toSequenceData.length; j++){
-
   //~ if (j > 0) tooltip += ",";
-
   //~ toResidues += seqLink.toSequenceData[j].toString();
-
   //~ }
-
   //~ }
-
   //~ tooltip += this.interactors[0].labelText + " ";
-
   //~ tooltip += fromResidues;
-
   //~ tooltip += " TO ";
-
   //~ tooltip += this.interactors[0].labelText + " ";
-
   //~ tooltip += toResidues;
-
   //~ return tooltip;
-
 //~ };
 
-
-
   UnaryLink.prototype.initSVG = function() {
-
     var path = this.interactors[0].getAggregateSelfLinkPath();
-
     this.line = document.createElementNS(Config.svgns, "path");
-
     this.line.setAttribute('d', path);
-
     this.highlightLine = document.createElementNS(Config.svgns, 'path');
-
     this.highlightLine.setAttribute('d', path);
-
     this.thickLine = document.createElementNS(Config.svgns, 'path');
-
     this.thickLine.setAttribute('d', path);
-
-
 
     this.line.setAttribute("class", "link");
-
     this.line.setAttribute("fill", "none");
-
     this.line.setAttribute("stroke", "black");
-
     this.line.setAttribute("stroke-width", 1);
-
     this.line.setAttribute("stroke-linecap", "round");
-
     this.highlightLine.setAttribute("class", "link");
-
     this.highlightLine.setAttribute("fill", "none");
-
     this.highlightLine.setAttribute("stroke", Config.highlightColour);
-
     this.highlightLine.setAttribute("stroke-width", "10");
-
     this.highlightLine.setAttribute("stroke-linecap", "round");
-
     this.highlightLine.setAttribute("stroke-opacity", "0");
-
     this.thickLine.setAttribute("class", "link");
-
     this.thickLine.setAttribute("fill", "none");
-
     this.thickLine.setAttribute("stroke", "lightgray");
-
     this.thickLine.setAttribute("stroke-linecap", "round");
-
     this.thickLine.setAttribute("stroke-linejoin", "round");
-
     //set the events for it
-
     var self = this;
-
     this.line.onmousedown = function(evt) {
-
       self.mouseDown(evt);
-
     };
-
     this.line.onmouseover = function(evt) {
-
       self.mouseOver(evt);
-
     };
-
     this.line.onmouseout = function(evt) {
-
       self.mouseOut(evt);
-
     };
-
     this.line.ontouchstart = function(evt) {
-
       self.touchStart(evt);
-
     };
-
-
 
     this.highlightLine.onmousedown = function(evt) {
-
       self.mouseDown(evt);
-
     };
-
     this.highlightLine.onmouseover = function(evt) {
-
       self.mouseOver(evt);
-
     };
-
     this.highlightLine.onmouseout = function(evt) {
-
       self.mouseOut(evt);
-
     };
-
     this.highlightLine.ontouchstart = function(evt) {
-
       self.touchStart(evt);
-
     };
-
-
 
     this.thickLine.onmousedown = function(evt) {
-
       self.mouseDown(evt);
-
     };
-
     this.thickLine.onmouseover = function(evt) {
-
       self.mouseOver(evt);
-
     };
-
     this.thickLine.onmouseout = function(evt) {
-
       self.mouseOut(evt);
-
     };
-
     this.thickLine.ontouchstart = function(evt) {
-
       self.touchStart(evt);
-
     };
-
-
 
     this.isSelected = false;
-
   }
-
-
 
   UnaryLink.prototype.selfLink = function() {
-
     return (this.fromProtein === this.toProtein);
-
   }
 
-
-
   UnaryLink.prototype.initSelfLinkSVG = function() {
-
     var path = this.interactors[0].getAggregateSelfLinkPath();
-
     this.line.setAttribute('d', path);
-
     this.highlightLine.setAttribute('d', path);
-
     this.thickLine.setAttribute('d', path);
-
   };
-
-
 
   UnaryLink.prototype.showHighlight = function(show) {
-
     if (this.notSubLink === true){
-
       this.highlightMolecules(show);
-
     }
-
     if (show) {
-
       //~ this.highlightLine.setAttribute("stroke", xiNET.highlightColour.toRGB());
-
       this.highlightLine.setAttribute("stroke-opacity", "1");
-
     } else {
-
       //~ this.highlightLine.setAttribute("stroke", xiNET.selectedColour.toRGB());
-
       //~ if (this.isSelected === false) {
-
       this.highlightLine.setAttribute("stroke-opacity", "0");
-
       //~ }			
-
     }
-
   };
-
-
 
   UnaryLink.prototype.check = function() {
-
     if (this.interactors[0].form !== 1) {
-
       this.show();
-
       return true;
-
     }
-
     else {
-
       this.hide();
-
       return false;
-
     }
-
   };
-
-
 
   UnaryLink.prototype.show = function() {
-
     this.line.setAttribute("transform", "translate(" + this.interactors[0].x
-
         + " " + this.interactors[0].y + ")" + " scale(" + (this.controller.z) + ")");
-
     this.highlightLine.setAttribute("transform", "translate(" + this.interactors[0].x
-
         + " " + this.interactors[0].y + ")" + " scale(" + (this.controller.z) + ")");
-
     this.controller.highlights.appendChild(this.highlightLine);
-
     this.controller.p_pLinks.appendChild(this.line);
-
   };
-
-
-
 
 
   UnaryLink.prototype.setLinkCoordinates = function() {
-
     var interactor = this.interactors[0];
-
     if (typeof this.thickLine !== 'undefined') {
-
       this.thickLine.setAttribute("transform", "translate(" + interactor.x
-
           + " " + interactor.y + ")" + " scale(" + (this.controller.z) + ")");
-
     }
-
     this.line.setAttribute("transform", "translate(" + interactor.x
-
         + " " + interactor.y + ")" + " scale(" + (this.controller.z) + ")");
-
     this.highlightLine.setAttribute("transform", "translate(" + interactor.x
-
         + " " + interactor.y + ")" + " scale(" + (this.controller.z) + ")");
-
   };
 
-
-
   module.exports = UnaryLink;
-
 
 },{"../../controller/Config":5,"./Link":21,"./SequenceLink":24}]},{},[6])(6)
 });
