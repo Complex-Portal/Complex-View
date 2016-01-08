@@ -91,7 +91,7 @@
     <p>The number of complexes available is currently limited, but will be added to over time. If you wish to request the curation of one or more complexes, or to amend or contribute to an existing entry, please contact us on <a href="${complex_contact_url}">intact-help</a>.</p>
     <p>To read more on complex curation, go to <a href="${complex_documentation_url}">Documentation</a>.</p>
     <p>To find out more about the search algorithms, go to <a href="${complex_help_url}">Help</a>.</p>
-    <p>To retrieve our data programmatic, please use our API: <a href="${complex_ws_url}">Complex Portal Web-Service</a> </p>
+    <p>To retrieve our data programmaticlly, please use our API: <a href="${complex_ws_url}">Complex Portal Web-Service</a> </p>
     <p>Complexes can be downloaded in PSI-MI <a href="http://www.psidev.info/mif">XML 2.5.4</a> format from our <a href="${complex_ftp_url}">ftp site</a>. Individual complex files are grouped by species.</p>
 </div>
 
