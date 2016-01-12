@@ -3,6 +3,8 @@
 <%@include file="header.jsp" %>
 <jsp:useBean id="details" class="uk.ac.ebi.intact.service.complex.view.ComplexDetails" scope="session"/>
 <script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/d3.v3.min.js"/>"></script>
+<script type="text/javascript" charset="utf-8" src="<c:url value="/resources/js/complexviewer-helper.js"/>"></script>
+
 <script>
     $(function () {
         $("#dialog").dialog({
@@ -12,6 +14,10 @@
         $("#dialog_opener").click(function () {
             $("#dialog").dialog("open");
         });
+    });
+    
+    window.addEventListener("load", function () {
+        loadComplexViewer('${sessionScope.details.ac}', '${json_rest}');
     });
 </script>
 
@@ -147,68 +153,31 @@
             </c:if>
         </div>
         <div class="grid_12" style="height: 50%; width: 45%;">
-            <div id="networkControls" class="networkControls" style="margin: 0; padding: 0;">
-                <button id="dialog_opener" class="submit networkButton">Legend</button>
-                <select id="annotationsSelect" onChange="changeAnnotations();">
-                    <option value="MI features" selected='selected'>MI features</option>
-                    <option value="UniprotKB">UniprotKB</option>
-                    <option value="SuperFamily">SuperFamily</option>
-                    <option value="Interactor">Interactor</option>
-                    <option value="None">None</option>
-                </select>
-                <button onclick="xlv.expandAll();">Expand All</button>
-                <button id="Reset" class="submit networkButton" onclick="xlv.reset();">Reset</button>
-                <button id="ExportSVG" class="submit networkButton" onclick="exportSVG()">Export SVG</button>
-                <div id="dialog" title="Legend" style="">
-                    <%@include file="legend.jsp" %>
+            <div class="grid_24">
+                <div id="networkControls" class="networkControls" style="margin: 0; padding: 0;">
+                    <button id="dialog_opener" class="submit networkButton">Legend</button>
+                    <select id="annotationsSelect" onChange="changeAnnotations();">
+                        <option value="MI features" selected='selected'>MI features</option>
+                        <option value="UniprotKB">UniprotKB</option>
+                        <option value="SuperFamily">SuperFamily</option>
+                        <option value="Interactor">Interactor</option>
+                        <option value="None">None</option>
+                    </select>
+                    <button onclick="xlv.expandAll();">Expand All</button>
+                    <button id="Reset" class="submit networkButton" onclick="xlv.reset();">Reset</button>
+                    <button id="ExportSVG" class="submit networkButton" onclick="exportSVG()">Export SVG</button>
+                    <a href="${complexviewer_url}${sessionScope.details.ac}">Click to enlarge</a>
+
+                    <div id="dialog" title="Legend" style="">
+                        <%@include file="legend.jsp" %>
+                    </div>
                 </div>
+                <br>
+                <br>
             </div>
-            <br>
-            <br>
-
-            <div id="networkContainer" style="border: 1px solid #f1f1f1;"></div>
-            <script type="text/javascript">
-                window.addEventListener("load", function () {
-                    var data = '${json_rest}';
-                    var targetDiv = document.getElementById('networkContainer');
-                    xlv = new xiNET(targetDiv);
-                    xlv.legendCallbacks.push(function (colourAssignment) {
-                        var coloursKeyDiv = document.getElementById('colours');
-
-                        var table = "<table><tr style='height:10px;'></tr><tr><td style='width:80px;margin:10px;"
-                                + "background:#70BDBD;opacity:0.3;border:none;'>"
-                                + "</td><td>${sessionScope.details.ac}</td></tr>";
-
-                        if (colourAssignment) {
-                            var domain = colourAssignment.domain();
-                            //~ console.log("Domain:"+domain);
-                            var range = colourAssignment.range();
-                            //~ console.log("Range:"+range);
-                            table += "<tr style='height:10px;'></tr>";
-                            for (var i = 0; i < domain.length; i++) {
-                                //make transparent version of colour
-                                var temp = new RGBColor(range[i % 20]);
-                                var trans = "rgba(" + temp.r + "," + temp.g + "," + temp.b + ", 0.6)"
-                                table += "<tr><td style='width:75px;margin:10px;background:"
-                                + trans + ";border:1px solid "
-                                + range[i % 20] + ";'></td><td>"
-                                + domain[i] + "</td></tr>";
-                                //~ console.log(i + " "+ domain[i] + " " + range[i]);
-                            }
-                        }
-                        table = table += "</table>";
-                        coloursKeyDiv.innerHTML = table;
-                    });
-                    xlv.readMIJSON(data, true);
-                    xlv.autoLayout();
-                });
-                function exportSVG() {
-                    var xml = xlv.getSVG();
-                    xmlAsUrl = 'data:image/svg;filename=xiNET-output.svg,';
-                    xmlAsUrl += encodeURIComponent(xml);
-                    var win = window.open(xmlAsUrl, 'xiNET-output.svg');
-                }
-            </script>
+            <div class="grid_24">
+                <div id="networkContainer" style="border: 1px solid #f1f1f1;"></div>
+            </div>
         </div>
         <div class="grid_24">
             <c:if test="${not empty sessionScope.details.functions}">
