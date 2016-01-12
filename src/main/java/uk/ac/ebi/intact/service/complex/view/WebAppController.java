@@ -170,6 +170,20 @@ public class WebAppController {
         return "details";
     }
 
+    // COMPLEX VIEWER
+    @RequestMapping(value = "/complexviewer/{ac}", method = RequestMethod.GET)
+    public String showComplexViewer(@PathVariable String ac,
+                                    ModelMap model,
+                                    HttpServletRequest request) throws Exception {
+        String json = restConnection.getJsonToVisualize(ac);
+        model.addAttribute("json_rest", json);
+        model.addAttribute("current_ac", ac);
+        model.addAttribute("complex_search_form", request.getRequestURL().toString().split("complexviewer/")[0]);
+        setDefaultModelMapValues(model, request);
+        model.addAttribute("page_title", "Complex Viewer");
+        return "complexviewer";
+    }
+
     // HELP
     @RequestMapping(value = "/help/", method = RequestMethod.GET)
     public String goHelp(ModelMap model,
@@ -263,6 +277,7 @@ public class WebAppController {
         model.addAttribute("complex_ftp_url", this.restConnection.getFtpUrl());
         model.addAttribute("complex_download_form", this.restConnection.getWSUrl() + "export/");
         model.addAttribute("complex_ws_url", this.restConnection.getWSUrl());
+        model.addAttribute("complexviewer_url", request.getContextPath() + "/complexviewer/");
     }
 
     private String cleanQuery(String query) {
