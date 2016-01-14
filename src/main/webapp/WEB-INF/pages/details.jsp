@@ -166,7 +166,7 @@
                     <button onclick="xlv.expandAll();">Expand All</button>
                     <button id="Reset" class="submit networkButton" onclick="xlv.reset();">Reset</button>
                     <button id="ExportSVG" class="submit networkButton" onclick="exportSVG()">Export SVG</button>
-                    <a href="${complexviewer_url}${sessionScope.details.ac}">Click to enlarge</a>
+                    <a href="${complexviewer_url}${sessionScope.details.ac}"><button>Click to enlarge</button></a>
 
                     <div id="dialog" title="Legend" style="">
                         <%@include file="legend.jsp" %>
