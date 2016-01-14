@@ -3,12 +3,12 @@
     <parent>
         <groupId>uk.ac.ebi.intact.service</groupId>
         <artifactId>service-master</artifactId>
-        <version>3.0.1-20140617.141408-1</version>
+        <version>3.0.3</version>
     </parent>
     <groupId>uk.ac.ebi.intact.service.complexprotal</groupId>
     <artifactId>complex-view</artifactId>
     <packaging>war</packaging>
-    <version>2.0.3-SNAPSHOT</version>
+    <version>2.0.3</version>
     <name>complex-view</name>
 
     <properties>
@@ -19,7 +19,7 @@
         <connection>scm:git:https://github.com/Complex-Portal/Complex-View.git</connection>
         <developerConnection>scm:git:https://github.com/Complex-Portal/Complex-View.git</developerConnection>
         <url>https://github.com/Complex-Portal/Complex-View</url>
-      <tag>HEAD</tag>
+      <tag>complex-view-2.0.3</tag>
   </scm>
 
     <dependencies>
