@@ -85,6 +85,7 @@
         <div class="grid_18 alpha">
             <div class="grid_18">
                 <form class="searchForm" method="GET" action="">
+                    <a href="https://www.surveymonkey.co.uk/r/complexportal">Please help us improve the complex portal by filling out our survey </a><img src="http://www.ebi.ac.uk/web_guidelines/images/icons/EBI-Generic/Generic%20icons/alert.png" style="width: 19px; height: 20px;">
                     <fieldset id="searchFormField">
                         <legend>Search in Complex Portal</legend>
                         <textarea name="q" rows="10" id="querySearchBox" type="text" class="searchBox"
