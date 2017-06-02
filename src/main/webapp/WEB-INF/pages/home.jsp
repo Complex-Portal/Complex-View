@@ -77,6 +77,13 @@
         <%--&lt;%&ndash;<h5 class="subtitleHome">IntAct provides a freely available, open source database system and analysis tools for molecular interaction data. All interactions are derived from literature curation or direct user submissions and are freely available. To perform a search in the IntAct database use the search box below.</h5>&ndash;%&gt;--%>
         <%--<h5 class="subtitleHome">The Complex Portal is a manually curate, encyclopaedic resource of macromolecular complexes from a number of key model organisms. All data is freely available for search and download. To perform a search for macromolecular complexes use the search box below.</h5>--%>
         <%--</div>--%>
+        <div style="width: 80%; background-color: #fff1aa; padding: 10px;margin: auto;">
+            <h3><img src="http://www.ebi.ac.uk/web_guidelines/images/icons/EBI-Generic/Generic%20icons/announcement.svg"
+                     style="width: 19px; height: 20px;"> Try out our new website</h3>
+            <p>Please try our newly designed and implemented Complex Portal: <a href="//www.ebi.ac.uk/complexportal"
+                                                                                target="_blank">www.ebi.ac.uk/complexportal</a>
+            </p>
+        </div>
         <p class="intro">The Complex Portal is a manually curated, encyclopaedic resource of macromolecular complexes
             from a number of key model organisms. All data is freely available for search and download. To perform a
             search for macromolecular complexes use the search box below.</p>
@@ -85,7 +92,10 @@
         <div class="grid_18 alpha">
             <div class="grid_18">
                 <form class="searchForm" method="GET" action="">
-                    <a href="https://www.surveymonkey.co.uk/r/complexportal">Please help us improve the complex portal by filling out our survey </a><img src="http://www.ebi.ac.uk/web_guidelines/images/icons/EBI-Generic/Generic%20icons/alert.png" style="width: 19px; height: 20px;">
+                    <a href="https://www.surveymonkey.co.uk/r/complexportal">Please help us improve the complex portal
+                        by filling out our survey </a><img
+                        src="http://www.ebi.ac.uk/web_guidelines/images/icons/EBI-Generic/Generic%20icons/alert.png"
+                        style="width: 19px; height: 20px;">
                     <fieldset id="searchFormField">
                         <legend>Search in Complex Portal</legend>
                         <textarea name="q" rows="10" id="querySearchBox" type="text" class="searchBox"
@@ -135,8 +145,8 @@
                 </ul>
                 <%--<a href="JavaScript:newPopup('<c:url value="/help/"/>');">Help</a>--%>
                 <%--<p rel="tooltip"--%>
-                   <%--title="You can search for one or several of the following types of terms: complex_id, complex_alias, species, complex_xref, udate, id, alias, ptype, stc, pbiorole, ftype, source and number_participants. By default, we search for entries that contain ANY of your search terms. If you would like to restrict your search, please link your terms with 'AND' or use the filters available once you have made an initial search.">--%>
-                    <%--Help</p>--%>
+                <%--title="You can search for one or several of the following types of terms: complex_id, complex_alias, species, complex_xref, udate, id, alias, ptype, stc, pbiorole, ftype, source and number_participants. By default, we search for entries that contain ANY of your search terms. If you would like to restrict your search, please link your terms with 'AND' or use the filters available once you have made an initial search.">--%>
+                <%--Help</p>--%>
             </div>
             <div class="grid_24">
                 <ul class="helpList">
@@ -176,19 +186,34 @@
             <section>
                 <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
                 <style type="text/css">
-                    #mc_embed_signup{background:#fff; newsSubButton:left; font:14px Helvetica,Arial,sans-serif;}
-                    #mc_embed_signup .button{background-color: #3c9195}
+                    #mc_embed_signup {
+                        background: #fff;
+                        newsSubButton: left;
+                        font: 14px Helvetica, Arial, sans-serif;
+                    }
+
+                    #mc_embed_signup .button {
+                        background-color: #3c9195
+                    }
+
                     /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
                       We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
                 </style>
                 <div id="mc_embed_signup">
-                    <form action="//ebi.us9.list-manage.com/subscribe/post?u=d50725c1556266fd605025eaf&amp;id=91a036cbb0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+                    <form action="//ebi.us9.list-manage.com/subscribe/post?u=d50725c1556266fd605025eaf&amp;id=91a036cbb0"
+                          method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form"
+                          class="validate" target="_blank" novalidate>
                         <div id="mc_embed_signup_scroll">
                             <label for="mce-EMAIL">Sign up for our newsletter</label>
-                            <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address">
+                            <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL"
+                                   placeholder="email address">
                             <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-                            <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_d50725c1556266fd605025eaf_91a036cbb0" tabindex="-1" value=""></div>
-                            <div class="newsSubButton"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+                            <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text"
+                                                                                                      name="b_d50725c1556266fd605025eaf_91a036cbb0"
+                                                                                                      tabindex="-1"
+                                                                                                      value=""></div>
+                            <div class="newsSubButton"><input type="submit" value="Subscribe" name="subscribe"
+                                                              id="mc-embedded-subscribe" class="button"></div>
                         </div>
                     </form>
                 </div>

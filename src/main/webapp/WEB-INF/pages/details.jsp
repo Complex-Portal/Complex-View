@@ -110,6 +110,13 @@
     </nav>
 
     <div class="grid_24">
+        <div style="width: 80%; background-color: #fff1aa; padding: 10px;margin: auto;">
+            <h3><img src="http://www.ebi.ac.uk/web_guidelines/images/icons/EBI-Generic/Generic%20icons/announcement.svg"
+                     style="width: 19px; height: 20px;"> Try out our new website</h3>
+            <p>Please try our newly designed and implemented Complex Portal: <a href="//www.ebi.ac.uk/complexportal/complex/${sessionScope.details.ac}"
+                                                                                target="_blank">www.ebi.ac.uk/complexportal/complex/${sessionScope.details.ac}</a>
+            </p>
+        </div>
         <div class="grid_12" style="margin-left: 0;">
             <h2><c:choose><c:when test="${not empty sessionScope.details.name}"><c:out
                     value="${sessionScope.details.name}"/></c:when><c:otherwise>&lt;Not available&gt;</c:otherwise></c:choose></h2>
